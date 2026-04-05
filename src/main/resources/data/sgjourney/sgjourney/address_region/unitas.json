@@ -5,7 +5,7 @@
 	"symbol_prefix": 1,
 	"extragalactic_address": {"symbols": [1, 12, 34, 24, 15, 8, 17], "randomizable": true},
 	"galactic_addresses":
-	[
-		{"galaxy": "sgjourney:milky_way", "address": {"symbols": [2, 27, 8, 34, 24, 15], "randomizable": true}}
-	]
+	{
+		"sgjourney:milky_way": {"address": {"symbols": [2, 27, 8, 34, 24, 15], "randomizable": true}}
+	}
 }

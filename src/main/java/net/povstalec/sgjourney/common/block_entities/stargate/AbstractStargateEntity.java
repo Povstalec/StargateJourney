@@ -826,7 +826,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(level.isClientSide())
 			return;
 			
-		StargateNetwork.get(level).updateStargate((ServerLevel) level, this);
+		StargateNetwork.get(level).updateStargateEntity(this);
 		setStargateState();
 	}
 	
@@ -1607,7 +1607,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	private void trySetPrimary()
 	{
-		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(level.dimension());
+		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(level.dimension());
 		
 		if(addressRegion == null || addressRegion.primaryAddress() != null)
 			return;

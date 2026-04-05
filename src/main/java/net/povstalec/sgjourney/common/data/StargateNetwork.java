@@ -197,15 +197,15 @@ public final class StargateNetwork extends SavedData
 		removeStargate(stargate);
 	}
 	
-	public final void updateStargate(ServerLevel level, AbstractStargateEntity<?> stargateEntity)
+	public final void updateStargateEntity(AbstractStargateEntity<?> stargateEntity)
 	{
 		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress());
 		
 		if(stargate != null)
 		{
-			Universe.get(server).removeStargateFromDimension(level.dimension(), stargate);
+			Universe.get(server).removeStargateFromDimension(stargateEntity.getLevel().dimension(), stargate);
 			stargate.update(server);
-			Universe.get(server).addStargateToDimension(level.dimension(), stargate);
+			Universe.get(server).addStargateToDimension(stargateEntity.getLevel().dimension(), stargate);
 		}
 	}
 	

@@ -65,22 +65,28 @@ public class AddressTable
 		// Dimensions that are not in Datapack Solar Systems
 		if(addressTable.includeGeneratedAddresses())
 		{
-			Map<Galaxy.Serializable, Address.Immutable> galaxyMap = Universe.get(level).getGalaxiesFromDimension(level.dimension());
+			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyMap = Universe.get(level).getGalaxiesFromDimension(level.dimension());
 			
 			if(galaxyMap != null)
 			{
-				for(Map.Entry<Galaxy.Serializable, Address.Immutable> galaxyEntry : galaxyMap.entrySet())
+				Universe universe = Universe.get(level);
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyEntry : galaxyMap.entrySet())
 				{
-					// Get Addresses from all generated Address Regions in the Galaxies that this Dimension is located in
-					for(Map.Entry<Address.Immutable, AddressRegion.Serializable> addressRegionEntry : galaxyEntry.getKey().getAddressRegions(entry -> entry.getValue().isGenerated()))
+					Galaxy galaxy = universe.getGalaxy(galaxyEntry.getKey());
+					if(galaxy != null)
 					{
-						for(SpaceLocation spaceLocation : addressRegionEntry.getValue().getSpaceLocations())
+						// Get Addresses from all generated Address Regions in the Galaxies that this Dimension is located in
+						for(Map.Entry<Address.Immutable, AddressRegion> addressRegionEntry : galaxy.getAddressRegions(entry -> entry.getValue().isGenerated))
 						{
-							WeightedAddress address = new WeightedAddress(new Address.Dimension(spaceLocation.getDimension()), 1);
-							addresses.add(address);
-							totalWeight += address.weight();
+							for(SpaceLocation spaceLocation : addressRegionEntry.getValue().getSpaceLocations())
+							{
+								WeightedAddress address = new WeightedAddress(new Address.Dimension(spaceLocation.getDimension()), 1);
+								addresses.add(address);
+								totalWeight += address.weight();
+							}
 						}
 					}
+					
 				}
 			}
 			

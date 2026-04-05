@@ -67,7 +67,7 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
-	default AddressRegion.Serializable getAddressRegion(MinecraftServer server)
+	default AddressRegion getAddressRegion(MinecraftServer server)
 	{
 		return Universe.get(server).getAddressRegionFromDimension(getDimension());
 	}
@@ -186,17 +186,17 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return The Address which this Stargate will provide to the Stargate Network during connections
 	 * (For example, during an interstellar connection, the Stargate will provide the 7-Chevron Address of its Solar System instead of its 9-Chevron Address)
 	 */
-	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable AddressRegion.Serializable addressRegion, Address.Type addressType)
+	default Address.Immutable getConnectionAddress(MinecraftServer server, @Nullable AddressRegion addressRegion, Address.Type addressType)
 	{
-		AddressRegion.Serializable localAddressRegion = getAddressRegion(server);
+		AddressRegion localAddressRegion = getAddressRegion(server);
 		if(localAddressRegion != null)
 		{
 			if(addressType == Address.Type.ADDRESS_7_CHEVRON)
 			{
-				Galaxy.Serializable galaxy = localAddressRegion.findCommonGalaxy(addressRegion);
+				Galaxy galaxy = localAddressRegion.findCommonGalaxy(server, addressRegion);
 				if(galaxy != null)
 				{
-					Address.Immutable address = localAddressRegion.getAddressInGalaxy(galaxy);
+					Address.Immutable address = localAddressRegion.getAddressInGalaxy(galaxy.getResourceKey());
 					if(address != null)
 						return address;
 				}

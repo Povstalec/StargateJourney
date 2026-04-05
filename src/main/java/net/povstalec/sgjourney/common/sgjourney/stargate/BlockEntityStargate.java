@@ -313,7 +313,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 						return traveler;
 					}
 					
-					return getWormhole().receiveTraveler((ServerLevel) stargate.getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+					return getWormhole().receiveTraveler(connection, (ServerLevel) stargate.getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 				},
 				null);
 	}

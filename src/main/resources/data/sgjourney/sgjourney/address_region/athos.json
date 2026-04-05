@@ -5,7 +5,7 @@
 	"symbol_prefix": 18,
 	"extragalactic_address": {"symbols": [18, 21, 14, 24, 1, 26, 28], "randomizable": true},
 	"galactic_addresses":
-	[
-		{"galaxy": "sgjourney:pegasus", "address": {"symbols": [21, 14, 24, 1, 26, 28], "randomizable": true}}
-	]
+	{
+		"sgjourney:pegasus": {"address": {"symbols": [21, 14, 24, 1, 26, 28], "randomizable": true}}
+	}
 }

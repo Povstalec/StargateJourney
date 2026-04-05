@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.init;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.mojang.brigadier.Command;
@@ -40,7 +41,7 @@ import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
 import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
+import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class CommandInit
@@ -237,22 +238,26 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		ResourceKey<Level> currentDimension = level.dimension();
 		
-		HashMap<Serializable, Address.Immutable> galaxyMap = Universe.get(level).getGalaxiesFromDimension(currentDimension);
+		Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyMap = Universe.get(level).getGalaxiesFromDimension(currentDimension);
 		if(galaxyMap == null || galaxyMap.isEmpty())
 		{
 			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 			return Command.SINGLE_SUCCESS;
 		}
 		
-		for(Entry<Serializable, Address.Immutable> galaxyEntry : galaxyMap.entrySet())
+		Universe universe = Universe.get(level);
+		for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyEntry : galaxyMap.entrySet())
 		{
-			Galaxy.Serializable galaxy = galaxyEntry.getKey();
-			Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey(), dimension);
-			
-			if(address == null)
-				context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_address", dimensionComponent(dimension), galaxy.toComponent()));
-			else
-				context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address", dimensionComponent(dimension), galaxy.toComponent(), address.toComponent(true)));
+			Galaxy galaxy = universe.getGalaxy(galaxyEntry.getKey());
+			if(galaxy != null)
+			{
+				Address.Immutable address = universe.getAddressInGalaxyFromDimension(galaxy.getResourceKey(), dimension);
+				
+				if(address == null)
+					context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_address", dimensionComponent(dimension), galaxy.toComponent()));
+				else
+					context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address", dimensionComponent(dimension), galaxy.toComponent(), address.toComponent(true)));
+			}
 		}
 		
 		return Command.SINGLE_SUCCESS;
@@ -277,7 +282,7 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getLevel();
-		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
+		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null && !addressRegion.getStargates(stargate -> dimension.equals(stargate.getDimension())).isEmpty())
 		{
@@ -306,7 +311,7 @@ public class CommandInit
 		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
 		
 		Level level = context.getSource().getLevel();
-		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
+		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
 		{
@@ -323,7 +328,7 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
 		Level level = context.getSource().getLevel();
-		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
+		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
 		{
@@ -340,7 +345,7 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
 		Level level = context.getSource().getLevel();
-		AddressRegion.Serializable addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
+		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
 		if(addressRegion != null)
 		{

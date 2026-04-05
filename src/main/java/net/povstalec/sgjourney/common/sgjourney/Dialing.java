@@ -76,7 +76,7 @@ public class Dialing
 	
 	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		AddressRegion.Serializable addressRegion = Universe.get(server).getAddressRegionFromAddress(dialingStargate.getAddressRegion(server), dialedAddress);
+		AddressRegion addressRegion = Universe.get(server).getSameGalaxyAddressRegion(dialingStargate.getAddressRegion(server), dialedAddress);
 		
 		if(addressRegion == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
@@ -86,7 +86,7 @@ public class Dialing
 	
 	private static StargateInfo.Feedback get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		AddressRegion.Serializable addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
 		
 		if(addressRegion == null)
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
@@ -94,9 +94,9 @@ public class Dialing
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback getStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion.Serializable dialedRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback getStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion dialedRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		AddressRegion.Serializable currentRegion = dialingStargate.getAddressRegion(server);
+		AddressRegion currentRegion = dialingStargate.getAddressRegion(server);
 		
 		if(dialedRegion.equals(currentRegion))
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL);
@@ -156,7 +156,7 @@ public class Dialing
 		return getStargateFromAddress(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 	}
 	
-	private static StargateInfo.Feedback getPreferredStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion.Serializable addressRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.Feedback getPreferredStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion addressRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		List<Stargate> stargates = addressRegion.getStargates();
 		

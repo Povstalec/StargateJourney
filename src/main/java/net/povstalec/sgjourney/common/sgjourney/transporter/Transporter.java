@@ -42,7 +42,7 @@ public interface Transporter
 	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
-	default AddressRegion.Serializable getAddressRegion(MinecraftServer server)
+	default AddressRegion getAddressRegion(MinecraftServer server)
 	{
 		return Universe.get(server).getAddressRegionFromDimension(getDimension());
 	}

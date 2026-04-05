@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
@@ -150,7 +151,7 @@ public abstract class SGJourneyStargate implements Stargate
 		// Chooses a random Stargate to connect to
 		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
 		
-		AddressRegion.Serializable addressRegion = this.getAddressRegion(server);
+		AddressRegion addressRegion = this.getAddressRegion(server);
 		
 		if(addressRegion != null)
 		{
@@ -164,14 +165,19 @@ public abstract class SGJourneyStargate implements Stargate
 			}
 			else // Picks a random Stargate from the same Galaxy
 			{
-				for(Map.Entry<Galaxy.Serializable, Address.Immutable> entry : addressRegion.getGalacticAddresses().entrySet())
+				Universe universe = Universe.get(server);
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : addressRegion.getGalacticAddresses().entrySet())
 				{
-					for(AddressRegion.Serializable randomAddressRegion : entry.getKey().getShuffledAddressRegions(randomSource))
+					Galaxy galaxy = universe.getGalaxy(entry.getKey());
+					if(galaxy != null)
 					{
-						for(Stargate reroutedStargate : randomAddressRegion.getShuffledStargates(randomSource))
+						for(AddressRegion randomAddressRegion : galaxy.getShuffledAddressRegions(randomSource))
 						{
-							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
-								return List.of(this, reroutedStargate);
+							for(Stargate reroutedStargate : randomAddressRegion.getShuffledStargates(randomSource))
+							{
+								if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+									return List.of(this, reroutedStargate);
+							}
 						}
 					}
 				}

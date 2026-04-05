@@ -85,8 +85,8 @@ public class TransporterConnection
 	
 	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
-		AddressRegion.Serializable regionA = transporterA.getAddressRegion(server);
-		AddressRegion.Serializable regionB = transporterB.getAddressRegion(server);
+		AddressRegion regionA = transporterA.getAddressRegion(server);
+		AddressRegion regionB = transporterB.getAddressRegion(server);
 		
 		if(regionA != null && regionB != null)
 		{
@@ -101,7 +101,7 @@ public class TransporterConnection
 					return Type.SYSTEM_WIDE;
 			}
 			
-			if(regionA.findCommonGalaxy(regionB) != null)
+			if(regionA.findCommonGalaxy(server, regionB) != null)
 				return Type.RELAYED_INTERSTELLAR;
 		}
 		

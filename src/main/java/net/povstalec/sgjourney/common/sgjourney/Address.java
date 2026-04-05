@@ -3,7 +3,10 @@ package net.povstalec.sgjourney.common.sgjourney;
 import java.util.*;
 
 import com.mojang.brigadier.StringReader;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -671,9 +674,9 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				address = Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey, this.dimension);
 			else
 			{
-				Galaxy.Serializable galaxy = Universe.get(server).getGalaxyFromDimension(this.dimension);
+				Galaxy galaxy = Universe.get(server).getGalaxyFromDimension(this.dimension);
 				if(galaxy != null)
-					address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey(), this.dimension);
+					address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getResourceKey(), this.dimension);
 				else
 					address = new Address.Immutable();
 			}
@@ -688,6 +691,73 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			Dimension address = (Dimension) super.clone();
 			address.dimension = this.dimension; // Shallow copy
 			return address;
+		}
+	}
+	
+	//============================================================================================
+	//************************************Randomizable Address************************************
+	//============================================================================================
+	
+	public record Randomizable<A extends Address>(A address, boolean isRandomizable)
+	{
+		public Randomizable(A address)
+		{
+			this(address, false);
+		}
+		
+		public static <A extends Address> RandomizableCodec<A> codec(Codec<A> addressCodec)
+		{
+			return new RandomizableCodec<>(addressCodec);
+		}
+	}
+	
+	public static final class RandomizableCodec<A extends Address> implements Codec<Randomizable<A>>
+	{
+		private final Codec<A> addressCodec;
+		
+		private RandomizableCodec(Codec<A> addressCodec)
+		{
+			this.addressCodec = addressCodec;
+		}
+		
+		@Override
+		public <T> DataResult<Pair<Randomizable<A>, T>> decode(final DynamicOps<T> ops, final T input)
+		{
+			return addressCodec.decode(ops, input).flatMap(addressPair ->
+					Codec.BOOL.fieldOf("randomizable").codec().decode(ops, addressPair.getSecond()).map(boolPair ->
+							Pair.of(new Randomizable<>(addressPair.getFirst(), boolPair.getFirst()), boolPair.getSecond())
+					)
+			);
+		}
+		
+		@Override
+		public <T> DataResult<T> encode(final Randomizable<A> input, final DynamicOps<T> ops, final T prefix)
+		{
+			return Codec.BOOL.fieldOf("randomizable").codec().encode(input.isRandomizable(), ops, prefix).flatMap(f -> addressCodec.encode(input.address(), ops, f));
+		}
+		
+		@Override
+		public boolean equals(final Object other)
+		{
+			if(this == other)
+				return true;
+			
+			if(other instanceof RandomizableCodec<?> otherAddress)
+				return Objects.equals(this.addressCodec, otherAddress.addressCodec);
+			
+			return false;
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(this.addressCodec);
+		}
+		
+		@Override
+		public @NotNull String toString()
+		{
+			return "Address.RandomizableCodec[" + this.addressCodec + ']';
 		}
 	}
 }

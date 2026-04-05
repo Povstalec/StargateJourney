@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.StringRepresentable;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -16,6 +17,7 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -84,18 +86,20 @@ public class StargateConnection
 		this.doKawoosh = doKawoosh;
 	}
 	
-	public enum Type
+	public enum Type implements StringRepresentable
 	{
-		SYSTEM_WIDE(SYSTEM_WIDE_CONNECTION_COST, SYSTEM_WIDE_CONNECTION_DRAW, SYSTEM_WIDE_CONNECTION_BYPASS_DRAW),
-		INTERSTELLAR(INTERSTELLAR_CONNECTION_COST, INTERSTELLAR_CONNECTION_DRAW, INTERSTELLAR_CONNECTION_BYPASS_DRAW),
-		INTERGALACTIC(INTERGALACTIC_CONNECTION_COST, INTERGALACTIC_CONNECTION_DRAW, INTERGALACTIC_CONNECTION_BYPASS_DRAW);
+		SYSTEM_WIDE("system_wide", SYSTEM_WIDE_CONNECTION_COST, SYSTEM_WIDE_CONNECTION_DRAW, SYSTEM_WIDE_CONNECTION_BYPASS_DRAW),
+		INTERSTELLAR("interstellar", INTERSTELLAR_CONNECTION_COST, INTERSTELLAR_CONNECTION_DRAW, INTERSTELLAR_CONNECTION_BYPASS_DRAW),
+		INTERGALACTIC("intergalactic", INTERGALACTIC_CONNECTION_COST, INTERGALACTIC_CONNECTION_DRAW, INTERGALACTIC_CONNECTION_BYPASS_DRAW);
 		
+		private final String name;
 		private final long establishingPowerCost;
 		private final long powerDraw;
 		private final long bypassPowerDraw;
 		
-		Type(long establishingPowerCost, long powerDraw, long bypassPowerDraw)
+		Type(String name, long establishingPowerCost, long powerDraw, long bypassPowerDraw)
 		{
+			this.name = name;
 			this.establishingPowerCost = establishingPowerCost;
 			this.powerDraw = powerDraw;
 			this.bypassPowerDraw = bypassPowerDraw;
@@ -109,6 +113,23 @@ public class StargateConnection
 		public long getPowerDraw(boolean energyBypass)
 		{
 			return energyBypass ? this.bypassPowerDraw : this.powerDraw;
+		}
+		
+		@Override
+		public @NotNull String getSerializedName()
+		{
+			return this.name;
+		}
+		
+		public static Type fromString(String name)
+		{
+			return switch(name)
+			{
+				case "system_wide" -> SYSTEM_WIDE;
+				case "interstellar" -> INTERSTELLAR;
+				case "intergalactic" -> INTERGALACTIC;
+				default -> null;
+			};
 		}
 	}
 	
@@ -176,15 +197,15 @@ public class StargateConnection
 	
 	public static StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
-		AddressRegion.Serializable dialingRegion = dialingStargate.getAddressRegion(server);
-		AddressRegion.Serializable dialedRegion = dialedStargate.getAddressRegion(server);
+		AddressRegion dialingRegion = dialingStargate.getAddressRegion(server);
+		AddressRegion dialedRegion = dialedStargate.getAddressRegion(server);
 		
 		if(dialingRegion != null && dialedRegion != null)
 		{
 			if(dialingRegion.equals(dialedRegion))
 				return StargateConnection.Type.SYSTEM_WIDE;
 			
-			if(dialingRegion.findCommonGalaxy(dialedRegion) != null)
+			if(dialingRegion.findCommonGalaxy(server, dialedRegion) != null)
 				return Type.INTERSTELLAR;
 		}
 		

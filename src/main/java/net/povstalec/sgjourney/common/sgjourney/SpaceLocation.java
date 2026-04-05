@@ -76,26 +76,37 @@ public class SpaceLocation
 	@Nullable
 	private ResourceKey<AddressRegion> addressRegionKey = null; // Address Region this Space Location is a part of
 	@Nullable
-	private AddressRegion.Serializable addressRegion = null;
+	private AddressRegion addressRegion = null;
 	
 	public SpaceLocation(Optional<TemplateInfo> templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean generateInAddressTables, boolean unityCrystalsGrow,
 						 Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<AddressRegion>> addressRegionKey)
 	{
-		this.templateInfo = templateInfo.orElse(null);
+		this(templateInfo.orElse(null), inStargateNetwork, parentGravity, /*allowFactionPresence, */generateInAddressTables, unityCrystalsGrow, pointOfOrigin.orElse(null), symbols.orElse(null), addressRegionKey.orElse(null));
+	}
+	
+	public SpaceLocation(@Nullable TemplateInfo templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean generateInAddressTables, boolean unityCrystalsGrow,
+						 @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<AddressRegion> addressRegionKey)
+	{
+		this.templateInfo = templateInfo;
 		this.inStargateNetwork = inStargateNetwork;
 		this.parentGravity = parentGravity;
 		//this.allowFactionPresence = allowFactionPresence;
 		this.generateInAddressTables = generateInAddressTables;
 		this.unityCrystalsGrow = unityCrystalsGrow;
 		
-		this.pointOfOrigin = pointOfOrigin.orElse(null);
-		this.symbols = symbols.orElse(null);
-		this.addressRegionKey = addressRegionKey.orElse(null);
+		this.pointOfOrigin = pointOfOrigin;
+		this.symbols = symbols;
+		this.addressRegionKey = addressRegionKey;
 	}
 	
-	public SpaceLocation createCopy()
+	public SpaceLocation copy()
 	{
-		return new SpaceLocation(Optional.empty(), this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, Optional.ofNullable(this.pointOfOrigin), Optional.ofNullable(this.symbols), Optional.ofNullable(this.addressRegionKey));
+		return new SpaceLocation(this.templateInfo, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey);
+	}
+	
+	public SpaceLocation copyWithoutTemplateInfo()
+	{
+		return new SpaceLocation(null, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey);
 	}
 	
 	@Nullable
@@ -152,7 +163,7 @@ public class SpaceLocation
 		return this.addressRegionKey;
 	}
 	
-	public void setAddressRegion(AddressRegion.Serializable addressRegion)
+	public void setAddressRegion(AddressRegion addressRegion)
 	{
 		if(addressRegion != null)
 			addressRegion.addSpaceLocation(this);
@@ -160,7 +171,7 @@ public class SpaceLocation
 	}
 	
 	@Nullable
-	public AddressRegion.Serializable getAddressRegion()
+	public AddressRegion getAddressRegion()
 	{
 		return this.addressRegion;
 	}
@@ -260,17 +271,17 @@ public class SpaceLocation
 		if(template != null)
 		{
 			// Create a new Space Location based on an existing template
-			spaceLocation = template.createCopy();
+			spaceLocation = template.copyWithoutTemplateInfo();
 			// Generate a new Address Region for the Space Location
 			if(template.templateInfo.generateAddressRegion && Universe.get(server).generateRandomAddressRegions())
 			{
 				// Assign Space Location to a Galaxy if possible (The only case in which it doesn't get assigned to at least one Galaxy is when the provided list of galaxies is empty)
 				if(template.templateInfo.galaxies != null)
 				{
-					List<Galaxy.Serializable> galaxyList = new ArrayList<>();
+					List<Galaxy> galaxyList = new ArrayList<>();
 					for(ResourceKey<Galaxy> galaxyKey : template.templateInfo.galaxies)
 					{
-						Galaxy.Serializable galaxy = Universe.get(server).getGalaxy(galaxyKey);
+						Galaxy galaxy = Universe.get(server).getGalaxy(galaxyKey);
 						if(galaxy != null)
 							galaxyList.add(galaxy);
 						else
@@ -278,19 +289,19 @@ public class SpaceLocation
 					}
 					
 					// Assign Space Location to Address Region
-					AddressRegion.Serializable addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, galaxyList);
+					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, galaxyList);
 					spaceLocation.setAddressRegion(addressRegion);
 				}
 				else
 				{
-					AddressRegion.Serializable addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
 					spaceLocation.setAddressRegion(addressRegion);
 				}
 			}
 			// Assign Space Location to an existing Address Region
 			else if(spaceLocation.addressRegionKey != null)
 			{
-				AddressRegion.Serializable addressRegion = Universe.get(server).getAddressRegionFromKey(spaceLocation.addressRegionKey);
+				AddressRegion addressRegion = Universe.get(server).getAddressRegionFromKey(spaceLocation.addressRegionKey);
 				if(addressRegion != null)
 					spaceLocation.setAddressRegion(addressRegion);
 				else
@@ -302,7 +313,7 @@ public class SpaceLocation
 		{
 			// Create a default Space Location
 			spaceLocation = defaultSpaceLocation(dimension);
-			AddressRegion.Serializable addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+			AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
 			spaceLocation.setAddressRegion(addressRegion);
 		}
 		
@@ -364,12 +375,20 @@ public class SpaceLocation
 		return spaceLocation;
 	}
 	
+	public static void registerTemplate(SpaceLocation spaceLocation)
+	{
+		if(spaceLocation.templateInfo != null)
+			TEMPLATES.put(spaceLocation.templateInfo.prefix, spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
+		else
+			StargateJourney.LOGGER.error("Can't register a Space Location Template without Template Info");
+	}
+	
 	public static void registerSpaceLocation(ResourceKey<SpaceLocation> key, SpaceLocation spaceLocation)
 	{
 		ResourceKey<Level> dimension = Conversion.locationToDimension(key.location());
 		
 		if(spaceLocation.templateInfo != null)
-			TEMPLATES.put(spaceLocation.templateInfo.prefix, spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
+			registerTemplate(spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
 		
 		addSpaceLocation(dimension, spaceLocation);
 	}
@@ -381,7 +400,7 @@ public class SpaceLocation
 		
 		Set<Map.Entry<ResourceKey<SpaceLocation>, SpaceLocation>> spaceLocationSet = spaceLocationRegistry.entrySet();
 		spaceLocationSet.forEach((spaceLocationEntry) ->
-				SpaceLocation.registerSpaceLocation(spaceLocationEntry.getKey(), spaceLocationEntry.getValue()));
+				SpaceLocation.registerSpaceLocation(spaceLocationEntry.getKey(), spaceLocationEntry.getValue().copy()));
 		StargateJourney.LOGGER.info("Space Locations registered");
 	}
 	
