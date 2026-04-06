@@ -192,7 +192,7 @@ public class Dialing
 	
 	public static StargateInfo.Feedback connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
-		return StargateNetwork.get(server).createConnection(server, dialingStargate, dialedStargate, addressType, doKawoosh);
+		return StargateNetwork.get(server).createConnection(dialingStargate, dialedStargate, addressType, doKawoosh);
 	}
 	
 	//============================================================================================
@@ -255,7 +255,7 @@ public class Dialing
 	
 	public static TransporterInfo.Feedback connectTransporters(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
-		return TransporterNetwork.get(server).createConnection(server, transporterA, transporterB);
+		return TransporterNetwork.get(server).createConnection(transporterA, transporterB);
 	}
 	
 	

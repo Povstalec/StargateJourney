@@ -324,7 +324,7 @@ public class BlockEntityList extends SavedData
 			StargateJourney.LOGGER.error("No valid position or Dimension data found in Compound Tag");
 	}
 	
-	private void tryDeserializeStargate(MinecraftServer server, String addressString, CompoundTag stargateTag)
+	private void tryDeserializeStargate(String addressString, CompoundTag stargateTag)
 	{
 		Address.Immutable address = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(addressString));
 		if(address.getType() == Address.Type.ADDRESS_9_CHEVRON)
@@ -347,7 +347,7 @@ public class BlockEntityList extends SavedData
 		StargateJourney.LOGGER.debug("Deserializing Stargates");
 		CompoundTag stargates = blockEntityList.getCompound(STARGATES);
 		
-		stargates.getAllKeys().forEach(addressString -> tryDeserializeStargate(server, addressString, stargates.getCompound(addressString)));
+		stargates.getAllKeys().forEach(addressString -> tryDeserializeStargate(addressString, stargates.getCompound(addressString)));
 		
 		StargateJourney.LOGGER.debug("Finished deserializing Stargates");
 	}
@@ -379,7 +379,7 @@ public class BlockEntityList extends SavedData
 			StargateJourney.LOGGER.error("No valid position or Dimension data found in Compound Tag");
 	}
 	
-	private void tryDeserializeTransporter(MinecraftServer server, String id, CompoundTag transporterTag)
+	private void tryDeserializeTransporter(String id, CompoundTag transporterTag)
 	{
 		if(TransporterID.canBeTransformedToID(id))
 		{
@@ -413,7 +413,7 @@ public class BlockEntityList extends SavedData
 		//TODO Transport Rings deserialization for legacy reasons
 		CompoundTag transportersTag = blockEntityList.getCompound(blockEntityList.contains(TRANSPORT_RINGS) ? TRANSPORT_RINGS : TRANSPORTERS);
 		
-		transportersTag.getAllKeys().forEach(transporterString -> tryDeserializeTransporter(server, transporterString, transportersTag.getCompound(transporterString)));
+		transportersTag.getAllKeys().forEach(transporterString -> tryDeserializeTransporter(transporterString, transportersTag.getCompound(transporterString)));
 		
 		StargateJourney.LOGGER.debug("Finished deserializing Transporters");
 	}

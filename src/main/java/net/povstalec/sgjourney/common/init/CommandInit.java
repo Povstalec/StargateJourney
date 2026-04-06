@@ -375,7 +375,7 @@ public class CommandInit
 	{
 		Level level = context.getSource().getLevel();
 		
-		StargateNetwork.get(level).stellarUpdate(level.getServer());
+		StargateNetwork.get(level).stellarUpdate();
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
@@ -461,7 +461,7 @@ public class CommandInit
 	{
 		Level level = context.getSource().getLevel();
 		
-		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
+		TransporterNetwork.get(level).reloadNetwork();
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;

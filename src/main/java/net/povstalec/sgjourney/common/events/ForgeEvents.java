@@ -87,12 +87,12 @@ public class ForgeEvents
 		
 		SpaceLocation.registerSpaceLocations(server);
 		
-		StargateNetwork.get(server).updateNetwork(server);
+		StargateNetwork.get(server).updateNetwork();
 		Universe.get(server).assignSpaceLocationsToAddressRegions();
-		StargateNetwork.get(server).addStargates(server);
+		StargateNetwork.get(server).addStargates();
 
-		TransporterNetwork.get(server).updateNetwork(server);
-		TransporterNetwork.get(server).addTransporters(server);
+		TransporterNetwork.get(server).updateNetwork();
+		TransporterNetwork.get(server).addTransporters();
 	}
 	
 	@SubscribeEvent

@@ -59,7 +59,7 @@ public final class TransporterNetwork extends SavedData
 		this.version = UPDATE_VERSION;
 	}
 	
-	public void updateNetwork(MinecraftServer server)
+	public void updateNetwork()
 	{
 		if(getVersion() == UPDATE_VERSION)
 		{
@@ -69,10 +69,10 @@ public final class TransporterNetwork extends SavedData
 		
 		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + UPDATE_VERSION);
 		
-		reloadNetwork(server, false);
+		reloadNetwork();
 	}
 	
-	public void reloadNetwork(MinecraftServer server, boolean updateInterfaces)
+	public void reloadNetwork()
 	{
 		eraseNetwork();
 		StargateJourney.LOGGER.info("Transporter Network erased");
@@ -97,7 +97,7 @@ public final class TransporterNetwork extends SavedData
 	//****************************************Transporters****************************************
 	//============================================================================================
 	
-	public void addTransporters(MinecraftServer server)
+	public void addTransporters()
 	{
 		BlockEntityList.get(server).getTransporters().forEach((address, transporter) ->
 		{
@@ -238,8 +238,7 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	//TODO Send feedback
-	public TransporterInfo.Feedback createConnection(MinecraftServer server, Transporter initiatingTransporter, Transporter targetTransporter)
+	public TransporterInfo.Feedback createConnection(Transporter initiatingTransporter, Transporter targetTransporter)
 	{
 		TransporterConnection.Type connectionType = TransporterConnection.getType(server, initiatingTransporter, targetTransporter);
 		

@@ -151,7 +151,6 @@ public class ConduitNetworks extends SavedData
 		ConduitNetworks data = create(server);
 
 		data.server = server;
-		
 		data.deserialize(tag);
 		
 		return data;

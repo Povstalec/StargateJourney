@@ -61,7 +61,7 @@ public final class StargateNetwork extends SavedData
 		this.version = updateVersion;
 	}
 	
-	public final void updateNetwork(MinecraftServer server)
+	public final void updateNetwork()
 	{
 		if(getVersion() == updateVersion)
 		{
@@ -71,7 +71,7 @@ public final class StargateNetwork extends SavedData
 		
 		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
 		
-		stellarUpdate(server);
+		stellarUpdate();
 	}
 	
 	public final void eraseNetwork()
@@ -86,7 +86,7 @@ public final class StargateNetwork extends SavedData
 		return StargateNetworkSettings.get(server).randomizeAddresses();
 	}
 	
-	public final void stellarUpdate(MinecraftServer server)
+	public final void stellarUpdate()
 	{
 		for(Entry<UUID, StargateConnection> connectionEntry : getConnections().entrySet())
 		{
@@ -101,14 +101,14 @@ public final class StargateNetwork extends SavedData
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.debug("Universe erased");
 		
-		Universe.get(server).generateUniverseInfo(server);
+		Universe.get(server).generateUniverseInfo();
 		Universe.get(server).setPrimaryStargateAddresses(primaryStargates);
 		StargateJourney.LOGGER.debug("Universe regenerated");
 		
 		eraseNetwork();
 		StargateJourney.LOGGER.debug("Stargate Network erased");
 		
-		resetStargates(server);
+		resetStargates();
 		StargateJourney.LOGGER.debug("Stargates reset");
 		
 		updateVersion();
@@ -121,7 +121,7 @@ public final class StargateNetwork extends SavedData
 	//*****************************************Stargates******************************************
 	//============================================================================================
 	
-	public void addStargates(MinecraftServer server)
+	public void addStargates()
 	{
 		BlockEntityList.get(server).getStargates().forEach((address, stargate) ->
 		{
@@ -130,7 +130,7 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
-	public void resetStargates(MinecraftServer server)
+	public void resetStargates()
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
@@ -257,7 +257,7 @@ public final class StargateNetwork extends SavedData
 		return 0;
 	}
 	
-	public final StargateInfo.Feedback createConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public final StargateInfo.Feedback createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		

@@ -289,12 +289,12 @@ public class SpaceLocation
 					}
 					
 					// Assign Space Location to Address Region
-					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, galaxyList);
+					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, galaxyList);
 					spaceLocation.setAddressRegion(addressRegion);
 				}
 				else
 				{
-					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
 					spaceLocation.setAddressRegion(addressRegion);
 				}
 			}
@@ -313,7 +313,7 @@ public class SpaceLocation
 		{
 			// Create a default Space Location
 			spaceLocation = defaultSpaceLocation(dimension);
-			AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(server, dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+			AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
 			spaceLocation.setAddressRegion(addressRegion);
 		}
 		
