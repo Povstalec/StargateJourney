@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.hammer",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/hammer",
+	"client_point_of_origin": "sgjourney:hammer",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

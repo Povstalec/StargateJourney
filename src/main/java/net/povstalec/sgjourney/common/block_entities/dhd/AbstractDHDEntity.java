@@ -5,7 +5,6 @@ import java.util.List;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
@@ -117,9 +116,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 		
 		this.symbolInfo = new SymbolInfo();
-		
-		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
-		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
 	}
 	
 	@Override
@@ -189,8 +185,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		address.saveToCompoundTag(tag, ADDRESS);
 		
@@ -212,10 +207,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			
 			energyStorage.setEnergy(tag.getLong(ENERGY));
 			
-			if(tag.contains(POINT_OF_ORIGIN))
-				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-			if(tag.contains(SYMBOLS))
-				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+			symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 			
 			address.fromArray(tag.getIntArray(ADDRESS));
 			isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
@@ -756,19 +748,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void setLocalSymbols()
 	{
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
 	}
 	
 	public void setSymbolsFromStargate()
 	{
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 			symbolInfo().setPointOfOrigin(this.stargate.symbolInfo().pointOfOrigin());
 		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 			symbolInfo().setSymbols(this.stargate.symbolInfo().symbols());
 	}
 	

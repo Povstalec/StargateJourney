@@ -87,10 +87,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
 		
 		if(!dynamicSymbols)
-		{
-			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
-		}
+			symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		return tag;
 	}
@@ -101,10 +98,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
 		
 		if(!dynamicSymbols)
-		{
-			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
-		}
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
 	}
@@ -136,9 +130,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	{
 		CompoundTag tag = super.getUpdateTag();
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
-		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
@@ -154,12 +146,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
-			if(tag.contains(POINT_OF_ORIGIN))
-				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-			
-			if(tag.contains(SYMBOLS))
-				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
-			
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 			canEngage = tag.getBoolean(CAN_ENGAGE);
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
 			symbolBuffer = tag.getInt(SYMBOL_BUFFER);
@@ -421,10 +408,10 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	public void setLocalSymbols()
 	{
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
 	}
 	
@@ -433,11 +420,11 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	{
 		if(generationStep == StructureGenEntity.Step.SETUP)
 		{
-			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
 			
-			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
 		}
 		else
 			setLocalSymbols();

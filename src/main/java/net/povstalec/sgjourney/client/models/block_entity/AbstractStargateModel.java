@@ -3,19 +3,15 @@ package net.povstalec.sgjourney.client.models.block_entity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 
@@ -36,8 +32,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	public static final String EMPTY = StargateJourney.EMPTY;
 	
-	private static Minecraft minecraft = Minecraft.getInstance();
-	
 	protected final short numberOfSymbols;
 	
 	public AbstractStargateModel(short numberOfSymbols)
@@ -46,29 +40,21 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	}
 	
 	@Nullable
-	protected PointOfOrigin getPointOfOrigin(AbstractStargateEntity stargate, Variant stargateVariant)
+	protected ClientPointOfOrigin getPointOfOrigin(StargateEntity stargate, Variant stargateVariant)
 	{
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
 		if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
-			return pointOfOriginRegistry.get(stargateVariant.symbols().permanentPointOfOrigin().get());
+			return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
 		else
-			return pointOfOriginRegistry.get(stargate.symbolInfo().pointOfOrigin());
+			return ClientPointOfOrigin.getPointOfOrigin(stargate.symbolInfo().pointOfOrigin());
 	}
 	
 	@Nullable
-	protected Symbols getSymbols(StargateEntity stargate, Variant stargateVariant)
+	protected ClientSymbols getSymbols(StargateEntity stargate, Variant stargateVariant)
 	{
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
 		if(stargateVariant.symbols().permanentSymbols().isPresent())
-			return symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get());
+			return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
 		else
-			return symbolRegistry.get(stargate.symbolInfo().symbols());
+			return ClientSymbols.getSymbols(stargate.symbolInfo().symbols());
 	}
 	
 	//============================================================================================

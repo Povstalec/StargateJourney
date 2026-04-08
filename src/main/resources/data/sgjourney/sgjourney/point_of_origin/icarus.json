@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.icarus",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/icarus"
+	"client_point_of_origin": "sgjourney:icarus"
 }

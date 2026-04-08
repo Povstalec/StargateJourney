@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities;
 import net.minecraft.core.Direction;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
@@ -12,6 +13,7 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -43,7 +45,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	@Nullable
 	private ResourceLocation addressTable;
 	
-	private ResourceLocation symbols;
+	private ResourceKey<Symbols> symbols = null;
 	@Nullable
 	private Address address;
 	
@@ -84,7 +86,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(tag.contains(ADDRESS_TABLE))
     		addressTable = ResourceLocation.tryParse(tag.getString(ADDRESS_TABLE));
     	if(tag.contains(SYMBOLS))
-    		symbols = ResourceLocation.tryParse(tag.getString(SYMBOLS));
+    		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
 		
 		if(tag.contains(DIMENSION))
 		{
@@ -117,7 +119,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(addressTable != null)
 			tag.putString(ADDRESS_TABLE, addressTable.toString());
 		if(symbols != null)
-			tag.putString(SYMBOLS, symbols.toString());
+			tag.putString(SYMBOLS, symbols.location().toString());
 		
 		if(address instanceof Address.Dimension dimensionAddress)
 		{
@@ -147,7 +149,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
 		Address oldAddress = address;
-		ResourceLocation oldSymbols = symbols;
+		ResourceKey<Symbols> oldSymbols = symbols;
 		
 		super.onDataPacket(net, packet);
 		
@@ -184,12 +186,12 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		this.address = new Address.Dimension(Conversion.locationToDimension(dimension), Optional.empty());
 	}
 	
-	public void setSymbols(ResourceLocation symbols)
+	public void setSymbols(ResourceKey<Symbols> symbols)
 	{
 		this.symbols = symbols;
 	}
 	
-	public ResourceLocation getSymbols()
+	public ResourceKey<Symbols> getSymbols()
 	{
 		return this.symbols;
 	}
@@ -284,7 +286,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(level.isClientSide())
 			return;
 		
-		setSymbols(Universe.get(level).getSymbols(level.dimension()).location());
+		setSymbols(Universe.get(level).getSymbols(level.dimension()));
 	}
 	
 	public void setDimensionFromLevel(Level level)

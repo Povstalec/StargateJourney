@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.phoenix",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/phoenix",
+	"client_point_of_origin": "sgjourney:phoenix",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

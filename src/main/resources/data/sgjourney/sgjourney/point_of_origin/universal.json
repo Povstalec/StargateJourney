@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.universal",
-	"texture": "sgjourney:symbol/universal/universal_0"
+	"client_point_of_origin": "sgjourney:universal"
 }

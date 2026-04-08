@@ -13,6 +13,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.client.ClientUtil;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
@@ -94,14 +96,14 @@ public abstract class DHDSymbolButton extends DHDButton
 		return this.menu.isSymbolEngaged(getSymbol());
 	}
 	
-	public void renderPointOfOrigin(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, PointOfOrigin pointOfOrigin, ColorUtil.RGBA rgba)
+	public void renderPointOfOrigin(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientPointOfOrigin pointOfOrigin, ColorUtil.RGBA rgba)
 	{
 		float xStart = xCenter - (xSize / 2F);
 		float yStart = yCenter - (ySize / 2F);
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		TextureAtlasSprite sprite = ClientUtil.getPointOfOriginSprite(pointOfOrigin);
+		TextureAtlasSprite sprite = ClientPointOfOrigin.getSprite(pointOfOrigin);
 		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -117,14 +119,14 @@ public abstract class DHDSymbolButton extends DHDButton
 		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
-	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, Symbols symbols, int symbol, ColorUtil.RGBA rgba)
+	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
 	{
 		float xStart = xCenter - (xSize / 2F);
 		float yStart = yCenter - (ySize / 2F);
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		TextureAtlasSprite sprite = ClientUtil.getSymbolSprite(symbols, symbol);
+		TextureAtlasSprite sprite = ClientSymbols.getSprite(symbols, symbol);
 		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);

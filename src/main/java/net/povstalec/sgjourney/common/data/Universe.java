@@ -168,12 +168,10 @@ public class Universe extends SavedData
 			PointOfOrigin pointOfOrigin = pointOfOriginEntry.getValue();
 			ResourceKey<PointOfOrigin> pointOfOriginKey = pointOfOriginEntry.getKey();
 			
-			Optional<List<ResourceKey<Galaxy>>> galaxiesOptional = pointOfOrigin.generatedGalaxies();
-			
-			galaxiesOptional.ifPresent(resourceKeys -> resourceKeys.forEach(galaxyKey ->
+			for(ResourceKey<Galaxy> galaxyKey : pointOfOrigin.generatedGalaxies())
 			{
 				addPointOfOrigin(this.galaxyKeys.get(galaxyKey), pointOfOriginKey);
-			}));
+			}
 		});
 	}
 	

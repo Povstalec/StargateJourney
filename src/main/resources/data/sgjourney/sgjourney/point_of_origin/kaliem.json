@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.kaliem",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/kaliem",
+	"client_point_of_origin": "sgjourney:kaliem",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

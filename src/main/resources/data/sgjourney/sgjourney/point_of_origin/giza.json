@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.giza",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/giza",
+	"client_point_of_origin": "sgjourney:giza",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,8 +43,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	{
 		super.load(tag);
 		
-		symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
-		symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}
 	
 	@Override
@@ -53,8 +51,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	{
 		super.saveAdditional(tag);
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}
 	
 	protected long buttonPressEnergyCost()
@@ -108,11 +105,11 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	{
 		if(generationStep == StructureGenEntity.Step.SETUP)
 		{
-			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
 			
-			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
 		}
 		else if(this.stargate != null) // Copy from connected Stargate
 			setSymbolsFromStargate();

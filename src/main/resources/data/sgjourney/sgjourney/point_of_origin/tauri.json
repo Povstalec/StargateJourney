@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.tauri",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/tauri"
+	"client_point_of_origin": "sgjourney:tauri"
 }

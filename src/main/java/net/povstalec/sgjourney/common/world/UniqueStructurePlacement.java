@@ -16,7 +16,7 @@ import java.util.Random;
 
 public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 {
-	public static final int MAX_CHUNKS = 512;
+	public static final int MAX_CHUNKS = 1874999;
 	public static final int MAX_BOUND = 64;
 	
 	public static final Codec<UniqueStructurePlacement> CODEC = RecordCodecBuilder.<UniqueStructurePlacement>mapCodec(instance ->

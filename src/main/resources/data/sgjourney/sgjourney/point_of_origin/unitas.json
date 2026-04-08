@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.unitas",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/unitas"
+	"client_point_of_origin": "sgjourney:unitas"
 }

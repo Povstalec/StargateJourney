@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.wheel",
-	"texture": "sgjourney:symbol/submitted/wheel",
+	"client_point_of_origin": "sgjourney:wheel",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

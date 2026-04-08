@@ -20,6 +20,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 public class CartoucheBlockItem extends BlockItem
 {
@@ -114,7 +115,7 @@ public class CartoucheBlockItem extends BlockItem
 				cartouche.tryGenerateAddress();
 				
 				if(info.contains(CartoucheEntity.SYMBOLS, CompoundTag.TAG_STRING))
-					cartouche.setSymbols(ResourceLocation.tryParse(info.getString(CartoucheEntity.SYMBOLS)));
+					cartouche.setSymbols(Conversion.stringToSymbols(info.getString(CartoucheEntity.SYMBOLS)));
 				else
 					cartouche.setSymbolsFromLevel(level);
 			}

@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.gamekeeper",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/gamekeeper",
+	"client_point_of_origin": "sgjourney:gamekeeper",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.serpent",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/serpent"
+	"client_point_of_origin": "sgjourney:serpent"
 }

@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.pyramid",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/pyramid",
+	"client_point_of_origin": "sgjourney:pyramid",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

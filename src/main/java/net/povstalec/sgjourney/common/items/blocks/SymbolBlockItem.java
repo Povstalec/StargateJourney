@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
 
@@ -72,12 +73,12 @@ public class SymbolBlockItem extends BlockItem
 				cartouche.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
 			
 			if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
-				cartouche.setPointOfOrigin(ResourceLocation.tryParse(info.getString(SymbolBlockEntity.SYMBOL)));
+				cartouche.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
 			else
 				cartouche.setPointOfOriginFromLevel(level);
 			
 			if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
-				cartouche.setSymbols(ResourceLocation.tryParse(info.getString(SymbolBlockEntity.SYMBOLS)));
+				cartouche.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
 			else
 				cartouche.setSymbolsFromLevel(level);
 		}

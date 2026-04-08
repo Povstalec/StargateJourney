@@ -6,6 +6,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.ClientUtil;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper.CoordinateSystems;
@@ -211,7 +213,7 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	{
 		if(getSymbol() == 0)
 		{
-			PointOfOrigin pointOfOrigin = ClientUtil.getPointOfOrigin(this.menu.blockEntity.symbolInfo().pointOfOrigin());
+			ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.getPointOfOrigin(this.menu.blockEntity.symbolInfo().pointOfOrigin());
 			if(pointOfOrigin != null)
 			{
 				
@@ -225,10 +227,9 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 		}
 		else
 		{
-			Symbols symbols = ClientUtil.getSymbols(this.menu.blockEntity.symbolInfo().symbols());
-			if(symbols != null && getSymbol() <= symbols.getSize())
+			ClientSymbols symbols = ClientSymbols.getSymbols(this.menu.blockEntity.symbolInfo().symbols());
+			if(symbols != null)
 			{
-				
 				if(isEngaged())
 					renderSymbol(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, symbols, getSymbol(), this.engagedColor);

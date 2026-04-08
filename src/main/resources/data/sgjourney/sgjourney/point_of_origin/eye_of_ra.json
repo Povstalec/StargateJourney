@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.eye_of_ra",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/eye_of_ra"
+	"client_point_of_origin": "sgjourney:eye_of_ra"
 }

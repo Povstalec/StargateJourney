@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.subido",
-	"texture": "sgjourney:symbol/pegasus/point_of_origin/subido"
+	"client_point_of_origin": "sgjourney:subido"
 }

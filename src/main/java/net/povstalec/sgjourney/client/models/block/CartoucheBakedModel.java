@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,6 +16,7 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.ModelProperties;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -66,11 +68,11 @@ public class CartoucheBakedModel extends SymbolBakedModel
 	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)
 	{
 		Address address = extraData.get(ModelProperties.ADDRESS_PROPERTY);
-		ResourceLocation symbolLocation = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
-		if(address == null || symbolLocation == null)
+		ResourceKey<Symbols> symbolKey = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
+		if(address == null || symbolKey == null)
 			return;
 		
-		Symbols symbols = ClientUtil.getSymbols(symbolLocation);
+		ClientSymbols symbols = ClientSymbols.getSymbols(symbolKey);
 		if(symbols == null)
 			return;
 		
@@ -101,7 +103,7 @@ public class CartoucheBakedModel extends SymbolBakedModel
 					yPos += 16F;
 				
 				boolean divideSymbol = symbolCount % 2 == 1 && ( (half == DoubleBlockHalf.UPPER && i == symbolEndIndex - 1) || (half == DoubleBlockHalf.LOWER && i == symbolStartIndex) );
-				quads.add(makeSymbolQuad(direction, orientation, ClientUtil.getSymbolSprite(symbols, address.symbolAt(i)), yPos, symbolSize, divideSymbol, half));
+				quads.add(makeSymbolQuad(direction, orientation, ClientSymbols.getSprite(symbols, address.symbolAt(i)), yPos, symbolSize, divideSymbol, half));
 			}
 		}
 	}

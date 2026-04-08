@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.apophis",
-	"texture": "sgjourney:symbol/milky_way/point_of_origin/apophis"
+	"client_point_of_origin": "sgjourney:apophis"
 }

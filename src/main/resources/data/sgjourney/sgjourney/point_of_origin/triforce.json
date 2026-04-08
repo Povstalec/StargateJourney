@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.triforce",
-	"texture": "sgjourney:symbol/triforce",
+	"client_point_of_origin": "sgjourney:triforce",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

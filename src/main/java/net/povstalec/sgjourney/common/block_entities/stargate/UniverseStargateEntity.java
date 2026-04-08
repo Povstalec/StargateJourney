@@ -4,6 +4,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.init.StargateInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
@@ -59,8 +60,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		
 		this.angle = this.maxRotation / 54;
 		
-		symbolInfo.setPointOfOrigin(PointOfOrigin.UNIVERSAL_LOCATION);
-		symbolInfo.setSymbols(Symbols.UNIVERSAL_LOCATION);
+		symbolInfo.setPointOfOrigin(Conversion.locationToPointOfOrigin(PointOfOrigin.UNIVERSAL_LOCATION));
+		symbolInfo.setSymbols(Conversion.locationToSymbols(Symbols.UNIVERSAL_LOCATION));
 		
 		this.dhdInfo = new DHDInfo(this)
 		{

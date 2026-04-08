@@ -1,7 +1,8 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.povstalec.sgjourney.client.ClientUtil;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -15,8 +16,6 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStar
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity, UniverseStargateVariant>
 {
@@ -312,7 +311,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderSymbols(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, float rotation)
 	{
-		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		ClientPointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
 		if(pointOfOrigin != null)
 		{
@@ -322,10 +321,10 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, ClientUtil.getPointOfOriginSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
 		}
 		
-		Symbols symbols = getSymbols(stargate, stargateVariant);
+		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
 		
 		if(symbols == null)
 			return;
@@ -342,7 +341,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, symbol, ClientUtil.getSymbolSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+					MAX_LIGHT : combinedLight, symbol, ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	

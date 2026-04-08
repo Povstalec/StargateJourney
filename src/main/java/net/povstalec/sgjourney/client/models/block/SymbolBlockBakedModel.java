@@ -5,6 +5,7 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
@@ -14,8 +15,11 @@ import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.ModelProperties;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
@@ -62,15 +66,15 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 	{
 		if(symbolNumber == 0 && symbol != null) // Point of Origin
 		{
-			PointOfOrigin pointOfOrigin = ClientUtil.getPointOfOrigin(symbol);
+			ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.getPointOfOrigin(Conversion.locationToPointOfOrigin(symbol));
 			if(pointOfOrigin != null)
-				return ClientUtil.getPointOfOriginSprite(pointOfOrigin);
+				return ClientPointOfOrigin.getSprite(pointOfOrigin);
 		}
 		else if(symbol != null) // Symbols
 		{
-			Symbols symbols = ClientUtil.getSymbols(symbol);
+			ClientSymbols symbols = ClientSymbols.getSymbols(Conversion.locationToSymbols(symbol));
 			if(symbols != null)
-				return ClientUtil.getSymbolSprite(symbols, symbolNumber);
+				return ClientSymbols.getSprite(symbols, symbolNumber);
 		}
 		
 		return null;
@@ -83,21 +87,21 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 			return null;
 		
 		// Show Point of Origin
-		ResourceLocation pointOfOriginLocation = extraData.get(ModelProperties.POINT_OF_ORIGIN_PROPERTY);
-		if(symbolNumber == 0 && pointOfOriginLocation != null)
+		ResourceKey<PointOfOrigin> pointOfOriginKey = extraData.get(ModelProperties.POINT_OF_ORIGIN_PROPERTY);
+		if(symbolNumber == 0 && pointOfOriginKey != null)
 		{
-			PointOfOrigin pointOfOrigin = ClientUtil.getPointOfOrigin(pointOfOriginLocation);
+			ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.getPointOfOrigin(pointOfOriginKey);
 			if(pointOfOrigin != null)
-				return ClientUtil.getPointOfOriginSprite(pointOfOrigin);
+				return ClientPointOfOrigin.getSprite(pointOfOrigin);
 		}
 		
 		// Show symbols
-		ResourceLocation symbolLocation = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
+		ResourceKey<Symbols> symbolLocation = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
 		if(symbolLocation != null)
 		{
-			Symbols symbols = ClientUtil.getSymbols(symbolLocation);
+			ClientSymbols symbols = ClientSymbols.getSymbols(symbolLocation);
 			if(symbols != null)
-				return ClientUtil.getSymbolSprite(symbols, symbolNumber);
+				return ClientSymbols.getSprite(symbols, symbolNumber);
 		}
 		
 		return null;
