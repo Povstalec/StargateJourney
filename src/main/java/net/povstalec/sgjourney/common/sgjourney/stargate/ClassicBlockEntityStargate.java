@@ -135,7 +135,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	@Override
 	public void update(MinecraftServer server)
 	{
-		stargateRun(server, stargate->
+		stargateRun(server, stargate ->
 		{
 			this.hasDHD = stargate.dhdInfo().hasDHD();
 			this.timesOpened = stargate.getTimesOpened();

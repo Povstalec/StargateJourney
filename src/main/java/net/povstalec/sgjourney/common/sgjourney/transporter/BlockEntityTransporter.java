@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
@@ -80,6 +81,29 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	default Vec3 transportPos(MinecraftServer server)
 	{
 		return transporterReturn(server, transporter -> transporter.transportPos().getCenter(), null);
+	}
+	
+	@Override
+	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
+	{
+		transporterRun(server, transporterEntity ->
+		{
+			if(type == null)
+				transporterEntity.updateInterfaceBlocks(eventName, objects);
+			else
+				switch(type)
+				{
+					case BASIC:
+						transporterEntity.updateBasicInterfaceBlocks(eventName, objects);
+						break;
+					case CRYSTAL:
+						transporterEntity.updateCrystalInterfaceBlocks(eventName, objects);
+						break;
+					case ADVANCED_CRYSTAL:
+						transporterEntity.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+						break;
+				}
+		});
 	}
 	
 	@Override

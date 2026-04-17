@@ -26,6 +26,7 @@ import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -628,9 +629,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void sendMessageToNearbyPlayers(Component message, int distance)
 	{
-		AABB localBox = new AABB((getBlockPos().getX() - distance), (getBlockPos().getY() - distance), (getBlockPos().getZ() - distance), 
-				(getBlockPos().getX() + 1 + distance), (getBlockPos().getY() + 1 + distance), (getBlockPos().getZ() + 1 + distance));
-		level.getEntitiesOfClass(Player.class, localBox).stream().forEach((player) -> player.displayClientMessage(message, true));
+		AABB localBox = new AABB(getBlockPos()).inflate(distance);
+		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
 	protected abstract SoundEvent getEnterSound();
@@ -653,7 +653,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		{
 			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 			{
-				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
+				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHDInfo.DHD_INFO_DISTANCE);
 				return;
 			}
 			
@@ -665,7 +665,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
 		}
 		else
-			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
+			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHDInfo.DHD_INFO_DISTANCE);
 	}
 	
 	public void encodeSymbol(int symbol)
@@ -674,13 +674,13 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		{
 			if(stargate.isConnected())
 			{
-				sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.getFeedbackMessage(), 5);
+				sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.getFeedbackMessage(), DHDInfo.DHD_INFO_DISTANCE);
 				return;
 			}
 			
 			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 			{
-				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
+				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHDInfo.DHD_INFO_DISTANCE);
 				return;
 			}
 			
@@ -696,7 +696,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
 		}
 		else
-			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
+			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHDInfo.DHD_INFO_DISTANCE);
 	}
 	
 	public boolean isSymbolEncoded(int symbol)
@@ -758,10 +758,20 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public void setSymbolsFromStargate()
 	{
 		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
-			symbolInfo().setPointOfOrigin(this.stargate.symbolInfo().pointOfOrigin());
+		{
+			if(PointOfOrigin.isValid(level.getServer(), this.stargate.symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(this.stargate.symbolInfo().pointOfOrigin());
+			else // Use dimension Point of Origin if Stargate Point of Origin isn't valid
+				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		}
 		
 		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
-			symbolInfo().setSymbols(this.stargate.symbolInfo().symbols());
+		{
+			if(Symbols.isValid(level.getServer(), this.stargate.symbolInfo().symbols()))
+				symbolInfo().setSymbols(this.stargate.symbolInfo().symbols());
+			else
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
 	}
 	
 	//============================================================================================

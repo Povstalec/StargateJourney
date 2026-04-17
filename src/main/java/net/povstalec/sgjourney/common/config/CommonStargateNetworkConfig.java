@@ -7,9 +7,9 @@ public class CommonStargateNetworkConfig
 	public static SGJourneyConfigValue.BooleanValue randomize_addresses;
 	public static SGJourneyConfigValue.BooleanValue generate_random_address_regions;
 	public static SGJourneyConfigValue.BooleanValue random_addresses_from_seed;
+	public static SGJourneyConfigValue.BooleanValue primary_stargate;
 	
 	public static SGJourneyConfigValue.BooleanValue disable_dhd_preference;
-	public static SGJourneyConfigValue.BooleanValue primary_stargate;
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
@@ -25,14 +25,14 @@ public class CommonStargateNetworkConfig
 				true, 
 				"Stargate Network will randomize addresses based on the world seed");
 		
+		primary_stargate = new SGJourneyConfigValue.BooleanValue(server, "server.primary_stargate",
+				false,
+				"Stargates Network will prioritize Primary Stargates");
+		
 		
 		
 		disable_dhd_preference = new SGJourneyConfigValue.BooleanValue(server, "server.disable_dhd_preference", 
 				false,
 				"Stargates Network will not consider DHDs when choosing preferred Stargate");
-		
-		primary_stargate = new SGJourneyConfigValue.BooleanValue(server, "server.primary_stargate",
-				false,
-				"Stargates Network will prioritize Primary Stargates");
 	}
 }

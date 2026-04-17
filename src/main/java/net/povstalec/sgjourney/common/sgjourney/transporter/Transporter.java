@@ -25,6 +25,8 @@ public interface Transporter
 	
 	String CUSTOM_NAME = "CustomName";
 	
+	String NETWORK = "network";
+	
 	TransporterType<?> getTransporterType();
 	
 	/**
@@ -159,6 +161,14 @@ public interface Transporter
 	 * @return Returns true if this Transporter is loaded (for example, in the case of Transporters placed in the world, if the Chunk the Transporter is located in is loaded)
 	 */
 	boolean isLoaded(MinecraftServer server);
+	
+	// Updating
+	
+	/**
+	 * Updates this Transporter
+	 * @param server Current Minecraft Server
+	 */
+	default void update(MinecraftServer server) {}
 	
 	/**
 	 * Update all Tech Interfaces that are currently connected to the Transporter

@@ -63,13 +63,13 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	}
 	
 	protected void renderIdleSymbols(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source,
-									 ClientSymbols symbols, ColorUtil.RGBA symbolColor, int numberOfSymbols)
+									 ClientSymbols symbols, ColorUtil.RGBA symbolColor, float rotation, int numberOfSymbols)
 	{
 		// Idle Symbols
 		for(int symbol = 1; symbol < numberOfSymbols && symbol < this.numberOfSymbols; symbol++)
 		{
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbol,
-					ClientSymbols.getSprite(symbols, symbol), 0, symbolColor);
+					ClientSymbols.getSprite(symbols, symbol), rotation, symbolColor);
 		}
 	}
 	
@@ -112,6 +112,6 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			}
 		}
 		else
-			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), stargate.isConnected() ? stargate.getCurrentSymbol() : 36);
+			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), rotation, stargate.isConnected() ? stargate.getCurrentSymbol() + 1 : 36);
 	}
 }

@@ -14,7 +14,7 @@ import javax.annotation.Nullable;
 
 public class DHDInfo
 {
-	public static final int DHD_INFO_DISTANCE = 5;
+	public static final int DHD_INFO_DISTANCE = 3;
 	
 	protected AbstractStargateEntity<?> stargate;
 	

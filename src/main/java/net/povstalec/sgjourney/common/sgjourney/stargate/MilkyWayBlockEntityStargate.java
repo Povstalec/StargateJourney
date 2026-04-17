@@ -135,7 +135,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	@Override
 	public void update(MinecraftServer server)
 	{
-		stargateRun(server, stargate->
+		stargateRun(server, stargate ->
 		{
 			this.hasDHD = stargate.dhdInfo().hasDHD();
 			this.timesOpened = stargate.getTimesOpened();

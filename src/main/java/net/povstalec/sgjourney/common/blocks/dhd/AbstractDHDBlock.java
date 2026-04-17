@@ -25,11 +25,16 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 import java.util.List;
 
@@ -126,6 +131,27 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.dhd.description"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.dialing_menu"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.crystal_menu"));
+		
+		String pointOfOriginString = "";
+		String symbolsString = "";
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(AbstractDHDEntity.POINT_OF_ORIGIN))
+				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "Error");
+			if(blockEntityTag.contains(AbstractDHDEntity.SYMBOLS))
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "Error");
+			
+			if(blockEntityTag.contains(AbstractDHDEntity.ENERGY))
+				energy = blockEntityTag.getLong(AbstractDHDEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOriginString)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy))).withStyle(ChatFormatting.DARK_RED));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

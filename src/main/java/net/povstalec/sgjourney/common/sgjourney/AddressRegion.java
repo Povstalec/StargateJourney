@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.sgjourney;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -12,15 +11,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * Class that represents a region of space with one Extragalactic Address, which may consist of multiple Space Locations, intended as a replacement for the SolarSystem class
@@ -41,7 +37,6 @@ public class AddressRegion
 	public static final String GALACTIC_ADDRESSES = "galactic_addresses";
 	
 	public static final String SPACE_LOCATIONS = "space_locations";
-	public static final String PRIMARY_STARGATE = "primary_stargate";
 	
 	public static final Codec<AddressRegion> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf(NAME).forGetter(addressRegion -> addressRegion.name),
@@ -68,14 +63,6 @@ public class AddressRegion
 	public final Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galacticAddresses; // Galaxies this Address Region is a part of and its address within each of them
 	
 	private final List<SpaceLocation> spaceLocations = new ArrayList<>();
-	
-	private final List<Stargate> stargates = new ArrayList<>();
-	
-	@Nullable
-	private Address.Immutable primaryAddress = null;
-	@Nullable
-	private Stargate primaryStargate = null;
-	//TODO List of Transporters
 	
 	// Constructor made specifically for the codec
 	private AddressRegion(String name, Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols,
@@ -236,132 +223,6 @@ public class AddressRegion
 		return null;
 	}
 	
-	//============================================================================================
-	//*****************************************Stargates******************************************
-	//============================================================================================
-	
-	public List<Stargate> getStargates()
-	{
-		return this.stargates;
-	}
-	
-	public List<Stargate> getStargates(Predicate<Stargate> predicate)
-	{
-		return this.stargates.stream().filter(predicate).toList();
-	}
-	
-	/** Adds Stargate to an ordered list based on the following preferences:
-	 * Stargate Preferences:
-	 * 1. Has DHD
-	 * 2. Stargate Generation
-	 * 3. The number of times the Stargate was used
-	 */
-	public void addStargate(MinecraftServer server, Stargate addedStargate)
-	{
-		if(this.primaryAddress == null)
-		{
-			if(addedStargate.isPrimary(server))
-			{
-				this.primaryAddress = addedStargate.get9ChevronAddress().clone();
-				this.primaryStargate = addedStargate;
-			}
-		}
-		else if(this.primaryStargate == null && this.primaryAddress.equals(addedStargate.get9ChevronAddress()))
-			this.primaryStargate = addedStargate;
-		
-		int index = Collections.binarySearch(this.stargates, addedStargate);
-		if(index < 0) // Stargate was not found
-			this.stargates.add(-index - 1, addedStargate);
-	}
-	
-	public void sortStargates()
-	{
-		this.stargates.sort(null);
-	}
-	
-	public void removeStargate(Stargate stargate)
-	{
-		if(stargate == this.primaryStargate)
-			this.primaryStargate = null;
-		
-		this.stargates.remove(stargate);
-	}
-	
-	/**
-	 * @param address Address to use for the search
-	 * @return Returns the Stargate based on the specified Address, or null if there is no Stargate with this Address
-	 */
-	@Nullable
-	public Stargate findStargate(Address.Immutable address)
-	{
-		for(Stargate stargate : this.stargates)
-		{
-			if(address.equals(stargate.get9ChevronAddress()))
-				return stargate;
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * Sets the Stargate with the specified address as the Primary Stargate of this Address Region
-	 * @param primaryAddress Address of the Primary Stargate
-	 * @return True if the Primary Stargate was set successfully, otherwise false
-	 */
-	public boolean setPrimaryStargate(@Nullable Address.Immutable primaryAddress)
-	{
-		if(primaryAddress != null && primaryAddress.getType() != Address.Type.ADDRESS_9_CHEVRON)
-			return false;
-		
-		if(primaryAddress == null)
-		{
-			this.primaryStargate = null;
-			this.primaryAddress = null;
-			
-		}
-		else if(primaryAddress.equals(this.primaryAddress))
-			return false;
-		else
-		{
-			this.primaryStargate = findStargate(primaryAddress);
-			this.primaryAddress = primaryAddress;
-		}
-		
-		return true;
-	}
-	
-	@Nullable
-	public Address.Immutable primaryAddress()
-	{
-		return this.primaryAddress;
-	}
-	
-	@Nullable
-	public Stargate primaryStargate()
-	{
-		return this.primaryStargate;
-	}
-	
-	public List<Stargate> getShuffledStargates(RandomSource randomSource)
-	{
-		return Util.toShuffledList(this.stargates.stream(), randomSource);
-	}
-	
-	@Nullable
-	public Stargate getRandomStargate(long seed)
-	{
-		int size = this.stargates.size();
-		
-		if(size < 1)
-			return null;
-		
-		Random random = new Random(seed);
-		
-		int randomValue = random.nextInt(0, size);
-		
-		return this.stargates.get(randomValue);
-	}
-	
 	@Override
 	public String toString()
 	{
@@ -396,9 +257,6 @@ public class AddressRegion
 		
 		getExtragalacticAddress().saveToCompoundTag(addressRegionTag, EXTRAGALACTIC_ADDRESS);
 		
-		if(this.primaryAddress != null)
-			addressRegionTag.putIntArray(PRIMARY_STARGATE, this.primaryAddress.toArray());
-		
 		return addressRegionTag;
 	}
 	
@@ -422,9 +280,6 @@ public class AddressRegion
 		{
 			SpaceLocation.fromDimension(server, Conversion.stringToDimension(tag.toString())).setAddressRegion(addressRegion);
 		}
-		
-		if(addressRegionTag.contains(PRIMARY_STARGATE, CompoundTag.TAG_INT_ARRAY))
-			addressRegion.setPrimaryStargate(new Address.Immutable(addressRegionTag.getIntArray(PRIMARY_STARGATE)));
 		
 		return addressRegion;
 	}

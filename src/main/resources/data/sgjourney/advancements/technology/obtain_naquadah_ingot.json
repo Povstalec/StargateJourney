@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:technology/mine_raw_naquadah",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:naquadah_ingot"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_naquadah_ingot.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_naquadah_ingot.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_naquadah_ingot": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"items":["sgjourney:naquadah_ingot"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_naquadah_ingot"
+		]
+	]
+}

@@ -132,20 +132,20 @@ public final class TransporterNetwork extends SavedData
 		});
 	}
 	
+	public void addTransporterEntity(AbstractTransporterEntity<?> transporterEntity)
+	{
+		Transporter transporter = BlockEntityList.get(server).addTransporter(transporterEntity);
+		
+		if(transporter != null && transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
+			addTransporter(transporter);
+	}
+	
 	public void addTransporter(Transporter transporter)
 	{
 		if(transporter != null && transporter.getDimension() != null)
 			addTransporterToDimension(transporter.getDimension(), transporter);
 		
 		this.setDirty();
-	}
-	
-	public void addTransporter(AbstractTransporterEntity<?> transporterEntity)
-	{
-		Transporter transporter = BlockEntityList.get(server).addTransporter(transporterEntity);
-		
-		if(transporter != null && transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
-			addTransporter(transporter);
 	}
 	
 	public void removeTransporter(Transporter transporter)
@@ -171,6 +171,14 @@ public final class TransporterNetwork extends SavedData
 		
 		Transporter transporter = getTransporter(transporterID);
 		removeTransporter(transporter);
+	}
+	
+	public final void updateTransporterEntity(AbstractTransporterEntity<?> transporterEntity)
+	{
+		Transporter transporter = getTransporter(transporterEntity.getID());
+		
+		if(transporter != null)
+			transporter.update(server);
 	}
 	
 	public int getTransporterCount()

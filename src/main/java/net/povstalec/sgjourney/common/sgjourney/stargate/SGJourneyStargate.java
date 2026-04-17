@@ -7,6 +7,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
@@ -152,32 +153,33 @@ public abstract class SGJourneyStargate implements Stargate
 		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
 		
 		AddressRegion addressRegion = this.getAddressRegion(server);
+		if(addressRegion == null)
+			return List.of(this);
 		
-		if(addressRegion != null)
+		StargateNetwork stargateNetwork = StargateNetwork.get(server);
+			
+		if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Address Region
 		{
-			if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Address Region
+			for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(addressRegion.getResourceKey(), randomSource))
 			{
-				for(Stargate reroutedStargate : addressRegion.getShuffledStargates(randomSource))
-				{
-					if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
-						return List.of(this, reroutedStargate);
-				}
+				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+					return List.of(this, reroutedStargate);
 			}
-			else // Picks a random Stargate from the same Galaxy
+		}
+		else // Picks a random Stargate from the same Galaxy
+		{
+			Universe universe = Universe.get(server);
+			for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : addressRegion.getGalacticAddresses().entrySet())
 			{
-				Universe universe = Universe.get(server);
-				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : addressRegion.getGalacticAddresses().entrySet())
+				Galaxy galaxy = universe.getGalaxy(entry.getKey());
+				if(galaxy != null)
 				{
-					Galaxy galaxy = universe.getGalaxy(entry.getKey());
-					if(galaxy != null)
+					for(AddressRegion randomAddressRegion : galaxy.getShuffledAddressRegions(randomSource))
 					{
-						for(AddressRegion randomAddressRegion : galaxy.getShuffledAddressRegions(randomSource))
+						for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(randomAddressRegion.getResourceKey(), randomSource))
 						{
-							for(Stargate reroutedStargate : randomAddressRegion.getShuffledStargates(randomSource))
-							{
-								if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
-									return List.of(this, reroutedStargate);
-							}
+							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+								return List.of(this, reroutedStargate);
 						}
 					}
 				}

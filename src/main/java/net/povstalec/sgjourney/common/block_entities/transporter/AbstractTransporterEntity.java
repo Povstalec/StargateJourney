@@ -8,14 +8,20 @@ import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -48,13 +54,18 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 	public static final String CUSTOM_NAME = "CustomName";
 	
-	private TransporterType<T> transporterType;
+	public static final String NETWORK = "network";
+	public static final String RESTRICT_NETWORK = "restrict_network";
+	
+	private final TransporterType<T> transporterType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected TransporterInfo.Feedback recentFeedback = TransporterInfo.Feedback.NONE;
 	
 	protected TransporterID.Immutable transporterID;
+	protected int network;
+	protected boolean restrictNetwork = false;
 	@Nullable
 	protected UUID connectionID = null;
 
@@ -65,12 +76,14 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	protected boolean isProtected = false;
 	
-	public AbstractTransporterEntity(BlockEntityType<?> blockEntityType, TransporterType<T> transporterType, BlockPos pos, BlockState state)
+	public AbstractTransporterEntity(BlockEntityType<?> blockEntityType, TransporterType<T> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
 		super(blockEntityType, pos, state);
 		this.transporterType = transporterType;
 		
 		this.transporterIDFilterInfo = new TransporterIDFilterInfo();
+		
+		this.network = defaultNetwork;
 	}
 	
 	@Override
@@ -91,29 +104,35 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		super.load(tag);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
-			this.generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
 		if(tag.contains(TRANSPORTER_ID))
-			this.transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
+			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
 		//TODO What about Transporters with old UUIDs?
     	
     	if(tag.contains(CUSTOM_NAME, 8))
-	         this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+		
+		network = tag.getInt(NETWORK);
+		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		if(this.generationStep != Step.GENERATED)
-			tag.putByte(GENERATION_STEP, this.generationStep.byteValue());
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
 		if(transporterID != null)
-			tag.putIntArray(TRANSPORTER_ID, this.transporterID.toArray());
+			tag.putIntArray(TRANSPORTER_ID, transporterID.toArray());
 		
 		super.saveAdditional(tag);
 		
-		if(this.name != null)
-	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+		if(name != null)
+	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(name));
+		
+		tag.putInt(NETWORK, network);
+		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
 	}
 	
 	public final TransporterType<T> getTransporterType()
@@ -138,7 +157,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(this.transporterID == null)
 			setID(BlockEntityList.get(level).generateTransporterID());
 		
-		TransporterNetwork.get(level).addTransporter(this);
+		TransporterNetwork.get(level).addTransporterEntity(this);
 		this.setChanged();
 	}
 	
@@ -152,8 +171,8 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		List<Component> status = new ArrayList<>();
 		
-		status.add(Component.literal("ID: " + this.transporterID).withStyle(ChatFormatting.AQUA));
-		status.add(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
+		status.add(Component.translatable("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.AQUA).append(this.transporterID.toComponent(true)));
+		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
 		
 		return status;
 	}
@@ -193,6 +212,17 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public TransporterInfo.Feedback getRecentFeedback()
 	{
 		return this.recentFeedback;
+	}
+	
+	public int getNetwork()
+	{
+		return this.network;
+	}
+	
+	public void setNetwork(int network)
+	{
+		this.network = network;
+		this.updateTransporter();
 	}
 	
 	
@@ -247,13 +277,99 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		return resetTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 	}
 	
+	public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)
+	{
+		for(Direction direction : Direction.values())
+		{
+			BlockPos pos = this.getBlockPos().relative(direction);
+			BlockState state = level.getBlockState(pos);
+			
+			if(level.getBlockEntity(pos) instanceof BasicInterfaceEntity interfaceEntity
+					&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
+			{
+				if(eventName != null)
+					interfaceEntity.queueEvent(eventName, objects);
+				level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+				interfaceEntity.setChanged();
+			}
+		}
+	}
+	
+	public void updateCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
+	{
+		for(Direction direction : Direction.values())
+		{
+			BlockPos pos = this.getBlockPos().relative(direction);
+			BlockState state = level.getBlockState(pos);
+			
+			if(level.getBlockEntity(pos) instanceof CrystalInterfaceEntity interfaceEntity
+					&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
+			{
+				if(eventName != null)
+					interfaceEntity.queueEvent(eventName, objects);
+				level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+				interfaceEntity.setChanged();
+			}
+		}
+	}
+	
+	public void updateAdvancedCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
+	{
+		for(Direction direction : Direction.values())
+		{
+			BlockPos pos = this.getBlockPos().relative(direction);
+			BlockState state = level.getBlockState(pos);
+			
+			if(level.getBlockEntity(pos) instanceof AdvancedCrystalInterfaceEntity interfaceEntity
+					&& direction.getOpposite() == state.getValue(AbstractInterfaceBlock.FACING))
+			{
+				if(eventName != null)
+					interfaceEntity.queueEvent(eventName, objects);
+				level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
+				interfaceEntity.setChanged();
+			}
+		}
+	}
+	
+	public void updateInterfaceBlocks(@Nullable String eventName, Object... objects)
+	{
+		updateBasicInterfaceBlocks(eventName, objects);
+		updateCrystalInterfaceBlocks(eventName, objects);
+		updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+	}
+	
+	public void updateTransporter()
+	{
+		updateTransporter(this.level);
+	}
+	
+	public void updateTransporter(Level level)
+	{
+		if(level.isClientSide())
+			return;
+		
+		TransporterNetwork.get(level).updateTransporterEntity(this);
+	}
+	
 	public TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
 	{
-		setRecentFeedback(feedback);
 		this.connectionID = null;
 		setConnected(false);
 		
-		return this.recentFeedback;
+		try
+		{
+			if(feedback == TransporterInfo.Feedback.UNKNOWN_ERROR)
+				throw new RuntimeException("Unknown Transporter Error");
+			else
+				StargateJourney.LOGGER.debug("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback.getMessage());
+		}
+		catch(RuntimeException e)
+		{
+			StargateJourney.LOGGER.error("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback.getMessage(), e);
+			return setRecentFeedback(feedback);
+		}
+		
+		return setRecentFeedback(feedback);
 	}
 	
 	protected void loadChunk(boolean load)
@@ -325,7 +441,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			consumer.accept(transporter);
 	}
 	
-	private <T> T transporterReturn(Function<Transporter, T> consumer, @Nullable T defaultValue)
+	private <R> R transporterReturn(Function<Transporter, R> consumer, @Nullable R defaultValue)
 	{
 		Transporter transporter = getTransporter();
 		

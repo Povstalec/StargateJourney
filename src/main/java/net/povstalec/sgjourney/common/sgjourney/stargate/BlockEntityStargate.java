@@ -161,16 +161,23 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
 	{
-		stargateRun(server, stargate ->
+		stargateRun(server, starghateEntity ->
 		{
 			if(type == null)
-				stargate.updateInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.BASIC)
-				stargate.updateBasicInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.CRYSTAL)
-				stargate.updateCrystalInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL)
-				stargate.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+				starghateEntity.updateInterfaceBlocks(eventName, objects);
+			else
+				switch(type)
+				{
+					case BASIC:
+						starghateEntity.updateBasicInterfaceBlocks(eventName, objects);
+						break;
+					case CRYSTAL:
+						starghateEntity.updateCrystalInterfaceBlocks(eventName, objects);
+						break;
+					case ADVANCED_CRYSTAL:
+						starghateEntity.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+						break;
+				}
 		});
 	}
 	
@@ -274,7 +281,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 			List<Entity> wormholeCandidates = stargate.findWormholeCandidates();
 			
 			// If this Stargate has its iris closed, then there's no point in trying to transport Entities
-			if(stargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
+			if(stargate instanceof IrisStargateEntity<?> irisStargate && irisStargate.irisInfo().isIrisClosed())
 				return;
 			
 			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();

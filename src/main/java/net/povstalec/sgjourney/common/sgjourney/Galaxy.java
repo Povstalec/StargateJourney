@@ -118,6 +118,16 @@ public class Galaxy
 		return this.addressRegions.get(address);
 	}
 	
+	@Nullable
+	public ResourceKey<AddressRegion> getAddressRegionKey(Address address)
+	{
+		AddressRegion addressRegion = this.addressRegions.get(address);
+		if(addressRegion == null)
+			return null;
+		
+		return addressRegion.getResourceKey();
+	}
+	
 	public void addAddressRegion(Address.Immutable galacticAddress, AddressRegion addressRegion)
 	{
 		this.addressRegions.put(galacticAddress, addressRegion);
@@ -150,10 +160,7 @@ public class Galaxy
 		Random random = new Random(seed);
 		
 		int randomValue = random.nextInt(0, size);
-		
-		AddressRegion randomSolarSystem = (AddressRegion) this.addressRegions.entrySet().stream().toArray()[randomValue];
-		
-		return randomSolarSystem;
+		return (AddressRegion) this.addressRegions.entrySet().stream().toArray()[randomValue];
 	}
 	
 	public void printAddressRegions()

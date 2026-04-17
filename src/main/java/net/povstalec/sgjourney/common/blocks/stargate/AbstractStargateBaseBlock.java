@@ -264,7 +264,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	long energy = 0;
-        String id = "";
 		
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -289,7 +288,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
         	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
-        		if(blockEntityTag.contains(AbstractStargateEntity.ID))
+				String id;
+        		if(blockEntityTag.contains(AbstractStargateEntity.ID)) //TODO Remove this
         		{
         			id = blockEntityTag.getString(AbstractStargateEntity.ID);
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));

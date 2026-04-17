@@ -29,6 +29,8 @@ public abstract class SGJourneyTransporter implements Transporter
 	protected TransporterID transporterID;
 	protected ResourceKey<Level> dimension;
 	
+	protected int network;
+	
 	@Nullable
 	protected Component name;
 	
@@ -155,6 +157,8 @@ public abstract class SGJourneyTransporter implements Transporter
 		
 		if(this.name != null)
 			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+		
+		tag.putInt(NETWORK, network);
 	}
 	
 	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
@@ -165,6 +169,8 @@ public abstract class SGJourneyTransporter implements Transporter
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+		
+		this.network = tag.getInt(NETWORK);
 	}
 	
 	//============================================================================================

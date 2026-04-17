@@ -38,13 +38,13 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	public static final int RING_SEGMENTS = 3;
 	public static final int SYMBOLS_PER_SEGMENT = TOTAL_SYMBOLS / RING_SEGMENTS;
 
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way_back_chevron");
+	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way_back_chevron");
 	
 	public boolean isChevronOpen = false;
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state, TOTAL_SYMBOLS, 2, MAX_ROTATION);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), new ResourceLocation(StargateJourney.MODID, "milky_way"), pos, state, TOTAL_SYMBOLS, 2, MAX_ROTATION);
 	}
 
 	@Override

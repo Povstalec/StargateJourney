@@ -79,8 +79,9 @@ public class TabInit
 				items.accept(PowerCellItem.liquidNaquadahSetup());
 				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 				
+				items.accept(ItemInit.CRYSTAL_READER.get());
 				items.accept(ItemInit.PDA.get());
-				//items.accept(ItemInit.UNIVERSE_DIALER.get());
+				//items.accept(ItemInit.ANCIENT_REMOTE.get());
 
 				items.accept(ItemInit.GDO.get());
 				
@@ -239,6 +240,51 @@ public class TabInit
 				
 				items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
 				items.accept(BlockInit.GOLDEN_IDOL.get());
+				
+				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
+				items.accept(BlockInit.SANDSTONE_SWITCH.get());
+				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
+				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
+				items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+				items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
+				items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
+				items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
+				items.accept(BlockInit.RED_SANDSTONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.STONE_SYMBOL.get());
+				items.accept(BlockInit.STONE_CARTOUCHE.get());
+				
+				items.accept(BlockInit.FIRE_PIT.get());
+				
+				items.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
+				items.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+				
+				items.accept(BlockInit.CRYSTALLIZER.get());
+				items.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
+				
+				items.accept(BlockInit.NAQUADAH_REACTOR.get());
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
+				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
+				
+				items.accept(BlockInit.BASIC_INTERFACE.get());
+				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
+				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+				
+				items.accept(BlockInit.TRANSCEIVER.get());
+				
+				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
+				
+				items.accept(BlockInit.ZPM_HUB.get());
+				
+				items.accept(BlockInit.NAQUADAH_WIRE.get());
+				items.accept(BlockInit.SMALL_NAQUADAH_CABLE.get());
+				items.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
+				items.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());
+				
+				//items.accept(BlockInit.LARGE_NAQUADAH_BATTERY.get());
 				
 				items.accept(BlockInit.SULFUR_SAND.get());
 				items.accept(BlockInit.BUDDING_UNITY.get());
@@ -404,51 +450,6 @@ public class TabInit
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_SLAB.get());
 				
 				items.accept(BlockInit.TRINIUM_BLOCK.get());
-				
-				items.accept(BlockInit.SANDSTONE_HIEROGLYPHS.get());
-				items.accept(BlockInit.SANDSTONE_SWITCH.get());
-				items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
-				items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
-				items.accept(BlockInit.SANDSTONE_SYMBOL.get());
-				items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
-				
-				items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
-				items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
-				items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
-				items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
-				items.accept(BlockInit.RED_SANDSTONE_CARTOUCHE.get());
-				
-				items.accept(BlockInit.STONE_SYMBOL.get());
-				items.accept(BlockInit.STONE_CARTOUCHE.get());
-				
-				items.accept(BlockInit.FIRE_PIT.get());
-
-				items.accept(BlockInit.NAQUADAH_LIQUIDIZER.get());
-				items.accept(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
-				
-				items.accept(BlockInit.CRYSTALLIZER.get());
-				items.accept(BlockInit.ADVANCED_CRYSTALLIZER.get());
-
-				items.accept(BlockInit.NAQUADAH_REACTOR.get());
-				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
-				items.accept(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
-				
-				items.accept(BlockInit.BASIC_INTERFACE.get());
-				items.accept(BlockInit.CRYSTAL_INTERFACE.get());
-				items.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
-
-				items.accept(BlockInit.TRANSCEIVER.get());
-
-				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
-				
-				items.accept(BlockInit.ZPM_HUB.get());
-				
-				items.accept(BlockInit.NAQUADAH_WIRE.get());
-				items.accept(BlockInit.SMALL_NAQUADAH_CABLE.get());
-				items.accept(BlockInit.MEDIUM_NAQUADAH_CABLE.get());
-				items.accept(BlockInit.LARGE_NAQUADAH_CABLE.get());
-				
-				//items.accept(BlockInit.LARGE_NAQUADAH_BATTERY.get());
 			});
 		});
 	}

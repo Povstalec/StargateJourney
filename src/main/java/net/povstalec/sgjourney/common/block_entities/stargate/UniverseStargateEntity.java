@@ -55,7 +55,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;

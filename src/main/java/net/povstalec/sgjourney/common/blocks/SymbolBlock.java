@@ -5,11 +5,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -35,7 +32,6 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -136,10 +132,6 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-
     	int symbolNumber = 0;
 		String symbolString = "";
     	String symbolsString = "";
@@ -151,10 +143,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 
         	if(symbolNumber == 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOL))
-				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "Error");
+				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "Error");
 
         	if(symbolNumber != 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "Error");
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "Error");
     	}
 		
 		if(symbolNumber == 0)
@@ -162,7 +154,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		else
 		{
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbolsString").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);

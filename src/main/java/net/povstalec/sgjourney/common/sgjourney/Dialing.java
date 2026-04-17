@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
@@ -43,6 +44,20 @@ public class Dialing
 		};
 	}
 	
+	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
+	{
+		if(dialingStargate.addressFilterInfo(server).getFilterType().shouldFilter())
+		{
+			if(dialingStargate.addressFilterInfo(server).getFilterType().isBlacklist() && dialingStargate.addressFilterInfo(server).isAddressBlacklisted(address))
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED);
+			
+			else if(dialingStargate.addressFilterInfo(server).getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo(server).isAddressWhitelisted(address))
+				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
+		}
+		
+		return dialStargate(server, dialingStargate, address, doKawoosh, false);
+	}
+	
 	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
 	{
 		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh))
@@ -58,20 +73,6 @@ public class Dialing
 			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			case ADDRESS_INVALID -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
 		};
-	}
-	
-	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
-	{
-		if(dialingStargate.addressFilterInfo(server).getFilterType().shouldFilter())
-		{
-			if(dialingStargate.addressFilterInfo(server).getFilterType().isBlacklist() && dialingStargate.addressFilterInfo(server).isAddressBlacklisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED);
-			
-			else if(dialingStargate.addressFilterInfo(server).getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo(server).isAddressWhitelisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
-		}
-		
-		return dialStargate(server, dialingStargate, address, doKawoosh, false);
 	}
 	
 	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
@@ -102,7 +103,7 @@ public class Dialing
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL);
 		
 		// If the Stargate Network knows of no Stargates in this Address Region, try locating any Structures with them
-		if(!mustBeLoaded && dialedRegion.getStargates().isEmpty()) // No point in loading chunks if the connection requires a loaded Stargate
+		if(!mustBeLoaded && !StargateNetwork.get(server).hasStargatesInRegion(dialedRegion.getResourceKey())) // No point in loading chunks if the connection requires a loaded Stargate
 		{
 			// Cycles through the list of Dimensions in the Address Region
 			int dimensions = 0;
@@ -158,15 +159,17 @@ public class Dialing
 	
 	private static StargateInfo.Feedback getPreferredStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion addressRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		List<Stargate> stargates = addressRegion.getStargates();
+		StargateNetwork stargateNetwork = StargateNetwork.get(server);
+		List<Stargate> stargates = stargateNetwork.getStargatesInRegion(addressRegion.getResourceKey());
 		
 		if(stargates.isEmpty())
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_STARGATES);
 		
+		Stargate primaryStargate = stargateNetwork.getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
 		// Primary Stargate
-		if(CommonStargateNetworkConfig.primary_stargate.get() && addressRegion.primaryStargate() != null)
+		if(StargateNetworkSettings.get(server).prioritizePrimaryStargates() && primaryStargate != null)
 		{
-			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, addressRegion.primaryStargate(), addressType, doKawoosh, mustBeLoaded);
+			StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, primaryStargate, addressType, doKawoosh, mustBeLoaded);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
 			if(!feedback.isSkippable())

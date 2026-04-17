@@ -152,6 +152,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected Random random = new Random();
 	protected int animationTick = 0;
 	protected int unstableTicks = 0;
+	protected int disconnectTicks = 0;
 	
 	protected ResourceLocation variant = StargateJourney.EMPTY_LOCATION;
 	private final ResourceLocation defaultVariant;
@@ -220,6 +221,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
         if(level.isClientSide())
 			return;
+		
+		checkStargate();
 		
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
@@ -399,7 +402,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			openTime = tag.getInt(StargateConnection.OPEN_TIME);
 			timeSinceLastTraveler = tag.getInt(StargateConnection.TIME_SINCE_LAST_TRAVELER);
 			
+			StargateConnection.State oldConnectionState = connectionState;
 			connectionState = StargateConnection.State.fromByte(tag.getByte(CONNECTION_STATE));
+			if(oldConnectionState.isConnected() && !connectionState.isConnected()) // Stargate is no longer connected
+				this.disconnectTicks++;
+			
 			blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
 			
 			symbolMap.loadFromCompoundTag(tag);
@@ -416,7 +423,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
 			set9ChevronAddress(Address.Immutable.extendWithPointOfOrigin(BlockEntityList.get(level).generate9ChevronAddress()));
 		
-		StargateNetwork.get(level).addStargate(this);
+		StargateNetwork.get(level).addStargateEntity(this);
 		this.setChanged();
 	}
 	
@@ -653,7 +660,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.connectionID = connectionID;
 		this.setConnected(connectionState);
 		this.timesOpened++;
-		this.animationTick = 0;
 		this.setChanged();
 		
 		this.updateStargate();
@@ -767,11 +773,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		setKawooshTickCount(0);
 		setOpenTime(0);
 		setTimeSinceLastTraveler(0);
-		resetAnimationTicks();
 		//updateClient();
 		
 		if(feedback.playFailSound() && !level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Fail(this.worldPosition, feedback));
 		
 		updateBasicInterfaceBlocks(EVENT_RESET, feedback.getCode());
 		updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
@@ -938,15 +943,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.animationTick = 0;
 	}
 	
-	public int getTickCount()
+	public int getAnimationTicks()
 	{
 		return this.animationTick;
 	}
 	
-	public int increaseAnimationTicks()
+	public void increaseAnimationTicks()
 	{
 		this.animationTick++;
-		return this.animationTick;
 	}
 	
 	public void animateUnstableWormhole()
@@ -955,6 +959,21 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			unstableTicks--;
 		else if(isWormholeUnstable() && random.nextFloat() <= 0.025)
 			unstableTicks = random.nextInt(5, 20);
+	}
+	
+	public void resetDisconnectTicks()
+	{
+		this.disconnectTicks = 0;
+	}
+	
+	public int getDisconnectTicks()
+	{
+		return this.disconnectTicks;
+	}
+	
+	public void increaseDisconnectTicks()
+	{
+		this.disconnectTicks++;
 	}
 	
 	public boolean showUnstableWormhole()
@@ -1369,17 +1388,20 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		List<Component> status = new ArrayList<>();
 		
-		status.add(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + symbolInfo().pointOfOrigin())).withStyle(ChatFormatting.DARK_PURPLE));
-		status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols())).withStyle(ChatFormatting.LIGHT_PURPLE));
-		status.add(Component.translatable("info.sgjourney.times_opened").append(Component.literal(": " + timesOpened)).withStyle(ChatFormatting.BLUE));
-		status.add(Component.translatable("info.sgjourney.has_dhd").append(Component.literal(": " + dhdInfo().hasDHD())).withStyle(ChatFormatting.GOLD));
-		status.add(Component.translatable("info.sgjourney.autoclose").append(Component.literal(": " + dhdInfo().autoclose())).withStyle(ChatFormatting.RED));
-		status.add(Component.translatable("info.sgjourney.last_traveler_time").append(Component.literal(": " + getTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE));
-		status.add(Component.translatable("info.sgjourney.encoded_address").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.GREEN));
+		if(symbolInfo().pointOfOrigin() != null)
+			status.add(Component.translatable("info.sgjourney.point_of_origin").append(": " + symbolInfo().pointOfOrigin().location()).withStyle(ChatFormatting.DARK_PURPLE));
+		if(symbolInfo().symbols() != null)
+			status.add(Component.translatable("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		status.add(Component.translatable("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
+		status.add(Component.translatable("info.sgjourney.has_dhd").append(": " + dhdInfo().hasDHD()).withStyle(ChatFormatting.GOLD));
+		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + dhdInfo().autoclose()).withStyle(ChatFormatting.RED));
+		status.add(Component.translatable("info.sgjourney.last_traveler_time").append(": " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
+		status.add(Component.translatable("info.sgjourney.encoded_address").append(": ").append(address.toComponent(true)).withStyle(ChatFormatting.GREEN));
 		status.add(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
 		
 		status.add(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
-		status.add(Component.translatable("info.sgjourney.add_to_network").append(Component.literal(": " + (generationStep == Step.GENERATED))).withStyle(ChatFormatting.YELLOW));
+		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
 			status.add(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		status.add(ComponentHelper.tickTimer("info.sgjourney.open_time", getOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA));
@@ -1578,7 +1600,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity stargate)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractStargateEntity<?> stargate)
     {
 		if(level.isClientSide())
 		{
@@ -1586,6 +1608,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			{
 				stargate.increaseAnimationTicks();
 				stargate.animateUnstableWormhole();
+			}
+			else if(stargate.getDisconnectTicks() > 0)
+			{
+				stargate.increaseAnimationTicks();
+				stargate.increaseDisconnectTicks();
 			}
 		}
 		else
@@ -1607,12 +1634,13 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	private void trySetPrimary()
 	{
+		StargateNetwork stargateNetwork = StargateNetwork.get(level);
 		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(level.dimension());
 		
-		if(addressRegion == null || addressRegion.primaryAddress() != null)
+		if(addressRegion == null || stargateNetwork.getPrimaryAddressFromAddressRegion(addressRegion.getResourceKey()) != null)
 			return;
 		
-		addressRegion.setPrimaryStargate(this.get9ChevronAddress());
+		stargateNetwork.setPrimaryAddressForAddressRegion(addressRegion.getResourceKey(), this.get9ChevronAddress());
 	}
 	
 	public void generate()

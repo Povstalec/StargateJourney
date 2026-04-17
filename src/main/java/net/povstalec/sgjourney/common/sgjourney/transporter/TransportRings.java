@@ -35,6 +35,7 @@ public class TransportRings extends SGJourneyTransporter implements BlockEntityT
 		this.blockPos = transporterEntity.getBlockPos();
 		
 		this.name = transporterEntity.getCustomName();
+		this.network = transporterEntity.getNetwork();
 	}
 	
 	@Nullable
@@ -46,6 +47,15 @@ public class TransportRings extends SGJourneyTransporter implements BlockEntityT
 			return transporter;
 		
 		return null;
+	}
+	
+	@Override
+	public void update(MinecraftServer server)
+	{
+		transporterRun(server, transporter ->
+		{
+			this.network = transporter.getNetwork();
+		});
 	}
 	
 	//============================================================================================

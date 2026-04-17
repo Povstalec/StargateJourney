@@ -68,7 +68,7 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 		if(GsonHelper.isStringValue(obj, "from_galaxy"))
 			initialGalaxy = Optional.ofNullable(ResourceLocation.tryParse(GsonHelper.getAsString(obj, "from_galaxy")));
 		if(GsonHelper.isStringValue(obj, "to_galaxy"))
-			destinationGalaxy = Optional.ofNullable(ResourceLocation.tryParse(GsonHelper.getAsString(obj, "to_address_region")));
+			destinationGalaxy = Optional.ofNullable(ResourceLocation.tryParse(GsonHelper.getAsString(obj, "to_galaxy")));
 		
 		if(GsonHelper.isNumberValue(obj, "distance"))
 			distanceTraveled = Optional.of(GsonHelper.getAsLong(obj, "distance"));
@@ -170,15 +170,15 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 			if(destinationDimension != null)
 				jsonObject.add("to_dimension", new JsonPrimitive(destinationDimension.toString()));
 			
-			if(initialDimension != null)
-				jsonObject.add("from_address_region", new JsonPrimitive(initialDimension.toString()));
-			if(destinationDimension != null)
-				jsonObject.add("to_address_region", new JsonPrimitive(destinationDimension.toString()));
+			if(initialAddressRegion != null)
+				jsonObject.add("from_address_region", new JsonPrimitive(initialAddressRegion.toString()));
+			if(destinationAddressRegion != null)
+				jsonObject.add("to_address_region", new JsonPrimitive(destinationAddressRegion.toString()));
 			
-			if(initialDimension != null)
-				jsonObject.add("from_galaxy", new JsonPrimitive(initialDimension.toString()));
-			if(destinationDimension != null)
-				jsonObject.add("to_galaxy", new JsonPrimitive(destinationDimension.toString()));
+			if(initialGalaxy != null)
+				jsonObject.add("from_galaxy", new JsonPrimitive(initialGalaxy.toString()));
+			if(destinationGalaxy != null)
+				jsonObject.add("to_galaxy", new JsonPrimitive(destinationGalaxy.toString()));
 			
 			if(distanceTraveled != null)
 				jsonObject.add("distance", new JsonPrimitive(distanceTraveled));

@@ -18,7 +18,6 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class Universe extends SavedData
 {
@@ -392,34 +391,6 @@ public class Universe extends SavedData
 		return address;
 	}
 	
-	public void addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
-	{
-		AddressRegion addressRegion = getAddressRegionFromDimension(dimension);
-		
-		if(addressRegion != null)
-		{
-			addressRegion.addStargate(server, stargate);
-			this.setDirty();
-		}
-	}
-	
-	public void removeStargateFromAddressRegion(AddressRegion addressRegion, Stargate stargate)
-	{
-		if(addressRegion != null)
-		{
-			addressRegion.removeStargate(stargate);
-			this.setDirty();
-		}
-	}
-	
-	public void removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
-	{
-		AddressRegion addressRegion = getAddressRegionFromDimension(dimension);
-		
-		if(addressRegion != null)
-			removeStargateFromAddressRegion(addressRegion, stargate);
-	}
-	
 	//============================================================================================
 	//********************************************Print*******************************************
 	//============================================================================================
@@ -431,8 +402,6 @@ public class Universe extends SavedData
 		{
 			AddressRegion addressRegion = addressRegionEntry.getValue();
 			System.out.println("- [Generated: " + addressRegion.isGenerated + "] " + addressRegionEntry.getKey().toString() + " " + addressRegion.getName());
-			
-			addressRegion.getStargates().forEach(stargate -> System.out.println("--- " + stargate.toString()));
 		}
 	}
 	
@@ -590,30 +559,6 @@ public class Universe extends SavedData
 			return spaceLocation.getAddressRegion().getSymbols();
 		
 		return Symbols.defaultSymbols();
-	}
-	
-	public HashMap<ResourceKey<AddressRegion>, Address.Immutable> getPrimaryStargateAddresses()
-	{
-		HashMap<ResourceKey<AddressRegion>, Address.Immutable> primaryStargates = new HashMap<>();
-		for(HashMap.Entry<Address, AddressRegion> entry : this.addressRegions.entrySet())
-		{
-			Address.Immutable address = entry.getValue().primaryAddress();
-			if(address != null)
-				primaryStargates.put(entry.getValue().getResourceKey(), address);
-		}
-		
-		return primaryStargates;
-	}
-	
-	public void setPrimaryStargateAddresses(HashMap<ResourceKey<AddressRegion>, Address.Immutable> primaryStargates)
-	{
-		for(HashMap.Entry<ResourceKey<AddressRegion>, Address.Immutable> entry : primaryStargates.entrySet())
-		{
-			AddressRegion addressRegion = this.addressRegionKeys.get(entry.getKey());
-			
-			if(addressRegion != null)
-				addressRegion.setPrimaryStargate(entry.getValue());
-		}
 	}
 	
 	//============================================================================================

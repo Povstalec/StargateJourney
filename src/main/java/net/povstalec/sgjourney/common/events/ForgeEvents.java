@@ -19,6 +19,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -443,123 +444,49 @@ public class ForgeEvents
 		event.register(Stargate.class);
 	}
 	
+	private static void addCartographerTrades(VillagerTradesEvent event)
+	{
+		Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+		
+		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
+		level2Trades.add(new TreasureMapForEmeraldsTrade(13, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecoration.Type.RED_X, 12, 80));
+	}
+	
+	private static void addArcheologistTrades(VillagerTradesEvent event)
+	{
+		Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
+		
+		List<VillagerTrades.ItemListing> level1Trades = trades.get(1);
+		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.PAPER, 20), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(BlockInit.GOLDEN_IDOL.get(), 1), new ItemStack(Items.EMERALD, 5), 4, 12, 0.09F));
+		level1Trades.add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecoration.Type.RED_X, 12, 80));
+		
+		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(Items.COMPASS, 1), 4, 12, 0.09F));
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(Items.WRITABLE_BOOK, 1), 4, 12, 0.09F));
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		
+		List<VillagerTrades.ItemListing> level3Trades = trades.get(3);
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 3), new ItemStack(BlockInit.FIRE_PIT.get(), 4), 1, 12, 0.09F));
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(BlockInit.SANDSTONE_HIEROGLYPHS.get(), 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_WITH_LAPIS.get(), 3), 4, 12, 0.09F));
+		
+		List<VillagerTrades.ItemListing> level4Trades = trades.get(4);
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.STONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.RED_SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.BONE, 4), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		
+		List<VillagerTrades.ItemListing> level5Trades = trades.get(5);
+		level5Trades.add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80));
+	}
+	
 	@SubscribeEvent
 	public static void addCustomTrades(VillagerTradesEvent event)
 	{
 		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 1;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.PAPER, 20), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 1;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(BlockInit.GOLDEN_IDOL.get(), 1), new ItemStack(Items.EMERALD, 5), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 1;
-
-		    trades.get(villagerLevel).add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecoration.Type.RED_X, 1, 80));
-		}
-		
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 2;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 4), new ItemStack(Items.COMPASS, 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 2;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 4), new ItemStack(Items.WRITABLE_BOOK, 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 2;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		}
-		
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 3;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 3), new ItemStack(BlockInit.FIRE_PIT.get(), 4), 1, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 3;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(BlockInit.SANDSTONE_HIEROGLYPHS.get(), 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 3;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_WITH_LAPIS.get(), 3), 4, 12, 0.09F));
-		}
-		
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 4;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.STONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		            
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 4;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-			int villagerLevel = 4;
-			
-			trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-					new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.RED_SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		}
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 4;
-
-		    trades.get(villagerLevel).add((trader, rand) -> new MerchantOffer(
-		            new ItemStack(Items.BONE, 4), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		}
-		
-		if(event.getType() == VillagerInit.ARCHEOLOGIST.get())
-		{
-			Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
-		    int villagerLevel = 5;
-
-		    trades.get(villagerLevel).add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80));
-		}
+			addArcheologistTrades(event);
+		else if(event.getType() == VillagerProfession.CARTOGRAPHER)
+			addCartographerTrades(event);
 	}
 }

@@ -2,10 +2,14 @@ package net.povstalec.sgjourney.common.data;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
@@ -43,8 +47,8 @@ public final class StargateNetwork extends SavedData
 	private static final int updateVersion = 18;
 	
 	private MinecraftServer server;
-	
-	private final HashMap<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
+	private final Map<ResourceKey<AddressRegion>, RegionStargates> regionStargates = new HashMap<>();
+	private final Map<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
 	private int version = 0;
 	
 	//============================================================================================
@@ -95,14 +99,10 @@ public final class StargateNetwork extends SavedData
 		
 		StargateJourney.LOGGER.debug("Connections terminated");
 		
-		StargateNetworkSettings.get(server).updateSettings();
-		
-		HashMap<ResourceKey<AddressRegion>, Address.Immutable> primaryStargates = Universe.get(server).getPrimaryStargateAddresses();
 		Universe.get(server).eraseUniverseInfo();
 		StargateJourney.LOGGER.debug("Universe erased");
 		
 		Universe.get(server).generateUniverseInfo();
-		Universe.get(server).setPrimaryStargateAddresses(primaryStargates);
 		StargateJourney.LOGGER.debug("Universe regenerated");
 		
 		eraseNetwork();
@@ -160,52 +160,118 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
-	public final void addStargate(Stargate stargate)
+	public boolean addStargateEntity(AbstractStargateEntity<?> stargateEntity)
+	{
+		return addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
+	}
+	
+	public boolean addStargate(Stargate stargate)
 	{
 		if(stargate == null)
-			return;
+			return false;
 		
-		Universe.get(server).addStargateToDimension(stargate.getDimension(), stargate);
-		this.setDirty();
+		return addStargateToDimension(stargate.getDimension(), stargate);
 	}
 	
-	public final void addStargate(AbstractStargateEntity<?> stargateEntity)
+	public boolean addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return false;
+		
+		return addStargateToAddressRegion(addressRegion.getResourceKey(), stargate);
 	}
 	
-	public final void removeStargate(Stargate stargate)
+	public boolean addStargateToAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
+	{
+		if(addressRegionKey == null)
+			return false;
+		
+		RegionStargates region = regionStargates.get(addressRegionKey);
+		if(region == null)
+		{
+			region = new RegionStargates(addressRegionKey);
+			region.addStargate(server, stargate);
+			regionStargates.put(addressRegionKey, region);
+			return true;
+		}
+		else
+		{
+			boolean result = region.addStargate(server, stargate);
+			if(result)
+				this.setDirty();
+			
+			return result;
+		}
+	}
+	
+	public boolean removeStargate(Address.Immutable address)
+	{
+		if(address == null)
+			return false;
+		
+		Stargate stargate = getStargate(address);
+		return removeStargate(stargate);
+	}
+	
+	public boolean removeStargate(Stargate stargate)
 	{
 		if(stargate != null)
 		{
-			Universe.get(server).removeStargateFromAddressRegion(stargate.getAddressRegion(server), stargate);
-			BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
+			boolean result = false;
 			
-			StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
-			setDirty();
+			AddressRegion addressRegion = stargate.getAddressRegion(server);
+			if(addressRegion != null)
+				result = removeStargateFromAddressRegion(addressRegion.getResourceKey(), stargate);
+			if(result)
+			{
+				setDirty();
+				StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
+			}
+			result |= BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
+			return result;
 		}
 		else
+		{
 			StargateJourney.LOGGER.error("Could not remove Stargate because it's null");
+			return false;
+		}
 	}
 	
-	public final void removeStargate(Address.Immutable address)
+	public boolean removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		if(address == null)
-			return;
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return false;
 		
-		Stargate stargate = getStargate(address);
-		removeStargate(stargate);
+		return removeStargateFromAddressRegion(addressRegion.getResourceKey(), stargate);
 	}
 	
-	public final void updateStargateEntity(AbstractStargateEntity<?> stargateEntity)
+	public boolean removeStargateFromAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
+	{
+		if(addressRegionKey == null)
+			return false;
+		
+		RegionStargates region = regionStargates.get(addressRegionKey);
+		if(region == null)
+			return false;
+		
+		boolean result = region.removeStargate(stargate);
+		if(result)
+			this.setDirty();
+		
+		return result;
+	}
+	
+	public void updateStargateEntity(AbstractStargateEntity<?> stargateEntity)
 	{
 		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress());
 		
 		if(stargate != null)
 		{
-			Universe.get(server).removeStargateFromDimension(stargateEntity.getLevel().dimension(), stargate);
+			removeStargateFromDimension(stargateEntity.getLevel().dimension(), stargate);
 			stargate.update(server);
-			Universe.get(server).addStargateToDimension(stargateEntity.getLevel().dimension(), stargate);
+			addStargateToDimension(stargateEntity.getLevel().dimension(), stargate);
 		}
 	}
 	
@@ -215,7 +281,7 @@ public final class StargateNetwork extends SavedData
 	}
 	
 	@Nullable
-	public final Stargate getStargate(Address address)
+	public Stargate getStargate(Address address)
 	{
 		return BlockEntityList.get(server).getStargate(address);
 	}
@@ -224,6 +290,146 @@ public final class StargateNetwork extends SavedData
 	public Stargate getRandomStargate(RandomSource randomSource)
 	{
 		return BlockEntityList.get(server).getRandomStargate(randomSource);
+	}
+	
+	//============================================================================================
+	//**************************************Region Stargates**************************************
+	//============================================================================================
+	
+	private void regionRun(ResourceKey<AddressRegion> addressRegionKey, Consumer<RegionStargates> consumer)
+	{
+		RegionStargates regionStargates = this.regionStargates.get(addressRegionKey);
+		if(regionStargates != null)
+			consumer.accept(regionStargates);
+	}
+	
+	private <T> T regionReturn(ResourceKey<AddressRegion> addressRegionKey, Function<RegionStargates, T> function, T defaultValue)
+	{
+		RegionStargates regionStargates = this.regionStargates.get(addressRegionKey);
+		if(regionStargates == null)
+			return defaultValue;
+		
+		return function.apply(regionStargates);
+	}
+	
+	public boolean hasStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> !regionStargates.stargates.isEmpty(), false);
+	}
+	
+	public List<Stargate> getStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> regionStargates.stargates, List.of());
+	}
+	
+	public List<Stargate> getStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey, Predicate<Stargate> predicate)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> regionStargates.stargates.stream().filter(predicate).toList(), List.of());
+	}
+	
+	public List<Stargate> getShuffledStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey, RandomSource randomSource)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> Util.toShuffledList(regionStargates.stargates.stream(), randomSource), List.of());
+	}
+	
+	public void sortStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		regionRun(addressRegionKey, regionStargates -> regionStargates.stargates.sort(null));
+	}
+	
+	@Nullable
+	public Stargate findStargateInRegion(ResourceKey<AddressRegion> addressRegionKey, Address address)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> regionStargates.findStargate(address), null);
+	}
+	
+	@Nullable
+	public Stargate getRandomStargateInRegion(ResourceKey<AddressRegion> addressRegionKey, long seed)
+	{
+		return regionReturn(addressRegionKey, regionStargates -> regionStargates.getRandomStargate(seed), null);
+	}
+	
+	//============================================================================================
+	//**************************************Primary Stargate**************************************
+	//============================================================================================
+	
+	public boolean setPrimaryAddressForDimension(ResourceKey<Level> dimension, @Nullable Address.Immutable primaryAddress)
+	{
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return false;
+		
+		return setPrimaryAddressForAddressRegion(addressRegion.getResourceKey(), primaryAddress);
+	}
+	
+	/**
+	 * Sets the Stargate with the specified Address as the Primary Stargate of the specified Address Region
+	 * @param addressRegionKey Key of the specified Address Region
+	 * @param primaryAddress Address of the Primary Stargate
+	 * @return True if the Primary Stargate was set successfully, otherwise false
+	 */
+	public boolean setPrimaryAddressForAddressRegion(ResourceKey<AddressRegion> addressRegionKey, @Nullable Address.Immutable primaryAddress)
+	{
+		if(primaryAddress != null && primaryAddress.getType() != Address.Type.ADDRESS_9_CHEVRON)
+			return false;
+		
+		RegionStargates regionStargates = this.regionStargates.get(addressRegionKey);
+		if(regionStargates == null)
+			return false;
+		
+		StargateNetworkSettings settings = StargateNetworkSettings.get(server);
+		
+		if(primaryAddress == null)
+		{
+			regionStargates.primaryStargate = null;
+			settings.setPrimaryAddress(addressRegionKey, null);
+			
+		}
+		else if(primaryAddress.equals(settings.getPrimaryAddress(addressRegionKey)))
+			return false;
+		else
+		{
+			regionStargates.primaryStargate = regionStargates.findStargate(primaryAddress);
+			settings.setPrimaryAddress(addressRegionKey, primaryAddress);
+		}
+		
+		return true;
+	}
+	
+	@Nullable
+	public Address.Immutable getPrimaryAddressFromDimension(ResourceKey<Level> dimension)
+	{
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return null;
+		
+		return getPrimaryAddressFromAddressRegion(addressRegion.getResourceKey());
+	}
+	
+	@Nullable
+	public Address.Immutable getPrimaryAddressFromAddressRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		return StargateNetworkSettings.get(server).getPrimaryAddress(addressRegionKey);
+	}
+	
+	@Nullable
+	public Stargate getPrimaryStargateFromDimension(ResourceKey<Level> dimension)
+	{
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return null;
+		
+		return getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
+	}
+	
+	@Nullable
+	public Stargate getPrimaryStargateFromAddressRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		RegionStargates regionStargates = this.regionStargates.get(addressRegionKey);
+		if(regionStargates != null)
+			return regionStargates.primaryStargate;
+		
+		return null;
 	}
 	
 	//============================================================================================
@@ -351,13 +557,17 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
+	public final void printRegionStargates()
+	{
+		System.out.println("[Stargates in Address Regions]");
+		this.regionStargates.forEach((key, regionStargates) ->
+				regionStargates.stargates.forEach(stargate -> System.out.println("--- " + stargate.toString())));
+	}
+	
 	public final void printConnections()
 	{
 		System.out.println("[Connections]");
-		this.connections.entrySet().stream().forEach(connectionEntry ->
-		{
-			connectionEntry.getValue().printConnection();
-		});
+		this.connections.forEach((uuid, connection) -> connection.printConnection());
 	}
 	
 	public final boolean sendStargateMessage(AbstractStargateEntity<?> sendingStargate, UUID uuid, String messsage)
@@ -574,4 +784,91 @@ public final class StargateNetwork extends SavedData
         
         return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
     }
+	
+	
+	
+	private static class RegionStargates
+	{
+		private final ResourceKey<AddressRegion> addressRegionKey;
+		
+		private final List<Stargate> stargates = new ArrayList<>();
+		@Nullable
+		private Stargate primaryStargate = null;
+		
+		private RegionStargates(ResourceKey<AddressRegion> addressRegionKey)
+		{
+			this.addressRegionKey = addressRegionKey;
+		}
+		
+		/** Adds Stargate to an ordered list based on the following preferences:
+		 * Stargate Preferences:
+		 * 1. Has DHD
+		 * 2. Stargate Generation
+		 * 3. The number of times the Stargate was used
+		 */
+		private boolean addStargate(MinecraftServer server, Stargate addedStargate)
+		{
+			StargateNetworkSettings settings = StargateNetworkSettings.get(server);
+			Address.Immutable primaryAddress = settings.getPrimaryAddress(addressRegionKey);
+			
+			if(primaryAddress == null)
+			{
+				if(addedStargate.isPrimary(server))
+				{
+					settings.setPrimaryAddress(addressRegionKey,  addedStargate.get9ChevronAddress());
+					this.primaryStargate = addedStargate;
+				}
+			}
+			else if(this.primaryStargate == null && primaryAddress.equals(addedStargate.get9ChevronAddress()))
+				this.primaryStargate = addedStargate;
+			
+			int index = Collections.binarySearch(this.stargates, addedStargate);
+			if(index < 0) // Stargate was not found
+			{
+				this.stargates.add(-index - 1, addedStargate);
+				return true;
+			}
+			
+			return false;
+		}
+		
+		private boolean removeStargate(Stargate stargate)
+		{
+			if(stargate == this.primaryStargate)
+				this.primaryStargate = null;
+			
+			return this.stargates.remove(stargate);
+		}
+		
+		/**
+		 * @param address Address to use for the search
+		 * @return Returns the Stargate based on the specified Address, or null if there is no Stargate with this Address
+		 */
+		@Nullable
+		private Stargate findStargate(Address address)
+		{
+			for(Stargate stargate : this.stargates)
+			{
+				if(address.equals(stargate.get9ChevronAddress()))
+					return stargate;
+			}
+			
+			return null;
+		}
+		
+		@Nullable
+		private Stargate getRandomStargate(long seed)
+		{
+			int size = this.stargates.size();
+			
+			if(size < 1)
+				return null;
+			
+			Random random = new Random(seed);
+			
+			int randomValue = random.nextInt(0, size);
+			
+			return this.stargates.get(randomValue);
+		}
+	}
 }

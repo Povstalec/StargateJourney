@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity
 
 public class RingPanelButton extends SGJourneyButton
 {
-	private RingPanelEntity.Button button;
+	protected final RingPanelEntity.Button button;
 	
 	public RingPanelButton(int x, int y, OnPress press, RingPanelEntity.Button button)
 	{
@@ -19,6 +19,7 @@ public class RingPanelButton extends SGJourneyButton
 		
 		this.button = button;
 		this.button.setUpdate(this::onButtonUpdate);
+		onButtonUpdate();
 	}
 	
 	

@@ -29,10 +29,10 @@ public abstract class MemoryEntry<T>
 		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.BLUE), Coordinates.class, Coordinates::new);
 		
 		private final Component component;
-		private final Class clazz;
+		private final Class<?> clazz;
 		private final Function<CompoundTag, MemoryEntry<?>> function;
 		
-		Type(Component component, Class clazz, Function<CompoundTag, MemoryEntry<?>> function)
+		Type(Component component, Class<?> clazz, Function<CompoundTag, MemoryEntry<?>> function)
 		{
 			this.component = component;
 			this.clazz = clazz;
@@ -52,7 +52,7 @@ public abstract class MemoryEntry<T>
 			return Type.values()[ordinal];
 		}
 		
-		public boolean isSameClass(Class clazz)
+		public boolean isSameClass(Class<?> clazz)
 		{
 			return this.clazz == clazz;
 		}

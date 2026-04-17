@@ -40,7 +40,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	public static final int TOTAL_SYMBOLS = 48;
 	
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
+	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus_back_chevron");
 	
 	protected int currentSymbol = 0;
 	public Address.Mutable addressBuffer = new Address.Mutable();
@@ -52,7 +52,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateInit.PEGASUS.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state, TOTAL_SYMBOLS, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateInit.PEGASUS.get(), new ResourceLocation(StargateJourney.MODID, "pegasus"), pos, state, TOTAL_SYMBOLS, 3);
 		this.setOpenSoundLead(13);
 		
 		this.dhdInfo = new DHDInfo(this)

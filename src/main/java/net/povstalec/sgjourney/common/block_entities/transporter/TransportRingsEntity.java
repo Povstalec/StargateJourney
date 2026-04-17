@@ -46,7 +46,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 	
 	public TransportRingsEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransporterInit.GOAULD_TRANSPORT_RINGS.get(), pos, state);
+		super(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransporterInit.GOAULD_TRANSPORT_RINGS.get(), pos, state, 1);
 	}
 	
 	@Override

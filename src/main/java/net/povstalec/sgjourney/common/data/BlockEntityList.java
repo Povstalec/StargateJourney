@@ -89,16 +89,17 @@ public class BlockEntityList extends SavedData
 		return stargate;
 	}
 	
-	public void removeStargate(Address address)
+	public boolean removeStargate(Address address)
 	{
 		if(!this.stargateMap.containsKey(address))
 		{
 			StargateJourney.LOGGER.error("{} not found in BlockEntityList", address);
-			return;
+			return false;
 		}
 		this.stargateMap.remove(address);
 		StargateJourney.LOGGER.debug("Removed Stargate {} from BlockEntityList", address);
 		setDirty();
+		return true;
 	}
 	
 	public void printStargates()

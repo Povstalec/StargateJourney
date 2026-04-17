@@ -107,6 +107,23 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return 0;
 	}
 	
+	public static int countMemoryEntriesOfType(ItemStack stack, MemoryEntry.Type entryType)
+	{
+		if(entryType == null)
+			return getMemoryListSize(stack);
+		
+		ListTag list = getMemoryList(stack);
+		
+		int count = 0;
+		for(int i = 0; i < list.size(); i++)
+		{
+			if(loadMemoryEntry(list, entryType, i) != null)
+				count++;
+		}
+		
+		return count;
+	}
+	
 	public static ListTag getMemoryList(ItemStack stack)
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)

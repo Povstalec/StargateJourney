@@ -135,7 +135,7 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	@Override
 	public void update(MinecraftServer server)
 	{
-		stargateRun(server, stargate->
+		stargateRun(server, stargate ->
 		{
 			this.hasDHD = stargate.dhdInfo().hasDHD();
 			this.timesOpened = stargate.getTimesOpened();

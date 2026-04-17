@@ -5,7 +5,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.entity.*;
-import net.povstalec.sgjourney.client.models.block_entity.TransportRingsModel;
+import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
 
 public class Layers
 {
@@ -23,7 +23,7 @@ public class Layers
 	public static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event)
 	{
 		// Transport Rings
-		event.registerLayerDefinition(TRANSPORT_RING_LAYER, () -> TransportRingsModel.createRingLayer());
+		event.registerLayerDefinition(TRANSPORT_RING_LAYER, () -> TransportRingModel.createRingLayer());
 		
 		// Armor
 		event.registerLayerDefinition(FALCON_HEAD, FalconArmorModel::createBodyLayer);

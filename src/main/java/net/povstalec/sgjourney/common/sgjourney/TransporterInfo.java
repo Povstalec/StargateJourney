@@ -43,10 +43,11 @@ public class TransporterInfo
 		SELF_CONNECT(-6, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_connect"),
 		ALREADY_CONNECTED(-7, TransporterInfo.FeedbackType.MAJOR_ERROR, "already_connected"),
 		TARGET_RESTRICTED(-8, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_restricted"),
-		TARGET_NOT_WHITELISTED(-9, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_not_whitelisted"), //TODO
+		TARGET_NOT_WHITELISTED(-9, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
 		NOT_WHITELISTED_BY_TARGET(-10, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_whitelisted_by_target"),
-		TARGET_BLACKLISTED(-11, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_blacklisted"), //TODO
+		TARGET_BLACKLISTED(-11, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_blacklisted"),
 		BLACKLISTED_BY_TARGET(-12, TransporterInfo.FeedbackType.MAJOR_ERROR, "blacklisted_by_target"),
+		//TODO no transporter at coords
 		
 		// End Connection
 		CONNECTION_ENDED_BY_DISCONNECT(7, TransporterInfo.FeedbackType.INFO, "connection_ended.disconnect"),
