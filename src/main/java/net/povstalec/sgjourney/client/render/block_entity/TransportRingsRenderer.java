@@ -9,10 +9,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
-public class TransportRingsRenderer implements BlockEntityRenderer<TransportRingsEntity>
+public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTransportRingsEntity>
 {
 	protected final TransportRingModel[] transportRings = new TransportRingModel[5];
 	
@@ -26,7 +26,7 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		}
 	}
 	
-	private float getProgress(TransportRingsEntity rings, float partialTick)
+	private float getProgress(AbstractTransportRingsEntity rings, float partialTick)
 	{
 		float progress = rings.getProgress(partialTick);
 		
@@ -37,21 +37,21 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 		return progress;
 	}
 	
-	private float ringHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
+	private float ringHeight(AbstractTransportRingsEntity rings, int ringNumber, float partialTick)
 	{
 		float height = getProgress(rings, partialTick) - 6 * ringNumber;
 		
 		return 4 * (rings.emptySpace >= 0 ? height : -height);
 	}
 	
-	private float stopHeight(TransportRingsEntity rings, int ringNumber)
+	private float stopHeight(AbstractTransportRingsEntity rings, int ringNumber)
 	{
 		float height = rings.getTransportHeight() - 2 * ringNumber;
 		
 		return 4 * (rings.emptySpace >= 0 ? height : -height);
 	}
 	
-	private float getHeight(TransportRingsEntity rings, int ringNumber, float partialTick)
+	private float getHeight(AbstractTransportRingsEntity rings, int ringNumber, float partialTick)
 	{
 		float progress = getProgress(rings, partialTick);
 		int startTicks = 6 * ringNumber;
@@ -69,8 +69,8 @@ public class TransportRingsRenderer implements BlockEntityRenderer<TransportRing
 	}
 	
 	@Override
-	public void render(TransportRingsEntity transportRings, float partialTick, PoseStack stack,
-			MultiBufferSource source, int combinedLight, int combinedOverlay)
+	public void render(AbstractTransportRingsEntity transportRings, float partialTick, PoseStack stack,
+					   MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		stack.pushPose();
 		stack.translate(0.5, 0.5, 0.5);

@@ -80,6 +80,11 @@ public class ItemInit
 	public static final RegistryObject<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter", 
 			() -> new Item(new Item.Properties().fireResistant()));
 	
+	public static final RegistryObject<Item> ANCIENT_TRANSPORT_RING = ITEMS.register("ancient_transport_ring",
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+	public static final RegistryObject<Item> GOAULD_TRANSPORT_RING = ITEMS.register("goauld_transport_ring",
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+	
 	public static final RegistryObject<Item> UNITY_SHARD = ITEMS.register("unity_shard",
 			() -> new Item(new Item.Properties()));
 

@@ -29,8 +29,9 @@ import net.povstalec.sgjourney.common.blocks.tech.*;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AdvancedCrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
-import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -112,8 +113,11 @@ public class BlockInit
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
 					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
 	// Transporters
-	public static final RegistryObject<TransportRingsBlock> GOAULD_TRANSPORT_RINGS = registerTransporterBlock("goauld_transport_rings",
-			() -> new TransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
+	public static final RegistryObject<AncientTransportRingsBlock> ANCIENT_TRANSPORT_RINGS = registerTransporterBlock("ancient_transport_rings",
+			() -> new AncientTransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
+					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
+	public static final RegistryObject<GoauldTransportRingsBlock> GOAULD_TRANSPORT_RINGS = registerTransporterBlock("goauld_transport_rings",
+			() -> new GoauldTransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	// Transporter Controllers
 	public static final RegistryObject<RingPanelBlock> GOAULD_RING_PANEL = registerBlock("goauld_ring_panel",

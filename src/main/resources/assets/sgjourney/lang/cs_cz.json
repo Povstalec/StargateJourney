@@ -223,8 +223,9 @@
 	
 	"block.sgjourney.protected_permissions": "Chráněno: Nemáš dostatečné pravomoce",
 	
-	"block.sgjourney.goauld_transport_rings": "Goa'uldské transportní kruhy",
-	"block.sgjourney.goauld_ring_panel": "Goa'uldské ovládání kruhů",
+	"block.sgjourney.ancient_transport_rings": "Antické transportní kruhy",
+	"block.sgjourney.goauld_transport_rings": "Goa'uldí transportní kruhy",
+	"block.sgjourney.goauld_ring_panel": "Goa'uldí ovládání kruhů",
 	
 	"block.sgjourney.naquadah_reactor": "Naquadahový Reaktor",
 	"block.sgjourney.naquadah_reactor.description.mode": "Shift + pravé kliknutí na blok pro aktivaci/deaktivaci",
@@ -307,6 +308,9 @@
 	"item.sgjourney.trinium_rod": "Triniová tyč",
 	"item.sgjourney.reaction_chamber": "Reakční komora",
 	"item.sgjourney.plasma_converter": "Plasmový převaděč",
+	
+	"item.sgjourney.ancient_transport_ring": "Antický transportní kruh",
+	"item.sgjourney.goauld_transport_ring": "Goa'uldí transportní kruh",
 	
 	"item.sgjourney.unity_shard": "Střep souladu",
 
@@ -405,6 +409,7 @@
 	"item.sgjourney.goauld_fossil": "Goa'uldí fosílie",
 	
 	"item.sgjourney.goauld_burger": "Goa'uldí burger",
+	"item.sgjourney.jaffa_burger": "Jaffa Burger",
 	"item.sgjourney.jaffa_cake": "Čokopiškot",
 	
 	"entity.sgjourney.goauld": "Goa'uld",

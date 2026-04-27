@@ -12,9 +12,10 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.povstalec.sgjourney.common.blocks.transporter.TransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
@@ -23,12 +24,14 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.TransporterInit;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
-import net.povstalec.sgjourney.common.sgjourney.transporter.TransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class TransportRingsEntity extends AbstractTransporterEntity<TransportRings>
+public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR>
 {
 	public static final String EMPTY_SPACE = "empty_space";
 	public static final String TRANSPORT_HEIGHT = "transport_height";
@@ -44,9 +47,9 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 	public int progress = -1;
 	public int progressOld = -1;
 	
-	public TransportRingsEntity(BlockPos pos, BlockState state) 
+	public AbstractTransportRingsEntity(BlockEntityType<?> blockEntityType, TransporterType<TR> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
-		super(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransporterInit.GOAULD_TRANSPORT_RINGS.get(), pos, state, 1);
+		super(blockEntityType, transporterType, pos, state, defaultNetwork);
 	}
 	
 	@Override
@@ -163,7 +166,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 		this.progressOld = connectionTime;
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, TransportRingsEntity rings)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity rings)
 	{
 		if(rings.isConnected())
 			rings.doClientProgress();
@@ -213,7 +216,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
 		if(state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
-			return this.level.getBlockState(pos).getValue(TransportRingsBlock.ACTIVATED);
+			return this.level.getBlockState(pos).getValue(AbstractTransportRingsBlock.ACTIVATED);
 		
 		return false;
 	}
@@ -231,7 +234,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 		BlockState state = this.level.getBlockState(pos);
 		
 		if(state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
-			level.setBlock(pos, state.setValue(TransportRingsBlock.ACTIVATED, connected), 2);
+			level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
 		
 		loadChunk(connected);
 	}
@@ -244,7 +247,7 @@ public class TransportRingsEntity extends AbstractTransporterEntity<TransportRin
 		if(!state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
 			return 0;
 		
-		if(state.getValue(TransportRingsBlock.FACING) == Direction.DOWN)
+		if(state.getValue(AbstractTransportRingsBlock.FACING) == Direction.DOWN)
 		{
 			for(int i = 4; i <= 16; i++)
 			{

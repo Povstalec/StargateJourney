@@ -19,8 +19,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
 
 public class BlockEntityInit
 {
@@ -46,8 +47,10 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<ClassicDHDEntity>> CLASSIC_DHD = BLOCK_ENTITIES.register("classic_dhd",
             () -> BlockEntityType.Builder.of(ClassicDHDEntity::new, BlockInit.CLASSIC_DHD.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<TransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("goauld_transport_rings",
-            () -> BlockEntityType.Builder.of(TransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AncientTransportRingsEntity>> ANCIENT_TRANSPORT_RINGS = BLOCK_ENTITIES.register("ancient_transport_rings",
+			() -> BlockEntityType.Builder.of(AncientTransportRingsEntity::new, BlockInit.ANCIENT_TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("goauld_transport_rings",
+            () -> BlockEntityType.Builder.of(GoauldTransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<RingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("goauld_ring_panel",
             () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));

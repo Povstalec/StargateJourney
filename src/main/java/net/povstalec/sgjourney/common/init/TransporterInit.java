@@ -18,8 +18,10 @@ public class TransporterInit
 	
 	
 	// Block Entity Transporters
-	public static final RegistryObject<TransporterType<TransportRings>> GOAULD_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("goauld_transport_rings", () ->
-			new TransporterType<>(TransportRings::new));
+	public static final RegistryObject<TransporterType<AncientBlockEntityTransportRings>> ANCIENT_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("ancient_transport_rings", () ->
+			new TransporterType<>(AncientBlockEntityTransportRings::new));
+	public static final RegistryObject<TransporterType<GoauldBlockEntityTransportRings>> GOAULD_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("goauld_transport_rings", () ->
+			new TransporterType<>(GoauldBlockEntityTransportRings::new));
 	
 	
 	

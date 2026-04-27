@@ -56,7 +56,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Item " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Item {} to {}", oldKey, newKey);
 				}
 			}
 		}
@@ -74,7 +74,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Block " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Block {} to {}", oldKey, newKey);
 				}
 			}
 		}
@@ -92,7 +92,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Block Entity Type " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Block Entity Type {} to {}", oldKey, newKey);
 				}
 			}
 		}

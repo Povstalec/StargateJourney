@@ -37,6 +37,7 @@ import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
@@ -66,41 +67,37 @@ public class CommandInit
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("address")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getAddress))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getAddress).requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("extragalacticAddress")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getExtragalacticAddress))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getExtragalacticAddress).requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("getAllStargates")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getStargates))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getStargates).requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("version")
-								.executes(CommandInit::getVersion)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(0)));
+								.executes(CommandInit::getVersion).requires(commandSourceStack -> commandSourceStack.hasPermission(0)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("forceStellarUpdate")
-								.executes(CommandInit::forceStellarUpdate)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+								.executes(CommandInit::forceStellarUpdate)
+								.requires(commandSourceStack -> commandSourceStack.hasPermission(CommonPermissionConfig.stellar_update_permissions.get())))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("settings")
 								.then(Commands.literal("get")
-										.executes(CommandInit::getSettings))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(0)));
+										.executes(CommandInit::getSettings)
+										.requires(commandSourceStack -> commandSourceStack.hasPermission(0))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -108,8 +105,8 @@ public class CommandInit
 								.then(Commands.literal("randomizeAddresses")
 										.then(Commands.literal("set")
 												.then(Commands.argument("randomizeAddresses", BoolArgumentType.bool())
-														.executes(CommandInit::randomizeAddresses))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::randomizeAddresses)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -117,8 +114,8 @@ public class CommandInit
 								.then(Commands.literal("generateRandomSolarSystems")
 										.then(Commands.literal("set")
 												.then(Commands.argument("generateRandomSolarSystems", BoolArgumentType.bool())
-														.executes(CommandInit::generateRandomSolarSystems))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::generateRandomSolarSystems)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -126,8 +123,8 @@ public class CommandInit
 								.then(Commands.literal("randomAddressFromSeed")
 										.then(Commands.literal("set")
 												.then(Commands.argument("randomAddressFromSeed", BoolArgumentType.bool())
-														.executes(CommandInit::randomAddressFromSeed))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::randomAddressFromSeed)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -135,8 +132,8 @@ public class CommandInit
 								.then(Commands.literal("primaryStargatePriority")
 										.then(Commands.literal("set")
 												.then(Commands.argument("prioritizePrimaryStargates", BoolArgumentType.bool())
-														.executes(CommandInit::prioritizePrimaryStargate))))))
-						.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::prioritizePrimaryStargate)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -145,8 +142,8 @@ public class CommandInit
 										.then(Commands.literal("set")
 												.then(Commands.argument("dimension", DimensionArgument.dimension())
 														.then(Commands.argument("address", new AddressArgumentType(Address.Type.ADDRESS_9_CHEVRON))
-																.executes(CommandInit::setPrimaryStargate)))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+																.executes(CommandInit::setPrimaryStargate)
+																.requires(commandSourceStack -> commandSourceStack.hasPermission(2)))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -154,8 +151,8 @@ public class CommandInit
 								.then(Commands.literal("primaryStargate")
 										.then(Commands.literal("unset")
 												.then(Commands.argument("dimension", DimensionArgument.dimension())
-														.executes(CommandInit::unsetPrimaryStargate))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::unsetPrimaryStargate)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
@@ -163,8 +160,8 @@ public class CommandInit
 								.then(Commands.literal("primaryStargate")
 										.then(Commands.literal("get")
 												.then(Commands.argument("dimension", DimensionArgument.dimension())
-														.executes(CommandInit::getPrimaryStargate))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::getPrimaryStargate)
+														.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))))));
 		
 		
 		
@@ -173,14 +170,14 @@ public class CommandInit
 				.then(Commands.literal(TRANSPORTER_NETWORK)
 						.then(Commands.literal("getAllTransporters")
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getTransporters))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getTransporters)
+										.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(TRANSPORTER_NETWORK)
 						.then(Commands.literal("reload")
-								.executes(CommandInit::reloadTransporterNetwork)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+								.executes(CommandInit::reloadTransporterNetwork)
+								.requires(commandSourceStack -> commandSourceStack.hasPermission(2)))));
 		
 		
 		
@@ -189,28 +186,28 @@ public class CommandInit
 				.then(Commands.literal(GENE)
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("ancient").executes(CommandInit::setAncientGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("ancient").executes(CommandInit::setAncientGene)
+												.requires(commandSourceStack -> commandSourceStack.hasPermission(2)))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(GENE)
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("inherited").executes(CommandInit::setInheritedGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("inherited").executes(CommandInit::setInheritedGene)
+												.requires(commandSourceStack -> commandSourceStack.hasPermission(2)))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(GENE)
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("artificial").executes(CommandInit::setArtificialGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("artificial").executes(CommandInit::setArtificialGene)
+												.requires(commandSourceStack -> commandSourceStack.hasPermission(2)))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(GENE)
 						.then(Commands.argument("target", EntityArgument.entity())
-								.then(Commands.literal("remove").executes(CommandInit::removeGene))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+								.then(Commands.literal("remove").executes(CommandInit::removeGene)
+										.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		
 		
@@ -219,15 +216,15 @@ public class CommandInit
 				.then(Commands.literal("protection")
 						.then(Commands.literal("set")
 								.then(Commands.argument("pos", BlockPosArgument.blockPos())
-										.executes(CommandInit::setProtected))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::setProtected)
+										.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("protection")
 						.then(Commands.literal("unset")
 								.then(Commands.argument("pos", BlockPosArgument.blockPos())
-										.executes(CommandInit::unsetProtected))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::unsetProtected)
+										.requires(commandSourceStack -> commandSourceStack.hasPermission(2))))));
 		
 		
 		
@@ -293,15 +290,8 @@ public class CommandInit
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getLevel();
-		AddressRegion addressRegion = Universe.get(level).getAddressRegionFromDimension(dimension);
 		
-		if(addressRegion == null)
-		{
-			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates.no_region").withStyle(ChatFormatting.DARK_RED));
-			return Command.SINGLE_SUCCESS;
-		}
-		
-		List<Stargate> stargates = StargateNetwork.get(level).getStargatesInRegion(addressRegion.getResourceKey(), stargate -> dimension.equals(stargate.getDimension()));
+		List<Stargate> stargates = StargateNetwork.get(level).getStargatesInDimension(dimension);
 		
 		if(!stargates.isEmpty())
 		{

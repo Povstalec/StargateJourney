@@ -254,7 +254,7 @@ public class Galaxy
 		}
 		
 		CompoundTag pointOfOriginTag = galaxyTag.getCompound(POINTS_OF_ORIGIN);
-		List<ResourceKey<PointOfOrigin>> pointsOfOrigin = new ArrayList<ResourceKey<PointOfOrigin>>();
+		List<ResourceKey<PointOfOrigin>> pointsOfOrigin = new ArrayList<>();
 		for(String pointOfOriginString : pointOfOriginTag.getAllKeys())
 		{
 			pointsOfOrigin.add(Conversion.stringToPointOfOrigin(pointOfOriginString));

@@ -28,11 +28,10 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.AddressRegion;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import org.jetbrains.annotations.NotNull;
 
 public final class StargateNetwork extends SavedData
 {
@@ -47,50 +46,46 @@ public final class StargateNetwork extends SavedData
 	private static final int updateVersion = 18;
 	
 	private MinecraftServer server;
+	private final Map<ResourceKey<Level>, List<Stargate>> dimensionStargates = new HashMap<>();
 	private final Map<ResourceKey<AddressRegion>, RegionStargates> regionStargates = new HashMap<>();
-	private final Map<UUID, StargateConnection> connections = new HashMap<UUID, StargateConnection>();
+	private final Map<UUID, StargateConnection> connections = new HashMap<>();
 	private int version = 0;
 	
 	//============================================================================================
 	//******************************************Versions******************************************
 	//============================================================================================
 	
-	public final int getVersion()
+	public int getVersion()
 	{
 		return this.version;
 	}
 	
-	private final void updateVersion()
+	private void updateVersion()
 	{
 		this.version = updateVersion;
 	}
 	
-	public final void updateNetwork()
+	public void updateNetwork()
 	{
 		if(getVersion() == updateVersion)
 		{
-			StargateJourney.LOGGER.debug("Stargate Network is up to date (Version: " + version + ")");
+			StargateJourney.LOGGER.debug("Stargate Network is up to date (Version: {})", version);
 			return;
 		}
 		
-		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: " + getVersion() + ") - updating to version " + updateVersion);
+		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: {}) - updating to version {}", getVersion(), updateVersion);
 		
 		stellarUpdate();
 	}
 	
-	public final void eraseNetwork()
+	public void eraseNetwork()
 	{
 		this.connections.clear();
 		
 		this.setDirty();
 	}
 	
-	public final boolean randomizeAddresses()
-	{
-		return StargateNetworkSettings.get(server).randomizeAddresses();
-	}
-	
-	public final void stellarUpdate()
+	public void stellarUpdate()
 	{
 		for(Entry<UUID, StargateConnection> connectionEntry : getConnections().entrySet())
 		{
@@ -114,12 +109,27 @@ public final class StargateNetwork extends SavedData
 		updateVersion();
 		StargateJourney.LOGGER.debug("Version updated");
 		
+		preloadStargates();
+		
 		this.setDirty();
 	}
 	
 	//============================================================================================
 	//*****************************************Stargates******************************************
 	//============================================================================================
+	
+	public void preloadStargates()
+	{
+		for(ResourceKey<Level> dimension : server.levelKeys())
+		{
+			SpaceLocation spaceLocation = SpaceLocation.fromDimension(server, dimension);
+			if(spaceLocation.shouldPreLoadStargate() && getStargatesInDimension(dimension).isEmpty())
+			{
+				StargateJourney.LOGGER.debug("Attempting to preload Stargates in {}", dimension.location());
+				findStargatesInLevel(server.getLevel(dimension));
+			}
+		}
+	}
 	
 	public void addStargates()
 	{
@@ -134,11 +144,8 @@ public final class StargateNetwork extends SavedData
 	{
 		HashMap<Address.Immutable, Stargate> stargates = BlockEntityList.get(server).getStargates();
 		
-		stargates.entrySet().forEach((stargateInfo) ->
+		stargates.forEach((address, stargate) ->
 		{
-			Address.Immutable address = stargateInfo.getKey();
-			Stargate stargate = stargateInfo.getValue();
-			
 			if(stargate != null)
 			{
 				if(stargate.checkValidity(server))
@@ -165,24 +172,51 @@ public final class StargateNetwork extends SavedData
 		return addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
 	}
 	
+	/**
+	 * Adds a single Stargate to the Stargate Network
+	 * @param stargate Stargate to be added
+	 * @return True if Stargate was added to some Dimension or Address Region, otherwise false
+	 */
 	public boolean addStargate(Stargate stargate)
 	{
 		if(stargate == null)
+		{
+			StargateJourney.LOGGER.error("Could not add Stargate to Stargate Network because it's null");
 			return false;
+		}
 		
-		return addStargateToDimension(stargate.getDimension(), stargate);
+		boolean added = addStargateToDimension(stargate.getDimension(), stargate) || addStargateToAddressRegion(stargate.getAddressRegionKey(server), stargate);
+		
+		if(added)
+			setDirty();
+		
+		return added;
 	}
 	
-	public boolean addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
+	private boolean addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
-		if(addressRegion == null)
-			return false;
+		List<Stargate> stargatesInDimension = dimensionStargates.get(dimension);
+		if(stargatesInDimension == null)
+		{
+			stargatesInDimension = new ArrayList<>();
+			stargatesInDimension.add(stargate);
+			dimensionStargates.put(dimension, stargatesInDimension);
+			return true;
+		}
+		else
+		{
+			int index = Collections.binarySearch(stargatesInDimension, stargate);
+			if(index < 0) // Stargate was not found
+			{
+				stargatesInDimension.add(-index - 1, stargate);
+				return true;
+			}
+		}
 		
-		return addStargateToAddressRegion(addressRegion.getResourceKey(), stargate);
+		return false;
 	}
 	
-	public boolean addStargateToAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
+	private boolean addStargateToAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
 	{
 		if(addressRegionKey == null)
 			return false;
@@ -196,13 +230,7 @@ public final class StargateNetwork extends SavedData
 			return true;
 		}
 		else
-		{
-			boolean result = region.addStargate(server, stargate);
-			if(result)
-				this.setDirty();
-			
-			return result;
-		}
+			return region.addStargate(server, stargate);
 	}
 	
 	public boolean removeStargate(Address.Immutable address)
@@ -210,35 +238,36 @@ public final class StargateNetwork extends SavedData
 		if(address == null)
 			return false;
 		
-		Stargate stargate = getStargate(address);
-		return removeStargate(stargate);
+		return removeStargate(getStargate(address));
 	}
 	
+	/**
+	 * Removes a single Stargate from the Stargate Network (and Block Entity List, if possible)
+	 * @param stargate
+	 * @return True if the Stargate was removed from some Dimension or Address Region (or the Block Entity List), otherwise false
+	 */
 	public boolean removeStargate(Stargate stargate)
 	{
-		if(stargate != null)
+		if(stargate == null)
 		{
-			boolean result = false;
-			
-			AddressRegion addressRegion = stargate.getAddressRegion(server);
-			if(addressRegion != null)
-				result = removeStargateFromAddressRegion(addressRegion.getResourceKey(), stargate);
-			if(result)
-			{
-				setDirty();
-				StargateJourney.LOGGER.debug("Removed " + stargate.get9ChevronAddress().toString() + " from Stargate Network");
-			}
-			result |= BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
-			return result;
-		}
-		else
-		{
-			StargateJourney.LOGGER.error("Could not remove Stargate because it's null");
+			StargateJourney.LOGGER.error("Could not remove Stargate from Stargate Network because it's null");
 			return false;
 		}
+		
+		boolean removed = removeStargateFromAddressRegion(stargate.getAddressRegionKey(server), stargate) || removeStargateFromDimension(stargate.getDimension(), stargate);
+		if(removed)
+		{
+			setDirty();
+			StargateJourney.LOGGER.debug("Removed {} from Stargate Network", stargate.get9ChevronAddress().toString());
+		}
+		
+		if(stargate instanceof BlockEntityStargate<?>) // Attempt to remove it from the Block Entity List
+			removed |= BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
+		
+		return removed;
 	}
 	
-	public boolean removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
+	private boolean removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
 		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
 		if(addressRegion == null)
@@ -247,7 +276,7 @@ public final class StargateNetwork extends SavedData
 		return removeStargateFromAddressRegion(addressRegion.getResourceKey(), stargate);
 	}
 	
-	public boolean removeStargateFromAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
+	private boolean removeStargateFromAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
 	{
 		if(addressRegionKey == null)
 			return false;
@@ -256,11 +285,7 @@ public final class StargateNetwork extends SavedData
 		if(region == null)
 			return false;
 		
-		boolean result = region.removeStargate(stargate);
-		if(result)
-			this.setDirty();
-		
-		return result;
+		return region.removeStargate(stargate);
 	}
 	
 	public void updateStargateEntity(AbstractStargateEntity<?> stargateEntity)
@@ -269,9 +294,8 @@ public final class StargateNetwork extends SavedData
 		
 		if(stargate != null)
 		{
-			removeStargateFromDimension(stargateEntity.getLevel().dimension(), stargate);
 			stargate.update(server);
-			addStargateToDimension(stargateEntity.getLevel().dimension(), stargate);
+			sortStargatesInRegion(stargate.getAddressRegionKey(server));
 		}
 	}
 	
@@ -290,6 +314,44 @@ public final class StargateNetwork extends SavedData
 	public Stargate getRandomStargate(RandomSource randomSource)
 	{
 		return BlockEntityList.get(server).getRandomStargate(randomSource);
+	}
+	
+	//============================================================================================
+	//************************************Dimension Stargates*************************************
+	//============================================================================================
+	
+	/**
+	 * @param dimension Dimension we want to get the Stargates from
+	 * @return List of Stargates in the specified Dimension, or an empty list, in case the Dimension is not found in the Stargate Network
+	 */
+	public List<Stargate> getStargatesInDimension(ResourceKey<Level> dimension)
+	{
+		List<Stargate> stargatesInDimension = this.dimensionStargates.get(dimension);
+		
+		if(stargatesInDimension == null)
+			return List.of();
+		
+		return stargatesInDimension;
+	}
+	
+	/**
+	 * @param dimension Dimension we want to get the Stargates from
+	 * @param predicate Predicate that limits which Stargates can appear in the list
+	 * @return List of Stargates in the specified Dimension, or an empty list, in case the Dimension is not found in the Stargate Network
+	 */
+	public List<Stargate> getStargatesInDimension(ResourceKey<Level> dimension, Predicate<Stargate> predicate)
+	{
+		List<Stargate> stargatesInDimension = this.dimensionStargates.get(dimension);
+		
+		if(stargatesInDimension == null)
+			return List.of();
+		
+		return stargatesInDimension.stream().filter(predicate).toList();
+	}
+	
+	public void sortStargatesInDimension(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		regionRun(addressRegionKey, regionStargates -> regionStargates.stargates.sort(null));
 	}
 	
 	//============================================================================================
@@ -334,6 +396,14 @@ public final class StargateNetwork extends SavedData
 	
 	public void sortStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey)
 	{
+		// Sort Stargates in individual Dimensions
+		Universe.get(server).getSpaceLocationsInAddressRegion(addressRegionKey).forEach(spaceLocation ->
+		{
+			if(this.dimensionStargates.containsKey(spaceLocation.getDimension()))
+				this.dimensionStargates.get(spaceLocation.getDimension()).sort(null);
+		});
+		
+		// Sort Stargates in the entire Address Region
 		regionRun(addressRegionKey, regionStargates -> regionStargates.stargates.sort(null));
 	}
 	
@@ -441,7 +511,13 @@ public final class StargateNetwork extends SavedData
 		return new HashMap<>(this.connections);
 	}
 	
-	public final void handleConnections()
+	@Nullable
+	public StargateConnection getConnection(UUID connectionID)
+	{
+		return this.connections.get(connectionID);
+	}
+	
+	public void handleConnections()
 	{
 		Map<UUID, StargateConnection> connections = new HashMap<>(this.connections);
 		
@@ -449,21 +525,7 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final int getOpenTime(UUID uuid)
-	{
-		if(this.connections.containsKey(uuid))
-			return connections.get(uuid).getOpenTime();
-		return 0;
-	}
-	
-	public final int getTimeSinceLastTraveler(UUID uuid)
-	{
-		if(this.connections.containsKey(uuid))
-			return connections.get(uuid).getTimeSinceLastTraveler();
-		return 0;
-	}
-	
-	public final StargateInfo.Feedback createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.Feedback createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
@@ -519,7 +581,7 @@ public final class StargateNetwork extends SavedData
 		return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 	}
 	
-	public final boolean addConnection(StargateConnection connection)
+	public boolean addConnection(StargateConnection connection)
 	{
 		if(!hasConnection(connection.getID()))
 		{
@@ -532,12 +594,12 @@ public final class StargateNetwork extends SavedData
 		return false;
 	}
 	
-	public final boolean hasConnection(UUID uuid)
+	public boolean hasConnection(UUID uuid)
 	{
 		return this.connections.containsKey(uuid);
 	}
 	
-	public final void terminateConnection(UUID uuid, StargateInfo.Feedback feedback)
+	public void terminateConnection(UUID uuid, StargateInfo.Feedback feedback)
 	{
 		StargateConnection connection = this.connections.get(uuid);
 		
@@ -545,7 +607,7 @@ public final class StargateNetwork extends SavedData
 			connection.terminate(server, feedback);
 	}
 	
-	public final void removeConnection(UUID uuid)
+	public void removeConnection(UUID uuid)
 	{
 		if(hasConnection(uuid))
 		{
@@ -557,20 +619,20 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public final void printRegionStargates()
+	public void printRegionStargates()
 	{
 		System.out.println("[Stargates in Address Regions]");
 		this.regionStargates.forEach((key, regionStargates) ->
 				regionStargates.stargates.forEach(stargate -> System.out.println("--- " + stargate.toString())));
 	}
 	
-	public final void printConnections()
+	public void printConnections()
 	{
 		System.out.println("[Connections]");
 		this.connections.forEach((uuid, connection) -> connection.printConnection());
 	}
 	
-	public final boolean sendStargateMessage(AbstractStargateEntity<?> sendingStargate, UUID uuid, String messsage)
+	public boolean sendStargateMessage(AbstractStargateEntity<?> sendingStargate, UUID uuid, String messsage)
 	{
 		if(hasConnection(uuid))
 		{
@@ -581,13 +643,13 @@ public final class StargateNetwork extends SavedData
 			return false;
 	}
 	
-	public final void sendStargateTransmission(AbstractStargateEntity<?> sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
+	public void sendStargateTransmission(AbstractStargateEntity<?> sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
 	{
 		if(hasConnection(uuid))
 			this.connections.get(uuid).sendStargateTransmission(server, sendingStargate.get9ChevronAddress(), transmissionJumps, frequency, transmission);
 	}
 	
-	public final float checkStargateShieldingState(AbstractStargateEntity<?> sendingStargate, UUID uuid)
+	public float checkStargateShieldingState(AbstractStargateEntity<?> sendingStargate, UUID uuid)
 	{
 		if(hasConnection(uuid))
 			return this.connections.get(uuid).checkStargateShieldingState(server, sendingStargate.get9ChevronAddress());
@@ -650,12 +712,12 @@ public final class StargateNetwork extends SavedData
 		}
 	}
 	
-	public static void findStargates(ServerLevel level)
+	public static void findStargatesInLevel(ServerLevel level)
 	{
 		if(level == null)
 			return;
 		
-		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in " + level.dimension().location());
+		StargateJourney.LOGGER.debug("Attempting to locate the Stargate Structure in {}", level.dimension().location());
 		
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
 		int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
@@ -667,7 +729,7 @@ public final class StargateNetwork extends SavedData
 			StargateJourney.LOGGER.debug("Stargate Structure not found");
 			return;
 		}
-		// Map of Block Entities that might contain a Stargate
+		// List of Stargate BlockEntities
 		List<AbstractStargateEntity<?>> stargates = new ArrayList<>();
 		
 		int xCenter = SectionPos.blockToSectionCoord(blockpos.getX());
@@ -693,24 +755,17 @@ public final class StargateNetwork extends SavedData
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private CompoundTag serialize()
+	private void serialize(CompoundTag tag)
 	{
-		CompoundTag tag = new CompoundTag();
-		
 		tag.putInt(VERSION, this.version);
 		tag.put(CONNECTIONS, serializeConnections());
-		
-		return tag;
 	}
 	
 	private CompoundTag serializeConnections()
 	{
 		CompoundTag connectionsTag = new CompoundTag();
 		
-		this.connections.forEach((connectionID, connection) ->
-		{
-			connectionsTag.put(connectionID.toString(), connection.serialize());
-		});
+		this.connections.forEach((connectionID, connection) -> connectionsTag.put(connectionID.toString(), connection.serialize()));
 		
 		return connectionsTag;
 	}
@@ -761,10 +816,9 @@ public final class StargateNetwork extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
-		tag = serialize();
-		
+		serialize(tag);
 		return tag;
 	}
 

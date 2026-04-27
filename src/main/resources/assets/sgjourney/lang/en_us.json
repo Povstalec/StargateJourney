@@ -223,7 +223,8 @@
 	"block.sgjourney.stargate.incorrect_stargate_type": "Incorrect Stargate type",
 	
 	"block.sgjourney.protected_permissions": "Protected: You lack permissions to do this",
-
+	
+	"block.sgjourney.ancient_transport_rings": "Ancient Transport Rings",
 	"block.sgjourney.goauld_transport_rings": "Goa'uld Transport Rings",
 	"block.sgjourney.goauld_ring_panel": "Goa'uld Ring Panel",
 	
@@ -308,6 +309,9 @@
 	"item.sgjourney.trinium_rod": "Trinium Rod",
 	"item.sgjourney.reaction_chamber": "Reaction Chamber",
 	"item.sgjourney.plasma_converter": "Plasma Converter",
+	
+	"item.sgjourney.ancient_transport_ring": "Ancient Transport Ring",
+	"item.sgjourney.goauld_transport_ring": "Goa'uld Transport Ring",
 	
 	"item.sgjourney.unity_shard": "Unity Shard",
 
@@ -406,6 +410,7 @@
 	"item.sgjourney.goauld_fossil": "Goa'uld Fossil",
 	
 	"item.sgjourney.goauld_burger": "Goa'uld Burger",
+	"item.sgjourney.jaffa_burger": "Jaffa Burger",
 	"item.sgjourney.jaffa_cake": "Jaffa Cake",
 	
 	"entity.sgjourney.goauld": "Goa'uld",

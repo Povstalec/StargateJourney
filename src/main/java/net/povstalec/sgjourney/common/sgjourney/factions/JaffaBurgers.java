@@ -1,8 +1,10 @@
 package net.povstalec.sgjourney.common.sgjourney.factions;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -50,7 +52,16 @@ public class JaffaBurgers extends AbstractFaction
 				{
 					if(entity instanceof FactionMember factionMember)
 						factionMember.setFaction(this);
+					
+					entity.setItemSlot(EquipmentSlot.MAINHAND, makeJaffaBurgerStack());
 				});
+	}
+	
+	public static ItemStack makeJaffaBurgerStack()
+	{
+		ItemStack stack = new ItemStack(ItemInit.GOAULD_BURGER.get());
+		stack.setHoverName(Component.translatable("item.sgjourney.jaffa_burger"));
+		return stack;
 	}
 	
 	public void prepareNextVisit(MinecraftServer server, int intervalTicks)

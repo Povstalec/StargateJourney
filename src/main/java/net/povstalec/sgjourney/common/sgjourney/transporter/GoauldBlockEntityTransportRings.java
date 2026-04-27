@@ -5,17 +5,17 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 
 import javax.annotation.Nullable;
 
-public class TransportRings extends SGJourneyTransporter implements BlockEntityTransporter<TransportRingsEntity>
+public class GoauldBlockEntityTransportRings extends GoauldTransportRings implements BlockEntityTransportRings<GoauldTransportRingsEntity>
 {
 	protected BlockPos blockPos;
 	
-	public TransportRings(TransporterType<?> type)
+	public GoauldBlockEntityTransportRings(TransporterType<?> type)
 	{
 		super(type);
 	}
@@ -39,11 +39,11 @@ public class TransportRings extends SGJourneyTransporter implements BlockEntityT
 	}
 	
 	@Nullable
-	public TransportRingsEntity getTransporterEntity(MinecraftServer server)
+	public GoauldTransportRingsEntity getTransporterEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof TransportRingsEntity transporter)
+		if(level != null && level.getBlockEntity(blockPos) instanceof GoauldTransportRingsEntity transporter)
 			return transporter;
 		
 		return null;

@@ -230,6 +230,7 @@ public class StargateJourney
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
         	
+        	BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);

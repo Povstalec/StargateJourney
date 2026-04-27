@@ -99,20 +99,19 @@ public interface Transporter
 	/**
 	 * @return The network this Transporter is a part of
 	 */
-	default int getNetwork()
-	{
-		return 0;
-	}
+	int getNetwork();
+	
+	/**
+	 * @return True if the Transporter is restricted to some network, otherwise false
+	 */
+	boolean isRestricted();
 	
 	/**
 	 * @param server Current Minecraft Server
 	 * @param network Network ID to test
 	 * @return False if the provided network passes the restriction check successfully, otherwise true
 	 */
-	default boolean isRestricted(MinecraftServer server, int network)
-	{
-		return false;
-	}
+	boolean passesRestrictionCheck(MinecraftServer server, int network);
 	
 	/**
 	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Transporter, where X is the direction which the Transporter is facing, Y is Transporter's up direction and Z is Transporter's right direction

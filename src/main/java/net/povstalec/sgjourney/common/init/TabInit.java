@@ -79,6 +79,9 @@ public class TabInit
 				items.accept(PowerCellItem.liquidNaquadahSetup());
 				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
 				
+				items.accept(ItemInit.ANCIENT_TRANSPORT_RING.get());
+				items.accept(ItemInit.GOAULD_TRANSPORT_RING.get());
+				
 				items.accept(ItemInit.CRYSTAL_READER.get());
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.ANCIENT_REMOTE.get());
@@ -235,6 +238,7 @@ public class TabInit
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 				
+				items.accept(BlockInit.ANCIENT_TRANSPORT_RINGS.get());
 				items.accept(BlockInit.GOAULD_TRANSPORT_RINGS.get());
 				items.accept(BlockInit.GOAULD_RING_PANEL.get());
 				

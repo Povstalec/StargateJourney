@@ -2,18 +2,14 @@ package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
@@ -22,7 +18,6 @@ public abstract class SGJourneyTransporter implements Transporter
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
 	public static final Vec3 UP = new Vec3(0, 1, 0);
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
-	public static final double INNER_RADIUS = 2;
 	
 	private final TransporterType<?> type;
 	
@@ -76,9 +71,23 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public double getInnerRadius()
+	public int getNetwork()
 	{
-		return INNER_RADIUS;
+		return this.network;
+	}
+	
+	public boolean isRestricted()
+	{
+		//TODO
+		return false;
+	}
+	
+	@Override
+	public boolean passesRestrictionCheck(MinecraftServer server, int network)
+	{
+		//TODO Handle this here and do the same for Stargate restriction
+		
+		return false;
 	}
 	
 	@Override
@@ -105,7 +114,7 @@ public abstract class SGJourneyTransporter implements Transporter
 			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If Transporter is restricted
-		if(isRestricted(server, initiatingTransporter.getNetwork()))
+		if(passesRestrictionCheck(server, initiatingTransporter.getNetwork()))
 			return TransporterInfo.Feedback.TARGET_RESTRICTED;
 		
 		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(initiatingTransporter.getID()))

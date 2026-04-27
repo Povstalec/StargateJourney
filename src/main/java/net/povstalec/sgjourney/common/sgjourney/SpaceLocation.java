@@ -37,6 +37,8 @@ public class SpaceLocation
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	public static final String ADDRESS_REGION = "address_region";
+	public static final String PRELOAD_STARGATE = "preload_stargate";
+	
 	public static final String DIMENSION = "dimension";
 	
 	public static final Codec<SpaceLocation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -50,7 +52,8 @@ public class SpaceLocation
 			PointOfOrigin.RESOURCE_KEY_CODEC.optionalFieldOf(POINT_OF_ORIGIN).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.pointOfOrigin)),
 			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf(SYMBOLS).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.symbols)),
 			//TODO Coordinates
-			AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey))
+			AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
+			Codec.BOOL.optionalFieldOf(PRELOAD_STARGATE, false).forGetter(spaceLocation -> spaceLocation.unityCrystalsGrow)
 	).apply(instance, SpaceLocation::new));
 	
 	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>(); // Templates for how to create a Space Location for a Dimension based on its prefix
@@ -74,18 +77,19 @@ public class SpaceLocation
 	
 	private ResourceKey<Level> dimension; // Dimension this Space Location represents
 	@Nullable
-	private ResourceKey<AddressRegion> addressRegionKey = null; // Address Region this Space Location is a part of
+	private ResourceKey<AddressRegion> addressRegionKey; // Address Region this Space Location is a part of
 	@Nullable
 	private AddressRegion addressRegion = null;
+	private final boolean preloadStargate; // If true and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures during Stellar Update
 	
 	public SpaceLocation(Optional<TemplateInfo> templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean generateInAddressTables, boolean unityCrystalsGrow,
-						 Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<AddressRegion>> addressRegionKey)
+						 Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<AddressRegion>> addressRegionKey, boolean preloadStargate)
 	{
-		this(templateInfo.orElse(null), inStargateNetwork, parentGravity, /*allowFactionPresence, */generateInAddressTables, unityCrystalsGrow, pointOfOrigin.orElse(null), symbols.orElse(null), addressRegionKey.orElse(null));
+		this(templateInfo.orElse(null), inStargateNetwork, parentGravity, /*allowFactionPresence, */generateInAddressTables, unityCrystalsGrow, pointOfOrigin.orElse(null), symbols.orElse(null), addressRegionKey.orElse(null), preloadStargate);
 	}
 	
 	public SpaceLocation(@Nullable TemplateInfo templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean generateInAddressTables, boolean unityCrystalsGrow,
-						 @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<AddressRegion> addressRegionKey)
+						 @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<AddressRegion> addressRegionKey, boolean preloadStargate)
 	{
 		this.templateInfo = templateInfo;
 		this.inStargateNetwork = inStargateNetwork;
@@ -97,16 +101,17 @@ public class SpaceLocation
 		this.pointOfOrigin = pointOfOrigin;
 		this.symbols = symbols;
 		this.addressRegionKey = addressRegionKey;
+		this.preloadStargate = preloadStargate;
 	}
 	
 	public SpaceLocation copy()
 	{
-		return new SpaceLocation(this.templateInfo, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey);
+		return new SpaceLocation(this.templateInfo, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey, this.preloadStargate);
 	}
 	
 	public SpaceLocation copyWithoutTemplateInfo()
 	{
-		return new SpaceLocation(null, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey);
+		return new SpaceLocation(null, this.inStargateNetwork, this.parentGravity, this.generateInAddressTables, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.addressRegionKey, this.preloadStargate);
 	}
 	
 	@Nullable
@@ -176,6 +181,11 @@ public class SpaceLocation
 		return this.addressRegion;
 	}
 	
+	public boolean shouldPreLoadStargate()
+	{
+		return preloadStargate;
+	}
+	
 	
 	
 	public CompoundTag serialize()
@@ -211,8 +221,9 @@ public class SpaceLocation
 		ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(spaceLocationTag.getString(POINT_OF_ORIGIN));
 		ResourceKey<Symbols> symbols = Conversion.stringToSymbols(spaceLocationTag.getString(SYMBOLS));
 		ResourceKey<AddressRegion> addressRegionKey = Conversion.stringToAddressRegionKey(spaceLocationTag.getString(ADDRESS_REGION));
+		boolean loadStargate = spaceLocationTag.getBoolean(PRELOAD_STARGATE);
 		
-		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), inStargateNetwork, parentGravity, /*allowFactionPresence, */appearAmongGeneratedAddresses, unityCrystalsGrow, Optional.ofNullable(pointOfOrigin), Optional.ofNullable(symbols), Optional.ofNullable(addressRegionKey));
+		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), inStargateNetwork, parentGravity, /*allowFactionPresence, */appearAmongGeneratedAddresses, unityCrystalsGrow, Optional.ofNullable(pointOfOrigin), Optional.ofNullable(symbols), Optional.ofNullable(addressRegionKey), loadStargate);
 		spaceLocation.dimension = Conversion.stringToDimension(spaceLocationTag.getString(DIMENSION));
 		return spaceLocation;
 	}
@@ -221,7 +232,7 @@ public class SpaceLocation
 	
 	public static SpaceLocation defaultSpaceLocation(ResourceKey<Level> dimension)
 	{
-		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), true, 0.0, /*false, */true, false, Optional.empty(), Optional.empty(), Optional.empty());
+		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), true, 0.0, /*false, */true, false, Optional.empty(), Optional.empty(), Optional.empty(), false);
 		spaceLocation.dimension = dimension;
 		return spaceLocation;
 	}

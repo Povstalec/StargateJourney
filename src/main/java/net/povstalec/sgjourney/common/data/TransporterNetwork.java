@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Dimension - Frequency - Rings
@@ -41,8 +42,8 @@ public final class TransporterNetwork extends SavedData
 	
 	private MinecraftServer server;
 
-	private Map<String, TransporterNetwork.Dimension> dimensions = new HashMap<String, TransporterNetwork.Dimension>();
-	private HashMap<UUID, TransporterConnection> connections = new HashMap<UUID, TransporterConnection>();
+	private final Map<String, TransporterNetwork.Dimension> dimensions = new HashMap<String, TransporterNetwork.Dimension>();
+	private final HashMap<UUID, TransporterConnection> connections = new HashMap<UUID, TransporterConnection>();
 	private int version = 0;
 	
 	//============================================================================================
@@ -63,11 +64,11 @@ public final class TransporterNetwork extends SavedData
 	{
 		if(getVersion() == UPDATE_VERSION)
 		{
-			StargateJourney.LOGGER.info("Transporter Network is up to date (Version: " + version + ")");
+			StargateJourney.LOGGER.info("Transporter Network is up to date (Version: {})", version);
 			return;
 		}
 		
-		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: " + getVersion() + ") - updating to version " + UPDATE_VERSION);
+		StargateJourney.LOGGER.info("Detected an incompatible Transporter Network version (Version: {}) - updating to version {}", getVersion(), UPDATE_VERSION);
 		
 		reloadNetwork();
 	}
@@ -110,11 +111,8 @@ public final class TransporterNetwork extends SavedData
 	{
 		HashMap<TransporterID, Transporter> transporters = BlockEntityList.get(server).getTransporters();
 		
-		transporters.entrySet().forEach((transporterInfo) ->
+		transporters.forEach((transporterID, transporter) ->
 		{
-			TransporterID transporterID = transporterInfo.getKey();
-			Transporter transporter = transporterInfo.getValue();
-			
 			if(transporter != null)
 			{
 				if(transporter.checkValidity(server))
@@ -157,7 +155,7 @@ public final class TransporterNetwork extends SavedData
 				removeTransporterFromDimension(transporter.getDimension(), transporter);
 			BlockEntityList.get(server).removeTransporter(transporter.getID());
 			
-			StargateJourney.LOGGER.debug("Removed " + transporter.getID().toString() + " from Transporter Network");
+			StargateJourney.LOGGER.debug("Removed {} from Transporter Network", transporter.getID().toString());
 			setDirty();
 		}
 		else
@@ -173,7 +171,7 @@ public final class TransporterNetwork extends SavedData
 		removeTransporter(transporter);
 	}
 	
-	public final void updateTransporterEntity(AbstractTransporterEntity<?> transporterEntity)
+	public void updateTransporterEntity(AbstractTransporterEntity<?> transporterEntity)
 	{
 		Transporter transporter = getTransporter(transporterEntity.getID());
 		
@@ -225,18 +223,26 @@ public final class TransporterNetwork extends SavedData
 		return ImmutableList.of();
 	}
 	
-	public final void printDimensions()
+	public void printDimensions()
 	{
 		System.out.println("[Dimensions - Transporters]");
-		this.dimensions.entrySet().stream().forEach(dimensionEntry ->
-		{
-			dimensionEntry.getValue().printDimension();
-		});
+		this.dimensions.forEach((key, value) -> value.printDimension());
 	}
 	
 	//============================================================================================
 	//****************************************Connections*****************************************
 	//============================================================================================
+	
+	public Map<UUID, TransporterConnection> getConnections()
+	{
+		return new HashMap<>(this.connections);
+	}
+	
+	@Nullable
+	public TransporterConnection getConnection(UUID connectionID)
+	{
+		return this.connections.get(connectionID);
+	}
 	
 	public void handleConnections()
 	{
@@ -321,10 +327,10 @@ public final class TransporterNetwork extends SavedData
 		if(hasConnection(uuid))
 		{
 			this.connections.remove(uuid);
-			StargateJourney.LOGGER.debug("Removed connection " + uuid);
+			StargateJourney.LOGGER.debug("Removed connection {}", uuid);
 		}
 		else
-			StargateJourney.LOGGER.error("Could not find connection " + uuid);
+			StargateJourney.LOGGER.error("Could not find connection {}", uuid);
 		this.setDirty();
 	}
 	
@@ -332,25 +338,18 @@ public final class TransporterNetwork extends SavedData
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
-	private CompoundTag serialize()
+	private void serialize(CompoundTag tag)
 	{
-		CompoundTag tag = new CompoundTag();
-		
 		tag.putInt(VERSION, this.version);
 		//tag.put(DIMENSIONS, serializeDimensions());
 		tag.put(CONNECTIONS, serializeConnections());
-		
-		return tag;
 	}
 	
 	private CompoundTag serializeDimensions()
 	{
 		CompoundTag dimensionsTag = new CompoundTag();
 		
-		this.dimensions.forEach((dimensionString, dimension) ->
-		{
-			dimensionsTag.put(dimensionString, dimension.serialize());
-		});
+		this.dimensions.forEach((dimensionString, dimension) -> dimensionsTag.put(dimensionString, dimension.serialize()));
 		
 		return dimensionsTag;
 	}
@@ -359,10 +358,7 @@ public final class TransporterNetwork extends SavedData
 	{
 		CompoundTag connectionsTag = new CompoundTag();
 		
-		this.connections.forEach((connectionID, connection) ->
-		{
-			connectionsTag.put(connectionID.toString(), connection.serialize());
-		});
+		this.connections.forEach((connectionID, connection) -> connectionsTag.put(connectionID.toString(), connection.serialize()));
 		
 		return connectionsTag;
 	}
@@ -377,10 +373,7 @@ public final class TransporterNetwork extends SavedData
 	
 	private void deserializeDimensions(CompoundTag tag)
 	{
-		tag.getAllKeys().forEach(dimensionString ->
-		{
-			this.dimensions.put(dimensionString, TransporterNetwork.Dimension.deserialize(server, tag.getCompound(dimensionString)));
-		});
+		tag.getAllKeys().forEach(dimensionString -> this.dimensions.put(dimensionString, Dimension.deserialize(server, tag.getCompound(dimensionString))));
 	}
 	
 	private void deserializeConnections(CompoundTag tag)
@@ -424,10 +417,9 @@ public final class TransporterNetwork extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
-		tag = serialize();
-		
+		serialize(tag);
 		return tag;
 	}
 	
@@ -456,7 +448,7 @@ public final class TransporterNetwork extends SavedData
     	private static final String TRANSPORTERS = "Transporters";
     	
     	private final ResourceKey<Level> dimension;
-    	private List<Transporter> transporters = new ArrayList<Transporter>();
+    	private List<Transporter> transporters = new ArrayList<>();
     	
     	private Dimension(ResourceKey<Level> dimension)
     	{
@@ -484,16 +476,13 @@ public final class TransporterNetwork extends SavedData
     	
     	public List<Transporter> getTransporters()
     	{
-    		return new ArrayList<Transporter>(transporters);
+    		return new ArrayList<>(transporters);
     	}
     	
     	public void printDimension()
     	{
-			System.out.println("- [" + this.dimension.location().toString() + "]");
-			transporters.forEach(transporter ->
-			{
-				System.out.println("--- " + transporter.toString());;
-			});
+			System.out.println("- [" + this.dimension.location() + "]");
+			transporters.forEach(transporter -> System.out.println("--- " + transporter.toString()));
     	}
     	
     	
@@ -515,7 +504,7 @@ public final class TransporterNetwork extends SavedData
 		{
 			ResourceKey<Level> dimension = Conversion.stringToDimension(dimensionTag.getString(DIMENSION));
 			
-	    	List<Transporter> transporters = new ArrayList<Transporter>();
+	    	List<Transporter> transporters = new ArrayList<>();
 			dimensionTag.getCompound(TRANSPORTERS).getAllKeys().forEach(transporterID ->
 			{
 				Transporter transporter = BlockEntityList.get(server).getTransporter(new TransporterID.Immutable(transporterID));

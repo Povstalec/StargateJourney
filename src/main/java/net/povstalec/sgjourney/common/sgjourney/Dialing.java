@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -113,7 +112,7 @@ public class Dialing
 				
 				if(server.levelKeys().contains(levelKey))
 				{
-					StargateNetwork.findStargates(Objects.requireNonNull(server.getLevel(levelKey)));
+					StargateNetwork.findStargatesInLevel(Objects.requireNonNull(server.getLevel(levelKey)));
 					dimensions++;
 				}
 			}

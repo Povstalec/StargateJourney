@@ -18,6 +18,7 @@ import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import org.jetbrains.annotations.NotNull;
 
 public class Universe extends SavedData
 {
@@ -140,9 +141,7 @@ public class Universe extends SavedData
 		
 		Set<Entry<ResourceKey<Galaxy>, Galaxy>> galaxySet = galaxyRegistry.entrySet();
 		galaxySet.forEach((galaxyEntry) ->
-        {
-			addGalaxy(galaxyEntry.getKey(), galaxyEntry.getValue().copyTemplateWithKey(galaxyEntry.getKey(), Map.of(), List.of()));
-        });
+				addGalaxy(galaxyEntry.getKey(), galaxyEntry.getValue().copyTemplateWithKey(galaxyEntry.getKey(), Map.of(), List.of())));
 		StargateJourney.LOGGER.info("Galaxies registered");
 	}
 	
@@ -208,14 +207,14 @@ public class Universe extends SavedData
 	{
 		if(this.addressRegions.containsKey(extragalacticAddress))
 		{
-			StargateJourney.LOGGER.error("Failed to add Address Region " + addressRegion.getName() + " as it is already contained in the Stargate Network");
+			StargateJourney.LOGGER.error("Failed to add Address Region {} as it is already contained in the Stargate Network", addressRegion.getName());
 			return false;
 		}
 		
 		this.addressRegions.put(extragalacticAddress, addressRegion);
 		this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
 		
-		StargateJourney.LOGGER.debug("Added Address Region " + addressRegion);
+		StargateJourney.LOGGER.debug("Added Address Region {}", addressRegion);
 		return true;
 	}
 	
@@ -440,9 +439,17 @@ public class Universe extends SavedData
 		return this.addressRegions.get(extragalacticAddress);
 	}
 	
+	public List<SpaceLocation> getSpaceLocationsInAddressRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		if(this.addressRegionKeys.containsKey(addressRegionKey))
+			return this.addressRegionKeys.get(addressRegionKey).getSpaceLocations();
+		
+		return List.of();
+	}
+	
 	public List<ResourceKey<Level>> getDimensionsWithGeneratedAddressRegions()
 	{
-		List<ResourceKey<Level>> dimensions = new ArrayList<ResourceKey<Level>>();
+		List<ResourceKey<Level>> dimensions = new ArrayList<>();
 		for(SpaceLocation spaceLocation : SpaceLocation.getGeneratedAddressSpaceLocations())
 		{
 			if(spaceLocation.generateInAddressTables() && spaceLocation.getAddressRegion() != null)
@@ -463,8 +470,8 @@ public class Universe extends SavedData
 	
 	/**
 	 * Gets Address Region in the same Galaxy as input Address Region
-	 * @param addressRegion
-	 * @param address
+	 * @param addressRegion Address Region to start the search from
+	 * @param address Address of the Region being searched for
 	 * @return Returns an Address Region in the same galaxy as the input Address Region based on the input Address, null if there is no such Address Region
 	 */
 	@Nullable
@@ -617,7 +624,8 @@ public class Universe extends SavedData
 			ResourceKey<Galaxy> galaxyKey = Conversion.stringToGalaxyKey(galaxyString);
 			Galaxy galaxy = Galaxy.deserialize(this.addressRegions, galaxyRegistry, galaxyKey, tag.getCompound(galaxyString));
 			
-			addGalaxy(galaxy.getResourceKey(), galaxy);
+			if(galaxy != null)
+				addGalaxy(galaxy.getResourceKey(), galaxy);
 		});
 	}
 	
@@ -645,7 +653,7 @@ public class Universe extends SavedData
 		return data;
 	}
 	
-	public CompoundTag save(CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
 		serialize(tag);
 		return tag;

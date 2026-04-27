@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 
 public class TransportRingModel
 {
@@ -26,8 +26,8 @@ public class TransportRingModel
 		this.ring = ring;
 	}
 	
-	public void render(TransportRingsEntity transportRings, float partialTick, PoseStack stack, MultiBufferSource source,
-			int combinedLight, int combinedOverlay, float height)
+	public void render(AbstractTransportRingsEntity transportRings, float partialTick, PoseStack stack, MultiBufferSource source,
+					   int combinedLight, int combinedOverlay, float height)
 	{
 		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(TRANSPORT_RINGS_TEXTURE));
 		
