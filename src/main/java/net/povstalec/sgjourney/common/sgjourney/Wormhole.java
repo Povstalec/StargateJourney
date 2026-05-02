@@ -226,9 +226,7 @@ public class Wormhole
 			}
 		}
 		else // No initial Region
-		{
 			triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, null, null, distanceTraveled);
-		}
 	}
 	
 	protected Entity transportPlayer(StargateConnection connection, ServerLevel destinationLevel, Stargate destinationStargate, ServerPlayer player, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)

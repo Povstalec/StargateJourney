@@ -93,7 +93,7 @@ public class BlockEntityList extends SavedData
 	{
 		if(!this.stargateMap.containsKey(address))
 		{
-			StargateJourney.LOGGER.error("{} not found in BlockEntityList", address);
+			StargateJourney.LOGGER.error("Stargate {} not found in BlockEntityList", address);
 			return false;
 		}
 		this.stargateMap.remove(address);
@@ -190,16 +190,17 @@ public class BlockEntityList extends SavedData
 		return transporter;
 	}
 	
-	public void removeTransporter(TransporterID transporterID)
+	public boolean removeTransporter(TransporterID transporterID)
 	{
 		if(!this.transporterMap.containsKey(transporterID))
 		{
-			StargateJourney.LOGGER.error("{} not found in BlockEntityList", transporterID);
-			return;
+			StargateJourney.LOGGER.error("Transporter {} not found in BlockEntityList", transporterID);
+			return false;
 		}
 		this.transporterMap.remove(transporterID);
 		StargateJourney.LOGGER.debug("Removed Transporter {} from BlockEntityList", transporterID);
 		setDirty();
+		return true;
 	}
 	
 	public void printTransporters()

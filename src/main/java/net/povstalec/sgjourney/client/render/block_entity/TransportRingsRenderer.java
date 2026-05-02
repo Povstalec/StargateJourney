@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
-public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTransportRingsEntity>
+public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTransportRingsEntity<?>>
 {
 	protected final TransportRingModel[] transportRings = new TransportRingModel[5];
 	
@@ -26,7 +26,7 @@ public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTrans
 		}
 	}
 	
-	private float getProgress(AbstractTransportRingsEntity rings, float partialTick)
+	private float getProgress(AbstractTransportRingsEntity<?> rings, float partialTick)
 	{
 		float progress = rings.getProgress(partialTick);
 		
@@ -37,21 +37,21 @@ public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTrans
 		return progress;
 	}
 	
-	private float ringHeight(AbstractTransportRingsEntity rings, int ringNumber, float partialTick)
+	private float ringHeight(AbstractTransportRingsEntity<?> rings, int ringNumber, float partialTick)
 	{
 		float height = getProgress(rings, partialTick) - 6 * ringNumber;
 		
 		return 4 * (rings.emptySpace >= 0 ? height : -height);
 	}
 	
-	private float stopHeight(AbstractTransportRingsEntity rings, int ringNumber)
+	private float stopHeight(AbstractTransportRingsEntity<?> rings, int ringNumber)
 	{
 		float height = rings.getTransportHeight() - 2 * ringNumber;
 		
 		return 4 * (rings.emptySpace >= 0 ? height : -height);
 	}
 	
-	private float getHeight(AbstractTransportRingsEntity rings, int ringNumber, float partialTick)
+	private float getHeight(AbstractTransportRingsEntity<?> rings, int ringNumber, float partialTick)
 	{
 		float progress = getProgress(rings, partialTick);
 		int startTicks = 6 * ringNumber;

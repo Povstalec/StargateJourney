@@ -4,8 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.function.Function;
 
@@ -26,7 +28,7 @@ public abstract class MemoryEntry<T>
 		TEXT(Component.translatable("tooltip.sgjourney.text").withStyle(ChatFormatting.GRAY), Text.class, Text::new),
 		ADDRESS(Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA), Address.class, Address::new),
 		TRANSPORTER_ID(Component.translatable("tooltip.sgjourney.transporter_id").withStyle(ChatFormatting.DARK_AQUA), TransporterID.class, TransporterID::new),
-		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.BLUE), Coordinates.class, Coordinates::new);
+		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.YELLOW), Coordinates.class, Coordinates::new);
 		
 		private final Component component;
 		private final Class<?> clazz;
@@ -135,6 +137,18 @@ public abstract class MemoryEntry<T>
 		return '[' + name + "] " + entry.toString();
 	}
 	
+	public ChatFormatting entryChatFormatting()
+	{
+		return ChatFormatting.WHITE;
+	}
+	
+	public MutableComponent toComponent()
+	{
+		MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+		
+		return component.append(Component.literal(entry.toString()).withStyle(entryChatFormatting()));
+	}
+	
 	//============================================================================================
 	//******************************************Entries*******************************************
 	//============================================================================================
@@ -210,6 +224,12 @@ public abstract class MemoryEntry<T>
 		{
 			return new net.povstalec.sgjourney.common.sgjourney.Address.Immutable(tag.getIntArray(ADDRESS));
 		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return entry.getChatFormatting();
+		}
 	}
 	
 	public static class TransporterID extends MemoryEntry<net.povstalec.sgjourney.common.sgjourney.TransporterID>
@@ -234,6 +254,12 @@ public abstract class MemoryEntry<T>
 		protected net.povstalec.sgjourney.common.sgjourney.TransporterID loadEntry(CompoundTag tag)
 		{
 			return new net.povstalec.sgjourney.common.sgjourney.TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
+		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return entry.getChatFormatting();
 		}
 	}
 	
@@ -265,6 +291,20 @@ public abstract class MemoryEntry<T>
 		{
 			return Conversion.intArrayToVec(tag.getIntArray(COORDINATES));
 		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return ChatFormatting.YELLOW;
+		}
+		
+		@Override
+		public MutableComponent toComponent()
+		{
+			MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+			
+			return component.append(Component.literal(Conversion.vec3iToString(entry)).withStyle(entryChatFormatting()));
+		}
 	}
 	
 	public static class StargateConnectionResult extends MemoryEntry<StargateConnection.Result>
@@ -293,6 +333,12 @@ public abstract class MemoryEntry<T>
 			StargateConnection.Result result = new StargateConnection.Result();
 			result.load(tag.getCompound(STARGATE_CONNECTION_RESULT));
 			return result;
+		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return ChatFormatting.DARK_BLUE;
 		}
 	}
 }

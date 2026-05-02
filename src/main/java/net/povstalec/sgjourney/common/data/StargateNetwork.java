@@ -80,6 +80,8 @@ public final class StargateNetwork extends SavedData
 	
 	public void eraseNetwork()
 	{
+		this.regionStargates.clear();
+		this.dimensionStargates.clear();
 		this.connections.clear();
 		
 		this.setDirty();
@@ -195,6 +197,9 @@ public final class StargateNetwork extends SavedData
 	
 	private boolean addStargateToDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
+		if(dimension == null)
+			return false;
+		
 		List<Stargate> stargatesInDimension = dimensionStargates.get(dimension);
 		if(stargatesInDimension == null)
 		{
@@ -269,11 +274,11 @@ public final class StargateNetwork extends SavedData
 	
 	private boolean removeStargateFromDimension(ResourceKey<Level> dimension, Stargate stargate)
 	{
-		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
-		if(addressRegion == null)
+		List<Stargate> stargatesInDimension = dimensionStargates.get(dimension);
+		if(stargatesInDimension == null)
 			return false;
 		
-		return removeStargateFromAddressRegion(addressRegion.getResourceKey(), stargate);
+		return stargatesInDimension.remove(stargate);
 	}
 	
 	private boolean removeStargateFromAddressRegion(@Nullable ResourceKey<AddressRegion> addressRegionKey, Stargate stargate)
@@ -622,8 +627,11 @@ public final class StargateNetwork extends SavedData
 	public void printRegionStargates()
 	{
 		System.out.println("[Stargates in Address Regions]");
-		this.regionStargates.forEach((key, regionStargates) ->
-				regionStargates.stargates.forEach(stargate -> System.out.println("--- " + stargate.toString())));
+		this.regionStargates.forEach((addressRegion, regionStargates) ->
+		{
+			System.out.println("Address Region: " + addressRegion.location());
+			regionStargates.stargates.forEach(stargate -> System.out.println("--- " + stargate.toString()));
+		});
 	}
 	
 	public void printConnections()

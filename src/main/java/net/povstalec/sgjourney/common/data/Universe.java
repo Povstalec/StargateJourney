@@ -425,6 +425,19 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
+	public ResourceKey<AddressRegion> getAddressRegionKeyFromDimension(ResourceKey<Level> dimension)
+	{
+		if(dimension == null)
+			return null;
+		
+		AddressRegion addressRegion = SpaceLocation.fromDimension(server, dimension).getAddressRegion();
+		if(addressRegion == null)
+			return null;
+			
+		return addressRegion.getResourceKey();
+	}
+	
+	@Nullable
 	public AddressRegion getAddressRegionFromDimension(ResourceKey<Level> dimension)
 	{
 		if(dimension == null)
@@ -484,6 +497,17 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
+	public Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> getGalaxiesFromAddressRegionKey(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		AddressRegion addressRegion = getAddressRegionFromKey(addressRegionKey);
+		
+		if(addressRegion != null)
+			return addressRegion.getGalacticAddresses();
+		
+		return null;
+	}
+	
+	@Nullable
 	public Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> getGalaxiesFromDimension(ResourceKey<Level> dimension)
 	{
 		AddressRegion addressRegion = getAddressRegionFromDimension(dimension);
@@ -506,6 +530,17 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
+	public Galaxy getGalaxyFromAddressRegionKey(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxies = getGalaxiesFromAddressRegionKey(addressRegionKey);
+		
+		if(galaxies != null && !galaxies.isEmpty())
+			return getGalaxy(galaxies.entrySet().iterator().next().getKey());
+		
+		return null;
+	}
+	
+	@Nullable
 	public Galaxy getGalaxyFromDimension(ResourceKey<Level> dimension)
 	{
 		Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxies = getGalaxiesFromDimension(dimension);
@@ -517,18 +552,22 @@ public class Universe extends SavedData
 	}
 	
 	@Nullable
-	public Address.Immutable getAddressInGalaxyFromAddressRegion(ResourceKey<Galaxy> galaxyKey, AddressRegion addressRegion)
+	public Address.Immutable getAddressInGalaxyFromAddressRegionKey(ResourceKey<Galaxy> galaxyKey, ResourceKey<AddressRegion> addressRegionKey)
 	{
-		if(this.galaxyKeys.containsKey(galaxyKey) && addressRegion != null)
-			return addressRegion.getAddressInGalaxy(galaxyKey);
+		if(!this.galaxyKeys.containsKey(galaxyKey) || addressRegionKey == null)
+			return null;
 		
-		return null;
+		AddressRegion addressRegion = getAddressRegionFromKey(addressRegionKey);
+		if(addressRegion == null)
+			return null;
+		
+		return addressRegion.getAddressInGalaxy(galaxyKey);
 	}
 	
 	@Nullable
 	public Address.Immutable getAddressInGalaxyFromDimension(ResourceKey<Galaxy> galaxyKey, ResourceKey<Level> dimension)
 	{
-		return getAddressInGalaxyFromAddressRegion(galaxyKey, getAddressRegionFromDimension(dimension));
+		return getAddressInGalaxyFromAddressRegionKey(galaxyKey, getAddressRegionKeyFromDimension(dimension));
 	}
 	
 	@Nullable

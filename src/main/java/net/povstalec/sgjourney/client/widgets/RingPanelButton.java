@@ -11,6 +11,8 @@ import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity
 
 public class RingPanelButton extends SGJourneyButton
 {
+	// Disabled button texture is just the enabled button texture but with HSV adjusted to -60 lightness
+	
 	protected final RingPanelEntity.Button button;
 	
 	public RingPanelButton(int x, int y, OnPress press, RingPanelEntity.Button button)

@@ -53,6 +53,10 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class RingPanelEntity extends TransporterControllerEntity implements ProtectedBlockEntity
 {
+	//FIXME Pressing a button while the Transport Rings are rising can cancel them
+	//FIXME Pressing a button while the Transport Rings are being lowered can cancel them
+	//TODO Display saved names of entries on Memory Crystal Buttons
+	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	public static final int MESSAGE_DISTANCE = 3;
 	
@@ -514,7 +518,10 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	
 	protected Button nextManualButton(int index)
 	{
-		return Button.controlCrystalButton(this, index, true, true).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)));
+		if(encodedID.canGrow())
+			return Button.controlCrystalButton(this, index, true, true).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)));
+		else
+			return Button.controlCrystalButton(this, index, false, true).setTooltip(encodedID.toComponent(false));
 	}
 	
 	// ======= Transporting =======
@@ -592,12 +599,14 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		public static final String ENABLED = "enabled";
 		public static final String COORDS = "coords";
 		public static final String NAME = "name";
+		public static final String CLOSE_SCREEN = "close_screen";
 		
 		protected final RingPanelEntity parent;
 		protected final int index;
 		
 		protected ButtonState state;
 		protected boolean enabled;
+		protected boolean closeScreen;
 		
 		@Nullable
 		protected TransporterID transporterID = null;
@@ -641,13 +650,23 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		public Button setEnabled(boolean enabled)
 		{
 			this.enabled = enabled;
-			
 			return this;
 		}
 		
 		public boolean enabled()
 		{
 			return enabled;
+		}
+		
+		public Button setCloseScreen(boolean closeScreen)
+		{
+			this.closeScreen = closeScreen;
+			return this;
+		}
+		
+		public boolean shouldCloseScreen()
+		{
+			return closeScreen;
 		}
 		
 		@Nullable
@@ -707,6 +726,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			
 			tag.putByte(STATE, (byte) state.ordinal());
 			tag.putBoolean(ENABLED, enabled);
+			tag.putBoolean(CLOSE_SCREEN, closeScreen);
 			
 			if(coords != null)
 				tag.put(COORDS, CoordinateHelper.vec3ToTag(coords));
@@ -720,6 +740,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		{
 			this.state = ButtonState.values()[tag.getByte(STATE)];
 			this.enabled = tag.getBoolean(ENABLED);
+			this.closeScreen = tag.getBoolean(CLOSE_SCREEN);
 			
 			if(tag.contains(COORDS, Tag.TAG_COMPOUND))
 				this.coords = CoordinateHelper.tagToVec3(tag.getCompound(COORDS));
@@ -743,7 +764,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			if(!hasEnergy)
 				return new Button(parent, index, ButtonState.DEFAULT, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
 			
-			return new Button(parent, index, ButtonState.DEFAULT, enabled).setTransporter(server, transporter).setOnPress(button ->
+			return new Button(parent, index, ButtonState.DEFAULT, enabled).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
 			{
 				if(button.transporterID() != null)
 				{
@@ -769,12 +790,16 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 					button.parent.setBaseMemoryCrystalPage(button.parent.level.getServer(), index);
 				else if(button.transporterID() != null)
 				{
+					button.setCloseScreen(true);
+					
 					TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
 					if(feedback.isError())
 						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
 				}
 				else if(button.coords() != null)
 				{
+					button.setCloseScreen(true);
+					
 					TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
 					if(feedback.isError())
 						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
@@ -784,7 +809,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		
 		public static Button memoryTransportButton(RingPanelEntity parent, int index, boolean enabled)
 		{
-			return new Button(parent, index, ButtonState.MEMORY, enabled).setOnPress(button ->
+			return new Button(parent, index, ButtonState.MEMORY, enabled).setCloseScreen(true).setOnPress(button ->
 			{
 				if(button.transporterID() != null)
 				{
@@ -802,7 +827,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			
 			return new Button(parent, index, ButtonState.MANUAL, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.manual_control").withStyle(ChatFormatting.AQUA)).setOnPress(button ->
 			{
-				if(button.index < 0)
+				if(button.parent.page < 0)
 					button.parent.setBaseControlCrystalPage(button.index);
 				else
 				{
@@ -817,7 +842,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			if(!hasEnergy)
 				return new Button(parent, index, ButtonState.FREQUENCY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
 			
-			return new Button(parent, index, ButtonState.FREQUENCY, enabled).setTransporter(server, transporter).setOnPress(button ->
+			return new Button(parent, index, ButtonState.FREQUENCY, enabled).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
 			{
 				if(button.transporterID() != null)
 				{
@@ -889,7 +914,12 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 				return new Button(parent, index, ButtonState.ENTER, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport"));
 			
 			return new Button(parent, index, ButtonState.ENTER, true).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport").append(Component.literal(": ").append(parent.encodedID.toComponent(false))).withStyle(ChatFormatting.DARK_AQUA))
-					.setOnPress(button -> button.parent.startIDTransport(button.parent.encodedID));
+					.setOnPress(button ->
+					{
+						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
+						if(feedback.isError())
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					}).setCloseScreen(true);
 		}
 	}
 }

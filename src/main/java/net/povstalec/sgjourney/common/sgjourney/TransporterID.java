@@ -4,18 +4,21 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class TransporterID
+public abstract class TransporterID implements Comparable<TransporterID>
 {
 	public static final String TRANSPORTER_ID = "transporter_id";
 	public static final String DIVIDER = "-";
 	
-	public static final byte FULL_ID_LENGTH = 9;
+	public static final byte FULL_ID_LENGTH = 7;
 	public static final byte MIN_SYMBOL = 1;
-	public static final byte MAX_SYMBOL = 6;
+	public static final byte MAX_SYMBOL = 8;
 	
 	protected int[] idArray = new int[0];
 	
@@ -55,12 +58,12 @@ public abstract class TransporterID
 	public static void verifyValidity(int[] idArray) throws IllegalArgumentException
 	{
 		if(idArray.length > FULL_ID_LENGTH)
-			throw new IllegalArgumentException("Transporter ID is too long <0, 9>");
+			throw new IllegalArgumentException("Transporter ID is too long <0, 7>");
 		
 		for(int j : idArray)
 		{
 			if(j < MIN_SYMBOL || j > MAX_SYMBOL)
-				throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 6>");
+				throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 8>");
 		}
 	}
 	
@@ -77,6 +80,11 @@ public abstract class TransporterID
 		return idArray[number];
 	}
 	
+	public ChatFormatting getChatFormatting()
+	{
+		return ChatFormatting.DARK_AQUA;
+	}
+	
 	public MutableComponent toComponent(boolean copyToClipboard)
 	{
 		Style style = Style.EMPTY;
@@ -86,7 +94,7 @@ public abstract class TransporterID
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(ChatFormatting.AQUA));
+		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(getChatFormatting()));
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)
@@ -186,7 +194,13 @@ public abstract class TransporterID
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(getSymbol(0), getSymbol(1), getSymbol(2), getSymbol(3), getSymbol(4), getSymbol(5), getSymbol(6), getSymbol(7), getSymbol(8));
+		return Objects.hash(getSymbol(0), getSymbol(1), getSymbol(2), getSymbol(3), getSymbol(4), getSymbol(5), getSymbol(6));
+	}
+	
+	@Override
+	public int compareTo(@NotNull TransporterID other)
+	{
+		return Arrays.compare(other.idArray, this.idArray);
 	}
 	
 	// Static functions

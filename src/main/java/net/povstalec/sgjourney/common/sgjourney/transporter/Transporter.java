@@ -14,12 +14,13 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 
-public interface Transporter
+public interface Transporter extends Comparable<Transporter>
 {
 	String DIMENSION = "Dimension";
 	
@@ -41,12 +42,25 @@ public interface Transporter
 	ResourceKey<Level> getDimension();
 	
 	/**
-	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
+	 * @return Address Region the Transporter is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
 	default AddressRegion getAddressRegion(MinecraftServer server)
 	{
 		return Universe.get(server).getAddressRegionFromDimension(getDimension());
+	}
+	
+	/**
+	 * @return Resource Key of the Address Region the Transporter is located in or null if it's not located in any Address Region
+	 */
+	@Nullable
+	default ResourceKey<AddressRegion> getAddressRegionKey(MinecraftServer server)
+	{
+		AddressRegion addressRegion = getAddressRegion(server);
+		if(addressRegion == null)
+			return null;
+		
+		return addressRegion.getResourceKey();
 	}
 	
 	/**
@@ -206,6 +220,12 @@ public interface Transporter
 	void updateTicks(MinecraftServer server, int connectionTime);
 	
 	TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter);
+	
+	@Override
+	default int compareTo(@NotNull Transporter other)
+	{
+		return other.getID().compareTo(this.getID());
+	}
 	
 	//============================================================================================
 	//**********************************Additional functionality**********************************

@@ -84,7 +84,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.TRANSPORTER_ID) ? blockEntityTag.getString(AbstractTransporterEntity.TRANSPORTER_ID) : "-";
 		
-		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
+		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.DARK_AQUA));
 
         if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))

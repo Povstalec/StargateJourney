@@ -548,6 +548,8 @@
 	
 	"advancements.sgjourney.technology.root.title": "Technologie hvězdné brány",
 	"advancements.sgjourney.technology.root.description": "Drž hvězdnou bránu",
+	"advancements.sgjourney.technology.obtain_transport_rings.title": "Tohle není hvězdná brána!",
+	"advancements.sgjourney.technology.obtain_transport_rings.description": "Drž transportní kruhy a všimni si, jak se liší od brány",
 	"advancements.sgjourney.technology.obtain_basic_interface.title": "MacGyver by byl pyšný",
 	"advancements.sgjourney.technology.obtain_basic_interface.description": "Vytvoř improvizované zařízení schopné komunikace s hvězdnou bránou",
 	"advancements.sgjourney.technology.mine_raw_naquadah.title": "Jako žádný jiný na Zemi...",
@@ -744,6 +746,8 @@
 	"tooltip.sgjourney.is_primary": "Je primární",
 	"tooltip.sgjourney.engage_stargate": "Spustit hvězdnou bránu",
 	"tooltip.sgjourney.disconnect_stargate": "Odpojit hvězdnou bránu",
+	"tooltip.sgjourney.invalid_entry": "Neplatný záznam",
+	"tooltip.sgjourney.coordinates": "Koordináty",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
@@ -871,9 +875,10 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
-	"message.sgjourney.ring_remote.error.transport_rings_busy": "Chyba: Transportní kruhy již v provozu",
-	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Chyba: Žádné transportní kruhy poblíž",
-	"message.sgjourney.ring_remote.error.no_coordinates": "Chyba: Žádné koordináty",
+	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy již v provozu",
+	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",
+	"message.sgjourney.ring_remote.error.no_transporters_nearby": "Žádný transportér poblíž",
+	"message.sgjourney.ring_remote.error.invalid_entry": "Paměťový záznam nelze použít pro transport",
 	
 	"message.sgjourney.ring_panel.error.not_enough_energy": "Ovládání kruhů nemá dost energie",
 	"message.sgjourney.ring_panel.error.not_connected_to_stargate": "Ovládání kruhů není připojeni k transportním kruhům",
@@ -983,6 +988,7 @@
 	"message.sgjourney.command.get_address.no_galaxy": "Nenacházíte se v žádné galaxii",
 	"message.sgjourney.command.get_address.none": "Dimenze %s se nenachází v galaxii %s",
 	"message.sgjourney.command.get_address.address": "Addresa %s v galaxii %s je %s",
+	"message.sgjourney.command.get_address.no_address": "Dimenze %s v galaxii %s nemá adresu",
 	"message.sgjourney.command.get_extragalactic_address.none": "Dimenze %s nemá mimogalaktickou adresu",
 	"message.sgjourney.command.get_extragalactic_address.address": "Mimogalaktická adresa dimenze %s je %s",
 	"message.sgjourney.command.stellar_update": "Hvězdný update dokončen",
@@ -997,6 +1003,7 @@
 	"message.sgjourney.command.get_transporters.transporters": "Transportéry v dimenzi %s",
 	"message.sgjourney.command.get_transporters.no_transporters": "V dimenzi %s nebyly nalezeny žádné transportéry",
 	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
+	"message.sgjourney.command.transporter_network_version": "Verze sítě transportérů",
 	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy",
 	"message.sgjourney.command.primary_stargate_set": "Primární hvězdná brána nastavena",
 	"message.sgjourney.command.primary_stargate_unset": "Primární hvězdná brána zrušena",

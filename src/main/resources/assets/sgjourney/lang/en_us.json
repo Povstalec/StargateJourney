@@ -550,6 +550,8 @@
 	
 	"advancements.sgjourney.technology.root.title": "Stargate Technology",
 	"advancements.sgjourney.technology.root.description": "Hold the Stargate",
+	"advancements.sgjourney.technology.obtain_transport_rings.title": "This is not a Stargate!",
+	"advancements.sgjourney.technology.obtain_transport_rings.description": "Hold Transport Rings and notice how they differ from the Stargate",
 	"advancements.sgjourney.technology.obtain_basic_interface.title": "MacGyver would be proud",
 	"advancements.sgjourney.technology.obtain_basic_interface.description": "Jury rig a device capable of interfacing with the Stargate",
 	"advancements.sgjourney.technology.mine_raw_naquadah.title": "Unlike any found on Earth...",
@@ -744,6 +746,8 @@
 	"tooltip.sgjourney.is_primary": "Is Primary",
 	"tooltip.sgjourney.engage_stargate": "Engage Stargate",
 	"tooltip.sgjourney.disconnect_stargate": "Disconnect Stargate",
+	"tooltip.sgjourney.invalid_entry": "Invalid Entry",
+	"tooltip.sgjourney.coordinates": "Coordinates",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
@@ -872,9 +876,10 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fusion Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	
-	"message.sgjourney.ring_remote.error.transport_rings_busy": "Error: Transport Rings Busy",
-	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Error: No Transport Rings Nearby",
-	"message.sgjourney.ring_remote.error.no_coordinates": "Error: No Coordinates",
+	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transport Rings Busy",
+	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "No Transport Rings Nearby",
+	"message.sgjourney.ring_remote.error.no_transporters_nearby": "No Transporters Nearby",
+	"message.sgjourney.ring_remote.error.invalid_entry": "Memory entry can't be used for transport",
 	
 	"message.sgjourney.ring_panel.error.not_enough_energy": "Ring Panel does not have enough energy",
 	"message.sgjourney.ring_panel.error.not_connected_to_stargate": "Ring Panel is not connected to Transport Rings",
@@ -985,6 +990,7 @@
 	"message.sgjourney.command.get_address.no_galaxy": "You are not located in any Galaxy",
 	"message.sgjourney.command.get_address.none": "Dimension %s is not located in Galaxy %s",
 	"message.sgjourney.command.get_address.address": "Address of Dimension %s in Galaxy %s is %s",
+	"message.sgjourney.command.get_address.no_address": "Dimension %s has no address in Galaxy %s",
 	"message.sgjourney.command.get_extragalactic_address.none": "Dimension %s has no extragalactic address",
 	"message.sgjourney.command.get_extragalactic_address.address": "Extragalactic Address of Dimension %s is %s",
 	"message.sgjourney.command.stellar_update": "Stellar update applied",
@@ -999,6 +1005,7 @@
 	"message.sgjourney.command.get_transporters.transporters": "Transporters in Dimension %s",
 	"message.sgjourney.command.get_transporters.no_transporters": "No Transporters could be located in Dimension %s",
 	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
+	"message.sgjourney.command.transporter_network_version": "Transporter Network version",
 	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
 	"message.sgjourney.command.primary_stargate_set": "Primary Stargate set",
 	"message.sgjourney.command.primary_stargate_unset": "Primary Stargate unset",

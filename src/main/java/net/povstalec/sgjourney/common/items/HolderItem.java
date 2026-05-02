@@ -1,14 +1,11 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.items.IItemHandler;
 
@@ -30,53 +27,55 @@ public class HolderItem extends Item
 		return itemHandler.getStackInSlot(0);
 	}
 	
-	protected int getWeight(ItemStack stack)
-	{
-		if(stack.is(Items.BUNDLE))
-			return 4 + getContentWeight(stack);
-		else
-		{
-			if((stack.is(Items.BEEHIVE) || stack.is(Items.BEE_NEST)) && stack.hasTag())
-			{
-				CompoundTag compoundtag = BlockItem.getBlockEntityData(stack);
-				if(compoundtag != null && !compoundtag.getList("Bees", 10).isEmpty())
-					return 64;
-			}
-			
-			return 64 / stack.getMaxStackSize();
-		}
-	}
+	protected void onSwapped(ItemStack holderStack, ItemStack insertedStack, ItemStack removedStack) {}
 	
-	protected int getContentWeight(ItemStack holderStack)
+	public ItemStack swapHeldItem(ItemStack holderStack, ItemStack otherStack)
 	{
-		ItemStack heldStack = getHeldItem(holderStack);
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		if(itemHandler == null || !itemHandler.isItemValid(0, otherStack))
+			return otherStack;
 		
-		return getWeight(heldStack) * heldStack.getCount();
+		if(otherStack.isEmpty())
+		{
+			ItemStack removedStack = itemHandler.extractItem(0, 1, false);
+			onSwapped(holderStack, otherStack, removedStack);
+			return removedStack;
+		}
+		
+		ItemStack heldStack = itemHandler.getStackInSlot(0);
+		
+		if(heldStack.isEmpty())
+		{
+			ItemStack removedStack = itemHandler.insertItem(0, otherStack, false);
+			onSwapped(holderStack, otherStack, removedStack);
+			return removedStack;
+		}
+		
+		heldStack = itemHandler.extractItem(0, 1, false);
+		onSwapped(holderStack, otherStack, heldStack);
+		itemHandler.insertItem(0, otherStack, false);
+		
+		return heldStack;
 	}
 	
 	@Override
-	public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction clickAction, Player player)
+	public boolean overrideStackedOnOther(ItemStack holderStack, Slot slot, ClickAction clickAction, Player player)
 	{
 		if(clickAction != ClickAction.SECONDARY)
 			return false;
 		
-		ItemStack itemstack = slot.getItem();
-		if(itemstack.isEmpty())
+		ItemStack slotStack = slot.getItem();
+		
+		if(slotStack.isEmpty())
 		{
-			//this.playRemoveOneSound(player);
-			removeOne(stack).ifPresent((p_150740_) ->
-			{
-				add(stack, slot.safeInsert(p_150740_));
-			});
+			ItemStack swappedStack = swapHeldItem(holderStack, slotStack);
+			slot.safeInsert(swappedStack);
 		}
-		else if (itemstack.getItem().canFitInsideContainerItems())
+		else
 		{
-			int i = (64 - getContentWeight(stack)) / getWeight(itemstack);
-			int j = add(stack, slot.safeTake(itemstack.getCount(), i, player));
-			/*if (j > 0)
-			{
-				this.playInsertSound(player);
-			}*/
+			ItemStack swappedStack = swapHeldItem(holderStack, slotStack);
+			slot.remove(1);
+			slot.safeInsert(swappedStack);
 		}
 		
 		return true;
@@ -86,53 +85,14 @@ public class HolderItem extends Item
 	{
 		if(clickAction == ClickAction.SECONDARY && slot.allowModification(player))
 		{
-			if(otherStack.isEmpty())
-			{
-				removeOne(holderStack).ifPresent((removedStack) ->
-				{
-					//this.playRemoveOneSound(player);
-					slotAccess.set(removedStack);
-				});
-			}
-			else
-			{
-				int i = add(holderStack, otherStack);
-				if (i > 0)
-				{
-					//this.playInsertSound(player);
-					otherStack.shrink(i);
-				}
-			}
+			ItemStack swappedStack = swapHeldItem(holderStack, otherStack);
+			
+			if(!swappedStack.equals(otherStack))
+				slotAccess.set(swappedStack);
 			
 			return true;
 		}
 		
 		return false;
-	}
-	
-	protected int add(ItemStack holderStack, ItemStack otherStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		if(itemHandler == null)
-			return 0;
-		
-		if(!itemHandler.getStackInSlot(0).isEmpty())
-			return 0;
-		
-		itemHandler.insertItem(0, otherStack, false);
-		return 1;
-	}
-	
-	protected Optional<ItemStack> removeOne(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		if(itemHandler == null)
-			return Optional.empty();
-		
-		ItemStack removedStack = itemHandler.extractItem(0, 1, false);
-		if(removedStack.isEmpty())
-			return Optional.empty();
-		
-		return Optional.of(removedStack);
 	}
 }

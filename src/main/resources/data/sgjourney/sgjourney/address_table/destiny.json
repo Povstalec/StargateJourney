@@ -1,0 +1,7 @@
+{
+	"include_generated_addresses": false,
+	"addresses":
+	[
+		{ "address": { "dimension": "sgjourney:destiny", "address_type": 9 }, "weight": 1 }
+	]
+}

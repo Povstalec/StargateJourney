@@ -11,9 +11,9 @@ public interface StructureGenEntity
 	
 	enum Step
 	{
-		GENERATED,
-		READY,
-		SETUP;
+		GENERATED, // Already generated
+		READY, // Can generate as soon as the Block Entity is loaded
+		SETUP; // Prepared for generation, won't generate unless manually triggered
 		
 		public byte byteValue()
 		{

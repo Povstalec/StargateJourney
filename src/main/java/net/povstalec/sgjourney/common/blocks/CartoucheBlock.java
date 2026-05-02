@@ -123,7 +123,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 					
 					if(cartouche.getSymbols() != null)
-						player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols())).withStyle(ChatFormatting.LIGHT_PURPLE));
+						player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 					
 					if(cartouche.getAddressTable() != null)
 						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW));

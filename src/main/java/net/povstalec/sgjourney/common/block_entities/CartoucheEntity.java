@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities;
 
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
@@ -34,6 +35,10 @@ import java.util.Optional;
 
 public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
 {
+	//TODO Make sure the cartouche stays blank if there's an Address Table
+	
+	//FIXME Cartouches don't generate Address Tables when placed with them, only when they generate in Structures
+	
 	public static final String ADDRESS_TABLE = "AddressTable";
 	public static final String DIMENSION = "Dimension";
 	public static final String GALAXY = "Galaxy";
@@ -88,25 +93,11 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
     	if(tag.contains(SYMBOLS))
     		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
 		
-		if(tag.contains(DIMENSION))
-		{
-			if(tag.contains(ADDRESS))
-			{
-				if(tag.contains(GALAXY))
-					address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.ofNullable(Conversion.stringToGalaxyKey(tag.getString(GALAXY))), tag.getIntArray(ADDRESS));
-				else
-					address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.empty(), tag.getIntArray(ADDRESS));
-			}
-			else
-			{
-				if(tag.contains(GALAXY))
-					address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.ofNullable(Conversion.stringToGalaxyKey(tag.getString(GALAXY))));
-				else
-					address = new Address.Dimension(Conversion.stringToDimension(tag.getString(DIMENSION)), Optional.empty());
-			}
-			
-		}
-		else if(tag.contains(ADDRESS))
+		if(tag.contains(ADDRESS, Tag.TAG_COMPOUND)) // Dimension Address is saved to a tag, load it
+			address = Address.Dimension.loadFromCompoundTag(tag, ADDRESS);
+		else if(tag.contains(DIMENSION, Tag.TAG_STRING)) // Dimension is saved as a String, load it along with other stuff that forms the Dimension Address //TODO For legacy reasons
+			address = Address.Dimension.loadFromCompoundTag(tag, ADDRESS, DIMENSION, GALAXY);
+		else if(tag.contains(ADDRESS, Tag.TAG_INT_ARRAY)) // Immutable Address is saved as an array, load it
 			address = new Address.Immutable(tag.getIntArray(ADDRESS));
 	}
 	
@@ -120,14 +111,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			tag.putString(ADDRESS_TABLE, addressTable.toString());
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.location().toString());
-		
-		if(address instanceof Address.Dimension dimensionAddress)
-		{
-			tag.putString(DIMENSION, dimensionAddress.getDimension().location().toString());
-			if(dimensionAddress.getGalaxy() != null)
-				tag.putString(GALAXY,  dimensionAddress.getGalaxy().location().toString());
-		}
-		if(address != null) // We always save the address because we want to send it in the client update packet
+		if(address != null)
 			address.saveToCompoundTag(tag, ADDRESS);
 		
 		super.saveAdditional(tag);
@@ -140,9 +124,18 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag()
 	{
-		return this.saveWithoutMetadata();
+		CompoundTag tag = new CompoundTag();
+		
+		if(address instanceof Address.Dimension dimensionAddress)
+			dimensionAddress.saveToCompoundTagAsArray(tag, ADDRESS);
+		else if(address != null)
+			address.saveToCompoundTag(tag, ADDRESS);
+		if(symbols != null)
+			tag.putString(SYMBOLS, symbols.location().toString());
+		
+		return tag;
 	}
 	
 	@Override
@@ -151,7 +144,17 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Address oldAddress = address;
 		ResourceKey<Symbols> oldSymbols = symbols;
 		
-		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			if(tag.contains(ADDRESS, Tag.TAG_INT_ARRAY))
+				address = Address.Immutable.loadFromCompoundTag(tag, ADDRESS);
+			else
+				address = new Address.Immutable();
+			
+			if(tag.contains(SYMBOLS, Tag.TAG_STRING))
+				symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
+		}
 		
 		boolean needsUpdate = address != null && !address.equals(oldAddress);
 		needsUpdate |= symbols != null && !symbols.equals(oldSymbols);
@@ -207,6 +210,11 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			return new Address.Immutable();
 		
 		return this.address;
+	}
+	
+	public void setAddressTable(@Nullable ResourceLocation addressTable)
+	{
+		this.addressTable = addressTable;
 	}
 	
 	@Nullable

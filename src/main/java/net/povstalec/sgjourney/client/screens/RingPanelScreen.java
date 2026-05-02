@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.RingPanelButton;
+import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
@@ -26,6 +27,12 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
         super(menu, playerInventory, title);
         this.imageHeight = 222;
     }
+	
+	private void buttonCloseScreen(RingPanelEntity.Button button)
+	{
+		if(button.shouldCloseScreen())
+			this.onClose();
+	}
     
     @Override
     public void init()
@@ -34,12 +41,12 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, button -> menu.pressButton(0), menu.getButtonAt(0)));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, button -> menu.pressButton(1), menu.getButtonAt(1)));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, button -> menu.pressButton(2), menu.getButtonAt(2)));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, button -> menu.pressButton(3), menu.getButtonAt(3)));
-		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, button -> menu.pressButton(4), menu.getButtonAt(4)));
-		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, button -> menu.pressButton(5), menu.getButtonAt(5)));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 48, button -> { menu.pressButton(0); buttonCloseScreen(menu.getButtonAt(0)); }, menu.getButtonAt(0)));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 48, button -> { menu.pressButton(1); buttonCloseScreen(menu.getButtonAt(1)); }, menu.getButtonAt(1)));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 66, button -> { menu.pressButton(2); buttonCloseScreen(menu.getButtonAt(2)); }, menu.getButtonAt(2)));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 66, button -> { menu.pressButton(3); buttonCloseScreen(menu.getButtonAt(3)); }, menu.getButtonAt(3)));
+		this.addRenderableWidget(new RingPanelButton(x + 51, y + 84, button -> { menu.pressButton(4); buttonCloseScreen(menu.getButtonAt(4)); }, menu.getButtonAt(4)));
+		this.addRenderableWidget(new RingPanelButton(x + 93, y + 84, button -> { menu.pressButton(5); buttonCloseScreen(menu.getButtonAt(5)); }, menu.getButtonAt(5)));
 	}
 
     @Override

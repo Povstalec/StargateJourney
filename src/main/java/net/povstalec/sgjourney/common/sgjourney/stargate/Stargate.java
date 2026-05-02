@@ -73,7 +73,7 @@ public interface Stargate extends Comparable<Stargate>
 	}
 	
 	/**
-	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
+	 * @return Resource Key of the Address Region the Stargate is located in or null if it's not located in any Address Region
 	 */
 	@Nullable
 	default ResourceKey<AddressRegion> getAddressRegionKey(MinecraftServer server)

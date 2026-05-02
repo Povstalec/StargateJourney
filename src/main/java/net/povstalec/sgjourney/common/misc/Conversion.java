@@ -163,4 +163,9 @@ public class Conversion
 	{
 		return new Vec3i((int) Math.floor(vec3.x), (int) Math.floor(vec3.y), (int) Math.floor(vec3.z));
 	}
+	
+	public static String vec3iToString(Vec3i coords)
+	{
+		return "[X:" + coords.getX() + ", Y: " + coords.getY() + ", Z: " + coords.getZ() + ']';
+	}
 }

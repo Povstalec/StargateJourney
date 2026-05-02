@@ -175,7 +175,7 @@ public class AddressRegion
 	@Nullable
 	public Address.Immutable getAddressInGalaxy(ResourceKey<Galaxy> galaxyKey)
 	{
-		if(galaxyKey == null)
+		if(galaxyKey == null || !this.galacticAddresses.containsKey(galaxyKey))
 			return null;
 		
 		return this.galacticAddresses.get(galaxyKey).address();

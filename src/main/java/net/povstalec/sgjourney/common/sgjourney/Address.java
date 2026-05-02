@@ -10,14 +10,18 @@ import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -26,6 +30,10 @@ public abstract class Address implements Cloneable, Comparable<Address>
 {
 	public static final String ADDRESS = "address";
 	public static final String SYMBOLS = "symbols";
+	
+	public static final String ADDRESS_TYPE = "address_type";
+	public static final String GALAXY = "galaxy";
+	public static final String DIMENSION = "dimension";
 	
 	public static final String ADDRESS_DIVIDER = "-";
 	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
@@ -147,16 +155,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return Address.Type.fromLength(addressArray.length + 1);
 	}
 	
-	public MutableComponent toComponent(boolean copyToClipboard)
+	public ChatFormatting getChatFormatting()
 	{
-		ChatFormatting chatFormatting = switch(this.getType())
+		return switch(this.getType())
 		{
 			case ADDRESS_7_CHEVRON -> ChatFormatting.GOLD;
 			case ADDRESS_8_CHEVRON -> ChatFormatting.LIGHT_PURPLE;
 			case ADDRESS_9_CHEVRON -> ChatFormatting.AQUA;
 			default -> ChatFormatting.GRAY;
 		};
-		
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
 		Style style = Style.EMPTY;
 		if(copyToClipboard)
 		{
@@ -164,7 +175,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(getChatFormatting()));
 	}
 	
 	public boolean containsRegularSymbol(int symbol)
@@ -199,9 +210,9 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return hasPointOfOrigin() || addressArray.length == MAX_ADDRESS_LENGTH;
 	}
 	
-	public void saveToCompoundTag(CompoundTag tag, String name)
+	public void saveToCompoundTag(CompoundTag tag, String addressKey)
 	{
-		tag.putIntArray(name, addressArray);
+		tag.putIntArray(addressKey, addressArray);
 	}
 	
 	/**
@@ -479,6 +490,15 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			
 			return address;
 		}
+		
+		@Nullable
+		public static Address.Immutable loadFromCompoundTag(CompoundTag tag, String addressKey)
+		{
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Immutable(tag.getIntArray(addressKey));
+			
+			return null;
+		}
 	}
 	
 	//============================================================================================
@@ -619,6 +639,15 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			
 			return new Mutable(string);
 		}
+		
+		@Nullable
+		public static Address.Mutable loadFromCompoundTag(CompoundTag tag, String addressKey)
+		{
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Mutable(tag.getIntArray(addressKey));
+			
+			return null;
+		}
 	}
 	
 	//============================================================================================
@@ -629,24 +658,32 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	{
 		public static final Codec<Dimension> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(address -> address.dimension),
-				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxyKey))
+				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(address -> Optional.ofNullable(address.galaxyKey)),
+				Codec.intRange(7, 9).optionalFieldOf("address_type", 7).forGetter(address -> (int) address.addressType.value)
 		).apply(instance, Dimension::new));
 		
 		private ResourceKey<Level> dimension;
 		@Nullable
 		private ResourceKey<Galaxy> galaxyKey;
+		private Address.Type addressType;
 		
 		public Dimension() {}
 		
 		public Dimension(ResourceKey<Level> dimension)
 		{
-			this(dimension, Optional.empty());
+			this(dimension, Optional.empty(), Type.ADDRESS_7_CHEVRON);
 		}
 		
-		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey)
+		private Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, int addressType)
+		{
+			this(dimension, galaxyKey, Address.Type.fromLength(addressType));
+		}
+		
+		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, Address.Type addressType)
 		{
 			this.dimension = dimension;
 			this.galaxyKey = galaxyKey.orElse(null);
+			this.addressType = addressType;
 		}
 		
 		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, int... addressArray)
@@ -655,6 +692,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			
 			this.dimension = dimension;
 			this.galaxyKey = galaxyKey.orElse(null);
+			this.addressType = super.getType();
 		}
 		
 		public ResourceKey<Level> getDimension()
@@ -667,30 +705,107 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return this.galaxyKey;
 		}
 		
-		public void generate(MinecraftServer server)
+		@Nullable
+		private Address.Immutable generate7ChevronAddress(MinecraftServer server)
 		{
-			Address.Immutable address;
 			if(this.galaxyKey != null)
-				address = Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey, this.dimension);
+				return Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey, this.dimension);
 			else
 			{
 				Galaxy galaxy = Universe.get(server).getGalaxyFromDimension(this.dimension);
 				if(galaxy != null)
-					address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getResourceKey(), this.dimension);
+					return Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getResourceKey(), this.dimension);
 				else
-					address = new Address.Immutable();
+					return null;
 			}
+		}
+		
+		@Nullable
+		private Address.Immutable generate8ChevronAddress(MinecraftServer server)
+		{
+			return Universe.get(server).getExtragalacticAddressFromDimension(this.dimension);
+		}
+		
+		@Nullable
+		private Address.Immutable generate9ChevronAddress(MinecraftServer server)
+		{
+			List<Stargate> stargatesInDimension = StargateNetwork.get(server).getStargatesInDimension(this.dimension);
+			
+			if(stargatesInDimension.isEmpty())
+				return null;
+			
+			return stargatesInDimension.get(0).get9ChevronAddress();
+		}
+		
+		@Nullable
+		private Address.Immutable generateAddress(MinecraftServer server)
+		{
+			return switch(this.addressType)
+			{
+				case ADDRESS_8_CHEVRON -> generate8ChevronAddress(server);
+				case ADDRESS_9_CHEVRON -> generate9ChevronAddress(server);
+				default -> generate7ChevronAddress(server);
+			};
+		}
+		
+		public void generate(MinecraftServer server)
+		{
+			Address address = generateAddress(server);
 			
 			if(address != null)
 				this.addressArray = address.addressArray.clone();
 		}
 		
 		@Override
-		public Dimension clone()
+		public Address.Dimension clone()
 		{
 			Dimension address = (Dimension) super.clone();
 			address.dimension = this.dimension; // Shallow copy
 			return address;
+		}
+		
+		@Override
+		public void saveToCompoundTag(CompoundTag tag, String addressKey)
+		{
+			CompoundTag addressTag = new CompoundTag();
+			
+			if(this.addressArray.length > 0)
+				addressTag.putIntArray(ADDRESS, this.addressArray);
+			addressTag.putString(DIMENSION, this.dimension.location().toString());
+			addressTag.putByte(ADDRESS_TYPE, this.addressType.byteValue());
+			
+			if(this.galaxyKey != null)
+				addressTag.putString(GALAXY, this.galaxyKey.location().toString());
+			
+			tag.put(addressKey, addressTag);
+		}
+		
+		public void saveToCompoundTagAsArray(CompoundTag tag, String addressKey)
+		{
+			super.saveToCompoundTag(tag, addressKey);
+		}
+		
+		public static Address.Dimension loadFromCompoundTag(CompoundTag tag, String addressKey, String dimensionKey, String galaxyKey) //TODO For legacy reasons
+		{
+			int[] addressArray = tag.getIntArray(addressKey);
+			ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(dimensionKey));
+			ResourceKey<Galaxy> galaxy = Conversion.stringToGalaxyKey(tag.getString(galaxyKey));
+			Address.Type type = tag.contains(ADDRESS_TYPE, Tag.TAG_BYTE) ? Address.Type.fromLength(tag.getByte(ADDRESS_TYPE)) : Address.Type.ADDRESS_7_CHEVRON;
+			
+			
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Dimension(dimension, Optional.ofNullable(galaxy), addressArray);
+			else
+				return new Address.Dimension(dimension, Optional.ofNullable(galaxy), type);
+		}
+		
+		@Nullable
+		public static Address.Dimension loadFromCompoundTag(CompoundTag tag, String addressKey)
+		{
+			if(!tag.contains(addressKey, Tag.TAG_COMPOUND))
+				return null;
+			
+			return loadFromCompoundTag(tag.getCompound(addressKey), ADDRESS, DIMENSION, GALAXY);
 		}
 	}
 	

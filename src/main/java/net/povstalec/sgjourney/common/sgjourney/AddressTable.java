@@ -59,7 +59,7 @@ public class AddressTable
 		if(level == null || addressTable == null)
 			return null;
 		
-		List<WeightedAddress> addresses = new ArrayList<WeightedAddress>();
+		List<WeightedAddress> addresses = new ArrayList<>();
 		int totalWeight = 0;
 		
 		// Dimensions that are not in Datapack Solar Systems

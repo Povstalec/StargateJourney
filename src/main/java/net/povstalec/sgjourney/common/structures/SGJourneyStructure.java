@@ -23,6 +23,7 @@
 	import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 	import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 	import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+	import org.jetbrains.annotations.NotNull;
 	
 	import javax.annotation.Nullable;
 	
@@ -59,7 +60,7 @@
 	}
 	
 	@Override
-	public HolderSet<Biome> biomes()
+	public @NotNull HolderSet<Biome> biomes()
 	{
 		if(commonStargates == null)
 			return super.biomes();
