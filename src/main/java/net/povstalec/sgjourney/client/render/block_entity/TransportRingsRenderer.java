@@ -7,89 +7,113 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
-import net.povstalec.sgjourney.client.Layers;
+import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
+import org.jetbrains.annotations.NotNull;
 
-public class TransportRingsRenderer implements BlockEntityRenderer<AbstractTransportRingsEntity<?>>
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEntity<?>> implements BlockEntityRenderer<T>
 {
-	protected final TransportRingModel[] transportRings = new TransportRingModel[5];
+	// Transport Rings move at a speed of 0.25m/tick
+	
+	protected final List<TransportRingModel<T>> transportRings = new ArrayList<>(5);
 	
 	private final BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 	
-	public TransportRingsRenderer(BlockEntityRendererProvider.Context context)
+	public TransportRingsRenderer(ResourceLocation texture, BlockEntityRendererProvider.Context context)
 	{
-		for(int i = 0; i < transportRings.length; i++)
+		for(int i = 0; i < 5; i++)
 		{
-			transportRings[i] = new TransportRingModel(context.bakeLayer(Layers.TRANSPORT_RING_LAYER));
+			transportRings.add(new TransportRingModel<>(texture, 36, 5F / 16F, 2.498F, 2F));
 		}
 	}
 	
-	private float getProgress(AbstractTransportRingsEntity<?> rings, float partialTick)
+	// Ring height ignoring direction
+	protected float getAbsoluteRingHeight(int hoverDuration, int transportHeight, float progress, int ringNumber)
 	{
-		float progress = rings.getProgress(partialTick);
-		
-		int maxProgress = rings.getTransportHeight() + 2 * TransporterConnection.TRANSPORT_TICKS;
-		if(progress > maxProgress)
-			return 2 * maxProgress - TransporterConnection.TRANSPORT_TICKS - progress;
-		
-		return progress;
-	}
-	
-	private float ringHeight(AbstractTransportRingsEntity<?> rings, int ringNumber, float partialTick)
-	{
-		float height = getProgress(rings, partialTick) - 6 * ringNumber;
-		
-		return 4 * (rings.emptySpace >= 0 ? height : -height);
-	}
-	
-	private float stopHeight(AbstractTransportRingsEntity<?> rings, int ringNumber)
-	{
-		float height = rings.getTransportHeight() - 2 * ringNumber;
-		
-		return 4 * (rings.emptySpace >= 0 ? height : -height);
-	}
-	
-	private float getHeight(AbstractTransportRingsEntity<?> rings, int ringNumber, float partialTick)
-	{
-		float progress = getProgress(rings, partialTick);
-		int startTicks = 6 * ringNumber;
-		
-		if(progress <= startTicks)
+		if(progress < 6 * ringNumber) // Idle height
 			return 0;
 		
-		float ringHeight = ringHeight(rings, ringNumber, partialTick);
-		float stopHeight = stopHeight(rings, ringNumber);
+		// While hovering, each ring's center should be located half a meter above the previous one
+		int hoverHeight = AbstractTransportRingsEntity.getRingHoverHeight(transportHeight, ringNumber);
+		int hoverStartTicks = AbstractTransportRingsEntity.getRingHoverStartTicks(transportHeight, ringNumber); // Progress at which the ring will start hovering
 		
-		if((rings.emptySpace >= 0 && ringHeight >= stopHeight) || (rings.emptySpace < 0 && ringHeight <= stopHeight))
-			return stopHeight;
+		if(progress < hoverStartTicks) // Height while Rings are rising into position
+			return progress - 6 * ringNumber;
 		
-		return ringHeight;
+		int hoverEndTicks = hoverStartTicks + hoverDuration + 6 * (4 - ringNumber);
+		
+		if(progress < hoverEndTicks) // Height while Rings are hovering in place
+			return hoverHeight;
+		
+		int totalTicks = hoverEndTicks + hoverHeight;
+		
+		if(progress < totalTicks) // Height while Rings are descending back to idle position
+			return totalTicks - progress;
+		
+		return 0;
+	}
+	
+	protected float getRingHeight(AbstractTransportRingsEntity<?> rings, float partialTick, int ringNumber)
+	{
+		float progress = rings.getProgress(partialTick);
+		int transportHeight = rings.getTransportHeight();
+		int hoverDuration = AbstractTransportRingsEntity.HOVER_TICKS;
+		
+		if(rings.emptySpace >= 0)
+			return 4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
+		else
+			return -4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
 	}
 	
 	@Override
-	public void render(AbstractTransportRingsEntity transportRings, float partialTick, PoseStack stack,
-					   MultiBufferSource source, int combinedLight, int combinedOverlay)
+	public void render(@NotNull T transportRings, float partialTick, PoseStack stack,
+					   @NotNull MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		stack.pushPose();
 		stack.translate(0.5, 0.5, 0.5);
 		
-		for(int i = 0; i < this.transportRings.length; i++)
+		for(int i = 0; i < this.transportRings.size(); i++)
 		{
-			float ringHeight = getHeight(transportRings, i, partialTick);
+			float ringHeight = getRingHeight(transportRings, partialTick, i) / 16F;
+			if(ringHeight == 0 && i != 4) // Don't render overlapping rings when Transport Rings are idle
+				continue;
 			
-			mutablePos.set(transportRings.getBlockPos().getX(), transportRings.getBlockPos().getY() + Math.round(ringHeight / 16F), transportRings.getBlockPos().getZ());
-			int transportLight = LevelRenderer.getLightColor(transportRings.getLevel(), mutablePos);
+			mutablePos.set(transportRings.getBlockPos().getX(), transportRings.getBlockPos().getY() + Math.round(ringHeight), transportRings.getBlockPos().getZ());
+			int transportLight = transportRings.getLevel() != null ? LevelRenderer.getLightColor(transportRings.getLevel(), mutablePos) : combinedLight;
 			
 			stack.pushPose();
-			stack.translate(0, ringHeight / 16D, 0);
+			stack.translate(0, ringHeight, 0);
 			
-			this.transportRings[i].render(transportRings, partialTick, stack, source, transportLight, combinedOverlay, ringHeight);
+			this.transportRings.get(i).render(transportRings, partialTick, stack, source, transportLight, combinedOverlay);
 			
 			stack.popPose();
 		}
 		
 	    stack.popPose();
+	}
+	
+	
+	
+	public static class Ancient extends TransportRingsRenderer<AncientTransportRingsEntity>
+	{
+		public Ancient(BlockEntityRendererProvider.Context context)
+		{
+			super(new ResourceLocation(StargateJourney.MODID, "textures/entity/transport_rings/ancient_transport_rings.png"), context);
+		}
+	}
+	
+	public static class Goauld extends TransportRingsRenderer<GoauldTransportRingsEntity>
+	{
+		public Goauld(BlockEntityRendererProvider.Context context)
+		{
+			super(new ResourceLocation(StargateJourney.MODID, "textures/entity/transport_rings/goauld_transport_rings.png"), context);
+		}
 	}
 }

@@ -197,7 +197,7 @@ public interface Transporter extends Comparable<Transporter>
 	
 	TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback);
 	
-	int getTimeOffset(MinecraftServer server);
+	int getTimeUntilTransport(MinecraftServer server);
 	
 	List<Entity> entitiesToTransport(MinecraftServer server);
 	
@@ -217,7 +217,7 @@ public interface Transporter extends Comparable<Transporter>
 	 */
 	boolean isObstructed(MinecraftServer server);
 	
-	void updateTicks(MinecraftServer server, int connectionTime);
+	void updateTicks(MinecraftServer server, int transportTicks, int connectionTime);
 	
 	TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter);
 	

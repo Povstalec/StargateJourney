@@ -520,6 +520,15 @@
 		]
 	},
 	
+	"transport_rings_transport":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport"
+		]
+	},
+	
 	"ring_panel_press":
 	{
 		"subtitle": "sounds.sgjourney.ring_panel_press",

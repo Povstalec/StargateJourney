@@ -435,10 +435,12 @@ public final class TransporterNetwork extends SavedData
 				
 				if(connection != null)
 					this.connections.put(uuid, connection);
+				else
+					StargateJourney.LOGGER.error("Could not deserialize Transporter Connection {}", connectionID);
 			}
 			catch(IllegalArgumentException e)
 			{
-				StargateJourney.LOGGER.error(e.toString());
+				StargateJourney.LOGGER.error("Could not deserialize Transporter Connection {}", connectionID, e);
 			}
 		}
 	}

@@ -53,9 +53,9 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class RingPanelEntity extends TransporterControllerEntity implements ProtectedBlockEntity
 {
-	//FIXME Pressing a button while the Transport Rings are rising can cancel them
-	//FIXME Pressing a button while the Transport Rings are being lowered can cancel them
-	//TODO Display saved names of entries on Memory Crystal Buttons
+	//TODO Tell the player there are no rings connected
+	//TODO Frequency
+	//TODO Interdimensional transport (Materialization Crystals)
 	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	public static final int MESSAGE_DISTANCE = 3;
@@ -311,10 +311,6 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		this.connectedTransporter = transporter;
 	}
 	
-	//TODO Tell the player there are no rings connected
-	//TODO Frequency
-	//TODO Interdimensional transport (Materialization Crystals)
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, RingPanelEntity ringPanel)
 	{
 		if(level.isClientSide())
@@ -439,7 +435,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			Transporter transporter = BlockEntityList.get(server).getTransporter(transporterID.entry());
 			if(transporter != null)
-				return Button.memoryTransportButton(this, index, true).setTransporter(server, transporter).setTooltip(Component.literal(transporterID.name()).withStyle(ChatFormatting.AQUA));
+				return Button.memoryTransportButton(this, index, true).setTransporter(server, transporter).setTooltip(Component.literal(transporterID.name()).withStyle(ChatFormatting.GREEN));
 			else
 				return Button.memoryTransportButton(this, index, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
 			
@@ -448,7 +444,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		{
 			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			if(coords != null)
-				return Button.memoryTransportButton(this, index, true).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.AQUA), coords.asVec3());
+				return Button.memoryTransportButton(this, index, true).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
 			else
 				return Button.memoryTransportButton(this, index, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_location").withStyle(ChatFormatting.DARK_RED));
 		}
@@ -525,6 +521,16 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	}
 	
 	// ======= Transporting =======
+	
+	public boolean checkBusy()
+	{
+		if(!connectedTransporter.isConnected(level.getServer()))
+			return true;
+		
+		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), MESSAGE_DISTANCE);
+		updateButtons();
+		return false;
+	}
 	
 	public TransporterInfo.Feedback startCoordTransport(Vec3 coords)
 	{
@@ -768,9 +774,12 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			{
 				if(button.transporterID() != null)
 				{
-					TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-					if(feedback.isError())
-						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					if(button.parent.checkBusy())
+					{
+						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+						if(feedback.isError())
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					}
 				}
 			});
 		}
@@ -780,7 +789,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			if(!hasEnergy)
 				return new Button(parent, index, ButtonState.MEMORY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
 			
-			int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(parent.crystalItemHandler.getStackInSlot(index), MemoryEntry.Type.TRANSPORTER_ID);
+			int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(parent.crystalItemHandler.getStackInSlot(index), MemoryEntry.Type.TRANSPORTER_ID, MemoryEntry.Type.COORDINATES);
 			if(entryCount == 0) // Memory Crystal holds no Transporter IDs, make the button uninteractable
 				return new Button(parent, index, ButtonState.MEMORY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries").append(": 0").withStyle(ChatFormatting.BLUE));
 			
@@ -788,22 +797,6 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			{
 				if(button.parent.page < 0)
 					button.parent.setBaseMemoryCrystalPage(button.parent.level.getServer(), index);
-				else if(button.transporterID() != null)
-				{
-					button.setCloseScreen(true);
-					
-					TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-					if(feedback.isError())
-						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
-				}
-				else if(button.coords() != null)
-				{
-					button.setCloseScreen(true);
-					
-					TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
-					if(feedback.isError())
-						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
-				}
 			});
 		}
 		
@@ -813,9 +806,25 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			{
 				if(button.transporterID() != null)
 				{
-					TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-					if(feedback.isError())
-						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					button.setCloseScreen(true);
+					
+					if(button.parent.checkBusy())
+					{
+						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+						if(feedback.isError())
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					}
+				}
+				else if(button.coords() != null)
+				{
+					button.setCloseScreen(true);
+					
+					if(button.parent.checkBusy())
+					{
+						TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
+						if(feedback.isError())
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					}
 				}
 			});
 		}
@@ -849,9 +858,12 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 					//TODO Automatically change connected Transporter's frequency to match
 					//button.parent.connectedTransporter.set
 					
-					TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-					if(feedback.isError())
-						button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					if(button.parent.checkBusy())
+					{
+						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+						if(feedback.isError())
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+					}
 				}
 			});
 		}
@@ -916,9 +928,12 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			return new Button(parent, index, ButtonState.ENTER, true).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport").append(Component.literal(": ").append(parent.encodedID.toComponent(false))).withStyle(ChatFormatting.DARK_AQUA))
 					.setOnPress(button ->
 					{
-						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
-						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+						if(button.parent.checkBusy())
+						{
+							TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
+							if(feedback.isError())
+								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+						}
 					}).setCloseScreen(true);
 		}
 	}

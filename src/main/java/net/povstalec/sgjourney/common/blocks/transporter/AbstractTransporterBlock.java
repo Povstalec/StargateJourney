@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -22,7 +23,7 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
-import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 
@@ -82,14 +83,21 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.TRANSPORTER_ID) ? blockEntityTag.getString(AbstractTransporterEntity.TRANSPORTER_ID) : "-";
 		
-		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.DARK_AQUA));
-
-        if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(AbstractTransporterEntity.ENERGY, Tag.TAG_LONG))
+				energy = blockEntityTag.getLong(AbstractTransporterEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(ComponentHelper.energy(energy));
+		
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, Tag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	

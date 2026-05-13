@@ -27,9 +27,6 @@ public class TransporterConnection
 	public static final String CONNECTION_TIME = "connection_time";
 	public static final String RELAY_ID = "relay_id";
 	
-	public static final int RING_TICKS = 16; // Number of ticks it takes the rings to get into position
-	public static final int TRANSPORT_TICKS = 30; // Number of ticks it takes to start transporting
-	
 	private final UUID uuid;
 	private final Transporter transporterA;
 	private final Transporter transporterB;
@@ -52,8 +49,8 @@ public class TransporterConnection
 		
 		this.connectionTime = connectionTime;
 		
-		this.timeOffsetA = transporterA.getTimeOffset(server);
-		this.timeOffsetB = transporterB.getTimeOffset(server);
+		this.timeOffsetA = transporterA.getTimeUntilTransport(server);
+		this.timeOffsetB = transporterB.getTimeUntilTransport(server);
 		
 		this.transportStartTicks = Math.max(timeOffsetA, timeOffsetB);
 		
@@ -126,38 +123,34 @@ public class TransporterConnection
 	
 	
 	
-	private int absDifference()
-	{
-		return Math.abs(timeOffsetA - timeOffsetB);
-	}
-	
 	public void tick(MinecraftServer server)
 	{
-		int halfTransportTicks = transportStartTicks + RING_TICKS + TRANSPORT_TICKS;
-		if(connectionTime >= 2 * halfTransportTicks || !isTransporterValid(server, transporterA) || !isTransporterValid(server, transporterB))
+		if(!isTransporterValid(server, transporterA) || !isTransporterValid(server, transporterB))
 		{
 			terminate(server, TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
 			return;
 		}
 		
-		if(connectionTime == halfTransportTicks)
+		if(connectionTime == transportStartTicks)
 			transport(server);
 		
 		updateTransporterTicks(server, transporterA, timeOffsetA);
 		updateTransporterTicks(server, transporterB, timeOffsetB);
 		
 		increaseTicks();
+		
+		if(connectionTime >= 2 * transportStartTicks)
+			terminate(server, TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 	}
 	
-	private void updateTransporterTicks(MinecraftServer server, Transporter transporter, int timeOffset)
+	private void updateTransporterTicks(MinecraftServer server, Transporter transporter, int transporterTimeOffset)
 	{
-		if(timeOffset == transportStartTicks)
-			transporter.updateTicks(server, connectionTime);
+		if(transporterTimeOffset == transportStartTicks)
+			transporter.updateTicks(server, transporterTimeOffset, connectionTime);
 		else
 		{
-			int ticks = connectionTime - (transportStartTicks - timeOffset);
-			if(ticks >= 0)
-				transporter.updateTicks(server, ticks);
+			int ticks = connectionTime - (transportStartTicks - transporterTimeOffset);
+			transporter.updateTicks(server, transporterTimeOffset, Math.max(ticks, -1));
 		}
 	}
 	

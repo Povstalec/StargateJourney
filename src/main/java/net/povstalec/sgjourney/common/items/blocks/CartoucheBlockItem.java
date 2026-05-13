@@ -118,7 +118,10 @@ public class CartoucheBlockItem extends BlockItem
 					cartouche.setDimensionFromLevel(level);
 				
 				if(info.contains(CartoucheEntity.ADDRESS_TABLE, Tag.TAG_STRING))
+				{
 					cartouche.setAddressTable(ResourceLocation.tryParse(info.getString(CartoucheEntity.ADDRESS_TABLE)));
+					cartouche.generate();
+				}
 				
 				cartouche.tryGenerateAddress();
 				

@@ -230,12 +230,12 @@ public class Dialing
 		{
 			Transporter target = transporterEntity.getTransporter();
 			if(target == null)
-				return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID); //TODO no transporter at coords
+				return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
 			
 			return connectionAttempt(server, dialingTransporter, target, mustBeLoaded);
 		}
 		else
-			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID); //TODO no transporter at coords
+			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
 	}
 	
 	private static TransporterInfo.Feedback connectionAttempt(MinecraftServer server, Transporter initiatingTransporter, Transporter targetTransporter, boolean mustBeLoaded)

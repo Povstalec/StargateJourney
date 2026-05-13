@@ -35,10 +35,6 @@ import java.util.Optional;
 
 public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
 {
-	//TODO Make sure the cartouche stays blank if there's an Address Table
-	
-	//FIXME Cartouches don't generate Address Tables when placed with them, only when they generate in Structures
-	
 	public static final String ADDRESS_TABLE = "AddressTable";
 	public static final String DIMENSION = "Dimension";
 	public static final String GALAXY = "Galaxy";
@@ -272,6 +268,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	
 	public void setAddressFromAddressTable()
 	{
+		System.out.println("setAddressFromAddressTable");
 		AddressTable addressTable = AddressTable.getAddressTable(level, this.addressTable);
 		Address address = AddressTable.randomAddress((ServerLevel) level, addressTable);
 		

@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -20,12 +21,9 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.TransporterInit;
+import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
-import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,6 +35,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final String TRANSPORT_HEIGHT = "transport_height";
 	public static final String PROGRESS = "progress";
 	
+	public static final int TRANSPORT_TICKS = 20; // Number of ticks Transport Rings wait while in the hover position before they start transporting
+	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
+	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
 	@Nullable
@@ -46,6 +47,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	
 	public int progress = -1;
 	public int progressOld = -1;
+	
+	protected int transportSoundLead = 43;
 	
 	public AbstractTransportRingsEntity(BlockEntityType<?> blockEntityType, TransporterType<TR> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
@@ -87,12 +90,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
     {
         return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
     }
-	
-	@Override
-	public int getTimeOffset()
-	{
-		return getTransportHeight();
-	}
 
 	//========================================================================================================
 	//**********************************************Transporting**********************************************
@@ -143,6 +140,21 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		CCTweakedCompatibility.registerTransportRingsMethods(wrapper);
 	}
 	
+	public static int getRingHoverHeight(int transportHeight, int ringNumber)
+	{
+		return transportHeight - 2 * ringNumber;
+	}
+	
+	public static int getRingHoverStartTicks(int transportHeight, int ringNumber)
+	{
+		return 6 * ringNumber + getRingHoverHeight(transportHeight, ringNumber);
+	}
+	
+	@Override
+	public int getTimeUntilTransport()
+	{
+		return getRingHoverStartTicks(getTransportHeight(), 4) + TRANSPORT_TICKS;
+	}
 	
 	public int getTransportHeight()
 	{
@@ -160,13 +172,16 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	public void updateTicks(int connectionTime)
+	public void updateTicks(int transportTicks, int connectionTime)
 	{
 		this.progress = connectionTime;
 		this.progressOld = connectionTime;
+		
+		if(transportTicks - getTransportSoundLead() == connectionTime)
+			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT.get(), SoundSource.BLOCKS, 0.5F, 1F);
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity rings)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity<?> rings)
 	{
 		if(rings.isConnected())
 			rings.doClientProgress();
@@ -213,12 +228,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public boolean isConnected()
 	{
-		BlockPos pos = this.getBlockPos();
-		BlockState state = this.level.getBlockState(pos);
-		if(state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
-			return this.level.getBlockState(pos).getValue(AbstractTransportRingsBlock.ACTIVATED);
-		
-		return false;
+		return this.level.getBlockState(this.getBlockPos()).getValue(AbstractTransportRingsBlock.ACTIVATED);
 	}
 	
 	@Override
@@ -232,9 +242,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
-		
-		if(state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
-			level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
+		level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
 		
 		loadChunk(connected);
 	}
@@ -243,18 +251,15 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
-		
-		if(!state.is(BlockInit.GOAULD_TRANSPORT_RINGS.get()))
+		if(!state.hasProperty(AbstractTransportRingsBlock.FACING))
 			return 0;
 		
 		if(state.getValue(AbstractTransportRingsBlock.FACING) == Direction.DOWN)
 		{
 			for(int i = 4; i <= 16; i++)
 			{
-				if(!level.getBlockState(pos.below(i)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 2)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 3)).getMaterial().isReplaceable())
+				if(!level.getBlockState(pos.below(i)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 1)).getMaterial().isReplaceable() &&
+					level.getBlockState(pos.below(i - 2)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 3)).getMaterial().isReplaceable())
 				{
 					return -i + 1;
 				}
@@ -264,8 +269,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		{
 			for(int i = 1; i <= 16; i++)
 			{
-				if(level.getBlockState(pos.above(i)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.above(i + 1)).getMaterial().isReplaceable() &&
+				if(level.getBlockState(pos.above(i)).getMaterial().isReplaceable() && level.getBlockState(pos.above(i + 1)).getMaterial().isReplaceable() &&
 					level.getBlockState(pos.above(i + 2)).getMaterial().isReplaceable())
 				{
 					return i;
@@ -307,4 +311,12 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		return Component.translatable("block.sgjourney.transport_rings");
 	}
 	
+	/**
+	 * Transport Rings can make noises before the transport itself starts
+	 * @return The number of ticks which the Transport Rings transport sound will get as a head-start before the actual transport begins
+	 */
+	public int getTransportSoundLead()
+	{
+		return this.transportSoundLead;
+	}
 }

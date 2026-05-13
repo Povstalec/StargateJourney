@@ -151,7 +151,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOriginString)).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

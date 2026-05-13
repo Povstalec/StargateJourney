@@ -120,9 +120,9 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default int getTimeOffset(MinecraftServer server)
+	default int getTimeUntilTransport(MinecraftServer server)
 	{
-		return transporterReturn(server, transporter -> transporter.getTimeOffset(), 0);
+		return transporterReturn(server, transporter -> transporter.getTimeUntilTransport(), 0);
 	}
 	
 	@Override
@@ -186,9 +186,9 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default void updateTicks(MinecraftServer server, int connectionTime)
+	default void updateTicks(MinecraftServer server, int transportTicks, int connectionTime)
 	{
-		transporterRun(server, transporter -> transporter.updateTicks(connectionTime));
+		transporterRun(server, transporter -> transporter.updateTicks(transportTicks, connectionTime));
 	}
 	
 	//============================================================================================

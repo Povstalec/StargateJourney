@@ -107,9 +107,9 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return 0;
 	}
 	
-	public static int countMemoryEntriesOfType(ItemStack stack, MemoryEntry.Type entryType)
+	public static int countMemoryEntriesOfType(ItemStack stack, MemoryEntry.Type... entryTypes)
 	{
-		if(entryType == null)
+		if(entryTypes.length == 0)
 			return getMemoryListSize(stack);
 		
 		ListTag list = getMemoryList(stack);
@@ -117,8 +117,14 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		int count = 0;
 		for(int i = 0; i < list.size(); i++)
 		{
-			if(loadMemoryEntry(list, entryType, i) != null)
-				count++;
+			for(MemoryEntry.Type entryType : entryTypes)
+			{
+				if(loadMemoryEntry(list, entryType, i) != null)
+				{
+					count++;
+					break;
+				}
+			}
 		}
 		
 		return count;

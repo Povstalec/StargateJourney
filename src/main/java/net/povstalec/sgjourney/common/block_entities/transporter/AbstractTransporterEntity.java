@@ -236,11 +236,6 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		return !this.isConnected();
 	}
 	
-	public int getTimeOffset()
-	{
-		return 0;
-	}
-	
 	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
 	{
 		if(!level.isClientSide())
@@ -395,12 +390,17 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	//**********************************************Transporting**********************************************
 	//========================================================================================================
 	
+	public int getTimeUntilTransport()
+	{
+		return 0; // Based on hoverStartTicks in the renderer
+	}
+	
 	@Nullable
 	public abstract List<Entity> entitiesToTransport();
 	
 	public abstract BlockPos transportPos();
 	
-	public abstract void updateTicks(int connectionTime);
+	public abstract void updateTicks(int transportTicks, int connectionTime);
 	
 	public abstract void setConnected(boolean connected);
 	

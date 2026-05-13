@@ -875,11 +875,12 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
-	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy již v provozu",
+	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",
 	"message.sgjourney.ring_remote.error.no_transporters_nearby": "Žádný transportér poblíž",
 	"message.sgjourney.ring_remote.error.invalid_entry": "Paměťový záznam nelze použít pro transport",
 	
+	"message.sgjourney.ring_panel.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_panel.error.not_enough_energy": "Ovládání kruhů nemá dost energie",
 	"message.sgjourney.ring_panel.error.not_connected_to_stargate": "Ovládání kruhů není připojeni k transportním kruhům",
 	

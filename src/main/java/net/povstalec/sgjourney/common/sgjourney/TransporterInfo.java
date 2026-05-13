@@ -37,28 +37,28 @@ public class TransporterInfo
 		CONNECTION_ESTABLISHED_RELAYED_INTERGALACTIC(6, TransporterInfo.FeedbackType.INFO, "connection_established.relayed_intergalactic"),
 		
 		INVALID_TRANSPORTER_ID(-2, TransporterInfo.FeedbackType.MAJOR_ERROR, "invalid_transporter_id"),
-		NOT_ENOUGH_POWER(-3, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power"), //TODO
-		SELF_OBSTRUCTED(-4, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_obstructed"),
-		TARGET_OBSTRUCTED(-5, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_obstructed"),
-		SELF_CONNECT(-6, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_connect"),
-		ALREADY_CONNECTED(-7, TransporterInfo.FeedbackType.MAJOR_ERROR, "already_connected"),
-		TARGET_RESTRICTED(-8, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_restricted"),
-		TARGET_NOT_WHITELISTED(-9, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
-		NOT_WHITELISTED_BY_TARGET(-10, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_whitelisted_by_target"),
-		TARGET_BLACKLISTED(-11, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_blacklisted"),
-		BLACKLISTED_BY_TARGET(-12, TransporterInfo.FeedbackType.MAJOR_ERROR, "blacklisted_by_target"),
-		//TODO no transporter at coords
+		NO_TRANSPORTER_AT_COORDS(-3, TransporterInfo.FeedbackType.MAJOR_ERROR, "no_transporter_at_coords"),
+		NOT_ENOUGH_POWER(-4, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power"), //TODO
+		SELF_OBSTRUCTED(-5, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_obstructed"),
+		TARGET_OBSTRUCTED(-6, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_obstructed"),
+		SELF_CONNECT(-7, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_connect"),
+		ALREADY_CONNECTED(-8, TransporterInfo.FeedbackType.MAJOR_ERROR, "already_connected"),
+		TARGET_RESTRICTED(-9, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_restricted"),
+		TARGET_NOT_WHITELISTED(-10, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
+		NOT_WHITELISTED_BY_TARGET(-11, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_whitelisted_by_target"),
+		TARGET_BLACKLISTED(-12, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_blacklisted"),
+		BLACKLISTED_BY_TARGET(-13, TransporterInfo.FeedbackType.MAJOR_ERROR, "blacklisted_by_target"),
 		
 		// End Connection
 		CONNECTION_ENDED_BY_DISCONNECT(7, TransporterInfo.FeedbackType.INFO, "connection_ended.disconnect"),
 		CONNECTION_ENDED_BY_NETWORK(8, TransporterInfo.FeedbackType.INFO, "connection_ended.transporter_network"),
-		CONNECTION_NOT_FINISHED(-13, TransporterInfo.FeedbackType.ERROR, "connection_not_finished"), //TODO
+		CONNECTION_NOT_FINISHED(-14, TransporterInfo.FeedbackType.ERROR, "connection_not_finished"), //TODO Is this even necessary?
 		
-		TRANSPORTER_DESTROYED(-13, TransporterInfo.FeedbackType.ERROR, "transporter_destroyed"),
-		COULD_NOT_REACH_TARGET_TRANSPORTER(-14, TransporterInfo.FeedbackType.MAJOR_ERROR, "could_not_reach_target_transporter"),
-		INTERRUPTED_BY_INCOMING_CONNECTION(-15, TransporterInfo.FeedbackType.ERROR, "interrupted_by_incoming_connection"), //TODO
+		TRANSPORTER_DESTROYED(-15, TransporterInfo.FeedbackType.ERROR, "transporter_destroyed"),
+		COULD_NOT_REACH_TARGET_TRANSPORTER(-16, TransporterInfo.FeedbackType.MAJOR_ERROR, "could_not_reach_target_transporter"),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-17, TransporterInfo.FeedbackType.ERROR, "interrupted_by_incoming_connection"), //TODO
 		
-		TARGET_NOT_LOADED(-16, TransporterInfo.FeedbackType.ERROR, "target_not_loaded");
+		TARGET_NOT_LOADED(-18, TransporterInfo.FeedbackType.ERROR, "target_not_loaded");
 		
 		private final int code;
 		private final TransporterInfo.FeedbackType type;

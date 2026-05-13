@@ -506,13 +506,13 @@ public class BlockInit
 			() -> new NaquadahGeneratorMarkIIBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)),
 			() -> CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get(), Rarity.COMMON);
 	
-	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerEnergyBlock("basic_interface",
+	public static final RegistryObject<BasicInterfaceBlock> BASIC_INTERFACE = registerInterfaceBlock("basic_interface",
 			() -> new BasicInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
 			() -> CommonInterfaceConfig.basic_interface_capacity.get(), Rarity.COMMON);
-	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerEnergyBlock("crystal_interface",
+	public static final RegistryObject<CrystalInterfaceBlock> CRYSTAL_INTERFACE = registerInterfaceBlock("crystal_interface",
 			() -> new CrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
 			() -> CommonInterfaceConfig.crystal_interface_capacity.get(), Rarity.UNCOMMON);
-	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerEnergyBlock("advanced_crystal_interface",
+	public static final RegistryObject<AdvancedCrystalInterfaceBlock> ADVANCED_CRYSTAL_INTERFACE = registerInterfaceBlock("advanced_crystal_interface",
 			() -> new AdvancedCrystalInterfaceBlock(BlockBehaviour.Properties.of(Material.METAL).isRedstoneConductor(BlockInit::never).strength(5.0F, 6.0F)),
 			() -> CommonInterfaceConfig.advanced_crystal_interface_capacity.get(), Rarity.RARE);
 	
@@ -621,6 +621,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerInterfaceBlock(String name, Supplier<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerInterfaceBlockItem(name, toReturn, getter, rarity);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerBlockItem(String name, RegistryObject<T> block)
 	{
 		return ItemInit.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
@@ -659,6 +668,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerEnergyBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerInterfaceBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
+	{
+		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter, "tooltip.sgjourney.energy_buffer"));
 	}
 	
 	public static void register(IEventBus eventBus)
