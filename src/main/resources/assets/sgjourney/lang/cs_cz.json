@@ -457,6 +457,9 @@
 	"stat.sgjourney.times_used_wormhole": "Počet použití červí díry",
 	"stat.sgjourney.distance_traveled_by_stargate": "Nacestováno hvězdnou bránou",
 	
+	"stat.sgjourney.times_used_transporter": "Počet použití transportéru",
+	"stat.sgjourney.distance_traveled_by_transporter": "Nacestováno transportérem",
+	
 	
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeolog",
 	

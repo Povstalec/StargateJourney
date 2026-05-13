@@ -458,6 +458,9 @@
 	"stat.sgjourney.times_killed_by_wormhole": "Times killed by Wormhole",
 	"stat.sgjourney.times_used_wormhole": "Times travelled by Wormhole",
 	"stat.sgjourney.distance_traveled_by_stargate": "Distance by Stargate",
+	
+	"stat.sgjourney.times_used_transporter": "Times travelled by Transporter",
+	"stat.sgjourney.distance_traveled_by_transporter": "Distance by Transporter",
 
 
 	"entity.minecraft.villager.sgjourney.archeologist": "Archeologist",

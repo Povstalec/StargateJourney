@@ -25,9 +25,11 @@ public class TransporterConnection
 	public static final String TRANSPORTER_A = "transporter_a";
 	public static final String TRANSPORTER_B = "transporter_b";
 	public static final String CONNECTION_TIME = "connection_time";
+	public static final String CONNECTION_TYPE = "connection_type";
 	public static final String RELAY_ID = "relay_id";
 	
 	private final UUID uuid;
+	protected final TransporterConnection.Type connectionType;
 	private final Transporter transporterA;
 	private final Transporter transporterB;
 	
@@ -41,9 +43,10 @@ public class TransporterConnection
 	@Nullable
 	protected UUID relayID; // UUID of the Stargate connection that is used to relay this connection
 	
-	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB, int connectionTime, @Nullable UUID relayID)
+	private TransporterConnection(MinecraftServer server, UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB, int connectionTime, @Nullable UUID relayID)
 	{
 		this.uuid = uuid;
+		this.connectionType = connectionType;
 		this.transporterA = transporterA;
 		this.transporterB = transporterB;
 		
@@ -57,26 +60,47 @@ public class TransporterConnection
 		this.relayID = relayID; //TODO
 	}
 	
-	private TransporterConnection(MinecraftServer server, UUID uuid, Transporter transporterA, Transporter transporterB)
+	private TransporterConnection(MinecraftServer server, UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
 	{
-		this(server, uuid, transporterA, transporterB, 0, null);
+		this(server, uuid, connectionType, transporterA, transporterB, 0, null);
 	}
 	
 	public enum Type
 	{
-		DIMENSIONAL(false), // Within one dimension
-		SYSTEM_WIDE(false), // Within one system, across two dimensions
+		DIMENSIONAL("dimensional", false), // Within one dimension
+		SYSTEM_WIDE("system_wide", false), // Within one system, across two dimensions
 		
-		RELAYED_DIMENSIONAL(true), // Within one dimension, relayed through a Stargate
-		RELAYED_SYSTEM_WIDE(true), // Within one system, relayed through a Stargate
-		RELAYED_INTERSTELLAR(true), // Across two solar systems, relayed through a Stargate
-		RELAYED_INTERGALACTIC(true); // Across two galaxies, relayed through a Stargate
+		RELAYED_DIMENSIONAL("relayed_dimensional", true), // Within one dimension, relayed through a Stargate
+		RELAYED_SYSTEM_WIDE("relayed_system_wide", true), // Within one system, relayed through a Stargate
+		RELAYED_INTERSTELLAR("relayed_interstellar", true), // Across two solar systems, relayed through a Stargate
+		RELAYED_INTERGALACTIC("relayed_intergalactic", true); // Across two galaxies, relayed through a Stargate
 		
+		private final String name;
 		public final boolean isRelayed;
 		
-		Type(boolean isRelayed)
+		Type(String name, boolean isRelayed)
 		{
+			this.name = name;
 			this.isRelayed = isRelayed;
+		}
+		
+		public String getSerializedName()
+		{
+			return this.name;
+		}
+		
+		public static TransporterConnection.Type fromString(String name)
+		{
+			return switch(name)
+			{
+				case "dimensional" -> DIMENSIONAL;
+				case "system_wide" -> SYSTEM_WIDE;
+				case "relayed_dimensional" -> RELAYED_DIMENSIONAL;
+				case "relayed_system_wide" -> RELAYED_SYSTEM_WIDE;
+				case "relayed_interstellar" -> RELAYED_INTERSTELLAR;
+				case "relayed_intergalactic" -> RELAYED_INTERGALACTIC;
+				default -> null;
+			};
 		}
 	}
 	
@@ -106,7 +130,7 @@ public class TransporterConnection
 	}
 	
 	@Nullable
-	public static TransporterConnection create(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	public static TransporterConnection create(MinecraftServer server, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
 	{
 		if(transporterA != null && transporterB != null)
 		{
@@ -115,7 +139,7 @@ public class TransporterConnection
 			transporterA.connect(server, uuid);
 			transporterB.connect(server, uuid);
 			
-			return new TransporterConnection(server, uuid, transporterA, transporterB);
+			return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB);
 		}
 		
 		return null;
@@ -199,11 +223,18 @@ public class TransporterConnection
 		return transporter.isConnected(server);
 	}
 	
-	
+	//============================================================================================
+	//************************************Getters and Setters*************************************
+	//============================================================================================
 	
 	public UUID getID()
 	{
 		return this.uuid;
+	}
+	
+	public TransporterConnection.Type getConnectionType()
+	{
+		return this.connectionType;
 	}
 	
 	public UUID getRelayID()
@@ -239,6 +270,7 @@ public class TransporterConnection
 	@Nullable
 	public static TransporterConnection deserialize(MinecraftServer server, UUID uuid, CompoundTag tag)
 	{
+		TransporterConnection.Type connectionType = TransporterConnection.Type.valueOf(tag.getString(CONNECTION_TYPE));
 		Transporter transporterA = deserializeTransporter(server, tag.getCompound(TRANSPORTER_A));
 		Transporter transporterB = deserializeTransporter(server, tag.getCompound(TRANSPORTER_B));
 		int connectionTime = tag.getInt(CONNECTION_TIME);
@@ -246,14 +278,14 @@ public class TransporterConnection
 		try
 		{
 			if(tag.contains(RELAY_ID, Tag.TAG_STRING))
-				return new TransporterConnection(server, uuid, transporterA, transporterB, connectionTime, UUID.fromString(tag.getString(RELAY_ID)));
+				return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB, connectionTime, UUID.fromString(tag.getString(RELAY_ID)));
 		}
 		catch(IllegalArgumentException e)
 		{
 			StargateJourney.LOGGER.error(e.toString());
 		}
 		
-		return new TransporterConnection(server, uuid, transporterA, transporterB, connectionTime, null);
+		return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB, connectionTime, null);
 	}
 	
 	private static Transporter deserializeTransporter(MinecraftServer server, CompoundTag transporterInfo)

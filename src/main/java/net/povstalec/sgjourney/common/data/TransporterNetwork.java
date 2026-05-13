@@ -336,7 +336,7 @@ public final class TransporterNetwork extends SavedData
 		else if(targetTransporter.isObstructed(server))
 			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OBSTRUCTED);
 		
-		TransporterConnection connection = TransporterConnection.create(server, initiatingTransporter, targetTransporter);
+		TransporterConnection connection = TransporterConnection.create(server, connectionType, initiatingTransporter, targetTransporter);
 		
 		//TODO New errors relating to the problems with relaying the connection through Stargates
 		//if(connection.getRelayID() == null && connectionType.isRelayed)

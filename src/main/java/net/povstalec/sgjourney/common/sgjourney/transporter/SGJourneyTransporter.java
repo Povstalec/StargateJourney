@@ -103,7 +103,7 @@ public abstract class SGJourneyTransporter implements Transporter
 		Vec3 destinationMomentum = fromTransporterCoords(server, relativeMomentum, false);
 		Vec3 destinationLookAngle = fromTransporterCoords(server, relativeLookAngle, false);
 		
-		return Transporting.receiveTraveler(getLevel(server), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		return Transporting.receiveTraveler(connection, getLevel(server), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 	}
 	
 	@Override
