@@ -9,6 +9,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -20,12 +22,16 @@ import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import java.util.*;
 
 public class Transporting
 {
+	public static final String EVENT_DECONSTRUCTING_ENTITY = "transporter_deconstructing_entity";
+	public static final String EVENT_RECONSTRUCTING_ENTITY = "transporter_reconstructing_entity";
+	
 	//============================================================================================
 	//***************************************Transport out****************************************
 	//============================================================================================
@@ -38,10 +44,9 @@ public class Transporting
 		
 		if(relativePosition.lengthSqr() <= initialTransporter.getInnerRadius() * initialTransporter.getInnerRadius())
 		{
-			//TODO Transporter Event
-			if(receivingTransporter.receiveTraveler(server, connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+			if(!SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(server, connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 			{
-				//TODO CC:Tweaked deconstruction event
+				deconstructEvent(server, initialTransporter, traveler, false);
 				return true;
 			}
 		}
@@ -77,8 +82,8 @@ public class Transporting
 			traveler.setDeltaMovement(destinationMomentum);
 		}
 		
-		//if(traveler != null)
-		//	reconstructEvent(destinationLevel.getServer(), receivingTransporter, traveler); //TODO CC:Tweaked reconstruction event
+		if(traveler != null)
+			reconstructEvent(destinationLevel.getServer(), receivingTransporter, traveler);
 		
 		return traveler;
 	}
@@ -141,7 +146,7 @@ public class Transporting
 		player.setDeltaMovement(destinationMomentum);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		
-		//reconstructEvent(destinationLevel.getServer(), receivingTransporter, player); //TODO CC:Tweaked reconstruction event
+		reconstructEvent(destinationLevel.getServer(), receivingTransporter, player);
 		
 		long distanceTraveled = Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType()) * Math.sqrt(initialPos.distanceTo(player.position())));
 		
@@ -187,5 +192,27 @@ public class Transporting
 	{
 		recursivePassengerTeleport(connection, level, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		return true;
+	}
+	
+	//============================================================================================
+	//*******************************************Events*******************************************
+	//============================================================================================
+	
+	public static void deconstructEvent(MinecraftServer server, Transporter initialTransporter, Entity traveler, boolean disintegrated)
+	{
+		String travelerType = EntityType.getKey(traveler.getType()).toString();
+		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+		String uuid = traveler.getUUID().toString();
+		
+		initialTransporter.updateInterfaceBlocks(server, null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+	}
+	
+	public static void reconstructEvent(MinecraftServer server, Transporter receivingTransporter, Entity traveler)
+	{
+		String travelerType = EntityType.getKey(traveler.getType()).toString();
+		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+		String uuid = traveler.getUUID().toString();
+		
+		receivingTransporter.updateInterfaceBlocks(server, null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
 	}
 }

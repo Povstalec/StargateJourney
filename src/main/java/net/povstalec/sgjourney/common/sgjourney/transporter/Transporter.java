@@ -201,7 +201,7 @@ public interface Transporter extends Comparable<Transporter>
 	
 	List<Entity> entitiesToTransport(MinecraftServer server);
 	
-	void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers);
+	boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers);
 	
 	boolean receiveTraveler(MinecraftServer server, TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	

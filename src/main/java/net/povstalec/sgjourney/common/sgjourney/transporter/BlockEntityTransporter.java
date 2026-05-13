@@ -23,7 +23,7 @@ import java.util.function.Function;
 
 public interface BlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends Transporter
 {
-	String COORDINATES = "Coordinates";
+	String COORDINATES = "Coordinates"; //TODO Change this to "coordinates"
 	
 	BlockPos getBlockPos();
 	
@@ -155,9 +155,9 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
+	default boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
 	{
-		transporterRun(server, transporter -> Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers));
+		return transporterReturn(server, transporter -> Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers), false);
 		
 	}
 	

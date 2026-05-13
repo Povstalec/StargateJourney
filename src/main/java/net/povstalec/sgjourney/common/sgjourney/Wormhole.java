@@ -289,13 +289,13 @@ public class Wormhole
 	
 	/**
 	 *
-	 * @param targetStargate
-	 * @param destinationPos
-	 * @param motionVec
-	 * @param traveler
+	 * @param targetStargate Target Stargate
+	 * @param destinationPos Position the Traveler should arrive at
+	 * @param motionVec Vector representing the motion direction of the Traveler
+	 * @param traveler Traveler entity
 	 * @return true if there were no issues, false if the traveler hit the shielding
 	 */
-	public boolean checkShielding(IrisStargateEntity targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
+	public boolean checkShielding(IrisStargateEntity<?> targetStargate, Vec3 destinationPos, Vec3 motionVec, Entity traveler)
 	{
 		if(targetStargate.irisInfo().isIrisClosed()) // No need to check, we know it's closed
 			return false;
@@ -329,7 +329,7 @@ public class Wormhole
 		return true;
 	}
 	
-	public void handleShielding(IrisStargateEntity irisStargate, Entity traveler)
+	public void handleShielding(IrisStargateEntity<?> irisStargate, Entity traveler)
 	{
 		recursiveExecute(traveler, (entity) ->
 		{
@@ -363,7 +363,7 @@ public class Wormhole
 	//*******************************************Events*******************************************
 	//============================================================================================
 	
-	protected void irisThudEvent(AbstractStargateEntity targetStargate, Entity traveler)
+	protected void irisThudEvent(AbstractStargateEntity<?> targetStargate, Entity traveler)
     {
     	String travelerType = EntityType.getKey(traveler.getType()).toString();
     	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
@@ -414,10 +414,10 @@ public class Wormhole
 	
 	public static class WormholeTeleporter implements ITeleporter
 	{
-		private Vec3 pos;
-		private Vec3 momentum;
-		private float newYRot;
-		private float newXRot;
+		private final Vec3 pos;
+		private final Vec3 momentum;
+		private final float newYRot;
+		private final float newXRot;
 		
 		public WormholeTeleporter(Vec3 pos, Vec3 momentum, float newYRot, float newXRot)
 		{
