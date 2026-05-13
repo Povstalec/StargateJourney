@@ -29,14 +29,14 @@ public class SGJourneyEvents
 	
 	// Stargate Connection
 	
-	public static boolean onStargateConnectionEstablished(MinecraftServer server, StargateConnection stargateConnection)
+	public static void onStargateConnectionEstablished(MinecraftServer server, StargateConnection stargateConnection)
 	{
-		return MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Establish(server, stargateConnection));
+		MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Establish(server, stargateConnection));
 	}
 	
-	public static boolean onStargateConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection, StargateInfo.Feedback feedback)
+	public static void onStargateConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection, StargateInfo.Feedback feedback)
 	{
-		return MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Terminate(server, stargateConnection, feedback));
+		MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Terminate(server, stargateConnection, feedback));
 	}
 	
 	// Transporter
@@ -63,13 +63,13 @@ public class SGJourneyEvents
 	
 	// Transporter Connection
 	
-	public static boolean onTransporterConnectionEstablished(MinecraftServer server, TransporterConnection transporterConnection)
+	public static void onTransporterConnectionEstablished(MinecraftServer server, TransporterConnection transporterConnection)
 	{
-		return MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Establish(server, transporterConnection));
+		MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Establish(server, transporterConnection));
 	}
 	
-	public static boolean onTransporterConnectionTerminated(MinecraftServer server, TransporterConnection transporterConnection, TransporterInfo.Feedback feedback)
+	public static void onTransporterConnectionTerminated(MinecraftServer server, TransporterConnection transporterConnection, TransporterInfo.Feedback feedback)
 	{
-		return MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Terminate(server, transporterConnection, feedback));
+		MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Terminate(server, transporterConnection, feedback));
 	}
 }

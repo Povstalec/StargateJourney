@@ -30,6 +30,7 @@
 		}
 	},
 	"terrain_adaptation": "beard_thin",
+	"rotation": "none",
 	
 	"stargate_modifiers":
 	{

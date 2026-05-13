@@ -187,7 +187,8 @@ public final class StargateNetwork extends SavedData
 			return false;
 		}
 		
-		boolean added = addStargateToDimension(stargate.getDimension(), stargate) || addStargateToAddressRegion(stargate.getAddressRegionKey(server), stargate);
+		// Using | instead of || because both need to execute
+		boolean added = addStargateToDimension(stargate.getDimension(), stargate) | addStargateToAddressRegion(stargate.getAddressRegionKey(server), stargate);
 		
 		if(added)
 			setDirty();
@@ -259,7 +260,8 @@ public final class StargateNetwork extends SavedData
 			return false;
 		}
 		
-		boolean removed = removeStargateFromAddressRegion(stargate.getAddressRegionKey(server), stargate) || removeStargateFromDimension(stargate.getDimension(), stargate);
+		// Using | instead of || because both need to execute
+		boolean removed = removeStargateFromAddressRegion(stargate.getAddressRegionKey(server), stargate) | removeStargateFromDimension(stargate.getDimension(), stargate);
 		if(removed)
 		{
 			setDirty();

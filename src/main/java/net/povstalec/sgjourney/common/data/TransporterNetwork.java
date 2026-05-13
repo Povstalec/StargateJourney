@@ -143,7 +143,8 @@ public final class TransporterNetwork extends SavedData
 			return false;
 		}
 		
-		boolean added = addTransporterToDimension(transporter.getDimension(), transporter) || addTransporterToAddressRegion(transporter.getAddressRegionKey(server), transporter);
+		// Using | instead of || because both need to execute
+		boolean added = addTransporterToDimension(transporter.getDimension(), transporter) | addTransporterToAddressRegion(transporter.getAddressRegionKey(server), transporter);
 		
 		if(added)
 			setDirty();
@@ -219,7 +220,8 @@ public final class TransporterNetwork extends SavedData
 			return false;
 		}
 		
-		boolean removed = removeTransporterFromAddressRegion(transporter.getAddressRegionKey(server), transporter) || removeTransporterFromDimension(transporter.getDimension(), transporter);
+		// Using | instead of || because both need to execute
+		boolean removed = removeTransporterFromAddressRegion(transporter.getAddressRegionKey(server), transporter) | removeTransporterFromDimension(transporter.getDimension(), transporter);
 		if(removed)
 		{
 			setDirty();

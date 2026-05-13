@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class TransporterID implements Comparable<TransporterID>
+public abstract class TransporterID implements Cloneable, Comparable<TransporterID>
 {
 	public static final String TRANSPORTER_ID = "transporter_id";
 	public static final String DIVIDER = "-";

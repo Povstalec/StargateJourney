@@ -11,6 +11,7 @@
 	import net.minecraft.util.RandomSource;
 	import net.minecraft.world.level.ChunkPos;
 	import net.minecraft.world.level.WorldGenLevel;
+	import net.minecraft.world.level.block.Rotation;
 	import net.minecraft.world.level.levelgen.Heightmap;
 	import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 	import net.minecraft.world.level.levelgen.structure.Structure;
@@ -32,10 +33,10 @@
 	protected DHDModifiers dhdModifiers;
 	
 	public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
-							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
 							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
 	{
-		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates);
+		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates);
 		
 		this.obstructedStartPool = obstructedStartPool.orElse(null);
 		
@@ -54,7 +55,7 @@
 	{
 		super.generateBlockEntity(level, startPos, randomSource, generatedEntity);
 		
-		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity stargate)
+		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity<?> stargate)
 			stargateModifiers.modifyStargate(stargate);
 		else if(dhdModifiers != null && generatedEntity instanceof AbstractDHDEntity dhd)
 			dhdModifiers.modifyDHD(dhd);
@@ -64,21 +65,21 @@
 	
 	public static class StargateModifiers
 	{
-		private boolean displayID;
-		private boolean upgraded;
-		private boolean localPointOfOrigin;
+		private final boolean displayID;
+		private final boolean upgraded;
+		private final boolean localPointOfOrigin;
 		
-		private boolean primary;
-		private boolean isProtected;
+		private final boolean primary;
+		private final boolean isProtected;
 		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.ofNullable(modifiers.displayID)),
-				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.ofNullable(modifiers.upgraded)),
+				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.of(modifiers.displayID)),
+				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.of(modifiers.upgraded)),
 				
-				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.ofNullable(modifiers.localPointOfOrigin)),
+				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.of(modifiers.localPointOfOrigin)),
 				
-				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.ofNullable(modifiers.primary)),
-				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))
+				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.of(modifiers.primary)),
+				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
 		).apply(instance, StargateModifiers::new));
 		
 		public StargateModifiers(Optional<Boolean> displayID, Optional<Boolean> upgraded, Optional<Boolean> localPointOfOrigin,
@@ -93,7 +94,7 @@
 			this.isProtected = isProtected.orElse(false);
 		}
 		
-		public void modifyStargate(AbstractStargateEntity stargate)
+		public void modifyStargate(AbstractStargateEntity<?> stargate)
 		{
 			if(displayID)
 				stargate.displayID();
@@ -116,7 +117,7 @@
 	
 	public static class DHDModifiers
 	{
-		private boolean isProtected;
+		private final boolean isProtected;
 		
 		public static final Codec<DHDModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))

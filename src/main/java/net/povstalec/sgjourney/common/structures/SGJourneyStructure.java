@@ -1,55 +1,63 @@
-	package net.povstalec.sgjourney.common.structures;
-	
-	import java.util.Optional;
-	
-	import net.minecraft.core.BlockPos;
-	import net.minecraft.core.Holder;
-	import net.minecraft.core.HolderSet;
-	import net.minecraft.resources.ResourceLocation;
-	import net.minecraft.util.RandomSource;
-	import net.minecraft.world.level.ChunkPos;
-	import net.minecraft.world.level.StructureManager;
-	import net.minecraft.world.level.WorldGenLevel;
-	import net.minecraft.world.level.biome.Biome;
-	import net.minecraft.world.level.block.entity.BlockEntity;
-	import net.minecraft.world.level.chunk.ChunkGenerator;
-	import net.minecraft.world.level.levelgen.Heightmap;
-	import net.minecraft.world.level.levelgen.WorldGenerationContext;
-	import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
-	import net.minecraft.world.level.levelgen.structure.BoundingBox;
-	import net.minecraft.world.level.levelgen.structure.Structure;
-	import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
-	import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
-	import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-	import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-	import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
-	import org.jetbrains.annotations.NotNull;
-	
-	import javax.annotation.Nullable;
-	
-	//Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-	public abstract class SGJourneyStructure extends Structure
-	{
+package net.povstalec.sgjourney.common.structures;
+
+import java.util.Optional;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.StructureManager;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.WorldGenerationContext;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
+import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+
+//Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
+public abstract class SGJourneyStructure extends Structure
+{
 	protected final Holder<StructureTemplatePool> startPool;
-	protected final Optional<ResourceLocation> startJigsawName;
+	@Nullable
+	protected final ResourceLocation startJigsawName;
 	protected final int size;
 	protected final HeightProvider startHeight;
-	protected final Optional<Heightmap.Types> projectStartToHeightmap;
+	@Nullable
+	protected final Heightmap.Types projectStartToHeightmap;
 	protected final int maxDistanceFromCenter;
+	@Nullable
+	protected Rotation rotation;
 	@Nullable
 	protected Boolean commonStargates; // Decides whether this Structure should generate while Common Stargate Generation config setting is set to true of false
 	
+	
 	public SGJourneyStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
-							  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+							  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
 							  Optional<Boolean> commonStargates)
 	{
 		super(config);
 		this.startPool = startPool;
-		this.startJigsawName = startJigsawName;
+		this.startJigsawName = startJigsawName.orElse(null);
 		this.size = size;
 		this.startHeight = startHeight;
-		this.projectStartToHeightmap = projectStartToHeightmap;
+		this.projectStartToHeightmap = projectStartToHeightmap.orElse(null);
 		this.maxDistanceFromCenter = maxDistanceFromCenter;
+		this.rotation = rotation.orElse(null);
 		
 		this.commonStargates = commonStargates.orElse(null);
 	}
@@ -83,23 +91,31 @@
 			return Optional.empty();
 		
 		int startY = this.startHeight.sample(context.random(), new WorldGenerationContext(context.chunkGenerator(), context.heightAccessor()));
-	
+		
 		// Turns the chunk coordinates into actual coordinates we can use. (Gets corner of that chunk)
 		ChunkPos chunkPos = context.chunkPos();
 		BlockPos blockPos = new BlockPos(chunkPos.getMinBlockX(), startY, chunkPos.getMinBlockZ());
-	
-		Optional<Structure.GenerationStub> structurePiecesGenerator =
+		
+		return this.rotation == null ?
 				JigsawPlacement.addPieces(
 						context,
 						getStartPool(),
-						this.startJigsawName,
+						Optional.ofNullable(this.startJigsawName),
 						this.size,
 						blockPos,
 						false,
-						this.projectStartToHeightmap,
-						this.maxDistanceFromCenter);
-		
-		return structurePiecesGenerator;
+						Optional.ofNullable(this.projectStartToHeightmap),
+						this.maxDistanceFromCenter) :
+				SGJourneyJigsawPlacement.addPieces(
+						context,
+						getStartPool(),
+						Optional.ofNullable(this.startJigsawName),
+						this.size,
+						blockPos,
+						false,
+						Optional.ofNullable(this.projectStartToHeightmap),
+						this.maxDistanceFromCenter,
+						this.rotation);
 	}
 	
 	@Override
@@ -138,4 +154,4 @@
 	{
 		generatedEntity.generateInStructure(level, randomSource);
 	}
-	}
+}

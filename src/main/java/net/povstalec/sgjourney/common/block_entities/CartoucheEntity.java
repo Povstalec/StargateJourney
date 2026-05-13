@@ -268,7 +268,6 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	
 	public void setAddressFromAddressTable()
 	{
-		System.out.println("setAddressFromAddressTable");
 		AddressTable addressTable = AddressTable.getAddressTable(level, this.addressTable);
 		Address address = AddressTable.randomAddress((ServerLevel) level, addressTable);
 		
