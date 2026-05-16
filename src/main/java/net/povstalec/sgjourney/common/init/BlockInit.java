@@ -187,6 +187,9 @@ public class BlockInit
 	public static final RegistryObject<Block> CUT_NAQUADAH_SLAB = registerBlock("cut_naquadah_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
+	public static final RegistryObject<Block> NAQUADAH_PILLAR = registerBlock("naquadah_pillar",
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
 	public static final RegistryObject<Block> POLISHED_NAQUADAH_BLOCK = registerBlock("polished_naquadah_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> POLISHED_NAQUADAH_STAIRS = registerBlock("polished_naquadah_stairs",
@@ -302,6 +305,23 @@ public class BlockInit
 			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<WaxedSlabBlock> WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB = registerBlock("waxed_oxidized_cut_naquadah_copper_slab",
 			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> NAQUADAH_COPPER_PILLAR = registerBlock("naquadah_copper_pillar",
+			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> EXPOSED_NAQUADAH_COPPER_PILLAR = registerBlock("exposed_naquadah_copper_pillar",
+			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WEATHERED_NAQUADAH_COPPER_PILLAR = registerBlock("weathered_naquadah_copper_pillar",
+			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> OXIDIZED_NAQUADAH_COPPER_PILLAR = registerBlock("oxidized_naquadah_copper_pillar",
+			() -> new WeatheringRotatedPillarBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_NAQUADAH_COPPER_PILLAR = registerBlock("waxed_naquadah_copper_pillar",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_EXPOSED_NAQUADAH_COPPER_PILLAR = registerBlock("waxed_exposed_naquadah_copper_pillar",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_WEATHERED_NAQUADAH_COPPER_PILLAR = registerBlock("waxed_weathered_naquadah_copper_pillar",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_OXIDIZED_NAQUADAH_COPPER_PILLAR = registerBlock("waxed_oxidized_naquadah_copper_pillar",
+			() -> new WaxedRotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<WeatheringFullBlock> POLISHED_NAQUADAH_COPPER_BLOCK = registerBlock("polished_naquadah_copper_block",
 			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
@@ -435,6 +455,9 @@ public class BlockInit
 			() -> new StairBlock(() -> NAQUADAH_IRON_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_IRON_SLAB = registerBlock("cut_naquadah_iron_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> NAQUADAH_IRON_PILLAR = registerBlock("naquadah_iron_pillar",
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<Block> POLISHED_NAQUADAH_IRON_BLOCK = registerBlock("polished_naquadah_iron_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));

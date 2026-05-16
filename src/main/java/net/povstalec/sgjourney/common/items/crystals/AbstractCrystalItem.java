@@ -62,37 +62,4 @@ public abstract class AbstractCrystalItem extends Item
 
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
-	
-	public static class Storage
-	{
-		private int[] crystals = new int[0];
-
-		private int[] advancedCrystals = new int[0];
-		
-		public Storage() {}
-		
-		public void addCrystal(boolean isAdvanced, int slot)
-		{
-			if(!isAdvanced)
-				crystals = ArrayHelper.growIntArray(this.crystals, slot);
-			else
-				advancedCrystals = ArrayHelper.growIntArray(this.advancedCrystals, slot);
-		}
-		
-		public void reset()
-		{
-			this.crystals = new int[0];
-			this.advancedCrystals = new int[0];
-		}
-		
-		public int[] getCrystals()
-		{
-			return this.crystals;
-		}
-		
-		public int[] getAdvancedCrystals()
-		{
-			return this.advancedCrystals;
-		}
-	}
 }

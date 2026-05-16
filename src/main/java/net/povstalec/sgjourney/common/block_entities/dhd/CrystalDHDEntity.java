@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 import javax.annotation.Nonnull;
 
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
@@ -21,26 +22,15 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 
 public abstract class CrystalDHDEntity extends AbstractDHDEntity
 {
 	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
-	protected AbstractCrystalItem.Storage memoryCrystals = new AbstractCrystalItem.Storage();
-	protected AbstractCrystalItem.Storage controlCrystals = new AbstractCrystalItem.Storage();
-	protected AbstractCrystalItem.Storage energyCrystals = new AbstractCrystalItem.Storage();
-	protected AbstractCrystalItem.Storage transferCrystals = new AbstractCrystalItem.Storage();
-	protected AbstractCrystalItem.Storage communicationCrystals = new AbstractCrystalItem.Storage();
+	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.CONTROL, CrystalCache.Type.MEMORY, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
 	
-	public final ItemStackHandler crystalHandler = createHandler();
+	public final ItemStackHandler crystalHandler = createCrystalHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
 	
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
@@ -97,7 +87,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		return super.getCapability(capability, side);
 	}
 	
-	protected ItemStackHandler createHandler()
+	protected ItemStackHandler createCrystalHandler()
 	{
 		return new ItemStackHandler(9)
 			{
@@ -125,9 +115,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 				{
 					if(!isItemValid(slot, stack))
-					{
 						return stack;
-					}
 					
 					return super.insertItem(slot, stack, simulate);
 					
@@ -145,16 +133,15 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	
 	public void recalculateCrystals()
 	{
+		this.crystalCache.reset();
+		
 		// Check if the DHD has a Control Crystal
-		this.enableCallForwarding = false;
 		this.enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
-		this.memoryCrystals.reset();
-		this.controlCrystals.reset();
-		this.energyCrystals.reset();
-		this.transferCrystals.reset();
+		
 		this.energyTarget = 0;
 		this.maxEnergyTransfer = 0;
-		this.communicationCrystals.reset();
+		this.enableCallForwarding = false;
+		this.maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
 		
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
@@ -162,58 +149,41 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 			ItemStack stack = crystalHandler.getStackInSlot(i);
 			Item item = stack.getItem();
 			
-			if(item instanceof ControlCrystalItem controlCrystal)
-				controlCrystals.addCrystal(controlCrystal.isAdvanced(), i);
-			
-			else if(item instanceof MemoryCrystalItem memoryCrystal)
-				memoryCrystals.addCrystal(memoryCrystal.isAdvanced(), i);
-			
-			else if(item instanceof EnergyCrystalItem energyCrystal)
-			{
-				energyCrystals.addCrystal(energyCrystal.isAdvanced(), i);
-				if(energyCrystals.getCrystals().length >= 4 || energyCrystals.getAdvancedCrystals().length >= 3)
-					energyTarget = -1;
-				else if(energyTarget >= 0)
-					energyTarget += energyCrystal.energyTargetIncrease();
-			}
-			
-			else if(item instanceof TransferCrystalItem transferCrystal)
-			{
-				transferCrystals.addCrystal(transferCrystal.isAdvanced(), i);
-				if(transferCrystals.getCrystals().length >= 4 || transferCrystals.getAdvancedCrystals().length >= 3)
-					maxEnergyTransfer = -1;
-				else if(maxEnergyTransfer >= 0)
-					maxEnergyTransfer += transferCrystal.getMaxTransfer();
-			}
-			
-			else if(item instanceof CommunicationCrystalItem communicationCrystal)
-				communicationCrystals.addCrystal(communicationCrystal.isAdvanced(), i);
-			
+			if(item instanceof AbstractCrystalItem crystal)
+				crystalCache.addCrystal(i, crystal);
 			else if(item instanceof CallForwardingDevice)
 				enableCallForwarding = true;
 		}
+		
+		// If there are 4 regular crystals or 3 advanced crystals
+		if(crystalCache.energyCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+			energyTarget = -1;
+		else
+			crystalCache.energyCrystals().forEach((slot, energyCrystal) -> energyTarget += energyCrystal.energyTargetIncrease());
+		
+		// If there are 4 regular crystals or 3 advanced crystals
+		if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+			energyTarget = -1;
+		else
+			crystalCache.transferCrystals().forEach((slot, transferCrystal) -> maxEnergyTransfer += transferCrystal.getMaxTransfer());
+		
+		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) -> maxConnectionDistance += communicationCrystal.getMaxDistance());
 		
 		setStargate();
 	}
 	
 	@Override
-	public int getMaxDistance()
-	{
-		int regularDistance = this.communicationCrystals.getCrystals().length * ItemInit.COMMUNICATION_CRYSTAL.get().getMaxDistance();
-		int advancedDistance = this.communicationCrystals.getAdvancedCrystals().length * ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get().getMaxDistance();
-		
-		return DEFAULT_CONNECTION_DISTANCE + regularDistance + advancedDistance;
-	}
-	
-	@Override
 	public void onDialAttempt(StargateInfo.Feedback feedback, Address address)
 	{
-		//TODO Save the address to more than one crystal
-		if(memoryCrystals.getCrystals().length > 0)
+		CompoundTag entry = new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback)).save();
+		for(int slot : crystalCache.memoryCrystals().getSlots())
 		{
-			ItemStack stack = crystalHandler.getStackInSlot(memoryCrystals.getCrystals()[0]);
+			ItemStack stack = crystalHandler.getStackInSlot(slot);
 			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
-				memoryCrystal.saveMemoryEntry(stack, new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.ADDRESS, new StargateConnection.Result(address, feedback)), true);
+				entry = memoryCrystal.saveCompound(stack, entry, true); // Save memory and move the oldest one to another crystal
+			
+			if(entry == null)
+				break; // End early if there are no more memories to move back
 		}
 	}
 	

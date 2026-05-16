@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
-	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface_widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/gui/interface/interface_widgets.png");
 	
 	protected InterfaceScreen screen;
 	

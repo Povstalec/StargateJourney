@@ -152,29 +152,51 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		}
 	}
 	
-	public boolean saveMemoryEntry(ItemStack stack, MemoryEntry<?> memoryEntry, boolean overrideOldMemory)
+	/**
+	 * Saves a CompoundTag to the Memory Crystal
+	 * @param stack Memory Crystal ItemStack
+	 * @param savedTag CompoundTag to be saved
+	 * @param overrideOldMemory Whether old entries get pushed out when the capacity reaches its limit
+	 * @return Tag containing oldest saved Memory Entry in the Crystal that got pushed out, or null if the Memory Crystal still has space
+	 */
+	public CompoundTag saveCompound(ItemStack stack, CompoundTag savedTag, boolean overrideOldMemory)
 	{
 		ListTag list = getMemoryList(stack);
 		
 		if(list.size() < getMemoryCapacity())
 		{
 			ListTag newList = new ListTag();
-			newList.add(memoryEntry.save());
+			newList.add(savedTag);
 			newList.addAll(list);
 			setMemoryList(stack, newList);
-			return true;
+			return null;
 		}
 		
 		if(!overrideOldMemory)
-			return false;
+			return null;
 		
 		ListTag newList = new ListTag();
-		newList.add(memoryEntry.save());
+		newList.add(savedTag);
 		newList.addAll(list);
-		newList.remove(newList.size() - 1);
+		Tag tag = newList.remove(newList.size() - 1);
 		setMemoryList(stack, newList);
 		
-		return true;
+		if(tag.getId() == Tag.TAG_COMPOUND)
+			return (CompoundTag) tag;
+		
+		return null;
+	}
+	
+	/**
+	 * Saves a Memory Entry to the Memory Crystal
+	 * @param stack Memory Crystal ItemStack
+	 * @param memoryEntry Memory Entry to be saved
+	 * @param overrideOldMemory Whether old entries get pushed out when the capacity reaches its limit
+	 * @return Tag containing oldest saved Memory Entry in the Crystal that got pushed out, or null if the Memory Crystal still has space
+	 */
+	public CompoundTag saveMemoryEntry(ItemStack stack, MemoryEntry<?> memoryEntry, boolean overrideOldMemory)
+	{
+		return saveCompound(stack, memoryEntry.save(), overrideOldMemory);
 	}
 	
 	@Nullable

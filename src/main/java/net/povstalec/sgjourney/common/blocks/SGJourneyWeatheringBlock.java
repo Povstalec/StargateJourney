@@ -78,6 +78,10 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				.put(BlockInit.CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_PILLAR.get(), BlockInit.EXPOSED_NAQUADAH_COPPER_PILLAR.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_PILLAR.get(), BlockInit.WEATHERED_NAQUADAH_COPPER_PILLAR.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_PILLAR.get(), BlockInit.OXIDIZED_NAQUADAH_COPPER_PILLAR.get())
 				.build();
 	});
 	Supplier<BiMap<Block, Block>> PREVIOUS_BY_BLOCK = Suppliers.memoize(() -> NEXT_BY_BLOCK.get().inverse());
@@ -149,6 +153,11 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				.put(BlockInit.EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_EXPOSED_CUT_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_WEATHERED_CUT_NAQUADAH_COPPER_SLAB.get())
 				.put(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get(), BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get())
+				
+				.put(BlockInit.NAQUADAH_COPPER_PILLAR.get(), BlockInit.WAXED_NAQUADAH_COPPER_PILLAR.get())
+				.put(BlockInit.EXPOSED_NAQUADAH_COPPER_PILLAR.get(), BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_PILLAR.get())
+				.put(BlockInit.WEATHERED_NAQUADAH_COPPER_PILLAR.get(), BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_PILLAR.get())
+				.put(BlockInit.OXIDIZED_NAQUADAH_COPPER_PILLAR.get(), BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_PILLAR.get())
 				.build();
 	});
 	Supplier<BiMap<Block, Block>> WAX_OFF_BY_BLOCK = Suppliers.memoize(() -> WAXABLES.get().inverse());

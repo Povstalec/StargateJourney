@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
@@ -57,6 +58,18 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	{
 		super.saveAdditional(nbt);
 		nbt.putLong(ENERGY, energyStorage.getTrueEnergyStored());
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	public void updateClient()

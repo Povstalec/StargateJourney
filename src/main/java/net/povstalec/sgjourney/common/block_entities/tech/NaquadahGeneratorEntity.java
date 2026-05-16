@@ -66,7 +66,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();
 	}

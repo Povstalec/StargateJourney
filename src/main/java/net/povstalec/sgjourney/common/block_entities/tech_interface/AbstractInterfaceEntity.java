@@ -120,18 +120,6 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		super.saveAdditional(tag);
 	}
 	
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	@Override
-	public CompoundTag getUpdateTag()
-	{
-		return this.saveWithoutMetadata();
-	}
-	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================

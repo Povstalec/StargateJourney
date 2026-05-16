@@ -55,6 +55,8 @@
 		"sgjourney:cut_naquadah_stairs",
 		"sgjourney:cut_naquadah_slab",
 		
+		"sgjourney:naquadah_pillar",
+		
 		"sgjourney:polished_naquadah_block",
 		"sgjourney:polished_naquadah_stairs",
 		"sgjourney:polished_naquadah_slab",
@@ -89,6 +91,15 @@
 		"sgjourney:waxed_exposed_naquadah_copper_slab",
 		"sgjourney:waxed_weathered_naquadah_copper_slab",
 		"sgjourney:waxed_oxidized_naquadah_copper_slab",
+		
+		"sgjourney:naquadah_copper_pillar",
+		"sgjourney:exposed_naquadah_copper_pillar",
+		"sgjourney:weathered_naquadah_copper_pillar",
+		"sgjourney:oxidized_naquadah_copper_pillar",
+		"sgjourney:waxed_naquadah_copper_pillar",
+		"sgjourney:waxed_exposed_naquadah_copper_pillar",
+		"sgjourney:waxed_weathered_naquadah_copper_pillar",
+		"sgjourney:waxed_oxidized_naquadah_copper_pillar",
 		
 		"sgjourney:cut_naquadah_copper_block",
 		"sgjourney:exposed_cut_naquadah_copper_block",
@@ -187,6 +198,8 @@
 		"sgjourney:cut_naquadah_iron_block",
 		"sgjourney:cut_naquadah_iron_stairs",
 		"sgjourney:cut_naquadah_iron_slab",
+		
+		"sgjourney:naquadah_iron_pillar",
 		
 		"sgjourney:polished_naquadah_iron_block",
 		"sgjourney:polished_naquadah_iron_stairs",

@@ -51,12 +51,6 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> 
 	}
 	
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
 		CompoundTag tag = this.saveWithoutMetadata();

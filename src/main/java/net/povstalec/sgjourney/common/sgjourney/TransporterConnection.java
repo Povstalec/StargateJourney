@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -15,6 +16,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class TransporterConnection
@@ -291,5 +293,93 @@ public class TransporterConnection
 	private static Transporter deserializeTransporter(MinecraftServer server, CompoundTag transporterInfo)
 	{
 		return BlockEntityList.get(server).getTransporter(new TransporterID.Immutable(transporterInfo.getString(ID)));
+	}
+	
+	
+	
+	public static class IDResult
+	{
+		public static final String FEEDBACK = "feedback";
+		public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
+		
+		protected TransporterID transporterID;
+		protected TransporterInfo.Feedback feedback;
+		
+		public IDResult() {}
+		
+		public IDResult(TransporterID transporterID, TransporterInfo.Feedback feedback)
+		{
+			this.transporterID = transporterID;
+			this.feedback = feedback;
+		}
+		
+		public TransporterID transporterID()
+		{
+			return transporterID;
+		}
+		
+		public TransporterInfo.Feedback feedback()
+		{
+			return feedback;
+		}
+		
+		public CompoundTag save()
+		{
+			CompoundTag tag = new CompoundTag();
+			
+			transporterID.saveToCompoundTag(tag, TRANSPORTER_ID);
+			tag.putInt(FEEDBACK, feedback.ordinal());
+			
+			return tag;
+		}
+		
+		public void load(CompoundTag tag)
+		{
+			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
+			feedback = TransporterInfo.Feedback.fromOrdinal(tag.getInt(FEEDBACK));
+		}
+	}
+	
+	public static class CoordsResult
+	{
+		public static final String FEEDBACK = "feedback";
+		public static final String COORDS = "coords";
+		
+		protected Vec3i coords;
+		protected TransporterInfo.Feedback feedback;
+		
+		public CoordsResult() {}
+		
+		public CoordsResult(Vec3i coords, TransporterInfo.Feedback feedback)
+		{
+			this.coords = coords;
+			this.feedback = feedback;
+		}
+		
+		public Vec3i coords()
+		{
+			return coords;
+		}
+		
+		public TransporterInfo.Feedback feedback()
+		{
+			return feedback;
+		}
+		
+		public CompoundTag save()
+		{
+			CompoundTag tag = new CompoundTag();
+			
+			tag.putIntArray(COORDS, Conversion.vecToIntArray(coords));
+			tag.putInt(FEEDBACK, feedback.ordinal());
+			
+			return tag;
+		}
+		
+		public void load(CompoundTag tag)
+		{
+			coords = Conversion.intArrayToVec(tag.getIntArray(COORDS));
+			feedback = TransporterInfo.Feedback.fromOrdinal(tag.getInt(FEEDBACK));
+		}
 	}
 }

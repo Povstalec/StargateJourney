@@ -16,6 +16,7 @@
 	"block.sgjourney.naquadah_block": "Block of Naquadah",
 	"block.sgjourney.naquadah_stairs": "Naquadah Stairs",
 	"block.sgjourney.naquadah_slab": "Naquadah Slab",
+	"block.sgjourney.naquadah_pillar": "Naquadah Pillar",
 	"block.sgjourney.cut_naquadah_block": "Cut Naquadah Block",
 	"block.sgjourney.cut_naquadah_stairs": "Cut Naquadah Stairs",
 	"block.sgjourney.cut_naquadah_slab": "Cut Naquadah Slab",
@@ -52,6 +53,15 @@
 	"block.sgjourney.waxed_exposed_naquadah_copper_slab": "Waxed Exposed Naquadah-Copper Slab",
 	"block.sgjourney.waxed_weathered_naquadah_copper_slab": "Waxed Weathered Naquadah-Copper Slab",
 	"block.sgjourney.waxed_oxidized_naquadah_copper_slab": "Waxed Oxidized Naquadah-Copper Slab",
+	
+	"block.sgjourney.naquadah_copper_pillar": "Naquadah-Copper Pillar",
+	"block.sgjourney.exposed_naquadah_copper_pillar": "Exposed Naquadah-Copper Pillar",
+	"block.sgjourney.weathered_naquadah_copper_pillar": "Weathered Naquadah-Copper Pillar",
+	"block.sgjourney.oxidized_naquadah_copper_pillar": "Oxidized Naquadah-Copper Pillar",
+	"block.sgjourney.waxed_naquadah_copper_pillar": "Waxed Naquadah-Copper Pillar",
+	"block.sgjourney.waxed_exposed_naquadah_copper_pillar": "Waxed Exposed Naquadah-Copper Pillar",
+	"block.sgjourney.waxed_weathered_naquadah_copper_pillar": "Waxed Weathered Naquadah-Copper Pillar",
+	"block.sgjourney.waxed_oxidized_naquadah_copper_pillar": "Waxed Oxidized Naquadah-Copper Pillar",
 	
 	"block.sgjourney.cut_naquadah_copper_block": "Cut Naquadah-Copper Block",
 	"block.sgjourney.exposed_cut_naquadah_copper_block": "Exposed Cut Naquadah-Copper Block",
@@ -146,6 +156,7 @@
 	"block.sgjourney.naquadah_iron_block": "Naquadah-Iron Block",
 	"block.sgjourney.naquadah_iron_stairs": "Naquadah-Iron Stairs",
 	"block.sgjourney.naquadah_iron_slab": "Naquadah-Iron Slab",
+	"block.sgjourney.naquadah_iron_pillar": "Naquadah-Iron Pillar",
 	"block.sgjourney.cut_naquadah_iron_block": "Cut Naquadah-Iron Block",
 	"block.sgjourney.cut_naquadah_iron_stairs": "Cut Naquadah-Iron Stairs",
 	"block.sgjourney.cut_naquadah_iron_slab": "Cut Naquadah-Iron Slab",
@@ -477,9 +488,11 @@
 	"screen.sgjourney.basic_interface": "Basic Interface",
 	"screen.sgjourney.crystal_interface": "Crystal Interface",
 	"screen.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
-	"screen.sgjourney.transport_rings": "Transport Rings",
 	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
 	"screen.sgjourney.dhd": "Dial Home Device",
+	
+	"screen.sgjourney.ancient_transport_rings": "Ancient Transport Rings",
+	"screen.sgjourney.goauld_transport_rings": "Goa'uld Transport Rings",
 
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	"screen.sgjourney.zpm_port": "ZPM Port",
@@ -689,6 +702,7 @@
 	"point_of_origin.sgjourney.serpent": "Serpent",
 	"point_of_origin.sgjourney.pontem": "Pontem",
 	
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
 	"point_of_origin.sgjourney.triforce": "Triforce",
 	"point_of_origin.sgjourney.aurum": "Aurum",
 	"point_of_origin.sgjourney.ankh": "Ankh",

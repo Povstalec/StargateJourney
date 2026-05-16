@@ -129,14 +129,7 @@ public class StargateJourney
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
 		
 		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
-				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
-				{
-					@Override
-					public Screen apply(Minecraft mc, Screen screen)
-					{
-						return new ConfigScreen(screen);
-					}
-				}));
+				() -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> new ConfigScreen(screen)));
         
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(MiscInit::registerCommands);
@@ -198,7 +191,10 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
         	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);
         	MenuScreens.register(MenuInit.ADVANCED_CRYSTAL_INTERFACE.get(), InterfaceScreen.AdvancedCrystal::new);
-         
+			
+			MenuScreens.register(MenuInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsScreen.Ancient::new);
+			MenuScreens.register(MenuInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsScreen.Goauld::new);
+			
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
 
         	MenuScreens.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);

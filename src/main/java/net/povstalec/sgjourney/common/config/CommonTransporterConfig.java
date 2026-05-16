@@ -9,6 +9,12 @@ public class CommonTransporterConfig
 	public static ForgeConfigSpec.LongValue ring_panel_max_energy_extract;
 	public static ForgeConfigSpec.LongValue ring_panel_button_press_energy_cost;
 	
+	public static ForgeConfigSpec.LongValue ancient_transport_rings_energy_capacity;
+	public static ForgeConfigSpec.LongValue ancient_transport_rings_max_energy_receive;
+	
+	public static ForgeConfigSpec.LongValue goauld_transport_rings_energy_capacity;
+	public static ForgeConfigSpec.LongValue goauld_transport_rings_max_energy_receive;
+	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
 		ring_panel_energy_capacity = server
@@ -26,5 +32,25 @@ public class CommonTransporterConfig
 		ring_panel_button_press_energy_cost = server
 				.comment("Energy depleted by pressing a button on the Ring Panel")
 				.defineInRange("server.ring_panel_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
+		
+		
+		
+		ancient_transport_rings_energy_capacity = server
+				.comment("Energy capacity of the Ancient Transport Rings")
+				.defineInRange("server.ancient_transport_rings_energy_capacity", 1000000, 0L, Long.MAX_VALUE);
+		
+		ancient_transport_rings_max_energy_receive = server
+				.comment("Maximum amount of energy that can be transferred to the Ancient Transport Rings in one tick")
+				.defineInRange("server.ancient_transport_rings_max_energy_receive", 1000000, 0L, Long.MAX_VALUE);
+		
+		
+		
+		goauld_transport_rings_energy_capacity = server
+				.comment("Energy capacity of the Goa'uld Transport Rings")
+				.defineInRange("server.goauld_transport_rings_energy_capacity", 1000000, 0L, Long.MAX_VALUE);
+		
+		goauld_transport_rings_max_energy_receive = server
+				.comment("Maximum amount of energy that can be transferred to the Goa'uld Transport Rings in one tick")
+				.defineInRange("server.goauld_transport_rings_max_energy_receive", 1000000, 0L, Long.MAX_VALUE);
 	}
 }

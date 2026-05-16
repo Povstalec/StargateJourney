@@ -319,6 +319,7 @@ public class TabInit
 				items.accept(BlockInit.CUT_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.CUT_NAQUADAH_STAIRS.get());
 				items.accept(BlockInit.CUT_NAQUADAH_SLAB.get());
+				items.accept(BlockInit.NAQUADAH_PILLAR.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_STAIRS.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_SLAB.get());
@@ -352,6 +353,10 @@ public class TabInit
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.EXPOSED_NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.WEATHERED_NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.OXIDIZED_NAQUADAH_COPPER_PILLAR.get());
 				
 				items.accept(BlockInit.POLISHED_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_COPPER_STAIRS.get());
@@ -408,6 +413,10 @@ public class TabInit
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get());
+				items.accept(BlockInit.WAXED_NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_PILLAR.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_PILLAR.get());
 				
 				items.accept(BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.WAXED_POLISHED_NAQUADAH_COPPER_STAIRS.get());
@@ -446,6 +455,7 @@ public class TabInit
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.CUT_NAQUADAH_IRON_SLAB.get());
+				items.accept(BlockInit.NAQUADAH_IRON_PILLAR.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_SLAB.get());

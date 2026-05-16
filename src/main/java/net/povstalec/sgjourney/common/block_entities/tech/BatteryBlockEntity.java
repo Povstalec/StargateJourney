@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -52,16 +51,6 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt);
 		nbt.put(INVENTORY, itemHandler.serializeNBT());
-	}
-	
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	public CompoundTag getUpdateTag()
-	{
-		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================

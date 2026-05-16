@@ -16,6 +16,7 @@
 	"block.sgjourney.naquadah_block": "Blok naquadahu",
 	"block.sgjourney.naquadah_stairs": "Naquadahové schody",
 	"block.sgjourney.naquadah_slab": "Naquadahový půlblok",
+	"block.sgjourney.naquadah_pillar": "Naquadahový pilíř",
 	"block.sgjourney.cut_naquadah_block": "Tepaný blok naquadahu",
 	"block.sgjourney.cut_naquadah_stairs": "Tepané naquadahové schody",
 	"block.sgjourney.cut_naquadah_slab": "Tepaný naquadahový půlblok",
@@ -52,6 +53,15 @@
 	"block.sgjourney.waxed_exposed_naquadah_copper_slab": "Navoskovaný vystavený měďo-naquadahový půlblok",
 	"block.sgjourney.waxed_weathered_naquadah_copper_slab": "Navoskovaný zvětralý měďo-naquadahový půlblok",
 	"block.sgjourney.waxed_oxidized_naquadah_copper_slab": "Navoskovaný oxidovaný měďo-naquadahový půlblok",
+	
+	"block.sgjourney.naquadah_copper_pillar": "Měďo-naquadahový pilíř",
+	"block.sgjourney.exposed_naquadah_copper_pillar": "Vystavený měďo-naquadahový pilíř",
+	"block.sgjourney.weathered_naquadah_copper_pillar": "Zvětralý měďo-naquadahový pilíř",
+	"block.sgjourney.oxidized_naquadah_copper_pillar": "Oxidovaný měďo-naquadahový pilíř",
+	"block.sgjourney.waxed_naquadah_copper_pillar": "Navoskovaný měďo-naquadahový pilíř",
+	"block.sgjourney.waxed_exposed_naquadah_copper_pillar": "Navoskovaný vystavený měďo-naquadahový pilíř",
+	"block.sgjourney.waxed_weathered_naquadah_copper_pillar": "Navoskovaný zvětralý měďo-naquadahový pilíř",
+	"block.sgjourney.waxed_oxidized_naquadah_copper_pillar": "Navoskovaný oxidovaný měďo-naquadahový pilíř",
 	
 	"block.sgjourney.cut_naquadah_copper_block": "Tepaný měďo-naquadahový blok",
 	"block.sgjourney.exposed_cut_naquadah_copper_block": "Vystavený tepaný měďo-naquadahový blok",
@@ -146,6 +156,7 @@
 	"block.sgjourney.naquadah_iron_block": "Železo-naquadahový blok",
 	"block.sgjourney.naquadah_iron_stairs": "Železo-naquadahové schody",
 	"block.sgjourney.naquadah_iron_slab": "Železo-naquadahový půblok",
+	"block.sgjourney.naquadah_iron_pillar": "Železo-naquadahový pilíř",
 	"block.sgjourney.cut_naquadah_iron_block": "Tepaný blok železo-naquadahu",
 	"block.sgjourney.cut_naquadah_iron_stairs": "Tepané železo-naquadahové schody",
 	"block.sgjourney.cut_naquadah_iron_slab": "Tepaný železo-naquadahový půlblok",
@@ -475,9 +486,11 @@
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
 	"screen.sgjourney.crystal_interface": "Krystalové rozhraní",
 	"screen.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
-	"screen.sgjourney.transport_rings": "Transportní kruhy",
 	"screen.sgjourney.naquadah_generator": "Naquadahový Generátor",
 	"screen.sgjourney.dhd": "DHD",
+	
+	"screen.sgjourney.ancient_transport_rings": "Antické transportní kruhy",
+	"screen.sgjourney.goauld_transport_rings": "Goa'uldí transportní kruhy",
 
 	"screen.sgjourney.zpm_hub": "ZPM Hub",
 	"screen.sgjourney.zpm_port": "ZPM Port",
@@ -689,6 +702,7 @@
 	"point_of_origin.sgjourney.serpent": "Had",
 	"point_of_origin.sgjourney.pontem": "Pontem",
 	
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
 	"point_of_origin.sgjourney.triforce": "Triforce",
 	"point_of_origin.sgjourney.aurum": "Aurum",
 	"point_of_origin.sgjourney.ankh": "Anch",

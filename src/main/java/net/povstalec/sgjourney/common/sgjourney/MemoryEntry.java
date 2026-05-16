@@ -7,7 +7,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.function.Function;
 
@@ -28,7 +27,11 @@ public abstract class MemoryEntry<T>
 		TEXT(Component.translatable("tooltip.sgjourney.text").withStyle(ChatFormatting.GRAY), Text.class, Text::new),
 		ADDRESS(Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA), Address.class, Address::new),
 		TRANSPORTER_ID(Component.translatable("tooltip.sgjourney.transporter_id").withStyle(ChatFormatting.DARK_AQUA), TransporterID.class, TransporterID::new),
-		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.YELLOW), Coordinates.class, Coordinates::new);
+		COORDINATES(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.YELLOW), Coordinates.class, Coordinates::new),
+		
+		TRANSPORTER_ID_CONNECTION_RESULT(Component.translatable("tooltip.sgjourney.transporter_id_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterIDConnectionResult.class, TransporterIDConnectionResult::new),
+		TRANSPORTER_COORDS_CONNECTION_RESULT(Component.translatable("tooltip.sgjourney.transporter_coords_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterCoordsConnectionResult.class, TransporterCoordsConnectionResult::new),
+		STARGATE_CONNECTION_RESULT(Component.translatable("tooltip.sgjourney.stargate_connection_result").withStyle(ChatFormatting.DARK_BLUE), StargateConnectionResult.class, StargateConnectionResult::new);
 		
 		private final Component component;
 		private final Class<?> clazz;
@@ -332,6 +335,76 @@ public abstract class MemoryEntry<T>
 		{
 			StargateConnection.Result result = new StargateConnection.Result();
 			result.load(tag.getCompound(STARGATE_CONNECTION_RESULT));
+			return result;
+		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return ChatFormatting.DARK_BLUE;
+		}
+	}
+	
+	public static class TransporterIDConnectionResult extends MemoryEntry<TransporterConnection.IDResult>
+	{
+		public static final String TRANSPORTER_CONNECTION_RESULT = "transporter_connection_result";
+		
+		public TransporterIDConnectionResult(CompoundTag tag)
+		{
+			super(tag);
+		}
+		
+		public TransporterIDConnectionResult(String name, long timeStamp, Type entryType, TransporterConnection.IDResult entry)
+		{
+			super(name, timeStamp, entryType, entry);
+		}
+		
+		@Override
+		protected void saveEntry(CompoundTag tag)
+		{
+			tag.put(TRANSPORTER_CONNECTION_RESULT, entry.save());
+		}
+		
+		@Override
+		protected TransporterConnection.IDResult loadEntry(CompoundTag tag)
+		{
+			TransporterConnection.IDResult result = new TransporterConnection.IDResult();
+			result.load(tag.getCompound(TRANSPORTER_CONNECTION_RESULT));
+			return result;
+		}
+		
+		@Override
+		public ChatFormatting entryChatFormatting()
+		{
+			return ChatFormatting.DARK_BLUE;
+		}
+	}
+	
+	public static class TransporterCoordsConnectionResult extends MemoryEntry<TransporterConnection.CoordsResult>
+	{
+		public static final String TRANSPORTER_CONNECTION_RESULT = "transporter_connection_result";
+		
+		public TransporterCoordsConnectionResult(CompoundTag tag)
+		{
+			super(tag);
+		}
+		
+		public TransporterCoordsConnectionResult(String name, long timeStamp, Type entryType, TransporterConnection.CoordsResult entry)
+		{
+			super(name, timeStamp, entryType, entry);
+		}
+		
+		@Override
+		protected void saveEntry(CompoundTag tag)
+		{
+			tag.put(TRANSPORTER_CONNECTION_RESULT, entry.save());
+		}
+		
+		@Override
+		protected TransporterConnection.CoordsResult loadEntry(CompoundTag tag)
+		{
+			TransporterConnection.CoordsResult result = new TransporterConnection.CoordsResult();
+			result.load(tag.getCompound(TRANSPORTER_CONNECTION_RESULT));
 			return result;
 		}
 		

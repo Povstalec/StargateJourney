@@ -117,12 +117,6 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	}
 	
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
 		CompoundTag tag = this.saveWithoutMetadata();

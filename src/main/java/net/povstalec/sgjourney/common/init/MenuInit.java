@@ -25,6 +25,11 @@ public class MenuInit
 	public static final RegistryObject<MenuType<InterfaceMenu<AdvancedCrystalInterfaceEntity>>> ADVANCED_CRYSTAL_INTERFACE =
 			registerMenuType(InterfaceMenu.AdvancedCrystal::new, "advnaced_crystal_interface");
 	
+	public static final RegistryObject<MenuType<TransportRingsMenu.Ancient>> ANCIENT_TRANSPORT_RINGS =
+			registerMenuType(TransportRingsMenu.Ancient::new, "ancient_transport_rings");
+	public static final RegistryObject<MenuType<TransportRingsMenu.Goauld>> GOAULD_TRANSPORT_RINGS =
+			registerMenuType(TransportRingsMenu.Goauld::new, "goauld_transport_rings");
+	
 	public static final RegistryObject<MenuType<RingPanelMenu>> RING_PANEL =
             registerMenuType(RingPanelMenu::new, "ring_panel");
 	

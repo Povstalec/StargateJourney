@@ -58,6 +58,11 @@ public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 		super.invalidateCaps();
 	}
 	
+	public LazyOptional<IItemHandler> getEnergyItemHandler()
+	{
+		return lazyEnergyItemHandler.cast();
+	}
+	
 	protected ItemStackHandler createEnergyItemHandler()
 	{
 		return new ItemStackHandler(1)

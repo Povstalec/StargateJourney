@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -18,6 +19,7 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
@@ -43,11 +45,10 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergyBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
+public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -249,6 +250,10 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			return setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
 		return this.recentFeedback;
 	}
+	
+	public void onDialAttempt(TransporterInfo.Feedback feedback, TransporterID otherID) {}
+	
+	public void onDialAttempt(TransporterInfo.Feedback feedback, Vec3i coords) {}
 	
 	public boolean connectTransporter(UUID connectionID)
 	{

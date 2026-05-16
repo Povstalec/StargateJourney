@@ -80,18 +80,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected Direction direction;
 	
 	@Nullable
-	protected AbstractStargateEntity<?> stargate;
+	protected AbstractStargateEntity<?> stargate = null;
 	@Nullable
-	protected Vec3i stargateRelativePos;
+	protected Vec3i stargateRelativePos = null;
 	
-	protected boolean isCenterButtonEngaged;
-	protected Address.Mutable address;
+	protected boolean isCenterButtonEngaged = false;
+	protected Address.Mutable address = new Address.Mutable();
 	
-	protected boolean enableAdvancedProtocols;
-	protected boolean enableCallForwarding;
+	protected boolean enableAdvancedProtocols = false;
+	protected boolean enableCallForwarding = false;
 	
-	protected long energyTarget;
-	protected long maxEnergyTransfer;
+	protected long energyTarget = DEFAULT_ENERGY_TARGET;
+	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
+	protected int maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
 	
 	public final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
@@ -103,15 +104,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
-		
-		this.isCenterButtonEngaged = false;
-		this.address = new Address.Mutable();
-		
-		this.enableAdvancedProtocols = false;
-		this.enableCallForwarding = false;
-		
-		this.energyTarget = DEFAULT_ENERGY_TARGET;
-		this.maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
 		
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
@@ -283,7 +275,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public int getMaxDistance()
 	{
-		return DEFAULT_CONNECTION_DISTANCE;
+		return maxConnectionDistance;
 	}
 	
 	public long getEnergyTarget()

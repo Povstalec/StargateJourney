@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -12,21 +13,34 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
+import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR>
@@ -35,10 +49,17 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final String TRANSPORT_HEIGHT = "transport_height";
 	public static final String PROGRESS = "progress";
 	
+	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
+	
 	public static final int TRANSPORT_TICKS = 20; // Number of ticks Transport Rings wait while in the hover position before they start transporting
 	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
 	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
+	
+	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.ALL);
+	
+	public final ItemStackHandler crystalHandler;
+	protected final LazyOptional<IItemHandler> lazyCrystalHandler;
 	
 	@Nullable
 	private BlockPos transportPos = null;
@@ -53,18 +74,45 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public AbstractTransportRingsEntity(BlockEntityType<?> blockEntityType, TransporterType<TR> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
 		super(blockEntityType, transporterType, pos, state, defaultNetwork);
+		
+		crystalHandler = createCrystalHandler();
+		lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
 	}
 	
 	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	public void load(CompoundTag tag)
 	{
-		return ClientboundBlockEntityDataPacket.create(this);
+		super.load(tag);
+		crystalHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		tag.put(CRYSTAL_INVENTORY, crystalHandler.serializeNBT());
+		super.saveAdditional(tag);
+	}
+	
+	@Override
+	public void onLoad()
+	{
+		if(!this.getLevel().isClientSide())
+			this.recalculateCrystals();
+		
+		super.onLoad();
+	}
+	
+	@Override
+	public void invalidateCaps()
+	{
+		lazyCrystalHandler.invalidate();
+		super.invalidateCaps();
 	}
 	
 	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
-		CompoundTag tag = new CompoundTag();
+		CompoundTag tag = super.getUpdateTag();
 		
 		tag.putInt(EMPTY_SPACE, emptySpace);
 		tag.putInt(TRANSPORT_HEIGHT, transportHeight);
@@ -82,7 +130,75 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			emptySpace = tag.getInt(EMPTY_SPACE);
 			transportHeight = tag.getInt(TRANSPORT_HEIGHT);
 			updateProgress(tag.getInt(PROGRESS));
+			
+			load(tag);
 		}
+	}
+	
+	public LazyOptional<IItemHandler> getCrystalHandler()
+	{
+		return lazyCrystalHandler.cast();
+	}
+	
+	protected ItemStackHandler createCrystalHandler()
+	{
+		return new ItemStackHandler(9)
+		{
+			@Override
+			protected void onContentsChanged(int slot)
+			{
+				setChanged();
+				recalculateCrystals();
+			}
+			
+			@Override
+			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+			{
+				return stack.getItem() instanceof AbstractCrystalItem;
+			}
+			
+			// Limits the number of items per slot
+			public int getSlotLimit(int slot)
+			{
+				return 1;
+			}
+			
+			@Nonnull
+			@Override
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+			{
+				if(!isItemValid(slot, stack))
+					return stack;
+				
+				return super.insertItem(slot, stack, simulate);
+				
+			}
+		};
+	}
+	
+	public void recalculateCrystals()
+	{
+		this.crystalCache.reset();
+		
+		// Check where the Crystals are and save their positions
+		for(int i = 1; i < 9; i++)
+		{
+			ItemStack stack = crystalHandler.getStackInSlot(i);
+			Item item = stack.getItem();
+			
+			if(item instanceof AbstractCrystalItem crystal)
+				crystalCache.addCrystal(i, crystal);
+		}
+	}
+	
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
+	{
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+			return lazyEnergyItemHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 
 	@Override
@@ -94,6 +210,32 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	//========================================================================================================
 	//**********************************************Transporting**********************************************
 	//========================================================================================================
+	
+	protected void saveDialAttempt(MemoryEntry<?> memoryEntry)
+	{
+		CompoundTag entry = memoryEntry.save();
+		for(int slot : crystalCache.memoryCrystals().getSlots())
+		{
+			ItemStack stack = crystalHandler.getStackInSlot(slot);
+			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
+				entry = memoryCrystal.saveCompound(stack, entry, true); // Save memory and move the oldest one to another crystal
+			
+			if(entry == null)
+				break; // End early if there are no more memories to move back
+		}
+	}
+	
+	@Override
+	public void onDialAttempt(TransporterInfo.Feedback feedback, TransporterID otherID)
+	{
+		saveDialAttempt(new MemoryEntry.TransporterIDConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_ID_CONNECTION_RESULT, new TransporterConnection.IDResult(otherID, feedback)));
+	}
+	
+	@Override
+	public void onDialAttempt(TransporterInfo.Feedback feedback, Vec3i coords)
+	{
+		saveDialAttempt(new MemoryEntry.TransporterCoordsConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_COORDS_CONNECTION_RESULT, new TransporterConnection.CoordsResult(coords, feedback)));
+	}
 	
 	@Override
 	@Nullable
@@ -183,6 +325,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity<?> rings)
 	{
+		EnergySlotBlockEntity.tick(level, pos, state, rings);
+		
 		if(rings.isConnected())
 			rings.doClientProgress();
 		else
@@ -203,7 +347,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		this.progress++;
 	}
 	
-	// Only updates the progress if there is none - should prevent jittering
+	// Only updates the progress if there is none (-1), this should prevent jittering
 	public void updateProgress(int progress)
 	{
 		if(this.progress == -1 || progress == -1)
@@ -279,20 +423,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		return 0;
 	}
 	
-	
-	
-	@Override
-	public long getCapacity()
-	{
-		return 0; //TODO Change
-	}
-
-	@Override
-	public long getMaxReceive()
-	{
-		return 0; //TODO Change
-	}
-
 	@Override
 	public long getMaxExtract()
 	{
@@ -302,7 +432,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public long getMaxDeplete()
 	{
-		return 0; //TODO Change
+		return Long.MAX_VALUE;
 	}
 	
 	@Override

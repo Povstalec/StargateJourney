@@ -249,7 +249,7 @@ public final class StargateNetwork extends SavedData
 	
 	/**
 	 * Removes a single Stargate from the Stargate Network (and Block Entity List, if possible)
-	 * @param stargate
+	 * @param stargate Stargate to be removed
 	 * @return True if the Stargate was removed from some Dimension or Address Region (or the Block Entity List), otherwise false
 	 */
 	public boolean removeStargate(Stargate stargate)
