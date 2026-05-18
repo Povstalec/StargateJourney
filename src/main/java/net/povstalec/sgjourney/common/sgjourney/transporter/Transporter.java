@@ -17,16 +17,18 @@ import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface Transporter extends Comparable<Transporter>
 {
-	String DIMENSION = "Dimension";
+	String DIMENSION = "Dimension"; //TODO Change this to "dimension"
 	
-	String CUSTOM_NAME = "CustomName";
+	String CUSTOM_NAME = "CustomName"; //TODO Change this to "custom_name"
 	
-	String NETWORK = "network";
+	String NETWORKS = "networks";
 	
 	TransporterType<?> getTransporterType();
 	
@@ -111,21 +113,19 @@ public interface Transporter extends Comparable<Transporter>
 	double getInnerRadius();
 	
 	/**
-	 * @return The network this Transporter is a part of
+	 * @return Set of networks this Transporter is a part of
 	 */
-	int getNetwork();
-	
-	/**
-	 * @return True if the Transporter is restricted to some network, otherwise false
-	 */
-	boolean isRestricted();
+	Set<Integer> getNetworks();
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @param network Network ID to test
+	 * @param networks Network IDs to test
 	 * @return False if the provided network passes the restriction check successfully, otherwise true
 	 */
-	boolean passesRestrictionCheck(MinecraftServer server, int network);
+	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> networks)
+	{
+		return false;
+	}
 	
 	/**
 	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Transporter, where X is the direction which the Transporter is facing, Y is Transporter's up direction and Z is Transporter's right direction

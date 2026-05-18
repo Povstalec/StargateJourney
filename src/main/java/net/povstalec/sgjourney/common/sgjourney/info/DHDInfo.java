@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public class DHDInfo
 {
@@ -157,11 +158,27 @@ public class DHDInfo
 	public void setAutoclose(int autoclose)
 	{
 		this.autoclose = autoclose;
-	}
+	} //TODO Why does this exist?
 	
 	public int autoclose()
 	{
 		return this.autoclose;
+	}
+	
+	public boolean hasNetworkRestrictions()
+	{
+		if(this.dhd != null)
+			return this.dhd.hasNetworkRestrictions();
+		
+		return false;
+	}
+	
+	public Set<Integer> getNetworks()
+	{
+		if(this.dhd != null)
+			return this.dhd.getNetworks();
+		
+		return Set.of();
 	}
 	
 	

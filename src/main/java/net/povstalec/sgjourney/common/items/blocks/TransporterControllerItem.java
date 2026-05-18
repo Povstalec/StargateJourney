@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -13,11 +11,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.TransporterControllerEntity;
 
-public class DHDItem extends BlockItem
+import javax.annotation.Nullable;
+
+public class TransporterControllerItem extends BlockItem
 {
-	public DHDItem(Block block, Properties properties)
+	public TransporterControllerItem(Block block, Properties properties)
 	{
 		super(block, properties);
 	}
@@ -60,10 +60,10 @@ public class DHDItem extends BlockItem
 		else
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
-			if(baseEntity instanceof AbstractDHDEntity dhd)
+			if(baseEntity instanceof TransporterControllerEntity controller)
 			{
-				dhd.setStargate();
-				dhd.generateAdditional(StructureGenEntity.Step.READY);
+				controller.setTransporter();
+				controller.generateAdditional(StructureGenEntity.Step.READY);
 			}
 		}
 			
@@ -72,25 +72,20 @@ public class DHDItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof AbstractDHDEntity dhd)
+		if(baseEntity instanceof TransporterControllerEntity controller)
 		{
 			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
-				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP));
+			if(info.contains(TransporterControllerEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(TransporterControllerEntity.GENERATION_STEP));
 			else
 				generationStep = StructureGenEntity.Step.GENERATED;
 			
-			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP)))
-				dhd.setToGenerate();
-			
-			dhd.setStargate();
+			controller.setTransporter();
 			if(generationStep == StructureGenEntity.Step.GENERATED)
-				dhd.generateAdditional(StructureGenEntity.Step.GENERATED);
+				controller.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else
-				dhd.generateAdditional(StructureGenEntity.Step.SETUP);
-			
-			return true;
+				controller.generateAdditional(StructureGenEntity.Step.SETUP);
 		}
 		
 		return false;

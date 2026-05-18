@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
@@ -20,6 +21,7 @@ import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
@@ -97,8 +99,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	// Connections
 	public static final String CONNECTION_STATE = "connection_state";
 	public static final String CONNECTION_ID = "ConnectionID";
-	public static final String NETWORK = "Network";
-	public static final String RESTRICT_NETWORK = "RestrictNetwork";
+	public static final String NETWORKS = "networks";
+	public static final String RESTRICT_NETWORK = "restrict_network";
 	public static final String TIMES_OPENED = "TimesOpened";
 	public static final String AUTOCLOSE = "Autoclose";
 	
@@ -133,8 +135,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	protected int totalSymbols;
 	public final SymbolMap symbolMap;
-	protected int network;
-	protected boolean restrictNetwork = false;
+	protected int defaultNetwork;
+	protected Set<Integer> networks = new HashSet<>();
+	protected Trinary restrictNetwork = Trinary.DEFAULT;
 	
 	// Blockstate values
 	protected BlockPos centerPosition;
@@ -198,7 +201,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.totalSymbols = totalSymbols;
 		this.symbolMap = new SymbolMap(totalSymbols);
 		
-		this.network = defaultNetwork;
+		this.defaultNetwork = defaultNetwork;
 		
 		this.verticalCenterHeight = verticalCenterHeight;
 		this.horizontalCenterHeight = horizontalCenterHeight;
@@ -242,7 +245,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(tag.contains(CONNECTION_ID, CompoundTag.TAG_STRING))
 		{
 			try { connectionID = UUID.fromString(tag.getString(CONNECTION_ID)); }
-			catch(IllegalArgumentException e) {}
+			catch(IllegalArgumentException e) { StargateJourney.LOGGER.error("Unable to load Stargate Connection UUID", e); }
 		}
 		
 		deserializeStargateInfo(tag, false);
@@ -254,8 +257,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
-		network = tag.getInt(NETWORK);
-		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		
+		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
 		
 		if(tag.contains(ID)) //TODO Keeping this here for the time being for legacy reasons
 			id9ChevronAddress = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(tag.getString(ID)));
@@ -317,8 +324,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.getArray());
-		tag.putInt(NETWORK, network);
-		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
+		
+		if(!networks.isEmpty())
+			tag.putIntArray(NETWORKS, networks.stream().toList());
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 
@@ -353,12 +362,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		super.saveAdditional(tag);
 		
 		return tag;
-	}
-	
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
 	}
 	
 	@Override
@@ -894,33 +897,47 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.recentFeedback;
 	}
 	
-	public int getNetwork()
+	public Set<Integer> getNetworks()
 	{
-		return this.network;
+		Set<Integer> networks = new HashSet<>(this.networks);
+		networks.addAll(dhdInfo().getNetworks());
+		
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
 	}
 	
-	public void setNetwork(int network)
+	public boolean addNetwork(int network)
 	{
-		this.network = network;
+		boolean result = this.networks.add(network);
 		this.updateStargate();
+		return result;
 	}
 	
-	public boolean getRestrictNetwork()
+	public boolean removeNetwork(int network)
+	{
+		boolean result = this.networks.remove(network);
+		this.updateStargate();
+		return result;
+	}
+	
+	public Trinary getRestrictNetwork()
 	{
 		return this.restrictNetwork;
 	}
 	
-	public void setRestrictNetwork(boolean restrictNetwork)
+	public boolean hasNetworkRestrictions()
 	{
-		this.restrictNetwork = restrictNetwork;
+		if(getRestrictNetwork().isNotDefault()) // If the restrictions (presumably set by a computer) aren't default, use them
+			return getRestrictNetwork().isTrue();
+		// Otherwise use DHD restrictions
+		return dhdInfo().hasNetworkRestrictions();
 	}
 	
-	public boolean isRestricted(int network)
+	public void setRestrictNetwork(Trinary restrictNetwork)
 	{
-		if(this.getRestrictNetwork())
-			return network != this.getNetwork();
-		
-		return false;
+		this.restrictNetwork = restrictNetwork;
 	}
 	
 	public StargateInfo.Gen getGeneration()

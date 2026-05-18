@@ -115,6 +115,8 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();
+		
+		recalculateCrystals();
 	}
 	
 	@Override

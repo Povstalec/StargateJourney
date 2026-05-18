@@ -22,7 +22,7 @@ import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
-	public static final String ENERGY = "Energy";
+	public static final String ENERGY = "Energy"; //TODO Change this to "energy"
 	
 	public EnergyCrystalItem(Properties properties)
 	{

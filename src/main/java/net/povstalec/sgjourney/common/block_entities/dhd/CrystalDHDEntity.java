@@ -133,15 +133,18 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	
 	public void recalculateCrystals()
 	{
-		this.crystalCache.reset();
+		crystalCache.reset();
 		
 		// Check if the DHD has a Control Crystal
-		this.enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
+		enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
 		
-		this.energyTarget = 0;
-		this.maxEnergyTransfer = 0;
-		this.enableCallForwarding = false;
-		this.maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
+		hasNetworkRestrictions = false;
+		networks.clear();
+		
+		energyTarget = 0;
+		maxEnergyTransfer = 0;
+		enableCallForwarding = false;
+		maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
 		
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
@@ -167,7 +170,22 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		else
 			crystalCache.transferCrystals().forEach((slot, transferCrystal) -> maxEnergyTransfer += transferCrystal.getMaxTransfer());
 		
-		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) -> maxConnectionDistance += communicationCrystal.getMaxDistance());
+		crystalCache.controlCrystals().forEach((slot, controlCrystal) ->
+		{
+			//TODO Some special entry for Network Restriction
+			if(!controlCrystal.isLarge())
+				hasNetworkRestrictions = true;
+		});
+		
+		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
+		{
+			// Collect frequencies of different Communication Crystals and interpret them as networks the Stargate is in
+			int network = communicationCrystal.getFrequency(crystalHandler.getStackInSlot(slot));
+			if(network != 0)
+				networks.add(network);
+			else
+				maxConnectionDistance += communicationCrystal.getRangeIncrease();
+		});
 		
 		setStargate();
 	}

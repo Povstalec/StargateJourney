@@ -17,7 +17,7 @@ import net.minecraft.world.level.Level;
 
 public class TransferCrystalItem extends AbstractCrystalItem
 {
-	public static final String TRANSFER_LIMIT = "TransferLimit";
+	public static final String TRANSFER_LIMIT = "transfer_limit";
 	
 	public TransferCrystalItem(Properties properties)
 	{

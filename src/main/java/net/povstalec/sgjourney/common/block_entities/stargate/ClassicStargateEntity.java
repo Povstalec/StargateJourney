@@ -94,7 +94,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerClassicStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerClassicStargateMethods(wrapper);
 	}
 	
 	@Override

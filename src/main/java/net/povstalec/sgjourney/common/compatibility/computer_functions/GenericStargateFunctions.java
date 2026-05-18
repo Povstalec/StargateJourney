@@ -3,8 +3,11 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+
+import java.util.Set;
 
 public class GenericStargateFunctions
 {
@@ -144,6 +147,45 @@ public class GenericStargateFunctions
 		return stargate.dhdInfo().hasDHD();
 	}
 	
+	/**
+	 * @param stargate Stargate
+	 * @return Networks this Stargate is a part of
+	 */
+	public static Set<Integer> getNetworks(AbstractStargateEntity<?> stargate)
+	{
+		return stargate.getNetworks();
+	}
+	
+	/**
+	 * Adds the specified Stargate to a network
+	 * @param stargate Stargate
+	 * @return True if the operation was successful, otherwise false
+	 */
+	public static boolean addNetwork(AbstractStargateEntity<?> stargate, int network)
+	{
+		return stargate.addNetwork(network);
+	}
+	
+	/**
+	 * Removes the specified Stargate from a network
+	 * @param stargate Stargate
+	 * @return True if the operation was successful, otherwise false
+	 */
+	public static boolean removeNetwork(AbstractStargateEntity<?> stargate, int network)
+	{
+		return stargate.removeNetwork(network);
+	}
+	
+	public static void setRestrictNetwork(AbstractStargateEntity<?> stargate, Trinary restrictNetwork)
+	{
+		stargate.setRestrictNetwork(restrictNetwork);
+	}
+	
+	public static Trinary getRestrictNetwork(AbstractStargateEntity<?> stargate)
+	{
+		return stargate.getRestrictNetwork();
+	}
+	
 	//============================================================================================
 	//*********************************Advanced Crystal Interface*********************************
 	//============================================================================================
@@ -156,25 +198,5 @@ public class GenericStargateFunctions
 	public static Address.Immutable getLocalAddress(AbstractStargateEntity<?> stargate)
 	{
 		return stargate.get9ChevronAddress();
-	}
-	
-	public static int getNetwork(AbstractStargateEntity<?> stargate)
-	{
-		return stargate.getNetwork();
-	}
-	
-	public static void setNetwork(AbstractStargateEntity<?> stargate, int network)
-	{
-		stargate.setNetwork(network);
-	}
-	
-	public static void setRestrictNetwork(AbstractStargateEntity<?> stargate, boolean restrictNetwork)
-	{
-		stargate.setRestrictNetwork(restrictNetwork);
-	}
-	
-	public static boolean isNetworkRestricted(AbstractStargateEntity<?> stargate)
-	{
-		return stargate.getRestrictNetwork();
 	}
 }

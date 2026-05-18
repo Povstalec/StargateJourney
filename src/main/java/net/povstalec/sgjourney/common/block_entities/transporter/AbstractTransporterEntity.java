@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -10,7 +8,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -28,7 +26,10 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.misc.BlockEntityCache;
+import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
@@ -48,14 +49,15 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity, Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
+public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
+		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 	public static final String CUSTOM_NAME = "CustomName";
 	
-	public static final String NETWORK = "network";
+	public static final String NETWORKS = "networks";
 	public static final String RESTRICT_NETWORK = "restrict_network";
 	
 	private final TransporterType<T> transporterType;
@@ -65,15 +67,19 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	protected TransporterInfo.Feedback recentFeedback = TransporterInfo.Feedback.NONE;
 	
 	protected TransporterID.Immutable transporterID;
-	protected int network;
-	protected boolean restrictNetwork = false;
+	
+	protected int defaultNetwork;
+	protected Set<Integer> networks = new HashSet<>();
+	protected Trinary restrictNetwork = Trinary.DEFAULT;
+	
 	@Nullable
 	protected UUID connectionID = null;
 
 	@Nullable
 	private Component name;
 	
-	protected TransporterIDFilterInfo transporterIDFilterInfo;
+	public final BlockEntityCache<TransporterControllerEntity> controllerCache = new BlockEntityCache<>();
+	protected TransporterIDFilterInfo transporterIDFilterInfo = new TransporterIDFilterInfo();
 	
 	protected boolean isProtected = false;
 	
@@ -82,9 +88,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		super(blockEntityType, pos, state);
 		this.transporterType = transporterType;
 		
-		this.transporterIDFilterInfo = new TransporterIDFilterInfo();
-		
-		this.network = defaultNetwork;
+		this.defaultNetwork = defaultNetwork;
 	}
 	
 	@Override
@@ -97,6 +101,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		
 		if(this.generationStep == StructureGenEntity.Step.READY)
 			generate();
+		
+		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, 16,
+				controller -> !controller.transporterCache.isFetching() && !controller.transporterCache.hasBlockEntity()));
 	}
 	
 	@Override
@@ -114,8 +121,11 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
     	if(tag.contains(CUSTOM_NAME, 8))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
-		network = tag.getInt(NETWORK);
-		restrictNetwork = tag.getBoolean(RESTRICT_NETWORK);
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
 	}
 	
 	@Override
@@ -132,8 +142,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(name != null)
 	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(name));
 		
-		tag.putInt(NETWORK, network);
-		tag.putBoolean(RESTRICT_NETWORK, restrictNetwork);
+		if(!networks.isEmpty())
+			tag.putIntArray(NETWORKS, networks.stream().toList());
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 	}
 	
 	public final TransporterType<T> getTransporterType()
@@ -215,15 +226,53 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		return this.recentFeedback;
 	}
 	
-	public int getNetwork()
+	public void setNetwork(int defaultNetwork)
 	{
-		return this.network;
+		this.defaultNetwork = defaultNetwork;
+		this.updateTransporter();
 	}
 	
-	public void setNetwork(int network)
+	public Set<Integer> getNetworks()
 	{
-		this.network = network;
+		Set<Integer> networks = new HashSet<>(this.networks);
+		networks.addAll(controllerCache.returnOrDefault(TransporterControllerEntity::getNetworks, Set.of()));
+		
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
+	}
+	
+	public boolean addNetwork(int network)
+	{
+		boolean result = this.networks.add(network);
 		this.updateTransporter();
+		return result;
+	}
+	
+	public boolean removeNetwork(int network)
+	{
+		boolean result = this.networks.remove(network);
+		this.updateTransporter();
+		return result;
+	}
+	
+	public Trinary getRestrictNetwork()
+	{
+		return this.restrictNetwork;
+	}
+	
+	public boolean hasNetworkRestrictions()
+	{
+		if(getRestrictNetwork().isNotDefault()) // If the restrictions (presumably set by a computer) aren't default, use them
+			return getRestrictNetwork().isTrue();
+		
+		return false;
+	}
+	
+	public void setRestrictNetwork(Trinary restrictNetwork)
+	{
+		this.restrictNetwork = restrictNetwork;
 	}
 	
 	

@@ -253,7 +253,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerMilkyWayStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerMilkyWayStargateMethods(wrapper);
 	}
 	
 	@Override

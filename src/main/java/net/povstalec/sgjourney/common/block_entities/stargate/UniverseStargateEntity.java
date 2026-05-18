@@ -307,7 +307,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerUniverseStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerUniverseStargateMethods(wrapper);
 	}
 	
 	@Override

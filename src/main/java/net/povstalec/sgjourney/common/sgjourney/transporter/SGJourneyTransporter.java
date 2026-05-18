@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -12,6 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class SGJourneyTransporter implements Transporter
 {
@@ -24,7 +30,7 @@ public abstract class SGJourneyTransporter implements Transporter
 	protected TransporterID transporterID;
 	protected ResourceKey<Level> dimension;
 	
-	protected int network;
+	protected Set<Integer> networks;
 	
 	@Nullable
 	protected Component name;
@@ -71,23 +77,9 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public int getNetwork()
+	public Set<Integer> getNetworks()
 	{
-		return this.network;
-	}
-	
-	public boolean isRestricted()
-	{
-		//TODO
-		return false;
-	}
-	
-	@Override
-	public boolean passesRestrictionCheck(MinecraftServer server, int network)
-	{
-		//TODO Handle this here and do the same for Stargate restriction
-		
-		return false;
+		return this.networks;
 	}
 	
 	@Override
@@ -114,7 +106,7 @@ public abstract class SGJourneyTransporter implements Transporter
 			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If Transporter is restricted
-		if(passesRestrictionCheck(server, initiatingTransporter.getNetwork()))
+		if(isNetworkRestricted(server, initiatingTransporter.getNetworks()))
 			return TransporterInfo.Feedback.TARGET_RESTRICTED;
 		
 		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(initiatingTransporter.getID()))
@@ -167,7 +159,7 @@ public abstract class SGJourneyTransporter implements Transporter
 		if(this.name != null)
 			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 		
-		tag.putInt(NETWORK, network);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
 	}
 	
 	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
@@ -179,7 +171,10 @@ public abstract class SGJourneyTransporter implements Transporter
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
-		this.network = tag.getInt(NETWORK);
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 	}
 	
 	//============================================================================================

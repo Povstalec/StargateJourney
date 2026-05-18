@@ -51,7 +51,7 @@ public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEnti
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerTollanStargateMethods(wrapper);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)

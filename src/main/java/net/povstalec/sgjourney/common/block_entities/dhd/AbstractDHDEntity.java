@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -89,6 +91,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	protected boolean enableAdvancedProtocols = false;
 	protected boolean enableCallForwarding = false;
+	protected boolean hasNetworkRestrictions = false;
+	protected Set<Integer> networks = new HashSet<>();
 	
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
@@ -555,6 +559,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public boolean callForwardingEnabled()
 	{
 		return this.enableCallForwarding;
+	}
+	
+	public boolean hasNetworkRestrictions()
+	{
+		return this.hasNetworkRestrictions;
+	}
+	
+	public Set<Integer> getNetworks()
+	{
+		return this.networks;
 	}
     
     protected BlockState getState()

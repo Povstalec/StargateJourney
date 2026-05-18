@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import net.minecraft.core.BlockPos;
@@ -57,6 +59,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	
 	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.ALL);
+	protected boolean hasNetworkRestrictions = false; // Network restrictions specified by Crystals (separate from those specified by computers)
+	protected Set<Integer> networksCache = new HashSet<>();
 	
 	public final ItemStackHandler crystalHandler;
 	protected final LazyOptional<IItemHandler> lazyCrystalHandler;
@@ -178,7 +182,10 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	
 	public void recalculateCrystals()
 	{
-		this.crystalCache.reset();
+		crystalCache.reset();
+		
+		hasNetworkRestrictions = false;
+		networksCache.clear();
 		
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
@@ -189,6 +196,21 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			if(item instanceof AbstractCrystalItem crystal)
 				crystalCache.addCrystal(i, crystal);
 		}
+		
+		crystalCache.controlCrystals().forEach((slot, controlCrystal) ->
+		{
+			//TODO Some special entry for Network Restriction
+			if(!controlCrystal.isLarge())
+				hasNetworkRestrictions = true;
+		});
+		
+		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
+		{
+			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
+			int network = communicationCrystal.getFrequency(crystalHandler.getStackInSlot(slot));
+			if(network != 0)
+				networksCache.add(network);
+		});
 	}
 	
 	@Nonnull
@@ -210,6 +232,24 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	//========================================================================================================
 	//**********************************************Transporting**********************************************
 	//========================================================================================================
+	
+	@Override
+	public Set<Integer> getNetworks()
+	{
+		Set<Integer> networks = new HashSet<>(this.networksCache);
+		networks.addAll(super.getNetworks());
+		
+		return networks;
+	}
+	
+	@Override
+	public boolean hasNetworkRestrictions()
+	{
+		if(super.hasNetworkRestrictions())
+			return true;
+		
+		return hasNetworkRestrictions; // Restrict based on crystals
+	}
 	
 	protected void saveDialAttempt(MemoryEntry<?> memoryEntry)
 	{
@@ -279,7 +319,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerTransportRingsMethods(wrapper);
+		CCTweakedCompatibility.Transporter.registerTransportRingsMethods(wrapper);
 	}
 	
 	public static int getRingHoverHeight(int transportHeight, int ringNumber)

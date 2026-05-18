@@ -16,6 +16,8 @@ import net.povstalec.sgjourney.common.sgjourney.Wormhole;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -76,9 +78,13 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default boolean isRestricted(MinecraftServer server, int network)
+	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> testedNetworks)
 	{
-		return stargateReturn(server, stargate -> stargate.isRestricted(network), false);
+		// If Stargate has network restrictions turned on, check if the tested network matches any of the networks Stargate is in
+		if(stargateReturn(server, stargate -> stargate.hasNetworkRestrictions(), false))
+			return Collections.disjoint(getNetworks(), testedNetworks);
+		
+		return false;
 	}
 	
 	@Override

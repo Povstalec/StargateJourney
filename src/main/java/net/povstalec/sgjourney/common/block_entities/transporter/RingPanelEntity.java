@@ -19,17 +19,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
@@ -51,7 +46,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class RingPanelEntity extends TransporterControllerEntity implements ProtectedBlockEntity
+public class RingPanelEntity extends TransporterControllerEntity
 {
 	//TODO Tell the player there are no rings connected
 	//TODO Frequency
@@ -64,6 +59,8 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
 	public static final String BUTTONS = "buttons";
+	
+	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.COMMUNICATION);
 	
 	//------Button Stuff------
 	protected ButtonState panelState = ButtonState.DEFAULT;
@@ -78,11 +75,6 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	
 	protected final ItemStackHandler energyItemHandler = createEnergyItemHandler();
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
-	
-	@Nullable
-	protected Transporter connectedTransporter;
-	
-	protected boolean isProtected = false;
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
@@ -106,6 +98,15 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT());
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 		super.saveAdditional(tag);
+	}
+	
+	@Override
+	public void onLoad()
+	{
+		if(!this.getLevel().isClientSide())
+			this.recalculateCrystals();
+		
+		super.onLoad();
 	}
 	
 	@Override
@@ -153,6 +154,33 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
+	public void recalculateCrystals()
+	{
+		crystalCache.reset();
+		
+		networks.clear();
+		
+		// Check where the Crystals are and save their positions
+		for(int i = 1; i < 6; i++)
+		{
+			ItemStack stack = crystalItemHandler.getStackInSlot(i);
+			Item item = stack.getItem();
+			
+			if(item instanceof AbstractCrystalItem crystal)
+				crystalCache.addCrystal(i, crystal);
+		}
+		
+		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
+		{
+			// Collect frequencies of different Communication Crystals and interpret them as networks the Stargate is in
+			int network = communicationCrystal.getFrequency(crystalItemHandler.getStackInSlot(slot));
+			if(network != 0)
+				networks.add(network);
+			else
+				maxDiscoveryDistance *= 2; // Max discovery distance gets doubled for each crystal
+		});
+	}
+	
 	//============================================================================================
 	//*****************************************Inventory******************************************
 	//============================================================================================
@@ -166,6 +194,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 				{
 					setChanged();
 					tryUpdateButtons(slot);
+					recalculateCrystals();
 				}
 				
 				@Override
@@ -300,11 +329,6 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	//*******************************************Buttons******************************************
 	//============================================================================================
 	
-	public void connectToTransporter(Transporter transporter)
-	{
-		this.connectedTransporter = transporter;
-	}
-	
 	public static void tick(Level level, BlockPos pos, BlockState state, RingPanelEntity ringPanel)
 	{
 		if(level.isClientSide())
@@ -323,39 +347,38 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 			return Button.communicationCrystalButton(this, index, enabled, hasEnergy);
 		if(state == ButtonState.MANUAL)
 			return Button.controlCrystalButton(this, index, enabled, hasEnergy);
-		else if(transporterIterator.hasNext())
-			return Button.defaultTransportButton(this, index, server, transporterIterator.next(), enabled, hasEnergy);
+		else if(enabled && transporterIterator.hasNext())
+			return Button.defaultTransportButton(this, index, server, transporterIterator.next(), true, hasEnergy);
 		else
 			return Button.defaultDisabledButton(this, index); // Empty Default Button
 	}
 	
 	protected void updateButtons()
 	{
+		transporterCache.markDirty();
+		
 		panelState = ButtonState.DEFAULT;
 		page = -1;
 		selectedSlot = -1;
 		encodedID = null;
 		
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), 32768F).iterator(); //TODO Change distance
-		
-		if(transporterIterator.hasNext())
+		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
+		if(transporterCache.hasBlockEntity())
 		{
-			Transporter connectionCandidate = transporterIterator.next();
-			Vec3 candidatePosition = connectionCandidate.getPosition(serverLevel.getServer());
-			
-			if(candidatePosition != null && getBlockPos().getCenter().closerThan(candidatePosition, 16D))
-				connectToTransporter(connectionCandidate);
-			else
-				connectToTransporter(null);
+			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+					!transporterCache.getBlockEntity().transporterID.equals(transporter.getID())).iterator();
+			for(int i = 0; i < 6; i++)
+			{
+				buttons[i] = nextButton(serverLevel.getServer(), i, transporterIterator, transporterCache.hasBlockEntity(), buttonHasEnergy);
+			}
 		}
 		else
-			connectToTransporter(null);
-		
-		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
-		for(int i = 0; i < 6; i++)
 		{
-			buttons[i] = nextButton(serverLevel.getServer(), i, transporterIterator, connectedTransporter != null, buttonHasEnergy);
+			for(int i = 0; i < 6; i++)
+			{
+				buttons[i] = nextButton(serverLevel.getServer(), i, null, transporterCache.hasBlockEntity(), buttonHasEnergy);
+			}
 		}
 		
 		updateClient();
@@ -496,7 +519,9 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	{
 		
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), 32768F).iterator(); //TODO Change distance
+		//TODO Frequency
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+				!transporterCache.getBlockEntity().transporterID.equals(transporter.getID())).iterator();
 		
 		for(int i = 0; i < 6; i++)
 		{
@@ -518,7 +543,7 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	
 	public boolean checkBusy()
 	{
-		if(!connectedTransporter.isConnected(level.getServer()))
+		if(transporterCache.returnOrDefault(transporter -> !transporter.isConnected(), true))
 			return true;
 		
 		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), MESSAGE_DISTANCE);
@@ -528,42 +553,26 @@ public class RingPanelEntity extends TransporterControllerEntity implements Prot
 	
 	public TransporterInfo.Feedback startCoordTransport(Vec3 coords)
 	{
-		TransporterInfo.Feedback feedback = connectedTransporter.dialTransporter(level.getServer(), Conversion.vec3ToVec3i(coords));
+		TransporterInfo.Feedback feedback = super.startCoordTransport(coords);
 		updateButtons();
 		return feedback;
 	}
 	
 	public TransporterInfo.Feedback startIDTransport(TransporterID transporterID)
 	{
-		TransporterInfo.Feedback feedback = connectedTransporter.dialTransporter(level.getServer(), transporterID);
+		TransporterInfo.Feedback feedback = super.startIDTransport(transporterID);
 		updateButtons();
 		return feedback;
 	}
 	
-	@Override
-	public void setProtected(boolean isProtected)
-	{
-		this.isProtected = isProtected;
-	}
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
 	
 	@Override
-	public boolean isProtected()
+	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
-		return isProtected;
-	}
-	
-	@Override
-	public boolean hasPermissions(Player player, boolean sendMessage)
-	{
-		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_transporter_controller_permissions.get()))
-		{
-			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
-			
-			return false;
-		}
-		
-		return true;
+		recalculateCrystals();
 	}
 	
 	

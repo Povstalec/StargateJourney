@@ -16,7 +16,7 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 	public static final int DEFAULT_RANGE_INCREMENT = 2;
 	public static final int ADVANCED_RANGE_INCREMENT = 4;
 	
-	private static final String CRYSTAL_MODE = "CrystalMode";
+	private static final String CRYSTAL_MODE = "crystal_mode";
 	
 	public MaterializationCrystalItem(Properties properties)
 	{

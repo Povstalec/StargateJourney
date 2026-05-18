@@ -35,7 +35,7 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 		this.blockPos = transporterEntity.getBlockPos();
 		
 		this.name = transporterEntity.getCustomName();
-		this.network = transporterEntity.getNetwork();
+		this.networks = transporterEntity.getNetworks();
 	}
 	
 	@Nullable
@@ -54,7 +54,7 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 	{
 		transporterRun(server, transporter ->
 		{
-			this.network = transporter.getNetwork();
+			this.networks = transporter.getNetworks();
 		});
 	}
 	

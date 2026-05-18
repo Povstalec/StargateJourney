@@ -21,7 +21,10 @@ import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public interface Stargate extends Comparable<Stargate>
 {
@@ -32,7 +35,7 @@ public interface Stargate extends Comparable<Stargate>
 	String HAS_DHD = "HasDHD";
 	String TIMES_OPENED = "TimesOpened";
 	
-	String NETWORK = "Network";
+	String NETWORKS = "networks";
 	
 	// Basic Info
 	
@@ -169,19 +172,19 @@ public interface Stargate extends Comparable<Stargate>
 	int getTimesOpened();
 	
 	/**
-	 * @return The network this Stargate is a part of
+	 * @return Set of networks this Stargate is a part of
 	 */
-	default int getNetwork()
+	default Set<Integer> getNetworks()
 	{
-		return 0;
+		return Set.of();
 	}
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @param network Network ID to test
+	 * @param networks Network IDs to test
 	 * @return False if the provided network passes the restriction check successfully, otherwise true
 	 */
-	default boolean isRestricted(MinecraftServer server, int network)
+	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> networks)
 	{
 		return false;
 	}

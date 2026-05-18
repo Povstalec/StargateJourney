@@ -387,7 +387,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	@Override
 	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerPegasusStargateMethods(wrapper);
 	}
 	
 	@Override

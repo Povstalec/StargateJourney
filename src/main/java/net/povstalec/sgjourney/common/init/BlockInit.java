@@ -120,9 +120,9 @@ public class BlockInit
 			() -> new GoauldTransportRingsBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	// Transporter Controllers
-	public static final RegistryObject<RingPanelBlock> GOAULD_RING_PANEL = registerBlock("goauld_ring_panel",
+	public static final RegistryObject<RingPanelBlock> GOAULD_RING_PANEL = registerTransporterControllerBlock("goauld_ring_panel",
 			() -> new RingPanelBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F)
-					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE, 1);
+					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	// Natural Blocks
 	public static final RegistryObject<FallingBlock> SULFUR_SAND = registerBlock("sulfur_sand",
 			() -> new FallingBlock(BlockBehaviour.Properties.of(Material.SAND, MaterialColor.SAND).strength(0.5F).sound(SoundType.SAND)));
@@ -626,6 +626,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerTransporterControllerBlock(String name, Supplier<T> block, Rarity rarity)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerTransporterControllerItem(name, toReturn, rarity, 1);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<T> registerCartoucheBlock(String name, Supplier<T> block)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -681,6 +690,11 @@ public class BlockInit
 	private static <T extends Block>RegistryObject<Item> registerDHDItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
 	{
 		return ItemInit.ITEMS.register(name, () -> new DHDItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
+	}
+	
+	private static <T extends Block>RegistryObject<Item> registerTransporterControllerItem(String name, RegistryObject<T> block, Rarity rarity, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new TransporterControllerItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(stacksTo)));
 	}
 	
 	private static <T extends Block>RegistryObject<Item> registerCartoucheBlockItem(String name, RegistryObject<T> block, int stacksTo)

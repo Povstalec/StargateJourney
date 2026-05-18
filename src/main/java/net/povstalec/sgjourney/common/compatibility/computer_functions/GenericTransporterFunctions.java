@@ -3,8 +3,11 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+
+import java.util.Set;
 
 public class GenericTransporterFunctions
 {
@@ -51,33 +54,42 @@ public class GenericTransporterFunctions
 		return transporter.getID();
 	}
 	
-	//TODO
-	/*public static TransporterID getConnectedTransporterID(AbstractTransporterEntity transporter)
+	/**
+	 * @param transporter Transporter
+	 * @return Networks this Transporter is a part of
+	 */
+	public static Set<Integer> getNetworks(AbstractTransporterEntity<?> transporter)
 	{
-		Transporter connectedTransporter = transporter.getConnectedTransporter();
-		if(connectedTransporter == null)
-			return new TransporterID.Immutable();
-	
-		return connectedTransporter.getID();
+		return transporter.getNetworks();
 	}
 	
-	public static int getNetwork(AbstractTransporterEntity transporter)
+	/**
+	 * Adds the specified Transporter to a network
+	 * @param transporter Transporter
+	 * @return True if the operation was successful, otherwise false
+	 */
+	public static boolean addNetwork(AbstractTransporterEntity<?> transporter, int network)
 	{
-		return transporter.getNetwork();
+		return transporter.addNetwork(network);
 	}
 	
-	public static void setNetwork(AbstractTransporterEntity transporter, int network)
+	/**
+	 * Removes the specified Transporter from a network
+	 * @param transporter Transporter
+	 * @return True if the operation was successful, otherwise false
+	 */
+	public static boolean removeNetwork(AbstractTransporterEntity<?> transporter, int network)
 	{
-		transporter.setNetwork(network);
+		return transporter.removeNetwork(network);
 	}
 	
-	public static void setRestrictNetwork(AbstractTransporterEntity transporter, boolean restrictNetwork)
+	public static void setRestrictNetwork(AbstractTransporterEntity<?> transporter, Trinary restrictNetwork)
 	{
 		transporter.setRestrictNetwork(restrictNetwork);
 	}
 	
-	public static boolean isNetworkRestricted(AbstractTransporterEntity transporter)
+	public static Trinary getRestrictNetwork(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.getRestrictNetwork();
-	}*/
+	}
 }

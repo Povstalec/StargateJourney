@@ -77,7 +77,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 		
 		this.hasDHD = stargate.dhdInfo().hasDHD();
 		this.timesOpened = stargate.getTimesOpened();
-		this.network = stargate.getNetwork();
+		this.networks = stargate.getNetworks();
 	}
 	
 	//============================================================================================
@@ -139,7 +139,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 		{
 			this.hasDHD = stargate.dhdInfo().hasDHD();
 			this.timesOpened = stargate.getTimesOpened();
-			this.network = stargate.getNetwork();
+			this.networks = stargate.getNetworks();
 		});
 	}
 	
@@ -162,7 +162,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 		
 		super.deserializeNBT(server, id9ChevronAddress, tag);
 		
-		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORK))
+		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORKS))
 		{
 			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof ClassicStargateEntity stargate)
 				loadFromBlockEntity(stargate);

@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
@@ -33,7 +34,7 @@ public abstract class SGJourneyStargate implements Stargate
 	// Preferred Stargate decision
 	protected boolean hasDHD;
 	protected int timesOpened;
-	protected int network;
+	protected Set<Integer> networks;
 	
 	protected Wormhole wormhole = new Wormhole();
 	
@@ -92,9 +93,9 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public int getNetwork()
+	public Set<Integer> getNetworks()
 	{
-		return this.network;
+		return this.networks;
 	}
 	
 	// Energy
@@ -129,7 +130,7 @@ public abstract class SGJourneyStargate implements Stargate
 			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If last Stargate is restricted
-		if(isRestricted(server, dialingStargate.getNetwork()))
+		if(isNetworkRestricted(server, dialingStargate.getNetworks()))
 			return StargateInfo.Feedback.TARGET_RESTRICTED;
 		
 		// If last Stargate has a blacklist
@@ -206,7 +207,7 @@ public abstract class SGJourneyStargate implements Stargate
 		
 		tag.putBoolean(HAS_DHD, hasDHD);
 		tag.putInt(TIMES_OPENED, timesOpened);
-		tag.putInt(NETWORK, network);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
 	}
 	
 	@Override
@@ -218,7 +219,11 @@ public abstract class SGJourneyStargate implements Stargate
 		
 		this.hasDHD = tag.getBoolean(HAS_DHD);
 		this.timesOpened = tag.getInt(TIMES_OPENED);
-		this.network = tag.getInt(NETWORK);
+		
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 	}
 	
 	//============================================================================================

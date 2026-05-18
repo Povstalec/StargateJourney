@@ -15,12 +15,12 @@ import net.minecraft.world.level.Level;
 
 public class CommunicationCrystalItem extends AbstractCrystalItem
 {
-	public static final int DEFAULT_MAX_DISTANCE = 16;
-	public static final int ADVANCED_MAX_DISTANCE = 32;
+	public static final int DEFAULT_RANGE_INCREASE = 16;
+	public static final int ADVANCED_RANGE_INCREASE = 32;
 	
 	public static final int DEFAULT_FREQUENCY = 0;
 	
-	private static final String FREQUENCY = "Frequency";
+	private static final String FREQUENCY = "frequency";
 	
 	public CommunicationCrystalItem(Properties properties)
 	{
@@ -49,26 +49,30 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		return tag;
 	}
 	
-	public int getMaxDistance()
+	public int getRangeIncrease()
 	{
-		return DEFAULT_MAX_DISTANCE;
+		return DEFAULT_RANGE_INCREASE;
 	}
 
 	@Override
 	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		int frequency = getFrequency(stack);
+		if(frequency == DEFAULT_FREQUENCY)
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.range", getRangeIncrease()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		else
+			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.network").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY);
+    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": ").withStyle(ChatFormatting.GRAY);
         int frequency = getFrequency(stack);
         if(frequency == DEFAULT_FREQUENCY)
             tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
         else
-        	tooltipComponents.add(description.append(Component.literal("" + frequency).withStyle(ChatFormatting.GRAY)));
+        	tooltipComponents.add(description.append(Component.literal(Integer.toString(frequency)).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
@@ -81,21 +85,15 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		}
 		
 		@Override
-		public int getMaxDistance()
+		public int getRangeIncrease()
 		{
-			return ADVANCED_MAX_DISTANCE;
+			return ADVANCED_RANGE_INCREASE;
 		}
 		
 		@Override
 		public boolean isAdvanced()
 		{
 			return true;
-		}
-
-		@Override
-		public Optional<Component> descriptionInDHD(ItemStack stack)
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
     }
 }

@@ -126,6 +126,8 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();
+		
+		recalculateCrystals();
 	}
 	
 	@Override
