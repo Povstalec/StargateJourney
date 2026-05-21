@@ -34,7 +34,7 @@ public abstract class SGJourneyStargate implements Stargate
 	// Preferred Stargate decision
 	protected boolean hasDHD;
 	protected int timesOpened;
-	protected Set<Integer> networks;
+	protected Set<Integer> networks = new HashSet<>();
 	
 	protected Wormhole wormhole = new Wormhole();
 	

@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
@@ -243,7 +244,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default boolean callForward(MinecraftServer server)
 	{
-		return stargateReturn(server, stargate -> stargate.dhdInfo().shouldCallForward(), false);
+		return stargateReturn(server, stargate -> stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false), false);
 	}
 	
 	@Override
@@ -305,7 +306,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		return stargateReturn(server, stargate ->
 				{
 					// Call Forwarding
-					if(stargate.dhdInfo().shouldCallForward() && callForwardDeny(traveler))
+					if(stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false) && callForwardDeny(traveler))
 					{
 						if(connection.getDialedStargates().size() > 1) // There are at least 2 gates currently connected -> traveler gets sent to a random other gate
 							return connection.getDialedStargates().get(new Random().nextInt(1, connection.getDialedStargates().size())).receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
@@ -337,10 +338,11 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
 		return stargateReturn(server, stargate ->
 		{
-			if(stargate.dhdInfo().autoclose() <= 0)
+			int autoclose = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autoclose, 0);
+			if(autoclose <= 0)
 				return false;
 			
-			return connection.getTimeSinceLastTraveler() > stargate.dhdInfo().autoclose() * 20;
+			return connection.getTimeSinceLastTraveler() > autoclose * 20;
 		}, false); //TODO Maybe move the "* 20" into DHD info?
 	}
 	

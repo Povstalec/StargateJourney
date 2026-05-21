@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
@@ -32,7 +31,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 		if(level.isClientSide())
 			return;
 		
-		if(this.stargate != null) // Copy from connected Stargate
+		if(stargateCache.isPresent()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();
@@ -111,7 +110,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(this.stargate != null) // Copy from connected Stargate
+		else if(stargateCache.isPresent()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

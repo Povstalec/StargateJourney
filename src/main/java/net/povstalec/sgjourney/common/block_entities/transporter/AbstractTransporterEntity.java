@@ -26,7 +26,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.misc.BlockEntityCache;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.misc.Trinary;
@@ -50,7 +50,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
 public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
-		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
+		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -78,7 +78,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	@Nullable
 	private Component name;
 	
-	public final BlockEntityCache<TransporterControllerEntity> controllerCache = new BlockEntityCache<>();
+	public final AutoCache.Controller<TransporterControllerEntity, AbstractTransporterEntity<?>> controllerCache = new AutoCache.Controller<>(this);
 	protected TransporterIDFilterInfo transporterIDFilterInfo = new TransporterIDFilterInfo();
 	
 	protected boolean isProtected = false;
@@ -103,7 +103,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			generate();
 		
 		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, 16,
-				controller -> !controller.transporterCache.isFetching() && !controller.transporterCache.hasBlockEntity()));
+				controller -> !controller.transporterCache.isCached()));
 	}
 	
 	@Override
@@ -145,6 +145,12 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(!networks.isEmpty())
 			tag.putIntArray(NETWORKS, networks.stream().toList());
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
+	}
+	
+	@Override
+	public AutoCache.Controller<TransporterControllerEntity, AbstractTransporterEntity<?>> controllerCache()
+	{
+		return controllerCache;
 	}
 	
 	public final TransporterType<T> getTransporterType()
@@ -289,14 +295,20 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
 	{
 		if(!level.isClientSide())
-			return setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
+		{
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			onDialAttempt(this.recentFeedback, otherID);
+		}
 		return this.recentFeedback;
 	}
 	
 	public TransporterInfo.Feedback dialTransporter(Vec3i coords)
 	{
 		if(!level.isClientSide())
-			return setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
+		{
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			onDialAttempt(this.recentFeedback, coords);
+		}
 		return this.recentFeedback;
 	}
 	

@@ -32,7 +32,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		if(level.isClientSide())
 			return;
 		
-		if(this.stargate != null) // Copy from connected Stargate
+		if(stargateCache.isPresent()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();
@@ -122,7 +122,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(this.stargate != null) // Copy from connected Stargate
+		else if(stargateCache.isPresent()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

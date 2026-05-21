@@ -61,9 +61,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 			
         	if(blockEntity instanceof ClassicDHDEntity dhd)
         	{
-        		dhd.setStargate();
-				
-				if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
+        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
 					this.openCrystalMenu(player, dhd);
 				else
 				{

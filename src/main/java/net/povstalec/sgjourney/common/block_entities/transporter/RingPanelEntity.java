@@ -53,7 +53,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//TODO Interdimensional transport (Materialization Crystals)
 	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
-	public static final int MESSAGE_DISTANCE = 3;
 	
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
@@ -355,7 +354,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	protected void updateButtons()
 	{
-		transporterCache.markDirty();
+		transporterCache.markDirtyTwoWays();
 		
 		panelState = ButtonState.DEFAULT;
 		page = -1;
@@ -364,20 +363,20 @@ public class RingPanelEntity extends TransporterControllerEntity
 		
 		ServerLevel serverLevel = (ServerLevel) getLevel();
 		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
-		if(transporterCache.hasBlockEntity())
+		if(transporterCache.isPresent())
 		{
 			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
-					!transporterCache.getBlockEntity().transporterID.equals(transporter.getID())).iterator();
+					!transporterCache.get().transporterID.equals(transporter.getID())).iterator();
 			for(int i = 0; i < 6; i++)
 			{
-				buttons[i] = nextButton(serverLevel.getServer(), i, transporterIterator, transporterCache.hasBlockEntity(), buttonHasEnergy);
+				buttons[i] = nextButton(serverLevel.getServer(), i, transporterIterator, true, buttonHasEnergy);
 			}
 		}
 		else
 		{
 			for(int i = 0; i < 6; i++)
 			{
-				buttons[i] = nextButton(serverLevel.getServer(), i, null, transporterCache.hasBlockEntity(), buttonHasEnergy);
+				buttons[i] = nextButton(serverLevel.getServer(), i, null, false, buttonHasEnergy);
 			}
 		}
 		
@@ -521,7 +520,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		ServerLevel serverLevel = (ServerLevel) getLevel();
 		//TODO Frequency
 		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
-				!transporterCache.getBlockEntity().transporterID.equals(transporter.getID())).iterator();
+				!transporterCache.get().transporterID.equals(transporter.getID())).iterator();
 		
 		for(int i = 0; i < 6; i++)
 		{
@@ -546,7 +545,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		if(transporterCache.returnOrDefault(transporter -> !transporter.isConnected(), true))
 			return true;
 		
-		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), MESSAGE_DISTANCE);
+		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), CONTROLLER_INFO_DISTANCE);
 		updateButtons();
 		return false;
 	}
@@ -781,7 +780,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 					{
 						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
 						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
 					}
 				}
 			});
@@ -815,7 +814,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 					{
 						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
 						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
 					}
 				}
 				else if(button.coords() != null)
@@ -826,7 +825,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 					{
 						TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
 						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
 					}
 				}
 			});
@@ -865,7 +864,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 					{
 						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
 						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
 					}
 				}
 			});
@@ -935,7 +934,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 						{
 							TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
 							if(feedback.isError())
-								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), MESSAGE_DISTANCE);
+								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
 						}
 					}).setCloseScreen(true);
 		}

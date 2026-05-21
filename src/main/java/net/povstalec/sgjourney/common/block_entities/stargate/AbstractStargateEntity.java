@@ -14,17 +14,14 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.misc.PDAStatus;
-import net.povstalec.sgjourney.common.misc.Trinary;
+import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
@@ -80,7 +77,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 
 public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
-		SymbolInfo.Interface, DHDInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity, PDAStatus
+		SymbolInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String ID = "ID"; //TODO For legacy reasons
@@ -185,8 +182,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 	
+	public final AutoCache.Controller<AbstractDHDEntity, AbstractStargateEntity<?>> dhdCache = new AutoCache.Controller<>(this);
+	
 	protected SymbolInfo symbolInfo;
-	protected DHDInfo dhdInfo;
 	protected AddressFilterInfo addressFilterInfo;
 	//protected ShieldInfo shieldInfo;
 
@@ -207,7 +205,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.horizontalCenterHeight = horizontalCenterHeight;
 		
 		this.symbolInfo = new SymbolInfo();
-		this.dhdInfo = new DHDInfo(this);
 		this.addressFilterInfo = new AddressFilterInfo();
 	}
 
@@ -230,7 +227,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(generationStep == StructureGenEntity.Step.READY)
 			generate();
 		
-        dhdInfo.loadDHD();
+		//TODO DHD connection distance limits
+		
+		//TODO Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
+		dhdCache.setOnChanged((oldDHD, newDHD) -> {updateStargate(); updateClient();});
+		dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, 64,
+				dhd -> !dhd.stargateCache.isCached()));
 	}
 	
 	@Override
@@ -288,12 +290,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		variant = new ResourceLocation(tag.getString(VARIANT));
 		
-		if(tag.contains(DHD_POS))
-			dhdInfo().setRelativePos(Conversion.intArrayToVec(tag.getIntArray(DHD_POS)));
-		else
-			dhdInfo().setRelativePos(null);
-		dhdInfo().setAutoclose(tag.getInt(AUTOCLOSE));
-		
 		addressFilterInfo().deserializeFilters(tag);
 		
 		blockCover.deserializeNBT(tag.getCompound(COVER_BLOCKS));
@@ -345,10 +341,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			tag.putBoolean(PROTECTED, true);
 
 		tag.putString(VARIANT, variant.toString());
-		
-		if(dhdInfo().relativePos() != null)
-			tag.putIntArray(DHD_POS, Conversion.vecToIntArray(dhdInfo().relativePos()));
-		tag.putInt(AUTOCLOSE, dhdInfo().autoclose());
 		
 		addressFilterInfo().serializeFilters(tag);
 		
@@ -581,7 +573,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
 	}
 	
-	public StargateInfo.Feedback dhdEngageStargate() //TODO Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
+	public StargateInfo.Feedback dhdEngageStargate() //Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
 		return engageStargate();
 	}
@@ -606,7 +598,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public StargateInfo.Feedback makeDialAttempt(StargateInfo.Feedback feedback)
 	{
-		dhdInfo().onDialAttempt(feedback, getAddress());
+		dhdCache.ifPresent(dhd -> dhd.onDialAttempt(feedback, getAddress()));
 		return feedback;
 	}
 	
@@ -785,7 +777,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		updateCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
 		updateAdvancedCrystalInterfaceBlocks(EVENT_RESET, feedback.getCode(), feedback.getMessage());
 		
-		dhdInfo().revalidateDHD();
+		dhdCache.markDirtyTwoWays();
 		
 		setChanged();
 		try
@@ -826,14 +818,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public void updateStargate()
 	{
-		updateStargate(this.level);
-	}
-	
-	public void updateStargate(Level level)
-	{
 		if(level.isClientSide())
 			return;
-			
+		
 		StargateNetwork.get(level).updateStargateEntity(this);
 		setStargateState();
 	}
@@ -855,26 +842,31 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		setStargateState();
 	}
 	
+	protected void updateDHD(AbstractDHDEntity dhd)
+	{
+		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? getAddress() : new Address.Mutable(), isConnected());
+	}
+	
 	//============================================================================================
 	//********************************************Info********************************************
 	//============================================================================================
 	
 	@Override
-	public SymbolInfo symbolInfo()
+	public AutoCache.Controller<AbstractDHDEntity, AbstractStargateEntity<?>> controllerCache()
 	{
-		return this.symbolInfo;
+		return dhdCache;
 	}
 	
 	@Override
-	public DHDInfo dhdInfo()
+	public SymbolInfo symbolInfo()
 	{
-		return this.dhdInfo;
+		return symbolInfo;
 	}
 	
 	@Override
 	public AddressFilterInfo addressFilterInfo()
 	{
-		return this.addressFilterInfo;
+		return addressFilterInfo;
 	}
 	
 	//============================================================================================
@@ -886,8 +878,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(feedback != StargateInfo.Feedback.NONE)
 			this.recentFeedback = feedback;
 		
-		dhdInfo().sendDHDFeedback(feedback);
-		dhdInfo().updateDHD();
+		dhdCache.ifPresent(dhd ->
+		{
+			updateDHD(dhd);
+			if(feedback.isError())
+				dhd.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), AbstractDHDEntity.DHD_INFO_DISTANCE);
+		});
 		
 		return feedback;
 	}
@@ -900,7 +896,18 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public Set<Integer> getNetworks()
 	{
 		Set<Integer> networks = new HashSet<>(this.networks);
-		networks.addAll(dhdInfo().getNetworks());
+		networks.addAll(dhdCache.returnOrDefault(AbstractDHDEntity::getNetworks, Set.of()));
+		
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
+	}
+	
+	public Set<Integer> getCachedNetworks()
+	{
+		Set<Integer> networks = new HashSet<>(this.networks);
+		networks.addAll(dhdCache.returnCachedOrDefault(AbstractDHDEntity::getNetworks, Set.of()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -932,7 +939,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(getRestrictNetwork().isNotDefault()) // If the restrictions (presumably set by a computer) aren't default, use them
 			return getRestrictNetwork().isTrue();
 		// Otherwise use DHD restrictions
-		return dhdInfo().hasNetworkRestrictions();
+		return dhdCache.returnOrDefault(AbstractDHDEntity::hasNetworkRestrictions, false);
 	}
 	
 	public void setRestrictNetwork(Trinary restrictNetwork)
@@ -1000,10 +1007,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public void setOpenTime(int openTime)
 	{
-		if(openTime < 0)
-			this.openTime = 0;
-		else
-			this.openTime = openTime;
+		this.openTime = Math.max(openTime, 0);
 	}
 	
 	public int getOpenTime()
@@ -1023,10 +1027,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
 	{
-		if(timeSinceLastTraveler < 0)
-			this.timeSinceLastTraveler = 0;
-		else
-			this.timeSinceLastTraveler = timeSinceLastTraveler;
+		this.timeSinceLastTraveler = Math.max(timeSinceLastTraveler, 0);
 	}
 	
 	public int getTimeSinceLastTraveler()
@@ -1411,8 +1412,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			status.add(Component.translatable("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		status.add(Component.translatable("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
-		status.add(Component.translatable("info.sgjourney.has_dhd").append(": " + dhdInfo().hasDHD()).withStyle(ChatFormatting.GOLD));
-		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + dhdInfo().autoclose()).withStyle(ChatFormatting.RED));
+		status.add(Component.translatable("info.sgjourney.has_dhd").append(": " + dhdCache.isPresent()).withStyle(ChatFormatting.GOLD));
+		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + dhdCache.returnOrDefault(AbstractDHDEntity::autoclose, 0)).withStyle(ChatFormatting.RED));
 		status.add(Component.translatable("info.sgjourney.last_traveler_time").append(": " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
 		status.add(Component.translatable("info.sgjourney.encoded_address").append(": ").append(address.toComponent(true)).withStyle(ChatFormatting.GREEN));
 		status.add(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getFeedbackMessage())).withStyle(ChatFormatting.WHITE));
@@ -1722,5 +1723,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		
 		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return id9ChevronAddress.toString() + " at (" + getBlockPos().toShortString() + ')';
 	}
 }

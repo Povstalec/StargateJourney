@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -14,6 +15,7 @@ import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class LocatorHelper
@@ -69,10 +71,70 @@ public class LocatorHelper
 	//****************************************Transporter*****************************************
 	//============================================================================================
 	
+	private interface XZConsumer
+	{
+		void accept(int x, int z);
+	}
+	
+	private static void forExtraSides(boolean xPositive, boolean zPositive, int xCenter, int zCenter, int radius, XZConsumer consumer)
+	{
+	
+	}
+	
+	/*private static void forManhattanSquare(int xCenter, int zCenter, int radius, XZConsumer consumer)
+	{
+		if(radius == 0)
+			consumer.accept(xCenter, zCenter);
+		else
+		{
+			// Travel on top of the square
+			for(int x = -radius; x <= radius; x++)
+			{
+				consumer.accept(x + xCenter, -radius + zCenter);
+			}
+			// Travel on the square's left side
+			for(int z = -radius + 1; z < radius; z++)
+			{
+				consumer.accept(-radius + xCenter, z + zCenter);
+			}
+			// Travel on bottom of the square
+			for(int x = -radius; x <= radius; x++)
+			{
+				consumer.accept(x + xCenter, radius + zCenter);
+			}
+			// Travel on the square's right side
+			for(int z = -radius + 1; z < radius; z++)
+			{
+				consumer.accept(radius + xCenter, z + zCenter);
+			}
+		}
+	}*/
+	
+	/*private static Queue<ChunkPos> bfsTraverseSquare(Set<ChunkPos> visited, Queue<ChunkPos> queue, int xCenter, int zCenter, int maxDistance)
+	{
+		Queue<ChunkPos> newQueue = new ArrayDeque<>(); // New queue to keep track of elements that are worth visiting, but too far away for this cycle
+		//TODO Use BlockPos with 16 block gaps
+		while(!queue.isEmpty())
+		{
+			ChunkPos pos = queue.remove();
+			
+			if(Math.abs(xCenter - pos.x) > maxDistance || Math.abs(zCenter - pos.z) > maxDistance)
+				newQueue.add(pos);
+			else
+			{
+				visited.add(pos); //TODO Is this the right place?
+			
+			}
+		}
+		
+		return newQueue;
+	}*/
+	
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public static <T extends BlockEntity> T getNearestBlockEntityOfClass(Class<T> clazz, Level level, BlockPos centerPos, double maxDistance, Predicate<T> filter)
 	{
+		System.out.println("-----getNearestBlockEntityOfClass " + clazz.getName() +  "-----");
 		double bestDistance = Double.POSITIVE_INFINITY;
 		T closest = null;
 		
@@ -92,8 +154,10 @@ public class LocatorHelper
 					if(distanceSqr < bestDistance && clazz.isInstance(blockEntity))
 					{
 						T t = (T) blockEntity;
+						System.out.println("Found " + t.getBlockPos() + " dist " + distanceSqr);
 						if(filter.test(t))
 						{
+							System.out.println("new best");
 							bestDistance = distanceSqr;
 							closest = t;
 						}
@@ -101,6 +165,21 @@ public class LocatorHelper
 				}
 			}
 		}
+		
+		//Thread.dumpStack();
+		
+		/*Set<ChunkPos> visited = new HashSet<>();
+		
+		Queue<ChunkPos> queue = new ArrayDeque<>();
+		queue.add(new ChunkPos(chunkX, chunkZ));
+		
+		while(!queue.isEmpty())
+		{
+			ChunkPos pos = queue.remove();
+			visited.add(pos);
+			
+			
+		}*/
 		
 		return closest;
 	}

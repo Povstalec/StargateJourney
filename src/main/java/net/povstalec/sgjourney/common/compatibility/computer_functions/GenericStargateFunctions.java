@@ -144,7 +144,7 @@ public class GenericStargateFunctions
 	
 	public static boolean hasDHD(AbstractStargateEntity<?> stargate)
 	{
-		return stargate.dhdInfo().hasDHD();
+		return stargate.dhdCache.isPresent();
 	}
 	
 	/**

@@ -31,7 +31,6 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -82,7 +81,7 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
 			if(blockEntity instanceof AbstractDHDEntity dhd)
-				dhd.unsetStargate();
+				dhd.stargateCache.clearTwoWays();
 		}
 		
 		super.onRemove(oldState, level, pos, newState, isMoving);

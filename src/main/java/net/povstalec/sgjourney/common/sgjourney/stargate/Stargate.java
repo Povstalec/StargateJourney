@@ -508,7 +508,11 @@ public interface Stargate extends Comparable<Stargate>
 			return genRes;
 		
 		// Stargates with more uses take precedence
-		return Integer.compare(other.getTimesOpened(), this.getTimesOpened());
+		int timesOpenedRes = Integer.compare(other.getTimesOpened(), this.getTimesOpened());
+		if(timesOpenedRes != 0)
+			return timesOpenedRes;
+		
+		return other.get9ChevronAddress().compareTo(this.get9ChevronAddress());
 	}
 	
 	//============================================================================================

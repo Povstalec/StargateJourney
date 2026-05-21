@@ -30,7 +30,7 @@ public abstract class SGJourneyTransporter implements Transporter
 	protected TransporterID transporterID;
 	protected ResourceKey<Level> dimension;
 	
-	protected Set<Integer> networks;
+	protected Set<Integer> networks = new HashSet<>();
 	
 	@Nullable
 	protected Component name;

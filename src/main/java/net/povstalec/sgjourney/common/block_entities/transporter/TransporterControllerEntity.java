@@ -14,20 +14,19 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.misc.BlockEntityCache;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity
+public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
+	public static final int CONTROLLER_INFO_DISTANCE = 3;
 	public static final double DEFAULT_MAX_DISCOVERY_DISTANCE = 1024;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
@@ -36,10 +35,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	
 	protected double maxDiscoveryDistance = DEFAULT_MAX_DISCOVERY_DISTANCE;
 	
-	/*@Nullable
-	protected Transporter transporter;*/
-	
-	public final BlockEntityCache<AbstractTransporterEntity<?>> transporterCache = new BlockEntityCache<>();
+	public final AutoCache.Receiver<TransporterControllerEntity, AbstractTransporterEntity<?>> transporterCache = new AutoCache.Receiver<>(this);
 	
 	protected boolean isProtected = false;
 	
@@ -57,7 +53,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			return;
 		
 		transporterCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractTransporterEntity.class, level, worldPosition, 16,
-				transporter -> !transporter.controllerCache.isFetching() && !transporter.controllerCache.hasBlockEntity()));
+				transporter -> !transporter.controllerCache.isCached()));
 	}
 	
 	@Override
@@ -78,19 +74,20 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 	}
 	
+	@Override
+	public AutoCache.Receiver<TransporterControllerEntity, AbstractTransporterEntity<?>> receiverCache()
+	{
+		return transporterCache;
+	}
+	
 	public Set<Integer> getNetworks()
 	{
 		return this.networks;
 	}
 	
-	/*public void connectToTransporter(Transporter transporter)
-	{
-		this.transporter = transporter;
-	}*/
-	
 	public void setTransporter()
 	{
-		transporterCache.fetch();
+		// transporterCache.fetch(); //TODO Probably get rid of this method altogether
 	}
 	
 	// ======= Transporting =======

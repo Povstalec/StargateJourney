@@ -187,7 +187,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				maxConnectionDistance += communicationCrystal.getRangeIncrease();
 		});
 		
-		setStargate();
+		stargateCache.markDirtyTwoWays();
 	}
 	
 	@Override

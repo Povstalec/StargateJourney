@@ -13,6 +13,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -107,14 +108,11 @@ public class ConduitNetworks extends SavedData
 		return cables;
 	}
 	
-	public CompoundTag serialize()
+	public void serialize(CompoundTag tag)
 	{
-		CompoundTag conduitNetworks = new CompoundTag();
 		CompoundTag cables = serializeCables();
 		
-		conduitNetworks.put(CABLES, cables);
-		
-		return conduitNetworks;
+		tag.put(CABLES, cables);
 	}
 	
 	private void deserializeCables(CompoundTag blockEntityList)
@@ -122,7 +120,7 @@ public class ConduitNetworks extends SavedData
 		CompoundTag cables = blockEntityList.getCompound(CABLES);
 		for(String idString : cables.getAllKeys())
 		{
-			int id = Integer.valueOf(idString);
+			int id = Integer.parseInt(idString);
 			ConduitNetwork cableNetwork = new ConduitNetwork(id);
 			cableNetwork.deserializeNBT(cables.getCompound(idString));
 			this.cableMap.put(id, cableNetwork);
@@ -156,10 +154,9 @@ public class ConduitNetworks extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
-		tag = serialize();
-		
+		serialize(tag);
 		return tag;
 	}
 	
@@ -183,8 +180,8 @@ public class ConduitNetworks extends SavedData
 	
 	/**
 	 * Breadth First Search through the cable network. Returns a set of all found Cable Block Entities
-	 * @param level
-	 * @param startingPos
+	 * @param level Current Level
+	 * @param startingPos Position to start BFS from
 	 */
 	public static List<CableBlockEntity> findConnectedCables(Level level, BlockPos startingPos)
 	{
@@ -192,7 +189,7 @@ public class ConduitNetworks extends SavedData
 		
 		List<CableBlockEntity> cables = new ArrayList<>();
 		Set<BlockPos> visited = new HashSet<>();
-		Queue<BlockPos> queue = new LinkedList<>();
+		Queue<BlockPos> queue = new ArrayDeque<>();
 		queue.add(startingPos);
 		
 		for(int i = 0; !queue.isEmpty() && i < CommonCableConfig.max_cables_in_network.get(); i++)
@@ -222,8 +219,8 @@ public class ConduitNetworks extends SavedData
 	
 	public static class ConduitNetwork implements INBTSerializable<CompoundTag>
 	{
-		private int id;
-		private Set<BlockPos> outputs;
+		public final int id;
+		private final Set<BlockPos> outputs;
 		
 		public ConduitNetwork(int id)
 		{

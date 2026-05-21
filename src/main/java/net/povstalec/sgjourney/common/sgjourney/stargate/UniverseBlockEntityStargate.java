@@ -75,7 +75,7 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
 		
-		this.hasDHD = stargate.dhdInfo().hasDHD();
+		this.hasDHD = stargate.dhdCache.isPresent();
 		this.timesOpened = stargate.getTimesOpened();
 		this.networks = stargate.getNetworks();
 	}
@@ -137,9 +137,11 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 	{
 		stargateRun(server, stargate ->
 		{
-			this.hasDHD = stargate.dhdInfo().hasDHD();
+			// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
+			this.hasDHD = stargate.dhdCache.isCached();
+			this.networks = stargate.getCachedNetworks();
+			
 			this.timesOpened = stargate.getTimesOpened();
-			this.networks = stargate.getNetworks();
 		});
 	}
 	

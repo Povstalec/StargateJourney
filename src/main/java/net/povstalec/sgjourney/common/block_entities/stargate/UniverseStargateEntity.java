@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -63,17 +64,6 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		symbolInfo.setPointOfOrigin(Conversion.locationToPointOfOrigin(PointOfOrigin.UNIVERSAL_LOCATION));
 		symbolInfo.setSymbols(Conversion.locationToSymbols(Symbols.UNIVERSAL_LOCATION));
 		
-		this.dhdInfo = new DHDInfo(this)
-		{
-			@Override
-			public void updateDHD()
-			{
-				if(hasDHD())
-					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address.Mutable(), canEngage || isConnected());
-			}
-		};
-		
 		this.oldRotation = RESET_DEGREES;
 		this.rotation = RESET_DEGREES;
 	}
@@ -126,6 +116,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	//============================================================================================
 	//*******************************************Other********************************************
 	//============================================================================================
+	
+	@Override
+	protected void updateDHD(AbstractDHDEntity dhd)
+	{
+		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
+	}
 	
 	@Override
 	public StargateInfo.Feedback indirectEngageSymbol(int symbol, boolean canEngageStargate)

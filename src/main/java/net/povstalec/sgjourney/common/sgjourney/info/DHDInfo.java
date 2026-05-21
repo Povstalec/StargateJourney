@@ -15,8 +15,6 @@ import java.util.Set;
 
 public class DHDInfo
 {
-	public static final int DHD_INFO_DISTANCE = 3;
-	
 	protected AbstractStargateEntity<?> stargate;
 	
 	@Nullable
@@ -46,19 +44,19 @@ public class DHDInfo
 			updateDHD();
 		}
 		
-		this.stargate.updateStargate(this.stargate.getLevel());
+		this.stargate.updateStargate();
 	}
 	
 	public void unsetDHD(boolean notifyDHD)
 	{
-		if(notifyDHD && hasDHD())
-			this.dhd.unsetStargate();
+		//if(notifyDHD && hasDHD())
+		//	this.dhd.unsetStargate();
 		
 		this.dhd = null;
 		this.dhdRelativePos = null;
 		this.autoclose = 0;
 		
-		this.stargate.updateStargate(this.stargate.getLevel());
+		this.stargate.updateStargate();
 		updateDHD();
 		this.stargate.setChanged();
 	}
@@ -95,7 +93,7 @@ public class DHDInfo
 	public void sendDHDFeedback(StargateInfo.Feedback feedback)
 	{
 		if(hasDHD() && feedback.isError())
-			this.dhd.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), DHD_INFO_DISTANCE);
+			this.dhd.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), AbstractDHDEntity.DHD_INFO_DISTANCE);
 	}
 	
 	public boolean shouldCallForward()

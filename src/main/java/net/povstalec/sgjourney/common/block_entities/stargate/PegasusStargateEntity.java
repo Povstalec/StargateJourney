@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -54,17 +55,6 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	{
 		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateInit.PEGASUS.get(), new ResourceLocation(StargateJourney.MODID, "pegasus"), pos, state, TOTAL_SYMBOLS, 3);
 		this.setOpenSoundLead(13);
-		
-		this.dhdInfo = new DHDInfo(this)
-		{
-			@Override
-			public void updateDHD()
-			{
-				if(hasDHD())
-					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address.Mutable(), canEngage || isConnected());
-			}
-		};
 	}
 	
 	@Override
@@ -157,6 +147,12 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	//============================================================================================
 	//*******************************************Other********************************************
 	//============================================================================================
+	
+	@Override
+	protected void updateDHD(AbstractDHDEntity dhd)
+	{
+		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
+	}
 	
 	@Override
 	public ResourceLocation defaultVariant()

@@ -202,7 +202,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     		if(stargate != null)
     		{
     			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED);
-    			stargate.dhdInfo().unsetDHD(true);
+				stargate.dhdCache.markDirtyTwoWays();
     			stargate.removeStargateFromNetwork();
     		}
     		

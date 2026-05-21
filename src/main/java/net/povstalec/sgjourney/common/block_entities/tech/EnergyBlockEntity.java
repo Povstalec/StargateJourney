@@ -137,8 +137,12 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	protected void energyChanged(long difference, boolean simulate)
 	{
-		this.setChanged();
-		updateClient();
+		if(!simulate)
+		{
+			this.setChanged();
+			if(difference != 0)
+				updateClient();
+		}
 	}
 	
 	protected SGJourneyEnergy createEnergyStorage()
