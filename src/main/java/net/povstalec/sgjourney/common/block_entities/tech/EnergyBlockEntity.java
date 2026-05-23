@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,8 +36,8 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public void onLoad()
 	{
-		super.onLoad();
 		lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
+		super.onLoad();
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void updateClient()
 	{
 		if(!level.isClientSide())
-			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 	}
 	
 	//============================================================================================

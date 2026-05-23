@@ -102,8 +102,10 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(this.generationStep == StructureGenEntity.Step.READY)
 			generate();
 		
+		//=====Setting up cache logic=====
 		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, 16,
 				controller -> !controller.transporterCache.isCached()));
+		//==========
 	}
 	
 	@Override

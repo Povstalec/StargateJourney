@@ -9,7 +9,6 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
@@ -118,7 +117,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	//============================================================================================
 	
 	@Override
-	protected void updateDHD(AbstractDHDEntity dhd)
+	public void updateDHD(AbstractDHDEntity dhd)
 	{
 		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
 	}

@@ -9,7 +9,6 @@ import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
@@ -149,7 +148,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	//============================================================================================
 	
 	@Override
-	protected void updateDHD(AbstractDHDEntity dhd)
+	public void updateDHD(AbstractDHDEntity dhd)
 	{
 		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
 	}

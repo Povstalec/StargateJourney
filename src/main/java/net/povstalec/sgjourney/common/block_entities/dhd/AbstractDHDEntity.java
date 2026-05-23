@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -51,6 +52,7 @@ import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
@@ -69,7 +71,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public static final String CRYSTAL_MODE = "CrystalMode";
 	public static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
 	
-	public static final String STARGATE_POS = "StargatePos";
+	public static final String STARGATE_POS = "stargate_pos";
 	
 	public static final int DEFAULT_ENERGY_TARGET = 150000;
 	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
@@ -98,6 +100,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	protected boolean isProtected = false;
 	
+	@Nullable
+	protected Vec3i stargateRelativePos = null;
 	public final AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> stargateCache = new AutoCache.Receiver<>(this);
 	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
@@ -113,19 +117,56 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	public void onLoad()
 	{
-		super.onLoad();
+		// Revalidation is the same on both Server and Client
+		stargateCache.setRevalidate(() ->
+		{
+			if(stargateRelativePos == null)
+				return false;
+			
+			BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+			if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+				return stargateCache.getCached() == stargate; // Check if the Stargate at the saved pos is the same Stargate
+			
+			return false;
+		});
 		
 		if(getLevel().isClientSide())
-			return;
-		
-		stargateCache.setOnChanged((oldStargate, newStargate) -> updateClient());
-		stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, 64, //TODO DHD Distance
-				stargate -> !stargate.dhdCache.isCached()));
-		
-		if(generationStep == StructureGenEntity.Step.READY)
-			generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (don't forget generateAdditional is fired by DHDItem)
-		
-		updateClient();
+		{
+			// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
+			stargateCache.setFetch(() ->
+			{
+				if(stargateRelativePos == null)
+					return null;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+					return stargate;
+				
+				return null;
+			});
+		}
+		else
+		{
+			// Find nearest Stargate that isn't connected to a DHD
+			stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, 64, //TODO DHD Distance
+					stargate -> !stargate.dhdCache.isCached()));
+			
+			stargateCache.setOnChanged((oldStargate, newStargate) ->
+			{
+				if(newStargate != null)
+					stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newStargate.getBlockPos());
+				else
+					stargateRelativePos = null;
+				
+				updateClient();
+			});
+			
+			if(generationStep == StructureGenEntity.Step.READY)
+				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (don't forget generateAdditional is fired by DHDItem)
+			
+			updateClient();
+			super.onLoad();
+		}
 	}
 	
 	@Override
@@ -134,11 +175,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		InventoryUtil.expandSlotsIfNeeded(energyItemHandler, 2);
 		
-		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+		if(tag.contains(GENERATION_STEP, Tag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
-		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
+		if(tag.contains(PROTECTED, Tag.TAG_BYTE))
 			isProtected = tag.getBoolean(PROTECTED);
+		
+		if(tag.contains(STARGATE_POS, Tag.TAG_INT_ARRAY))
+			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
+		else
+			stargateRelativePos = null;
+		
+		address.fromArray(tag.getIntArray(ADDRESS));
+		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
 		
 		super.load(tag);
 	}
@@ -155,14 +204,18 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		if(isProtected)
 			tag.putBoolean(PROTECTED, true);
+		
+		if(stargateRelativePos != null)
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
+		
+		address.saveToCompoundTag(tag, ADDRESS);
+		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
 	}
 	
 	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
 		CompoundTag tag = new CompoundTag();
-		
-		stargateCache.ifCached(stargate -> tag.putIntArray(STARGATE_POS, Conversion.blockPosToIntArray(stargate.getBlockPos())));
 		
 		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
 		
@@ -171,7 +224,27 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		address.saveToCompoundTag(tag, ADDRESS);
 		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
 		
+		if(stargateRelativePos != null)
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
+		
 		return tag;
+	}
+	
+	@Override
+	public void handleUpdateTag(CompoundTag tag)
+	{
+		energyStorage.setEnergy(tag.getLong(ENERGY));
+		
+		symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		address.fromArray(tag.getIntArray(ADDRESS));
+		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+		
+		if(tag.contains(STARGATE_POS, Tag.TAG_INT_ARRAY))
+			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
+		else
+			stargateRelativePos = null;
+		stargateCache.markDirty();
 	}
 	
 	@Override
@@ -179,25 +252,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
-		{
-			energyStorage.setEnergy(tag.getLong(ENERGY));
-			
-			symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
-			
-			address.fromArray(tag.getIntArray(ADDRESS));
-			isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
-			
-			if(tag.contains(STARGATE_POS, Tag.TAG_INT_ARRAY))
-			{
-				BlockPos pos = Conversion.intArrayToBlockPos(tag.getIntArray(STARGATE_POS));
-				if(level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
-					stargateCache.set(stargate);
-				else
-					stargateCache.clear();
-			}
-			else
-				stargateCache.clear();
-		}
+			handleUpdateTag(tag);
 	}
 	
 	@Override
@@ -553,20 +608,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		return this.networks;
 	}
-    
-    protected BlockState getState()
-    {
-    	BlockPos gatePos = this.getBlockPos();
-		return this.level.getBlockState(gatePos);
-    }
 	
 	public Direction getDirection()
 	{
 		if(this.direction == null)
 		{
-			BlockState gateState = getState();
+			BlockState gateState = getBlockState();
 			
-			if(gateState.getBlock() instanceof AbstractDHDBlock)
+			if(gateState.hasProperty(AbstractDHDBlock.FACING))
 				this.direction = gateState.getValue(AbstractDHDBlock.FACING);
 			else
 				StargateJourney.LOGGER.error("Couldn't find DHD Direction");
@@ -649,6 +698,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 					
 					stargate.dhdEngageStargate();
+					stargate.updateDHD(this);
 					
 					if(REQUIRE_ENERGY)
 						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
@@ -679,6 +729,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 						stargate.indirectEngageSymbol(stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray()), false);
 					else
 						stargate.indirectEngageSymbol(symbol, false);
+					stargate.updateDHD(this);
 					
 					if(REQUIRE_ENERGY)
 						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);

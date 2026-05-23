@@ -4,6 +4,7 @@ import java.util.*;
 
 import javax.annotation.Nullable;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -112,6 +113,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public static final String ENGAGED_CHEVRONS = "engaged_chevrons";
 	
+	public static final String DHD_POS = "dhd_pos";
+	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
 	
 	public static final int SEGMENTS = 3;
@@ -182,6 +185,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
 	
+	@Nullable
+	protected Vec3i dhdRelativePos = null;
 	public final AutoCache.Controller<AbstractDHDEntity, AbstractStargateEntity<?>> dhdCache = new AutoCache.Controller<>(this);
 	
 	protected SymbolInfo symbolInfo;
@@ -217,22 +222,52 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Override
     public void onLoad()
 	{
+		if(level.isClientSide())
+		{
+			// Anything goes, onDataPacket() is responsible for taking care of the cache on the client
+			dhdCache.setRevalidate(() -> true);
+			dhdCache.setFetch(dhdCache::getCached);
+		}
+		else
+		{
+			//TODO DHD connection distance limits
+			
+			//TODO Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
+			
+			//=====Setting up cache logic=====
+			dhdCache.setRevalidate(() ->
+			{
+				if(dhdRelativePos == null)
+					return false;
+				
+				BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
+				if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
+					return dhdCache.getCached() == dhd; // Check if the DHD at the saved pos is the same DHD
+				
+				return false;
+			});
+			dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, 64,
+					dhd -> !dhd.stargateCache.isCached()));
+			
+			dhdCache.setOnChanged((oldDHD, newDHD) ->
+			{
+				if(newDHD != null)
+					dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
+				else
+					dhdRelativePos = null;
+				
+				updateStargate();
+				updateClient();
+			});
+			//==========
+			
+			checkStargate();
+			
+			if(generationStep == StructureGenEntity.Step.READY)
+				generate();
+		}
+		
 		super.onLoad();
-		
-        if(level.isClientSide())
-			return;
-		
-		checkStargate();
-		
-		if(generationStep == StructureGenEntity.Step.READY)
-			generate();
-		
-		//TODO DHD connection distance limits
-		
-		//TODO Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
-		dhdCache.setOnChanged((oldDHD, newDHD) -> {updateStargate(); updateClient();});
-		dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, 64,
-				dhd -> !dhd.stargateCache.isCached()));
 	}
 	
 	@Override
@@ -249,6 +284,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			try { connectionID = UUID.fromString(tag.getString(CONNECTION_ID)); }
 			catch(IllegalArgumentException e) { StargateJourney.LOGGER.error("Unable to load Stargate Connection UUID", e); }
 		}
+		
+		if(tag.contains(DHD_POS, Tag.TAG_INT_ARRAY))
+			dhdRelativePos = Conversion.intArrayToVec(tag.getIntArray(DHD_POS));
+		else
+			dhdRelativePos = null;
 		
 		deserializeStargateInfo(tag, false);
 	}
@@ -312,6 +352,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putByte(CONNECTION_STATE, connectionState.byteValue());
 		if(connectionID != null)
 			tag.putString(CONNECTION_ID, connectionID.toString());
+		
+		if(dhdRelativePos != null)
+			tag.putIntArray(DHD_POS, Conversion.vecToIntArray(dhdRelativePos));
 		
 		serializeStargateInfo(tag);
 	}
@@ -842,7 +885,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		setStargateState();
 	}
 	
-	protected void updateDHD(AbstractDHDEntity dhd)
+	public void updateDHD(AbstractDHDEntity dhd)
 	{
 		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? getAddress() : new Address.Mutable(), isConnected());
 	}
@@ -1149,18 +1192,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
     			centerPos.getY() - mainBlockPos.getY() + y, 
     			centerPos.getZ() - mainBlockPos.getZ() + 0.5);
     }
-    
-    protected BlockState getState()
-    {
-    	BlockPos gatePos = getBlockPos();
-		return this.level.getBlockState(gatePos);
-    }
 	
 	public Orientation getOrientation()
 	{
 		if(this.orientation == null)
 		{
-			BlockState gateState = getState();
+			BlockState gateState = getBlockState();
 			
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.orientation = gateState.getValue(AbstractStargateBaseBlock.ORIENTATION);
@@ -1175,7 +1212,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		if(this.direction == null)
 		{
-			BlockState gateState = getState();
+			BlockState gateState = getBlockState();
 			
 			if(gateState.getBlock() instanceof AbstractStargateBaseBlock)
 				this.direction = gateState.getValue(AbstractStargateBaseBlock.FACING);
@@ -1215,7 +1252,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void setStargateState(boolean updateIris, ShieldingState shieldingState)
 	{
 		BlockPos gatePos = getBlockPos();
-		BlockState gateState = getState();
+		BlockState gateState = getBlockState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
 		{
@@ -1294,7 +1331,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
     public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)
     {
     	BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = getState();
+		BlockState gateState = getBlockState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
@@ -1323,7 +1360,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
     public void updateCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
     {
     	BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = getState();
+		BlockState gateState = getBlockState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
@@ -1352,7 +1389,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
     public void updateAdvancedCrystalInterfaceBlocks(@Nullable String eventName, Object... objects)
     {
     	BlockPos gatePos = this.getBlockPos();
-		BlockState gateState = getState();
+		BlockState gateState = getBlockState();
 		
 		if(gateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{

@@ -52,8 +52,10 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		if(this.level.isClientSide())
 			return;
 		
+		//=====Setting up cache logic=====
 		transporterCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractTransporterEntity.class, level, worldPosition, 16,
 				transporter -> !transporter.controllerCache.isCached()));
+		//==========
 	}
 	
 	@Override

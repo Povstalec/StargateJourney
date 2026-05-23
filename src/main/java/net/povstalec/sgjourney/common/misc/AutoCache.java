@@ -81,17 +81,26 @@ public class AutoCache<T>
 		this.revalidate = revalidate;
 	}
 	
+	protected boolean shouldFetch()
+	{
+		if(!dirty)
+			return false;
+		
+		if(object != null && revalidate.getAsBoolean())
+		{
+			dirty = false;
+			return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Fetches an Object for the cache
 	 */
 	protected void fetch()
 	{
 		set(fetch.get());
-	}
-	
-	protected boolean shouldFetch()
-	{
-		return dirty && !revalidate.getAsBoolean();
 	}
 	
 	/**
