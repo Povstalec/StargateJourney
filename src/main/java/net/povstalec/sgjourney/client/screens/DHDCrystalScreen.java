@@ -14,18 +14,20 @@ import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 
-public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
+public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyContainerScreen<T>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd_crystal_gui.png");
-	
 	public static final int HINT_OFFSET_Y = 166;
 	public static final int LARGE_CRYSTAL_HINT_OFFSET_X = 0;
 	public static final int CRYSTAL_HINT_OFFSET_X = 16;
 	public static final int ENERGY_HINT_OFFSET_X = 32;
 	
-	public DHDCrystalScreen(DHDCrystalMenu pMenu, Inventory pPlayerInventory, Component pTitle)
+	public final ResourceLocation texture;
+	
+	public DHDCrystalScreen(T menu, Inventory playerInventory, Component title, ResourceLocation texture)
 	{
-        super(pMenu, pPlayerInventory, pTitle);
+        super(menu, playerInventory, title);
+		
+		this.texture = texture;
     }
 
     @Override
@@ -33,7 +35,7 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
@@ -122,5 +124,31 @@ public class DHDCrystalScreen extends SGJourneyContainerScreen<DHDCrystalMenu>
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)
 	{
 		this.tooltip(poseStack, mouseX, mouseY, x, y, 16, 6, components);
+	}
+	
+	
+	
+	public static class MilkyWay extends DHDCrystalScreen<DHDCrystalMenu.MilkyWay>
+	{
+		public MilkyWay(DHDCrystalMenu.MilkyWay menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/milky_way/milky_way_dhd_crystal_gui.png"));
+		}
+	}
+	
+	public static class Pegasus extends DHDCrystalScreen<DHDCrystalMenu.Pegasus>
+	{
+		public Pegasus(DHDCrystalMenu.Pegasus menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_crystal_gui.png"));
+		}
+	}
+	
+	public static class Classic extends DHDCrystalScreen<DHDCrystalMenu.Classic>
+	{
+		public Classic(DHDCrystalMenu.Classic menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_crystal_gui.png"));
+		}
 	}
 }

@@ -53,7 +53,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
-	public static final int TRANSPORT_TICKS = 20; // Number of ticks Transport Rings wait while in the hover position before they start transporting
+	public static final int TRANSPORT_TICKS = 21; // Number of ticks Transport Rings wait while in the hover position before they start transporting
 	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
 	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;

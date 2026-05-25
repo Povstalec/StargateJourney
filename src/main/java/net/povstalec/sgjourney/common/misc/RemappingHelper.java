@@ -112,12 +112,6 @@ public class RemappingHelper
 		remapBlockEntity("ring_panel", BlockEntityInit.GOAULD_RING_PANEL, BlockInit.GOAULD_RING_PANEL);
 		
 		// Blocks
-		remapBlock("naquadah_block", BlockInit.POLISHED_NAQUADAH_IRON_BLOCK);
-		remapBlock("naquadah_slab", BlockInit.POLISHED_NAQUADAH_IRON_SLAB);
-		remapBlock("naquadah_stairs", BlockInit.CUT_NAQUADAH_IRON_STAIRS);
-		remapBlock("cut_naquadah_block", BlockInit.NAQUADAH_IRON_BLOCK);
-		remapBlock("cut_naquadah_stairs", BlockInit.NAQUADAH_IRON_STAIRS);
-		remapBlock("cut_naquadah_slab", BlockInit.NAQUADAH_IRON_SLAB);
 		
 		// Items
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);

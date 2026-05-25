@@ -33,17 +33,20 @@ public class MenuInit
 	public static final RegistryObject<MenuType<RingPanelMenu>> RING_PANEL =
             registerMenuType(RingPanelMenu::new, "ring_panel");
 	
-	public static final RegistryObject<MenuType<DHDCrystalMenu>> DHD_CRYSTAL =
-            registerMenuType(DHDCrystalMenu::new, "dhd_crystal");
-	
 	public static final RegistryObject<MenuType<MilkyWayDHDMenu>> MILKY_WAY_DHD =
             registerMenuType(MilkyWayDHDMenu::new, "milky_way_dhd");
+	public static final RegistryObject<MenuType<DHDCrystalMenu.MilkyWay>> MILKY_WAY_DHD_CRYSTAL =
+			registerMenuType(DHDCrystalMenu.MilkyWay::new, "milky_way_dhd_crystal");
 	
 	public static final RegistryObject<MenuType<PegasusDHDMenu>> PEGASUS_DHD =
             registerMenuType(PegasusDHDMenu::new, "pegasus_dhd");
+	public static final RegistryObject<MenuType<DHDCrystalMenu.Pegasus>> PEGASUS_DHD_CRYSTAL =
+			registerMenuType(DHDCrystalMenu.Pegasus::new, "pegasus_dhd_crystal");
 	
 	public static final RegistryObject<MenuType<ClassicDHDMenu>> CLASSIC_DHD =
             registerMenuType(ClassicDHDMenu::new, "classic_dhd");
+	public static final RegistryObject<MenuType<DHDCrystalMenu.Classic>> CLASSIC_DHD_CRYSTAL =
+			registerMenuType(DHDCrystalMenu.Classic::new, "classic_dhd_crystal");
 	
 	public static final RegistryObject<MenuType<NaquadahGeneratorMenu>> NAQUADAH_GENERATOR =
             registerMenuType(NaquadahGeneratorMenu::new, "naquadah_generator");

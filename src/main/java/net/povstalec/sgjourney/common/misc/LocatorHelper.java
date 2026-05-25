@@ -71,15 +71,10 @@ public class LocatorHelper
 	//****************************************Transporter*****************************************
 	//============================================================================================
 	
-	private interface XZConsumer
+	/*private interface XZConsumer
 	{
 		void accept(int x, int z);
-	}
-	
-	private static void forExtraSides(boolean xPositive, boolean zPositive, int xCenter, int zCenter, int radius, XZConsumer consumer)
-	{
-	
-	}
+	}*/
 	
 	/*private static void forManhattanSquare(int xCenter, int zCenter, int radius, XZConsumer consumer)
 	{
@@ -134,7 +129,7 @@ public class LocatorHelper
 	@Nullable
 	public static <T extends BlockEntity> T getNearestBlockEntityOfClass(Class<T> clazz, Level level, BlockPos centerPos, double maxDistance, Predicate<T> filter)
 	{
-		System.out.println("-----getNearestBlockEntityOfClass " + clazz.getName() +  "-----");
+		//System.out.println("-----getNearestBlockEntityOfClass " + clazz.getName() +  "-----");
 		double bestDistance = Double.POSITIVE_INFINITY;
 		T closest = null;
 		
@@ -154,10 +149,10 @@ public class LocatorHelper
 					if(distanceSqr < bestDistance && clazz.isInstance(blockEntity))
 					{
 						T t = (T) blockEntity;
-						System.out.println("Found " + t.getBlockPos() + " dist " + distanceSqr);
+						//System.out.println("Found " + t.getBlockPos() + " dist " + distanceSqr);
 						if(filter.test(t))
 						{
-							System.out.println("new best");
+							//System.out.println("new best");
 							bestDistance = distanceSqr;
 							closest = t;
 						}
@@ -165,8 +160,6 @@ public class LocatorHelper
 				}
 			}
 		}
-		
-		//Thread.dumpStack();
 		
 		/*Set<ChunkPos> visited = new HashSet<>();
 		

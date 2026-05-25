@@ -39,7 +39,7 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	
 	public ClassicStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.CLASSIC_STARGATE.get(), StargateInit.CLASSIC.get(), new ResourceLocation(StargateJourney.MODID, "classic"), pos, state,
+		super(BlockEntityInit.CLASSIC_STARGATE.get(), StargateInit.CLASSIC.get(), StargateJourney.sgjourneyLocation("classic"), pos, state,
 				TOTAL_SYMBOLS, 0, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_CLASSIC_HEIGHT, MAX_ROTATION);
 	}
 

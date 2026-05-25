@@ -55,7 +55,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), new ResourceLocation(StargateJourney.MODID, "universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), StargateJourney.sgjourneyLocation("universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;
@@ -174,6 +174,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public StargateInfo.Feedback dhdEngageStargate()
 	{
+		if(!addressBuffer.canBeDialed())
+			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+		
 		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
 		if(address.getLength() < addressBuffer.getLength())
 		{

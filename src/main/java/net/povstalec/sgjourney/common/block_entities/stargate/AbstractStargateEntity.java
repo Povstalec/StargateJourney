@@ -123,6 +123,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final float VERTICAL_CENTER_STANDARD_HEIGHT = 0.5F;
 	public static final float HORIZONTAL_CENTER_STANDARD_HEIGHT = (STANDARD_THICKNESS / 2) / 16;
 	
+	public static final long MIN_DHD_SEARCH_DISTANCE = 64;
+	
 	private final StargateType<SG> stargateType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
@@ -187,6 +189,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	@Nullable
 	protected Vec3i dhdRelativePos = null;
+	protected long dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE;
 	public final AutoCache.Controller<AbstractDHDEntity, AbstractStargateEntity<?>> dhdCache = new AutoCache.Controller<>(this);
 	
 	protected SymbolInfo symbolInfo;
@@ -230,10 +233,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		else
 		{
-			//TODO DHD connection distance limits
-			
-			//TODO Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
-			
 			//=====Setting up cache logic=====
 			dhdCache.setRevalidate(() ->
 			{
@@ -242,17 +241,23 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				
 				BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
 				if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
-					return dhdCache.getCached() == dhd; // Check if the DHD at the saved pos is the same DHD
+					return dhdCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(dhdPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
 				
 				return false;
 			});
-			dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, 64,
+			dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, dhdSearchDistance,
 					dhd -> !dhd.stargateCache.isCached()));
 			
 			dhdCache.setOnChanged((oldDHD, newDHD) ->
 			{
 				if(newDHD != null)
+				{
 					dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
+					dhdSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
+					// Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
+					if(dhdSearchDistance < MIN_DHD_SEARCH_DISTANCE)
+						dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE; // Make sure the distance is at least 64
+				}
 				else
 					dhdRelativePos = null;
 				
@@ -616,7 +621,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
 	}
 	
-	public StargateInfo.Feedback dhdEngageStargate() //Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
+	public StargateInfo.Feedback dhdEngageStargate() // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
 		return engageStargate();
 	}

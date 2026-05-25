@@ -36,6 +36,7 @@ import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class ClassicDHDBlock extends CrystalDHDBlock
@@ -61,8 +62,24 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 			
         	if(blockEntity instanceof ClassicDHDEntity dhd)
         	{
-        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
-					this.openCrystalMenu(player, dhd);
+        		if((trace.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.Classic(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
 				else
 				{
 					MenuProvider containerProvider = new MenuProvider()

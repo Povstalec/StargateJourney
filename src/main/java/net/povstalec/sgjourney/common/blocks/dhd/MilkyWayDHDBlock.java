@@ -42,6 +42,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.MilkyWayDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
@@ -90,9 +91,25 @@ public class MilkyWayDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
 			
         	if(blockEntity instanceof MilkyWayDHDEntity dhd)
         	{
-        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
-        			this.openCrystalMenu(player, dhd);
-        		else
+				if((trace.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.MilkyWay(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
+				else
         		{
         			MenuProvider containerProvider = new MenuProvider() 
             		{

@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
@@ -11,7 +10,6 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Starga
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.stargate.TollanBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.TollanStargate;
@@ -26,7 +24,7 @@ public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEnti
 	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateInit.TOLLAN.get(), new ResourceLocation(StargateJourney.MODID, "tollan"), pos, state,
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateInit.TOLLAN.get(), StargateJourney.sgjourneyLocation("tollan"), pos, state,
 				TOTAL_SYMBOLS, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 

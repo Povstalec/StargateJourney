@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney;
 
 import java.util.Calendar;
-import java.util.function.BiFunction;
 
 import net.minecraftforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
@@ -19,9 +18,7 @@ import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -197,9 +194,11 @@ public class StargateJourney
 			
         	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
 
-        	MenuScreens.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);
+        	MenuScreens.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
+			MenuScreens.register(MenuInit.PEGASUS_DHD_CRYSTAL.get(), DHDCrystalScreen.Pegasus::new);
         	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
+			MenuScreens.register(MenuInit.CLASSIC_DHD_CRYSTAL.get(), DHDCrystalScreen.Classic::new);
         	MenuScreens.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
 
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);

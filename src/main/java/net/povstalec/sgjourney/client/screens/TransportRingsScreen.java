@@ -127,7 +127,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 	{
 		public Ancient(TransportRingsMenu.Ancient menu, Inventory playerInventory, Component title)
 		{
-			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd_crystal_gui.png"));
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/transporter/ancient_transport_rings_gui.png"));
 		}
 	}
 	
@@ -135,7 +135,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 	{
 		public Goauld(TransportRingsMenu.Goauld menu, Inventory playerInventory, Component title)
 		{
-			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd_crystal_gui.png"));
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/transporter/goauld_transport_rings_gui.png"));
 		}
 	}
 }
