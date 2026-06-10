@@ -15,6 +15,10 @@ public class CommonTransporterConfig
 	public static ForgeConfigSpec.LongValue goauld_transport_rings_energy_capacity;
 	public static ForgeConfigSpec.LongValue goauld_transport_rings_max_energy_receive;
 	
+	public static ForgeConfigSpec.LongValue transporter_transport_energy_cost;
+	public static ForgeConfigSpec.LongValue transporter_transport_distance_energy_cost;
+	public static ForgeConfigSpec.LongValue transporter_dimension_transport_energy_cost;
+	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
 		ring_panel_energy_capacity = server
@@ -52,5 +56,19 @@ public class CommonTransporterConfig
 		goauld_transport_rings_max_energy_receive = server
 				.comment("Maximum amount of energy that can be transferred to the Goa'uld Transport Rings in one tick")
 				.defineInRange("server.goauld_transport_rings_max_energy_receive", 1000000, 0L, Long.MAX_VALUE);
+		
+		
+		
+		transporter_transport_energy_cost = server
+				.comment("The amount of energy that is used for establishing a transport between two Transporters")
+				.defineInRange("server.transporter_transport_energy_cost", 5000L, 0L, Long.MAX_VALUE);
+		
+		transporter_transport_distance_energy_cost = server
+				.comment("The amount of energy added to total energy cost of transporting per block travelled")
+				.defineInRange("server.transporter_transport_distance_energy_cost", 500L, 0L, Long.MAX_VALUE);
+		
+		transporter_dimension_transport_energy_cost = server
+				.comment("The amount of energy added to total energy cost of transporting to another Dimension in the same Address Region")
+				.defineInRange("server.transporter_dimension_transport_energy_cost", 50000L, 0L, Long.MAX_VALUE);
 	}
 }

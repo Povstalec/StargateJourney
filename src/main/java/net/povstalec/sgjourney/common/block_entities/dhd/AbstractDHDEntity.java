@@ -176,8 +176,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
 			
 			updateClient();
-			super.onLoad();
 		}
+		
+		super.onLoad();
 	}
 	
 	@Override

@@ -19,12 +19,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
@@ -145,6 +150,21 @@ public class RingPanelEntity extends TransporterControllerEntity
 				buttons[i].deserialize(list.getCompound(i));
 			}
 		}
+	}
+	
+	public Direction getDirection()
+	{
+		if(this.direction == null)
+		{
+			BlockState gateState = getBlockState();
+			
+			if(gateState.hasProperty(RingPanelBlock.FACING))
+				this.direction = gateState.getValue(RingPanelBlock.FACING);
+			else
+				StargateJourney.LOGGER.error("Couldn't find Ring Panel Direction");
+		}
+		
+		return this.direction;
 	}
 	
 	public void sendMessageToNearbyPlayers(Component message, int distance)
@@ -572,6 +592,12 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
 		recalculateCrystals();
+	}
+	
+	@Override
+	public void generateEnergyItem()
+	{
+		energyItemHandler.setStackInSlot(0, PowerCellItem.liquidNaquadahSetup()); //TODO Randomize this
 	}
 	
 	

@@ -1,19 +1,19 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "category": "equipment",
-  "pattern": [
-    "ICI",
-    "ETE",
-    "IOI"
-  ],
-  "key": {
-	"I": { "item": "minecraft:gold_ingot" },
-	"O": { "item": "sgjourney:control_crystal" },
-	"C": { "item": "sgjourney:communication_crystal" },
-	"E": { "item": "minecraft:emerald" },
-	"T": { "item": "minecraft:red_terracotta" }
-  },
-  "result": {
-    "item": "sgjourney:goauld_ring_panel"
-  }
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"ICI",
+		"ETE",
+		"IOI"
+	],
+	"key":
+	{
+		"I": { "item": "minecraft:gold_ingot" },
+		"O": { "item": "sgjourney:control_crystal" },
+		"C": { "item": "sgjourney:communication_crystal" },
+		"E": { "item": "minecraft:emerald" },
+		"T": { "item": "minecraft:red_terracotta" }
+	},
+	"result": { "item": "sgjourney:goauld_ring_panel" }
 }

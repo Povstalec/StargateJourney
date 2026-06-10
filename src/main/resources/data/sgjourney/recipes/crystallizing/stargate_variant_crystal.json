@@ -9,5 +9,6 @@
 	{
 		"item": "sgjourney:stargate_variant_crystal"
 	},
-	"progress": 100
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

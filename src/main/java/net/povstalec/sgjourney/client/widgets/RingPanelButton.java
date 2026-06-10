@@ -17,7 +17,7 @@ public class RingPanelButton extends SGJourneyButton
 	
 	public RingPanelButton(int x, int y, OnPress press, RingPanelEntity.Button button)
 	{
-		super(new ResourceLocation(StargateJourney.MODID, "textures/gui/ring_panel_widgets.png"), x, y, 32, 16, Component.empty(), Component.empty(), press);
+		super(StargateJourney.sgjourneyLocation("textures/gui/ring_panel_widgets.png"), x, y, 32, 16, Component.empty(), Component.empty(), press);
 		
 		this.button = button;
 		this.button.setUpdate(this::onButtonUpdate);

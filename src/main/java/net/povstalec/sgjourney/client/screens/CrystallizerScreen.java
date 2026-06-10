@@ -10,11 +10,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
+import net.povstalec.sgjourney.client.widgets.DumpTankButton;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
 
 public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends SGJourneyContainerScreen<CrystallizerMenu<T>>
 {
@@ -23,7 +25,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	public static final int ENERGY_HINT_OFFSET_X = 16;
 	public static final int CRYSTAL_BASE_HINT_OFFSET_X = 32;
 	
-	private ResourceLocation texture;
+	private final ResourceLocation texture;
 	private FluidTankRenderer fluidTankRenderer;
 	
     public CrystallizerScreen(CrystallizerMenu<T> menu, ResourceLocation texture, Inventory inventory, Component component)
@@ -35,17 +37,22 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	@Override
 	public void init()
 	{
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		
 		super.init();
+		
 		assignFluidRenderer();
+		this.addRenderableWidget(new DumpTankButton(x + 52, y + 16, button -> menu.pressDumpButton()));
 	}
 	
 	private void assignFluidRenderer()
 	{
-		this.fluidTankRenderer = new FluidTankRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, true, 16, 52);
+		this.fluidTankRenderer = new FluidTankRenderer(menu.blockEntity.inputFluidTankCapacity(), true, 16, 52);
 	}
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -62,22 +69,22 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 		this.renderEnergyVertical(stack, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
         this.renderProgress(stack, x + 52, y + 40);
         
-        fluidTankRenderer.render(stack, x + 34, y + 17, menu.getFluid());
+        fluidTankRenderer.render(stack, x + 34, y + 17, menu.getFluidStack());
     }
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
     {
         renderBackground(stack);
         super.render(stack, mouseX, mouseY, delta);
         renderTooltip(stack, mouseX, mouseY);
 		
 		this.energyTooltip(stack, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
-        this.liquidNaquadahTooltip(stack, 34, 17, mouseX, mouseY);
+        this.liquidNaquadahTooltip(stack, mouseX, mouseY);
 	}
     
     @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) 
+    protected void renderLabels(@NotNull PoseStack stack, int mouseX, int mouseY)
 	{
 		this.font.draw(stack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
 	    this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
@@ -90,12 +97,13 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
     	this.blit(stack, x, y, 0, 166, actual, 8);
     }
     
-    protected void liquidNaquadahTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void liquidNaquadahTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
-    	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
+    	if(this.isHovering(34, 17, 16, 54, mouseX, mouseY))
 	    {
-    		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid(), 1);
-	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(fluidStack.getTranslationKey(), this.menu.getFluid().getAmount(), AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, ComponentHelper.fluidComponentColor(menu.getDesiredFluid())), mouseX, mouseY);
+			FluidStack fluidStack = this.menu.getFluidStack();
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.inputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
 	
@@ -117,7 +125,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	
 	public static class Crystallizer extends CrystallizerScreen<CrystallizerEntity>
 	{
-		public Crystallizer(CrystallizerMenu menu, Inventory inventory, Component component)
+		public Crystallizer(CrystallizerMenu<CrystallizerEntity> menu, Inventory inventory, Component component)
 		{
 			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png"), inventory, component);
 		}
@@ -125,7 +133,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	
 	public static class AdvancedCrystallizer extends CrystallizerScreen<AdvancedCrystallizerEntity>
 	{
-		public AdvancedCrystallizer(CrystallizerMenu menu, Inventory inventory, Component component)
+		public AdvancedCrystallizer(CrystallizerMenu<AdvancedCrystallizerEntity> menu, Inventory inventory, Component component)
 		{
 			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/advanced_crystallizer_gui.png"), inventory, component);
 		}

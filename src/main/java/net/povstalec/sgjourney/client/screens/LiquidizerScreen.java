@@ -10,11 +10,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
+import net.povstalec.sgjourney.client.widgets.DumpTankButton;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntity<?>> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
 {
@@ -24,7 +26,8 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
 	public static final int ITEM_INPUT_HINT_OFFSET_X = 32;
 	
 	private final ResourceLocation texture;
-	private FluidTankRenderer fluidTankRenderer;
+	private FluidTankRenderer inputFluidTankRenderer;
+	private FluidTankRenderer outputFluidTankRenderer;
 	
     public LiquidizerScreen(LiquidizerMenu<T> menu, ResourceLocation texture, Inventory inventory, Component component)
     {
@@ -35,17 +38,24 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
 	@Override
 	public void init()
 	{
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		
 		super.init();
+		
 		assignFluidRenderer();
+		this.addRenderableWidget(new DumpTankButton(x + 52, y + 60, button -> menu.pressDumpButton(true)));
+		this.addRenderableWidget(new DumpTankButton(x + 78, y + 60, button -> menu.pressDumpButton(false)));
 	}
 	
 	private void assignFluidRenderer()
 	{
-		this.fluidTankRenderer = new FluidTankRenderer(AbstractNaquadahLiquidizerEntity.TANK_CAPACITY, true, 16, 52);
+		this.inputFluidTankRenderer = new FluidTankRenderer(menu.blockEntity.inputFluidTankCapacity(), true, 16, 52);
+		this.outputFluidTankRenderer = new FluidTankRenderer(menu.blockEntity.outputFluidTankCapacity(), true, 16, 52);
 	}
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -63,51 +73,46 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
 		this.renderEnergyVertical(stack, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
         this.renderProgress(stack, x + 52, y + 40);
         
-        fluidTankRenderer.render(stack, x + 34, y + 17, menu.getFluid1());
-        fluidTankRenderer.render(stack, x + 90, y + 17, menu.getFluid2());
+        inputFluidTankRenderer.render(stack, x + 34, y + 17, menu.getInputFluidStack());
+		outputFluidTankRenderer.render(stack, x + 90, y + 17, menu.getOutputFluidStack());
     }
 
 	@Override
-	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
     {
         renderBackground(stack);
         super.render(stack, mouseX, mouseY, delta);
         renderTooltip(stack, mouseX, mouseY);
 		
 		this.energyTooltip(stack, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
-        this.liquidFluid1Tooltip(stack, 34, 17, mouseX, mouseY);
-        this.liquidFluid2Tooltip(stack, 90, 17, mouseX, mouseY);
+        this.liquidFluidInputTooltip(stack, mouseX, mouseY);
+        this.liquidFluidOutputTooltip(stack, mouseX, mouseY);
 	}
-    
-    @Override
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY) 
-	{
-		this.font.draw(stack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
-	    this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
-    }
-    
-    protected void renderProgress(PoseStack stack, int x, int y)
+	
+	protected void renderProgress(PoseStack stack, int x, int y)
     {
     	float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();
     	int actual = Math.round(36 * percentage);
     	this.blit(stack, x, y, 0, 166, actual, 8);
     }
     
-    protected void liquidFluid1Tooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void liquidFluidInputTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
-    	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
+    	if(this.isHovering(34, 17, 16, 54, mouseX, mouseY))
 	    {
-    		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid1(), 1);
-	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(fluidStack.getTranslationKey(), this.menu.getFluid1().getAmount(), AbstractNaquadahLiquidizerEntity.TANK_CAPACITY, ComponentHelper.fluidComponentColor(menu.getDesiredFluid1())), mouseX, mouseY);
+    		FluidStack fluidStack = this.menu.getInputFluidStack();
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.inputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
     
-    protected void liquidFluid2Tooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
+    protected void liquidFluidOutputTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
-    	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
+    	if(this.isHovering(90, 17, 16, 54, mouseX, mouseY))
 	    {
-    		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid2(), 1);
-	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(fluidStack.getTranslationKey(), this.menu.getFluid2().getAmount(), AbstractNaquadahLiquidizerEntity.TANK_CAPACITY, ComponentHelper.fluidComponentColor(menu.getDesiredFluid2())), mouseX, mouseY);
+    		FluidStack fluidStack = this.menu.getOutputFluidStack();
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.outputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
 	

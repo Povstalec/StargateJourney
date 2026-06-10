@@ -2,9 +2,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
-import net.minecraft.world.SimpleContainer;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,7 +16,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -28,15 +27,13 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Optional;
 
-public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R>
+public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
 {
 	private static final String INVENTORY = "Inventory"; //TODO For legacy reasons
 	
 	private static final String INPUT_INVENTORY = "input_inventory";
 	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
 	private static final String FLUID_OUTPUT_INVENTORY = "fluid_output_inventory";
-
-	public static final int TANK_CAPACITY = 4000;
 	
 	public final ItemStackHandler itemInputHandler = createItemInputHandler();
 	protected final LazyOptional<IItemHandler> lazyInputHandler = LazyOptional.of(() -> itemInputHandler);
@@ -50,7 +47,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	
 	public AbstractNaquadahLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, new SimpleContainer(1));
+		super(type, pos, state, new SimpleFluidContainer(1, 2));
 	}
 	
 	@Override
@@ -147,32 +144,40 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		return super.getCapability(capability, side);
 	}
 	
-	public abstract Fluid getInputFluid();
-	
-	public abstract Fluid getOutputFluid();
+	public abstract boolean isDesiredInputFluid(FluidStack fluidStack);
 	
 	@Override
 	protected void updateSimpleContainer()
 	{
 		this.simpleContainer.setItem(0, itemInputHandler.getStackInSlot(0));
+		this.simpleContainer.setFluid(0, inputFluidTank.getFluid());
 	}
 	
-	protected final FluidTank inputFluidTank = new FluidTank(TANK_CAPACITY)
+	public abstract int inputFluidTankCapacity();
+	
+	public abstract int maxFluidReceive();
+	
+	protected final FluidTank inputFluidTank = new FluidTank(inputFluidTankCapacity())
 	{
 		@Override
 		protected void onContentsChanged()
 		{
+			updateSimpleContainer();
 			setChanged();
 	    }
 		
 		@Override
-	    public boolean isFluidValid(FluidStack stack)
-	    {
-			return stack.getFluid() == getInputFluid();
-	    }
+		public boolean isFluidValid(FluidStack stack)
+		{
+			return isDesiredInputFluid(stack);
+		}
 	};
 	
-	protected final FluidTank outputFluidTank = new FluidTank(TANK_CAPACITY)
+	public abstract int outputFluidTankCapacity();
+	
+	public abstract int maxFluidExtract();
+	
+	protected final FluidTank outputFluidTank = new FluidTank(outputFluidTankCapacity())
 	{
 		@Override
 		protected void onContentsChanged()
@@ -183,7 +188,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		@Override
 	    public boolean isFluidValid(FluidStack stack)
 	    {
-			return stack.getFluid() == getOutputFluid();
+			return true;
 	    }
 	};
 	
@@ -293,10 +298,10 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	{
 		fluidItemInputHandler.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
 		{
-			int drainAmount = Math.min(inputFluidTank.getSpace(), 1000);
+			int drainAmount = Math.min(inputFluidTank.getSpace(), maxFluidReceive());
 			FluidStack fluidStack = handler.getFluidInTank(0);
 			
-			if(inputFluidTank.isFluidValid(fluidStack))
+			if(inputFluidTank.isFluidValid(fluidStack) && isSameFluidOrEmpty(inputFluidTank.getFluidInTank(0), fluidStack))
 			{
 				fluidStack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
 				fillInputTank(fluidStack, handler.getContainer());
@@ -308,7 +313,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	{
 		fluidItemInputHandler.getStackInSlot(1).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
 		{
-			FluidStack simulatedDrained = outputFluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+			FluidStack simulatedDrained = outputFluidTank.drain(maxFluidExtract(), IFluidHandler.FluidAction.SIMULATE);
 			int simulatedFilledAmount = handler.fill(simulatedDrained, IFluidHandler.FluidAction.SIMULATE);
 			
 			if(simulatedFilledAmount > 0)
@@ -321,30 +326,38 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		});
 	}
 	
-	// Recipe
-	
-	@Override
-	public boolean hasExtraIngredients(R recipe)
+	public void dumpInputFluidTank()
 	{
-		return inputFluidTank.getFluidInTank(0).getAmount() > recipe.getInputLiquidAmount();
+		inputFluidTank.drain(inputFluidTank.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
 	}
+	
+	public void dumpOutputFluidTank()
+	{
+		outputFluidTank.drain(outputFluidTank.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
+	}
+	
+	// Recipe
 	
 	public boolean canOutput(R recipe)
 	{
-		return outputFluidTank.getFluidAmount() + recipe.getOutputLiquidAmount() <= outputFluidTank.getCapacity();
+		// Check if it's the same fluid as in the output tank
+		if(isSameFluidOrEmpty(outputFluidTank.getFluidInTank(0), recipe.getOutputFluid()))
+			return outputFluidTank.getFluidAmount() + recipe.getOutputFluid().getAmount() <= outputFluidTank.getCapacity(); // Check if the fluid fits in the output tank
+		
+		return false;
 	}
 	
 	@Override
 	public void depleteIngredients(R recipe)
 	{
 		itemInputHandler.extractItem(0, 1, false);
-		inputFluidTank.drain(recipe.getInputLiquidAmount(), IFluidHandler.FluidAction.EXECUTE);
+		inputFluidTank.drain(recipe.getInputFluid(), IFluidHandler.FluidAction.EXECUTE);
 	}
 	
 	@Override
 	public void createOutput(R recipe)
 	{
-		outputFluidTank.fill(new FluidStack(getOutputFluid(), recipe.getOutputLiquidAmount()), IFluidHandler.FluidAction.EXECUTE);
+		outputFluidTank.fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
 	}
 	
 	public void outputLiquid()
@@ -356,7 +369,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		
 		blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).ifPresent(fluidHandler ->
 		{
-			FluidStack simulatedOutputAmount = this.outputFluidTank.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+			FluidStack simulatedOutputAmount = this.outputFluidTank.drain(maxFluidExtract(), IFluidHandler.FluidAction.SIMULATE);
 			int simulatedReceiveAmount = fluidHandler.fill(simulatedOutputAmount, IFluidHandler.FluidAction.SIMULATE);
 			
 			fluidHandler.fill(this.outputFluidTank.drain(simulatedReceiveAmount, IFluidHandler.FluidAction.EXECUTE), IFluidHandler.FluidAction.EXECUTE);

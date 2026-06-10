@@ -5,24 +5,27 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.recipe.ProgressRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
-public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> extends EnergySlotBlockEntity
+public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C>, C extends SimpleContainer> extends EnergySlotBlockEntity
 {
 	public static final String PROGRESS = "progress";
 	
-	protected SimpleContainer simpleContainer;
+	protected C simpleContainer;
 	protected int maxProgress = 100;
 	protected int progress = 0;
 	
-	public ProgressRecipeEnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, SimpleContainer simpleContainer)
+	public ProgressRecipeEnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, C simpleContainer)
 	{
 		super(type, pos, state);
 		
@@ -72,6 +75,11 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> 
 	
 	protected abstract RecipeType<R> getRecipeType();
 	
+	protected Stream<Recipe<?>> getAvailableRecipes()
+	{
+		return level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType().equals(getRecipeType()));
+	}
+	
 	protected Optional<R> getRecipe()
 	{
 		if(level == null)
@@ -112,23 +120,21 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> 
 				{
 					energyStorage.depleteEnergy(energyPerProgressTick(), false);
 					progress++;
+					setChanged();
 				}
 			}
 			else if(progress >= recipe.getProgressTime()) // Wait until it's possible to output
 			{
-				if(hasExtraIngredients(recipe) && canOutput(recipe)) // Check if there's space for the output 'n stuff
+				if(canOutput(recipe)) // Check if there's space for the output
 				{
 					depleteIngredients(recipe);
 					createOutput(recipe);
 					resetProgress();
+					setChanged();
 				}
 			}
-			
-			setChanged();
 		}, this::resetProgress); // Doesn't have base ingredients, stop progress
 	}
-	
-	public abstract boolean hasExtraIngredients(R recipe);
 	
 	public abstract boolean canOutput(R recipe);
 	
@@ -136,7 +142,7 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> 
 	
 	public abstract void createOutput(R recipe);
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, ProgressRecipeEnergyBlockEntity<?> recipeBlockEntity)
+	public static void tick(Level level, BlockPos pos, BlockState state, ProgressRecipeEnergyBlockEntity<?, ?> recipeBlockEntity)
 	{
 		EnergySlotBlockEntity.tick(level, pos, state, recipeBlockEntity);
 		
@@ -144,5 +150,13 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe> 
 			return;
 		
 		recipeBlockEntity.doProgress();
+	}
+	
+	public static boolean isSameFluidOrEmpty(FluidStack tankFluid, FluidStack testedFluid)
+	{
+		if(tankFluid.isEmpty())
+			return true;
+		
+		return testedFluid.getFluid().isSame(tankFluid.getFluid());
 	}
 }

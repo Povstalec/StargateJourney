@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -16,6 +15,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidize
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.packets.ServerboundLiquidizerUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<?>> extends EnergyBlockMenu<T>
 {
@@ -52,24 +54,19 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
 		
     }
 	
-	public FluidStack getFluid1()
+	public void pressDumpButton(boolean inputTank)
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundLiquidizerUpdatePacket(this.blockEntity.getBlockPos(), inputTank));
+	}
+	
+	public FluidStack getInputFluidStack()
 	{
 		return this.blockEntity.getInputFluidStack();
 	}
 	
-	public FluidStack getFluid2()
+	public FluidStack getOutputFluidStack()
 	{
 		return this.blockEntity.getOutputFluidStack();
-	}
-	
-	public Fluid getDesiredFluid1()
-	{
-		return this.blockEntity.getInputFluid();
-	}
-	
-	public Fluid getDesiredFluid2()
-	{
-		return this.blockEntity.getOutputFluid();
 	}
 	
 	public int getMaxProgress()
@@ -90,7 +87,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
 	{
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getInputFluid());
+			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
 		return false;
     }
@@ -103,7 +100,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
     {
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluid());
+			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluidStack().getFluid());
 		
 		return false;
     }
@@ -146,7 +143,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.NAQUADAH_LIQUIDIZER.get());
 		}
@@ -165,7 +162,7 @@ public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
 		}

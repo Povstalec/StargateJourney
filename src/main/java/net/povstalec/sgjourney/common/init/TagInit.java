@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class TagInit
 {
-	public class Items
+	public static class Items
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
@@ -29,7 +29,7 @@ public class TagInit
         }*/
 	}
 	
-	public class Blocks
+	public static class Blocks
 	{
 		public static final TagKey<Block> IRIS_RESISTANT = tag("iris_resistant");
 		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
@@ -48,10 +48,11 @@ public class TagInit
         }*/
 	}
 	
-	public class Entities
+	public static class Entities
 	{
 		public static final TagKey<EntityType<?>> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<EntityType<?>> WORMHOLE_IGNORES = tag("wormhole_ignores");
+		public static final TagKey<EntityType<?>> REVERSE_WORMHOLE_IGNORES = tag("reverse_wormhole_ignores");
 		public static final TagKey<EntityType<?>> WORMHOLE_CANNOT_TELEPORT = tag("wormhole_cannot_teleport");
 		public static final TagKey<EntityType<?>> NO_IRIS_DAMAGE = tag("no_iris_damage");
 		
@@ -66,7 +67,7 @@ public class TagInit
         }*/
 	}
 	
-	public class Structures
+	public static class Structures
 	{
 		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
 		public static final TagKey<Structure> NETWORK_STARGATE = tag("network_stargate");

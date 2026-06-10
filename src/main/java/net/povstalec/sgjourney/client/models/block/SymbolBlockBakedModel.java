@@ -46,7 +46,7 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 	protected ResourceLocation symbol;
 	
 	public SymbolBlockBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-								 TextureAtlasSprite particleIcon,ItemTransforms transforms,ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint)
+								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint)
 	{
 		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes, symbolTint);
 		
@@ -54,7 +54,7 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 	}
 	
 	public SymbolBlockBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-								 TextureAtlasSprite particleIcon,ItemTransforms transforms,ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint, int symbolNumber, ResourceLocation symbol)
+								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint, int symbolNumber, ResourceLocation symbol)
 	{
 		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes, symbolTint);
 		

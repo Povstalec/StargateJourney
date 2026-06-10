@@ -11,11 +11,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,27 +41,23 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 		return this.icon;
 	}
 	
-	protected abstract Fluid getInputFluid();
-	
-	protected abstract Fluid getOutputFluid();
-	
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, T recipe, @NotNull IFocusGroup focuses)
 	{
 		ItemStack stack = recipe.getIngredients().get(0).getItems()[0].copy();
 		
 		// Input Tank
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 17)
-				.addFluidStack(getInputFluid(), recipe.getInputLiquidAmount())
-				.setFluidRenderer(recipe.getInputLiquidAmount(), false, 16, 52);
+				.addFluidStack(recipe.getInputFluid().getFluid(), recipe.getInputFluid().getAmount())
+				.setFluidRenderer(recipe.getInputFluid().getAmount(), false, 16, 52);
 		
 		// Upper Slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 62, 17).addItemStack(stack);
 		
 		// Output Tank
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 90, 17)
-				.addFluidStack(getOutputFluid(), recipe.getOutputLiquidAmount())
-				.setFluidRenderer(recipe.getOutputLiquidAmount(), false, 16, 52);
+				.addFluidStack(recipe.getOutputFluid().getFluid(), recipe.getOutputFluid().getAmount())
+				.setFluidRenderer(recipe.getOutputFluid().getAmount(), false, 16, 52);
 	}
 	
 	//============================================================================================
@@ -80,18 +73,6 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 		public NaquadahLiquidizer(IGuiHelper helper)
 		{
 			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.NAQUADAH_LIQUIDIZER.get()));
-		}
-		
-		@Override
-		protected Fluid getInputFluid()
-		{
-			return Fluids.LAVA;
-		}
-		
-		@Override
-		protected Fluid getOutputFluid()
-		{
-			return FluidInit.LIQUID_NAQUADAH_SOURCE.get();
 		}
 		
 		@Override
@@ -120,18 +101,6 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 		public HeavyNaquadahLiquidizer(IGuiHelper helper)
 		{
 			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/heavy_naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get()));
-		}
-		
-		@Override
-		protected Fluid getInputFluid()
-		{
-			return FluidInit.LIQUID_NAQUADAH_SOURCE.get();
-		}
-		
-		@Override
-		protected Fluid getOutputFluid()
-		{
-			return FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 		}
 		
 		@Override

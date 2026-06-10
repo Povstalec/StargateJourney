@@ -1,7 +1,7 @@
 {
 	"type": "sgjourney:naquadah_liquidizing",
 	"ingredient": { "item": "sgjourney:raw_naquadah" },
-	"input_liquid_amount": 100,
-	"output_liquid_amount": 100,
+	"input_fluid": { "id":  "minecraft:lava", "amount": 100 },
+	"output_fluid": { "id":  "sgjourney:liquid_naquadah", "amount": 100 },
 	"progress": 100
 }

@@ -1,21 +1,20 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
 
 public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<CrystallizingRecipe.AdvancedCrystallizer>
 {
-	public static final long ENERGY_CAPACITY = 1000000; // TODO Make this configurable
-	public static final long MAX_ENERGY_RECEIVE = 100000; // TODO Make this configurable
-	public static final long CRYSTALLIZATION_ENERGY_PER_TICK = 1000; // TODO Make this configurable
+	public static final Map<Fluid, Boolean> VALID_FLUIDS_CACHE = new HashMap<>(); // Caching fluids the tank can hold
 	
 	public AdvancedCrystallizerEntity(BlockPos pos, BlockState state)
 	{
@@ -23,9 +22,11 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<Cryst
 	}
 
 	@Override
-	public Fluid getDesiredFluid()
+	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
-		return FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
+				.map(recipe -> (CrystallizingRecipe.AdvancedCrystallizer) recipe)
+				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	
 	@Override
@@ -35,19 +36,35 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<Cryst
 	}
 	
 	//============================================================================================
+	//*******************************************Fluids*******************************************
+	//============================================================================================
+	
+	@Override
+	public int inputFluidTankCapacity()
+	{
+		return CommonTechConfig.advanced_crystallizer_fluid_input_capacity.get();
+	}
+	
+	@Override
+	public int maxFluidReceive()
+	{
+		return CommonTechConfig.advanced_crystallizer_max_fluid_receive.get();
+	}
+	
+	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
 	@Override
 	protected long getCapacity()
 	{
-		return ENERGY_CAPACITY;
+		return CommonTechConfig.advanced_crystallizer_energy_capacity.get();
 	}
 	
 	@Override
 	protected long getMaxReceive()
 	{
-		return MAX_ENERGY_RECEIVE;
+		return CommonTechConfig.advanced_crystallizer_max_energy_receive.get();
 	}
 	
 	@Override
@@ -59,6 +76,6 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<Cryst
 	@Override
 	public long energyPerProgressTick()
 	{
-		return CRYSTALLIZATION_ENERGY_PER_TICK;
+		return CommonTechConfig.advanced_crystallizer_energy_per_tick.get();
 	}
 }

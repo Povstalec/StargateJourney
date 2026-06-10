@@ -4,8 +4,9 @@ import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.Container;
 
-public abstract class ProgressRecipe extends SGJourneyRecipe
+public abstract class ProgressRecipe<C extends Container> extends SGJourneyRecipe<C>
 {
 	protected final int progressTime;
 	

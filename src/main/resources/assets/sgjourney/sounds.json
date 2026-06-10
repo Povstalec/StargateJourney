@@ -619,6 +619,19 @@
 			"minecraft:item/armor/equip_iron6"
 		]
 	},
+	"equip_trinium_armor":
+	{
+		"subtitle": "sounds.sgjourney.equip_trinium_armor",
+		"sounds":
+		[
+			"minecraft:item/armor/equip_iron1",
+			"minecraft:item/armor/equip_iron2",
+			"minecraft:item/armor/equip_iron3",
+			"minecraft:item/armor/equip_iron4",
+			"minecraft:item/armor/equip_iron5",
+			"minecraft:item/armor/equip_iron6"
+		]
+	},
 
 	"empty": {}
 }

@@ -79,6 +79,8 @@ public class ItemInit
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final RegistryObject<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter", 
 			() -> new Item(new Item.Properties().fireResistant()));
+	public static final RegistryObject<Item> MATTER_PROJECTOR = ITEMS.register("matter_projector",
+			() -> new Item(new Item.Properties().fireResistant()));
 	
 	public static final RegistryObject<Item> ANCIENT_TRANSPORT_RING = ITEMS.register("ancient_transport_ring",
 			() -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
@@ -191,6 +193,17 @@ public class ItemInit
 	public static final RegistryObject<HoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe", 
 			() -> new HoeItem(ToolMaterialInit.NAQUADAH, -2, 0.0f, new Item.Properties().fireResistant()));
 	
+	public static final RegistryObject<SwordItem> TRINIUM_SWORD = ITEMS.register("trinium_sword",
+			() -> new SwordItem(ToolMaterialInit.TRINIUM, 4, -2.4f, new Item.Properties()));
+	public static final RegistryObject<PickaxeItem> TRINIUM_PICKAXE = ITEMS.register("trinium_pickaxe",
+			() -> new PickaxeItem(ToolMaterialInit.TRINIUM, 2, -2.8f, new Item.Properties()));
+	public static final RegistryObject<AxeItem> TRINIUM_AXE = ITEMS.register("trinium_axe",
+			() -> new AxeItem(ToolMaterialInit.TRINIUM, 6.0f, -3.0f, new Item.Properties()));
+	public static final RegistryObject<ShovelItem> TRINIUM_SHOVEL = ITEMS.register("trinium_shovel",
+			() -> new ShovelItem(ToolMaterialInit.TRINIUM, 2.5f, -3.0f, new Item.Properties()));
+	public static final RegistryObject<HoeItem> TRINIUM_HOE = ITEMS.register("trinium_hoe",
+			() -> new HoeItem(ToolMaterialInit.TRINIUM, -2, 0.0f, new Item.Properties()));
+	
 	public static final RegistryObject<Item> TRINIUM_ARROW = ITEMS.register("trinium_arrow",
 			() -> new TriniumArrowItem(new Item.Properties()));
 	
@@ -204,14 +217,14 @@ public class ItemInit
 	public static final RegistryObject<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots", 
 			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
 	
-	public static final RegistryObject<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final RegistryObject<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<ArmorItem> TRINIUM_HELMET = ITEMS.register("trinium_helmet",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<ArmorItem> TRINIUM_CHESTPLATE = ITEMS.register("trinium_chestplate",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<ArmorItem> TRINIUM_LEGGINGS = ITEMS.register("trinium_leggings",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<ArmorItem> TRINIUM_BOOTS = ITEMS.register("trinium_boots",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, EquipmentSlot.FEET, new Item.Properties().stacksTo(1)));
 	
 	public static final RegistryObject<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet", 
 			() -> new ArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
@@ -226,6 +239,15 @@ public class ItemInit
 			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
 	public static final RegistryObject<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet", 
 			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA, EquipmentSlot.HEAD, new Item.Properties().fireResistant()));
+	
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.HEAD, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.CHEST, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.LEGS, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final RegistryObject<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, EquipmentSlot.FEET, new Item.Properties().stacksTo(1).fireResistant()));
 	
 	public static final RegistryObject<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod", 
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));

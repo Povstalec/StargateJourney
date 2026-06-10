@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		" N ",
+		"RMR",
+		"ANA"
+	],
+	
+	"key": 
+	{
+		"M": { "item": "sgjourney:materialization_crystal" },
+		"N": { "tag": "sgjourney:naquadah_ingot" },
+		"R": { "tag": "sgjourney:naquadah_iron_rod" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" }
+		
+	},
+	
+	"result": { "item": "sgjourney:matter_projector", "count": 4 }
+}

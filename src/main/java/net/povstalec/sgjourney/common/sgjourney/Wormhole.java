@@ -96,7 +96,7 @@ public class Wormhole
 						return true;
 					}
 				}
-				else
+				else if(!traveler.getType().is(TagInit.Entities.REVERSE_WORMHOLE_IGNORES))
 					handleReverseWormhole(server, initialStargate, traveler);
 			}
 		}

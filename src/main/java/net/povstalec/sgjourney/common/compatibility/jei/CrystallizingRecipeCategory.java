@@ -11,11 +11,8 @@ import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,10 +41,8 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		return this.icon;
 	}
 	
-	protected abstract Fluid getInputFluid();
-	
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, T recipe, IFocusGroup focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, T recipe, @NotNull IFocusGroup focuses)
 	{
 		ItemStack stack1 = recipe.getIngredients().get(0).getItems()[0].copy();
 		ItemStack stack2 = recipe.getIngredients().get(1).getItems()[0].copy();
@@ -59,8 +54,8 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		
 		// Input Tank
 		builder.addSlot(RecipeIngredientRole.INPUT, 34, 17)
-				.addFluidStack(getInputFluid(), recipe.getInputLiquidAmount())
-				.setFluidRenderer(recipe.getInputLiquidAmount(), false, 16, 52);
+				.addFluidStack(recipe.getInputFluid().getFluid(), recipe.getInputFluid().getAmount())
+				.setFluidRenderer(recipe.getInputFluid().getAmount(), false, 16, 52);
 		
 		// Upper Slot
 		builder.addSlot(RecipeIngredientRole.INPUT, 71, 17).addItemStack(stack1);
@@ -89,12 +84,6 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		}
 		
 		@Override
-		protected Fluid getInputFluid()
-		{
-			return FluidInit.LIQUID_NAQUADAH_SOURCE.get();
-		}
-		
-		@Override
 		public @NotNull RecipeType<CrystallizingRecipe.Crystallizer> getRecipeType()
 		{
 			return TYPE;
@@ -120,12 +109,6 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		public AdvancedCrystallizer(IGuiHelper helper)
 		{
 			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/advanced_crystallizer_gui.png"), new ItemStack(BlockInit.ADVANCED_CRYSTALLIZER.get()));
-		}
-		
-		@Override
-		protected Fluid getInputFluid()
-		{
-			return FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 		}
 		
 		@Override

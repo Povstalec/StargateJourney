@@ -1,7 +1,7 @@
 {
 	"type": "sgjourney:naquadah_heavy_liquidizing",
 	"ingredient": { "item": "sgjourney:pure_naquadah" },
-	"input_liquid_amount": 100,
-	"output_liquid_amount": 200,
+	"input_fluid": { "id":  "sgjourney:liquid_naquadah", "amount": 100 },
+	"output_fluid": { "id":  "sgjourney:heavy_liquid_naquadah", "amount": 200 },
 	"progress": 100
 }

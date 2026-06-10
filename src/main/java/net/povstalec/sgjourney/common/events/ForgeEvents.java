@@ -34,6 +34,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
@@ -51,6 +52,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.MissingMappingsEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -79,6 +84,20 @@ public class ForgeEvents
 	public static void onMissingMapping(MissingMappingsEvent event)
 	{
 		RemappingHelper.startRemapping(event);
+	}
+	
+	@SubscribeEvent
+	public static void onDatapackSync(OnDatapackSyncEvent event)
+	{
+		// Reset valid fluid caches whenever Datapacks get reloaded
+		if(event.getPlayer() == null)
+		{
+			NaquadahLiquidizerEntity.VALID_FLUIDS_CACHE.clear();
+			HeavyNaquadahLiquidizerEntity.VALID_FLUIDS_CACHE.clear();
+			
+			CrystallizerEntity.VALID_FLUIDS_CACHE.clear();
+			AdvancedCrystallizerEntity.VALID_FLUIDS_CACHE.clear();
+		}
 	}
 	
 	@SubscribeEvent

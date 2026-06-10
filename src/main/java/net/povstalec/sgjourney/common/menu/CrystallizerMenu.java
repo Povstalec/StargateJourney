@@ -6,7 +6,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -16,6 +15,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEn
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.packets.ServerboundCrystallizerUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> extends EnergyBlockMenu<T>
 {
@@ -33,7 +35,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	{
 		super(type, containerId, inventory, blockEntity);
 		checkContainerSize(inventory, 7);
-		this.fluidStack = this.blockEntity.getFluid();
+		this.fluidStack = this.blockEntity.getFluidStack();
 	
 		addPlayerInventory(inventory, 8, 84);
 		addPlayerHotbar(inventory, 8, 142);
@@ -52,19 +54,19 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
 	}
 	
+	public void pressDumpButton()
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundCrystallizerUpdatePacket(this.blockEntity.getBlockPos()));
+	}
+	
 	public void setFluid(FluidStack fluidStack)
 	{
 		this.fluidStack = fluidStack;
 	}
 	
-	public FluidStack getFluid()
+	public FluidStack getFluidStack()
 	{
-		return this.blockEntity.getFluid();
-	}
-	
-	public Fluid getDesiredFluid()
-	{
-		return this.blockEntity.getDesiredFluid();
+		return this.blockEntity.getFluidStack();
 	}
 	
 	public int getMaxProgress()
@@ -85,7 +87,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	{
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getDesiredFluid());
+			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
 		return false;
 	}
@@ -119,7 +121,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CRYSTALLIZER.get());
 		}
@@ -138,7 +140,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ADVANCED_CRYSTALLIZER.get());
 		}

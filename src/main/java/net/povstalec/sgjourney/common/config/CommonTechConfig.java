@@ -17,6 +17,34 @@ public class CommonTechConfig
 	public static ForgeConfigSpec.LongValue naquadah_power_cell_buffer_capacity;
 	public static ForgeConfigSpec.LongValue naquadah_power_cell_max_transfer;
 	
+	public static ForgeConfigSpec.LongValue naquadah_liquidizer_energy_capacity;
+	public static ForgeConfigSpec.LongValue naquadah_liquidizer_max_energy_receive;
+	public static ForgeConfigSpec.LongValue naquadah_liquidizer_energy_per_tick;
+	public static ForgeConfigSpec.IntValue naquadah_liquidizer_fluid_input_capacity;
+	public static ForgeConfigSpec.IntValue naquadah_liquidizer_fluid_output_capacity;
+	public static ForgeConfigSpec.IntValue naquadah_liquidizer_max_fluid_receive;
+	public static ForgeConfigSpec.IntValue naquadah_liquidizer_max_fluid_extract;
+	
+	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_energy_capacity;
+	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_max_energy_receive;
+	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_energy_per_tick;
+	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_input_capacity;
+	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_output_capacity;
+	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_receive;
+	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_extract;
+	
+	public static ForgeConfigSpec.LongValue crystallizer_energy_capacity;
+	public static ForgeConfigSpec.LongValue crystallizer_max_energy_receive;
+	public static ForgeConfigSpec.LongValue crystallizer_energy_per_tick;
+	public static ForgeConfigSpec.IntValue crystallizer_fluid_input_capacity;
+	public static ForgeConfigSpec.IntValue crystallizer_max_fluid_receive;
+	
+	public static ForgeConfigSpec.LongValue advanced_crystallizer_energy_capacity;
+	public static ForgeConfigSpec.LongValue advanced_crystallizer_max_energy_receive;
+	public static ForgeConfigSpec.LongValue advanced_crystallizer_energy_per_tick;
+	public static ForgeConfigSpec.IntValue advanced_crystallizer_fluid_input_capacity;
+	public static ForgeConfigSpec.IntValue advanced_crystallizer_max_fluid_receive;
+	
 	public static ForgeConfigSpec.LongValue small_naquadah_battery_capacity;
 	public static ForgeConfigSpec.LongValue small_naquadah_battery_max_transfer;
 	public static ForgeConfigSpec.LongValue large_naquadah_battery_capacity;
@@ -24,6 +52,8 @@ public class CommonTechConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		// Fusion Core
+		
 		fusion_core_infinite_energy = server
 				.comment("If true, Fusion Core will produce an endless amount of energy and won't require any fuel")
 				.define("server.fusion_core_infinite_energy", false);
@@ -46,7 +76,7 @@ public class CommonTechConfig
 				.comment("The amount of Heavy Liquid Naquadah a Personal Shield can hold")
 				.defineInRange("server.personal_shield_capacity", 300, 1, Integer.MAX_VALUE);
 		
-		
+		// Vial and Naquadah Power Cell
 		
 		vial_capacity = server
 				.comment("The amount of Liquid Naquadah or Heavy Liquid Naquadah a Vial can hold")
@@ -68,22 +98,126 @@ public class CommonTechConfig
 				.comment("The amount of energy the Naquadah Power Cell's Energy Buffer can transfer out at once")
 				.defineInRange("server.naquadah_power_cell_max_transfer", 200000L, 1, Long.MAX_VALUE);
 		
+		// Liquidizers
 		
+		naquadah_liquidizer_energy_capacity = server
+				.comment("The maximum amount of energy the Naquadah Liquidizer can hold")
+				.defineInRange("server.naquadah_liquidizer_energy_capacity", 1000000L, 1L, Long.MAX_VALUE);
+		
+		naquadah_liquidizer_max_energy_receive = server
+				.comment("The maximum amount of energy the Naquadah Liquidizer can receive in one tick")
+				.defineInRange("server.naquadah_liquidizer_max_energy_receive", 100000L, 1L, Long.MAX_VALUE);
+		
+		naquadah_liquidizer_energy_per_tick = server
+				.comment("The amount of energy the Naquadah Liquidizer depletes per tick when active")
+				.defineInRange("server.naquadah_liquidizer_energy_per_tick", 1000L, 0L, Long.MAX_VALUE);
+		
+		naquadah_liquidizer_fluid_input_capacity = server
+				.comment("The maximum amount of fluid the input tank of the Naquadah Liquidizer can hold")
+				.defineInRange("server.naquadah_liquidizer_fluid_input_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		naquadah_liquidizer_fluid_output_capacity = server
+				.comment("The maximum amount of fluid the output tank of the Naquadah Liquidizer can hold")
+				.defineInRange("server.naquadah_liquidizer_fluid_output_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		naquadah_liquidizer_max_fluid_receive = server
+				.comment("The maximum amount of fluid the Naquadah Liquidizer can receive in one tick")
+				.defineInRange("server.naquadah_liquidizer_max_fluid_receive", 1000, 1, Integer.MAX_VALUE);
+		
+		naquadah_liquidizer_max_fluid_extract = server
+				.comment("The maximum amount of fluid that can be extracted from the Naquadah Liquidizer in one tick")
+				.defineInRange("server.naquadah_liquidizer_max_fluid_extract", 1000, 1, Integer.MAX_VALUE);
+		
+		
+		
+		heavy_naquadah_liquidizer_energy_capacity = server
+				.comment("The maximum amount of energy the Heavy Naquadah Liquidizer can hold")
+				.defineInRange("server.heavy_naquadah_liquidizer_energy_capacity", 1000000L, 1L, Long.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_max_energy_receive = server
+				.comment("The maximum amount of energy the Heavy Naquadah Liquidizer can receive in one tick")
+				.defineInRange("server.heavy_naquadah_liquidizer_max_energy_receive", 100000L, 1L, Long.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_energy_per_tick = server
+				.comment("The amount of energy the Heavy Naquadah Liquidizer depletes per tick when active")
+				.defineInRange("server.heavy_naquadah_liquidizer_energy_per_tick", 1000L, 0L, Long.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_fluid_input_capacity = server
+				.comment("The maximum amount of fluid the input tank of the Heavy Naquadah Liquidizer can hold")
+				.defineInRange("server.heavy_naquadah_liquidizer_fluid_input_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_fluid_output_capacity = server
+				.comment("The maximum amount of fluid the output tank of the Heavy Naquadah Liquidizer can hold")
+				.defineInRange("server.heavy_naquadah_liquidizer_fluid_output_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_max_fluid_receive = server
+				.comment("The maximum amount of fluid the Heavy Naquadah Liquidizer can receive in one tick")
+				.defineInRange("server.heavy_naquadah_liquidizer_max_fluid_receive", 1000, 1, Integer.MAX_VALUE);
+		
+		heavy_naquadah_liquidizer_max_fluid_extract = server
+				.comment("The maximum amount of fluid that can be extracted from the Heavy Naquadah Liquidizer in one tick")
+				.defineInRange("server.heavy_naquadah_liquidizer_max_fluid_extract", 1000, 1, Integer.MAX_VALUE);
+		
+		// Crystallizers
+		
+		crystallizer_energy_capacity = server
+				.comment("The maximum amount of energy the Crystallizer can hold")
+				.defineInRange("server.crystallizer_energy_capacity", 1000000L, 1L, Long.MAX_VALUE);
+		
+		crystallizer_max_energy_receive = server
+				.comment("The maximum amount of energy the Crystallizer can receive in one tick")
+				.defineInRange("server.crystallizer_max_energy_receive", 100000L, 1L, Long.MAX_VALUE);
+		
+		crystallizer_energy_per_tick = server
+				.comment("The amount of energy the Crystallizer depletes per tick when active")
+				.defineInRange("server.crystallizer_energy_per_tick", 1000L, 0L, Long.MAX_VALUE);
+		
+		crystallizer_fluid_input_capacity = server
+				.comment("The maximum amount of fluid the input tank of the Crystallizer can hold")
+				.defineInRange("server.crystallizer_fluid_input_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		crystallizer_max_fluid_receive = server
+				.comment("The maximum amount of fluid the Crystallizer can receive in one tick")
+				.defineInRange("server.crystallizer_max_fluid_receive", 1000, 1, Integer.MAX_VALUE);
+		
+		
+		
+		advanced_crystallizer_energy_capacity = server
+				.comment("The maximum amount of energy the Advanced Crystallizer can hold")
+				.defineInRange("server.advanced_crystallizer_energy_capacity", 1000000L, 1L, Long.MAX_VALUE);
+		
+		advanced_crystallizer_max_energy_receive = server
+				.comment("The maximum amount of energy the Advanced Crystallizer can receive in one tick")
+				.defineInRange("server.advanced_crystallizer_max_energy_receive", 100000L, 1L, Long.MAX_VALUE);
+		
+		advanced_crystallizer_energy_per_tick = server
+				.comment("The amount of energy the Advanced Crystallizer depletes per tick when active")
+				.defineInRange("server.advanced_crystallizer_energy_per_tick", 1000L, 0L, Long.MAX_VALUE);
+		
+		advanced_crystallizer_fluid_input_capacity = server
+				.comment("The maximum amount of fluid the input tank of the Advanced Crystallizer can hold")
+				.defineInRange("server.advanced_crystallizer_fluid_input_capacity", 4000, 1, Integer.MAX_VALUE);
+		
+		advanced_crystallizer_max_fluid_receive = server
+				.comment("The maximum amount of fluid the Advanced Crystallizer can receive in one tick")
+				.defineInRange("server.advanced_crystallizer_max_fluid_receive", 1000, 1, Integer.MAX_VALUE);
+		
+		// Naquadah Batteries
 		
 		small_naquadah_battery_capacity = server
-				.comment("The amount of energy an Energy Crystal can hold")
+				.comment("The amount of energy a Small Naquadah Battery can hold")
 				.defineInRange("server.small_naquadah_battery_capacity", 5000000L, 1L, Long.MAX_VALUE);
 		
 		small_naquadah_battery_max_transfer = server
-				.comment("The amount of energy an Advanced Energy Crystal can hold")
+				.comment("The amount of energy a Small Naquadah Battery can transfer in one tick")
 				.defineInRange("server.small_naquadah_battery_max_transfer", 10000L, 1L, Long.MAX_VALUE);
 		
 		large_naquadah_battery_capacity = server
-				.comment("The amount of energy an Energy Crystal can hold")
+				.comment("The amount of energy a Large Naquadah Battery can hold")
 				.defineInRange("server.large_naquadah_battery_capacity", 1000000000L, 1L, Long.MAX_VALUE);
 		
 		large_naquadah_battery_max_transfer = server
-				.comment("The amount of energy an Advanced Energy Crystal can hold")
+				.comment("The amount of energy a Large Naquadah Battery can transfer in one tick")
 				.defineInRange("server.large_naquadah_battery_max_transfer", 100000L, 1L, Long.MAX_VALUE);
 	}
 }

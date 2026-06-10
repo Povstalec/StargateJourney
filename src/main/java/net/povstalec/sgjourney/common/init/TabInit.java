@@ -75,6 +75,8 @@ public class TabInit
 				items.accept(NaquadahFuelRodItem.fuelRodSetup());
 				//items.accept(ItemInit.LIQUID_NAQUADAH_REACTOR_CORE.get());
 				items.accept(ItemInit.PLASMA_CONVERTER.get());
+				items.accept(ItemInit.MATTER_PROJECTOR.get());
+				
 				items.accept(ItemInit.NAQUADAH_POWER_CELL.get());
 				items.accept(PowerCellItem.liquidNaquadahSetup());
 				items.accept(PowerCellItem.heavyLiquidNaquadahSetup());
@@ -100,6 +102,17 @@ public class TabInit
 				items.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
 				items.accept(ItemInit.NAQUADAH_LEGGINGS.get());
 				items.accept(ItemInit.NAQUADAH_BOOTS.get());
+				
+				items.accept(ItemInit.TRINIUM_SWORD.get());
+				items.accept(ItemInit.TRINIUM_PICKAXE.get());
+				items.accept(ItemInit.TRINIUM_AXE.get());
+				items.accept(ItemInit.TRINIUM_SHOVEL.get());
+				items.accept(ItemInit.TRINIUM_HOE.get());
+				
+				items.accept(ItemInit.TRINIUM_HELMET.get());
+				items.accept(ItemInit.TRINIUM_CHESTPLATE.get());
+				items.accept(ItemInit.TRINIUM_LEGGINGS.get());
+				items.accept(ItemInit.TRINIUM_BOOTS.get());
 				
 				items.accept(ItemInit.TRINIUM_ARROW.get());
 				

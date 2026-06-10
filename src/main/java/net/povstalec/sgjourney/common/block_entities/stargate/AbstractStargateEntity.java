@@ -227,7 +227,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		if(level.isClientSide())
 		{
-			// Anything goes, onDataPacket() is responsible for taking care of the cache on the client
+			// Anything goes, DHD is responsible for taking care of everything on client
 			dhdCache.setRevalidate(() -> true);
 			dhdCache.setFetch(dhdCache::getCached);
 		}

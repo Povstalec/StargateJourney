@@ -12,7 +12,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
@@ -26,10 +25,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.misc.AutoCache;
-import net.povstalec.sgjourney.common.misc.LocatorHelper;
-import net.povstalec.sgjourney.common.misc.PDAStatus;
-import net.povstalec.sgjourney.common.misc.Trinary;
+import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
@@ -60,6 +56,10 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public static final String NETWORKS = "networks";
 	public static final String RESTRICT_NETWORK = "restrict_network";
 	
+	public static final String CONTROLLER_POS = "controller_pos";
+	
+	public static final long MIN_CONTROLLER_SEARCH_DISTANCE = 64;
+	
 	private final TransporterType<T> transporterType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
@@ -78,7 +78,11 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	@Nullable
 	private Component name;
 	
+	@Nullable
+	protected Vec3i controllerRelativePos = null;
+	protected long controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE;
 	public final AutoCache.Controller<TransporterControllerEntity, AbstractTransporterEntity<?>> controllerCache = new AutoCache.Controller<>(this);
+	
 	protected TransporterIDFilterInfo transporterIDFilterInfo = new TransporterIDFilterInfo();
 	
 	protected boolean isProtected = false;
@@ -99,13 +103,65 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
         if(this.level.isClientSide())
 	        return;
 		
-		if(this.generationStep == StructureGenEntity.Step.READY)
+		if(this.generationStep == Step.READY)
 			generate();
 		
 		//=====Setting up cache logic=====
 		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, 16,
 				controller -> !controller.transporterCache.isCached()));
 		//==========
+		
+		
+		
+		
+		if(level.isClientSide())
+		{
+			// Anything goes, DHD is responsible for taking care of everything on client
+			controllerCache.setRevalidate(() -> true);
+			controllerCache.setFetch(controllerCache::getCached);
+		}
+		else
+		{
+			//=====Setting up cache logic=====
+			controllerCache.setRevalidate(() ->
+			{
+				if(controllerRelativePos == null)
+					return false;
+				
+				BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
+				if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity dhd)
+					return controllerCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+				
+				return false;
+			});
+			controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
+					controller -> !controller.transporterCache.isCached()));
+			
+			controllerCache.setOnChanged((oldDHD, newDHD) ->
+			{
+				if(newDHD != null)
+				{
+					controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
+					controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
+					// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
+					if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
+						controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
+				}
+				else
+					controllerRelativePos = null;
+				
+				updateTransporter();
+				updateClient();
+			});
+			//==========
+			
+			checkTransporter();
+			
+			if(generationStep == Step.READY)
+				generate();
+		}
+		
+		super.onLoad();
 	}
 	
 	@Override
@@ -116,18 +172,21 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
-		if(tag.contains(TRANSPORTER_ID))
+		if(tag.contains(TRANSPORTER_ID, Tag.TAG_INT_ARRAY))
 			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
 		//TODO What about Transporters with old UUIDs?
     	
     	if(tag.contains(CUSTOM_NAME, 8))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
-		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
-			networks = new HashSet<>(List.of(tag.getInt("Network")));
-		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
 			networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+		
+		if(tag.contains(CONTROLLER_POS, Tag.TAG_INT_ARRAY))
+			controllerRelativePos = Conversion.intArrayToVec(tag.getIntArray(CONTROLLER_POS));
+		else
+			controllerRelativePos = null;
 	}
 	
 	@Override
@@ -147,6 +206,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(!networks.isEmpty())
 			tag.putIntArray(NETWORKS, networks.stream().toList());
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
+		
+		if(controllerRelativePos != null)
+			tag.putIntArray(CONTROLLER_POS, Conversion.vecToIntArray(controllerRelativePos));
 	}
 	
 	@Override
@@ -285,6 +347,11 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	
 	
+	public Direction getDirection()
+	{
+		return Direction.NORTH; // Hardcoded to North just so the Transporter has some Direction to store its relative Controller position
+	}
+	
 	public abstract boolean isConnected();
 	
 	public abstract boolean isObstructed();
@@ -324,6 +391,22 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		setConnected(true);
 		
 		return true;
+	}
+	
+	@Nullable
+	public UUID getConnectionID()
+	{
+		return this.connectionID;
+	}
+	
+	public void checkTransporter()
+	{
+		if(isConnected())
+		{
+			// Will reset the Transporter if it incorrectly thinks it's connected
+			if(!TransporterNetwork.get(getLevel()).hasConnection(getConnectionID()))
+				resetTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+		}
 	}
 	
 	public TransporterInfo.Feedback disconnectTransporter(TransporterInfo.Feedback feedback)
@@ -402,11 +485,6 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	public void updateTransporter()
-	{
-		updateTransporter(this.level);
-	}
-	
-	public void updateTransporter(Level level)
 	{
 		if(level.isClientSide())
 			return;

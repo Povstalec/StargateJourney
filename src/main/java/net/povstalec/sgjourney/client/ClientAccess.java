@@ -59,4 +59,9 @@ public class ClientAccess
 			}
 		}
 	}
+	
+	public static void dumpCrystallizerTank(UUID playerId, boolean mainHand, String idc, int frequency)
+	{
+		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
+	}
 }

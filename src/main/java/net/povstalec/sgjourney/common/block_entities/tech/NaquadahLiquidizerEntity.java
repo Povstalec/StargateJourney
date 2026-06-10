@@ -4,19 +4,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<LiquidizingRecipe.NaquadahLiquidizer>
 {
-	public static final long ENERGY_CAPACITY = 1000000; // TODO Make this configurable
-	public static final long MAX_ENERGY_RECEIVE = 100000; // TODO Make this configurable
-	public static final long LIQUIDIZATION_ENERGY_PER_TICK = 1000; // TODO Make this configurable
+	public static final Map<Fluid, Boolean> VALID_FLUIDS_CACHE = new HashMap<>(); // Caching fluids the tank can hold
 	
 	public NaquadahLiquidizerEntity(BlockPos pos, BlockState state)
 	{
@@ -24,15 +22,11 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<L
 	}
 	
 	@Override
-	public Fluid getInputFluid()
+	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
-		return Fluids.LAVA;
-	}
-
-	@Override
-	public Fluid getOutputFluid()
-	{
-		return FluidInit.LIQUID_NAQUADAH_SOURCE.get();
+		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
+				.map(recipe -> (LiquidizingRecipe.NaquadahLiquidizer) recipe)
+				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	
 	@Override
@@ -42,19 +36,47 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<L
 	}
 	
 	//============================================================================================
+	//*******************************************Fluids*******************************************
+	//============================================================================================
+	
+	@Override
+	public int inputFluidTankCapacity()
+	{
+		return CommonTechConfig.naquadah_liquidizer_fluid_input_capacity.get();
+	}
+	
+	@Override
+	public int maxFluidReceive()
+	{
+		return CommonTechConfig.naquadah_liquidizer_max_fluid_receive.get();
+	}
+	
+	@Override
+	public int outputFluidTankCapacity()
+	{
+		return CommonTechConfig.naquadah_liquidizer_fluid_output_capacity.get();
+	}
+	
+	@Override
+	public int maxFluidExtract()
+	{
+		return CommonTechConfig.naquadah_liquidizer_max_fluid_extract.get();
+	}
+	
+	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
 	@Override
 	protected long getCapacity()
 	{
-		return ENERGY_CAPACITY;
+		return CommonTechConfig.naquadah_liquidizer_energy_capacity.get();
 	}
 	
 	@Override
 	protected long getMaxReceive()
 	{
-		return MAX_ENERGY_RECEIVE;
+		return CommonTechConfig.naquadah_liquidizer_max_energy_receive.get();
 	}
 	
 	@Override
@@ -66,6 +88,6 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<L
 	@Override
 	public long energyPerProgressTick()
 	{
-		return LIQUIDIZATION_ENERGY_PER_TICK;
+		return CommonTechConfig.naquadah_liquidizer_energy_per_tick.get();
 	}
 }

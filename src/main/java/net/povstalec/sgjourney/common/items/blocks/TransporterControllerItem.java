@@ -61,10 +61,7 @@ public class TransporterControllerItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			if(baseEntity instanceof TransporterControllerEntity controller)
-			{
-				controller.setTransporter();
 				controller.generateAdditional(StructureGenEntity.Step.READY);
-			}
 		}
 			
 			return false;
@@ -81,7 +78,6 @@ public class TransporterControllerItem extends BlockItem
 			else
 				generationStep = StructureGenEntity.Step.GENERATED;
 			
-			controller.setTransporter();
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 				controller.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else
