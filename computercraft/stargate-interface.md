@@ -831,6 +831,84 @@ print("Stargate has been open for "..openTimeInSeconds.." seconds")
 ___
 
 {% include components/computercraft_function.html
+    name="getPointOfOrigin"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/b5d8f1b0c5817ba96f363f1bf926c580f740b299/src/main/java/net/povstalec/sgjourney/common/compatibility/computer_functions/GenericStargateFunctions.java#L85"
+%}
+
+Returns a string of the resource location of the Point Of Origin.
+
+**Returns**
+1. `string` The resource location of the Point Of Origin.
+
+**See also**
+- [overridePointOfOrigin()](#overridePointOfOrigin)
+- [getSymbols()](#getSymbols)
+
+**Usage**
+- Print the Point of Origin
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local PoO = interface.getPointOfOrigin()
+-- print the Point of Origin
+print("Stargate has Point of Origin: "..PoO)
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="getPublicBlacklist"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/b5d8f1b0c5817ba96f363f1bf926c580f740b299/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L207"
+%}
+Advanced Crystal Interface
+{: .label .label-purple }
+
+Returns a table with publicly visible addresses on the blacklist.
+Only addresses that were added to blacklist as public will be listed.
+Private blacklist cannot be listed.
+
+**Returns**
+1. `number[][]` The table (array) of blacklisted addresses, each address is a table (array) of numbers (symbols).  
+For example:
+```lua
+{
+    { 1, 2, 3, 4, 5, 6 },
+    { 8, 7, 6, 5, 4, 3, 2, 1 }
+}
+```
+
+**See also**
+- [addToBlacklist(address, isPublic)](#addToBlacklist)
+- [clearBlacklist()](#clearBlacklist)
+- [removeFromBlacklist(address)](#removeFromBlacklist)
+- [setFilterType(type)](#setFilterType)
+
+**Usage**
+- Print public address on blacklist
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local publicBlacklist = interface.getPublicBlacklist()
+-- Print each address
+for _,address in pairs(publicBlacklist) do
+    local text = interface.addressToString(address)
+    print(text)
+end
+```
+
+___
+
+{% include components/computercraft_function.html
     name="getRecentFeedback"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L28"
@@ -1001,6 +1079,37 @@ end
 -- use the interface:
 local variant = interface.getStargateVariant()
 print("The stargate variant: "..variant)
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="getSymbols"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/b5d8f1b0c5817ba96f363f1bf926c580f740b299/src/main/java/net/povstalec/sgjourney/common/compatibility/computer_functions/GenericStargateFunctions.java#L90"
+%}
+
+Returns a string of the resource location of the Symbols.
+
+**Returns**
+1. `string` The resource location of the Symbols
+
+**See also**
+- [getPointOfOrigin()](#getPointOfOrigin)
+- [overrideSymbols(symbols)](#overrideSymbols)
+
+**Usage**
+- Print the Symbols
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local symbols = interface.getSymbols()
+-- print the Symbols
+print("Stargate has Symbols: "..symbols)
 ```
 
 ___
@@ -1347,6 +1456,12 @@ When the [filter is set](#setFilterType) to the blacklist type,
 the Stargate will not be able to form a connection with the address on the blacklist.
 That being said, the Stargate can't dial the address or accept a connection from the blacklisted address.
 
+The added address can be either private or public.
+By default, the address is added as private.
+Private addresses cannot be listed, but they are still being blacklisted and can be removed with [removeFromBlacklist(address)](#removeFromBlacklist).
+If an address is already listed and an attempt to add it again is made, with a different visibility,
+the specified visibility is applied and updated in the blacklist.
+
 {: .note }
 Blacklisting a 9-chevron address will block all 9-chevron address connections from/to that specific Stargate.
 However, a connection using a 7/8-chevron address
@@ -1359,6 +1474,9 @@ However, it will not block 9-chevron connections from/to such Stargates.
 
 **Parameters**
 1. `address`: `number[]` The 7, 8 or 9-chevron address to be added to the blacklist (without the trailing zero - Point of Origin).
+2. `isPublic`: `boolean` (Optional, default `false`) Whether the address should be added as public.
+The public blacklist contents are accessible with [getPublicBlacklist()](#getPublicBlacklist).
+The contents of the private blacklist cannot be listed.
 
 **Returns**
 1. `string` A message describing the result of the action  
@@ -1368,6 +1486,7 @@ However, it will not block 9-chevron connections from/to such Stargates.
 - When the specified address is invalid (the only allowed lengths are 6, 7 and 8).
 
 **See also**
+- [getPublicBlacklist()](#getPublicBlacklist)
 - [clearBlacklist()](#clearBlacklist)
 - [removeFromBlacklist(address)](#removeFromBlacklist)
 - [setFilterType(type)](#setFilterType)
@@ -1457,8 +1576,9 @@ Removes all addresses from the blacklist.
 1. `string`: A message `"Blacklist cleared"` [source](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L255C26-L255C45)
 
 **See also**
-- [addToBlacklist()](#addToBlacklist)
+- [addToBlacklist(address, isPublic)](#addToBlacklist)
 - [removeFromBlacklist(address)](#removeFromBlacklist)
+- [getPublicBlacklist()](#getPublicBlacklist)
 - [setFilterType(type)](#setFilterType)
 
 **Usage**
@@ -1727,6 +1847,7 @@ Removes the specified address from the blacklist.
 
 **See also**
 - [addToBlacklist(address)](#addToBlacklist)
+- [getPublicBlacklist()](#getPublicBlacklist)
 
 **Usage**
 - Remove the address from the blacklist
@@ -2195,3 +2316,10 @@ local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
 ```
 
+[//]: # (// TODO:)
+
+[//]: # ("getPublicWhitelist", )
+
+[//]: # ("getRotationDegrees", )
+
+[//]: # ("hasDHD" )

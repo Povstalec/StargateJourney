@@ -3,6 +3,10 @@ The documentation is deployed on https://povstalec.github.io/StargateJourney/
 
 Used template: [Just the docs](https://just-the-docs.com/)
 
+The site currently uses Jekyll with the mentioned template.
+Migration to [Docusaurus](https://docusaurus.io/) is under considerations.
+That should allow to replace ruby with TypeScript, which has a better IDE support and extend the customizability.
+
 ## Local development setup
 1. Install ruby and jekyll  
    [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll)  
