@@ -77,7 +77,7 @@ public class BlockEntityList extends SavedData
 			return null;
 		}
 		
-		SG stargate = stargateEntity.getStargateType().constructStargate();
+		SG stargate = stargateEntity.getStargateType().constructStargate(server);
 		stargate.loadFromBlockEntity(stargateEntity);
 		
 		this.stargateMap.put(address, stargate);
@@ -178,7 +178,7 @@ public class BlockEntityList extends SavedData
 		if(transporterEntity.getLevel() == null)
 			return null;
 		
-		T transporter = transporterEntity.getTransporterType().constructTransporter();
+		T transporter = transporterEntity.getTransporterType().constructTransporter(server);
 		transporter.loadFromBlockEntity(transporterEntity);
 		
 		this.transporterMap.put(transporterID, transporter);
@@ -314,7 +314,7 @@ public class BlockEntityList extends SavedData
 		{
 			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends BlockEntityStargate<?>> stargateEntity)
 			{
-				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate();
+				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
 				stargate.loadFromBlockEntity((stargateEntity));
 				this.stargateMap.put(address, stargate);
 				setDirty(); // A pretty important change happened
@@ -333,7 +333,7 @@ public class BlockEntityList extends SavedData
 		{
 			StargateType.getTypeFromTag(stargateTag).ifPresentOrElse(type ->
 			{
-				Stargate stargate = type.constructStargate();
+				Stargate stargate = type.constructStargate(server);
 				stargate.deserializeNBT(server, address, stargateTag);
 				this.stargateMap.put(address, stargate);
 			}, () ->
@@ -369,7 +369,7 @@ public class BlockEntityList extends SavedData
 				if(setEntityID)
 					transporterEntity.setID(transporterID);
 				
-				BlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter();
+				BlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter(server);
 				transporter.loadFromBlockEntity(transporterEntity);
 				this.transporterMap.put(transporterID, transporter);
 				setDirty(); // A pretty important change happened
@@ -391,7 +391,7 @@ public class BlockEntityList extends SavedData
 				
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
-					Transporter transporter = type.constructTransporter();
+					Transporter transporter = type.constructTransporter(server);
 					transporter.deserializeNBT(server, transporterID, transporterTag);
 					this.transporterMap.put(transporterID, transporter);
 				}, () ->

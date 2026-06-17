@@ -37,7 +37,7 @@ public class CrystalReaderItem extends Item
 		if(offHandItem.getItem() instanceof CrystalReaderItem && mainHandItem.getItem() instanceof MemoryCrystalItem memoryCrystal)
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if(blockEntity instanceof AbstractTransporterEntity transporter)
+			if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
 			{
 				if(transporter.getID() != null)
 				{

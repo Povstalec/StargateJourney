@@ -14,30 +14,36 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class SGJourneyTransporter implements Transporter
 {
+	public static final String ALLOW_INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
+	public static final String MAX_TRANSPORT_DISTANCE = "max_transport_distance";
+	
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
 	public static final Vec3 UP = new Vec3(0, 1, 0);
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
 	
 	private final TransporterType<?> type;
+	private final MinecraftServer server;
 	
 	protected TransporterID transporterID;
 	protected ResourceKey<Level> dimension;
 	
+	protected boolean hasNetworkRestrictions = false;
 	protected Set<Integer> networks = new HashSet<>();
+	
+	protected boolean allowInterdimensionalTransport = false;
+	protected double maxTransportDistance = 0;
 	
 	@Nullable
 	protected Component name;
 	
-	public SGJourneyTransporter(TransporterType<?> type)
+	public SGJourneyTransporter(TransporterType<?> type, MinecraftServer server)
 	{
 		this.type = type;
+		this.server = server;
 	}
 	
 	@Override
@@ -83,6 +89,16 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
+	public boolean isNetworkRestricted(Collection<Integer> testedNetworks)
+	{
+		// If Transporter has network restrictions turned on, check if the tested network matches any of the networks Transporter is in
+		if(hasNetworkRestrictions)
+			return Collections.disjoint(getNetworks(), testedNetworks);
+		
+		return false;
+	}
+	
+	@Override
 	public Component getName()
 	{
 		return name != null ? name : Component.empty();
@@ -106,7 +122,7 @@ public abstract class SGJourneyTransporter implements Transporter
 			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If Transporter is restricted
-		if(isNetworkRestricted(server, initiatingTransporter.getNetworks()))
+		if(isNetworkRestricted(initiatingTransporter.getNetworks()))
 			return TransporterInfo.Feedback.TARGET_RESTRICTED;
 		
 		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(initiatingTransporter.getID()))
@@ -117,6 +133,18 @@ public abstract class SGJourneyTransporter implements Transporter
 			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 		
 		return Dialing.connectTransporters(server, initiatingTransporter, this);
+	}
+	
+	@Override
+	public double maxTransportDistance(MinecraftServer server)
+	{
+		return maxTransportDistance;
+	}
+	
+	@Override
+	public boolean allowInterdimensionalTransport(MinecraftServer server)
+	{
+		return allowInterdimensionalTransport;
 	}
 	
 	//============================================================================================
@@ -159,7 +187,11 @@ public abstract class SGJourneyTransporter implements Transporter
 		if(this.name != null)
 			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
 		
+		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
 		tag.putIntArray(NETWORKS, networks.stream().toList());
+		
+		tag.putBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
+		tag.putDouble(MAX_TRANSPORT_DISTANCE, maxTransportDistance);
 	}
 	
 	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
@@ -171,10 +203,14 @@ public abstract class SGJourneyTransporter implements Transporter
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
+		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
 		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
 			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
 		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
 			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		
+		this.allowInterdimensionalTransport = tag.getBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT);
+		this.maxTransportDistance = tag.getDouble(MAX_TRANSPORT_DISTANCE);
 	}
 	
 	//============================================================================================

@@ -8,6 +8,8 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
+import javax.annotation.Nullable;
+
 public class SGJourneyEvents
 {
 	// Stargate
@@ -51,7 +53,7 @@ public class SGJourneyEvents
 		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.DialCoords(server, transporter, coords));
 	}
 	
-	public static boolean onTransporterConnect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, TransporterConnection.Type connectionType)
+	public static boolean onTransporterConnect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, @Nullable TransporterConnection.Type connectionType)
 	{
 		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.Connect(server, transporter, connectedTransporter, connectionType));
 	}

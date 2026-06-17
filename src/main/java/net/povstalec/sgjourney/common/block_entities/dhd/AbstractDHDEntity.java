@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.Tag;
@@ -73,8 +70,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public static final String STARGATE_POS = "stargate_pos";
 	
-	public static final int DEFAULT_ENERGY_TARGET = 150000;
-	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
+	public static final int DEFAULT_ENERGY_TARGET = 0;
+	public static final int DEFAULT_ENERGY_TRANSFER = 0;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
@@ -87,7 +84,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected boolean enableAdvancedProtocols = false;
 	protected boolean enableCallForwarding = false;
 	protected boolean hasNetworkRestrictions = false;
-	protected Set<Integer> networks = new HashSet<>();
+	protected Set<Integer> networks = new TreeSet<>();
 	
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
@@ -179,6 +176,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		
 		super.onLoad();
+		stargateCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -415,7 +413,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
 	}
 	
-	public abstract long maxEnergyDeplete();
+	public abstract long maxEnergyTransfer();
 	
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
@@ -432,7 +430,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	public long getMaxDeplete()
 	{
-		return CommonDHDConfig.milky_way_dhd_max_energy_extract.get();
+		return Long.MAX_VALUE;
 	}
 	
 	private void tryStoreEnergy(ItemStack energyStack)
@@ -470,14 +468,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(stargate.energyStorage.getTrueEnergyStored() < getEnergyTarget())
 		{
-			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.energyStorage.getTrueEnergyStored(), maxEnergyDeplete());
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.energyStorage.getTrueEnergyStored(), maxEnergyTransfer());
 			
-			// Uses energy from a Energy Item if one is present
+			// Uses energy from an Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
 				
-				if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
 					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
 					stargate.energyStorage.receiveLongEnergy(energySent, false);
@@ -660,10 +658,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		if(stargateCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": " + stargateCache.get().get9ChevronAddress())).withStyle(ChatFormatting.AQUA));
+			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(stargateCache.get().getBlockPos()))).withStyle(ChatFormatting.AQUA));
 		else
-			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.RED));
-			
+			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA));
 		
 		return status;
 	}

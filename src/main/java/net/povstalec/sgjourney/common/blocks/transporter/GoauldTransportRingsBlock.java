@@ -19,6 +19,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransport
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.TransportRingsMenu;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -52,9 +53,9 @@ public class GoauldTransportRingsBlock extends AbstractTransportRingsBlock
 			MenuProvider containerProvider = new MenuProvider()
 			{
 				@Override
-				public Component getDisplayName()
+				public @NotNull Component getDisplayName()
 				{
-					return Component.translatable("screen.sgjourney.goauld_transport_rings");
+					return transportRings.hasCustomName() ? transportRings.getCustomName() : Component.translatable("screen.sgjourney.goauld_transport_rings");
 				}
 				
 				@Override

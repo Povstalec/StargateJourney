@@ -58,6 +58,9 @@ public class AutoCache<T>
 		dirty = true;
 	}
 	
+	/**
+	 * @return True if there cache is dirty, otherwise false
+	 */
 	public boolean isDirty()
 	{
 		return dirty;
@@ -98,7 +101,7 @@ public class AutoCache<T>
 	/**
 	 * Fetches an Object for the cache
 	 */
-	protected void fetch()
+	public void fetch()
 	{
 		set(fetch.get());
 	}
@@ -285,7 +288,7 @@ public class AutoCache<T>
 		}
 		
 		@Override
-		protected void fetch()
+		public void fetch()
 		{
 			breakLink(); // If we're fetching, we're definitely breaking the link,
 			

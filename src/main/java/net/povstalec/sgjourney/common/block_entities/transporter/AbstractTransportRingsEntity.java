@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,9 +31,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transp
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
@@ -53,14 +48,21 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
+	public static final String INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
+	public static final String TRANSPORT_RANGE = "transport_range";
+	
 	public static final int TRANSPORT_TICKS = 21; // Number of ticks Transport Rings wait while in the hover position before they start transporting
 	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
 	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
+	public static final int DEFAULT_MAX_TRANSPORT_RANGE = 512;
 	
 	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.ALL);
 	protected boolean hasNetworkRestrictions = false; // Network restrictions specified by Crystals (separate from those specified by computers)
-	protected Set<Integer> networksCache = new HashSet<>();
+	protected Set<Integer> networksCrystalCache = new HashSet<>();// Networks specified by Crystals (separate from those specified by computers)
+	
+	protected double maxTransportRange = DEFAULT_MAX_TRANSPORT_RANGE;
+	protected boolean allowInterdimensionalTransport = false;
 	
 	public final ItemStackHandler crystalHandler;
 	protected final LazyOptional<IItemHandler> lazyCrystalHandler;
@@ -100,10 +102,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public void onLoad()
 	{
-		if(!this.getLevel().isClientSide())
-			this.recalculateCrystals();
-		
 		super.onLoad();
+		recalculateCrystals();
 	}
 	
 	@Override
@@ -122,20 +122,26 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		tag.putInt(TRANSPORT_HEIGHT, transportHeight);
 		tag.putInt(PROGRESS, progress);
 		
+		tag.putBoolean(INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
+		tag.putDouble(TRANSPORT_RANGE, maxTransportRange);
+		
 		return tag;
 	}
 	
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
+		super.onDataPacket(net, packet);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
 			emptySpace = tag.getInt(EMPTY_SPACE);
 			transportHeight = tag.getInt(TRANSPORT_HEIGHT);
 			updateProgress(tag.getInt(PROGRESS));
-			
-			load(tag);
+			// The following values are updated here because the inventory isn't updated until the menu is opened,
+			// but the info needs to be sent to the Ring Panel even if you don't open the menu
+			allowInterdimensionalTransport = tag.getBoolean(INTERDIMENSIONAL_TRANSPORT);
+			maxTransportRange = tag.getDouble(TRANSPORT_RANGE);
 		}
 	}
 	
@@ -158,7 +164,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getItem() instanceof AbstractCrystalItem;
+				return slot == 0 ? stack.getItem() instanceof ControlCrystalItem controlCrystal && !controlCrystal.isLarge() : stack.getItem() instanceof AbstractCrystalItem;
 			}
 			
 			// Limits the number of items per slot
@@ -185,7 +191,10 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		crystalCache.reset();
 		
 		hasNetworkRestrictions = false;
-		networksCache.clear();
+		networksCrystalCache.clear();
+		
+		maxTransportRange = DEFAULT_MAX_TRANSPORT_RANGE;
+		allowInterdimensionalTransport = false;
 		
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
@@ -200,17 +209,33 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		crystalCache.controlCrystals().forEach((slot, controlCrystal) ->
 		{
 			//TODO Some special entry for Network Restriction
-			if(!controlCrystal.isLarge())
-				hasNetworkRestrictions = true;
+			hasNetworkRestrictions = true;
 		});
 		
 		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
 		{
 			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
-			int network = communicationCrystal.getFrequency(crystalHandler.getStackInSlot(slot));
-			if(network != 0)
-				networksCache.add(network);
+			if(CommunicationCrystalItem.hasFrequency(crystalHandler.getStackInSlot(slot)))
+				networksCrystalCache.add(CommunicationCrystalItem.getFrequency(crystalHandler.getStackInSlot(slot)));
 		});
+		
+		crystalCache.materializationCrystals().forEach((slot, materializationCrystal) ->
+		{
+			// Multiply the transport range with each materialization crystal
+			maxTransportRange *= materializationCrystal.getRangeMultiplier();
+		});
+		// If there are two normal or one Advanced Materialization Crystal, allow interdimensional transport
+		if(crystalCache.materializationCrystals().count(false) >= 2 || crystalCache.materializationCrystals().count(true) >= 1)
+			allowInterdimensionalTransport = true;
+		
+		controllerCache.markDirtyTwoWays();
+		updateTransporter();
+	}
+	
+	@Override
+	protected boolean isCorrectEnergySide(Direction side)
+	{
+		return getBlockState().hasProperty(AbstractTransportRingsBlock.FACING) && side != getBlockState().getValue(AbstractTransportRingsBlock.FACING);
 	}
 	
 	@Nonnull
@@ -236,10 +261,27 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public Set<Integer> getNetworks()
 	{
-		Set<Integer> networks = new HashSet<>(this.networksCache);
-		networks.addAll(super.getNetworks());
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		networks.addAll(this.networksCrystalCache);
+		controllerCache.ifPresent(controller -> networks.addAll(controller.getNetworks()));
 		
-		return networks;
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
+	}
+	
+	@Override
+	public Set<Integer> getCachedNetworks()
+	{
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		networks.addAll(this.networksCrystalCache);
+		controllerCache.ifCached(controller -> networks.addAll(controller.getNetworks()));
+		
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
 	}
 	
 	@Override
@@ -263,6 +305,18 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			if(entry == null)
 				break; // End early if there are no more memories to move back
 		}
+	}
+	
+	@Override
+	public double maxTransportRange()
+	{
+		return maxTransportRange;
+	}
+	
+	@Override
+	public boolean allowInterdimensionalTransport()
+	{
+		return allowInterdimensionalTransport;
 	}
 	
 	@Override
@@ -426,7 +480,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	{
 		BlockPos pos = this.getBlockPos();
 		BlockState state = this.level.getBlockState(pos);
-		level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
+		if(state.hasProperty(AbstractTransportRingsBlock.ACTIVATED))
+			level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
 		
 		loadChunk(connected);
 	}

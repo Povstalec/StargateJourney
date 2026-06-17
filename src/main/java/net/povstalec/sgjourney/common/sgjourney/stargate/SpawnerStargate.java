@@ -49,7 +49,7 @@ public class SpawnerStargate implements Stargate
 	protected Function<RandomSource, EntityType<?>> randomizedEntityType;
 	protected BiConsumer<Entity, RandomSource> onEntitySpawn;
 	
-	public SpawnerStargate(StargateType<?> type)
+	public SpawnerStargate(StargateType<?> type, MinecraftServer server)
 	{
 		this.type = type;
 	}

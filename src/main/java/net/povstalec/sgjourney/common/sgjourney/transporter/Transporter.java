@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -28,6 +29,7 @@ public interface Transporter extends Comparable<Transporter>
 	
 	String CUSTOM_NAME = "CustomName"; //TODO Change this to "custom_name"
 	
+	String NETWORK_RESTRICTIONS = "network_restrictions";
 	String NETWORKS = "networks";
 	
 	TransporterType<?> getTransporterType();
@@ -118,14 +120,48 @@ public interface Transporter extends Comparable<Transporter>
 	Set<Integer> getNetworks();
 	
 	/**
-	 * @param server Current Minecraft Server
 	 * @param networks Network IDs to test
-	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 * @return False if the provided networks pass the restriction check successfully, otherwise true
 	 */
-	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> networks)
+	default boolean isNetworkRestricted(Collection<Integer> networks)
 	{
 		return false;
 	}
+	
+	/**
+	 * @param network Network ID to test
+	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 */
+	default boolean isNetworkRestricted(int network)
+	{
+		return isNetworkRestricted(List.of(network));
+	}
+	
+	//TODO Javadoc
+	double maxTransportDistance(MinecraftServer server);
+	
+	//TODO Javadoc
+	default double distanceFrom(MinecraftServer server, Transporter other)
+	{
+		if(getLevel(server) != null && other.getLevel(server) != null && getPosition(server) != null && other.getPosition(server) != null)
+			return DimensionType.getTeleportationScale(getLevel(server).dimensionType(), other.getLevel(server).dimensionType()) * Math.sqrt(getPosition(server).distanceTo(other.getPosition(server)));
+		
+		return Double.NaN; // Distance not applicable
+	}
+	
+	//TODO Javadoc
+	default boolean isInRange(MinecraftServer server, Transporter other)
+	{
+		double distance = distanceFrom(server, other);
+		
+		if(Double.isNaN(distance))
+			return true; // TODO Come up with a way to handle Transporters that aren't actually in any Dimension
+		
+		return distance <= maxTransportDistance(server);
+	}
+	
+	//TODO Javadoc
+	boolean allowInterdimensionalTransport(MinecraftServer server);
 	
 	/**
 	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Transporter, where X is the direction which the Transporter is facing, Y is Transporter's up direction and Z is Transporter's right direction
@@ -192,23 +228,57 @@ public interface Transporter extends Comparable<Transporter>
 	 */
 	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
 	
+	//TODO Javadoc
 	@Nullable
 	Component getName();
 	
+	//TODO Javadoc
 	TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback);
 	
+	// Energy
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Energy currently stored in the Transporter's energy buffer
+	 */
+	long getEnergyStored(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Max amount of energy that can be stored in the Transporter's energy buffer
+	 */
+	long getEnergyCapacity(MinecraftServer server);
+	
+	/**
+	 * Extracts energy from the Transporter's energy buffer (used mainly for drawing energy to establish a Transporter Connection)
+	 * @param server Current Minecraft Server
+	 * @param energy Amount of energy to be depleted
+	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Transporter's energy buffer will stay the same, if false, the energy is extracted from the energy buffer
+	 * @return Amount of energy that was actually depleted
+	 */
+	long extractEnergy(MinecraftServer server, long energy, boolean simulate);
+	
+	// Transporter Connection
+	
+	//TODO Javadoc
 	int getTimeUntilTransport(MinecraftServer server);
 	
+	//TODO Javadoc
 	List<Entity> entitiesToTransport(MinecraftServer server);
 	
+	//TODO Javadoc
 	boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers);
 	
+	//TODO Javadoc
 	boolean receiveTraveler(MinecraftServer server, TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
+	//TODO Javadoc
 	void connect(MinecraftServer server, UUID connectionID);
 	
+	//TODO Javadoc
 	void disconnect(MinecraftServer server);
 	
+	//TODO Javadoc
 	boolean isConnected(MinecraftServer server);
 	
 	/**
@@ -217,10 +287,13 @@ public interface Transporter extends Comparable<Transporter>
 	 */
 	boolean isObstructed(MinecraftServer server);
 	
+	//TODO Javadoc
 	void updateTicks(MinecraftServer server, int transportTicks, int connectionTime);
 	
+	//TODO Javadoc
 	TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter);
 	
+	//TODO Javadoc
 	@Override
 	default int compareTo(@NotNull Transporter other)
 	{
@@ -231,10 +304,13 @@ public interface Transporter extends Comparable<Transporter>
 	//**********************************Additional functionality**********************************
 	//============================================================================================
 	
+	//TODO Javadoc
 	TransporterIDFilterInfo transporterIDFilterInfo(MinecraftServer server);
 	
+	//TODO Javadoc
 	TransporterInfo.Feedback dialTransporter(MinecraftServer server, TransporterID otherID);
 	
+	//TODO Javadoc
 	TransporterInfo.Feedback dialTransporter(MinecraftServer server, Vec3i coords);
 	
 	//============================================================================================

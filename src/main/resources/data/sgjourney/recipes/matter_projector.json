@@ -3,19 +3,20 @@
 	"category": "misc",
 	"pattern":
 	[
-		" N ",
+		"AIA",
 		"RMR",
-		"ANA"
+		"NIN"
 	],
 	
 	"key": 
 	{
 		"M": { "item": "sgjourney:materialization_crystal" },
-		"N": { "tag": "sgjourney:naquadah_ingot" },
-		"R": { "tag": "sgjourney:naquadah_iron_rod" },
-		"A": { "tag": "sgjourney:naquadah_iron_alloy" }
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"N": { "tag": "sgjourney:naquadah_iron_rod" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"R": { "item": "minecraft:redstone" }
 		
 	},
 	
-	"result": { "item": "sgjourney:matter_projector", "count": 4 }
+	"result": { "item": "sgjourney:matter_projector", "count": 8 }
 }

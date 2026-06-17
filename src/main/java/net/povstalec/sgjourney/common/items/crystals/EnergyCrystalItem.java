@@ -85,7 +85,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long energyTargetIncrease()
 	{
-		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
+		return CommonDHDConfig.energy_crystal_energy_target_increase.get();
 	}
 	
 	@Override
@@ -143,7 +143,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long energyTargetIncrease()
 		{
-			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
+			return CommonDHDConfig.advanced_energy_crystal_energy_target_increase.get();
 		}
 
 		@Override

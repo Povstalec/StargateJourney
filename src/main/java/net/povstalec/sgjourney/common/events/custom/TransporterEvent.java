@@ -8,6 +8,8 @@ import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
+import javax.annotation.Nullable;
+
 @Cancelable
 public class TransporterEvent extends Event
 {
@@ -89,10 +91,11 @@ public class TransporterEvent extends Event
 	@Cancelable
 	public static class Connect extends TransporterEvent
 	{
+		@Nullable
 		private final TransporterConnection.Type connectionType;
 		private final Transporter connectedTransporter;
 		
-		public Connect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, TransporterConnection.Type connectionType)
+		public Connect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, @Nullable TransporterConnection.Type connectionType)
 		{
 			super(server, transporter);
 
@@ -105,6 +108,11 @@ public class TransporterEvent extends Event
 			return this.connectedTransporter;
 		}
 		
+		/**
+		 * @return Connection type of the potential connection, or null if the connection is definitely invalid
+		 * (like when a Transporter attempts to connect to a Transporter in another Address Region without relaying the connection through a Stargate)
+		 */
+		@Nullable
 		public TransporterConnection.Type getConnectionType()
 		{
 			return this.connectionType;

@@ -81,11 +81,15 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
 				ComponentHelper.description("tooltip.sgjourney.dhd.energy_transfer.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.energy_transfer.usage"));
-		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range_1")
-				.append(Component.literal(": " + menu.getMaxDistance() + " "))
-				.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY),
+		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
 				ComponentHelper.description("tooltip.sgjourney.dhd.communication_range.description"),
-				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"));
+				Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+				ComponentHelper.description("tooltip.sgjourney.dhd.networks.description"),
+				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
+				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"),
+				Component.translatable("tooltip.sgjourney.dhd.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				Component.translatable("tooltip.sgjourney.dhd.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				ComponentHelper.usage("tooltip.sgjourney.dhd.networks.usage.control_crystal"));
 		
 		this.itemTooltip(poseStack, mouseX, mouseY, 80, 35, 0, ComponentHelper.description("tooltip.sgjourney.dhd.large_crystal_slot.description"));
 		
@@ -96,7 +100,7 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		this.itemTooltip(poseStack, mouseX, mouseY, 80, 53, 5, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 62, 53, 6, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 62, 35, 7, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 62, 53, 8, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
+		this.itemTooltip(poseStack, mouseX, mouseY, 62, 17, 8, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		
 		this.itemTooltip(poseStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot.description"));
@@ -115,10 +119,10 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		if(slot < 0 || slot > 10)
 			return false;
 		
-		if(slot >= 9)
-			return !menu.blockEntity.energyItemHandler.getStackInSlot(slot - 9).isEmpty();
-		else
+		if(slot < 9)
 			return !menu.blockEntity.crystalHandler.getStackInSlot(slot).isEmpty();
+		else
+			return !menu.blockEntity.energyItemHandler.getStackInSlot(slot - 9).isEmpty();
 	}
 	
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)

@@ -35,6 +35,7 @@ public interface Stargate extends Comparable<Stargate>
 	String HAS_DHD = "HasDHD";
 	String TIMES_OPENED = "TimesOpened";
 	
+	String NETWORK_RESTRICTIONS = "network_restrictions";
 	String NETWORKS = "networks";
 	
 	// Basic Info
@@ -180,13 +181,21 @@ public interface Stargate extends Comparable<Stargate>
 	}
 	
 	/**
-	 * @param server Current Minecraft Server
 	 * @param networks Network IDs to test
-	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 * @return False if the provided networks pass the restriction check successfully, otherwise true
 	 */
-	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> networks)
+	default boolean isNetworkRestricted(Collection<Integer> networks)
 	{
 		return false;
+	}
+	
+	/**
+	 * @param network Network ID to test
+	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 */
+	default boolean isNetworkRestricted(int network)
+	{
+		return isNetworkRestricted(List.of(network));
 	}
 	
 	/**

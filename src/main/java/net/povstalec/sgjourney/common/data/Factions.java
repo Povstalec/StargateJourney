@@ -61,7 +61,7 @@ public final class Factions extends SavedData
 	
 	private void deserialize(CompoundTag tag)
 	{
-		JaffaBurgers.tryDeserialize(tag);
+		JaffaBurgers.tryDeserialize(server, tag);
 		deserializeGoauldFactions(tag.getCompound(GOAULD));
 	}
 	

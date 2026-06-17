@@ -26,6 +26,7 @@ public abstract class SGJourneyStargate implements Stargate
 	public static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	
 	private final StargateType<?> type;
+	private final MinecraftServer server;
 	
 	protected Address.Immutable id9ChevronAddress;
 	
@@ -34,13 +35,16 @@ public abstract class SGJourneyStargate implements Stargate
 	// Preferred Stargate decision
 	protected boolean hasDHD;
 	protected int timesOpened;
+	
+	protected boolean hasNetworkRestrictions = false;
 	protected Set<Integer> networks = new HashSet<>();
 	
 	protected Wormhole wormhole = new Wormhole();
 	
-	public SGJourneyStargate(StargateType<?> type)
+	public SGJourneyStargate(StargateType<?> type, MinecraftServer server)
 	{
 		this.type = type;
+		this.server = server;
 	}
 	
 	public final StargateType<?> getStargateType()
@@ -98,6 +102,16 @@ public abstract class SGJourneyStargate implements Stargate
 		return this.networks;
 	}
 	
+	@Override
+	public boolean isNetworkRestricted(Collection<Integer> testedNetworks)
+	{
+		// If Stargate has network restrictions turned on, check if the tested network matches any of the networks Stargate is in
+		if(hasNetworkRestrictions)
+			return Collections.disjoint(getNetworks(), testedNetworks);
+		
+		return false;
+	}
+	
 	// Energy
 	
 	@Override
@@ -130,7 +144,7 @@ public abstract class SGJourneyStargate implements Stargate
 			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If last Stargate is restricted
-		if(isNetworkRestricted(server, dialingStargate.getNetworks()))
+		if(isNetworkRestricted(dialingStargate.getNetworks()))
 			return StargateInfo.Feedback.TARGET_RESTRICTED;
 		
 		// If last Stargate has a blacklist
@@ -207,6 +221,8 @@ public abstract class SGJourneyStargate implements Stargate
 		
 		tag.putBoolean(HAS_DHD, hasDHD);
 		tag.putInt(TIMES_OPENED, timesOpened);
+		
+		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
 		tag.putIntArray(NETWORKS, networks.stream().toList());
 	}
 	
@@ -220,6 +236,7 @@ public abstract class SGJourneyStargate implements Stargate
 		this.hasDHD = tag.getBoolean(HAS_DHD);
 		this.timesOpened = tag.getInt(TIMES_OPENED);
 		
+		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
 		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
 			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
 		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))

@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
@@ -34,9 +35,9 @@ public class StargateType<S extends Stargate>
 		return generation;
 	}
 	
-	public S constructStargate()
+	public S constructStargate(MinecraftServer server)
 	{
-		return stargateConstructor.constructStargate(this);
+		return stargateConstructor.constructStargate(this, server);
 	}
 	
 	
@@ -80,6 +81,6 @@ public class StargateType<S extends Stargate>
 	
 	public interface StargateConstructor<S extends Stargate>
 	{
-		S constructStargate(StargateType<?> type);
+		S constructStargate(StargateType<?> type, MinecraftServer server);
 	}
 }

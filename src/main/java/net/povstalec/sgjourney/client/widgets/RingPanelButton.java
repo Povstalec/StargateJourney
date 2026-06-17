@@ -5,17 +5,17 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
+import org.jetbrains.annotations.NotNull;
 
 public class RingPanelButton extends SGJourneyButton
 {
 	// Disabled button texture is just the enabled button texture but with HSV adjusted to -60 lightness
 	
-	protected final RingPanelEntity.Button button;
+	protected final TransporterControllerButton<?> button;
 	
-	public RingPanelButton(int x, int y, OnPress press, RingPanelEntity.Button button)
+	public RingPanelButton(int x, int y, OnPress press, TransporterControllerButton<?> button)
 	{
 		super(StargateJourney.sgjourneyLocation("textures/gui/ring_panel_widgets.png"), x, y, 32, 16, Component.empty(), Component.empty(), press);
 		
@@ -26,7 +26,7 @@ public class RingPanelButton extends SGJourneyButton
 	
 	
 	
-	public Component componentFromButton(RingPanelEntity.Button button)
+	public Component componentFromButton(TransporterControllerButton<?> button)
 	{
 		MutableComponent component = Component.empty();
 		
@@ -48,9 +48,9 @@ public class RingPanelButton extends SGJourneyButton
 	@Override
 	protected int getXImage()
 	{
-		return this.button.state().ordinal();
+		return this.button.state().textureOffsetX;
 	}
 	
 	@Override
-	public void playDownSound(SoundManager soundManager) {}
+	public void playDownSound(@NotNull SoundManager soundManager) {}
 }

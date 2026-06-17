@@ -3,20 +3,22 @@ package net.povstalec.sgjourney.client.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.RingPanelButton;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
+import org.jetbrains.annotations.NotNull;
 
 public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/ring_panel_gui.png");
-	
 	
 	public static final int HINT_OFFSET_Y = 222;
 	public static final int CRYSTAL_HINT_OFFSET_X = 0;
@@ -28,7 +30,7 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
         this.imageHeight = 222;
     }
 	
-	private void buttonCloseScreen(RingPanelEntity.Button button)
+	private void buttonCloseScreen(TransporterControllerButton<?> button)
 	{
 		if(button.shouldCloseScreen())
 			this.onClose();
@@ -50,7 +52,7 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 	}
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY)
 	{
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -60,7 +62,7 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 
         this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
 		
-		this.renderEnergyVertical(poseStack, x + 165, y + 36, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
+		this.renderEnergyVertical(poseStack, x + 165, y + 30, 6, 64, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
 		this.itemHint(poseStack, x + 5, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
 		this.itemHint(poseStack, x + 23, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
@@ -69,33 +71,40 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 		this.itemHint(poseStack, x + 5, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 4);
 		this.itemHint(poseStack, x + 23, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
 		
-		this.itemHint(poseStack, x + 137, y + 36, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 9);
+		this.itemHint(poseStack, x + 137, y + 30, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 9);
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
         renderBackground(poseStack);
         super.render(poseStack, mouseX, mouseY, delta);
         renderTooltip(poseStack, mouseX, mouseY);
 		
-		this.energyTooltip(poseStack, mouseX, mouseY, 165, 36, 6, 52, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getMaxEnergy());
+		this.energyTooltip(poseStack, mouseX, mouseY, 165, 30, 6, 64, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
-		//TODO
-		/*this.crystalEffectTooltip(poseStack, 136, 56, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
+		this.crystalEffectTooltip(poseStack, 136, 51, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transporter.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
+				ComponentHelper.description("tooltip.sgjourney.transporter.connection_range.description"),
+				Component.translatable("tooltip.sgjourney.transporter.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
+				ComponentHelper.description("tooltip.sgjourney.transporter.interdimensional_transport.description"));
+		this.crystalEffectTooltip(poseStack, 136, 63, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
 						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
-				ComponentHelper.description("tooltip.sgjourney.dhd.energy_target.description"),
-				ComponentHelper.usage("tooltip.sgjourney.dhd.energy_target.usage"),
-				ComponentHelper.energy("tooltip.sgjourney.dhd.stargate_energy", menu.getStargateEnergy()));
-		this.crystalEffectTooltip(poseStack, 136, 68, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
+				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_target.description"),
+				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_target.usage"),
+				ComponentHelper.energy("tooltip.sgjourney.ring_panel.transporter_energy", menu.getTransporterEnergy()));
+		this.crystalEffectTooltip(poseStack, 136, 75, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
 						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
-				ComponentHelper.description("tooltip.sgjourney.dhd.energy_transfer.description"),
-				ComponentHelper.usage("tooltip.sgjourney.dhd.energy_transfer.usage"));
-		this.crystalEffectTooltip(poseStack, 136, 80, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range_1")
-						.append(Component.literal(": " + menu.getMaxDistance() + " "))
-						.append(Component.translatable("tooltip.sgjourney.dhd.communication_range_2")).withStyle(ChatFormatting.GRAY),
-				ComponentHelper.description("tooltip.sgjourney.dhd.communication_range.description"),
-				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"));*/
+				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_transfer.description"),
+				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_transfer.usage"));
+		this.crystalEffectTooltip(poseStack, 136, 87, mouseX, mouseY, Component.translatable("tooltip.sgjourney.ring_panel.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
+				ComponentHelper.description("tooltip.sgjourney.ring_panel.communication_range.description"),
+				Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+				ComponentHelper.description("tooltip.sgjourney.ring_panel.networks.description"),
+				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
+				ComponentHelper.usage("tooltip.sgjourney.ring_panel.communication_range.usage"),
+				Component.translatable("tooltip.sgjourney.ring_panel.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				Component.translatable("tooltip.sgjourney.ring_panel.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				ComponentHelper.usage("tooltip.sgjourney.ring_panel.networks.usage.control_crystal"));
 		
 		this.itemTooltip(poseStack, mouseX, mouseY, 5, 36, 0, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 23, 36, 1, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
@@ -104,11 +113,11 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 		this.itemTooltip(poseStack, mouseX, mouseY, 5, 72, 4, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 23, 72, 5, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
 		
-		this.itemTooltip(poseStack, mouseX, mouseY, 137, 36, 6, ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_slot.description"));
+		this.itemTooltip(poseStack, mouseX, mouseY, 137, 30, 6, ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_slot.description"));
     }
     
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
+    protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
 	{
 	    this.font.draw(poseStack, this.playerInventoryTitle, (float)this.inventoryLabelX, 128.0F, 4210752);
     }

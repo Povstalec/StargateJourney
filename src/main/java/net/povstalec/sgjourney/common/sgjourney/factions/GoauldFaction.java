@@ -36,14 +36,14 @@ public class GoauldFaction extends AbstractFaction
 	protected Address.Immutable incursionTarget;
 	protected int incursionTime = 0;
 	
-	public GoauldFaction()
+	public GoauldFaction(MinecraftServer server)
 	{
 		this.addresses.add(TERRA);
 		//this.addresses.add(ABYDOS);
 		//this.addresses.add(RIMA);
 		//this.addresses.add(UNITAS);
 		
-		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate();
+		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
 		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
 				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
 				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->

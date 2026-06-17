@@ -13,6 +13,9 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AncientTranspor
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<?>> extends EnergyBlockMenu<T>
 {
@@ -39,7 +42,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		this.crystalSlotIndex[6] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 7, 62, 35)).index;
 		this.crystalSlotIndex[7] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 8, 62, 17)).index;
 		
-		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 134, 27)).index;
+		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
 	}
 	
 	@Override
@@ -51,6 +54,27 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
 	}
+	
+	public long getTransportRange()
+	{
+		return Math.round(this.blockEntity.maxTransportRange());
+	}
+	
+	public boolean allowInterdimensionalTransport()
+	{
+		return this.blockEntity.allowInterdimensionalTransport();
+	}
+	
+	public Set<Integer> getNetworks()
+	{
+		return this.blockEntity.getCachedNetworks();
+	}
+	
+	public boolean hasNetworkRestrictions()
+	{
+		return this.blockEntity.hasNetworkRestrictions();
+	}
+	
 	
 	
 	public static class Ancient extends TransportRingsMenu<AncientTransportRingsEntity>
@@ -66,7 +90,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ANCIENT_TRANSPORT_RINGS.get());
 		}
@@ -85,7 +109,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		}
 		
 		@Override
-		public boolean stillValid(Player player)
+		public boolean stillValid(@NotNull Player player)
 		{
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.GOAULD_TRANSPORT_RINGS.get());
 		}

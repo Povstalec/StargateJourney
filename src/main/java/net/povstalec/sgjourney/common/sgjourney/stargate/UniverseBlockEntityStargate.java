@@ -30,9 +30,9 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 	@Nullable
 	protected Vec3 right = null;
 	
-	public UniverseBlockEntityStargate(StargateType<?> type)
+	public UniverseBlockEntityStargate(StargateType<?> type, MinecraftServer server)
 	{
-		super(type);
+		super(type, server);
 	}
 	
 	@Override
@@ -77,6 +77,8 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 		
 		this.hasDHD = stargate.dhdCache.isPresent();
 		this.timesOpened = stargate.getTimesOpened();
+		
+		this.hasNetworkRestrictions = stargate.hasNetworkRestrictions();
 		this.networks = stargate.getNetworks();
 	}
 	
@@ -139,9 +141,12 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 		{
 			// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
 			this.hasDHD = stargate.dhdCache.isCached();
-			this.networks = stargate.getCachedNetworks();
 			
 			this.timesOpened = stargate.getTimesOpened();
+			
+			// Retrieving cached ones here too because they're influenced by the DHD
+			this.hasNetworkRestrictions = stargate.hasCachedNetworkRestrictions();
+			this.networks = stargate.getCachedNetworks();
 		});
 	}
 	

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
@@ -7,9 +8,9 @@ public abstract class TollanStargate extends SGJourneyStargate
 {
 	public static final StargateInfo.ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.tollan_chevron_lock_speed.get();
 	
-	public TollanStargate(StargateType<?> type)
+	public TollanStargate(StargateType<?> type, MinecraftServer server)
 	{
-		super(type);
+		super(type, server);
 	}
 	
 	

@@ -39,6 +39,7 @@ import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
@@ -296,7 +297,7 @@ public class CommandInit
 				Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
 				
 				if(dimension.equals(stargateDimension) && stargatePos != null)
-					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(Component.literal(" X: " + stargatePos.x() + " Y: " + stargatePos.y() + " Z: " + stargatePos.z()).withStyle(ChatFormatting.YELLOW)), false);
+					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(" ").append(ComponentHelper.coordinate(stargatePos)), false);
 			});
 			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}
@@ -436,9 +437,9 @@ public class CommandInit
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		Level level = context.getSource().getLevel();
 		
-		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
+		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersInDimension(dimension);
 		
-		if(transporters != null && !transporters.isEmpty())
+		if(!transporters.isEmpty())
 		{
 			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters.transporters", dimensionComponent(dimension)), false);
 			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
@@ -446,7 +447,7 @@ public class CommandInit
 			for(Transporter transporter : transporters)
 			{
 				Vec3 coords = transporter.getPosition(level.getServer());
-				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(Component.literal(" X: " + (int) Math.floor(coords.x()) + " Y: " + (int) Math.floor(coords.y()) + " Z: " + (int) Math.floor(coords.z())).withStyle(ChatFormatting.YELLOW)), false);
+				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(" ").append(ComponentHelper.coordinate(coords)), false);
 			}
 			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}

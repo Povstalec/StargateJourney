@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import javax.annotation.Nonnull;
 
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -59,10 +60,8 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public void onLoad()
 	{
-		if(!this.getLevel().isClientSide())
-			this.recalculateCrystals();
-		
 		super.onLoad();
+		recalculateCrystals();
 	}
 	
 	@Override
@@ -180,14 +179,14 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
 		{
 			// Collect frequencies of different Communication Crystals and interpret them as networks the Stargate is in
-			int network = communicationCrystal.getFrequency(crystalHandler.getStackInSlot(slot));
-			if(network != 0)
-				networks.add(network);
+			if(CommunicationCrystalItem.hasFrequency(crystalHandler.getStackInSlot(slot)))
+				networks.add(CommunicationCrystalItem.getFrequency(crystalHandler.getStackInSlot(slot)));
 			else
 				maxConnectionDistance += communicationCrystal.getRangeIncrease();
 		});
 		
 		stargateCache.markDirtyTwoWays();
+		stargateCache.ifPresent(AbstractStargateEntity::updateStargate);
 	}
 	
 	@Override

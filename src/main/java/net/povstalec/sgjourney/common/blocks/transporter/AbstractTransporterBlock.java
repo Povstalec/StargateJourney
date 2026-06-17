@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
@@ -49,11 +50,28 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
             if(entity instanceof AbstractTransporterEntity<?> transporterEntity)
 			{
 				transporterEntity.bypassDisconnectTransporter(TransporterInfo.Feedback.TRANSPORTER_DESTROYED);
+				transporterEntity.controllerCache.clearTwoWays();
 				transporterEntity.removeTransporterFromNetwork();
 			}
         }
         super.onRemove(state, level, pos, newState, isMoving);
     }
+	
+	@Override
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
+	{
+		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+		
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
+		{
+			transporter.saveToItem(stack);
+			if(transporter.hasCustomName())
+				stack.setHoverName(transporter.getCustomName());
+		}
+		
+		return stack;
+	}
 	
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)

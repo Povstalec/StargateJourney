@@ -11,33 +11,46 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.misc.AutoCache;
-import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
+public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, PDAStatus,
+		AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
 	public static final String TRANSPORTER_POS = "transporter_pos";
+	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	public static final int CONTROLLER_INFO_DISTANCE = 3;
-	public static final double DEFAULT_MAX_DISCOVERY_DISTANCE = 1024;
+	public static final double DEFAULT_MAX_DISCOVERY_DISTANCE = 1024; //TODO Make max discovery distance the same as max transport distance of connected Transport Rings
 	
+	public static final int DEFAULT_ENERGY_TARGET = 0;
+	public static final int DEFAULT_ENERGY_TRANSFER = 0;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
@@ -46,8 +59,13 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	
 	protected Set<Integer> networks = new HashSet<>();
 	
+	protected long energyTarget = DEFAULT_ENERGY_TARGET;
+	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
 	protected int maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE; // Max distance from which it can connect to a Transporter and control it
 	protected double maxDiscoveryDistance = DEFAULT_MAX_DISCOVERY_DISTANCE; // Max distance for discovering nearby Transporters for the purposes of establishing a connection
+	
+	protected final ItemStackHandler energyItemHandler = createEnergyItemHandler();
+	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 	
 	@Nullable
 	protected Vec3i transporterRelativePos = null;
@@ -125,6 +143,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		}
 		
 		super.onLoad();
+		transporterCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -137,6 +156,8 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			transporterRelativePos = Conversion.intArrayToVec(tag.getIntArray(TRANSPORTER_POS));
 		else
 			transporterRelativePos = null;
+		
+		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		
 		super.load(tag);
 	}
@@ -151,6 +172,15 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		
 		if(transporterRelativePos != null)
 			tag.putIntArray(TRANSPORTER_POS, Conversion.vecToIntArray(transporterRelativePos));
+		
+		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
+	}
+	
+	@Override
+	public void setRemoved()
+	{
+		super.setRemoved();
+		lazyEnergyItemHandler.invalidate();
 	}
 	
 	@Override
@@ -194,7 +224,12 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	
 	public Set<Integer> getNetworks()
 	{
-		return this.networks;
+		return networks;
+	}
+	
+	public Set<Integer> getTransporterNetworks()
+	{
+		return transporterCache.returnCachedOrDefault(AbstractTransporterEntity::getCachedNetworks, getNetworks());
 	}
 	
 	public abstract Direction getDirection();
@@ -211,6 +246,113 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		return (long) maxConnectionDistance * maxConnectionDistance;
 	}
 	
+	public long getTransporterEnergy()
+	{
+		return transporterCache.returnOrDefault(transporter -> transporter.energyStorage.getTrueEnergyStored(), -1L);
+	}
+	
+	public long minStoredEnergy()
+	{
+		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
+	}
+	public long maxEnergyTransfer()
+	{
+		return this.maxEnergyTransfer;
+	}
+	
+	public long getEnergyTarget()
+	{
+		return this.energyTarget;
+	}
+	
+	private ItemStackHandler createEnergyItemHandler()
+	{
+		return new ItemStackHandler(1)
+		{
+			@Override
+			protected void onContentsChanged(int slot)
+			{
+				setChanged();
+			}
+			
+			@Override
+			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+			{
+				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+			}
+			
+			// Limits the number of items per slot
+			public int getSlotLimit(int slot)
+			{
+				return 1;
+			}
+			
+			@Nonnull
+			@Override
+			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+			{
+				if(!isItemValid(slot, stack))
+					return stack;
+				
+				return super.insertItem(slot, stack, simulate);
+				
+			}
+		};
+	}
+	
+	private void tryPowerTransporter(AbstractTransporterEntity<?> transporter, ItemStack energyStack)
+	{
+		if(transporter.energyStorage.getTrueEnergyStored() < getEnergyTarget())
+		{
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), transporter.energyStorage.getTrueEnergyStored(), maxEnergyTransfer());
+			
+			// Uses energy from an Energy Item if one is present
+			if(InventoryUtil.stackHasEnergy(energyStack))
+			{
+				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+				
+				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				{
+					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
+					transporter.energyStorage.receiveLongEnergy(energySent, false);
+				}
+				else
+				{
+					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
+					transporter.energyStorage.receiveLongEnergy(energySent, false);
+				}
+			}
+			// Uses energy from the Transporter energy buffer
+			else
+			{
+				long energySent = energyStorage.depleteEnergy(needed, false);
+				transporter.energyStorage.receiveLongEnergy(energySent, false);
+			}
+		}
+	}
+	
+	@Override
+	protected void outputEnergy(Direction outputDirection)
+	{
+		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
+		
+		// Stores energy in the DHD buffer
+		if(energyStorage.getTrueEnergyStored() < minStoredEnergy())
+		{
+			try
+			{
+				extractItemEnergy(energyStack);
+			}
+			catch(Exception e)
+			{
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		// Sends energy to the Transporter
+		else
+			transporterCache.ifPresent(transporter -> tryPowerTransporter(transporter, energyStack));
+	}
+	
 	// ======= Transporting =======
 	
 	public TransporterInfo.Feedback startCoordTransport(Vec3 coords)
@@ -221,6 +363,27 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	public TransporterInfo.Feedback startIDTransport(TransporterID transporterID)
 	{
 		return transporterCache.returnOrDefault(transporter -> transporter.dialTransporter(transporterID), TransporterInfo.Feedback.NONE);
+	}
+	
+	@Override
+	public List<Component> getStatus()
+	{
+		List<Component> status = new ArrayList<>();
+		
+		if(transporterCache.isPresent())
+			status.add(Component.translatable("info.sgjourney.transporter_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(transporterCache.get().getBlockPos()))).withStyle(ChatFormatting.DARK_AQUA));
+		else
+			status.add(Component.translatable("info.sgjourney.no_transporter_connected").withStyle(ChatFormatting.DARK_AQUA));
+		
+		return status;
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, TransporterControllerEntity controller)
+	{
+		if(level.isClientSide())
+			return;
+		
+		controller.outputEnergy(null);
 	}
 	
 	//============================================================================================

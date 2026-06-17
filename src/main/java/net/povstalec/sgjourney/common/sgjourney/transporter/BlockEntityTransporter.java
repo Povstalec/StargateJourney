@@ -16,8 +16,6 @@ import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -59,16 +57,6 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	void loadFromBlockEntity(AbstractTransporterEntity<?> transporterEntity);
 	
 	
-	
-	@Override
-	default boolean isNetworkRestricted(MinecraftServer server, Collection<Integer> testedNetworks)
-	{
-		// If Transporter has network restrictions turned on, check if the tested network matches any of the networks Transporter is in
-		if(transporterReturn(server, transporter -> transporter.hasNetworkRestrictions(), false))
-			return Collections.disjoint(getNetworks(), testedNetworks);
-		
-		return false;
-	}
 	
 	@Override
 	default boolean isLoaded(MinecraftServer server)
@@ -129,6 +117,24 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 			StargateJourney.LOGGER.error("Failed to reset Transporter as it does not exist");
 		
 		return feedback;
+	}
+	
+	@Override
+	default long getEnergyStored(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.energyStorage.getTrueEnergyStored(), 0L);
+	}
+	
+	@Override
+	default long getEnergyCapacity(MinecraftServer server)
+	{
+		return transporterReturn(server, transporter -> transporter.energyStorage.getTrueMaxEnergyStored(), 0L);
+	}
+	
+	@Override
+	default long extractEnergy(MinecraftServer server, long energy, boolean simulate)
+	{
+		return transporterReturn(server, transporter -> transporter.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	@Override

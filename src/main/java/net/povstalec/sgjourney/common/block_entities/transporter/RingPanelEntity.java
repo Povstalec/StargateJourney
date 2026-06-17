@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,7 +9,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
@@ -22,16 +23,14 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
-import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -53,22 +52,23 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class RingPanelEntity extends TransporterControllerEntity
 {
-	//TODO Tell the player there are no rings connected
-	//TODO Frequency
 	//TODO Interdimensional transport (Materialization Crystals)
 	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	public static final String ENERGY_INVENTORY = "energy_inventory";
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
 	public static final String BUTTONS = "buttons";
 	
-	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.COMMUNICATION);
+	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
 	
 	//------Button Stuff------
-	protected ButtonState panelState = ButtonState.DEFAULT;
-	protected Button[] buttons = { Button.defaultDisabledButton(this, 0), Button.defaultDisabledButton(this, 1), Button.defaultDisabledButton(this, 2), Button.defaultDisabledButton(this, 3), Button.defaultDisabledButton(this, 4), Button.defaultDisabledButton(this, 5) };
+	protected TransporterControllerButton.ButtonState panelState = TransporterControllerButton.ButtonState.DEFAULT;
+	protected List<TransporterControllerButton<RingPanelEntity>> buttons = Arrays.asList(
+			TransporterControllerButton.defaultButton(this, 0, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 1, TransporterControllerButton.ButtonStatus.DISABLED),
+			TransporterControllerButton.defaultButton(this, 2, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 3, TransporterControllerButton.ButtonStatus.DISABLED),
+			TransporterControllerButton.defaultButton(this, 4, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED)
+	);
 	protected int selectedSlot = -1;
 	protected int page = -1;
 	@Nullable
@@ -76,9 +76,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	protected final ItemStackHandler crystalItemHandler = createCrystalItemHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
-	
-	protected final ItemStackHandler energyItemHandler = createEnergyItemHandler();
-	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 	
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
@@ -93,24 +90,20 @@ public class RingPanelEntity extends TransporterControllerEntity
 			crystalItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		else
 			crystalItemHandler.deserializeNBT(tag.getCompound("Inventory")); //TODO For legacy reasons
-		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
 		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT());
-		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 		super.saveAdditional(tag);
 	}
 	
 	@Override
 	public void onLoad()
 	{
-		if(!this.getLevel().isClientSide())
-			this.recalculateCrystals();
-		
 		super.onLoad();
+		recalculateCrystals();
 	}
 	
 	@Override
@@ -118,18 +111,16 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		super.setRemoved();
 		lazyCrystalItemHandler.invalidate();
-		lazyEnergyItemHandler.invalidate();
 	}
 	
 	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
-		CompoundTag tag = this.saveWithoutMetadata();
+		CompoundTag tag = super.getUpdateTag();
 		ListTag list = new ListTag();
 		for(int i = 0; i < 6; i++)
 		{
-			if(buttons[i] != null)
-				list.add(buttons[i].serialize());
+			list.add(buttons.get(i).serialize());
 		}
 		
 		tag.put(BUTTONS, list);
@@ -147,7 +138,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 			ListTag list = tag.getList(BUTTONS, Tag.TAG_COMPOUND);
 			for(int i = 0; i < 6; i++)
 			{
-				buttons[i].deserialize(list.getCompound(i));
+				buttons.get(i).deserialize(list.getCompound(i));
 			}
 		}
 	}
@@ -179,8 +170,11 @@ public class RingPanelEntity extends TransporterControllerEntity
 		
 		networks.clear();
 		
+		energyTarget = 0;
+		maxEnergyTransfer = 0;
+		
 		// Check where the Crystals are and save their positions
-		for(int i = 1; i < 6; i++)
+		for(int i = 0; i < 6; i++)
 		{
 			ItemStack stack = crystalItemHandler.getStackInSlot(i);
 			Item item = stack.getItem();
@@ -189,15 +183,29 @@ public class RingPanelEntity extends TransporterControllerEntity
 				crystalCache.addCrystal(i, crystal);
 		}
 		
+		// If there are 4 regular crystals or 3 advanced crystals
+		if(crystalCache.energyCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+			energyTarget = -1;
+		else
+			crystalCache.energyCrystals().forEach((slot, energyCrystal) -> energyTarget += energyCrystal.energyTargetIncrease());
+		
+		// If there are 4 regular crystals or 3 advanced crystals
+		if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+			energyTarget = -1;
+		else
+			crystalCache.transferCrystals().forEach((slot, transferCrystal) -> maxEnergyTransfer += transferCrystal.getMaxTransfer());
+		
 		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
 		{
-			// Collect frequencies of different Communication Crystals and interpret them as networks the Stargate is in
-			int network = communicationCrystal.getFrequency(crystalItemHandler.getStackInSlot(slot));
-			if(network != 0)
-				networks.add(network);
+			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
+			if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot)))
+				networks.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot)));
 			else
 				maxDiscoveryDistance *= 2; // Max discovery distance gets doubled for each crystal
 		});
+		
+		transporterCache.markDirtyTwoWays();
+		transporterCache.ifPresent(AbstractTransporterEntity::updateTransporter);
 	}
 	
 	//============================================================================================
@@ -239,41 +247,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 					
 				}
 			};
-	}
-	
-	private ItemStackHandler createEnergyItemHandler()
-	{
-		return new ItemStackHandler(1)
-		{
-			@Override
-			protected void onContentsChanged(int slot)
-			{
-				setChanged();
-			}
-			
-			@Override
-			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-			{
-				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
-			}
-			
-			// Limits the number of items per slot
-			public int getSlotLimit(int slot)
-			{
-				return 1;
-			}
-			
-			@Nonnull
-			@Override
-			public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
-			{
-				if(!isItemValid(slot, stack))
-					return stack;
-				
-				return super.insertItem(slot, stack, simulate);
-				
-			}
-		};
 	}
 	
 	public LazyOptional<IItemHandler> getCrystalItemHandler()
@@ -339,44 +312,391 @@ public class RingPanelEntity extends TransporterControllerEntity
 		return CommonTransporterConfig.ring_panel_button_press_energy_cost.get();
 	}
 	
-	private void chargeFromEnergyItem()
-	{
-		extractItemEnergy(energyItemHandler.getStackInSlot(0));
-	}
-	
 	//============================================================================================
 	//*******************************************Buttons******************************************
 	//============================================================================================
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, RingPanelEntity ringPanel)
+	private TransporterControllerButton<RingPanelEntity> pageForwardButton(boolean enabled)
 	{
-		if(level.isClientSide())
-			return;
-		
-		ringPanel.chargeFromEnergyItem();
+		return TransporterControllerButton.pageForwardButton(this, 5, page + 1, enabled).setOnPress(button ->
+		{
+			button.parent.page++;
+			switch(button.parent.panelState)
+			{
+				case MEMORY -> button.parent.setButtonsFromMemoryCrystal(button.parent.level.getServer(), button.parent.selectedSlot);
+				case MANUAL -> button.parent.setButtonsForManualControl();
+			}
+		});
 	}
 	
-	protected Button nextButton(MinecraftServer server, int index, Iterator<Transporter> transporterIterator, boolean enabled, boolean hasEnergy)
+	private TransporterControllerButton<RingPanelEntity> pageBackButton()
 	{
-		ButtonState state = buttonStateAt(index);
+		return TransporterControllerButton.pageBackButton(this, 4, page - 1).setOnPress(button ->
+		{
+			button.parent.page--;
+			switch(button.parent.panelState)
+			{
+				case MEMORY -> button.parent.setButtonsFromMemoryCrystal(button.parent.level.getServer(), button.parent.selectedSlot);
+				case MANUAL -> button.parent.setButtonsForManualControl();
+			}
+		});
+	}
+	
+	private TransporterControllerButton<RingPanelEntity> defaultButton(MinecraftServer server, Transporter transporter, int index, TransporterControllerButton.ButtonStatus status)
+	{
+		return TransporterControllerButton.defaultButton(this, index, status).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		{
+			if(button.transporterID() != null && button.parent.checkBusy())
+			{
+				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+			}
+		});
+	}
+	
+	// ======= Memory Crystal =======
+	
+	private TransporterControllerButton<RingPanelEntity> memoryButton(int index, TransporterControllerButton.ButtonStatus status)
+	{
+		ItemStack stack = crystalItemHandler.getStackInSlot(index);
+		int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(stack, MemoryEntry.Type.TRANSPORTER_ID, MemoryEntry.Type.COORDINATES);
+		if(entryCount == 0) // Memory Crystal holds no Transporter IDs, make the button not interactable
+			return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries").append(": 0").withStyle(ChatFormatting.BLUE));
 		
-		if(state == ButtonState.MEMORY)
-			return Button.memoryCrystalButton(this, index, enabled, hasEnergy);
-		if(state == ButtonState.FREQUENCY)
-			return Button.communicationCrystalButton(this, index, enabled, hasEnergy);
-		if(state == ButtonState.MANUAL)
-			return Button.controlCrystalButton(this, index, enabled, hasEnergy);
-		else if(enabled && transporterIterator.hasNext())
-			return Button.defaultTransportButton(this, index, server, transporterIterator.next(), true, hasEnergy);
+		if(!status.isEnabled)
+			return TransporterControllerButton.memoryButton(this, index, status);
+		
+		MutableComponent tooltip = stack.hasCustomHoverName() ? stack.getHoverName().copy() : Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries");
+		
+		return TransporterControllerButton.memoryButton(this, index, status).setTooltip(tooltip.append(": " + entryCount).withStyle(ChatFormatting.BLUE)).setOnPress(button ->
+		{
+			if(button.parent.page < 0)
+				button.parent.setBaseMemoryCrystalPage(button.parent.level.getServer(), index);
+		});
+	}
+	
+	protected void setBaseMemoryCrystalPage(MinecraftServer server, int index)
+	{
+		if(index < 0)
+			return;
+		
+		selectedSlot = index;
+		page = 0;
+		panelState = TransporterControllerButton.ButtonState.MEMORY;
+		setButtonsFromMemoryCrystal(server, index);
+	}
+	
+	private void setButtonsFromMemoryCrystal(MinecraftServer server, int index)
+	{
+		ListTag list = MemoryCrystalItem.getMemoryList(this.crystalItemHandler.getStackInSlot(index));
+		
+		int start = 4 * page;
+		for(int i = 0; i < 4; i++)
+		{
+			buttons.set(i, loadButtonFromMemoryCrystal(server, list, start + i));
+		}
+		
+		if(list.size() > 5)
+		{
+			buttons.set(4, page == 0 ? TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()) : pageBackButton());
+			buttons.set(5, pageForwardButton(start + 4 < list.size()));
+		}
 		else
-			return Button.defaultDisabledButton(this, index); // Empty Default Button
+		{
+			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+			buttons.set(5, loadButtonFromMemoryCrystal(server, list, start + 4));
+		}
+		
+		updateClient();
+	}
+	
+	private TransporterControllerButton<RingPanelEntity> loadButtonFromMemoryCrystal(MinecraftServer server, ListTag list, int index)
+	{
+		MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, index);
+		
+		if(type == MemoryEntry.Type.TRANSPORTER_ID)
+		{
+			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+			Transporter transporter = BlockEntityList.get(server).getTransporter(transporterID.entry());
+			if(transporter != null)
+			{
+				if(transporterID.name().isEmpty() && transporter.getName() != null)
+					return memoryTransportButton(index).setTransporter(server, transporter);
+				else
+					return memoryTransportButton(index).setTransporter(server, transporter, ChatFormatting.GREEN);
+			}
+			else
+				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
+			
+		}
+		else if(type == MemoryEntry.Type.COORDINATES)
+		{
+			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+			if(coords != null)
+				return memoryTransportButton(index).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
+			else
+				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_location").withStyle(ChatFormatting.DARK_RED));
+		}
+		
+		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.no_entry").withStyle(ChatFormatting.BLUE));
+	}
+	
+	private TransporterControllerButton<RingPanelEntity> memoryTransportButton(int index)
+	{
+		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setCloseScreen(true).setOnPress(button ->
+		{
+			if(button.transporterID() != null && button.parent.checkBusy())
+			{
+				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+			}
+			else if(button.coords() != null && button.parent.checkBusy())
+			{
+				TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
+				if(feedback.isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+			}
+		});
+	}
+	
+	// ======= Communication Crystal =======
+	
+	private TransporterControllerButton<RingPanelEntity> communicationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	{
+		if(!CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(index)))
+			return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency.none"));
+		
+		if(!status.isEnabled)
+			return TransporterControllerButton.networkButton(this, index, status);
+		else
+		{
+			return TransporterControllerButton.networkButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency").append(": " + CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(index))).withStyle(ChatFormatting.GRAY))
+					.setOnPress(button -> button.parent.setBaseCommunicationCrystalPage(index, CommunicationCrystalItem.getFrequency(button.parent.crystalItemHandler.getStackInSlot(index))));
+		}
+	}
+	
+	protected void setBaseCommunicationCrystalPage(int index, int frequency)
+	{
+		if(index < 0)
+			return;
+		
+		selectedSlot = index;
+		page = 0;
+		panelState = TransporterControllerButton.ButtonState.NETWORK;
+		setButtonsForNetworkControl(frequency);
+	}
+	
+	protected void setButtonsForNetworkControl(int network)
+	{
+		ServerLevel serverLevel = (ServerLevel) getLevel();
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+				!transporterCache.get().transporterID.equals(transporter.getID()) &&
+						transporter.getNetworks().contains(network)).iterator();
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(transporterIterator.hasNext())
+				buttons.set(i, nextNetworkButton(serverLevel.getServer(), transporterIterator.next(), i));
+			else
+				buttons.set(i, TransporterControllerButton.networkButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
+		}
+		
+		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+		if(transporterIterator.hasNext())
+			buttons.set(5, nextNetworkButton(serverLevel.getServer(), transporterIterator.next(), 5));
+		else
+			buttons.set(5, TransporterControllerButton.networkButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
+		
+		updateClient();
+	}
+	
+	protected TransporterControllerButton<RingPanelEntity> nextNetworkButton(MinecraftServer server, Transporter transporter, int index)
+	{
+		return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		{
+			if(button.transporterID() != null && button.parent.checkBusy())
+			{
+				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+			}
+		});
+	}
+	
+	// ======= Control Crystal =======
+	
+	private TransporterControllerButton<RingPanelEntity> controlCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	{
+		if(!status.isEnabled)
+			return TransporterControllerButton.manualControlButton(this, index, status);
+		
+		return TransporterControllerButton.manualControlButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.manual_control").withStyle(ChatFormatting.AQUA))
+				.setOnPress(button -> button.parent.setBaseControlCrystalPage(button.index));
+	}
+	
+	private void setBaseControlCrystalPage(int index)
+	{
+		if(index < 0)
+			return;
+		
+		encodedID = new TransporterID.Mutable();
+		selectedSlot = index;
+		page = 0;
+		panelState = TransporterControllerButton.ButtonState.MANUAL;
+		setButtonsForManualControl();
+	}
+	
+	private void setButtonsForManualControl()
+	{
+		int start = 4 * page;
+		for(int i = 0; i < 4; i++)
+		{
+			buttons.set(i, nextManualButton(i + start + 1));
+		}
+		
+		if(page <= 0)
+		{
+			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+			buttons.set(5, pageForwardButton(true));
+		}
+		else
+		{
+			buttons.set(4, pageBackButton());
+			buttons.set(5, encodedID == null || encodedID.getLength() == 0 ? TransporterControllerButton.emptyEnterButton(this, 5) :
+					TransporterControllerButton.enterButton(this, 5, encodedID).setOnPress(button ->
+					{
+						if(button.parent.checkBusy())
+						{
+							TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
+							if(feedback.isError())
+								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+						}
+					}));
+		}
+		
+		updateClient();
+	}
+	
+	private TransporterControllerButton<RingPanelEntity> nextManualButton(int index)
+	{
+		if(encodedID.canGrow())
+			return TransporterControllerButton.manualControlButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)))
+					.setOnPress(button ->
+					{
+						button.parent.encodedID.addSymbol(button.index);
+						button.parent.setButtonsForManualControl();
+					});
+		else
+			return TransporterControllerButton.manualControlButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTooltip(encodedID.toComponent(false));
+	}
+	
+	// ======= Materialization Crystal =======
+	
+	private TransporterControllerButton<RingPanelEntity> materializationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	{
+		if(!status.isEnabled)
+			return TransporterControllerButton.materializationButton(this, index, status);
+		
+		return TransporterControllerButton.materializationButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.interdimensional").withStyle(ChatFormatting.DARK_AQUA))
+				.setOnPress(button -> button.parent.setBaseMaterializationCrystalPage(button.index));
+	}
+	
+	protected void setBaseMaterializationCrystalPage(int index)
+	{
+		if(index < 0)
+			return;
+		
+		selectedSlot = index;
+		page = 0;
+		panelState = TransporterControllerButton.ButtonState.NETWORK;
+		setButtonsForInterdimensionalControl();
+	}
+	
+	protected void setButtonsForInterdimensionalControl()
+	{
+		ServerLevel serverLevel = (ServerLevel) getLevel();
+		MinecraftServer server = serverLevel.getServer();
+		
+		final Set<ResourceKey<Level>> dimensions = new HashSet<>();
+		dimensions.add(level.dimension()); // Added to ignore the Dimension this Ring Panel is in
+		
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInRegion(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+		{
+			ResourceKey<Level> transporterDimension = transporter.getDimension();
+			if(transporterDimension == null || dimensions.contains(transporterDimension))
+				return false; // Attempt to collect only one Transporter from each Dimension at most
+			
+			boolean add = !transporterCache.get().transporterID.equals(transporter.getID()) &&
+					!transporter.isNetworkRestricted(getTransporterNetworks()) &&
+					transporter.allowInterdimensionalTransport(server);
+			
+			if(add)
+				dimensions.add(transporterDimension);
+			
+			return add;
+		}).iterator();
+		
+		for(int i = 0; i < 4; i++)
+		{
+			if(transporterIterator.hasNext())
+				buttons.set(i, nextInterdimensionalButton(serverLevel.getServer(), transporterIterator.next(), i));
+			else
+				buttons.set(i, TransporterControllerButton.materializationButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
+		}
+		
+		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+		if(transporterIterator.hasNext())
+			buttons.set(5, nextInterdimensionalButton(serverLevel.getServer(), transporterIterator.next(), 5));
+		else
+			buttons.set(5, TransporterControllerButton.materializationButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
+		
+		updateClient();
+	}
+	
+	protected TransporterControllerButton<RingPanelEntity> nextInterdimensionalButton(MinecraftServer server, Transporter transporter, int index)
+	{
+		return TransporterControllerButton.materializationButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		{
+			if(button.transporterID() != null && button.parent.checkBusy())
+			{
+				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+			}
+		});
+	}
+	
+	//============================================================================================
+	//*******************************************Control******************************************
+	//============================================================================================
+	
+	private TransporterControllerButton<RingPanelEntity> nextButton(MinecraftServer server, int index, Iterator<Transporter> transporterIterator, TransporterControllerButton.ButtonStatus status)
+	{
+		TransporterControllerButton.ButtonState state = buttonStateAt(index);
+		
+		if(state == TransporterControllerButton.ButtonState.MEMORY)
+			return memoryButton(index, status);
+		if(state == TransporterControllerButton.ButtonState.NETWORK)
+			return communicationCrystalButton(index, status);
+		if(state == TransporterControllerButton.ButtonState.MANUAL)
+			return controlCrystalButton(index, status);
+		if(state == TransporterControllerButton.ButtonState.MATERIALIZATION)
+			return materializationCrystalButton(index, status);
+		else if(transporterIterator != null && transporterIterator.hasNext())
+			return defaultButton(server, transporterIterator.next(), index, status);
+		else if(status.isEnabled)
+			return TransporterControllerButton.defaultButton(this, index, TransporterControllerButton.ButtonStatus.NO_REACHABLE_TRANSPORTER); // Empty Default Button because no more Transporters are reachable
+		else
+			return TransporterControllerButton.defaultButton(this, index, status); // Empty Default Button because of status issues
 	}
 	
 	protected void updateButtons()
 	{
 		transporterCache.markDirtyTwoWays();
 		
-		panelState = ButtonState.DEFAULT;
+		panelState = TransporterControllerButton.ButtonState.DEFAULT;
 		page = -1;
 		selectedSlot = -1;
 		encodedID = null;
@@ -385,18 +705,21 @@ public class RingPanelEntity extends TransporterControllerEntity
 		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
 		if(transporterCache.isPresent())
 		{
-			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
-					!transporterCache.get().transporterID.equals(transporter.getID())).iterator();
+			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+					!transporterCache.get().transporterID.equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
+							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
+							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
+			).iterator();
 			for(int i = 0; i < 6; i++)
 			{
-				buttons[i] = nextButton(serverLevel.getServer(), i, transporterIterator, true, buttonHasEnergy);
+				buttons.set(i, nextButton(serverLevel.getServer(), i, transporterIterator, buttonHasEnergy ? TransporterControllerButton.ButtonStatus.ENABLED : TransporterControllerButton.ButtonStatus.NO_POWER));
 			}
 		}
 		else
 		{
 			for(int i = 0; i < 6; i++)
 			{
-				buttons[i] = nextButton(serverLevel.getServer(), i, null, false, buttonHasEnergy);
+				buttons.set(i, nextButton(serverLevel.getServer(), i, null, TransporterControllerButton.ButtonStatus.NO_TRANSPORTER));
 			}
 		}
 		
@@ -414,32 +737,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		tryUpdateButtons(-1);
 	}
 	
-	protected void setBaseMemoryCrystalPage(MinecraftServer server, int index)
+	public TransporterControllerButton<RingPanelEntity> getButtonAt(int index)
 	{
-		if(index < 0)
-			return;
-		
-		selectedSlot = index;
-		page = 0;
-		panelState = ButtonState.MEMORY;
-		setButtonsFromMemoryCrystal(server, index);
-	}
-	
-	protected void setBaseControlCrystalPage(int index)
-	{
-		if(index < 0)
-			return;
-		
-		encodedID = new TransporterID.Mutable();
-		selectedSlot = index;
-		page = 0;
-		panelState = ButtonState.MANUAL;
-		setButtonsForManualControl();
-	}
-	
-	public Button getButtonAt(int index)
-	{
-		return buttons[index];
+		return buttons.get(index);
 	}
 	
 	public void pressButton(int index)
@@ -455,107 +755,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		getButtonAt(index).press();
 	}
 	
-	public ButtonState buttonStateAt(int index)
+	public TransporterControllerButton.ButtonState buttonStateAt(int index)
 	{
-		return ButtonState.stateFromItem(this.crystalItemHandler.getStackInSlot(index).getItem());
-	}
-	
-	// ======= Memory Crystal =======
-	
-	protected Button loadButtonFromMemoryCrystal(MinecraftServer server, ListTag list, int index)
-	{
-		MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, index);
-		
-		if(type == MemoryEntry.Type.TRANSPORTER_ID)
-		{
-			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
-			Transporter transporter = BlockEntityList.get(server).getTransporter(transporterID.entry());
-			if(transporter != null)
-				return Button.memoryTransportButton(this, index, true).setTransporter(server, transporter).setTooltip(Component.literal(transporterID.name()).withStyle(ChatFormatting.GREEN));
-			else
-				return Button.memoryTransportButton(this, index, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
-			
-		}
-		else if(type == MemoryEntry.Type.COORDINATES)
-		{
-			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
-			if(coords != null)
-				return Button.memoryTransportButton(this, index, true).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
-			else
-				return Button.memoryTransportButton(this, index, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_location").withStyle(ChatFormatting.DARK_RED));
-		}
-		
-		return new Button(this, index, ButtonState.MEMORY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.no_entry"));
-	}
-	
-	protected void setButtonsFromMemoryCrystal(MinecraftServer server, int index)
-	{
-		ListTag list = MemoryCrystalItem.getMemoryList(this.crystalItemHandler.getStackInSlot(index));
-		
-		int start = 4 * page;
-		for(int i = 0; i < 4; i++)
-		{
-			buttons[i] = loadButtonFromMemoryCrystal(server, list, start + i);
-		}
-		
-		if(list.size() > 5)
-		{
-			buttons[4] = page == 0 ? Button.returnButton(this, 4) : Button.pageBackButton(this, 4);
-			buttons[5] = Button.pageForwardButton(this, 5, start + 4 < list.size());
-		}
-		else
-		{
-			buttons[4] = Button.returnButton(this, 4);
-			buttons[5] = loadButtonFromMemoryCrystal(server, list, start + 4);
-		}
-		
-		updateClient();
-	}
-	
-	protected void setButtonsForManualControl()
-	{
-		int start = 4 * page;
-		for(int i = 0; i < 4; i++)
-		{
-			buttons[i] = nextManualButton(i + start + 1);
-		}
-		
-		if(page <= 0)
-		{
-			buttons[4] = Button.returnButton(this, 4);
-			buttons[5] = Button.pageForwardButton(this, 5, true);
-		}
-		else
-		{
-			buttons[4] = Button.pageBackButton(this, 4);
-			buttons[5] = Button.enterButton(this, 5);
-		}
-		
-		updateClient();
-	}
-	
-	protected void setButtonsForFrequencyControl()
-	{
-		
-		ServerLevel serverLevel = (ServerLevel) getLevel();
-		//TODO Frequency
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransporters(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
-				!transporterCache.get().transporterID.equals(transporter.getID())).iterator();
-		
-		for(int i = 0; i < 6; i++)
-		{
-			buttons[i] = nextManualButton(i); //TODO
-		}
-		
-		updateClient();
-	}
-	
-	protected Button nextManualButton(int index)
-	{
-		if(encodedID.canGrow())
-			return Button.controlCrystalButton(this, index, true, true).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)));
-		else
-			return Button.controlCrystalButton(this, index, false, true).setTooltip(encodedID.toComponent(false));
+		return TransporterControllerButton.ButtonState.stateFromItem(this.crystalItemHandler.getStackInSlot(index).getItem());
 	}
 	
 	// ======= Transporting =======
@@ -598,371 +800,5 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public void generateEnergyItem()
 	{
 		energyItemHandler.setStackInSlot(0, PowerCellItem.liquidNaquadahSetup()); //TODO Randomize this
-	}
-	
-	
-	
-	public enum ButtonState
-	{
-		DEFAULT, // Transporter Select
-		MEMORY,
-		FREQUENCY,
-		MANUAL,
-		
-		PAGE_FORWARD,
-		PAGE_BACK,
-		RETURN,
-		ENTER;
-		
-		public static ButtonState stateFromItem(Item item)
-		{
-			if(item instanceof MemoryCrystalItem)
-				return ButtonState.MEMORY;
-			if(item instanceof ControlCrystalItem)
-				return ButtonState.MANUAL;
-			if(item instanceof CommunicationCrystalItem)
-				return ButtonState.FREQUENCY;
-			
-			return ButtonState.DEFAULT;
-		}
-	}
-	
-	public static class Button
-	{
-		public static final String STATE = "state";
-		public static final String ENABLED = "enabled";
-		public static final String COORDS = "coords";
-		public static final String NAME = "name";
-		public static final String CLOSE_SCREEN = "close_screen";
-		
-		protected final RingPanelEntity parent;
-		protected final int index;
-		
-		protected ButtonState state;
-		protected boolean enabled;
-		protected boolean closeScreen;
-		
-		@Nullable
-		protected TransporterID transporterID = null;
-		@Nullable
-		protected Component tooltip = null;
-		@Nullable
-		protected Vec3 coords = null;
-		
-		@Nullable
-		protected Runnable onUpdate = null;
-		protected Consumer<Button> onPress;
-		
-		public Button(RingPanelEntity parent, int index, ButtonState state, boolean enabled)
-		{
-			this.parent = parent;
-			this.index = index;
-			
-			this.state = state;
-			this.enabled = enabled;
-		}
-		
-		public Button setTransporter(TransporterID transporterID, Component tooltip, Vec3 coords)
-		{
-			this.transporterID = transporterID;
-			this.tooltip = tooltip;
-			this.coords = coords;
-			
-			return this;
-		}
-		
-		public Button setTransporter(MinecraftServer server, Transporter transporter)
-		{
-			return setTransporter(transporter.getID(), transporter.getName(), transporter.getPosition(server));
-		}
-		
-		public ButtonState state()
-		{
-			return state;
-		}
-		
-		public Button setEnabled(boolean enabled)
-		{
-			this.enabled = enabled;
-			return this;
-		}
-		
-		public boolean enabled()
-		{
-			return enabled;
-		}
-		
-		public Button setCloseScreen(boolean closeScreen)
-		{
-			this.closeScreen = closeScreen;
-			return this;
-		}
-		
-		public boolean shouldCloseScreen()
-		{
-			return closeScreen;
-		}
-		
-		@Nullable
-		public TransporterID transporterID()
-		{
-			return transporterID;
-		}
-		
-		public Button setTooltip(Component tooltip)
-		{
-			this.tooltip = tooltip;
-			
-			return this;
-		}
-		
-		@Nullable
-		public Component tooltip()
-		{
-			return tooltip;
-		}
-		
-		@Nullable
-		public Vec3 coords()
-		{
-			return coords;
-		}
-		
-		public Button setOnPress(Consumer<Button> onPress)
-		{
-			this.onPress = onPress;
-			
-			return this;
-		}
-		
-		public void press()
-		{
-			if(this.onPress != null)
-				this.onPress.accept(this);
-		}
-		
-		public Button setUpdate(Runnable onUpdate)
-		{
-			this.onUpdate = onUpdate;
-			
-			return this;
-		}
-		
-		private void runOnUpdate()
-		{
-			if(this.onUpdate != null)
-				this.onUpdate.run();
-		}
-		
-		public CompoundTag serialize()
-		{
-			CompoundTag tag = new CompoundTag();
-			
-			tag.putByte(STATE, (byte) state.ordinal());
-			tag.putBoolean(ENABLED, enabled);
-			tag.putBoolean(CLOSE_SCREEN, closeScreen);
-			
-			if(coords != null)
-				tag.put(COORDS, CoordinateHelper.vec3ToTag(coords));
-			if(tooltip != null)
-				tag.putString(NAME, Component.Serializer.toJson(this.tooltip));
-			
-			return tag;
-		}
-		
-		public void deserialize(CompoundTag tag)
-		{
-			this.state = ButtonState.values()[tag.getByte(STATE)];
-			this.enabled = tag.getBoolean(ENABLED);
-			this.closeScreen = tag.getBoolean(CLOSE_SCREEN);
-			
-			if(tag.contains(COORDS, Tag.TAG_COMPOUND))
-				this.coords = CoordinateHelper.tagToVec3(tag.getCompound(COORDS));
-			else
-				this.coords = null;
-			if(tag.contains(NAME, Tag.TAG_STRING))
-				this.tooltip = Component.Serializer.fromJson(tag.getString(NAME));
-			else
-				this.tooltip = null;
-			
-			runOnUpdate();
-		}
-		
-		public static Button defaultDisabledButton(RingPanelEntity parent, int index)
-		{
-			return new Button(parent, index, ButtonState.DEFAULT, false);
-		}
-		
-		public static Button defaultTransportButton(RingPanelEntity parent, int index, MinecraftServer server, Transporter transporter, boolean enabled, boolean hasEnergy)
-		{
-			if(!hasEnergy)
-				return new Button(parent, index, ButtonState.DEFAULT, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			
-			return new Button(parent, index, ButtonState.DEFAULT, enabled).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
-			{
-				if(button.transporterID() != null)
-				{
-					if(button.parent.checkBusy())
-					{
-						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
-					}
-				}
-			});
-		}
-		
-		public static Button memoryCrystalButton(RingPanelEntity parent, int index, boolean enabled, boolean hasEnergy)
-		{
-			if(!hasEnergy)
-				return new Button(parent, index, ButtonState.MEMORY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			
-			int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(parent.crystalItemHandler.getStackInSlot(index), MemoryEntry.Type.TRANSPORTER_ID, MemoryEntry.Type.COORDINATES);
-			if(entryCount == 0) // Memory Crystal holds no Transporter IDs, make the button uninteractable
-				return new Button(parent, index, ButtonState.MEMORY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries").append(": 0").withStyle(ChatFormatting.BLUE));
-			
-			return new Button(parent, index, ButtonState.MEMORY, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries").append(": " + entryCount).withStyle(ChatFormatting.BLUE)).setOnPress(button ->
-			{
-				if(button.parent.page < 0)
-					button.parent.setBaseMemoryCrystalPage(button.parent.level.getServer(), index);
-			});
-		}
-		
-		public static Button memoryTransportButton(RingPanelEntity parent, int index, boolean enabled)
-		{
-			return new Button(parent, index, ButtonState.MEMORY, enabled).setCloseScreen(true).setOnPress(button ->
-			{
-				if(button.transporterID() != null)
-				{
-					button.setCloseScreen(true);
-					
-					if(button.parent.checkBusy())
-					{
-						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
-					}
-				}
-				else if(button.coords() != null)
-				{
-					button.setCloseScreen(true);
-					
-					if(button.parent.checkBusy())
-					{
-						TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
-						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
-					}
-				}
-			});
-		}
-		
-		public static Button controlCrystalButton(RingPanelEntity parent, int index, boolean enabled, boolean hasEnergy)
-		{
-			if(!hasEnergy)
-				return new Button(parent, index, ButtonState.MANUAL, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			
-			return new Button(parent, index, ButtonState.MANUAL, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.manual_control").withStyle(ChatFormatting.AQUA)).setOnPress(button ->
-			{
-				if(button.parent.page < 0)
-					button.parent.setBaseControlCrystalPage(button.index);
-				else
-				{
-					button.parent.encodedID.addSymbol(button.index);
-					button.parent.setButtonsForManualControl();
-				}
-			});
-		}
-		
-		public static Button nextFrequencyButton(RingPanelEntity parent, int index, MinecraftServer server, Transporter transporter, boolean enabled, boolean hasEnergy)
-		{
-			if(!hasEnergy)
-				return new Button(parent, index, ButtonState.FREQUENCY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			
-			return new Button(parent, index, ButtonState.FREQUENCY, enabled).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
-			{
-				if(button.transporterID() != null)
-				{
-					//TODO Automatically change connected Transporter's frequency to match
-					//button.parent.connectedTransporter.set
-					
-					if(button.parent.checkBusy())
-					{
-						TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-						if(feedback.isError())
-							button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
-					}
-				}
-			});
-		}
-		
-		public static Button communicationCrystalButton(RingPanelEntity parent, int index, boolean enabled, boolean hasEnergy)
-		{
-			if(!hasEnergy)
-				return new Button(parent, index, ButtonState.FREQUENCY, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			
-			return new Button(parent, index, ButtonState.FREQUENCY, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency").withStyle(ChatFormatting.GRAY)).setOnPress(button ->
-			{
-				parent.setButtonsForFrequencyControl();
-			});
-		}
-		
-		public static Button returnButton(RingPanelEntity parent, int index)
-		{
-			return new Button(parent, index, ButtonState.RETURN, true).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.return").withStyle(ChatFormatting.RED)).setOnPress(button -> button.parent.updateButtons());
-		}
-		
-		public static Button pageForwardButton(RingPanelEntity parent, int index, boolean enabled)
-		{
-			return new Button(parent, index, ButtonState.PAGE_FORWARD, enabled).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.page_forward").append(Component.literal(" (" + (parent.page + 1) + ')'))).setOnPress(button ->
-			{
-				button.parent.page++;
-				switch(button.parent.panelState)
-				{
-					case MEMORY:
-						button.parent.setButtonsFromMemoryCrystal(button.parent.level.getServer(), button.parent.selectedSlot);
-						break;
-					case MANUAL:
-						button.parent.setButtonsForManualControl();
-						break;
-					default:
-				}
-			});
-		}
-		
-		public static Button pageBackButton(RingPanelEntity parent, int index)
-		{
-			return new Button(parent, index, ButtonState.PAGE_BACK, true).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.page_back").append(Component.literal(" (" + (parent.page - 1) + ')'))).setOnPress(button ->
-			{
-				button.parent.page--;
-				switch(button.parent.panelState)
-				{
-					case MEMORY:
-						button.parent.setButtonsFromMemoryCrystal(button.parent.level.getServer(), button.parent.selectedSlot);
-						break;
-					case MANUAL:
-						button.parent.setButtonsForManualControl();
-						break;
-					default:
-				}
-			});
-		}
-		
-		public static Button enterButton(RingPanelEntity parent, int index)
-		{
-			if(parent.encodedID == null || parent.encodedID.getLength() == 0)
-				return new Button(parent, index, ButtonState.ENTER, false).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport"));
-			
-			return new Button(parent, index, ButtonState.ENTER, true).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport").append(Component.literal(": ").append(parent.encodedID.toComponent(false))).withStyle(ChatFormatting.DARK_AQUA))
-					.setOnPress(button ->
-					{
-						if(button.parent.checkBusy())
-						{
-							TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
-							if(feedback.isError())
-								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
-						}
-					}).setCloseScreen(true);
-		}
 	}
 }

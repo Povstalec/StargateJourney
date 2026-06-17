@@ -137,9 +137,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	protected int totalSymbols;
 	public final SymbolMap symbolMap;
-	protected int defaultNetwork;
-	protected Set<Integer> networks = new HashSet<>();
+	
 	protected Trinary restrictNetwork = Trinary.DEFAULT;
+	protected Set<Integer> networks = new TreeSet<>();
+	public final int defaultNetwork;
 	
 	// Blockstate values
 	protected BlockPos centerPosition;
@@ -268,11 +269,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			
 			checkStargate();
 			
-			if(generationStep == StructureGenEntity.Step.READY)
+			if(generationStep == Step.READY)
 				generate();
 		}
 		
 		super.onLoad();
+		dhdCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -304,12 +306,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
-		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
-			networks = new HashSet<>(List.of(tag.getInt("Network")));
-		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
-			networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			networks = new TreeSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		
 		if(tag.contains(ID)) //TODO Keeping this here for the time being for legacy reasons
 			id9ChevronAddress = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(tag.getString(ID)));
@@ -369,9 +371,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.getArray());
 		
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		if(!networks.isEmpty())
 			tag.putIntArray(NETWORKS, networks.stream().toList());
-		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		
 		tag.putIntArray(ID_9_CHEVRON_ADDRESS, id9ChevronAddress.toArray());
 
@@ -414,6 +416,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putIntArray(ADDRESS, address.getArray());
 		tag.putIntArray(ENGAGED_CHEVRONS, engagedChevrons);
 		
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
+		
 		tag.putString(VARIANT, variant.toString());
 		// Ticks
 		tag.putInt(StargateConnection.KAWOOSH_TICKS, kawooshTick);
@@ -438,6 +443,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			
 			address.fromArray(tag.getIntArray(ADDRESS));
 			engagedChevrons = tag.getIntArray(ENGAGED_CHEVRONS);
+			
+			restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 			
 			variant = new ResourceLocation(tag.getString(VARIANT));
 			// Ticks
@@ -943,8 +951,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public Set<Integer> getNetworks()
 	{
-		Set<Integer> networks = new HashSet<>(this.networks);
-		networks.addAll(dhdCache.returnOrDefault(AbstractDHDEntity::getNetworks, Set.of()));
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		dhdCache.ifPresent(dhd -> networks.addAll(dhd.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -954,8 +962,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public Set<Integer> getCachedNetworks()
 	{
-		Set<Integer> networks = new HashSet<>(this.networks);
-		networks.addAll(dhdCache.returnCachedOrDefault(AbstractDHDEntity::getNetworks, Set.of()));
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		dhdCache.ifPresent(dhd -> networks.addAll(dhd.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -966,14 +974,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public boolean addNetwork(int network)
 	{
 		boolean result = this.networks.add(network);
-		this.updateStargate();
+		updateStargate();
+		updateClient();
 		return result;
 	}
 	
 	public boolean removeNetwork(int network)
 	{
 		boolean result = this.networks.remove(network);
-		this.updateStargate();
+		updateStargate();
+		updateClient();
 		return result;
 	}
 	
@@ -990,9 +1000,19 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return dhdCache.returnOrDefault(AbstractDHDEntity::hasNetworkRestrictions, false);
 	}
 	
+	public boolean hasCachedNetworkRestrictions()
+	{
+		if(getRestrictNetwork().isNotDefault()) // If the restrictions (presumably set by a computer) aren't default, use them
+			return getRestrictNetwork().isTrue();
+		// Otherwise use DHD restrictions
+		return dhdCache.returnCachedOrDefault(AbstractDHDEntity::hasNetworkRestrictions, false);
+	}
+	
 	public void setRestrictNetwork(Trinary restrictNetwork)
 	{
 		this.restrictNetwork = restrictNetwork;
+		updateStargate();
+		updateClient();
 	}
 	
 	public StargateInfo.Gen getGeneration()
@@ -1454,7 +1474,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			status.add(Component.translatable("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		status.add(Component.translatable("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
-		status.add(Component.translatable("info.sgjourney.has_dhd").append(": " + dhdCache.isPresent()).withStyle(ChatFormatting.GOLD));
+		if(dhdCache.isPresent())
+			status.add(Component.translatable("info.sgjourney.dhd_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(dhdCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
+		else
+			status.add(Component.translatable("info.sgjourney.no_dhd_connected").withStyle(ChatFormatting.GOLD));
 		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + dhdCache.returnOrDefault(AbstractDHDEntity::autoclose, 0)).withStyle(ChatFormatting.RED));
 		status.add(Component.translatable("info.sgjourney.last_traveler_time").append(": " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
 		status.add(Component.translatable("info.sgjourney.encoded_address").append(": ").append(address.toComponent(true)).withStyle(ChatFormatting.GREEN));
@@ -1466,6 +1489,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			status.add(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		status.add(ComponentHelper.tickTimer("info.sgjourney.open_time", getOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA));
 		status.add(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getTrueEnergyStored()));
+		status.add(Component.translatable("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
+		status.add(Component.translatable("info.sgjourney.networks").append(": " + getNetworks()));
 		
 		return status;
 	}

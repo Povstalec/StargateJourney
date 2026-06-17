@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -11,11 +10,11 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Predicate;
 
 public class LocatorHelper
@@ -276,19 +275,35 @@ public class LocatorHelper
 		return transportRings.get(0);
 	}
 	
-	public static List<Transporter> findNearestTransporters(ServerLevel level, Vec3 centerPos, double maxDistance, Predicate<Transporter> filter)
+	public static List<Transporter> findNearestTransportersInDimension(ServerLevel level, Vec3 centerPos, double maxDistance, Predicate<Transporter> filter)
 	{
 		double maxDistSqr = maxDistance * maxDistance;
 		
-		return TransporterNetwork.get(level).getTransportersFromDimension(level.dimension()).stream()
+		return TransporterNetwork.get(level).getTransportersInDimension(level.dimension()).stream()
 				.filter(transporter -> transporter.getPosition(level.getServer()) != null &&
 						centerPos.distanceToSqr(transporter.getPosition(level.getServer())) <= maxDistSqr &&
 						transporter.getDimension() != null && filter.test(transporter))
 				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition(level.getServer())))).toList();
 	}
 	
-	public static List<Transporter> findNearestTransporters(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
+	public static List<Transporter> findNearestTransportersInDimension(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
 	{
-		return findNearestTransporters(level, centerPos.getCenter(), maxDistance, filter);
+		return findNearestTransportersInDimension(level, centerPos.getCenter(), maxDistance, filter);
+	}
+	
+	public static List<Transporter> findNearestTransportersInRegion(ServerLevel level, Vec3 centerPos, double maxDistance, Predicate<Transporter> filter)
+	{
+		double maxDistSqr = maxDistance * maxDistance;
+		
+		return TransporterNetwork.get(level).getTransportersInRegion(Universe.get(level).getAddressRegionKeyFromDimension(level.dimension())).stream()
+				.filter(transporter -> transporter.getPosition(level.getServer()) != null &&
+						centerPos.distanceToSqr(transporter.getPosition(level.getServer())) <= maxDistSqr &&
+						transporter.getDimension() != null && filter.test(transporter))
+				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition(level.getServer())))).toList();
+	}
+	
+	public static List<Transporter> findNearestTransportersInRegion(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
+	{
+		return findNearestTransportersInRegion(level, centerPos.getCenter(), maxDistance, filter);
 	}
 }

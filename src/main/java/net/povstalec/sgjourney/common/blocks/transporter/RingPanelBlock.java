@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.blocks.transporter;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -17,25 +16,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
-import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
@@ -45,7 +37,7 @@ import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import java.util.List;
 
 
-public class RingPanelBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
+public class RingPanelBlock extends TransporterControllerBlock
 {
 	protected static final VoxelShape NORTH = Block.box(2.0D, 0.0D, 13.0D, 14.0D, 16.0D, 16.0D);
 	protected static final VoxelShape SOUTH = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 3.0D);
@@ -118,25 +110,6 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 		super.playerWillDestroy(level, pos, state, player);
 	}
 	
-	public BlockState getStateForPlacement(BlockPlaceContext context)
-	{
-	      return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
-	}
-	 
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
-	{
-		state.add(FACING);
-	}
-	
-	public boolean canSurvive(BlockState state, LevelReader reader, BlockPos pos)
-	{
-		Direction direction = state.getValue(FACING);
-		BlockPos blockpos = pos.relative(direction.getOpposite());
-		BlockState blockstate = reader.getBlockState(blockpos);
-		
-		return blockstate.isFaceSturdy(reader, blockpos, direction);
-	}
-	
 	public VoxelShape getShape(BlockState state, BlockGetter reader, BlockPos position, CollisionContext context)
 	{
 		return switch (state.getValue(FACING))
@@ -178,27 +151,5 @@ public class RingPanelBlock extends HorizontalDirectionalBlock implements Entity
 		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-	}
-	
-	@Nullable
-	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof RingPanelEntity ringPanel)
-			return ringPanel;
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof RingPanelEntity ringPanel)
-			return ringPanel.hasPermissions(player, sendMessage);
-		
-		return true;
 	}
 }

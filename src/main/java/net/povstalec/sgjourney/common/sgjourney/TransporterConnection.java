@@ -10,9 +10,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
@@ -29,6 +33,10 @@ public class TransporterConnection
 	public static final String CONNECTION_TIME = "connection_time";
 	public static final String CONNECTION_TYPE = "connection_type";
 	public static final String RELAY_ID = "relay_id";
+	
+	public static final long TRANSPORT_ENERGY_COST = CommonTransporterConfig.transporter_transport_energy_cost.get();
+	public static final long DIMENSION_TRANSPORT_ENERGY_COST = CommonTransporterConfig.transporter_dimension_transport_energy_cost.get();
+	public static final long DISTANCE_TRANSPORT_ENERGY_COST = CommonTransporterConfig.transporter_transport_distance_energy_cost.get();
 	
 	private final UUID uuid;
 	protected final TransporterConnection.Type connectionType;
@@ -69,26 +77,33 @@ public class TransporterConnection
 	
 	public enum Type
 	{
-		DIMENSIONAL("dimensional", false), // Within one dimension
-		SYSTEM_WIDE("system_wide", false), // Within one system, across two dimensions
+		DIMENSIONAL("dimensional", 0, false), // Within one dimension
+		SYSTEM_WIDE("system_wide", DIMENSION_TRANSPORT_ENERGY_COST, false), // Within one system, across two dimensions
 		
-		RELAYED_DIMENSIONAL("relayed_dimensional", true), // Within one dimension, relayed through a Stargate
-		RELAYED_SYSTEM_WIDE("relayed_system_wide", true), // Within one system, relayed through a Stargate
-		RELAYED_INTERSTELLAR("relayed_interstellar", true), // Across two solar systems, relayed through a Stargate
-		RELAYED_INTERGALACTIC("relayed_intergalactic", true); // Across two galaxies, relayed through a Stargate
+		RELAYED_DIMENSIONAL("relayed_dimensional", 0, true), // Within one dimension, relayed through a Stargate
+		RELAYED_SYSTEM_WIDE("relayed_system_wide", 0, true), // Within one system, relayed through a Stargate
+		RELAYED_INTERSTELLAR("relayed_interstellar", 0, true), // Across two solar systems, relayed through a Stargate
+		RELAYED_INTERGALACTIC("relayed_intergalactic", 0, true); // Across two galaxies, relayed through a Stargate
 		
 		private final String name;
+		public final long energyCost;
 		public final boolean isRelayed;
 		
-		Type(String name, boolean isRelayed)
+		Type(String name, long energyCost, boolean isRelayed)
 		{
 			this.name = name;
+			this.energyCost = energyCost;
 			this.isRelayed = isRelayed;
 		}
 		
 		public String getSerializedName()
 		{
 			return this.name;
+		}
+		
+		public long getTransportEnergyCost(double distance)
+		{
+			return TRANSPORT_ENERGY_COST + Math.round(distance * DISTANCE_TRANSPORT_ENERGY_COST) + energyCost;
 		}
 		
 		public static TransporterConnection.Type fromString(String name)
@@ -106,6 +121,13 @@ public class TransporterConnection
 		}
 	}
 	
+	private static boolean isRelayed(MinecraftServer server, Transporter transporterA, Transporter transporterB)
+	{
+		//TODO Relay logic
+		return false;
+	}
+	
+	@Nullable
 	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
 		AddressRegion regionA = transporterA.getAddressRegion(server);
@@ -125,10 +147,12 @@ public class TransporterConnection
 			}
 			
 			if(regionA.findCommonGalaxy(server, regionB) != null)
-				return Type.RELAYED_INTERSTELLAR;
+				return isRelayed(server, transporterA, transporterB) ? Type.RELAYED_INTERSTELLAR : null;
+			
+			return isRelayed(server, transporterA, transporterB) ? Type.RELAYED_INTERGALACTIC : null;
 		}
 		
-		return Type.RELAYED_INTERGALACTIC;
+		return null;
 	}
 	
 	@Nullable
@@ -178,6 +202,11 @@ public class TransporterConnection
 			int ticks = connectionTime - (transportStartTicks - transporterTimeOffset);
 			transporter.updateTicks(server, transporterTimeOffset, Math.max(ticks, -1));
 		}
+	}
+	
+	public static boolean canExtract(MinecraftServer server, Transporter transporter, long energyExtracted)
+	{
+		return transporter.extractEnergy(server, energyExtracted, true) >= energyExtracted;
 	}
 	
 	private void increaseTicks()

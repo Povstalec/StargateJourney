@@ -15,9 +15,9 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 {
 	protected BlockPos blockPos;
 	
-	public GoauldBlockEntityTransportRings(TransporterType<?> type)
+	public GoauldBlockEntityTransportRings(TransporterType<?> type, MinecraftServer server)
 	{
-		super(type);
+		super(type, server);
 	}
 	
 	@Override
@@ -35,7 +35,12 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 		this.blockPos = transporterEntity.getBlockPos();
 		
 		this.name = transporterEntity.getCustomName();
+		
+		this.hasNetworkRestrictions = transporterEntity.hasNetworkRestrictions();
 		this.networks = transporterEntity.getNetworks();
+		
+		this.allowInterdimensionalTransport = transporterEntity.allowInterdimensionalTransport();
+		this.maxTransportDistance = transporterEntity.maxTransportRange();
 	}
 	
 	@Nullable
@@ -54,7 +59,11 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 	{
 		transporterRun(server, transporter ->
 		{
-			this.networks = transporter.getNetworks();
+			this.hasNetworkRestrictions = transporter.hasNetworkRestrictions();
+			this.networks = transporter.getCachedNetworks();
+			
+			this.allowInterdimensionalTransport = transporter.allowInterdimensionalTransport();
+			this.maxTransportDistance = transporter.maxTransportRange();
 		});
 	}
 	

@@ -43,9 +43,9 @@ public class JaffaBurgers extends AbstractFaction
 	protected Address.Immutable visitTarget;
 	protected int incursionTime = 0;
 	
-	public JaffaBurgers()
+	public JaffaBurgers(MinecraftServer server)
 	{
-		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate();
+		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
 		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
 				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
 				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
@@ -139,12 +139,12 @@ public class JaffaBurgers extends AbstractFaction
 			tag.put(JAFFA_BURGERS, jaffaBurgers.serializeNBT());
 	}
 	
-	public static void tryDeserialize(CompoundTag tag)
+	public static void tryDeserialize(MinecraftServer server, CompoundTag tag)
 	{
 		if(StargateJourney.isAprilFools())
 		{
 			if(jaffaBurgers == null)
-				jaffaBurgers = new JaffaBurgers();
+				jaffaBurgers = new JaffaBurgers(server);
 			
 			if(tag.contains(JAFFA_BURGERS, CompoundTag.TAG_COMPOUND))
 				jaffaBurgers.deserializeNBT(tag.getCompound(JAFFA_BURGERS));
@@ -158,7 +158,7 @@ public class JaffaBurgers extends AbstractFaction
 		{
 			boolean isAprilFools = StargateJourney.isAprilFools();
 			if(isAprilFools && jaffaBurgers == null)
-				jaffaBurgers = new JaffaBurgers();
+				jaffaBurgers = new JaffaBurgers(server);
 			else if(!isAprilFools && jaffaBurgers != null)
 				jaffaBurgers = null;
 		}

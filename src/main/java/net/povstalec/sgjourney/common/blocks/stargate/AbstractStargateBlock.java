@@ -383,7 +383,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
 		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
-			stargate.saveToItem(stack);
+		stargate.saveToItem(stack);
 		
         return stack;
 	}

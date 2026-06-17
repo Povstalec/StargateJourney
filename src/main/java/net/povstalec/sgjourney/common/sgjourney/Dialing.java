@@ -129,6 +129,10 @@ public class Dialing
 		if(mustBeLoaded && !dialedStargate.isLoaded(server))
 			return StargateInfo.Feedback.TARGET_NOT_LOADED;
 		
+		// If the dialing Stargate is restricted
+		if(dialingStargate.isNetworkRestricted(dialedStargate.getNetworks()))
+			return StargateInfo.Feedback.SELF_RESTRICTED;
+		
 		if(!SpaceLocation.fromDimension(server, dialedStargate.getDimension()).isInStargateNetwork())
 			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK);
 		
@@ -242,6 +246,10 @@ public class Dialing
 	{
 		if(mustBeLoaded && !targetTransporter.isLoaded(server))
 			return TransporterInfo.Feedback.TARGET_NOT_LOADED;
+		
+		// If the initiating Transporter is restricted
+		if(initiatingTransporter.isNetworkRestricted(targetTransporter.getNetworks()))
+			return TransporterInfo.Feedback.SELF_RESTRICTED;
 		
 		if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().shouldFilter())
 		{

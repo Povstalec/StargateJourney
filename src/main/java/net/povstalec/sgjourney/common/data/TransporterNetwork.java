@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.data;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
@@ -26,11 +28,12 @@ import org.jetbrains.annotations.NotNull;
  */
 public final class TransporterNetwork extends SavedData
 {
+	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
+	
 	private static final String FILE_NAME = StargateJourney.MODID + "-transporter_network";
+	private static final String VERSION = "version";
 	
 	private static final String CONNECTIONS = "connections";
-
-	private static final String VERSION = "version";
 
 	private static final int UPDATE_VERSION = 3;
 	
@@ -275,7 +278,11 @@ public final class TransporterNetwork extends SavedData
 	//***********************************Dimension Transporters***********************************
 	//============================================================================================
 	
-	public List<Transporter> getTransportersFromDimension(ResourceKey<Level> dimension)
+	/**
+	 * @param dimension Dimension we want to get the Transporters from
+	 * @return List of Transporters in the specified Dimension, or an empty list, in case the Dimension is not found in the Transporter Network
+	 */
+	public List<Transporter> getTransportersInDimension(ResourceKey<Level> dimension)
 	{
 		List<Transporter> transportersInDimension = this.dimensionTransporters.get(dimension);
 		
@@ -283,6 +290,21 @@ public final class TransporterNetwork extends SavedData
 			return List.of();
 		
 		return transportersInDimension;
+	}
+	
+	/**
+	 * @param dimension Dimension we want to get the Transporters from
+	 * @param predicate Predicate that limits which Transporters can appear in the list
+	 * @return List of Transporters in the specified Dimension, or an empty list, in case the Dimension is not found in the Transporter Network
+	 */
+	public List<Transporter> getTransportersInDimension(ResourceKey<Level> dimension, Predicate<Transporter> predicate)
+	{
+		List<Transporter> transportersInDimension = this.dimensionTransporters.get(dimension);
+		
+		if(transportersInDimension == null)
+			return List.of();
+		
+		return transportersInDimension.stream().filter(predicate).toList();
 	}
 	
 	public void printDimensions()
@@ -293,6 +315,39 @@ public final class TransporterNetwork extends SavedData
 			System.out.println("Dimension: " + dimension.location());
 			transportersInDimension.forEach(transporter -> System.out.println("--- " + transporter.toString()));
 		});
+	}
+	
+	//============================================================================================
+	//************************************Region Transporters*************************************
+	//============================================================================================
+	
+	/**
+	 * @param addressRegionKey Address Region we want to get the Transporters from
+	 * @return List of Transporters in the specified Dimension, or an empty list, in case the Dimension is not found in the Transporter Network
+	 */
+	public List<Transporter> getTransportersInRegion(ResourceKey<AddressRegion> addressRegionKey)
+	{
+		List<Transporter> regionTransporters = this.regionTransporters.get(addressRegionKey);
+		
+		if(regionTransporters == null)
+			return List.of();
+		
+		return regionTransporters;
+	}
+	
+	/**
+	 * @param addressRegionKey Address Region we want to get the Transporters from
+	 * @param predicate Predicate that limits which Transporters can appear in the list
+	 * @return List of Transporters in the specified Dimension, or an empty list, in case the Dimension is not found in the Transporter Network
+	 */
+	public List<Transporter> getTransportersInRegion(ResourceKey<Level> addressRegionKey, Predicate<Transporter> predicate)
+	{
+		List<Transporter> regionTransporters = this.regionTransporters.get(addressRegionKey);
+		
+		if(regionTransporters == null)
+			return List.of();
+		
+		return regionTransporters.stream().filter(predicate).toList();
 	}
 	
 	//============================================================================================
@@ -337,6 +392,34 @@ public final class TransporterNetwork extends SavedData
 			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.ALREADY_CONNECTED);
 		else if(targetTransporter.isObstructed(server))
 			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OBSTRUCTED);
+		
+		if(connectionType == null)
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_INTERSTELLAR_TRANSPORT);
+		else if(connectionType == TransporterConnection.Type.SYSTEM_WIDE)
+		{
+			if(!initiatingTransporter.allowInterdimensionalTransport(server))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.SELF_NO_INTERDIMENSIONAL_TRANSPORT);
+			else if(!targetTransporter.allowInterdimensionalTransport(server))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_NO_INTERDIMENSIONAL_TRANSPORT);
+		}
+		
+		if(!initiatingTransporter.isInRange(server, targetTransporter))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OUT_OF_RANGE);
+		else if(!targetTransporter.isInRange(server, initiatingTransporter))
+			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET);
+		
+		if(REQUIRE_ENERGY)
+		{
+			long transportEnergyCost = connectionType.getTransportEnergyCost(initiatingTransporter.distanceFrom(server, targetTransporter));
+			
+			if(!TransporterConnection.canExtract(server, initiatingTransporter, transportEnergyCost))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NOT_ENOUGH_POWER);
+			else if(!TransporterConnection.canExtract(server, targetTransporter, transportEnergyCost))
+				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NOT_ENOUGH_POWER_IN_TARGET);
+			
+			initiatingTransporter.extractEnergy(server, transportEnergyCost, false);
+			targetTransporter.extractEnergy(server, transportEnergyCost, false);
+		}
 		
 		TransporterConnection connection = TransporterConnection.create(server, connectionType, initiatingTransporter, targetTransporter);
 		

@@ -71,9 +71,9 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	public long maxEnergyDeplete()
+	public long maxEnergyTransfer()
 	{
-		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.milky_way_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.classic_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
 
 	@Override

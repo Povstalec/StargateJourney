@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.TransporterInit;
 
@@ -25,9 +26,9 @@ public class TransporterType<T extends Transporter>
 		this.transporterConstructor = transporterConstructor;
 	}
 	
-	public T constructTransporter()
+	public T constructTransporter(MinecraftServer server)
 	{
-		return transporterConstructor.constructTransporter(this);
+		return transporterConstructor.constructTransporter(this, server);
 	}
 	
 	
@@ -71,6 +72,6 @@ public class TransporterType<T extends Transporter>
 	
 	public interface TransporterConstructor<T extends Transporter>
 	{
-		T constructTransporter(TransporterType<?> type);
+		T constructTransporter(TransporterType<?> type, MinecraftServer server);
 	}
 }

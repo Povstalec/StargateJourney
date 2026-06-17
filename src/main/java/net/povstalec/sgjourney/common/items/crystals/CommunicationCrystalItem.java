@@ -27,17 +27,25 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		super(properties);
 	}
 	
-	public int getFrequency(ItemStack stack)
+	public static boolean hasFrequency(ItemStack stack)
 	{
-		int frequency;
-		CompoundTag tag = stack.getOrCreateTag();
+		if(stack.hasTag())
+			return stack.getTag().contains(FREQUENCY);
 		
-		if(!tag.contains(FREQUENCY))
-			tag.putInt(FREQUENCY, DEFAULT_FREQUENCY);
+		return false;
+	}
+	
+	public static int getFrequency(ItemStack stack)
+	{
+		if(hasFrequency(stack))
+			return stack.getTag().getInt(FREQUENCY);
 		
-		frequency = tag.getInt(FREQUENCY);
-		
-		return frequency;
+		return DEFAULT_FREQUENCY;
+	}
+	
+	public static void setFrequency(ItemStack stack, int frequency)
+	{
+		stack.getOrCreateTag().putInt(FREQUENCY, frequency);
 	}
 	
 	public static CompoundTag tagSetup(int frequency)
@@ -57,8 +65,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	@Override
 	public Optional<Component> descriptionInDHD(ItemStack stack)
 	{
-		int frequency = getFrequency(stack);
-		if(frequency == DEFAULT_FREQUENCY)
+		if(!hasFrequency(stack))
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.range", getRangeIncrease()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		else
 			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.network").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
@@ -68,11 +75,10 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": ").withStyle(ChatFormatting.GRAY);
-        int frequency = getFrequency(stack);
-        if(frequency == DEFAULT_FREQUENCY)
+        if(!hasFrequency(stack))
             tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
         else
-        	tooltipComponents.add(description.append(Component.literal(Integer.toString(frequency)).withStyle(ChatFormatting.GRAY)));
+        	tooltipComponents.add(description.append(Component.literal(Integer.toString(getFrequency(stack))).withStyle(ChatFormatting.GRAY)));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

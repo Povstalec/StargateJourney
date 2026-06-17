@@ -234,17 +234,17 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			if(blockentity == null)
 				return;
 			
-			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent((energyStorage) -> fillEnergyStorage(energyStorage));
+			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(this::fillEnergyStorage);
 		}
 	}
 	
 	public void extractItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> drainEnergyStorage(itemEnergy));
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::drainEnergyStorage);
 	}
 	
 	public void fillItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy -> fillEnergyStorage(itemEnergy));
+		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::fillEnergyStorage);
 	}
 }

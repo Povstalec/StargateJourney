@@ -43,7 +43,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "Connections";
 
 	// Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int updateVersion = 18;
+	private static final int UPDATE_VERSION = 18;
 	
 	private MinecraftServer server;
 	private final Map<ResourceKey<Level>, List<Stargate>> dimensionStargates = new HashMap<>();
@@ -62,18 +62,18 @@ public final class StargateNetwork extends SavedData
 	
 	private void updateVersion()
 	{
-		this.version = updateVersion;
+		this.version = UPDATE_VERSION;
 	}
 	
 	public void updateNetwork()
 	{
-		if(getVersion() == updateVersion)
+		if(getVersion() == UPDATE_VERSION)
 		{
 			StargateJourney.LOGGER.debug("Stargate Network is up to date (Version: {})", version);
 			return;
 		}
 		
-		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: {}) - updating to version {}", getVersion(), updateVersion);
+		StargateJourney.LOGGER.debug("Detected an incompatible Stargate Network version (Version: {}) - updating to version {}", getVersion(), UPDATE_VERSION);
 		
 		stellarUpdate();
 	}
@@ -354,11 +354,6 @@ public final class StargateNetwork extends SavedData
 			return List.of();
 		
 		return stargatesInDimension.stream().filter(predicate).toList();
-	}
-	
-	public void sortStargatesInDimension(ResourceKey<AddressRegion> addressRegionKey)
-	{
-		regionRun(addressRegionKey, regionStargates -> regionStargates.stargates.sort(null));
 	}
 	
 	//============================================================================================

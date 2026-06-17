@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
@@ -20,6 +21,7 @@ import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends InventoryMenu<T>
 {
@@ -88,7 +90,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	
 	public long maxEnergyDeplete()
 	{
-		return this.blockEntity.maxEnergyDeplete();
+		return this.blockEntity.maxEnergyTransfer();
 	}
 	
 	public int getMaxDistance()
@@ -107,6 +109,16 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 			return true;
 		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
+	}
+	
+	public Set<Integer> getNetworks()
+	{
+		return this.blockEntity.stargateCache.returnCachedOrDefault(AbstractStargateEntity::getCachedNetworks, this.blockEntity.getNetworks());
+	}
+	
+	public boolean hasNetworkRestrictions()
+	{
+		return this.blockEntity.stargateCache.returnCachedOrDefault(AbstractStargateEntity::hasNetworkRestrictions, false);
 	}
 	
 	

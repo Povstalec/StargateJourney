@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
+import net.povstalec.sgjourney.common.world.UniqueStructurePlacement;
 
 public class CommonGenerationConfig
 {
@@ -36,11 +37,11 @@ public class CommonGenerationConfig
 		
 		stargate_generation_center_x_chunk_offset = server
 				.comment("X chunk center offset of structures that contain a Stargate")
-				.defineInRange("server.stargate_generation_center_x_chunk_offset", 0, -512, 512);
+				.defineInRange("server.stargate_generation_center_x_chunk_offset", 0, -UniqueStructurePlacement.MAX_CHUNKS, UniqueStructurePlacement.MAX_CHUNKS);
 		
 		stargate_generation_center_z_chunk_offset = server
 				.comment("Z chunk center offset of structures that contain a Stargate")
-				.defineInRange("server.stargate_generation_center_z_chunk_offset", 0, -512, 512);
+				.defineInRange("server.stargate_generation_center_z_chunk_offset", 0, -UniqueStructurePlacement.MAX_CHUNKS, UniqueStructurePlacement.MAX_CHUNKS);
 		
 		stargate_generation_x_bound = server
 				.comment("X chunk bounds within which a Structure containing a Stargate may generate")

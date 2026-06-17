@@ -9,6 +9,8 @@ import javax.annotation.Nullable;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -42,14 +44,11 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
 public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
 		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
-	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
-	
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 	public static final String CUSTOM_NAME = "CustomName";
 	
@@ -68,9 +67,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	protected TransporterID.Immutable transporterID;
 	
-	protected int defaultNetwork;
-	protected Set<Integer> networks = new HashSet<>();
 	protected Trinary restrictNetwork = Trinary.DEFAULT;
+	protected Set<Integer> networks = new TreeSet<>();
+	public final int defaultNetwork;
 	
 	@Nullable
 	protected UUID connectionID = null;
@@ -98,22 +97,6 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	@Override
     public void onLoad()
 	{
-		super.onLoad();
-		
-        if(this.level.isClientSide())
-	        return;
-		
-		if(this.generationStep == Step.READY)
-			generate();
-		
-		//=====Setting up cache logic=====
-		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, 16,
-				controller -> !controller.transporterCache.isCached()));
-		//==========
-		
-		
-		
-		
 		if(level.isClientSide())
 		{
 			// Anything goes, DHD is responsible for taking care of everything on client
@@ -129,20 +112,20 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 					return false;
 				
 				BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
-				if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity dhd)
-					return controllerCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+				if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity controller)
+					return controllerCache.getCached() == controller && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= controller.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
 				
 				return false;
 			});
 			controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
 					controller -> !controller.transporterCache.isCached()));
 			
-			controllerCache.setOnChanged((oldDHD, newDHD) ->
+			controllerCache.setOnChanged((oldController, newController) ->
 			{
-				if(newDHD != null)
+				if(newController != null)
 				{
-					controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
-					controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
+					controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newController.getBlockPos());
+					controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newController.getBlockPos(), getBlockPos())));
 					// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
 					if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
 						controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
@@ -162,6 +145,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		}
 		
 		super.onLoad();
+		controllerCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -179,9 +163,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
     	if(tag.contains(CUSTOM_NAME, 8))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
-		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
-			networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		
 		if(tag.contains(CONTROLLER_POS, Tag.TAG_INT_ARRAY))
 			controllerRelativePos = Conversion.intArrayToVec(tag.getIntArray(CONTROLLER_POS));
@@ -203,12 +187,35 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(name != null)
 	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(name));
 		
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		if(!networks.isEmpty())
 			tag.putIntArray(NETWORKS, networks.stream().toList());
-		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		
 		if(controllerRelativePos != null)
 			tag.putIntArray(CONTROLLER_POS, Conversion.vecToIntArray(controllerRelativePos));
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		}
 	}
 	
 	@Override
@@ -255,6 +262,12 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		
 		status.add(Component.translatable("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.AQUA).append(this.transporterID.toComponent(true)));
 		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
+		if(controllerCache.isPresent())
+			status.add(Component.translatable("info.sgjourney.transporter_controller_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(controllerCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
+		else
+			status.add(Component.translatable("info.sgjourney.no_transporter_controller_connected").withStyle(ChatFormatting.GOLD));
+		status.add(Component.translatable("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
+		status.add(Component.translatable("info.sgjourney.networks").append(": " + getNetworks()));
 		
 		return status;
 	}
@@ -264,12 +277,14 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		this.name = name;
 	}
 	
-	public Component getName()
+	@Override
+	public @NotNull Component getName()
 	{
 		return this.name != null ? this.name : this.getDefaultName();
 	}
 	
-	public Component getDisplayName()
+	@Override
+	public @NotNull Component getDisplayName()
 	{
 		return this.getName();
 	}
@@ -296,16 +311,21 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		return this.recentFeedback;
 	}
 	
-	public void setNetwork(int defaultNetwork)
-	{
-		this.defaultNetwork = defaultNetwork;
-		this.updateTransporter();
-	}
-	
 	public Set<Integer> getNetworks()
 	{
-		Set<Integer> networks = new HashSet<>(this.networks);
-		networks.addAll(controllerCache.returnOrDefault(TransporterControllerEntity::getNetworks, Set.of()));
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		controllerCache.ifPresent(controller -> networks.addAll(controller.getNetworks()));
+		
+		if(!networks.isEmpty())
+			return networks;
+		
+		return Set.of(defaultNetwork);
+	}
+	
+	public Set<Integer> getCachedNetworks()
+	{
+		Set<Integer> networks = new TreeSet<>(this.networks);
+		controllerCache.ifPresent(controller -> networks.addAll(controller.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -316,14 +336,16 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public boolean addNetwork(int network)
 	{
 		boolean result = this.networks.add(network);
-		this.updateTransporter();
+		updateTransporter();
+		updateClient();
 		return result;
 	}
 	
 	public boolean removeNetwork(int network)
 	{
 		boolean result = this.networks.remove(network);
-		this.updateTransporter();
+		updateTransporter();
+		updateClient();
 		return result;
 	}
 	
@@ -343,6 +365,13 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public void setRestrictNetwork(Trinary restrictNetwork)
 	{
 		this.restrictNetwork = restrictNetwork;
+		updateTransporter();
+		updateClient();
+	}
+	
+	public boolean isNetworkRestricted(Collection<Integer> networks)
+	{
+		return transporterReturn(connectedTransporter -> connectedTransporter.isNetworkRestricted(networks), false);
 	}
 	
 	
@@ -360,6 +389,10 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		return !this.isConnected();
 	}
+	
+	public abstract double maxTransportRange();
+	
+	public abstract boolean allowInterdimensionalTransport();
 	
 	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
 	{
