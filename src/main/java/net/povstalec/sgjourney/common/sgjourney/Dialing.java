@@ -45,13 +45,13 @@ public class Dialing
 	
 	public static StargateInfo.Feedback dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
 	{
-		if(dialingStargate.addressFilterInfo(server).getFilterType().shouldFilter())
+		if(dialingStargate.addressFilterInfo().getFilterType().shouldFilter())
 		{
-			if(dialingStargate.addressFilterInfo(server).getFilterType().isBlacklist() && dialingStargate.addressFilterInfo(server).isAddressBlacklisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_BLACKLISTED);
+			if(dialingStargate.addressFilterInfo().getFilterType().isBlacklist() && dialingStargate.addressFilterInfo().isAddressBlacklisted(address))
+				return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_BLACKLISTED);
 			
-			else if(dialingStargate.addressFilterInfo(server).getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo(server).isAddressWhitelisted(address))
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
+			else if(dialingStargate.addressFilterInfo().getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo().isAddressWhitelisted(address))
+				return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
@@ -63,23 +63,23 @@ public class Dialing
 			return StargateInfo.Feedback.NONE;
 		
 		if(!SpaceLocation.fromDimension(server, dialingStargate.getDimension()).isInStargateNetwork())
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_OUTSIDE_STARGATE_NETWORK);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.SELF_OUTSIDE_STARGATE_NETWORK);
 		
 		return switch(address.getType())
 		{
 			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
 			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case ADDRESS_INVALID -> dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
+			case ADDRESS_INVALID -> dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		};
 	}
 	
 	private static StargateInfo.Feedback get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		AddressRegion addressRegion = Universe.get(server).getSameGalaxyAddressRegion(dialingStargate.getAddressRegion(server), dialedAddress);
+		AddressRegion addressRegion = Universe.get(server).getSameGalaxyAddressRegion(dialingStargate.getAddressRegion(), dialedAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded);
 	}
@@ -89,17 +89,17 @@ public class Dialing
 		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded);
 	}
 	
 	private static StargateInfo.Feedback getStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion dialedRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		AddressRegion currentRegion = dialingStargate.getAddressRegion(server);
+		AddressRegion currentRegion = dialingStargate.getAddressRegion();
 		
 		if(dialedRegion.equals(currentRegion))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SAME_SYSTEM_DIAL);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.SAME_SYSTEM_DIAL);
 		
 		// If the Stargate Network knows of no Stargates in this Address Region, try locating any Structures with them
 		if(!mustBeLoaded && !StargateNetwork.get(server).hasStargatesInRegion(dialedRegion.getResourceKey())) // No point in loading chunks if the connection requires a loaded Stargate
@@ -118,7 +118,7 @@ public class Dialing
 			}
 			
 			if(dimensions == 0)
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_DIMENSIONS);
+				return dialingStargate.resetStargate(StargateInfo.Feedback.NO_DIMENSIONS);
 		}
 		
 		return getPreferredStargate(server, dialingStargate, dialedRegion, addressType, doKawoosh, mustBeLoaded);
@@ -126,7 +126,7 @@ public class Dialing
 	
 	private static StargateInfo.Feedback attemptConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		if(mustBeLoaded && !dialedStargate.isLoaded(server))
+		if(mustBeLoaded && !dialedStargate.isLoaded())
 			return StargateInfo.Feedback.TARGET_NOT_LOADED;
 		
 		// If the dialing Stargate is restricted
@@ -134,9 +134,9 @@ public class Dialing
 			return StargateInfo.Feedback.SELF_RESTRICTED;
 		
 		if(!SpaceLocation.fromDimension(server, dialedStargate.getDimension()).isInStargateNetwork())
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK);
 		
-		return dialedStargate.tryConnect(server, dialingStargate, addressType, doKawoosh);
+		return dialedStargate.tryConnect(dialingStargate, addressType, doKawoosh);
 	}
 	
 	private static StargateInfo.Feedback getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
@@ -144,7 +144,7 @@ public class Dialing
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate == null)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_ADDRESS);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
 		
 		StargateInfo.Feedback feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded);
 		
@@ -152,7 +152,7 @@ public class Dialing
 		if(!feedback.isSkippable())
 			return feedback;
 		
-		return dialingStargate.resetStargate(server, feedback);
+		return dialingStargate.resetStargate(feedback);
 	}
 	
 	private static StargateInfo.Feedback get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
@@ -166,7 +166,7 @@ public class Dialing
 		List<Stargate> stargates = stargateNetwork.getStargatesInRegion(addressRegion.getResourceKey());
 		
 		if(stargates.isEmpty())
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.NO_STARGATES);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.NO_STARGATES);
 		
 		Stargate primaryStargate = stargateNetwork.getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
 		// Primary Stargate
@@ -193,7 +193,7 @@ public class Dialing
 		
 		if(feedback == StargateInfo.Feedback.UNKNOWN_ERROR)
 			StargateJourney.LOGGER.error("Address Region has Stargates, but somehow none can be accessed");
-		return dialingStargate.resetStargate(server, feedback);
+		return dialingStargate.resetStargate(feedback);
 	}
 	
 	public static StargateInfo.Feedback connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
@@ -212,9 +212,9 @@ public class Dialing
 		
 		Transporter target = TransporterNetwork.get(server).getTransporter(targetID);
 		if(target == null)
-			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.INVALID_TRANSPORTER_ID);
+			return dialingTransporter.resetTransporter(TransporterInfo.Feedback.INVALID_TRANSPORTER_ID);
 		
-		return connectionAttempt(server, dialingTransporter, target, mustBeLoaded);
+		return connectionAttempt(dialingTransporter, target, mustBeLoaded);
 	}
 	
 	public static TransporterInfo.Feedback dialTransporterCoords(MinecraftServer server, Transporter dialingTransporter, Vec3i coords, boolean mustBeLoaded)
@@ -222,45 +222,45 @@ public class Dialing
 		if(SGJourneyEvents.onTransporterDialCoords(server, dialingTransporter, coords))
 			return TransporterInfo.Feedback.NONE;
 		
-		ServerLevel level = dialingTransporter.getLevel(server);
+		ServerLevel level = dialingTransporter.getLevel();
 		if(level == null)
 		{
 			StargateJourney.LOGGER.error("Dialing Transporter is not located in any dimension");
-			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.UNKNOWN_ERROR);
+			return dialingTransporter.resetTransporter(TransporterInfo.Feedback.UNKNOWN_ERROR);
 		}
 		
-		BlockEntity blockEntity = dialingTransporter.getLevel(server).getBlockEntity(new BlockPos(coords));
+		BlockEntity blockEntity = dialingTransporter.getLevel().getBlockEntity(new BlockPos(coords));
 		if(blockEntity instanceof AbstractTransporterEntity<?> transporterEntity)
 		{
 			Transporter target = transporterEntity.getTransporter();
 			if(target == null)
-				return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
+				return dialingTransporter.resetTransporter(TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
 			
-			return connectionAttempt(server, dialingTransporter, target, mustBeLoaded);
+			return connectionAttempt(dialingTransporter, target, mustBeLoaded);
 		}
 		else
-			return dialingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
+			return dialingTransporter.resetTransporter(TransporterInfo.Feedback.NO_TRANSPORTER_AT_COORDS);
 	}
 	
-	private static TransporterInfo.Feedback connectionAttempt(MinecraftServer server, Transporter initiatingTransporter, Transporter targetTransporter, boolean mustBeLoaded)
+	private static TransporterInfo.Feedback connectionAttempt(Transporter initiatingTransporter, Transporter targetTransporter, boolean mustBeLoaded)
 	{
-		if(mustBeLoaded && !targetTransporter.isLoaded(server))
+		if(mustBeLoaded && !targetTransporter.isLoaded())
 			return TransporterInfo.Feedback.TARGET_NOT_LOADED;
 		
 		// If the initiating Transporter is restricted
 		if(initiatingTransporter.isNetworkRestricted(targetTransporter.getNetworks()))
 			return TransporterInfo.Feedback.SELF_RESTRICTED;
 		
-		if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().shouldFilter())
+		if(initiatingTransporter.transporterIDFilterInfo().getFilterType().shouldFilter())
 		{
-			if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().isBlacklist() && initiatingTransporter.transporterIDFilterInfo(server).isIDBlacklisted(targetTransporter.getID()))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_BLACKLISTED);
+			if(initiatingTransporter.transporterIDFilterInfo().getFilterType().isBlacklist() && initiatingTransporter.transporterIDFilterInfo().isIDBlacklisted(targetTransporter.getID()))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_BLACKLISTED);
 			
-			else if(initiatingTransporter.transporterIDFilterInfo(server).getFilterType().isWhitelist() && !initiatingTransporter.transporterIDFilterInfo(server).isIDWhitelisted(targetTransporter.getID()))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_NOT_WHITELISTED);
+			else if(initiatingTransporter.transporterIDFilterInfo().getFilterType().isWhitelist() && !initiatingTransporter.transporterIDFilterInfo().isIDWhitelisted(targetTransporter.getID()))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_NOT_WHITELISTED);
 		}
 		
-		return targetTransporter.tryConnect(server, initiatingTransporter);
+		return targetTransporter.tryConnect(initiatingTransporter);
 	}
 	
 	public static TransporterInfo.Feedback connectTransporters(MinecraftServer server, Transporter transporterA, Transporter transporterB)

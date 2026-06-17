@@ -80,12 +80,12 @@ public class JaffaBurgers extends AbstractFaction
 		if(visitTarget == null)
 			return false;
 		
-		if(spawnerStargate.isConnected(server))
+		if(spawnerStargate.isConnected())
 			return false;
 		
 		spawnerStargate.encodeAddress(visitTarget);
 		
-		return !spawnerStargate.dial(server).isError();
+		return !spawnerStargate.dial().isError();
 	}
 	
 	public void finalizeVisit()

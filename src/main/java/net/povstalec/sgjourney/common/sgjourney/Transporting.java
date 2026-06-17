@@ -38,15 +38,15 @@ public class Transporting
 	
 	public static boolean transportTraveler(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, Entity traveler)
 	{
-		Vec3 relativePosition = initialTransporter.toTransporterCoords(server,traveler.position().subtract(initialTransporter.transportPos(server)), true);
-		Vec3 relativeMomentum = initialTransporter.toTransporterCoords(server, traveler.getDeltaMovement(), false);
-		Vec3 relativeLookAngle = initialTransporter.toTransporterCoords(server, traveler.getLookAngle(), false);
+		Vec3 relativePosition = initialTransporter.toTransporterCoords(traveler.position().subtract(initialTransporter.transportPos()), true);
+		Vec3 relativeMomentum = initialTransporter.toTransporterCoords(traveler.getDeltaMovement(), false);
+		Vec3 relativeLookAngle = initialTransporter.toTransporterCoords(traveler.getLookAngle(), false);
 		
 		if(relativePosition.lengthSqr() <= initialTransporter.getInnerRadius() * initialTransporter.getInnerRadius())
 		{
-			if(!SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(server, connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+			if(!SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 			{
-				deconstructEvent(server, initialTransporter, traveler, false);
+				deconstructEvent(initialTransporter, traveler, false);
 				return true;
 			}
 		}
@@ -83,7 +83,7 @@ public class Transporting
 		}
 		
 		if(traveler != null)
-			reconstructEvent(destinationLevel.getServer(), receivingTransporter, traveler);
+			reconstructEvent(receivingTransporter, traveler);
 		
 		return traveler;
 	}
@@ -146,7 +146,7 @@ public class Transporting
 		player.setDeltaMovement(destinationMomentum);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		
-		reconstructEvent(destinationLevel.getServer(), receivingTransporter, player);
+		reconstructEvent(receivingTransporter, player);
 		
 		long distanceTraveled = Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType()) * Math.sqrt(initialPos.distanceTo(player.position())));
 		
@@ -198,21 +198,21 @@ public class Transporting
 	//*******************************************Events*******************************************
 	//============================================================================================
 	
-	public static void deconstructEvent(MinecraftServer server, Transporter initialTransporter, Entity traveler, boolean disintegrated)
+	public static void deconstructEvent(Transporter initialTransporter, Entity traveler, boolean disintegrated)
 	{
 		String travelerType = EntityType.getKey(traveler.getType()).toString();
 		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
 		String uuid = traveler.getUUID().toString();
 		
-		initialTransporter.updateInterfaceBlocks(server, null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+		initialTransporter.updateInterfaceBlocks(null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
 	}
 	
-	public static void reconstructEvent(MinecraftServer server, Transporter receivingTransporter, Entity traveler)
+	public static void reconstructEvent(Transporter receivingTransporter, Entity traveler)
 	{
 		String travelerType = EntityType.getKey(traveler.getType()).toString();
 		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
 		String uuid = traveler.getUUID().toString();
 		
-		receivingTransporter.updateInterfaceBlocks(server, null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
+		receivingTransporter.updateInterfaceBlocks(null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
 	}
 }

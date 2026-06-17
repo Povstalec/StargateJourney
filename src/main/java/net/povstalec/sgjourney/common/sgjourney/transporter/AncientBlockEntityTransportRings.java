@@ -55,7 +55,7 @@ public class AncientBlockEntityTransportRings extends GoauldTransportRings imple
 	}
 	
 	@Override
-	public void update(MinecraftServer server)
+	public void update()
 	{
 		transporterRun(server, transporter ->
 		{
@@ -79,10 +79,10 @@ public class AncientBlockEntityTransportRings extends GoauldTransportRings imple
 		super.serializeNBT(tag);
 	}
 	
-	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
 	{
 		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		super.deserializeNBT(server, transporterID, tag);
+		super.deserializeNBT(transporterID, tag);
 	}
 }

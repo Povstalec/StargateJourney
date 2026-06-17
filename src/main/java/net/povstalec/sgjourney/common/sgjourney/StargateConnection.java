@@ -197,8 +197,8 @@ public class StargateConnection
 	
 	public static StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
-		AddressRegion dialingRegion = dialingStargate.getAddressRegion(server);
-		AddressRegion dialedRegion = dialedStargate.getAddressRegion(server);
+		AddressRegion dialingRegion = dialingStargate.getAddressRegion();
+		AddressRegion dialedRegion = dialedStargate.getAddressRegion();
 		
 		if(dialingRegion != null && dialedRegion != null)
 		{
@@ -217,7 +217,7 @@ public class StargateConnection
 		this(uuid, connectionType, dialingStargate, dialedStargates, false, 0, 0, 0, doKawoosh);
 	}
 	
-	public static StargateConnection create(MinecraftServer server, StargateConnection.Type connectionType, Stargate dialingStargate, List<Stargate> dialedStargates, boolean doKawoosh)
+	public static StargateConnection create(StargateConnection.Type connectionType, Stargate dialingStargate, List<Stargate> dialedStargates, boolean doKawoosh)
 	{
 		UUID uuid = UUID.randomUUID();
 		
@@ -225,23 +225,23 @@ public class StargateConnection
 		{
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.resetStargate(server, StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
+				dialedStargate.resetStargate(StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
 			}
 			
 			StargateConnection stargateConnection = new StargateConnection(uuid, connectionType, dialingStargate, dialedStargates, doKawoosh);
 
-			dialingStargate.connectStargate(server, stargateConnection, StargateConnection.State.OUTGOING_CONNECTION);
+			dialingStargate.connectStargate(stargateConnection, StargateConnection.State.OUTGOING_CONNECTION);
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.connectStargate(server, stargateConnection, StargateConnection.State.INCOMING_CONNECTION);
+				dialedStargate.connectStargate(stargateConnection, StargateConnection.State.INCOMING_CONNECTION);
 			}
 			
-			dialingStargate.connectionUpdate(server, stargateConnection);
-			dialingStargate.updateClient(server);
+			dialingStargate.connectionUpdate(stargateConnection);
+			dialingStargate.updateClient();
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.connectionUpdate(server, stargateConnection);
-				dialedStargate.updateClient(server);
+				dialedStargate.connectionUpdate(stargateConnection);
+				dialedStargate.updateClient();
 			}
 			
 			return stargateConnection;
@@ -255,14 +255,14 @@ public class StargateConnection
 		
 		if(this.dialingStargate != null)
 		{
-			this.dialingStargate.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
-			this.dialingStargate.resetStargate(server, feedback);
+			this.dialingStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
+			this.dialingStargate.resetStargate(feedback);
 		}
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
-			dialedStargate.resetStargate(server, feedback);
+			dialedStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
+			dialedStargate.resetStargate(feedback);
 		}
 		
 		StargateNetwork.get(server).removeConnection(uuid);
@@ -301,7 +301,7 @@ public class StargateConnection
 		}
 	}
 	
-	public boolean isStargateValid(MinecraftServer server, Stargate stargate) //TODO Remove
+	public boolean isStargateValid(Stargate stargate) //TODO Remove
 	{
 		if(stargate == null)
 		{
@@ -309,7 +309,7 @@ public class StargateConnection
 			return false;
 		}
 		
-		if(!stargate.isConnected(server))
+		if(!stargate.isConnected())
 		{
 			StargateJourney.LOGGER.info("Stargate {} is not connected", stargate.get9ChevronAddress());
 			return false;
@@ -322,7 +322,7 @@ public class StargateConnection
 	{
 		// Get dialing address and cache it for later use
 		if(this.dialingAddress == null)
-			this.dialingAddress = Address.Immutable.extendWithPointOfOrigin(this.dialingStargate.getConnectionAddress(server, getDialedStargate().getAddressRegion(server), this.dialingStargate.getAddress(server).getType()));
+			this.dialingAddress = Address.Immutable.extendWithPointOfOrigin(this.dialingStargate.getConnectionAddress(getDialedStargate().getAddressRegion(), this.dialingStargate.getAddress().getType()));
 		
 		return this.dialingAddress;
 	}
@@ -334,21 +334,21 @@ public class StargateConnection
 		Address.Type addressType = dialingAddress.getType();
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.setChevronConfiguration(server, Dialing.getChevronConfiguration(addressType));
+			dialedStargate.setChevronConfiguration(Dialing.getChevronConfiguration(addressType));
 		}
 		
-		this.dialingStargate.doWhileConnecting(server, this, false, kawooshStartTicks);
+		this.dialingStargate.doWhileConnecting(this, false, kawooshStartTicks);
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.doWhileConnecting(server, this, true, kawooshStartTicks);
+			dialedStargate.doWhileConnecting(this, true, kawooshStartTicks);
 		}
 		
 		// Used for handling what the Stargate does when it's being dialed
 		// For example: Pegasus Stargate's ring booting up
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.doWhileDialed(server, this, dialingAddress, kawooshStartTicks);
+			dialedStargate.doWhileDialed(this, dialingAddress, kawooshStartTicks);
 		}
 		
 		// Updates Interfaces when a wormhole is detected
@@ -357,36 +357,36 @@ public class StargateConnection
 			List<Integer> emptyAddressList = new ArrayList<>();
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
-				List<Integer> dialedAddressList = dialedStargate.getAddress(server).toList();
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
-				dialedStargate.updateInterfaceBlocks(server, AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
+				List<Integer> dialedAddressList = dialedStargate.getAddress().toList();
+				dialedStargate.updateInterfaceBlocks(AbstractInterfaceEntity.InterfaceType.BASIC, EVENT_INCOMING_WORMHOLE, emptyAddressList);
+				dialedStargate.updateInterfaceBlocks(AbstractInterfaceEntity.InterfaceType.CRYSTAL, EVENT_INCOMING_WORMHOLE, emptyAddressList);
+				dialedStargate.updateInterfaceBlocks(AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL, EVENT_INCOMING_WORMHOLE, dialedAddressList);
 			}
 			
-			List<Integer> dialingAddressList = dialingStargate.getAddress(server).toList();
-			dialingStargate.updateInterfaceBlocks(server, null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
+			List<Integer> dialingAddressList = dialingStargate.getAddress().toList();
+			dialingStargate.updateInterfaceBlocks(null, EVENT_OUTGOING_WORMHOLE, dialingAddressList);
 		}
 	}
 	
-	public static boolean canExtract(MinecraftServer server, Stargate stargate, long energyExtracted)
+	public static boolean canExtract(Stargate stargate, long energyExtracted)
 	{
-		return stargate.extractEnergy(server, energyExtracted, true) >= energyExtracted;
+		return stargate.extractEnergy(energyExtracted, true) >= energyExtracted;
 	}
 	
-	private boolean depleteEnergy(MinecraftServer server, long energyDraw)
+	private boolean depleteEnergy(long energyDraw)
 	{
-		if(canExtract(server, this.dialingStargate, energyDraw))
+		if(canExtract(this.dialingStargate, energyDraw))
 		{
-			this.dialingStargate.extractEnergy(server, energyDraw, false);
+			this.dialingStargate.extractEnergy(energyDraw, false);
 			return true;
 		}
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
 			//TODO Tie this to Advanced Protocols
-			if(dialedStargate.canPowerFromOtherSide(server) && canExtract(server, dialedStargate, energyDraw))
+			if(dialedStargate.canPowerFromOtherSide() && canExtract(dialedStargate, energyDraw))
 			{
-				dialedStargate.extractEnergy(server, energyDraw, false);
+				dialedStargate.extractEnergy(energyDraw, false);
 				return true;
 			}
 		}
@@ -394,42 +394,42 @@ public class StargateConnection
 		return false;
 	}
 	
-	private boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	private boolean requiresEnergyBypass(int openTime)
 	{
-		if(this.dialingStargate.requiresEnergyBypass(server, openTime))
+		if(this.dialingStargate.requiresEnergyBypass(openTime))
 			return true;
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			if(dialedStargate.requiresEnergyBypass(server, openTime))
+			if(dialedStargate.requiresEnergyBypass(openTime))
 				return true;
 		}
 		
 		return false;
 	}
 	
-	private boolean shouldAutoclose(MinecraftServer server)
+	private boolean shouldAutoclose()
 	{
-		if(this.dialingStargate.shouldAutoclose(server, this))
+		if(this.dialingStargate.shouldAutoclose(this))
 			return true;
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			if(dialedStargate.shouldAutoclose(server, this))
+			if(dialedStargate.shouldAutoclose(this))
 				return true;
 		}
 		
 		return false;
 	}
 	
-	private boolean hasInvalidStargate(MinecraftServer server)
+	private boolean hasInvalidStargate()
 	{
-		if(!isStargateValid(server, this.dialingStargate))
+		if(!isStargateValid(this.dialingStargate))
 			return true;
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			if(!isStargateValid(server, dialedStargate)) //TODO Handle singular Stargates being destroyed during the connection, only end the connection once there are no dialed Stargates
+			if(!isStargateValid(dialedStargate)) //TODO Handle singular Stargates being destroyed during the connection, only end the connection once there are no dialed Stargates
 				return true;
 		}
 		
@@ -438,7 +438,7 @@ public class StargateConnection
 	
 	public void tick(MinecraftServer server)
 	{
-		if(hasInvalidStargate(server))
+		if(hasInvalidStargate())
 		{
 			terminate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 			return;
@@ -449,22 +449,22 @@ public class StargateConnection
 		{
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
-				dialedStargate.updateInterfaceBlocks(server, null, EVENT_INCOMING_CONNECTION);
+				dialedStargate.updateInterfaceBlocks(null, EVENT_INCOMING_CONNECTION);
 			}
 		}
 		
-		int kawooshStartTicks = getDialedStargate().dialedEngageTime(server, doKawoosh());
+		int kawooshStartTicks = getDialedStargate().dialedEngageTime(doKawoosh());
 		// Time after which the dangerous part of the kawoosh is finished, and it's safe to go through the wormhole
-		int maxKawooshTicks = kawooshStartTicks + Math.max(getDialedStargate().wormholeEstablishTime(server, doKawoosh()), this.dialingStargate.wormholeEstablishTime(server, doKawoosh()));
+		int maxKawooshTicks = kawooshStartTicks + Math.max(getDialedStargate().wormholeEstablishTime(doKawoosh()), this.dialingStargate.wormholeEstablishTime(doKawoosh()));
 		
 		this.increaseTicks(maxKawooshTicks);
 		
-		this.dialingStargate.connectionUpdate(server, this);
-		this.dialingStargate.updateClient(server);
+		this.dialingStargate.connectionUpdate(this);
+		this.dialingStargate.updateClient();
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.connectionUpdate(server, this);
-			dialedStargate.updateClient(server);
+			dialedStargate.connectionUpdate(this);
+			dialedStargate.updateClient();
 		}
 		
 		// Dialing Stargate waits here while dialed Stargate is locking Chevrons, then both Stargates do kawoosh
@@ -475,20 +475,20 @@ public class StargateConnection
 		if(doKawoosh() && this.connectionTime < maxKawooshTicks)
 			return;
 
-		this.dialingStargate.doWhileConnected(server, this, false);
+		this.dialingStargate.doWhileConnected(this, false);
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.doWhileConnected(server, this, true);
+			dialedStargate.doWhileConnected(this, true);
 		}
 		
-		if(requiresEnergyBypass(server, this.openTime) && !ENERGY_BYPASS_ENABLED)
+		if(requiresEnergyBypass(this.openTime) && !ENERGY_BYPASS_ENABLED)
 		{
 			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
 			return;
 		}
 		
 		// Depletes energy over time
-		if(REQUIRE_ENERGY && !depleteEnergy(server, getPowerDraw(server)))
+		if(REQUIRE_ENERGY && !depleteEnergy(getPowerDraw()))
 		{
 			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
 			return;
@@ -498,16 +498,16 @@ public class StargateConnection
 			this.timeSinceLastTraveler++;
 		
 		// Closes the connection if any Stargate requires it
-		if(shouldAutoclose(server))
+		if(shouldAutoclose())
 		{
 			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
 			return;
 		}
 		
-		this.dialingStargate.doWormhole(server, this, false, StargateInfo.WormholeTravel.ENABLED);
+		this.dialingStargate.doWormhole(this, false, StargateInfo.WormholeTravel.ENABLED);
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.doWormhole(server, this, true, CommonStargateConfig.two_way_wormholes.get());
+			dialedStargate.doWormhole(this, true, CommonStargateConfig.two_way_wormholes.get());
 		}
 	}
 	
@@ -525,32 +525,32 @@ public class StargateConnection
 		{
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
-				dialedStargate.receiveStargateMessage(server, message);
+				dialedStargate.receiveStargateMessage(message);
 			}
 		}
 		else
-			this.dialingStargate.receiveStargateMessage(server, message);
+			this.dialingStargate.receiveStargateMessage(message);
 	}
 	
-	public void sendStargateTransmission(MinecraftServer server, Address address, int transmissionJumps, int frequency, String transmission)
+	public void sendStargateTransmission(Address address, int transmissionJumps, int frequency, String transmission)
 	{
 		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 		{
 			for(Stargate dialedStargate : this.dialedStargates)
 			{
-				dialedStargate.forwardTransmission(server, transmissionJumps, frequency, transmission);
+				dialedStargate.forwardTransmission(transmissionJumps, frequency, transmission);
 			}
 		}
 		else
-			this.dialingStargate.forwardTransmission(server, transmissionJumps, frequency, transmission);
+			this.dialingStargate.forwardTransmission(transmissionJumps, frequency, transmission);
 	}
 	
-	public float checkStargateShieldingState(MinecraftServer server, Address address)
+	public float checkStargateShieldingState(Address address)
 	{
 		if(address.equals(this.dialingStargate.get9ChevronAddress()))
-			return getDialedStargate().checkStargateShieldingState(server);
+			return getDialedStargate().checkStargateShieldingState();
 		else
-			return this.dialingStargate.checkStargateShieldingState(server);
+			return this.dialingStargate.checkStargateShieldingState();
 	}
 	
 	//============================================================================================
@@ -598,9 +598,9 @@ public class StargateConnection
 	/**
 	 * @return Time (in ticks) since the kawoosh started
 	 */
-	public int getKawooshTime(MinecraftServer server)
+	public int getKawooshTime()
 	{
-		int kawooshStartTicks = getDialedStargate().dialedEngageTime(server, doKawoosh());
+		int kawooshStartTicks = getDialedStargate().dialedEngageTime(doKawoosh());
 		int kawooshTime = this.connectionTime - kawooshStartTicks;
 		
 		return kawooshTime < 0 ? 0 : kawooshTime;
@@ -648,9 +648,9 @@ public class StargateConnection
 		return this.doKawoosh;
 	}
 	
-	public long getPowerDraw(MinecraftServer server)
+	public long getPowerDraw()
 	{
-		return this.connectionType.getPowerDraw(requiresEnergyBypass(server, this.openTime));
+		return this.connectionType.getPowerDraw(requiresEnergyBypass(this.openTime));
 	}
 	
 	//============================================================================================
@@ -690,7 +690,7 @@ public class StargateConnection
 	{
 		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));
 		Stargate dialingStargate = deserializeStargate(server, tag.getCompound(DIALING_STARGATE));
-		List<Stargate> dialedStargates = new ArrayList<Stargate>();
+		List<Stargate> dialedStargates = new ArrayList<>();
 		ListTag listTag = tag.getList(DIALED_STARGATES, Tag.TAG_COMPOUND);
 		for(int i = 0; i < listTag.size(); i++)
 		{

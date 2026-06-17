@@ -280,10 +280,10 @@ public class LocatorHelper
 		double maxDistSqr = maxDistance * maxDistance;
 		
 		return TransporterNetwork.get(level).getTransportersInDimension(level.dimension()).stream()
-				.filter(transporter -> transporter.getPosition(level.getServer()) != null &&
-						centerPos.distanceToSqr(transporter.getPosition(level.getServer())) <= maxDistSqr &&
+				.filter(transporter -> transporter.getPosition() != null &&
+						centerPos.distanceToSqr(transporter.getPosition()) <= maxDistSqr &&
 						transporter.getDimension() != null && filter.test(transporter))
-				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition(level.getServer())))).toList();
+				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition()))).toList();
 	}
 	
 	public static List<Transporter> findNearestTransportersInDimension(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
@@ -296,10 +296,10 @@ public class LocatorHelper
 		double maxDistSqr = maxDistance * maxDistance;
 		
 		return TransporterNetwork.get(level).getTransportersInRegion(Universe.get(level).getAddressRegionKeyFromDimension(level.dimension())).stream()
-				.filter(transporter -> transporter.getPosition(level.getServer()) != null &&
-						centerPos.distanceToSqr(transporter.getPosition(level.getServer())) <= maxDistSqr &&
+				.filter(transporter -> transporter.getPosition() != null &&
+						centerPos.distanceToSqr(transporter.getPosition()) <= maxDistSqr &&
 						transporter.getDimension() != null && filter.test(transporter))
-				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition(level.getServer())))).toList();
+				.sorted(Comparator.comparing(transporter -> centerPos.distanceToSqr(transporter.getPosition()))).toList();
 	}
 	
 	public static List<Transporter> findNearestTransportersInRegion(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)

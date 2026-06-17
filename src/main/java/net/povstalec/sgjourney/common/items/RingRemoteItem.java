@@ -198,11 +198,11 @@ public class RingRemoteItem extends HolderItem
 			
 			if(transporterIterator.hasNext()) // Found Transporter to connect to
 			{
-				if(connectionCandidate.isConnected(level.getServer())) // Other transporter is still connected
+				if(connectionCandidate.isConnected()) // Other transporter is still connected
 					player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
 				else
 				{
-					TransporterInfo.Feedback feedback = connectionCandidate.dialTransporter(level.getServer(), transporterIterator.next().getID());
+					TransporterInfo.Feedback feedback = connectionCandidate.dialTransporter(transporterIterator.next().getID());
 					if(feedback.isError())
 						player.displayClientMessage(feedback.getFeedbackMessage(), true);
 				}

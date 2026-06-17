@@ -334,7 +334,7 @@ public class BlockEntityList extends SavedData
 			StargateType.getTypeFromTag(stargateTag).ifPresentOrElse(type ->
 			{
 				Stargate stargate = type.constructStargate(server);
-				stargate.deserializeNBT(server, address, stargateTag);
+				stargate.deserializeNBT(address, stargateTag);
 				this.stargateMap.put(address, stargate);
 			}, () ->
 			{
@@ -392,7 +392,7 @@ public class BlockEntityList extends SavedData
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
 					Transporter transporter = type.constructTransporter(server);
-					transporter.deserializeNBT(server, transporterID, transporterTag);
+					transporter.deserializeNBT(transporterID, transporterTag);
 					this.transporterMap.put(transporterID, transporter);
 				}, () ->
 				{

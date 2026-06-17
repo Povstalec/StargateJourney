@@ -398,7 +398,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
 			onDialAttempt(this.recentFeedback, otherID);
 		}
 		return this.recentFeedback;
@@ -408,7 +408,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(level.getServer(), coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
 			onDialAttempt(this.recentFeedback, coords);
 		}
 		return this.recentFeedback;

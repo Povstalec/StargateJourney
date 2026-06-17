@@ -4,6 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
@@ -25,8 +26,8 @@ public abstract class SGJourneyStargate implements Stargate
 	
 	public static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	
-	private final StargateType<?> type;
-	private final MinecraftServer server;
+	protected final StargateType<?> type;
+	protected final MinecraftServer server;
 	
 	protected Address.Immutable id9ChevronAddress;
 	
@@ -50,6 +51,12 @@ public abstract class SGJourneyStargate implements Stargate
 	public final StargateType<?> getStargateType()
 	{
 		return this.type;
+	}
+	
+	@Override
+	public MinecraftServer getServer()
+	{
+		return this.server;
 	}
 	
 	@Override
@@ -115,7 +122,7 @@ public abstract class SGJourneyStargate implements Stargate
 	// Energy
 	
 	@Override
-	public boolean canPowerFromOtherSide(MinecraftServer server)
+	public boolean canPowerFromOtherSide()
 	{
 		return CommonStargateConfig.can_draw_power_from_both_ends.get();
 	}
@@ -125,22 +132,22 @@ public abstract class SGJourneyStargate implements Stargate
 	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
 	
 	@Override
-	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
+	public int dialedEngageTime(boolean doKawoosh)
 	{
 		return getChevronLockSpeed(doKawoosh).getKawooshStartTicks();
 	}
 	
 	@Override
-	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	public int wormholeEstablishTime(boolean doKawoosh)
 	{
 		return KAWOOSH_TICKS;
 	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.Feedback tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		// If last Stargate is obstructed
-		if(isObstructed(server))
+		if(isObstructed())
 			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If last Stargate is restricted
@@ -148,26 +155,26 @@ public abstract class SGJourneyStargate implements Stargate
 			return StargateInfo.Feedback.TARGET_RESTRICTED;
 		
 		// If last Stargate has a blacklist
-		if(addressFilterInfo(server).getFilterType().isBlacklist() && addressFilterInfo(server).isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getAddressRegion(server), addressType)))
+		if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
 			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
 		
 		// If last Stargate has a whitelist
-		if(addressFilterInfo(server).getFilterType().isWhitelist() && !addressFilterInfo(server).isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getAddressRegion(server), addressType)))
+		if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
 			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 		
 		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
 	}
 	
 	@Override
-	public List<Stargate> getDialedStargates(MinecraftServer server, Stargate dialingStargate, StargateConnection.Type connectionType)
+	public List<Stargate> getDialedStargates(Stargate dialingStargate, StargateConnection.Type connectionType)
 	{
-		if(!callForward(server))
+		if(!callForward())
 			return List.of(this);
 		
 		// Chooses a random Stargate to connect to
 		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
 		
-		AddressRegion addressRegion = this.getAddressRegion(server);
+		AddressRegion addressRegion = this.getAddressRegion();
 		if(addressRegion == null)
 			return List.of(this);
 		
@@ -177,7 +184,7 @@ public abstract class SGJourneyStargate implements Stargate
 		{
 			for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(addressRegion.getResourceKey(), randomSource))
 			{
-				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
 					return List.of(this, reroutedStargate);
 			}
 		}
@@ -193,7 +200,7 @@ public abstract class SGJourneyStargate implements Stargate
 					{
 						for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(randomAddressRegion.getResourceKey(), randomSource))
 						{
-							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected(server) && !reroutedStargate.callForward(server))
+							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
 								return List.of(this, reroutedStargate);
 						}
 					}
@@ -205,7 +212,7 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	public boolean requiresEnergyBypass(int openTime)
 	{
 		return openTime > MAX_OPEN_TIME;
 	}
@@ -227,7 +234,7 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void deserializeNBT(MinecraftServer server, Address.Immutable id9ChevronAddress, CompoundTag tag)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		this.id9ChevronAddress = id9ChevronAddress;
 		

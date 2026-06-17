@@ -87,7 +87,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	//============================================================================================
 	
 	@Override
-	public @Nullable Vec3 getForward(MinecraftServer server)
+	public @Nullable Vec3 getForward()
 	{
 		if(forward == null)
 		{
@@ -104,7 +104,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	}
 	
 	@Override
-	public @Nullable Vec3 getUp(MinecraftServer server)
+	public @Nullable Vec3 getUp()
 	{
 		if(up == null)
 		{
@@ -121,12 +121,12 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	}
 	
 	@Override
-	public Vec3 getRight(MinecraftServer server)
+	public Vec3 getRight()
 	{
 		if(right == null)
 		{
-			if(getForward(server) != null && getUp(server) != null)
-				right = CoordinateHelper.Relative.vecRight(getForward(server), getUp(server));
+			if(getForward() != null && getUp() != null)
+				right = CoordinateHelper.Relative.vecRight(getForward(), getUp());
 		}
 		
 		return right;
@@ -135,7 +135,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	// Updating
 	
 	@Override
-	public void update(MinecraftServer server)
+	public void update()
 	{
 		stargateRun(server, stargate ->
 		{
@@ -163,11 +163,11 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	}
 	
 	@Override
-	public void deserializeNBT(MinecraftServer server, Address.Immutable id9ChevronAddress, CompoundTag tag)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		super.deserializeNBT(server, id9ChevronAddress, tag);
+		super.deserializeNBT(id9ChevronAddress, tag);
 		
 		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORKS))
 		{

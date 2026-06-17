@@ -25,8 +25,8 @@ public abstract class SGJourneyTransporter implements Transporter
 	public static final Vec3 UP = new Vec3(0, 1, 0);
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
 	
-	private final TransporterType<?> type;
-	private final MinecraftServer server;
+	protected final TransporterType<?> type;
+	protected final MinecraftServer server;
 	
 	protected TransporterID transporterID;
 	protected ResourceKey<Level> dimension;
@@ -53,6 +53,12 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
+	public MinecraftServer getServer()
+	{
+		return this.server;
+	}
+	
+	@Override
 	public TransporterID getID()
 	{
 		return transporterID;
@@ -62,24 +68,6 @@ public abstract class SGJourneyTransporter implements Transporter
 	public ResourceKey<Level> getDimension()
 	{
 		return dimension;
-	}
-	
-	@Override
-	public @Nullable Vec3 getForward(MinecraftServer server)
-	{
-		return FORWARD;
-	}
-	
-	@Override
-	public @Nullable Vec3 getUp(MinecraftServer server)
-	{
-		return UP;
-	}
-	
-	@Override
-	public @Nullable Vec3 getRight(MinecraftServer server)
-	{
-		return RIGHT;
 	}
 	
 	@Override
@@ -105,44 +93,44 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public boolean receiveTraveler(TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
-		Vec3 destinationPosition = fromTransporterCoords(server, relativePosition, true).add(transportPos(server));
-		Vec3 destinationMomentum = fromTransporterCoords(server, relativeMomentum, false);
-		Vec3 destinationLookAngle = fromTransporterCoords(server, relativeLookAngle, false);
+		Vec3 destinationPosition = fromTransporterCoords(relativePosition, true).add(transportPos());
+		Vec3 destinationMomentum = fromTransporterCoords(relativeMomentum, false);
+		Vec3 destinationLookAngle = fromTransporterCoords(relativeLookAngle, false);
 		
-		return Transporting.receiveTraveler(connection, getLevel(server), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		return Transporting.receiveTraveler(connection, getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 	}
 	
 	@Override
-	public TransporterInfo.Feedback tryConnect(MinecraftServer server, Transporter initiatingTransporter)
+	public TransporterInfo.Feedback tryConnect(Transporter initiatingTransporter)
 	{
 		// If Transporter is obstructed
-		if(isObstructed(server))
+		if(isObstructed())
 			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
 		
 		// If Transporter is restricted
 		if(isNetworkRestricted(initiatingTransporter.getNetworks()))
 			return TransporterInfo.Feedback.TARGET_RESTRICTED;
 		
-		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(initiatingTransporter.getID()))
+		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(initiatingTransporter.getID()))
 			return TransporterInfo.Feedback.BLACKLISTED_BY_TARGET;
 		
 		// If Transporter has a whitelist
-		if(transporterIDFilterInfo(server).getFilterType().isWhitelist() && !transporterIDFilterInfo(server).isIDWhitelisted(initiatingTransporter.getID()))
+		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(initiatingTransporter.getID()))
 			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
 		
 		return Dialing.connectTransporters(server, initiatingTransporter, this);
 	}
 	
 	@Override
-	public double maxTransportDistance(MinecraftServer server)
+	public double maxTransportDistance()
 	{
 		return maxTransportDistance;
 	}
 	
 	@Override
-	public boolean allowInterdimensionalTransport(MinecraftServer server)
+	public boolean allowInterdimensionalTransport()
 	{
 		return allowInterdimensionalTransport;
 	}
@@ -152,25 +140,25 @@ public abstract class SGJourneyTransporter implements Transporter
 	//============================================================================================
 	
 	@Override
-	public TransporterInfo.Feedback dialTransporter(MinecraftServer server, TransporterID otherID)
+	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
 	{
-		if(isObstructed(server))
-			return resetTransporter(server, TransporterInfo.Feedback.SELF_OBSTRUCTED);
+		if(isObstructed())
+			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
-		if(transporterIDFilterInfo(server).getFilterType().isBlacklist() && transporterIDFilterInfo(server).isIDBlacklisted(otherID))
+		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(otherID))
 			return TransporterInfo.Feedback.TARGET_BLACKLISTED;
 		
-		if(transporterIDFilterInfo(server).getFilterType().isWhitelist() && !transporterIDFilterInfo(server).isIDWhitelisted(otherID))
+		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(otherID))
 			return TransporterInfo.Feedback.TARGET_NOT_WHITELISTED;
 		
 		return Dialing.dialTransporterID(server, this, otherID, false);
 	}
 	
 	@Override
-	public TransporterInfo.Feedback dialTransporter(MinecraftServer server, Vec3i coords)
+	public TransporterInfo.Feedback dialTransporter(Vec3i coords)
 	{
-		if(isObstructed(server))
-			return resetTransporter(server, TransporterInfo.Feedback.SELF_OBSTRUCTED);
+		if(isObstructed())
+			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
 		return Dialing.dialTransporterCoords(server, this, coords, false);
 	}
@@ -194,7 +182,7 @@ public abstract class SGJourneyTransporter implements Transporter
 		tag.putDouble(MAX_TRANSPORT_DISTANCE, maxTransportDistance);
 	}
 	
-	public void deserializeNBT(MinecraftServer server, TransporterID transporterID, CompoundTag tag)
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
 	{
 		this.transporterID = transporterID;
 		

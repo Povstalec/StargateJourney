@@ -61,9 +61,9 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	
 	
 	@Override
-	default boolean isLoaded(MinecraftServer server)
+	default boolean isLoaded()
 	{
-		ServerLevel level  = server.getLevel(getDimension());
+		ServerLevel level = getLevel();
 		if(level == null)
 			return false;
 		
@@ -71,21 +71,21 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default @Nullable Vec3 getPosition(MinecraftServer server)
+	default @Nullable Vec3 getPosition()
 	{
-		return stargateReturn(server, stargate -> stargate.getCenter(), null);
+		return stargateReturn(getServer(), stargate -> stargate.getCenter(), null);
 	}
 	
 	@Override
-	default Address.Mutable getAddress(MinecraftServer server)
+	default Address.Mutable getAddress()
 	{
-		return stargateReturn(server, stargate -> stargate.getAddress(), new Address.Mutable());
+		return stargateReturn(getServer(), stargate -> stargate.getAddress(), new Address.Mutable());
 	}
 	
 	@Override
-	default StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback)
+	default StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
 	{
-		StargateEntity stargateEntity = getStargateEntity(server);
+		StargateEntity stargateEntity = getStargateEntity(getServer());
 		
 		//this.stargate = null; //TODO bring back once Stargates get cached
 		
@@ -98,27 +98,27 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default boolean isConnected(MinecraftServer server)
+	default boolean isConnected()
 	{
-		return stargateReturn(server, stargate -> stargate.isConnected(), false);
+		return stargateReturn(getServer(), stargate -> stargate.isConnected(), false);
 	}
 	
 	@Override
-	default boolean isObstructed(MinecraftServer server)
+	default boolean isObstructed()
 	{
-		return stargateReturn(server, stargate -> stargate.isObstructed(), false);
+		return stargateReturn(getServer(), stargate -> stargate.isObstructed(), false);
 	}
 	
 	@Override
-	default boolean isPrimary(MinecraftServer server)
+	default boolean isPrimary()
 	{
-		return stargateReturn(server, stargate -> stargate.isPrimary(), false);
+		return stargateReturn(getServer(), stargate -> stargate.isPrimary(), false);
 	}
 	
 	@Override
-	default boolean checkValidity(MinecraftServer server)
+	default boolean checkValidity()
 	{
-		StargateEntity stargate = getStargateEntity(server);
+		StargateEntity stargate = getStargateEntity(getServer());
 		
 		if(stargate == null)
 		{
@@ -140,23 +140,23 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration)
+	default void setChevronConfiguration(int[] chevronConfiguration)
 	{
-		stargateRun(server, stargate -> stargate.setEngagedChevrons(chevronConfiguration));
+		stargateRun(getServer(), stargate -> stargate.setEngagedChevrons(chevronConfiguration));
 	}
 	
 	// Updating
 	
 	@Override
-	default void updateClient(MinecraftServer server)
+	default void updateClient()
 	{
-		stargateRun(server, stargate -> stargate.updateClient());
+		stargateRun(getServer(), stargate -> stargate.updateClient());
 	}
 	
 	@Override
-	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
+	default void updateInterfaceBlocks(@Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
 	{
-		stargateRun(server, starghateEntity ->
+		stargateRun(getServer(), starghateEntity ->
 		{
 			if(type == null)
 				starghateEntity.updateInterfaceBlocks(eventName, objects);
@@ -179,99 +179,99 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	// Communication
 	
 	@Override
-	default void receiveStargateMessage(MinecraftServer server, String message)
+	default void receiveStargateMessage(String message)
 	{
-		stargateRun(server, stargate -> stargate.receiveStargateMessage(message));
+		stargateRun(getServer(), stargate -> stargate.receiveStargateMessage(message));
 	}
 	
 	@Override
-	default void forwardTransmission(MinecraftServer server, int transmissionJumps, int frequency, String transmission)
+	default void forwardTransmission(int transmissionJumps, int frequency, String transmission)
 	{
-		stargateRun(server, stargate -> stargate.forwardTransmission(transmissionJumps, frequency, transmission));
+		stargateRun(getServer(), stargate -> stargate.forwardTransmission(transmissionJumps, frequency, transmission));
 	}
 	
 	@Override
-	default float checkStargateShieldingState(MinecraftServer server)
+	default float checkStargateShieldingState()
 	{
-		return stargateReturn(server, stargate -> stargate instanceof IrisStargateEntity<?> irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F, 0F);
+		return stargateReturn(getServer(), stargate -> stargate instanceof IrisStargateEntity<?> irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F, 0F);
 	}
 	
 	// Energy
 	
 	@Override
-	default long getEnergyStored(MinecraftServer server)
+	default long getEnergyStored()
 	{
-		return stargateReturn(server, stargate -> stargate.energyStorage.getTrueEnergyStored(), 0L);
+		return stargateReturn(getServer(), stargate -> stargate.energyStorage.getTrueEnergyStored(), 0L);
 	}
 	
 	@Override
-	default long getEnergyCapacity(MinecraftServer server)
+	default long getEnergyCapacity()
 	{
-		return stargateReturn(server, stargate -> stargate.energyStorage.getTrueMaxEnergyStored(), 0L);
+		return stargateReturn(getServer(), stargate -> stargate.energyStorage.getTrueMaxEnergyStored(), 0L);
 	}
 	
 	@Override
-	default long extractEnergy(MinecraftServer server, long energy, boolean simulate)
+	default long extractEnergy(long energy, boolean simulate)
 	{
-		return stargateReturn(server, stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
+		return stargateReturn(getServer(), stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	// Stargate Connection
 	
 	@Override
-	default void connectionUpdate(MinecraftServer server, StargateConnection connection)
+	default void connectionUpdate(StargateConnection connection)
 	{
-		stargateRun(server, stargate ->
+		stargateRun(getServer(), stargate ->
 		{
-			stargate.setKawooshTickCount(connection.getKawooshTime(server));
+			stargate.setKawooshTickCount(connection.getKawooshTime());
 			stargate.setOpenTime(connection.getOpenTime());
 			stargate.setTimeSinceLastTraveler(connection.getTimeSinceLastTraveler());
 		});
 	}
 	
 	@Override
-	default boolean callForward(MinecraftServer server)
+	default boolean callForward()
 	{
-		return stargateReturn(server, stargate -> stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false), false);
+		return stargateReturn(getServer(), stargate -> stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false), false);
 	}
 	
 	@Override
-	default void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
+	default void connectStargate(StargateConnection connection, StargateConnection.State connectionState)
 	{
-		stargateRun(server, stargate -> stargate.connectStargate(connection.getID(), connectionState));
+		stargateRun(getServer(), stargate -> stargate.connectStargate(connection.getID(), connectionState));
 	}
 	
 	@Override
-	default void doWhileConnecting(MinecraftServer server, StargateConnection connection, boolean incoming, int kawooshStartTicks)
+	default void doWhileConnecting(StargateConnection connection, boolean incoming, int kawooshStartTicks)
 	{
-		stargateRun(server, stargate -> stargate.doWhileConnecting(incoming, connection.doKawoosh(), kawooshStartTicks, connection.getConnectionTime()));
+		stargateRun(getServer(), stargate -> stargate.doWhileConnecting(incoming, connection.doKawoosh(), kawooshStartTicks, connection.getConnectionTime()));
 	}
 	
 	@Override
-	default void doWhileDialed(MinecraftServer server, StargateConnection connection, Address connectedAddress, int kawooshStartTicks)
+	default void doWhileDialed(StargateConnection connection, Address connectedAddress, int kawooshStartTicks)
 	{
-		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, connection.doKawoosh(), connection.getConnectionTime()));
+		stargateRun(getServer(), stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, connection.doKawoosh(), connection.getConnectionTime()));
 	}
 	
 	@Override
-	default void doWhileConnected(MinecraftServer server, StargateConnection connection, boolean incoming)
+	default void doWhileConnected(StargateConnection connection, boolean incoming)
 	{
-		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, connection.getConnectionTime()));
+		stargateRun(getServer(), stargate -> stargate.doWhileConnected(incoming, connection.getConnectionTime()));
 	}
 	
-	default void wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate destinationStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
+	default void wormholeEntities(StargateConnection connection, Stargate destinationStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
 	{
-		stargateRun(server, stargate ->
+		stargateRun(getServer(), stargate ->
 		{
-			if(getWormhole().wormholeEntities(server, connection, this, destinationStargate, wormholeTravel, wormholeCandidates))
+			if(getWormhole().wormholeEntities(getServer(), connection, this, destinationStargate, wormholeTravel, wormholeCandidates))
 				connection.setUsed(true);
 		});
 	}
 	
 	@Override
-	default void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
+	default void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
 	{
-		stargateRun(server, stargate ->
+		stargateRun(getServer(), stargate ->
 		{
 			List<Entity> wormholeCandidates = stargate.findWormholeCandidates();
 			
@@ -284,30 +284,30 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 			if(!wormholeCandidates.isEmpty() && connection.used())
 				connection.setTimeSinceLastTraveler(0);
 			
-			wormholeEntities(server, connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
+			wormholeEntities(connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
 		});
 	}
 	
 	@Override
-	default @Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
-		return stargateReturn(server, stargate ->
+		return stargateReturn(getServer(), stargate ->
 				{
 					// Call Forwarding
 					if(stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false) && callForwardDeny(traveler))
 					{
 						if(connection.getDialedStargates().size() > 1) // There are at least 2 gates currently connected -> traveler gets sent to a random other gate
-							return connection.getDialedStargates().get(new Random().nextInt(1, connection.getDialedStargates().size())).receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
+							return connection.getDialedStargates().get(new Random().nextInt(1, connection.getDialedStargates().size())).receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
 						else // There is only one gate connected -> traveler gets sent back to the gate they initially entered
-							return initialStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
+							return initialStargate.receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
 					}
 					
 					// TODO Tie this to Advanced Protocols
 					Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ? new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 					
-					Vec3 destinationPosition = fromStargateCoords(server, relativePosition, true, true).add(stargate.getCenter());
-					Vec3 destinationMomentum = fromStargateCoords(server, tempMomentum, false, true);
-					Vec3 destinationLookAngle = fromStargateCoords(server, relativeLookAngle, false, true);
+					Vec3 destinationPosition = fromStargateCoords(relativePosition, true, true).add(stargate.getCenter());
+					Vec3 destinationMomentum = fromStargateCoords(tempMomentum, false, true);
+					Vec3 destinationLookAngle = fromStargateCoords(relativeLookAngle, false, true);
 					
 					if(stargate instanceof IrisStargateEntity<?> irisStargate && !getWormhole().checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 					{
@@ -321,10 +321,10 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
+	default boolean shouldAutoclose(StargateConnection connection)
 	{
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		return stargateReturn(server, stargate ->
+		return stargateReturn(getServer(), stargate ->
 		{
 			int autoclose = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autoclose, 0);
 			if(autoclose <= 0)
@@ -339,8 +339,8 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	//============================================================================================
 	
 	@Override
-	default AddressFilterInfo addressFilterInfo(MinecraftServer server)
+	default AddressFilterInfo addressFilterInfo()
 	{
-		return stargateReturn(server, stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
+		return stargateReturn(getServer(), stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
 	}
 }

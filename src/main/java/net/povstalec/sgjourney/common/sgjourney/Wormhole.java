@@ -75,22 +75,22 @@ public class Wormhole
 	
 	protected boolean wormholeEntity(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Map<Integer, Vec3> entityLocations, Entity traveler)
 	{
-		Vec3 relativePosition = initialStargate.toStargateCoords(server,traveler.position().subtract(initialStargate.getPosition(server)), true);
+		Vec3 relativePosition = initialStargate.toStargateCoords(traveler.position().subtract(initialStargate.getPosition()), true);
 		Vec3 oldRelativePos = this.entityLocations.get(traveler.getId());
 		
 		if(oldRelativePos != null)
 		{
 			Vec3 relativeMomentum = relativePosition.subtract(oldRelativePos);
 			
-			if(shouldWormhole(initialStargate.getPosition(server), traveler, oldRelativePos.x(), relativePosition.x(), relativeMomentum.x()))
+			if(shouldWormhole(initialStargate.getPosition(), traveler, oldRelativePos.x(), relativePosition.x(), relativeMomentum.x()))
 			{
 				playWormholeSound(traveler.getLevel(), traveler);
 				
 				if(twoWayWormhole == WormholeTravel.ENABLED || (twoWayWormhole == WormholeTravel.CREATIVE_ONLY && traveler instanceof Player player && (player.isCreative() || player.isSpectator())))
 				{
-					Vec3 relativeLookAngle = initialStargate.toStargateCoords(server, traveler.getLookAngle(), false);
+					Vec3 relativeLookAngle = initialStargate.toStargateCoords(traveler.getLookAngle(), false);
 					
-					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(server, connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle) != null)
+					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle) != null)
 					{
 						deconstructEvent(server, initialStargate, traveler, false);
 						return true;
@@ -378,7 +378,7 @@ public class Wormhole
     	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
     	String uuid = traveler.getUUID().toString();
     	
-    	initialStargate.updateInterfaceBlocks(server, null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+    	initialStargate.updateInterfaceBlocks(null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
     }
     
     protected void reconstructEvent(MinecraftServer server, Stargate targetStargate, Entity traveler)
@@ -387,7 +387,7 @@ public class Wormhole
     	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
     	String uuid = traveler.getUUID().toString();
     	
-    	targetStargate.updateInterfaceBlocks(server, null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
+    	targetStargate.updateInterfaceBlocks(null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
     }
 	
 	public static void recursiveExecute(Entity traveler, WormholeFunction func)

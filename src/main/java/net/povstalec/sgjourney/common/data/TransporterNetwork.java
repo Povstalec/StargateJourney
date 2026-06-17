@@ -115,12 +115,12 @@ public final class TransporterNetwork extends SavedData
 		{
 			if(transporter != null)
 			{
-				if(transporter.checkValidity(server))
+				if(transporter.checkValidity())
 				{
 					if(!transporterID.equals(transporter.getID()))
 						removeTransporter(transporter);
 					
-					transporter.resetTransporter(server, TransporterInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+					transporter.resetTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 					
 					addTransporter(transporter);
 				}
@@ -147,7 +147,7 @@ public final class TransporterNetwork extends SavedData
 		}
 		
 		// Using | instead of || because both need to execute
-		boolean added = addTransporterToDimension(transporter.getDimension(), transporter) | addTransporterToAddressRegion(transporter.getAddressRegionKey(server), transporter);
+		boolean added = addTransporterToDimension(transporter.getDimension(), transporter) | addTransporterToAddressRegion(transporter.getAddressRegionKey(), transporter);
 		
 		if(added)
 			setDirty();
@@ -224,7 +224,7 @@ public final class TransporterNetwork extends SavedData
 		}
 		
 		// Using | instead of || because both need to execute
-		boolean removed = removeTransporterFromAddressRegion(transporter.getAddressRegionKey(server), transporter) | removeTransporterFromDimension(transporter.getDimension(), transporter);
+		boolean removed = removeTransporterFromAddressRegion(transporter.getAddressRegionKey(), transporter) | removeTransporterFromDimension(transporter.getDimension(), transporter);
 		if(removed)
 		{
 			setDirty();
@@ -260,7 +260,7 @@ public final class TransporterNetwork extends SavedData
 		Transporter transporter = getTransporter(transporterEntity.getID());
 		
 		if(transporter != null)
-			transporter.update(server);
+			transporter.update();
 	}
 	
 	public int getTransporterCount()
@@ -382,46 +382,46 @@ public final class TransporterNetwork extends SavedData
 			return TransporterInfo.Feedback.NONE;
 		
 		// Will reset the Transporter if something's wrong
-		if(!targetTransporter.checkValidity(server))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
+		if(!targetTransporter.checkValidity())
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
 		
 		if(initiatingTransporter.equals(targetTransporter))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.SELF_CONNECT);
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.SELF_CONNECT);
 		
-		if(targetTransporter.isConnected(server))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.ALREADY_CONNECTED);
-		else if(targetTransporter.isObstructed(server))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OBSTRUCTED);
+		if(targetTransporter.isConnected())
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.ALREADY_CONNECTED);
+		else if(targetTransporter.isObstructed())
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_OBSTRUCTED);
 		
 		if(connectionType == null)
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NO_INTERSTELLAR_TRANSPORT);
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NO_INTERSTELLAR_TRANSPORT);
 		else if(connectionType == TransporterConnection.Type.SYSTEM_WIDE)
 		{
-			if(!initiatingTransporter.allowInterdimensionalTransport(server))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.SELF_NO_INTERDIMENSIONAL_TRANSPORT);
-			else if(!targetTransporter.allowInterdimensionalTransport(server))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_NO_INTERDIMENSIONAL_TRANSPORT);
+			if(!initiatingTransporter.allowInterdimensionalTransport())
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.SELF_NO_INTERDIMENSIONAL_TRANSPORT);
+			else if(!targetTransporter.allowInterdimensionalTransport())
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_NO_INTERDIMENSIONAL_TRANSPORT);
 		}
 		
-		if(!initiatingTransporter.isInRange(server, targetTransporter))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.TARGET_OUT_OF_RANGE);
-		else if(!targetTransporter.isInRange(server, initiatingTransporter))
-			return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET);
+		if(!initiatingTransporter.isInRange(targetTransporter))
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_OUT_OF_RANGE);
+		else if(!targetTransporter.isInRange(initiatingTransporter))
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET);
 		
 		if(REQUIRE_ENERGY)
 		{
-			long transportEnergyCost = connectionType.getTransportEnergyCost(initiatingTransporter.distanceFrom(server, targetTransporter));
+			long transportEnergyCost = connectionType.getTransportEnergyCost(initiatingTransporter.distanceFrom(targetTransporter));
 			
-			if(!TransporterConnection.canExtract(server, initiatingTransporter, transportEnergyCost))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NOT_ENOUGH_POWER);
-			else if(!TransporterConnection.canExtract(server, targetTransporter, transportEnergyCost))
-				return initiatingTransporter.resetTransporter(server, TransporterInfo.Feedback.NOT_ENOUGH_POWER_IN_TARGET);
+			if(!TransporterConnection.canExtract(initiatingTransporter, transportEnergyCost))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER);
+			else if(!TransporterConnection.canExtract(targetTransporter, transportEnergyCost))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER_IN_TARGET);
 			
-			initiatingTransporter.extractEnergy(server, transportEnergyCost, false);
-			targetTransporter.extractEnergy(server, transportEnergyCost, false);
+			initiatingTransporter.extractEnergy(transportEnergyCost, false);
+			targetTransporter.extractEnergy(transportEnergyCost, false);
 		}
 		
-		TransporterConnection connection = TransporterConnection.create(server, connectionType, initiatingTransporter, targetTransporter);
+		TransporterConnection connection = TransporterConnection.create(connectionType, initiatingTransporter, targetTransporter);
 		
 		//TODO New errors relating to the problems with relaying the connection through Stargates
 		//if(connection.getRelayID() == null && connectionType.isRelayed)

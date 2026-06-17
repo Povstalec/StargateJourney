@@ -294,7 +294,7 @@ public class CommandInit
 			stargates.forEach(stargate ->
 			{
 				ResourceKey<Level> stargateDimension = stargate.getDimension();
-				Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
+				Vec3 stargatePos = stargate.getPosition();
 				
 				if(dimension.equals(stargateDimension) && stargatePos != null)
 					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(" ").append(ComponentHelper.coordinate(stargatePos)), false);
@@ -446,7 +446,7 @@ public class CommandInit
 			
 			for(Transporter transporter : transporters)
 			{
-				Vec3 coords = transporter.getPosition(level.getServer());
+				Vec3 coords = transporter.getPosition();
 				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(" ").append(ComponentHelper.coordinate(coords)), false);
 			}
 			context.getSource().sendSuccess(Component.literal("-------------------------"), false);

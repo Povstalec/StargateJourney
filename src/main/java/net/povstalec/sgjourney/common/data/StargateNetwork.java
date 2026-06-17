@@ -150,16 +150,16 @@ public final class StargateNetwork extends SavedData
 		{
 			if(stargate != null)
 			{
-				if(stargate.checkValidity(server))
+				if(stargate.checkValidity())
 				{
 					if(!address.equals(stargate.get9ChevronAddress()))
 						removeStargate(stargate);
 					
-					stargate.resetStargate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+					stargate.resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
 					
-					stargate.update(server);
+					stargate.update();
 					addStargate(stargate);
-					stargate.updateInterfaceBlocks(server, null, null);
+					stargate.updateInterfaceBlocks(null, null);
 				}
 				else
 					removeStargate(stargate);
@@ -188,7 +188,7 @@ public final class StargateNetwork extends SavedData
 		}
 		
 		// Using | instead of || because both need to execute
-		boolean added = addStargateToDimension(stargate.getDimension(), stargate) | addStargateToAddressRegion(stargate.getAddressRegionKey(server), stargate);
+		boolean added = addStargateToDimension(stargate.getDimension(), stargate) | addStargateToAddressRegion(stargate.getAddressRegionKey(), stargate);
 		
 		if(added)
 			setDirty();
@@ -261,7 +261,7 @@ public final class StargateNetwork extends SavedData
 		}
 		
 		// Using | instead of || because both need to execute
-		boolean removed = removeStargateFromAddressRegion(stargate.getAddressRegionKey(server), stargate) | removeStargateFromDimension(stargate.getDimension(), stargate);
+		boolean removed = removeStargateFromAddressRegion(stargate.getAddressRegionKey(), stargate) | removeStargateFromDimension(stargate.getDimension(), stargate);
 		if(removed)
 		{
 			setDirty();
@@ -301,8 +301,8 @@ public final class StargateNetwork extends SavedData
 		
 		if(stargate != null)
 		{
-			stargate.update(server);
-			sortStargatesInRegion(stargate.getAddressRegionKey(server));
+			stargate.update();
+			sortStargatesInRegion(stargate.getAddressRegionKey());
 		}
 	}
 	
@@ -536,38 +536,38 @@ public final class StargateNetwork extends SavedData
 			return StargateInfo.Feedback.NONE;
 		
 		// Will reset the Stargate if something's wrong
-		if(!dialedStargate.checkValidity(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+		if(!dialedStargate.checkValidity())
+			return dialingStargate.resetStargate(StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
 				connectionType == StargateConnection.Type.INTERSTELLAR)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS);
 		
 		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == StargateConnection.Type.SYSTEM_WIDE)
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION);
 		
 		if(dialingStargate.equals(dialedStargate))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.SELF_DIAL);
+			return dialingStargate.resetStargate(StargateInfo.Feedback.SELF_DIAL);
 		
-		if(dialedStargate.isConnected(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.ALREADY_CONNECTED);
-		else if(dialedStargate.isObstructed(server))
-			return dialingStargate.resetStargate(server, StargateInfo.Feedback.TARGET_OBSTRUCTED);
+		if(dialedStargate.isConnected())
+			return dialingStargate.resetStargate(StargateInfo.Feedback.ALREADY_CONNECTED);
+		else if(dialedStargate.isObstructed())
+			return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_OBSTRUCTED);
 		
 		if(REQUIRE_ENERGY)
 		{
-			if(StargateConnection.canExtract(server, dialingStargate, connectionType.getEstablishingPowerCost()))
-				dialingStargate.extractEnergy(server, connectionType.getEstablishingPowerCost(), false);
+			if(StargateConnection.canExtract(dialingStargate, connectionType.getEstablishingPowerCost()))
+				dialingStargate.extractEnergy(connectionType.getEstablishingPowerCost(), false);
 			else
-				return dialingStargate.resetStargate(server, StargateInfo.Feedback.NOT_ENOUGH_POWER);
+				return dialingStargate.resetStargate(StargateInfo.Feedback.NOT_ENOUGH_POWER);
 		}
 		
-		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(server, dialingStargate, connectionType);
+		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(dialingStargate, connectionType);
 		if(dialedStargates.isEmpty())
 			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
 		
-		StargateConnection connection = StargateConnection.create(server, connectionType, dialingStargate, dialedStargates, doKawoosh);
+		StargateConnection connection = StargateConnection.create(connectionType, dialingStargate, dialedStargates, doKawoosh);
 		if(connection != null)
 		{
 			addConnection(connection);
@@ -651,13 +651,13 @@ public final class StargateNetwork extends SavedData
 	public void sendStargateTransmission(AbstractStargateEntity<?> sendingStargate, UUID uuid, int transmissionJumps, int frequency, String transmission)
 	{
 		if(hasConnection(uuid))
-			this.connections.get(uuid).sendStargateTransmission(server, sendingStargate.get9ChevronAddress(), transmissionJumps, frequency, transmission);
+			this.connections.get(uuid).sendStargateTransmission(sendingStargate.get9ChevronAddress(), transmissionJumps, frequency, transmission);
 	}
 	
 	public float checkStargateShieldingState(AbstractStargateEntity<?> sendingStargate, UUID uuid)
 	{
 		if(hasConnection(uuid))
-			return this.connections.get(uuid).checkStargateShieldingState(server, sendingStargate.get9ChevronAddress());
+			return this.connections.get(uuid).checkStargateShieldingState(sendingStargate.get9ChevronAddress());
 		
 		return 0;
 	}
@@ -872,7 +872,7 @@ public final class StargateNetwork extends SavedData
 			
 			if(primaryAddress == null)
 			{
-				if(addedStargate.isPrimary(server))
+				if(addedStargate.isPrimary())
 				{
 					settings.setPrimaryAddress(addressRegionKey,  addedStargate.get9ChevronAddress());
 					this.primaryStargate = addedStargate;

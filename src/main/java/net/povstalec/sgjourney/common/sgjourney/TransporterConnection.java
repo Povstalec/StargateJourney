@@ -53,7 +53,7 @@ public class TransporterConnection
 	@Nullable
 	protected UUID relayID; // UUID of the Stargate connection that is used to relay this connection
 	
-	private TransporterConnection(MinecraftServer server, UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB, int connectionTime, @Nullable UUID relayID)
+	private TransporterConnection(UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB, int connectionTime, @Nullable UUID relayID)
 	{
 		this.uuid = uuid;
 		this.connectionType = connectionType;
@@ -62,17 +62,17 @@ public class TransporterConnection
 		
 		this.connectionTime = connectionTime;
 		
-		this.timeOffsetA = transporterA.getTimeUntilTransport(server);
-		this.timeOffsetB = transporterB.getTimeUntilTransport(server);
+		this.timeOffsetA = transporterA.getTimeUntilTransport();
+		this.timeOffsetB = transporterB.getTimeUntilTransport();
 		
 		this.transportStartTicks = Math.max(timeOffsetA, timeOffsetB);
 		
 		this.relayID = relayID; //TODO
 	}
 	
-	private TransporterConnection(MinecraftServer server, UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
+	private TransporterConnection(UUID uuid, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
 	{
-		this(server, uuid, connectionType, transporterA, transporterB, 0, null);
+		this(uuid, connectionType, transporterA, transporterB, 0, null);
 	}
 	
 	public enum Type
@@ -130,8 +130,8 @@ public class TransporterConnection
 	@Nullable
 	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
-		AddressRegion regionA = transporterA.getAddressRegion(server);
-		AddressRegion regionB = transporterB.getAddressRegion(server);
+		AddressRegion regionA = transporterA.getAddressRegion();
+		AddressRegion regionB = transporterB.getAddressRegion();
 		
 		if(regionA != null && regionB != null)
 		{
@@ -156,16 +156,16 @@ public class TransporterConnection
 	}
 	
 	@Nullable
-	public static TransporterConnection create(MinecraftServer server, TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
+	public static TransporterConnection create(TransporterConnection.Type connectionType, Transporter transporterA, Transporter transporterB)
 	{
 		if(transporterA != null && transporterB != null)
 		{
 			UUID uuid = UUID.randomUUID();
 			
-			transporterA.connect(server, uuid);
-			transporterB.connect(server, uuid);
+			transporterA.connect(uuid);
+			transporterB.connect(uuid);
 			
-			return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB);
+			return new TransporterConnection(uuid, connectionType, transporterA, transporterB);
 		}
 		
 		return null;
@@ -175,17 +175,17 @@ public class TransporterConnection
 	
 	public void tick(MinecraftServer server)
 	{
-		if(!isTransporterValid(server, transporterA) || !isTransporterValid(server, transporterB))
+		if(!isTransporterValid(transporterA) || !isTransporterValid(transporterB))
 		{
 			terminate(server, TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER);
 			return;
 		}
 		
 		if(connectionTime == transportStartTicks)
-			transport(server);
+			transport();
 		
-		updateTransporterTicks(server, transporterA, timeOffsetA);
-		updateTransporterTicks(server, transporterB, timeOffsetB);
+		updateTransporterTicks(transporterA, timeOffsetA);
+		updateTransporterTicks(transporterB, timeOffsetB);
 		
 		increaseTicks();
 		
@@ -193,20 +193,20 @@ public class TransporterConnection
 			terminate(server, TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 	}
 	
-	private void updateTransporterTicks(MinecraftServer server, Transporter transporter, int transporterTimeOffset)
+	private void updateTransporterTicks(Transporter transporter, int transporterTimeOffset)
 	{
 		if(transporterTimeOffset == transportStartTicks)
-			transporter.updateTicks(server, transporterTimeOffset, connectionTime);
+			transporter.updateTicks(transporterTimeOffset, connectionTime);
 		else
 		{
 			int ticks = connectionTime - (transportStartTicks - transporterTimeOffset);
-			transporter.updateTicks(server, transporterTimeOffset, Math.max(ticks, -1));
+			transporter.updateTicks(transporterTimeOffset, Math.max(ticks, -1));
 		}
 	}
 	
-	public static boolean canExtract(MinecraftServer server, Transporter transporter, long energyExtracted)
+	public static boolean canExtract(Transporter transporter, long energyExtracted)
 	{
-		return transporter.extractEnergy(server, energyExtracted, true) >= energyExtracted;
+		return transporter.extractEnergy(energyExtracted, true) >= energyExtracted;
 	}
 	
 	private void increaseTicks()
@@ -214,14 +214,14 @@ public class TransporterConnection
 		this.connectionTime++;
 	}
 	
-	private void transport(MinecraftServer server)
+	private void transport()
 	{
 		// Get all potential travelers that can be transported before the transport starts, so that you don't end up transporting A -> B and then immediately B -> A
-		List<Entity> travelersA = transporterA.entitiesToTransport(server);
-		List<Entity> travelersB = transporterB.entitiesToTransport(server);
+		List<Entity> travelersA = transporterA.entitiesToTransport();
+		List<Entity> travelersB = transporterB.entitiesToTransport();
 		// Attempt transporting all potential travelers
-		transporterA.transportTravelers(server, this, transporterB, travelersA);
-		transporterB.transportTravelers(server, this, transporterA, travelersB);
+		transporterA.transportTravelers(this, transporterB, travelersA);
+		transporterB.transportTravelers(this, transporterA, travelersB);
 	}
 	
 	public void terminate(MinecraftServer server, TransporterInfo.Feedback feedback)
@@ -230,20 +230,20 @@ public class TransporterConnection
 		
 		if(this.transporterA != null)
 		{
-			this.transporterA.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Initiated the Transport
-			this.transporterA.resetTransporter(server, feedback);
+			this.transporterA.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Initiated the Transport
+			this.transporterA.resetTransporter(feedback);
 		}
 		
 		if(this.transporterB != null)
 		{
-			this.transporterB.updateInterfaceBlocks(server, null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Did not initiate the Transport
-			this.transporterB.resetTransporter(server, feedback);
+			this.transporterB.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Did not initiate the Transport
+			this.transporterB.resetTransporter(feedback);
 		}
 		
 		TransporterNetwork.get(server).removeConnection(this.uuid);
 	}
 	
-	public boolean isTransporterValid(MinecraftServer server, Transporter transporter)
+	public boolean isTransporterValid(Transporter transporter)
 	{
 		if(transporter == null)
 		{
@@ -251,7 +251,7 @@ public class TransporterConnection
 			return false;
 		}
 		
-		return transporter.isConnected(server);
+		return transporter.isConnected();
 	}
 	
 	//============================================================================================
@@ -309,14 +309,14 @@ public class TransporterConnection
 		try
 		{
 			if(tag.contains(RELAY_ID, Tag.TAG_STRING))
-				return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB, connectionTime, UUID.fromString(tag.getString(RELAY_ID)));
+				return new TransporterConnection(uuid, connectionType, transporterA, transporterB, connectionTime, UUID.fromString(tag.getString(RELAY_ID)));
 		}
 		catch(IllegalArgumentException e)
 		{
 			StargateJourney.LOGGER.error(e.toString());
 		}
 		
-		return new TransporterConnection(server, uuid, connectionType, transporterA, transporterB, connectionTime, null);
+		return new TransporterConnection(uuid, connectionType, transporterA, transporterB, connectionTime, null);
 	}
 	
 	private static Transporter deserializeTransporter(MinecraftServer server, CompoundTag transporterInfo)

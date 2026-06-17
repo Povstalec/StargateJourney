@@ -342,9 +342,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		});
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> defaultButton(MinecraftServer server, Transporter transporter, int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<RingPanelEntity> defaultButton(Transporter transporter, int index, TransporterControllerButton.ButtonStatus status)
 	{
-		return TransporterControllerButton.defaultButton(this, index, status).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		return TransporterControllerButton.defaultButton(this, index, status).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
@@ -422,9 +422,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 			if(transporter != null)
 			{
 				if(transporterID.name().isEmpty() && transporter.getName() != null)
-					return memoryTransportButton(index).setTransporter(server, transporter);
+					return memoryTransportButton(index).setTransporter(transporter);
 				else
-					return memoryTransportButton(index).setTransporter(server, transporter, ChatFormatting.GREEN);
+					return memoryTransportButton(index).setTransporter(transporter, ChatFormatting.GREEN);
 			}
 			else
 				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
@@ -514,7 +514,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	protected TransporterControllerButton<RingPanelEntity> nextNetworkButton(MinecraftServer server, Transporter transporter, int index)
 	{
-		return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
@@ -630,7 +630,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 			
 			boolean add = !transporterCache.get().transporterID.equals(transporter.getID()) &&
 					!transporter.isNetworkRestricted(getTransporterNetworks()) &&
-					transporter.allowInterdimensionalTransport(server);
+					transporter.allowInterdimensionalTransport();
 			
 			if(add)
 				dimensions.add(transporterDimension);
@@ -657,7 +657,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	protected TransporterControllerButton<RingPanelEntity> nextInterdimensionalButton(MinecraftServer server, Transporter transporter, int index)
 	{
-		return TransporterControllerButton.materializationButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(server, transporter).setCloseScreen(true).setOnPress(button ->
+		return TransporterControllerButton.materializationButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
@@ -685,7 +685,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		if(state == TransporterControllerButton.ButtonState.MATERIALIZATION)
 			return materializationCrystalButton(index, status);
 		else if(transporterIterator != null && transporterIterator.hasNext())
-			return defaultButton(server, transporterIterator.next(), index, status);
+			return defaultButton(transporterIterator.next(), index, status);
 		else if(status.isEnabled)
 			return TransporterControllerButton.defaultButton(this, index, TransporterControllerButton.ButtonStatus.NO_REACHABLE_TRANSPORTER); // Empty Default Button because no more Transporters are reachable
 		else

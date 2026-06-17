@@ -59,9 +59,9 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	
 	
 	@Override
-	default boolean isLoaded(MinecraftServer server)
+	default boolean isLoaded()
 	{
-		ServerLevel level  = server.getLevel(getDimension());
+		ServerLevel level = getLevel();
 		if(level == null)
 			return false;
 		
@@ -69,7 +69,7 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default @Nullable Vec3 getPosition(MinecraftServer server)
+	default @Nullable Vec3 getPosition()
 	{
 		return getBlockPos().getCenter();
 	}
@@ -78,15 +78,15 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	
 	@Override
 	@Nullable
-	default Vec3 transportPos(MinecraftServer server)
+	default Vec3 transportPos()
 	{
-		return transporterReturn(server, transporter -> transporter.transportPos().getCenter(), null);
+		return transporterReturn(getServer(), transporter -> transporter.transportPos().getCenter(), null);
 	}
 	
 	@Override
-	default void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
+	default void updateInterfaceBlocks(@Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
 	{
-		transporterRun(server, transporterEntity ->
+		transporterRun(getServer(), transporterEntity ->
 		{
 			if(type == null)
 				transporterEntity.updateInterfaceBlocks(eventName, objects);
@@ -107,9 +107,9 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default TransporterInfo.Feedback resetTransporter(MinecraftServer server, TransporterInfo.Feedback feedback)
+	default TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
 	{
-		TransporterEntity transporterEntity = getTransporterEntity(server);
+		TransporterEntity transporterEntity = getTransporterEntity(getServer());
 		
 		if(transporterEntity != null)
 			return transporterEntity.resetTransporter(feedback);
@@ -120,39 +120,39 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default long getEnergyStored(MinecraftServer server)
+	default long getEnergyStored()
 	{
-		return transporterReturn(server, transporter -> transporter.energyStorage.getTrueEnergyStored(), 0L);
+		return transporterReturn(getServer(), transporter -> transporter.energyStorage.getTrueEnergyStored(), 0L);
 	}
 	
 	@Override
-	default long getEnergyCapacity(MinecraftServer server)
+	default long getEnergyCapacity()
 	{
-		return transporterReturn(server, transporter -> transporter.energyStorage.getTrueMaxEnergyStored(), 0L);
+		return transporterReturn(getServer(), transporter -> transporter.energyStorage.getTrueMaxEnergyStored(), 0L);
 	}
 	
 	@Override
-	default long extractEnergy(MinecraftServer server, long energy, boolean simulate)
+	default long extractEnergy(long energy, boolean simulate)
 	{
-		return transporterReturn(server, transporter -> transporter.energyStorage.depleteEnergy(energy, simulate), 0L);
+		return transporterReturn(getServer(), transporter -> transporter.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	@Override
-	default int getTimeUntilTransport(MinecraftServer server)
+	default int getTimeUntilTransport()
 	{
-		return transporterReturn(server, transporter -> transporter.getTimeUntilTransport(), 0);
+		return transporterReturn(getServer(), transporter -> transporter.getTimeUntilTransport(), 0);
 	}
 	
 	@Override
-	default List<Entity> entitiesToTransport(MinecraftServer server)
+	default List<Entity> entitiesToTransport()
 	{
-		return transporterReturn(server, transporter -> transporter.entitiesToTransport(), ImmutableList.of());
+		return transporterReturn(getServer(), transporter -> transporter.entitiesToTransport(), ImmutableList.of());
 	}
 	
 	@Override
-	default boolean checkValidity(MinecraftServer server)
+	default boolean checkValidity()
 	{
-		TransporterEntity transporter = getTransporterEntity(server);
+		TransporterEntity transporter = getTransporterEntity(getServer());
 		
 		if(transporter == null)
 		{
@@ -173,40 +173,40 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
+	default boolean transportTravelers(TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
 	{
-		return transporterReturn(server, transporter -> Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers), false);
+		return transporterReturn(getServer(), transporter -> Transporting.transportTravelers(getServer(), connection, this, receivingTransporter, travelers), false);
 		
 	}
 	
 	@Override
-	default void connect(MinecraftServer server, UUID connectionID)
+	default void connect(UUID connectionID)
 	{
-		transporterRun(server, transporter -> transporter.connectTransporter(connectionID));
+		transporterRun(getServer(), transporter -> transporter.connectTransporter(connectionID));
 	}
 	
 	@Override
-	default void disconnect(MinecraftServer server)
+	default void disconnect()
 	{
-		transporterRun(server, transporter -> transporter.disconnectTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
+		transporterRun(getServer(), transporter -> transporter.disconnectTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT));
 	}
 	
 	@Override
-	default boolean isConnected(MinecraftServer server)
+	default boolean isConnected()
 	{
-		return transporterReturn(server, transporter -> transporter.isConnected(), false);
+		return transporterReturn(getServer(), transporter -> transporter.isConnected(), false);
 	}
 	
 	@Override
-	default boolean isObstructed(MinecraftServer server)
+	default boolean isObstructed()
 	{
-		return transporterReturn(server, transporter -> transporter.isObstructed(), false);
+		return transporterReturn(getServer(), transporter -> transporter.isObstructed(), false);
 	}
 	
 	@Override
-	default void updateTicks(MinecraftServer server, int transportTicks, int connectionTime)
+	default void updateTicks(int transportTicks, int connectionTime)
 	{
-		transporterRun(server, transporter -> transporter.updateTicks(transportTicks, connectionTime));
+		transporterRun(getServer(), transporter -> transporter.updateTicks(transportTicks, connectionTime));
 	}
 	
 	//============================================================================================
@@ -214,8 +214,8 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	//============================================================================================
 	
 	@Override
-	default TransporterIDFilterInfo transporterIDFilterInfo(MinecraftServer server)
+	default TransporterIDFilterInfo transporterIDFilterInfo()
 	{
-		return transporterReturn(server, transporter -> transporter.transporterIDFilterInfo(), new TransporterIDFilterInfo());
+		return transporterReturn(getServer(), transporter -> transporter.transporterIDFilterInfo(), new TransporterIDFilterInfo());
 	}
 }

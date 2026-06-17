@@ -12,7 +12,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
@@ -30,6 +29,7 @@ public class SpawnerStargate implements Stargate
 	public static final int KAWOOSH_TICKS = 40;
 	
 	private final StargateType<?> type;
+	private final MinecraftServer server;
 	
 	protected Address.Immutable id9ChevronAddress;
 	
@@ -52,6 +52,7 @@ public class SpawnerStargate implements Stargate
 	public SpawnerStargate(StargateType<?> type, MinecraftServer server)
 	{
 		this.type = type;
+		this.server = server;
 	}
 	
 	public void loadStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval, Function<RandomSource, EntityType<?>> randomizedEntityType, BiConsumer<Entity, RandomSource> onEntitySpawn)
@@ -88,6 +89,12 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public MinecraftServer getServer()
+	{
+		return this.server;
+	}
+	
+	@Override
 	public Address.Immutable get9ChevronAddress()
 	{
 		return this.id9ChevronAddress;
@@ -100,25 +107,25 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public @Nullable Vec3 getPosition(MinecraftServer server)
+	public @Nullable Vec3 getPosition()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getForward(MinecraftServer server)
+	public @Nullable Vec3 getForward()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getUp(MinecraftServer server)
+	public @Nullable Vec3 getUp()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getRight(MinecraftServer server)
+	public @Nullable Vec3 getRight()
 	{
 		return null;
 	}
@@ -148,13 +155,13 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public Address.Mutable getAddress(MinecraftServer server)
+	public Address.Mutable getAddress()
 	{
 		return this.address;
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback)
+	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
 	{
 		this.connectionID = null;
 		this.address.reset();
@@ -165,67 +172,67 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean isConnected(MinecraftServer server)
+	public boolean isConnected()
 	{
 		return this.connectionID != null;
 	}
 	
 	@Override
-	public boolean isObstructed(MinecraftServer server)
+	public boolean isObstructed()
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean checkValidity(MinecraftServer server)
+	public boolean checkValidity()
 	{
 		return true;
 	}
 	
 	@Override
-	public boolean isLoaded(MinecraftServer server)
+	public boolean isLoaded()
 	{
 		return true;
 	}
 	
 	@Override
-	public float checkStargateShieldingState(MinecraftServer server)
+	public float checkStargateShieldingState()
 	{
 		return 0;
 	}
 	
 	@Override
-	public long getEnergyStored(MinecraftServer server)
+	public long getEnergyStored()
 	{
 		return CommonStargateConfig.intergalactic_connection_energy_cost.get(); // CommonStargateConfig.interstellar_connection_energy_cost.get(); //TODO Add some actual energy handling
 	}
 	
 	@Override
-	public long getEnergyCapacity(MinecraftServer server)
+	public long getEnergyCapacity()
 	{
 		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 	
 	@Override
-	public boolean canPowerFromOtherSide(MinecraftServer server)
+	public boolean canPowerFromOtherSide()
 	{
 		return false;
 	}
 	
 	@Override
-	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
+	public long extractEnergy(long energy, boolean simulate)
 	{
-		return Math.min(energy, getEnergyStored(server));
+		return Math.min(energy, getEnergyStored());
 	}
 	
 	@Override
-	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
+	public int dialedEngageTime(boolean doKawoosh)
 	{
 		return StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks();
 	}
 	
 	@Override
-	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	public int wormholeEstablishTime(boolean doKawoosh)
 	{
 		return KAWOOSH_TICKS;
 	}
@@ -235,20 +242,20 @@ public class SpawnerStargate implements Stargate
 		this.address = new Address.Mutable(address);
 	}
 	
-	public StargateInfo.Feedback dial(MinecraftServer server)
+	public StargateInfo.Feedback dial()
 	{
-		return Dialing.dialStargate(server, this, getAddress(server), true, true);
+		return Dialing.dialStargate(server, this, getAddress(), true, true);
 	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.Feedback tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateJourney.LOGGER.error("Stargate does not permit connections");
 		return StargateInfo.Feedback.UNKNOWN_ERROR;
 	}
 	
 	@Override
-	public void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
+	public void connectStargate(StargateConnection connection, StargateConnection.State connectionState)
 	{
 		this.connectionID = connection.getID();
 	}
@@ -276,15 +283,15 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
+	public void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
 	{
 		Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
 		
 		if(timer > 0)
 			timer--;
-		else if(0 < counter)
+		else if(0 < counter && connectedStargate != null)
 		{
-			ServerLevel level = connectedStargate.getLevel(server);
+			ServerLevel level = connectedStargate.getLevel();
 			
 			if(level != null)
 			{
@@ -294,7 +301,7 @@ public class SpawnerStargate implements Stargate
 				Entity entity = createEntity(level);
 				if(entity != null)
 				{
-					Entity traveler = connectedStargate.receiveTraveler(server, connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
+					Entity traveler = connectedStargate.receiveTraveler(connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
 					if(traveler != null)
 					{
 						connection.setTimeSinceLastTraveler(0);
@@ -310,7 +317,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public @Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
 			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
@@ -319,13 +326,13 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
+	public boolean shouldAutoclose(StargateConnection connection)
 	{
 		return connection.getOpenTime() > 200;
 	}
 	
 	@Override
-	public boolean requiresEnergyBypass(MinecraftServer server, int openTime)
+	public boolean requiresEnergyBypass(int openTime)
 	{
 		return openTime > SGJourneyStargate.MAX_OPEN_TIME;
 	}
@@ -337,13 +344,13 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public void deserializeNBT(MinecraftServer server, Address.Immutable id9ChevronAddress, CompoundTag tag)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		//TODO
 	}
 	
 	@Override
-	public AddressFilterInfo addressFilterInfo(MinecraftServer server)
+	public AddressFilterInfo addressFilterInfo()
 	{
 		return new AddressFilterInfo();
 	}

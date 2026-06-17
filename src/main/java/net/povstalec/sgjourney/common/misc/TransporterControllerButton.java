@@ -115,14 +115,14 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 		return this;
 	}
 	
-	public TransporterControllerButton<T> setTransporter(MinecraftServer server, Transporter transporter)
+	public TransporterControllerButton<T> setTransporter(Transporter transporter)
 	{
-		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(state.chatFormatting) : null, transporter.getPosition(server));
+		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(state.chatFormatting) : null, transporter.getPosition());
 	}
 	
-	public TransporterControllerButton<T> setTransporter(MinecraftServer server, Transporter transporter, ChatFormatting chatFormatting)
+	public TransporterControllerButton<T> setTransporter(Transporter transporter, ChatFormatting chatFormatting)
 	{
-		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(chatFormatting) : null, transporter.getPosition(server));
+		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(chatFormatting) : null, transporter.getPosition());
 	}
 	
 	public ButtonState state()
