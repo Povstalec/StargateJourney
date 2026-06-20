@@ -92,10 +92,11 @@ public class StargateIrisItem extends Item
 			
 			CompoundTag tag = stack.getOrCreateTag();
 			
-			if(!tag.contains(DURABILITY))
-				tag.putInt(DURABILITY, irisItem.getMaxDurability());
-			
-			durability = tag.getInt(DURABILITY);
+			if(tag.contains(DURABILITY)) {
+				durability = tag.getInt(DURABILITY);
+			} else {
+				durability = irisItem.getMaxDurability();
+			}
 			
 			return durability;
 		}
@@ -123,7 +124,7 @@ public class StargateIrisItem extends Item
 			durability--;
 			
 			tag.putInt(DURABILITY, durability);
-			
+
 			if(durability >= 1)
 				return true;
 		}
