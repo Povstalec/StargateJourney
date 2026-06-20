@@ -185,6 +185,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				
 				if(result.isPresent())
 					blockStates.put(part, result.get());
+			} else {
+				removeBlockAt(part);
 			}
 		}
 	}
