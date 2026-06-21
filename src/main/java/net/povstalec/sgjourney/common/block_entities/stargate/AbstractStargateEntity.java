@@ -128,9 +128,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	private final StargateType<SG> stargateType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
-	
-	// Stargate destruction
-	protected boolean isItemDropped = false;
+
+	/**
+	 * If set, the gate is being removed by the given part.
+	 * Once set, the value must not be changed.
+	 */
+	protected StargatePart pendingRemovalFromPart = null;
 	
 	// Basic Info
 	protected Address.Immutable id9ChevronAddress = new Address.Immutable();
@@ -1334,16 +1337,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
-	public void markItemAsDropped()
-	{
-		this.isItemDropped = true;
-	}
-	
-	public boolean isItemDropped()
-	{
-		return this.isItemDropped;
-	}
-	
 	@Override
 	public void saveToItem(ItemStack stack)
 	{
@@ -1701,7 +1694,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			}
 		}
 		else
+		{
 			stargate.updateClient();
+			if (stargate.getPendingRemovalFromPart() != null)
+			{
+				// once removal is initiated, destroy the base block
+				level.destroyBlock(pos, false);
+			}
+		}
 
 		//stargate.blockCover.canSinkGate = true; //TODO Implement a check for whether or not the Stargate can sink into the ground
     }
@@ -1791,7 +1791,29 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		return true;
 	}
-	
+
+	/**
+	 * Register a pending removal of the multiblock structure which is being handled by the given part.
+	 * Does nothing if there is already a part registered.
+	 * @param part the part initiating the removal.
+	 */
+	public void setPendingRemovalFromPart(StargatePart part)
+	{
+		if (this.pendingRemovalFromPart == null)
+		{
+			this.pendingRemovalFromPart = part;
+		}
+	}
+
+	/**
+	 * The part that initiated the gate multiblock structure removal.
+	 * @return the stargate part or {@code null}
+	 */
+	public StargatePart getPendingRemovalFromPart()
+	{
+		return pendingRemovalFromPart;
+	}
+
 	@Override
 	public String toString()
 	{

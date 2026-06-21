@@ -205,11 +205,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				stargate.dhdCache.clearTwoWays();
     			stargate.removeStargateFromNetwork();
     		}
-    		
-			dropStargateItem(level, pos, oldState, null);
-    		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
-    		
-            super.onRemove(oldState, level, pos, newState, isMoving);
+
+			super.onRemove(oldState, level, pos, newState, isMoving);
         }
     }
 	
