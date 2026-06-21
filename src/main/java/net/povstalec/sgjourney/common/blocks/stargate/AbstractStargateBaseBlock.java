@@ -23,6 +23,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -53,6 +55,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String LOCAL_POINT_OF_ORIGIN = AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN;
+	private static final List<StargatePart> DIRECT_NEIGHBORS = List.of(StargatePart.LEFT, StargatePart.RIGHT);
 	
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
@@ -173,6 +176,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
 	{
 		super.setPlacedBy(level, pos, state, placer, stack);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
 		for(StargatePart part : getParts())
 		{
@@ -186,8 +190,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
 			}
 		}
-		
-		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
 		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			updateIris(level, pos, state, irisStargate.irisInfo().getShieldingState());
@@ -335,7 +337,29 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		return null;
 	}
-	
+
+	/**
+	 * Checks if the change came from left or right and verifies that the neighbor is still a valid stargate ring block.
+	 * If not, the base block removes itself.
+	 */
+	@Override
+	public void neighborChanged(BlockState state, Level level, BlockPos pos, Block oldNeighborBlock, BlockPos neighborPos, boolean movedByPiston)
+	{
+		super.neighborChanged(state, level, pos, oldNeighborBlock, neighborPos, movedByPiston);
+		for (StargatePart part : DIRECT_NEIGHBORS)
+		{
+			if (part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)).equals(neighborPos)) {
+				Block newNeighborBlock = level.getBlockState(neighborPos).getBlock();
+				boolean wasRing = oldNeighborBlock instanceof AbstractStargateRingBlock;
+				boolean isNowRing = newNeighborBlock instanceof AbstractStargateRingBlock;
+				if (wasRing && !isNowRing)
+				{
+					level.destroyBlock(pos, false);
+				}
+			}
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> createTickerHelper(BlockEntityType<A> typeA, BlockEntityType<E> typeB, BlockEntityTicker<? super E> ticker)

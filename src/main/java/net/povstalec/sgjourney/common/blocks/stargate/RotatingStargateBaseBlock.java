@@ -32,5 +32,6 @@ public abstract class RotatingStargateBaseBlock extends AbstractStargateBaseBloc
 			else
 				stargate.updateSignal(StargatePart.BASE, 0);
 		}
+		super.neighborChanged(state, level, pos, block, pos2, bool);
 	}
 }

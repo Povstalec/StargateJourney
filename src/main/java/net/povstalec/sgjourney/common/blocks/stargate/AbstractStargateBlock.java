@@ -190,24 +190,25 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 
 	/**
-	 * Extracts block entity from the stargate base block, removes the base block from the level and returns a single element list
+	 * Extracts block entity from the stargate base block and returns a single element list
 	 * with the item stack of the gate.
-	 * If the gate was already marked as dropped or the base block does not exists, empty list is returned.
 	 *
-	 * @return List with the stargate item stack or empty list if the gate was already dropped or could not be accessed.
+	 * @return List with the stargate item stack or empty list if the method was called before or the gate could not be accessed.
 	 * @implSpec Requires {@link LootContextParams#ORIGIN} to be passed in the context, otherwise returns empty list.
+	 * Expects {@link LootContextParams#BLOCK_ENTITY} to be present for the base block.
+	 * @implNote Can be called only once, marks the gate as dropped and any further calls will return empty list.
 	 */
 	@Override
-	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder) {
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+	{
 		final BlockPos originPos = Optional.ofNullable(builder.getOptionalParameter(LootContextParams.ORIGIN))
 				.map(BlockPos::new)
 				.orElse(null);
 
-		if (originPos == null) {
+		if (originPos == null)
+		{
 			return Collections.emptyList();
 		}
-
-		final BlockPos basePos = getBasePos(state, originPos);
 
 		final ItemStack gateStack =
 				// if the location is present find the respective stargate entity
@@ -216,57 +217,53 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				// or find it in the level (if a ring block was mined)
 				.or(() -> Optional.ofNullable(getStargate(builder.getLevel(), originPos, state)))
 				.filter(blockEntity -> blockEntity instanceof AbstractStargateEntity<?>)
-				// make the item stack
-				.flatMap(stargateEntity -> makeStargateItem(builder.getLevel(), (AbstractStargateEntity<?>) stargateEntity))
+				// make the item stack and mark the gate as dropped
+				.map(stargateEntity -> makeStargateItem(builder.getLevel(), (AbstractStargateEntity<?>) stargateEntity))
 				.orElse(null);
 
 		// if null, the gate entity does not exist or the gate was already marked as dropped
-		if (gateStack == null) {
+		if (gateStack == null)
+		{
 			return Collections.emptyList();
 		}
 
-		// now remove the base block if it exists
-		if (builder.getLevel().getBlockState(basePos).getBlock() instanceof AbstractStargateBaseBlock baseBlock) {
-			builder.getLevel().removeBlock(basePos, false);
-		}
+		// the base block will be removed by block update
 		return List.of(gateStack);
-	}
-
-	private static BlockPos getBasePos(BlockState stargateBlockState, BlockPos blockPos) {
-		return stargateBlockState.getValue(PART).getBaseBlockPos(blockPos, stargateBlockState.getValue(FACING), stargateBlockState.getValue(ORIENTATION));
 	}
 
 	/**
 	 * Converts the stargate to an {@link ItemStack}.
 	 * The gate can be converted only once and is marked as dropped, until placed again.
-	 * @return the {@link ItemStack} if converted, or empty optional if the gate was already "dropped"
+	 * @return the {@link ItemStack} if converted, or {@code null} if the gate was already "dropped"
 	 */
-	public Optional<ItemStack> makeStargateItem(Level level, AbstractStargateEntity<?> stargate)
+	public ItemStack makeStargateItem(Level level, AbstractStargateEntity<?> stargate)
 	{
-		if(level.isClientSide())
-			return Optional.empty();
-
-		if(stargate != null)
+		if(!level.isClientSide() && stargate != null)
 		{
 			if(!stargate.isItemDropped())
 			{
 				stargate.markItemAsDropped(); // mark as dropped to prevent duplication
 				ItemStack itemstack = new ItemStack(asItem());
 				stargate.saveToItem(itemstack);
-				return Optional.of(itemstack);
+				return itemstack;
 			}
 		}
-		return Optional.empty();
+		return null;
 	}
 
 	/**
-	 * Triggers removal of the whole gate except the base block, that will be removed in {@link #getDrops(BlockState, LootContext.Builder)} in order to preserve the block entity.
+	 * Triggers removal of the whole gate except the base block,
+	 * that will be removed in {@link #getDrops(BlockState, LootContext.Builder)} in order to preserve the block entity.
 	 */
 	@Override
-	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean movedByPiston)
+	{
+		Direction direction = oldState.getValue(FACING);
+		Orientation orientation = oldState.getValue(ORIENTATION);
+		BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, direction, orientation);
+		destroyStargate(level, baseBlockPos, getParts(), getShieldingParts(), direction, orientation, StargatePart.BASE);
+
 		super.onRemove(oldState, level, pos, newState, movedByPiston);
-		BlockPos baseBlockPos = getBasePos(oldState, pos);
-		destroyStargate(level, baseBlockPos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), StargatePart.BASE);
 	}
 
 	/**
@@ -292,7 +289,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		for(StargatePart part : parts)
 		{
-			if(excludedPart.equals(part)) {
+			if(excludedPart.equals(part))
+			{
 				continue;
 			}
 			BlockPos ringPos = part.getRingPos(pos, direction, orientation);
@@ -301,8 +299,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(ringState.getBlock() instanceof AbstractStargateBlock)
 			{
 				boolean waterlogged = ringState.getBlock() instanceof AbstractStargateRingBlock ? ringState.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
-
-				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+				BlockState newState = waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
+				level.setBlock(ringPos, newState, Block.UPDATE_NEIGHBORS | Block.UPDATE_CLIENTS);
 			}
 		}
 	}
