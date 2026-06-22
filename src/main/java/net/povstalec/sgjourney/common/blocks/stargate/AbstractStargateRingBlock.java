@@ -56,6 +56,12 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	{
 		if(oldState.getBlock() != newState.getBlock())
 		{
+			oldState.getOptionalValue(PART)
+					.ifPresent(part ->
+							getBlockCover(level, oldState, pos)
+									.ifPresent(cover ->
+											cover.mineBlockAt(level, null, part, pos)
+									));
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
     }

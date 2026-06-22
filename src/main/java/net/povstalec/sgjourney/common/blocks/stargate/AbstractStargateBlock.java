@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.HoneycombItem;
@@ -248,9 +249,17 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			ItemStack itemstack = new ItemStack(asItem());
 			stargate.saveToItem(itemstack);
+
+			removeCoverBlockFromStargateData(itemstack.getTagElement("BlockEntityTag"));
 			return itemstack;
 		}
 		return null;
+	}
+
+	private static void removeCoverBlockFromStargateData(CompoundTag tag) {
+		if (tag != null) {
+			tag.remove(AbstractStargateEntity.COVER_BLOCKS);
+		}
 	}
 
 	/**

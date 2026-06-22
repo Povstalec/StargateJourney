@@ -24,6 +24,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import org.jetbrains.annotations.Nullable;
 
 public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
@@ -63,8 +64,15 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		
 		return Optional.ofNullable(oldState);
 	}
-	
-	public boolean mineBlockAt(Level level, Player player, StargatePart part, BlockPos pos)
+
+	/**
+	 * Removes the block cover, if present.
+	 * If player is provided, the cover block drops if the player is not in creative nad has the correct tool.
+	 * If the player is not provided ({@code null}), the cover block always drops.
+	 * @param player The player to check for creative mode and the correct tool for drops, or {@code null}.
+	 * @return {@code true} when cover block was present and was removed, {@code false} otherwise
+	 */
+	public boolean mineBlockAt(Level level, @Nullable Player player, StargatePart part, BlockPos pos)
 	{
 		Optional<BlockState> removed = removeBlockAt(part);
 		if(removed.isPresent())
@@ -73,7 +81,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			{
 				BlockState state = removed.get();
 				
-				if(!player.isCreative() && player.hasCorrectToolForDrops(removed.get()))
+				if(player == null || (!player.isCreative() && player.hasCorrectToolForDrops(removed.get())))
 					Block.dropResources(state, level, pos);
 				
 				level.levelEvent((Player) null, 2001, pos, Block.getId(state)); // Spawns breaking particles and makes a breaking sound
