@@ -1694,14 +1694,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			}
 		}
 		else
-		{
 			stargate.updateClient();
-			if (stargate.getPendingRemovalFromPart() != null)
-			{
-				// once removal is initiated, destroy the base block
-				level.destroyBlock(pos, false);
-			}
-		}
 
 		//stargate.blockCover.canSinkGate = true; //TODO Implement a check for whether or not the Stargate can sink into the ground
     }

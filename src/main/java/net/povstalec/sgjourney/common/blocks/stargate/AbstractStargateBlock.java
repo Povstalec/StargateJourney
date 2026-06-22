@@ -223,6 +223,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				.map(blockEntity -> (AbstractStargateEntity<?>) blockEntity)
 				// discard entity if its being removed by a different part,
 				// only the part that initiated removal can provide drops
+				// allowing null when probed before removal
 				.filter(stargate -> stargate.getPendingRemovalFromPart() == null || thisPart.equals(stargate.getPendingRemovalFromPart()))
 				// make the item stack
 				.map(stargateEntity -> makeStargateItem(builder.getLevel(), stargateEntity))
