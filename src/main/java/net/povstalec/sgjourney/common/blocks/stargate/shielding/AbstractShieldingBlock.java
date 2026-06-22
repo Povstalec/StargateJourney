@@ -234,7 +234,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 				if(stargate instanceof IrisStargateEntity<?> irisStargate)
 				{
 					// This check here makes sure the iris doesn't destroy itself when it's opening and blocks are getting removed
-					// This checks if the blockstate change was caused by the iris opening (checking old shielding progress against current shielding progress)
+					// Check if the blockstate change was caused by the iris opening and break the rest of the iris if it wasn't
 					if(shieldingPart.shieldingState().isBefore(irisStargate.irisInfo().getIrisProgress()))
 					{
 						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
