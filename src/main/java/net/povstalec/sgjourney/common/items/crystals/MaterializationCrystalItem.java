@@ -12,8 +12,8 @@ import net.minecraft.world.level.Level;
 
 public class MaterializationCrystalItem extends AbstractCrystalItem
 {
-	public static final int DEFAULT_RANGE_MULTIPLIER = 16;
-	public static final int ADVANCED_RANGE_MULTIPLIER = 32;
+	public static final int DEFAULT_RANGE_MULTIPLIER = 4;
+	public static final int ADVANCED_RANGE_MULTIPLIER = 8;
 	
 	public MaterializationCrystalItem(Properties properties)
 	{

@@ -31,16 +31,16 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		addPlayerInventory(inventory, 8, 84);
 		addPlayerHotbar(inventory, 8, 142);
 		
-		this.largeControlCrystalIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 0, 80, 35)).index;
+		this.largeControlCrystalIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 0, 80, 35)).index;
 		
-		this.crystalSlotIndex[0] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 1, 80, 17)).index;
-		this.crystalSlotIndex[1] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 2, 98, 17)).index;
-		this.crystalSlotIndex[2] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 3, 98, 35)).index;
-		this.crystalSlotIndex[3] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 4, 98, 53)).index;
-		this.crystalSlotIndex[4] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 5, 80, 53)).index;
-		this.crystalSlotIndex[5] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 6, 62, 53)).index;
-		this.crystalSlotIndex[6] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 7, 62, 35)).index;
-		this.crystalSlotIndex[7] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalHandler, 8, 62, 17)).index;
+		this.crystalSlotIndex[0] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 1, 80, 17)).index;
+		this.crystalSlotIndex[1] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 2, 98, 17)).index;
+		this.crystalSlotIndex[2] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 3, 98, 35)).index;
+		this.crystalSlotIndex[3] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 4, 98, 53)).index;
+		this.crystalSlotIndex[4] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 5, 80, 53)).index;
+		this.crystalSlotIndex[5] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 6, 62, 53)).index;
+		this.crystalSlotIndex[6] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 7, 62, 35)).index;
+		this.crystalSlotIndex[7] = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.crystalItemHandler, 8, 62, 17)).index;
 		
 		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
 	}
@@ -53,6 +53,21 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 			return true;
 		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
+	}
+	
+	public int getTransferEfficiency()
+	{
+		return this.blockEntity.getTransferEfficiency();
+	}
+	
+	public long getTotalEnergyStored()
+	{
+		return this.blockEntity.getTotalEnergyStored();
+	}
+	
+	public long getTotalEnergyCapacity()
+	{
+		return this.blockEntity.getTotalEnergyCapacity();
 	}
 	
 	public long getTransportRange()

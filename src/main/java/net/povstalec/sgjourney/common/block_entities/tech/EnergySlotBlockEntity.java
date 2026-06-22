@@ -104,7 +104,5 @@ public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 			return;
 		
 		energyBlockEntity.extractItemEnergy(energyBlockEntity.energyItemHandler.getStackInSlot(0));
-		
-		energyBlockEntity.updateClient();
 	}
 }

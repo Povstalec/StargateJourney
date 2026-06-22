@@ -39,6 +39,8 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 		this.hasNetworkRestrictions = transporterEntity.hasNetworkRestrictions();
 		this.networks = transporterEntity.getNetworks();
 		
+		this.transferEfficiency = transporterEntity.getTransferEfficiency();
+		
 		this.allowInterdimensionalTransport = transporterEntity.allowInterdimensionalTransport();
 		this.maxTransportDistance = transporterEntity.maxTransportRange();
 	}
@@ -61,6 +63,8 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 		{
 			this.hasNetworkRestrictions = transporter.hasNetworkRestrictions();
 			this.networks = transporter.getCachedNetworks();
+			
+			this.transferEfficiency = transporter.getTransferEfficiency();
 			
 			this.allowInterdimensionalTransport = transporter.allowInterdimensionalTransport();
 			this.maxTransportDistance = transporter.maxTransportRange();

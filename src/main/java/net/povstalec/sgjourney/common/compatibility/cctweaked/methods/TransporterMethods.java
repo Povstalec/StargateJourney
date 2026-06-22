@@ -40,7 +40,7 @@ public class TransporterMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractTransporterEntity<?> transporter, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericTransporterFunctions.getRecentFeedback(transporter)));
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericTransporterFunctions.getRecentFeedback(transporter).feedback()));
 		}
 	}
 	public static class DialCoords implements InterfaceMethod<AbstractTransporterEntity<?>>
@@ -60,7 +60,7 @@ public class TransporterMethods
 				int y = arguments.getInt(1);
 				int z = arguments.getInt(2);
 				
-				return returnedFeedback(interfaceEntity, GenericTransporterFunctions.dialCoords(transporter, new Vec3i(x, y, z)));
+				return returnedFeedback(interfaceEntity, GenericTransporterFunctions.dialCoords(transporter, new Vec3i(x, y, z)).feedback());
 			});
 		}
 	}
@@ -81,7 +81,7 @@ public class TransporterMethods
 			{
 				Map<Double, Double> transporterIDTable = (Map<Double, Double>) arguments.getTable(0);
 				
-				return returnedFeedback(interfaceEntity, GenericTransporterFunctions.dialTransporterID(transporter, new TransporterID.Immutable(transporterIDTable)));
+				return returnedFeedback(interfaceEntity, GenericTransporterFunctions.dialTransporterID(transporter, new TransporterID.Immutable(transporterIDTable)).feedback());
 			});
 		}
 	}

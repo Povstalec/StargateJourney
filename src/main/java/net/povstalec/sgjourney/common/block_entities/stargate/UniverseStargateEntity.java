@@ -123,12 +123,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback indirectEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		canEngage = canEngageStargate;
 		
 		if(isSymbolOutOfBounds(symbol))
-			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol));
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() > 0)
 			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
@@ -136,25 +136,25 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
-				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
 		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
-			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
 		
 		if(addressBuffer.containsSymbol(symbol))
-			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
 		addressBuffer.addSymbol(symbol);
-		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
 	@Override
-	public StargateInfo.Feedback directEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
@@ -163,7 +163,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	protected StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		waitTicks++;
@@ -172,7 +172,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback dhdEngageStargate()
+	public StargateInfo.FeedbackMessage dhdEngageStargate()
 	{
 		if(!addressBuffer.canBeDialed())
 			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
@@ -185,7 +185,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			else
 			{
 				canEngage = true;
-				return StargateInfo.Feedback.NONE;
+				return StargateInfo.Feedback.NONE.withInfo();
 			}
 		}
 		else
@@ -276,7 +276,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		super.resetStargate(feedback);
 		

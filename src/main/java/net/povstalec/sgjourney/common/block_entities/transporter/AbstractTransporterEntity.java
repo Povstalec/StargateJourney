@@ -63,7 +63,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
-	protected TransporterInfo.Feedback recentFeedback = TransporterInfo.Feedback.NONE;
+	protected TransporterInfo.FeedbackMessage recentFeedback = TransporterInfo.Feedback.NONE.withInfo();
 	
 	protected TransporterID.Immutable transporterID;
 	
@@ -212,10 +212,16 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		super.onDataPacket(net, packet);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
-		{
-			restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
-			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
-		}
+			handleUpdateTag(tag);
+	}
+	
+	@Override
+	public void handleUpdateTag(CompoundTag tag)
+	{
+		super.handleUpdateTag(tag);
+		
+		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
+		networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 	}
 	
 	@Override
@@ -298,15 +304,15 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	protected abstract Component getDefaultName();
 	
 	
-	public TransporterInfo.Feedback setRecentFeedback(TransporterInfo.Feedback feedback)
+	public TransporterInfo.FeedbackMessage setRecentFeedback(TransporterInfo.FeedbackMessage feedback)
 	{
-		if(feedback != TransporterInfo.Feedback.NONE)
+		if(feedback.feedback() != TransporterInfo.Feedback.NONE)
 			this.recentFeedback = feedback;
 		
 		return feedback;
 	}
 	
-	public TransporterInfo.Feedback getRecentFeedback()
+	public TransporterInfo.FeedbackMessage getRecentFeedback()
 	{
 		return this.recentFeedback;
 	}
@@ -390,33 +396,35 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		return !this.isConnected();
 	}
 	
+	public abstract int getTransferEfficiency();
+	
 	public abstract double maxTransportRange();
 	
 	public abstract boolean allowInterdimensionalTransport();
 	
-	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
+	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
 			onDialAttempt(this.recentFeedback, otherID);
 		}
 		return this.recentFeedback;
 	}
 	
-	public TransporterInfo.Feedback dialTransporter(Vec3i coords)
+	public TransporterInfo.FeedbackMessage dialTransporter(Vec3i coords)
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), TransporterInfo.Feedback.UNKNOWN_ERROR));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
 			onDialAttempt(this.recentFeedback, coords);
 		}
 		return this.recentFeedback;
 	}
 	
-	public void onDialAttempt(TransporterInfo.Feedback feedback, TransporterID otherID) {}
+	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, TransporterID otherID) {}
 	
-	public void onDialAttempt(TransporterInfo.Feedback feedback, Vec3i coords) {}
+	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, Vec3i coords) {}
 	
 	public boolean connectTransporter(UUID connectionID)
 	{
@@ -442,14 +450,14 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		}
 	}
 	
-	public TransporterInfo.Feedback disconnectTransporter(TransporterInfo.Feedback feedback)
+	public TransporterInfo.FeedbackMessage disconnectTransporter(TransporterInfo.Feedback feedback)
 	{
 		//TODO Extra checks for disconnect?
 		
 		return bypassDisconnectTransporter(feedback);
 	}
 	
-	public TransporterInfo.Feedback bypassDisconnectTransporter(TransporterInfo.Feedback feedback)
+	public TransporterInfo.FeedbackMessage bypassDisconnectTransporter(TransporterInfo.Feedback feedback)
 	{
 		if(connectionID != null)
 			TransporterNetwork.get(level).terminateConnection(this.connectionID, feedback);
@@ -525,25 +533,30 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		TransporterNetwork.get(level).updateTransporterEntity(this);
 	}
 	
-	public TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
+	public TransporterInfo.FeedbackMessage resetTransporter(TransporterInfo.FeedbackMessage feedback)
 	{
 		this.connectionID = null;
 		setConnected(false);
 		
 		try
 		{
-			if(feedback == TransporterInfo.Feedback.UNKNOWN_ERROR)
+			if(feedback.feedback() == TransporterInfo.Feedback.UNKNOWN_ERROR)
 				throw new RuntimeException("Unknown Transporter Error");
 			else
-				StargateJourney.LOGGER.debug("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback.getMessage());
+				StargateJourney.LOGGER.debug("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback);
 		}
 		catch(RuntimeException e)
 		{
-			StargateJourney.LOGGER.error("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback.getMessage(), e);
+			StargateJourney.LOGGER.error("Reset Transporter {} at {} {} {}", transporterID, getBlockPos().toShortString(), getLevel().dimension().location(), feedback, e);
 			return setRecentFeedback(feedback);
 		}
 		
 		return setRecentFeedback(feedback);
+	}
+	
+	public TransporterInfo.FeedbackMessage resetTransporter(TransporterInfo.Feedback feedback, Object... additionalInfo)
+	{
+		return resetTransporter(feedback.withInfo(additionalInfo));
 	}
 	
 	protected void loadChunk(boolean load)

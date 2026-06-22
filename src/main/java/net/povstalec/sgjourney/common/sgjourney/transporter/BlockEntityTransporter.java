@@ -107,7 +107,7 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	}
 	
 	@Override
-	default TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback)
+	default TransporterInfo.FeedbackMessage resetTransporter(TransporterInfo.FeedbackMessage feedback)
 	{
 		TransporterEntity transporterEntity = getTransporterEntity(getServer());
 		

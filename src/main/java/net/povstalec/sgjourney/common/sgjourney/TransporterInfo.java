@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.sgjourney;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class TransporterInfo
 {
@@ -38,8 +38,8 @@ public class TransporterInfo
 		
 		INVALID_TRANSPORTER_ID(-2, TransporterInfo.FeedbackType.MAJOR_ERROR, "invalid_transporter_id"),
 		NO_TRANSPORTER_AT_COORDS(-3, TransporterInfo.FeedbackType.MAJOR_ERROR, "no_transporter_at_coords"),
-		NOT_ENOUGH_POWER(-4, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power"), //TODO
-		NOT_ENOUGH_POWER_IN_TARGET(-5, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power_in_target"), //TODO
+		NOT_ENOUGH_POWER(-4, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power"),
+		NOT_ENOUGH_POWER_IN_TARGET(-5, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power_in_target"),
 		SELF_OBSTRUCTED(-6, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_obstructed"),
 		TARGET_OBSTRUCTED(-7, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_obstructed"),
 		SELF_CONNECT(-8, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_connect"),
@@ -71,18 +71,12 @@ public class TransporterInfo
 		private final int code;
 		private final TransporterInfo.FeedbackType type;
 		private final String message;
-		private final Component feedbackMessage;
 		
 		Feedback(int code, TransporterInfo.FeedbackType type, String message)
 		{
 			this.code = code;
 			this.type = type;
 			this.message = message;
-			
-			if(type.isError())
-				this.feedbackMessage = createError(message, type == TransporterInfo.FeedbackType.MAJOR_ERROR);
-			else
-				this.feedbackMessage = createInfo(message);
 		}
 		
 		public int getCode()
@@ -93,11 +87,6 @@ public class TransporterInfo
 		public String getMessage()
 		{
 			return this.message;
-		}
-		
-		public Component getFeedbackMessage()
-		{
-			return this.feedbackMessage;
 		}
 		
 		public boolean playFailSound()
@@ -117,17 +106,44 @@ public class TransporterInfo
 			
 			return TransporterInfo.Feedback.values()[ordinal];
 		}
-	}
-	
-	private static Component createInfo(String feedback)
-	{
-		return Component.translatable("message.sgjourney.transporter.info." + feedback);
-	}
-	
-	private static Component createError(String feedback, boolean majorError)
-	{
-		MutableComponent component = Component.translatable("message.sgjourney.transporter.error." + feedback);
 		
-		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
+		public FeedbackMessage withInfo(Object... additionalInfo)
+		{
+			return new FeedbackMessage(this, additionalInfo);
+		}
+	}
+	
+	public record FeedbackMessage(Feedback feedback, Object... additionalInfo)
+	{
+		public Component getMessageComponent()
+		{
+			if(feedback().isError())
+				return createError(feedback().message, feedback().type == FeedbackType.MAJOR_ERROR, additionalInfo());
+			else
+				return createInfo(feedback().message, additionalInfo());
+		}
+		
+		@Override
+		public @NotNull String toString()
+		{
+			StringBuilder message = new StringBuilder(feedback().getMessage());
+			
+			for(Object info : additionalInfo())
+			{
+				message.append(", ").append(info);
+			}
+			
+			return message.toString();
+		}
+	}
+	
+	private static Component createInfo(String feedback, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.transporter.info." + feedback, additionalInfo);
+	}
+	
+	private static Component createError(String feedback, boolean majorError, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.transporter.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
 	}
 }

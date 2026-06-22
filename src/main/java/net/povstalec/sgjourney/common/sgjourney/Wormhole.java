@@ -240,7 +240,10 @@ public class Wormhole
 		
 		reconstructEvent(destinationLevel.getServer(), destinationStargate, player);
 		
-		long distanceTraveled = Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType()) * Math.sqrt(initialPos.distanceTo(player.position())));
+		double teleportationScale = DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType());
+		Vec3 transformedPos = new Vec3(initialPos.x * teleportationScale, initialPos.y, initialPos.z * teleportationScale);
+		
+		long distanceTraveled = Math.round(transformedPos.distanceTo(player.position()));
 		
 		player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
 		player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled * 100);

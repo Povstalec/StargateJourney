@@ -97,7 +97,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		if(this.isChevronOpen)
 		{
@@ -127,10 +127,10 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback encodeChevron()
+	public StargateInfo.FeedbackMessage encodeChevron()
 	{
 		if(!isChevronOpen())
-			return setRecentFeedback(StargateInfo.Feedback.CHEVRON_NOT_OPEN);
+			return setRecentFeedback(StargateInfo.Feedback.CHEVRON_NOT_OPEN.withInfo());
 		
 		if(!level.isClientSide())
 			updateClient();
@@ -138,7 +138,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		return setRecentFeedback(encodeChevron(getCurrentSymbol(), false, true));
 	}
 	
-	public StargateInfo.Feedback openChevron()
+	public StargateInfo.FeedbackMessage openChevron()
 	{
 		if(!this.isChevronOpen)
 		{
@@ -151,24 +151,24 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 				if(!level.isClientSide())
 					updateClient();
 				
-				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_OPENED);
+				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_OPENED.withInfo());
 			}
 			else
-				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
+				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo());
 		}
-		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_OPENED);
+		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_OPENED.withInfo());
 	}
 	
-	public StargateInfo.Feedback closeChevron()
+	public StargateInfo.FeedbackMessage closeChevron()
 	{
 		if(this.isChevronOpen)
 		{
 			this.isChevronOpen = false;
 			
-			StargateInfo.Feedback feedback = directEngageSymbol(getCurrentSymbol(), true);
+			StargateInfo.FeedbackMessage feedback = directEngageSymbol(getCurrentSymbol(), true);
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
-			if(feedback == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)
+			if(feedback.feedback() == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)
 				chevronSound(getCurrentChevron(), false, false, false);
 			
 			return setRecentFeedback(feedback);
@@ -177,7 +177,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(!level.isClientSide())
 			updateClient();
 		
-		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED);
+		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED.withInfo());
 	}
 	
 	//============================================================================================
@@ -207,10 +207,10 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public StargateInfo.Feedback startRotation(int desiredSymbol, RotationDirection rotateClockwise)
+	public StargateInfo.FeedbackMessage startRotation(int desiredSymbol, RotationDirection rotateClockwise)
 	{
 		if(this.isChevronOpen)
-			return StargateInfo.Feedback.ROTATION_BLOCKED;
+			return StargateInfo.Feedback.ROTATION_BLOCKED.withInfo();
 		
 		return super.startRotation(desiredSymbol, rotateClockwise);
 	}
@@ -229,7 +229,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 				if(!isConnected())
 					openChevron();
 				else
-					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
+					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN.withInfo());
 			}
 		}
 		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)

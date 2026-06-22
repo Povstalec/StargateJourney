@@ -856,6 +856,8 @@
 	"tooltip.sgjourney.transport_rings.networks.description": "If network restrictions are active, Transport Rings connections are limited to Transporters in the same networks",
 	"tooltip.sgjourney.transport_rings.networks.usage.communication_crystal": "Communication Crystal (with Frequency) -> Add Transporter to another Network",
 	"tooltip.sgjourney.transport_rings.networks.usage.control_crystal": "Control Crystal -> Activate network restrictions",
+	"tooltip.sgjourney.transport_rings.energy_reach": "Energy Reach: %s Blocks",
+	"tooltip.sgjourney.transport_rings.total_energy": "Total Energy",
 	
 	"tooltip.sgjourney.dhd.symbols_to_numbers": "Hold Shift to show numbers",
 	"tooltip.sgjourney.dhd.numbers_to_symbols": "Hold Shift to show symbols",
@@ -979,9 +981,9 @@
 	"message.sgjourney.stargate.info.none": "None",
 	"message.sgjourney.stargate.error.unknown": "Unknown Error",
 	
-	"message.sgjourney.stargate.info.symbol_encoded": "Symbol encoded",
-	"message.sgjourney.stargate.error.symbol_in_address": "Symbol is already encoded",
-	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol is out of bounds",
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol %s encoded",
+	"message.sgjourney.stargate.error.symbol_in_address": "Symbol %s is already encoded",
+	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol %s is out of bounds",
 	"message.sgjourney.stargate.error.encode_when_connected": "Cannot encode Symbols when connected",
 	
 	"message.sgjourney.stargate.info.connection_established.system_wide": "System-wide connection established",
@@ -990,7 +992,7 @@
 	
 	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
-	"message.sgjourney.stargate.error.not_enough_power": "Not enough power",
+	"message.sgjourney.stargate.error.not_enough_power": "Not enough power (%s required)",
 	"message.sgjourney.stargate.error.self_obstructed": "Local Stargate is obstructed",
 	"message.sgjourney.stargate.error.target_obstructed": "Target Stargate is obstructed",
 	"message.sgjourney.stargate.error.self_dial": "Stargate cannot dial itself",
@@ -1045,7 +1047,8 @@
 	"message.sgjourney.transporter.info.connection_established.relayed_intergalactic": "Intergalactic connection established",
 	
 	"message.sgjourney.transporter.error.invalid_transporter_id": "Invalid Transporter ID",
-	"message.sgjourney.transporter.error.not_enough_power": "Not enough power",
+	"message.sgjourney.transporter.error.not_enough_power": "Not enough power (%s required)",
+	"message.sgjourney.transporter.error.not_enough_power_in_target": "Not enough power in target (%s required)",
 	"message.sgjourney.transporter.error.self_obstructed": "Local Transporter is obstructed",
 	"message.sgjourney.transporter.error.target_obstructed": "Target Transporter is obstructed",
 	"message.sgjourney.transporter.error.self_connect": "Transporter cannot connect to itself",

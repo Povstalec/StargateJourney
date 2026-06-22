@@ -249,19 +249,19 @@ public class StargateConnection
 		return null;
 	}
 	
-	public void terminate(MinecraftServer server, StargateInfo.Feedback feedback)
+	public void terminate(MinecraftServer server, StargateInfo.FeedbackMessage feedback)
 	{
-		SGJourneyEvents.onStargateConnectionTerminated(server, this, feedback);
+		SGJourneyEvents.onStargateConnectionTerminated(server, this, feedback.feedback());
 		
 		if(this.dialingStargate != null)
 		{
-			this.dialingStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), true); // true: Was dialing out
+			this.dialingStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.feedback().getCode(), true); // true: Was dialing out
 			this.dialingStargate.resetStargate(feedback);
 		}
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.getCode(), false); // false: Was being dialed
+			dialedStargate.updateInterfaceBlocks(null, EVENT_DISCONNECTED, feedback.feedback().getCode(), false); // false: Was being dialed
 			dialedStargate.resetStargate(feedback);
 		}
 		
@@ -276,7 +276,7 @@ public class StargateConnection
 		newDialedStargate.connectStargate(this.uuid, false);
 	}*/
 	
-	private void removeDialedStargate(MinecraftServer server, Stargate removedStargate, StargateInfo.Feedback feedback)
+	private void removeDialedStargate(MinecraftServer server, Stargate removedStargate, StargateInfo.FeedbackMessage feedback)
 	{
 		if(this.dialedStargates.size() == 1)
 			terminate(server, feedback);
@@ -284,7 +284,7 @@ public class StargateConnection
 			this.dialedStargates = this.dialedStargates.stream().filter(dialedStargate -> dialedStargate != removedStargate).toList();
 	}
 	
-	public void removeStargate(MinecraftServer server, Address address, StargateInfo.Feedback feedback)
+	public void removeStargate(MinecraftServer server, Address address, StargateInfo.FeedbackMessage feedback)
 	{
 		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 			terminate(server, feedback);
@@ -440,7 +440,7 @@ public class StargateConnection
 	{
 		if(hasInvalidStargate())
 		{
-			terminate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+			terminate(server, StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE.withInfo());
 			return;
 		}
 		
@@ -483,14 +483,14 @@ public class StargateConnection
 		
 		if(requiresEnergyBypass(this.openTime) && !ENERGY_BYPASS_ENABLED)
 		{
-			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME);
+			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME.withInfo());
 			return;
 		}
 		
 		// Depletes energy over time
 		if(REQUIRE_ENERGY && !depleteEnergy(getPowerDraw()))
 		{
-			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER);
+			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER.withInfo());
 			return;
 		}
 		
@@ -500,7 +500,7 @@ public class StargateConnection
 		// Closes the connection if any Stargate requires it
 		if(shouldAutoclose())
 		{
-			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE);
+			terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_AUTOCLOSE.withInfo());
 			return;
 		}
 		

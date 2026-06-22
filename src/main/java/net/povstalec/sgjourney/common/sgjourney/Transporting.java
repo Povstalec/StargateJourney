@@ -148,7 +148,10 @@ public class Transporting
 		
 		reconstructEvent(receivingTransporter, player);
 		
-		long distanceTraveled = Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType()) * Math.sqrt(initialPos.distanceTo(player.position())));
+		double teleportationScale = DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType());
+		Vec3 transformedPos = new Vec3(initialPos.x * teleportationScale, initialPos.y, initialPos.z * teleportationScale);
+		
+		long distanceTraveled = Math.round(transformedPos.distanceTo(player.position()));
 		
 		player.awardStat(StatisticsInit.TIMES_USED_TRANSPORTER.get());
 		player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_TRANSPORTER.get(), (int) distanceTraveled * 100);

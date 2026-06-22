@@ -171,26 +171,26 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback indirectEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(level.isClientSide())
-			return StargateInfo.Feedback.NONE;
+			return StargateInfo.Feedback.NONE.withInfo();
 		
 		canEngage = canEngageStargate;
 		
 		if(isSymbolOutOfBounds(symbol))
-			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS;
+			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol);
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
-				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
 		
 		if(addressBuffer.containsSymbol(symbol))
-			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
 		
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
@@ -201,11 +201,11 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
 		
-		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
 	@Override
-	public StargateInfo.Feedback directEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
@@ -214,14 +214,14 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	protected StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		StargateInfo.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
+		StargateInfo.FeedbackMessage feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
@@ -233,7 +233,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback dhdEngageStargate()
+	public StargateInfo.FeedbackMessage dhdEngageStargate()
 	{
 		if(!addressBuffer.canBeDialed())
 			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
@@ -246,7 +246,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			else
 			{
 				canEngage = true;
-				return StargateInfo.Feedback.NONE;
+				return StargateInfo.Feedback.NONE.withInfo();
 			}
 		}
 		else

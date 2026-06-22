@@ -19,6 +19,9 @@ public class TransferCrystalItem extends AbstractCrystalItem
 {
 	public static final String TRANSFER_LIMIT = "transfer_limit";
 	
+	public static final int DEFAULT_EFFICIENCY_MULTIPLIER = 2;
+	public static final int ADVANCED_EFFICIENCY_MULTIPLIER = 4;
+	
 	public TransferCrystalItem(Properties properties)
 	{
 		super(properties);
@@ -36,6 +39,11 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	public long getMaxTransfer()
 	{
 		return CommonCrystalConfig.transfer_crystal_max_transfer.get();
+	}
+	
+	public int getEfficiencyMultiplier()
+	{
+		return DEFAULT_EFFICIENCY_MULTIPLIER;
 	}
 	
 	public static long getMaxTransfer(ItemStack stack)
@@ -86,6 +94,12 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		public long getMaxTransfer()
 		{
 			return CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get();
+		}
+		
+		@Override
+		public int getEfficiencyMultiplier()
+		{
+			return ADVANCED_EFFICIENCY_MULTIPLIER;
 		}
 		
 		@Override

@@ -7,7 +7,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class StargateInfo
 {
@@ -37,17 +37,13 @@ public class StargateInfo
 		
 		public static Gen intToGen(int gen)
 		{
-			switch(gen)
+			return switch(gen)
 			{
-			case 1:
-				return GEN_1;
-			case 2:
-				return GEN_2;
-			case 3:
-				return GEN_3;
-			default:
-				return NONE;
-			}
+				case 1 -> GEN_1;
+				case 2 -> GEN_2;
+				case 3 -> GEN_3;
+				default -> NONE;
+			};
 		}
 	}
 	
@@ -57,7 +53,7 @@ public class StargateInfo
 		MEDIUM(2),
 		FAST(1);
 		
-		private int multiplier;
+		private final int multiplier;
 		
 		ChevronLockSpeed(int multiplier)
 		{
@@ -182,18 +178,12 @@ public class StargateInfo
 		private final int code;
 		private final FeedbackType type;
 		private final String message;
-		private final Component feedbackMessage;
 		
 		Feedback(int code, FeedbackType type, String message)
 		{
 			this.code = code;
 			this.type = type;
 			this.message = message;
-			
-			if(type.isError())
-				this.feedbackMessage = createError(message, type == FeedbackType.MAJOR_ERROR || type == FeedbackType.SKIPPABLE_ERROR);
-			else
-				this.feedbackMessage = createInfo(message);
 		}
 		
 		public int getCode()
@@ -204,11 +194,6 @@ public class StargateInfo
 		public String getMessage()
 		{
 			return this.message;
-		}
-		
-		public Component getFeedbackMessage()
-		{
-			return this.feedbackMessage;
 		}
 		
 		public boolean playFailSound()
@@ -238,18 +223,45 @@ public class StargateInfo
 			
 			return Feedback.values()[ordinal];
 		}
-	}
-	
-	private static Component createInfo(String feedback)
-	{
-		return Component.translatable("message.sgjourney.stargate.info." + feedback);
-	}
-	
-	private static Component createError(String feedback, boolean majorError)
-	{
-		MutableComponent component = Component.translatable("message.sgjourney.stargate.error." + feedback);
 		
-		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
+		public StargateInfo.FeedbackMessage withInfo(Object... additionalInfo)
+		{
+			return new StargateInfo.FeedbackMessage(this, additionalInfo);
+		}
+	}
+	
+	public record FeedbackMessage(StargateInfo.Feedback feedback, Object... additionalInfo)
+	{
+		public Component getMessageComponent()
+		{
+			if(feedback().isError())
+				return createError(feedback().message, feedback().type == StargateInfo.FeedbackType.MAJOR_ERROR, additionalInfo());
+			else
+				return createInfo(feedback().message, additionalInfo());
+		}
+		
+		@Override
+		public @NotNull String toString()
+		{
+			StringBuilder message = new StringBuilder(feedback().getMessage());
+			
+			for(Object info : additionalInfo())
+			{
+				message.append(", ").append(info);
+			}
+			
+			return message.toString();
+		}
+	}
+	
+	private static Component createInfo(String feedback, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.stargate.info." + feedback, additionalInfo);
+	}
+	
+	private static Component createError(String feedback, boolean majorError, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.stargate.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
 	}
 	
 	public static class IncomingOutgoing<Thing>

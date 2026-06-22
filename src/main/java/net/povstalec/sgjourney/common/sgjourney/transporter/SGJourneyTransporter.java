@@ -20,6 +20,7 @@ public abstract class SGJourneyTransporter implements Transporter
 {
 	public static final String ALLOW_INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
 	public static final String MAX_TRANSPORT_DISTANCE = "max_transport_distance";
+	public static final String TRANSFER_EFFICIENCY = "transfer_efficiency";
 	
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
 	public static final Vec3 UP = new Vec3(0, 1, 0);
@@ -33,6 +34,8 @@ public abstract class SGJourneyTransporter implements Transporter
 	
 	protected boolean hasNetworkRestrictions = false;
 	protected Set<Integer> networks = new HashSet<>();
+	
+	protected int transferEfficiency = 1;
 	
 	protected boolean allowInterdimensionalTransport = false;
 	protected double maxTransportDistance = 0;
@@ -103,24 +106,30 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public TransporterInfo.Feedback tryConnect(Transporter initiatingTransporter)
+	public TransporterInfo.FeedbackMessage tryConnect(Transporter initiatingTransporter)
 	{
 		// If Transporter is obstructed
 		if(isObstructed())
-			return TransporterInfo.Feedback.TARGET_OBSTRUCTED;
+			return TransporterInfo.Feedback.TARGET_OBSTRUCTED.withInfo();
 		
 		// If Transporter is restricted
 		if(isNetworkRestricted(initiatingTransporter.getNetworks()))
-			return TransporterInfo.Feedback.TARGET_RESTRICTED;
+			return TransporterInfo.Feedback.TARGET_RESTRICTED.withInfo();
 		
 		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(initiatingTransporter.getID()))
-			return TransporterInfo.Feedback.BLACKLISTED_BY_TARGET;
+			return TransporterInfo.Feedback.BLACKLISTED_BY_TARGET.withInfo();
 		
 		// If Transporter has a whitelist
 		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(initiatingTransporter.getID()))
-			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
+			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET.withInfo();
 		
 		return Dialing.connectTransporters(server, initiatingTransporter, this);
+	}
+	
+	@Override
+	public int getTransferEfficiency()
+	{
+		return transferEfficiency;
 	}
 	
 	@Override
@@ -140,22 +149,22 @@ public abstract class SGJourneyTransporter implements Transporter
 	//============================================================================================
 	
 	@Override
-	public TransporterInfo.Feedback dialTransporter(TransporterID otherID)
+	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
 	{
 		if(isObstructed())
 			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
 		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(otherID))
-			return TransporterInfo.Feedback.TARGET_BLACKLISTED;
+			return TransporterInfo.Feedback.TARGET_BLACKLISTED.withInfo();
 		
 		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(otherID))
-			return TransporterInfo.Feedback.TARGET_NOT_WHITELISTED;
+			return TransporterInfo.Feedback.TARGET_NOT_WHITELISTED.withInfo();
 		
 		return Dialing.dialTransporterID(server, this, otherID, false);
 	}
 	
 	@Override
-	public TransporterInfo.Feedback dialTransporter(Vec3i coords)
+	public TransporterInfo.FeedbackMessage dialTransporter(Vec3i coords)
 	{
 		if(isObstructed())
 			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
@@ -178,6 +187,8 @@ public abstract class SGJourneyTransporter implements Transporter
 		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
 		tag.putIntArray(NETWORKS, networks.stream().toList());
 		
+		tag.putInt(TRANSFER_EFFICIENCY, transferEfficiency);
+		
 		tag.putBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
 		tag.putDouble(MAX_TRANSPORT_DISTANCE, maxTransportDistance);
 	}
@@ -196,6 +207,8 @@ public abstract class SGJourneyTransporter implements Transporter
 			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
 		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
 			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		
+		this.transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
 		
 		this.allowInterdimensionalTransport = tag.getBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT);
 		this.maxTransportDistance = tag.getDouble(MAX_TRANSPORT_DISTANCE);

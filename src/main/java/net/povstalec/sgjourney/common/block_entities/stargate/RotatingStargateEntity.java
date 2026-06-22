@@ -291,7 +291,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		rotate(rotationDirection, rotationStep());
 	}
 	
-	protected StargateInfo.Feedback rotateTo(int degrees, RotationDirection rotateClockwise)
+	protected StargateInfo.FeedbackMessage rotateTo(int degrees, RotationDirection rotateClockwise)
 	{
 		this.desiredRotation = degrees;
 		this.rotationDirection = rotateClockwise;
@@ -303,21 +303,21 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotateClockwise);
 		
-		return setRecentFeedback(StargateInfo.Feedback.ROTATING);
+		return setRecentFeedback(StargateInfo.Feedback.ROTATING.withInfo());
 	}
 	
-	public StargateInfo.Feedback startRotation(int desiredSymbol, RotationDirection rotateClockwise)
+	public StargateInfo.FeedbackMessage startRotation(int desiredSymbol, RotationDirection rotateClockwise)
 	{
 		return rotateTo(desiredSymbol < 0 ? -1 : getDesiredRotation(desiredSymbol), rotateClockwise);
 	}
 	
-	public StargateInfo.Feedback endRotation(boolean playSound)
+	public StargateInfo.FeedbackMessage endRotation(boolean playSound)
 	{
 		if(!this.level.isClientSide() && playSound)
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
 		if(!this.rotationDirection.isRotating)
-			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING);
+			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING.withInfo());
 		
 		this.rotationDirection = RotationDirection.NONE;
 		
@@ -325,7 +325,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 		
-		return setRecentFeedback(StargateInfo.Feedback.ROTATION_STOPPED);
+		return setRecentFeedback(StargateInfo.Feedback.ROTATION_STOPPED.withInfo());
 	}
 	
 	protected void syncRotation()
@@ -418,7 +418,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	//***************************************Manual Dialing***************************************
 	//============================================================================================
 	
-	public StargateInfo.Feedback encodeChevron()
+	public StargateInfo.FeedbackMessage encodeChevron()
 	{
 		if(!level.isClientSide())
 			updateClient();
@@ -452,7 +452,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			if(!isConnected())
 				directEngageSymbol(getCurrentSymbol(), true);
 			else
-				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN);
+				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN.withInfo());
 		}
 		
 		if(!this.level.isClientSide())

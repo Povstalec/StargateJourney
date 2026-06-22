@@ -23,6 +23,7 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -91,7 +92,7 @@ public final class StargateNetwork extends SavedData
 	{
 		for(Entry<UUID, StargateConnection> connectionEntry : getConnections().entrySet())
 		{
-			connectionEntry.getValue().terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK);
+			connectionEntry.getValue().terminate(server, StargateInfo.Feedback.CONNECTION_ENDED_BY_NETWORK.withInfo());
 		}
 		
 		StargateJourney.LOGGER.debug("Connections terminated");
@@ -527,13 +528,13 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public StargateInfo.Feedback createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.FeedbackMessage createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
 		// Event for Stargate connecting, can be canceled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
 		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
-			return StargateInfo.Feedback.NONE;
+			return StargateInfo.Feedback.NONE.withInfo();
 		
 		// Will reset the Stargate if something's wrong
 		if(!dialedStargate.checkValidity())
@@ -560,12 +561,12 @@ public final class StargateNetwork extends SavedData
 			if(StargateConnection.canExtract(dialingStargate, connectionType.getEstablishingPowerCost()))
 				dialingStargate.extractEnergy(connectionType.getEstablishingPowerCost(), false);
 			else
-				return dialingStargate.resetStargate(StargateInfo.Feedback.NOT_ENOUGH_POWER);
+				return dialingStargate.resetStargate(StargateInfo.Feedback.NOT_ENOUGH_POWER, SGJourneyEnergy.energyToString(connectionType.getEstablishingPowerCost()));
 		}
 		
 		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(dialingStargate, connectionType);
 		if(dialedStargates.isEmpty())
-			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
+			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE.withInfo();
 		
 		StargateConnection connection = StargateConnection.create(connectionType, dialingStargate, dialedStargates, doKawoosh);
 		if(connection != null)
@@ -574,13 +575,13 @@ public final class StargateNetwork extends SavedData
 			
 			return switch(connectionType)
 			{
-				case SYSTEM_WIDE -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
-				case INTERSTELLAR -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR;
-				default -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC;
+				case SYSTEM_WIDE -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE.withInfo();
+				case INTERSTELLAR -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERSTELLAR.withInfo();
+				default -> StargateInfo.Feedback.CONNECTION_ESTABLISHED_INTERGALACTIC.withInfo();
 			};
 		}
 		
-		return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE;
+		return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE.withInfo();
 	}
 	
 	public boolean addConnection(StargateConnection connection)
@@ -601,7 +602,7 @@ public final class StargateNetwork extends SavedData
 		return this.connections.containsKey(uuid);
 	}
 	
-	public void terminateConnection(UUID uuid, StargateInfo.Feedback feedback)
+	public void terminateConnection(UUID uuid, StargateInfo.FeedbackMessage feedback)
 	{
 		StargateConnection connection = this.connections.get(uuid);
 		
