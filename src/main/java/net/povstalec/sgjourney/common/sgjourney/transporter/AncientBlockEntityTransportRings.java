@@ -42,7 +42,6 @@ public class AncientBlockEntityTransportRings extends GoauldTransportRings imple
 		this.transferEfficiency = transporterEntity.getTransferEfficiency();
 		
 		this.allowInterdimensionalTransport = transporterEntity.allowInterdimensionalTransport();
-		this.maxTransportDistance = transporterEntity.maxTransportRange();
 	}
 	
 	@Nullable
@@ -67,7 +66,6 @@ public class AncientBlockEntityTransportRings extends GoauldTransportRings imple
 			this.transferEfficiency = transporter.getTransferEfficiency();
 			
 			this.allowInterdimensionalTransport = transporter.allowInterdimensionalTransport();
-			this.maxTransportDistance = transporter.maxTransportRange();
 		});
 	}
 	

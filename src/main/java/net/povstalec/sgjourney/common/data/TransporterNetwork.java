@@ -405,11 +405,6 @@ public final class TransporterNetwork extends SavedData
 				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_NO_INTERDIMENSIONAL_TRANSPORT);
 		}
 		
-		if(!initiatingTransporter.isInRange(targetTransporter))
-			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_OUT_OF_RANGE); //TODO Range message
-		else if(!targetTransporter.isInRange(initiatingTransporter))
-			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET); //TODO Range message
-		
 		if(REQUIRE_ENERGY)
 		{
 			double distance = initiatingTransporter.distanceFrom(targetTransporter);

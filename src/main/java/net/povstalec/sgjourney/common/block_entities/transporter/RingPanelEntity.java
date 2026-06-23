@@ -60,7 +60,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public static final String BUTTONS = "buttons";
 	
-	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
+	public final CrystalCache<RingPanelEntity> crystalCache = new CrystalCache<>(this, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
 	
 	//------Button Stuff------
 	protected TransporterControllerButton.ButtonState panelState = TransporterControllerButton.ButtonState.DEFAULT;
@@ -80,6 +80,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.GOAULD_RING_PANEL.get(), pos, state);
+		crystalCache.setOnRecalculateCrystals(RingPanelEntity::recalculateCrystals);
 	}
 	
 	@Override
@@ -103,7 +104,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public void onLoad()
 	{
 		super.onLoad();
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override
@@ -164,10 +165,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
-	public void recalculateCrystals()
+	protected void recalculateCrystals()
 	{
-		crystalCache.reset();
-		
 		networks.clear();
 		
 		energyTarget = 0;
@@ -219,7 +218,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 				{
 					setChanged();
 					tryUpdateButtons(slot);
-					recalculateCrystals();
+					crystalCache.recalculateCrystals();
 				}
 				
 				@Override
@@ -630,7 +629,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 					transporter.allowInterdimensionalTransport();
 			
 			if(add)
-				dimensions.add(transporterDimension);
+				dimensions.add(transporterDimension); // It should be okay to do it like this, because this filter is applied on the sorted stream of Transporters
 			
 			return add;
 		}).iterator();
@@ -790,7 +789,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	@Override
 	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override

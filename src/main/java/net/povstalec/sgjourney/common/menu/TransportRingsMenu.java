@@ -70,7 +70,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		return this.blockEntity.getTotalEnergyCapacity();
 	}
 	
-	public long getTransportRange()
+	public double getTransportRange()
 	{
 		return Math.round(this.blockEntity.maxTransportRange());
 	}

@@ -127,7 +127,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		else // Generate from Dimension
 			setLocalSymbols();
 		
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override

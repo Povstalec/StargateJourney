@@ -845,7 +845,7 @@
 	"tooltip.sgjourney.transporter.interdimensional_transport": "Interdimensional transport: %s",
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "If enabled, the Transporter will be able to transport across dimensions in the same Solar System",
 	
-	"tooltip.sgjourney.transport_rings.control_crystal_slot.description": "Holds Control Crystals",
+	"tooltip.sgjourney.transport_rings.materialization_crystal_slot.description": "Holds Materialization Crystals",
 	"tooltip.sgjourney.transport_rings.crystal_slot.description": "Holds Crystals and Advanced Crystals",
 	"tooltip.sgjourney.transport_rings.energy_slot.description": "Holds energy providing items",
 	"tooltip.sgjourney.transport_rings.connection_range": "Connection Range: %s Blocks",

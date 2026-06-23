@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -145,26 +146,39 @@ public interface Transporter extends Comparable<Transporter>
 	int getTransferEfficiency();
 	
 	//TODO Javadoc
-	double maxTransportDistance();
-	
-	//TODO Javadoc
-	default double distanceFrom(Transporter other)
+	default double distanceFrom(DimensionType dimensionType, Vec3 pos)
 	{
-		if(getLevel() != null && other.getLevel() != null && getPosition() != null && other.getPosition() != null)
-			return CoordinateHelper.distanceAcrossDimensions(getLevel().dimensionType(), getPosition(), other.getLevel().dimensionType(), other.getPosition());
+		if(getLevel() != null && getPosition() != null)
+			return CoordinateHelper.distanceAcrossDimensions(getLevel().dimensionType(), getPosition(), dimensionType, pos);
 		
 		return Double.NaN; // Distance not applicable
 	}
 	
 	//TODO Javadoc
-	default boolean isInRange(Transporter other)
+	default double distanceFrom(Transporter other)
 	{
-		double distance = distanceFrom(other);
+		if(other.getLevel() != null && other.getPosition() != null)
+			return distanceFrom(other.getLevel().dimensionType(), other.getPosition());
 		
-		if(Double.isNaN(distance))
-			return true; // TODO Come up with a way to handle Transporters that aren't actually in any Dimension
+		return Double.NaN; // Distance not applicable
+	}
+	
+	//TODO Javadoc
+	default double distanceFromSqr(DimensionType dimensionType, Vec3 pos)
+	{
+		if(getLevel() != null && getPosition() != null)
+			return CoordinateHelper.distanceAcrossDimensionsSqr(getLevel().dimensionType(), getPosition(), dimensionType, pos);
 		
-		return distance <= maxTransportDistance();
+		return Double.NaN; // Distance not applicable
+	}
+	
+	//TODO Javadoc
+	default double distanceFromSqr(Transporter other)
+	{
+		if(other.getLevel() != null && other.getPosition() != null)
+			return distanceFromSqr(other.getLevel().dimensionType(), other.getPosition());
+		
+		return Double.NaN; // Distance not applicable
 	}
 	
 	//TODO Javadoc

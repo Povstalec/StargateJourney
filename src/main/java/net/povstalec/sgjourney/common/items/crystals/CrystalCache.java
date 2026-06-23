@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 
 import javax.annotation.Nullable;
@@ -7,8 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-public class CrystalCache
+public class CrystalCache<T extends BlockEntity>
 {
 	public static final Type[] ALL = new Type[] { Type.CONTROL, Type.MEMORY, Type.MATERIALIZATION, Type.ENERGY, Type.TRANSFER, Type.COMMUNICATION };
 	
@@ -22,21 +24,28 @@ public class CrystalCache
 		COMMUNICATION
 	}
 	
-	@Nullable
-	private Crystals<ControlCrystalItem> controlCrystals = null;
-	@Nullable
-	private Crystals<MemoryCrystalItem> memoryCrystals = null;
-	@Nullable
-	private Crystals<MaterializationCrystalItem> materializationCrystals = null;
-	@Nullable
-	private Crystals<EnergyCrystalItem> energyCrystals = null;
-	@Nullable
-	private Crystals<TransferCrystalItem> transferCrystals = null;
-	@Nullable
-	private Crystals<CommunicationCrystalItem> communicationCrystals = null;
+	protected T parent;
+	protected boolean isDirty = true;
 	
-	public CrystalCache(Type... supportedTypes)
+	protected Consumer<T> onRecalculateCrystals = parent -> {};
+	
+	@Nullable
+	protected Crystals<ControlCrystalItem> controlCrystals = null;
+	@Nullable
+	protected Crystals<MemoryCrystalItem> memoryCrystals = null;
+	@Nullable
+	protected Crystals<MaterializationCrystalItem> materializationCrystals = null;
+	@Nullable
+	protected Crystals<EnergyCrystalItem> energyCrystals = null;
+	@Nullable
+	protected Crystals<TransferCrystalItem> transferCrystals = null;
+	@Nullable
+	protected Crystals<CommunicationCrystalItem> communicationCrystals = null;
+	
+	public CrystalCache(T parent, Type... supportedTypes)
 	{
+		this.parent = parent;
+		
 		for(Type type : supportedTypes)
 		{
 			switch(type)
@@ -64,39 +73,92 @@ public class CrystalCache
 		}
 	}
 	
+	public void setDirty()
+	{
+		isDirty = true;
+	}
+	
+	public boolean isDirty()
+	{
+		return isDirty;
+	}
+	
+	public void setOnRecalculateCrystals(Consumer<T> onRecalculateCrystals)
+	{
+		this.onRecalculateCrystals = onRecalculateCrystals;
+	}
+	
+	public void recalculateCrystals()
+	{
+		isDirty = false;
+		
+		if(controlCrystals != null)
+			controlCrystals.reset();
+		if(memoryCrystals != null)
+			memoryCrystals.reset();
+		if(materializationCrystals != null)
+			materializationCrystals.reset();
+		if(energyCrystals != null)
+			energyCrystals.reset();
+		if(transferCrystals != null)
+			transferCrystals.reset();
+		if(communicationCrystals != null)
+			communicationCrystals.reset();
+		
+		onRecalculateCrystals.accept(parent);
+	}
+	
 	@Nullable
 	public Crystals<ControlCrystalItem> controlCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return controlCrystals;
 	}
 	
 	@Nullable
 	public Crystals<MemoryCrystalItem> memoryCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return memoryCrystals;
 	}
 	
 	@Nullable
 	public Crystals<MaterializationCrystalItem> materializationCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return materializationCrystals;
 	}
 	
 	@Nullable
 	public Crystals<EnergyCrystalItem> energyCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return energyCrystals;
 	}
 	
 	@Nullable
 	public Crystals<TransferCrystalItem> transferCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return transferCrystals;
 	}
 	
 	@Nullable
 	public Crystals<CommunicationCrystalItem> communicationCrystals()
 	{
+		if(isDirty)
+			recalculateCrystals();
+		
 		return communicationCrystals;
 	}
 	
@@ -162,22 +224,6 @@ public class CrystalCache
 			communicationCrystals.addCrystal(slot, communicationCrystal);
 		else
 			StargateJourney.LOGGER.error("This crystal cache does not support Communication Crystals!");
-	}
-	
-	public void reset()
-	{
-		if(controlCrystals != null)
-			controlCrystals.reset();
-		if(memoryCrystals != null)
-			memoryCrystals.reset();
-		if(materializationCrystals != null)
-			materializationCrystals.reset();
-		if(energyCrystals != null)
-			energyCrystals.reset();
-		if(transferCrystals != null)
-			transferCrystals.reset();
-		if(communicationCrystals != null)
-			communicationCrystals.reset();
 	}
 	
 	public static class Crystals<T extends AbstractCrystalItem>

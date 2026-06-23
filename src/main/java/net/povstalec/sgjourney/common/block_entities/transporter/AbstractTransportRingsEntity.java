@@ -48,22 +48,19 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
 	public static final String INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
-	public static final String TRANSPORT_RANGE = "transport_range";
 	public static final String TRANSFER_EFFICIENCY = "transfer_efficiency";
 	
 	public static final int TRANSPORT_TICKS = 21; // Number of ticks Transport Rings wait while in the hover position before they start transporting
 	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
 	
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
-	public static final int DEFAULT_MAX_TRANSPORT_RANGE = 1024;
 	public static final int DEFAULT_TRANSFER_EFFICIENCY = 1;
 	
-	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.ALL);
+	protected CrystalCache<AbstractTransportRingsEntity<?>> crystalCache = new CrystalCache<>(this, CrystalCache.ALL);
 	
 	protected boolean hasNetworkRestrictions = false; // Network restrictions specified by Crystals (separate from those specified by computers)
 	protected Set<Integer> networksCrystalCache = new HashSet<>();// Networks specified by Crystals (separate from those specified by computers)
 	
-	protected double maxTransportRange = DEFAULT_MAX_TRANSPORT_RANGE;
 	protected boolean allowInterdimensionalTransport = false;
 	
 	protected int transferEfficiency = DEFAULT_TRANSFER_EFFICIENCY;
@@ -84,6 +81,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public AbstractTransportRingsEntity(BlockEntityType<?> blockEntityType, TransporterType<TR> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
 		super(blockEntityType, transporterType, pos, state, defaultNetwork);
+		crystalCache.setOnRecalculateCrystals(AbstractTransportRingsEntity::recalculateCrystals);
 		
 		crystalItemHandler = createCrystalHandler();
 		lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
@@ -107,7 +105,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public void onLoad()
 	{
 		super.onLoad();
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override
@@ -127,7 +125,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		tag.putInt(PROGRESS, progress);
 		
 		tag.putBoolean(INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
-		tag.putDouble(TRANSPORT_RANGE, maxTransportRange);
 		tag.putInt(TRANSFER_EFFICIENCY, transferEfficiency);
 		
 		return tag;
@@ -144,7 +141,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		// The following values are updated here because the inventory isn't updated until the menu is opened,
 		// but the info needs to be sent to the Ring Panel even if you don't open the menu
 		allowInterdimensionalTransport = tag.getBoolean(INTERDIMENSIONAL_TRANSPORT);
-		maxTransportRange = tag.getDouble(TRANSPORT_RANGE);
 		transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
 	}
 	
@@ -161,13 +157,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			protected void onContentsChanged(int slot)
 			{
 				setChanged();
-				recalculateCrystals();
+				crystalCache.recalculateCrystals();
 			}
 			
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return slot == 0 ? stack.getItem() instanceof ControlCrystalItem controlCrystal && !controlCrystal.isLarge() : stack.getItem() instanceof AbstractCrystalItem;
+				return slot == 0 ? stack.getItem() instanceof MaterializationCrystalItem : stack.getItem() instanceof AbstractCrystalItem;
 			}
 			
 			// Limits the number of items per slot
@@ -189,17 +185,15 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		};
 	}
 	
-	public void recalculateCrystals()
+	protected void recalculateCrystals()
 	{
-		crystalCache.reset();
-		
 		hasNetworkRestrictions = false;
 		networksCrystalCache.clear();
 		
 		transferEfficiency = DEFAULT_TRANSFER_EFFICIENCY;
 		
-		maxTransportRange = DEFAULT_MAX_TRANSPORT_RANGE;
-		allowInterdimensionalTransport = false;
+		// Allow interdimensional transport if there is a Materialization Crystal placed in the center
+		allowInterdimensionalTransport = crystalItemHandler.getStackInSlot(0).getItem() instanceof MaterializationCrystalItem;
 		
 		// Check where the Crystals are and save their positions
 		for(int i = 1; i < 9; i++)
@@ -216,15 +210,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			//TODO Some special entry for Network Restriction
 			hasNetworkRestrictions = true;
 		});
-		
-		crystalCache.materializationCrystals().forEach((slot, materializationCrystal) ->
-		{
-			// Multiply the transport range with each materialization crystal
-			maxTransportRange *= materializationCrystal.getRangeMultiplier();
-		});
-		// If there are two normal or one Advanced Materialization Crystal, allow interdimensional transport
-		if(crystalCache.materializationCrystals().count(false) >= 2 || crystalCache.materializationCrystals().count(true) >= 1)
-			allowInterdimensionalTransport = true;
 		
 		crystalCache.transferCrystals().forEach((slot, transferCrystal) ->
 		{
@@ -354,7 +339,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot).getCapability(ForgeCapabilities.ENERGY).resolve();
 						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
-							energyExtracted += sgjourneyEnergy.extractLongEnergy(maxExtract - energyExtracted, simulate);
+							// depleteEnergy() gets around the issue of Energy Crystals having their maximum extract rate set to 100k by default
+							long extracting = sgjourneyEnergy.depleteEnergy(maxExtract - energyExtracted, simulate);
+							energyExtracted += extracting;
 							extracted = true;
 							
 							if(energyExtracted >= maxExtract)
@@ -439,7 +426,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public double maxTransportRange()
 	{
-		return maxTransportRange;
+		return TransporterConnection.estimateMaxRange(getTotalEnergyCapacity(), getTransferEfficiency());
 	}
 	
 	@Override

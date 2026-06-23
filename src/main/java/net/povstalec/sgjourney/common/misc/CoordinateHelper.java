@@ -27,6 +27,20 @@ public class CoordinateHelper
 			return posA.distanceTo(posB);
 	}
 	
+	public static double distanceAcrossDimensionsSqr(DimensionType dimensionTypeA, Vec3 posA, DimensionType dimensionTypeB, Vec3 posB)
+	{
+		// Take the smallest teleportation scale
+		double teleportationScaleA = DimensionType.getTeleportationScale(dimensionTypeA, dimensionTypeB);
+		double teleportationScaleB = DimensionType.getTeleportationScale(dimensionTypeB, dimensionTypeA);
+		
+		if(teleportationScaleA < teleportationScaleB)
+			return posB.distanceToSqr(posA.x * teleportationScaleA, posA.y, posA.z * teleportationScaleA);
+		else if(teleportationScaleB < teleportationScaleA)
+			return posA.distanceToSqr(posB.x * teleportationScaleB, posB.y, posB.z * teleportationScaleB);
+		else
+			return posA.distanceToSqr(posB);
+	}
+	
 	public static class CoordinateSystems
 	{
 		public static float cartesianToPolarR(float x, float y)

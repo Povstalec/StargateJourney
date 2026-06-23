@@ -10,11 +10,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
@@ -85,9 +82,9 @@ public class TransporterConnection
 	/**
 	 * @param energy Total energy available
 	 * @param transferEfficiency Transfer efficiency of the Transporter
-	 * @return Estimate of how far the specified Transporter can realistically reach
+	 * @return Estimate of how far the specified Transporter can realistically reach (doesn't take interdimensional transport into consideration)
 	 */
-	public static double distanceFromEnergy(long energy, int transferEfficiency)
+	public static double estimateMaxRange(long energy, int transferEfficiency)
 	{
 		if(DISTANCE_TRANSPORT_ENERGY_COST == 0)
 			return Double.POSITIVE_INFINITY;

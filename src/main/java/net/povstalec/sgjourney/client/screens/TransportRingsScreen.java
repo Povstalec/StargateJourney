@@ -72,7 +72,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 				Component.translatable("tooltip.sgjourney.transport_rings.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.interdimensional_transport.description"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.interdimensional_transport.usage"),
-				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", TransporterConnection.distanceFromEnergy(totalEnergy, transferEfficiency)).withStyle(ChatFormatting.RED),
+				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", TransporterConnection.estimateMaxRange(totalEnergy, transferEfficiency)).withStyle(ChatFormatting.RED),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.energy_reach.description"));
 		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, ComponentHelper.energy("tooltip.sgjourney.transport_rings.total_energy", totalEnergy, menu.getTotalEnergyCapacity()),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.total_energy.description"));
@@ -83,7 +83,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.networks.usage.communication_crystal"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.networks.usage.control_crystal"));
 		
-		this.itemTooltip(poseStack, mouseX, mouseY, 80, 35, 0, ComponentHelper.description("tooltip.sgjourney.transport_rings.control_crystal_slot.description"));
+		this.itemTooltip(poseStack, mouseX, mouseY, 80, 35, 0, ComponentHelper.description("tooltip.sgjourney.transport_rings.materialization_crystal_slot.description"));
 		
 		this.itemTooltip(poseStack, mouseX, mouseY, 80, 17, 1, ComponentHelper.description("tooltip.sgjourney.transport_rings.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 98, 17, 2, ComponentHelper.description("tooltip.sgjourney.transport_rings.crystal_slot.description"));

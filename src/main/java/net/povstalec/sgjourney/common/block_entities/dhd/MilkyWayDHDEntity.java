@@ -137,7 +137,7 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 		else // Generate from Dimension
 			setLocalSymbols();
 		
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override

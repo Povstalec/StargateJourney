@@ -845,7 +845,7 @@
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "Pokud je aktivní,transportér bude schopný transportovat mezi dimenzemi ve stejném solárním systému",
 	
 	"tooltip.sgjourney.connection_range": "Dosah spojení: %s bloků",
-	"tooltip.sgjourney.transport_rings.control_crystal_slot.description": "Drží ovládací krystaly",
+	"tooltip.sgjourney.transport_rings.materialization_crystal_slot.description": "Drží materializační krystaly",
 	"tooltip.sgjourney.transport_rings.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.transport_rings.energy_slot.description": "Drží předměty dodávající energii",
 	"tooltip.sgjourney.transport_rings.connection_range.description": "Maximální vzdálenost ze které se transportní kruhy dokážou spojit s dalším transportérem",

@@ -80,15 +80,15 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 		}
 		
 		@Override
-		public long extractLongEnergy(long maxExtract, boolean simulate)
+		public long depleteEnergy(long maxExtract, boolean simulate)
 		{
 			long currentEnergy = super.getTrueEnergyStored();
 			if(currentEnergy >= maxExtract) // If there is energy stored in the buffer, use that
-				return super.extractLongEnergy(maxExtract, simulate);
+				return super.depleteEnergy(maxExtract, simulate);
 			// Try converting liquid naquadah to energy
 			long convertedEnergy = convertLiquidNaquadahToEnergy(maxExtract, simulate);
 			if(convertedEnergy <= 0) // If no energy was converted, extract everything that's left in the buffer
-				return super.extractLongEnergy(maxExtract, simulate);
+				return super.depleteEnergy(maxExtract, simulate);
 			currentEnergy += convertedEnergy;
 			
 			long extractedEnergy = Math.min(maxExtract, currentEnergy);

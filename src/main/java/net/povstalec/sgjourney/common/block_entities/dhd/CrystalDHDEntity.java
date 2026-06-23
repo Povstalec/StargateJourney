@@ -29,7 +29,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 {
 	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
-	protected CrystalCache crystalCache = new CrystalCache(CrystalCache.Type.CONTROL, CrystalCache.Type.MEMORY, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
+	public final CrystalCache<CrystalDHDEntity> crystalCache = new CrystalCache<>(this, CrystalCache.Type.CONTROL, CrystalCache.Type.MEMORY, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
 	
 	public final ItemStackHandler crystalHandler = createCrystalHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
@@ -37,6 +37,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
+		crystalCache.setOnRecalculateCrystals(CrystalDHDEntity::recalculateCrystals);
 	}
 	
 	@Override
@@ -61,7 +62,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	public void onLoad()
 	{
 		super.onLoad();
-		recalculateCrystals();
+		crystalCache.recalculateCrystals();
 	}
 	
 	@Override
@@ -94,7 +95,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 				protected void onContentsChanged(int slot)
 				{
 					setChanged();
-					recalculateCrystals();
+					crystalCache.recalculateCrystals();
 				}
 				
 				@Override
@@ -130,10 +131,8 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		return (stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge()) || stack.getItem() instanceof CallForwardingDevice;
 	}
 	
-	public void recalculateCrystals()
+	protected void recalculateCrystals()
 	{
-		crystalCache.reset();
-		
 		// Check if the DHD has a Control Crystal
 		enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
 		

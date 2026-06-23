@@ -19,7 +19,6 @@ import java.util.*;
 public abstract class SGJourneyTransporter implements Transporter
 {
 	public static final String ALLOW_INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
-	public static final String MAX_TRANSPORT_DISTANCE = "max_transport_distance";
 	public static final String TRANSFER_EFFICIENCY = "transfer_efficiency";
 	
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
@@ -38,7 +37,6 @@ public abstract class SGJourneyTransporter implements Transporter
 	protected int transferEfficiency = 1;
 	
 	protected boolean allowInterdimensionalTransport = false;
-	protected double maxTransportDistance = 0;
 	
 	@Nullable
 	protected Component name;
@@ -133,12 +131,6 @@ public abstract class SGJourneyTransporter implements Transporter
 	}
 	
 	@Override
-	public double maxTransportDistance()
-	{
-		return maxTransportDistance;
-	}
-	
-	@Override
 	public boolean allowInterdimensionalTransport()
 	{
 		return allowInterdimensionalTransport;
@@ -190,7 +182,6 @@ public abstract class SGJourneyTransporter implements Transporter
 		tag.putInt(TRANSFER_EFFICIENCY, transferEfficiency);
 		
 		tag.putBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
-		tag.putDouble(MAX_TRANSPORT_DISTANCE, maxTransportDistance);
 	}
 	
 	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
@@ -211,7 +202,6 @@ public abstract class SGJourneyTransporter implements Transporter
 		this.transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
 		
 		this.allowInterdimensionalTransport = tag.getBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT);
-		this.maxTransportDistance = tag.getDouble(MAX_TRANSPORT_DISTANCE);
 	}
 	
 	//============================================================================================
@@ -221,6 +211,6 @@ public abstract class SGJourneyTransporter implements Transporter
 	@Override
 	public String toString()
 	{
-		return "[ " + getName().toString() + " | ID: " + getID() + " ]";
+		return "[ Name: " + getName().getString() + " | ID: " + getID() + " | Dim: " + getDimension().location() + " | Pos: " + getPosition() + " ]";
 	}
 }
