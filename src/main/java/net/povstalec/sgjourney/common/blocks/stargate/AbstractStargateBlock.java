@@ -213,10 +213,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			return Collections.emptyList();
 		}
 
-		final ItemStack gateStack =
-				// if the location is present find the respective stargate entity
-				// extract the block entity from the context (when the base block was mined)
-				Optional.ofNullable(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY))
+		// if the location is present find the respective stargate entity
+		// extract the block entity from the context (when the base block was mined)
+		return Optional.ofNullable(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY))
 				// or find it in the level (if a ring block was mined)
 				.or(() -> getStargateEntityFromLootContext(state, builder))
 				// check type and cast to stargate entity
@@ -225,18 +224,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				// discard entity if its being removed by a different part,
 				// only the part that initiated removal can provide drops
 				// allowing null when probed before removal
-				.filter(stargate -> stargate.getPendingGateRemovalFromPart() == null || thisPart.equals(stargate.getPendingGateRemovalFromPart()))
+				.filter(stargate -> stargate.getPendingGateRemovalFromPart() == null ||
+						thisPart.equals(stargate.getPendingGateRemovalFromPart()))
 				// make the item stack
 				.map(stargateEntity -> makeStargateItem(builder.getLevel(), stargateEntity))
-				.orElse(null);
-
-		// if null, the gate entity does not exist, or this part cannot provide the drops
-		if (gateStack == null)
-		{
-			return Collections.emptyList();
-		}
-
-		return List.of(gateStack);
+				.map(List::of)
+				// if null, the gate entity does not exist, or this part cannot provide the drops
+				.orElseGet(Collections::emptyList);
 	}
 
 	/**
