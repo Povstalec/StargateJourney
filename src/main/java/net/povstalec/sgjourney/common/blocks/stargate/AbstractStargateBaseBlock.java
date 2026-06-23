@@ -220,7 +220,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		AbstractStargateEntity<?> stargateEntity = getStargate(levelAccessor, basePos, baseState);
 
-		if (stargateEntity != null && stargateEntity.getPendingRemovalFromPart() != null) {
+		if (stargateEntity != null && stargateEntity.getPendingGateRemovalFromPart() != null) {
 			// stargate is being removed
 			levelAccessor.scheduleTick(basePos, baseState.getBlock(), 0);
 		}
@@ -238,7 +238,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 
 		AbstractStargateEntity<?> stargateEntity = getStargate(level, pos, state);
 
-		if (stargateEntity != null && stargateEntity.getPendingRemovalFromPart() != null) {
+		if (stargateEntity != null && stargateEntity.getPendingGateRemovalFromPart() != null) {
 			// stargate is being removed, destroy the base block
 			level.destroyBlock(pos, false);
 		}

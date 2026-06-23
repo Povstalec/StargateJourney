@@ -225,7 +225,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				// discard entity if its being removed by a different part,
 				// only the part that initiated removal can provide drops
 				// allowing null when probed before removal
-				.filter(stargate -> stargate.getPendingRemovalFromPart() == null || thisPart.equals(stargate.getPendingRemovalFromPart()))
+				.filter(stargate -> stargate.getPendingGateRemovalFromPart() == null || thisPart.equals(stargate.getPendingGateRemovalFromPart()))
 				// make the item stack
 				.map(stargateEntity -> makeStargateItem(builder.getLevel(), stargateEntity))
 				.orElse(null);
@@ -278,13 +278,13 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if (stargateEntity != null)
 		{
 			// try to set self as initiator of the removal
-			stargateEntity.setPendingRemovalFromPart(thisPart);
+			stargateEntity.setPendingGateRemovalFromPart(thisPart);
 		}
 
 		// if no entity was found (just in case)
 		// or if this part is handling the removal
 		// then destroy the gate, except for the base block
-		if (stargateEntity == null || stargateEntity.getPendingRemovalFromPart().equals(thisPart))
+		if (stargateEntity == null || stargateEntity.getPendingGateRemovalFromPart().equals(thisPart))
 		{
 			destroyStargate(level, baseBlockPos, getParts(), getShieldingParts(), direction, orientation, StargatePart.BASE);
 		}

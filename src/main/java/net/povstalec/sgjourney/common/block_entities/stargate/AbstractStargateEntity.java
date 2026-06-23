@@ -133,7 +133,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	 * If set, the gate is being removed by the given part.
 	 * Once set, the value must not be changed.
 	 */
-	protected StargatePart pendingRemovalFromPart = null;
+	protected StargatePart pendingGateRemovalFromPart = null;
 	
 	// Basic Info
 	protected Address.Immutable id9ChevronAddress = new Address.Immutable();
@@ -1790,15 +1790,15 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 
 	/**
-	 * Register a pending removal of the multiblock structure which is being handled by the given part.
+	 * Register a pending removal of the stargate multiblock structure which is being handled by the given part.
 	 * Does nothing if there is already a part registered.
-	 * @param part the part initiating the removal.
+	 * @param removalInitiator the part initiating the removal.
 	 */
-	public void setPendingRemovalFromPart(StargatePart part)
+	public void setPendingGateRemovalFromPart(StargatePart removalInitiator)
 	{
-		if (this.pendingRemovalFromPart == null)
+		if (this.pendingGateRemovalFromPart == null)
 		{
-			this.pendingRemovalFromPart = part;
+			this.pendingGateRemovalFromPart = removalInitiator;
 		}
 	}
 
@@ -1806,9 +1806,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	 * The part that initiated the gate multiblock structure removal.
 	 * @return the stargate part or {@code null}
 	 */
-	public StargatePart getPendingRemovalFromPart()
+	public StargatePart getPendingGateRemovalFromPart()
 	{
-		return pendingRemovalFromPart;
+		return pendingGateRemovalFromPart;
 	}
 
 	@Override
