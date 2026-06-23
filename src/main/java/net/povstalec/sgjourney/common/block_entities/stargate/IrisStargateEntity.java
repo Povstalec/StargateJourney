@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
@@ -24,6 +25,12 @@ import java.util.List;
 public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> extends AbstractStargateEntity<SG> implements IrisInfo.Interface
 {
 	protected IrisInfo irisInfo;
+
+	/**
+	 * If set, shielding blocks are being removed by the given part.
+	 * Once set, the value must not be changed.
+	 */
+	private ShieldingPart pendingShieldRemovalFromPart = null;
 	
 	public IrisStargateEntity(BlockEntityType<?> blockEntityType, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
 							  int totalSymbols, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
@@ -121,5 +128,32 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 		
 		status.addAll(super.getStatus());
 		return status;
+	}
+
+	/**
+	 * The part that initiated the shielding structure removal.
+	 * @return the shielding part or {@code null}
+	 */
+	public ShieldingPart getPendingShieldRemovalFromPart()
+	{
+		return pendingShieldRemovalFromPart;
+	}
+
+	/**
+	 * Register a pending removal of the shielding multiblock structure which is being handled by the given part.
+	 * Does nothing if there is already a part registered.
+	 * @param removalInitiator the part initiating the removal.
+	 */
+	public void setPendingShieldRemovalFromPart(ShieldingPart removalInitiator)
+	{
+		if (this.pendingShieldRemovalFromPart == null && removalInitiator != null)
+		{
+			this.pendingShieldRemovalFromPart = removalInitiator;
+		}
+	}
+
+	public void resetPendingShieldRemoval()
+	{
+		this.pendingShieldRemovalFromPart = null;
 	}
 }

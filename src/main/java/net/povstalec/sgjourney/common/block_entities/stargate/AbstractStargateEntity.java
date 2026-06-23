@@ -1796,7 +1796,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	 */
 	public void setPendingGateRemovalFromPart(StargatePart removalInitiator)
 	{
-		if (this.pendingGateRemovalFromPart == null)
+		if (this.pendingGateRemovalFromPart == null && removalInitiator != null)
 		{
 			this.pendingGateRemovalFromPart = removalInitiator;
 		}

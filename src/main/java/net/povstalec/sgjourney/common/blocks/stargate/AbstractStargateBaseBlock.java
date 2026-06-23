@@ -229,18 +229,34 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 
 	/**
-	 * Processes scheduled ticks
+	 * Processes scheduled ticks.
+	 * Destroys itself if the gate is being removed.
+	 * Deletes iris if its being removed.
 	 * @see LevelAccessor#scheduleTick(BlockPos, Block, int)
 	 */
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
+	{
 		super.tick(state, level, pos, random);
 
 		AbstractStargateEntity<?> stargateEntity = getStargate(level, pos, state);
 
-		if (stargateEntity != null && stargateEntity.getPendingGateRemovalFromPart() != null) {
+		if (stargateEntity == null)
+		{
+			return;
+		}
+
+		if (stargateEntity.getPendingGateRemovalFromPart() != null)
+		{
 			// stargate is being removed, destroy the base block
 			level.destroyBlock(pos, false);
+		}
+		else if (stargateEntity instanceof IrisStargateEntity<?> irisStargate &&
+				irisStargate.getPendingShieldRemovalFromPart() != null)
+		{
+			// the shielding is being removed, delete iris
+			irisStargate.irisInfo().removeIris();
+			irisStargate.resetPendingShieldRemoval();
 		}
 	}
 	

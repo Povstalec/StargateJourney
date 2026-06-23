@@ -208,7 +208,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
 		StargatePart thisPart = state.getOptionalValue(PART).orElse(null);
-		if (thisPart == null)
+		if (thisPart == null || builder.getLevel().isClientSide())
 		{
 			return Collections.emptyList();
 		}
