@@ -176,7 +176,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		
 		super.onLoad();
-		stargateCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -562,7 +561,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	protected abstract SoundEvent getPressSound();
 	
-	public abstract void onDialAttempt(StargateInfo.Feedback feedback, Address address);
+	public abstract void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address);
 	
 	public void pressButton(int index)
 	{
@@ -599,7 +598,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				{
 					if(stargate.isConnected())
 					{
-						sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.getFeedbackMessage(), DHD_INFO_DISTANCE);
+						sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo().getMessageComponent(), DHD_INFO_DISTANCE);
 						return;
 					}
 					

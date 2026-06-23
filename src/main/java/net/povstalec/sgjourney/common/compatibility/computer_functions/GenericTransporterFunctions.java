@@ -30,12 +30,12 @@ public class GenericTransporterFunctions
 		return transporter.energyStorage.getTrueEnergyStored();
 	}
 	
-	public static TransporterInfo.Feedback getRecentFeedback(AbstractTransporterEntity<?> transporter)
+	public static TransporterInfo.FeedbackMessage getRecentFeedback(AbstractTransporterEntity<?> transporter)
 	{
 		return transporter.getRecentFeedback();
 	}
 	
-	public static TransporterInfo.Feedback dialCoords(AbstractTransporterEntity<?> transporter, Vec3i coords)
+	public static TransporterInfo.FeedbackMessage dialCoords(AbstractTransporterEntity<?> transporter, Vec3i coords)
 	{
 		return transporter.dialTransporter(coords);
 	}
@@ -44,7 +44,7 @@ public class GenericTransporterFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static TransporterInfo.Feedback dialTransporterID(AbstractTransporterEntity<?> transporter, TransporterID transporterID)
+	public static TransporterInfo.FeedbackMessage dialTransporterID(AbstractTransporterEntity<?> transporter, TransporterID transporterID)
 	{
 		return transporter.dialTransporter(transporterID);
 	}

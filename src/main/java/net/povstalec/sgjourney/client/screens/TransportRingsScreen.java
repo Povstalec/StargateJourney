@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.menu.TransportRingsMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJourneyContainerScreen<T>
 {
@@ -63,13 +64,20 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 		
 		this.energyTooltip(poseStack, mouseX, mouseY, 162, 17, 6, 52, "tooltip.sgjourney.energy", this.menu.getEnergy(), this.menu.getEnergyCapacity());
 		
-		this.crystalEffectTooltip(poseStack, 14, 29, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transport_rings.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
+		long totalEnergy = menu.getTotalEnergyStored();
+		int transferEfficiency = menu.getTransferEfficiency();
+		
+		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transport_rings.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.connection_range.description"),
 				Component.translatable("tooltip.sgjourney.transport_rings.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.interdimensional_transport.description"),
-				ComponentHelper.usage("tooltip.sgjourney.transport_rings.interdimensional_transport.usage"));
-		this.crystalEffectTooltip(poseStack, 14, 40, mouseX, mouseY, Component.translatable("test", menu.getTransportRange()).withStyle(ChatFormatting.DARK_RED));
-		this.crystalEffectTooltip(poseStack, 14, 52, mouseX, mouseY, Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+				ComponentHelper.usage("tooltip.sgjourney.transport_rings.interdimensional_transport.usage"),
+				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", TransporterConnection.distanceFromEnergy(totalEnergy, transferEfficiency)).withStyle(ChatFormatting.RED),
+				ComponentHelper.description("tooltip.sgjourney.transport_rings.energy_reach.description"));
+		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, ComponentHelper.energy("tooltip.sgjourney.transport_rings.total_energy", totalEnergy, menu.getTotalEnergyCapacity()),
+				ComponentHelper.description("tooltip.sgjourney.transport_rings.total_energy.description"));
+		this.crystalEffectTooltip(poseStack, 14, 46, mouseX, mouseY, Component.translatable("transfer_efficiency " + transferEfficiency).withStyle(ChatFormatting.GOLD));
+		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.networks.description"),
 				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.networks.usage.communication_crystal"),
@@ -105,7 +113,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 		if(slot == 9)
 			return !menu.blockEntity.energyItemHandler.getStackInSlot(0).isEmpty();
 		else
-			return !menu.blockEntity.crystalHandler.getStackInSlot(slot).isEmpty();
+			return !menu.blockEntity.crystalItemHandler.getStackInSlot(slot).isEmpty();
 	}
 	
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)

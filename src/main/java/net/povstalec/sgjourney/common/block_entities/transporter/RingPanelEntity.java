@@ -200,8 +200,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
 			if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot)))
 				networks.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot)));
-			else
-				maxDiscoveryDistance *= 2; // Max discovery distance gets doubled for each crystal
 		});
 		
 		transporterCache.markDirtyTwoWays();
@@ -348,9 +346,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
-				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-				if(feedback.isError())
-					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+				TransporterInfo.FeedbackMessage feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.feedback().isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 			}
 		});
 	}
@@ -448,15 +446,15 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
-				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-				if(feedback.isError())
-					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+				TransporterInfo.FeedbackMessage feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.feedback().isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 			}
 			else if(button.coords() != null && button.parent.checkBusy())
 			{
-				TransporterInfo.Feedback feedback = button.parent.startCoordTransport(button.coords());
-				if(feedback.isError())
-					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+				TransporterInfo.FeedbackMessage feedback = button.parent.startCoordTransport(button.coords());
+				if(feedback.feedback().isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 			}
 		});
 	}
@@ -491,7 +489,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	protected void setButtonsForNetworkControl(int network)
 	{
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance(), transporter ->
 				!transporterCache.get().transporterID.equals(transporter.getID()) &&
 						transporter.getNetworks().contains(network)).iterator();
 		
@@ -518,9 +516,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
-				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-				if(feedback.isError())
-					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+				TransporterInfo.FeedbackMessage feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.feedback().isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 			}
 		});
 	}
@@ -569,9 +567,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 					{
 						if(button.parent.checkBusy())
 						{
-							TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.parent.encodedID);
-							if(feedback.isError())
-								button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+							TransporterInfo.FeedbackMessage feedback = button.parent.startIDTransport(button.parent.encodedID);
+							if(feedback.feedback().isError())
+								button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 						}
 					}));
 		}
@@ -617,12 +615,11 @@ public class RingPanelEntity extends TransporterControllerEntity
 	protected void setButtonsForInterdimensionalControl()
 	{
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		MinecraftServer server = serverLevel.getServer();
 		
 		final Set<ResourceKey<Level>> dimensions = new HashSet<>();
 		dimensions.add(level.dimension()); // Added to ignore the Dimension this Ring Panel is in
 		
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInRegion(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInRegion(serverLevel, getBlockPos(), maxDiscoveryDistance(), transporter ->
 		{
 			ResourceKey<Level> transporterDimension = transporter.getDimension();
 			if(transporterDimension == null || dimensions.contains(transporterDimension))
@@ -661,9 +658,9 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			if(button.transporterID() != null && button.parent.checkBusy())
 			{
-				TransporterInfo.Feedback feedback = button.parent.startIDTransport(button.transporterID());
-				if(feedback.isError())
-					button.parent.sendMessageToNearbyPlayers(feedback.getFeedbackMessage(), CONTROLLER_INFO_DISTANCE);
+				TransporterInfo.FeedbackMessage feedback = button.parent.startIDTransport(button.transporterID());
+				if(feedback.feedback().isError())
+					button.parent.sendMessageToNearbyPlayers(feedback.getMessageComponent(), CONTROLLER_INFO_DISTANCE);
 			}
 		});
 	}
@@ -705,7 +702,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
 		if(transporterCache.isPresent())
 		{
-			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance, transporter ->
+			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance(), transporter ->
 					!transporterCache.get().transporterID.equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
 							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
 							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
@@ -772,16 +769,16 @@ public class RingPanelEntity extends TransporterControllerEntity
 		return false;
 	}
 	
-	public TransporterInfo.Feedback startCoordTransport(Vec3 coords)
+	public TransporterInfo.FeedbackMessage startCoordTransport(Vec3 coords)
 	{
-		TransporterInfo.Feedback feedback = super.startCoordTransport(coords);
+		TransporterInfo.FeedbackMessage feedback = super.startCoordTransport(coords);
 		updateButtons();
 		return feedback;
 	}
 	
-	public TransporterInfo.Feedback startIDTransport(TransporterID transporterID)
+	public TransporterInfo.FeedbackMessage startIDTransport(TransporterID transporterID)
 	{
-		TransporterInfo.Feedback feedback = super.startIDTransport(transporterID);
+		TransporterInfo.FeedbackMessage feedback = super.startIDTransport(transporterID);
 		updateButtons();
 		return feedback;
 	}

@@ -75,6 +75,26 @@ public class TransporterConnection
 		this(uuid, connectionType, transporterA, transporterB, 0, null);
 	}
 	
+	public static long distanceEnergyCost(double distance, int transferEfficiency)
+	{
+		long energyCost = Math.round(distance * DISTANCE_TRANSPORT_ENERGY_COST / transferEfficiency);
+		
+		return Math.max(energyCost, 1);
+	}
+	
+	/**
+	 * @param energy Total energy available
+	 * @param transferEfficiency Transfer efficiency of the Transporter
+	 * @return Estimate of how far the specified Transporter can realistically reach
+	 */
+	public static double distanceFromEnergy(long energy, int transferEfficiency)
+	{
+		if(DISTANCE_TRANSPORT_ENERGY_COST == 0)
+			return Double.POSITIVE_INFINITY;
+		
+		return (double) (energy - TRANSPORT_ENERGY_COST) / DISTANCE_TRANSPORT_ENERGY_COST * transferEfficiency;
+	}
+	
 	public enum Type
 	{
 		DIMENSIONAL("dimensional", 0, false), // Within one dimension
@@ -101,9 +121,9 @@ public class TransporterConnection
 			return this.name;
 		}
 		
-		public long getTransportEnergyCost(double distance)
+		public long getTransportEnergyCost(double distance, int transferEfficiency)
 		{
-			return TRANSPORT_ENERGY_COST + Math.round(distance * DISTANCE_TRANSPORT_ENERGY_COST) + energyCost;
+			return TRANSPORT_ENERGY_COST + distanceEnergyCost(distance, transferEfficiency) + energyCost;
 		}
 		
 		public static TransporterConnection.Type fromString(String name)

@@ -202,9 +202,9 @@ public class RingRemoteItem extends HolderItem
 					player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
 				else
 				{
-					TransporterInfo.Feedback feedback = connectionCandidate.dialTransporter(transporterIterator.next().getID());
-					if(feedback.isError())
-						player.displayClientMessage(feedback.getFeedbackMessage(), true);
+					TransporterInfo.FeedbackMessage feedback = connectionCandidate.dialTransporter(transporterIterator.next().getID());
+					if(feedback.feedback().isError())
+						player.displayClientMessage(feedback.getMessageComponent(), true);
 				}
 			}
 			else
@@ -223,9 +223,9 @@ public class RingRemoteItem extends HolderItem
 				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
 			else
 			{
-				TransporterInfo.Feedback feedback = transporter.dialTransporter(transporterID);
-				if(feedback.isError())
-					player.displayClientMessage(feedback.getFeedbackMessage(), true);
+				TransporterInfo.FeedbackMessage feedback = transporter.dialTransporter(transporterID);
+				if(feedback.feedback().isError())
+					player.displayClientMessage(feedback.getMessageComponent(), true);
 			}
 		}
 		else
@@ -241,9 +241,9 @@ public class RingRemoteItem extends HolderItem
 				player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
 			else
 			{
-				TransporterInfo.Feedback feedback = transporter.dialTransporter(coords);
-				if(feedback.isError())
-					player.displayClientMessage(feedback.getFeedbackMessage(), true);
+				TransporterInfo.FeedbackMessage feedback = transporter.dialTransporter(coords);
+				if(feedback.feedback().isError())
+					player.displayClientMessage(feedback.getMessageComponent(), true);
 			}
 		}
 		else

@@ -83,7 +83,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
+	default StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		StargateEntity stargateEntity = getStargateEntity(getServer());
 		

@@ -30,7 +30,7 @@ public class AutoDialerItem extends Item
 		if(stargate != null)
 		{
 			if(stargate.isConnected())
-				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
 			{
 				Address address = new Address.Immutable(26, 6, 14, 31, 11, 29);

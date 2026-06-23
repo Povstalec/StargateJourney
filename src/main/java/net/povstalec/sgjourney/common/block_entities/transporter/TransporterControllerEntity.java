@@ -47,7 +47,6 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	public static final int CONTROLLER_INFO_DISTANCE = 3;
-	public static final double DEFAULT_MAX_DISCOVERY_DISTANCE = 1024; //TODO Make max discovery distance the same as max transport distance of connected Transport Rings
 	
 	public static final int DEFAULT_ENERGY_TARGET = 0;
 	public static final int DEFAULT_ENERGY_TRANSFER = 0;
@@ -62,7 +61,6 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
 	protected int maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE; // Max distance from which it can connect to a Transporter and control it
-	protected double maxDiscoveryDistance = DEFAULT_MAX_DISCOVERY_DISTANCE; // Max distance for discovering nearby Transporters for the purposes of establishing a connection
 	
 	protected final ItemStackHandler energyItemHandler = createEnergyItemHandler();
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
@@ -143,7 +141,6 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		}
 		
 		super.onLoad();
-		transporterCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
@@ -244,6 +241,14 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	public long getMaxConnectionDistanceSqr()
 	{
 		return (long) maxConnectionDistance * maxConnectionDistance;
+	}
+	
+	/**
+	 * @return Max distance for discovering nearby Transporters for the purposes of establishing a connection
+	 */
+	public double maxDiscoveryDistance()
+	{
+		return transporterCache.returnOrDefault(AbstractTransporterEntity::maxTransportRange, 0D);
 	}
 	
 	public long getTransporterEnergy()
@@ -355,14 +360,14 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	
 	// ======= Transporting =======
 	
-	public TransporterInfo.Feedback startCoordTransport(Vec3 coords)
+	public TransporterInfo.FeedbackMessage startCoordTransport(Vec3 coords)
 	{
-		return transporterCache.returnOrDefault(transporter -> transporter.dialTransporter(Conversion.vec3ToVec3i(coords)), TransporterInfo.Feedback.NONE);
+		return transporterCache.returnOrDefault(transporter -> transporter.dialTransporter(Conversion.vec3ToVec3i(coords)), TransporterInfo.Feedback.NONE.withInfo());
 	}
 	
-	public TransporterInfo.Feedback startIDTransport(TransporterID transporterID)
+	public TransporterInfo.FeedbackMessage startIDTransport(TransporterID transporterID)
 	{
-		return transporterCache.returnOrDefault(transporter -> transporter.dialTransporter(transporterID), TransporterInfo.Feedback.NONE);
+		return transporterCache.returnOrDefault(transporter -> transporter.dialTransporter(transporterID), TransporterInfo.Feedback.NONE.withInfo());
 	}
 	
 	@Override

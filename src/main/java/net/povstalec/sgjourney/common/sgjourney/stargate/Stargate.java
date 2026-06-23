@@ -232,10 +232,21 @@ public interface Stargate extends Comparable<Stargate>
 	
 	/**
 	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
-	 * @param feedback Feedback with information regarding why this Stargate was reset
+	 * @param feedback FeedbackMessage with information regarding why this Stargate was reset and any additional info
 	 * @return Feedback with information regarding how this Stargate's reset attempt went
 	 */
-	StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback);
+	StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback);
+	
+	/**
+	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
+	 * @param feedback Feedback with information regarding why this Stargate was reset
+	 * @param additionalInfo Additional info to go along with the feedback (like how much energy is needed to dial when dialing fails due to having enough power)
+	 * @return Feedback with information regarding how this Stargate's reset attempt went
+	 */
+	default StargateInfo.FeedbackMessage resetStargate(StargateInfo.Feedback feedback, Object... additionalInfo)
+	{
+		return resetStargate(feedback.withInfo(additionalInfo));
+	}
 	
 	/**
 	 * @return True if this Stargate is currently connected, otherwise false
@@ -364,7 +375,7 @@ public interface Stargate extends Comparable<Stargate>
 	 * @param doKawoosh Whether kawoosh should form when the connection is established
 	 * @return Stargate Feedback describing how successful the formation of the connection was (for example, throw an error when this Stargate is already connected)
 	 */
-	StargateInfo.Feedback tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh);
+	StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh);
 	
 	/**
 	 * @return True if the Stargate can call forward, otherwise false

@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -143,13 +142,16 @@ public interface Transporter extends Comparable<Transporter>
 	}
 	
 	//TODO Javadoc
+	int getTransferEfficiency();
+	
+	//TODO Javadoc
 	double maxTransportDistance();
 	
 	//TODO Javadoc
 	default double distanceFrom(Transporter other)
 	{
 		if(getLevel() != null && other.getLevel() != null && getPosition() != null && other.getPosition() != null)
-			return DimensionType.getTeleportationScale(getLevel().dimensionType(), other.getLevel().dimensionType()) * Math.sqrt(getPosition().distanceTo(other.getPosition()));
+			return CoordinateHelper.distanceAcrossDimensions(getLevel().dimensionType(), getPosition(), other.getLevel().dimensionType(), other.getPosition());
 		
 		return Double.NaN; // Distance not applicable
 	}
@@ -232,7 +234,13 @@ public interface Transporter extends Comparable<Transporter>
 	Component getName();
 	
 	//TODO Javadoc
-	TransporterInfo.Feedback resetTransporter(TransporterInfo.Feedback feedback);
+	TransporterInfo.FeedbackMessage resetTransporter(TransporterInfo.FeedbackMessage feedback);
+	
+	//TODO Javadoc
+	default TransporterInfo.FeedbackMessage resetTransporter(TransporterInfo.Feedback feedback, Object... additionalInfo)
+	{
+		return resetTransporter(feedback.withInfo(additionalInfo));
+	}
 	
 	// Energy
 	
@@ -286,7 +294,7 @@ public interface Transporter extends Comparable<Transporter>
 	void updateTicks(int transportTicks, int connectionTime);
 	
 	//TODO Javadoc
-	TransporterInfo.Feedback tryConnect(Transporter initiatingTransporter);
+	TransporterInfo.FeedbackMessage tryConnect(Transporter initiatingTransporter);
 	
 	//TODO Javadoc
 	@Override
@@ -303,10 +311,10 @@ public interface Transporter extends Comparable<Transporter>
 	TransporterIDFilterInfo transporterIDFilterInfo();
 	
 	//TODO Javadoc
-	TransporterInfo.Feedback dialTransporter(TransporterID otherID);
+	TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID);
 	
 	//TODO Javadoc
-	TransporterInfo.Feedback dialTransporter(Vec3i coords);
+	TransporterInfo.FeedbackMessage dialTransporter(Vec3i coords);
 	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************

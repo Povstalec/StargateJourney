@@ -855,6 +855,8 @@
 	"tooltip.sgjourney.transport_rings.networks.description": "Pokud jsou síťová omezení aktivní, spojení s transportnímy kruhy jsou limitována na transportéry ve stejných sítích",
 	"tooltip.sgjourney.transport_rings.networks.usage.communication_crystal": "Komunikační krystal (s frekvencí) -> Přidání transportéru do další sítě",
 	"tooltip.sgjourney.transport_rings.networks.usage.control_crystal": "Ovládaci krystal -> Aktivace síťových omezení",
+	"tooltip.sgjourney.transport_rings.energy_reach": "Dosah s energií: %s bloků",
+	"tooltip.sgjourney.transport_rings.total_energy": "Colkově energie",
 	
 	"tooltip.sgjourney.dhd.symbols_to_numbers": "Drž Shift pro zobrazení čísel",
 	"tooltip.sgjourney.dhd.numbers_to_symbols": "Drž Shift pro zobrazení symbolů",
@@ -978,9 +980,9 @@
 	"message.sgjourney.stargate.info.none": "Nic",
 	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
 	
-	"message.sgjourney.stargate.symbol_encoded": "Symbol zadán",
-	"message.sgjourney.stargate.error.symbol_in_address": "Symbol byl již zadán",
-	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol mimo meze",
+	"message.sgjourney.stargate.symbol_encoded": "Symbol %s zadán",
+	"message.sgjourney.stargate.error.symbol_in_address": "Symbol %s byl již zadán",
+	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol %s je mimo meze",
 	"message.sgjourney.stargate.error.encode_when_connected": "Nelze zadávat symboly během spojení",
 	
 	"message.sgjourney.stargate.info.connection_established.system_wide": "Vnitro-systémové spojení navázáno",
@@ -989,7 +991,7 @@
 	
 	"message.sgjourney.stargate.error.incomplete_address": "Neúplná adresa",
 	"message.sgjourney.stargate.error.invalid_address": "Neplatná adresa",
-	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie",
+	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie (je třeba %s)",
 	"message.sgjourney.stargate.error.self_obstructed": "Lokální hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.target_obstructed": "Cílová hvězdná brána je blokována",
 	"message.sgjourney.stargate.error.self_dial": "Hvězdná brána nemůže navázat spojení sama se sebou",
@@ -1044,7 +1046,8 @@
 	"message.sgjourney.transporter.info.connection_established.relayed_intergalactic": "Mezigalaktické spojení navázáno",
 	
 	"message.sgjourney.transporter.error.invalid_transporter_id": "Neplatné ID transportéru",
-	"message.sgjourney.transporter.error.not_enough_power": "Nedostatek energie",
+	"message.sgjourney.transporter.error.not_enough_power": "Nedostatek energie (je třeba %s)",
+	"message.sgjourney.transporter.error.not_enough_power_in_target": "Nedostatek energie v cíli (je třeba %s)",
 	"message.sgjourney.transporter.error.self_obstructed": "Lokální transportér je blokován",
 	"message.sgjourney.transporter.error.target_obstructed": "Cílový transportér je blokován",
 	"message.sgjourney.transporter.error.self_connect": "Transportér nemůže navázat spojení sám se sebou",

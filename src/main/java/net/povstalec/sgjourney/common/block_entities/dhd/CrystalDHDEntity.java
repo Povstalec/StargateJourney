@@ -190,9 +190,9 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	}
 	
 	@Override
-	public void onDialAttempt(StargateInfo.Feedback feedback, Address address)
+	public void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address)
 	{
-		CompoundTag entry = new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback)).save();
+		CompoundTag entry = new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback.feedback())).save();
 		for(int slot : crystalCache.memoryCrystals().getSlots())
 		{
 			ItemStack stack = crystalHandler.getStackInSlot(slot);

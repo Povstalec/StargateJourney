@@ -161,7 +161,7 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback)
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		this.connectionID = null;
 		this.address.reset();
@@ -242,16 +242,16 @@ public class SpawnerStargate implements Stargate
 		this.address = new Address.Mutable(address);
 	}
 	
-	public StargateInfo.Feedback dial()
+	public StargateInfo.FeedbackMessage dial()
 	{
 		return Dialing.dialStargate(server, this, getAddress(), true, true);
 	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateJourney.LOGGER.error("Stargate does not permit connections");
-		return StargateInfo.Feedback.UNKNOWN_ERROR;
+		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
 	}
 	
 	@Override

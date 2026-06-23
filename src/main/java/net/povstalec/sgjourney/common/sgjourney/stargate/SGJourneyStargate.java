@@ -144,23 +144,23 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	public StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		// If last Stargate is obstructed
 		if(isObstructed())
-			return StargateInfo.Feedback.TARGET_OBSTRUCTED;
+			return StargateInfo.Feedback.TARGET_OBSTRUCTED.withInfo();
 		
 		// If last Stargate is restricted
 		if(isNetworkRestricted(dialingStargate.getNetworks()))
-			return StargateInfo.Feedback.TARGET_RESTRICTED;
+			return StargateInfo.Feedback.TARGET_RESTRICTED.withInfo();
 		
 		// If last Stargate has a blacklist
 		if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
-			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
+			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET.withInfo();
 		
 		// If last Stargate has a whitelist
 		if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
-			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
+			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET.withInfo();
 		
 		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
 	}

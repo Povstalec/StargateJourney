@@ -5,12 +5,27 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class CoordinateHelper
 {
 	public static final String X = "x", Y = "y", Z = "z";
+	
+	public static double distanceAcrossDimensions(DimensionType dimensionTypeA, Vec3 posA, DimensionType dimensionTypeB, Vec3 posB)
+	{
+		// Take the smallest teleportation scale
+		double teleportationScaleA = DimensionType.getTeleportationScale(dimensionTypeA, dimensionTypeB);
+		double teleportationScaleB = DimensionType.getTeleportationScale(dimensionTypeB, dimensionTypeA);
+		
+		if(teleportationScaleA < teleportationScaleB)
+			return Math.sqrt(posB.distanceToSqr(posA.x * teleportationScaleA, posA.y, posA.z * teleportationScaleA));
+		else if(teleportationScaleB < teleportationScaleA)
+			return Math.sqrt(posA.distanceToSqr(posB.x * teleportationScaleB, posB.y, posB.z * teleportationScaleB));
+		else
+			return posA.distanceTo(posB);
+	}
 	
 	public static class CoordinateSystems
 	{

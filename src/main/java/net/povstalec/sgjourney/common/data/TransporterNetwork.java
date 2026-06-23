@@ -14,8 +14,10 @@ import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
@@ -373,13 +375,13 @@ public final class TransporterNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public TransporterInfo.Feedback createConnection(Transporter initiatingTransporter, Transporter targetTransporter)
+	public TransporterInfo.FeedbackMessage createConnection(Transporter initiatingTransporter, Transporter targetTransporter)
 	{
 		TransporterConnection.Type connectionType = TransporterConnection.getType(server, initiatingTransporter, targetTransporter);
 		
 		// Event for Transporter connecting, can be canceled - !!!NOTE That it does NOT reset the Transporter or actually change its feedback when canceled!!!
 		if(SGJourneyEvents.onTransporterConnect(server, initiatingTransporter, targetTransporter, connectionType))
-			return TransporterInfo.Feedback.NONE;
+			return TransporterInfo.Feedback.NONE.withInfo();
 		
 		// Will reset the Transporter if something's wrong
 		if(!targetTransporter.checkValidity())
@@ -404,21 +406,23 @@ public final class TransporterNetwork extends SavedData
 		}
 		
 		if(!initiatingTransporter.isInRange(targetTransporter))
-			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_OUT_OF_RANGE);
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.TARGET_OUT_OF_RANGE); //TODO Range message
 		else if(!targetTransporter.isInRange(initiatingTransporter))
-			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET);
+			return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.OUT_OF_RANGE_OF_TARGET); //TODO Range message
 		
 		if(REQUIRE_ENERGY)
 		{
-			long transportEnergyCost = connectionType.getTransportEnergyCost(initiatingTransporter.distanceFrom(targetTransporter));
+			double distance = initiatingTransporter.distanceFrom(targetTransporter);
+			long transportEnergyCostA = connectionType.getTransportEnergyCost(distance, initiatingTransporter.getTransferEfficiency());
+			long transportEnergyCostB = connectionType.getTransportEnergyCost(distance, targetTransporter.getTransferEfficiency());
 			
-			if(!TransporterConnection.canExtract(initiatingTransporter, transportEnergyCost))
-				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER);
-			else if(!TransporterConnection.canExtract(targetTransporter, transportEnergyCost))
-				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER_IN_TARGET);
+			if(!TransporterConnection.canExtract(initiatingTransporter, transportEnergyCostA))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER, SGJourneyEnergy.energyToString(transportEnergyCostA));
+			else if(!TransporterConnection.canExtract(targetTransporter, transportEnergyCostB))
+				return initiatingTransporter.resetTransporter(TransporterInfo.Feedback.NOT_ENOUGH_POWER_IN_TARGET, SGJourneyEnergy.energyToString(transportEnergyCostB));
 			
-			initiatingTransporter.extractEnergy(transportEnergyCost, false);
-			targetTransporter.extractEnergy(transportEnergyCost, false);
+			initiatingTransporter.extractEnergy(transportEnergyCostA, false);
+			targetTransporter.extractEnergy(transportEnergyCostB, false);
 		}
 		
 		TransporterConnection connection = TransporterConnection.create(connectionType, initiatingTransporter, targetTransporter);
@@ -433,16 +437,16 @@ public final class TransporterNetwork extends SavedData
 			
 			return switch(connectionType)
 			{
-				case DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_DIMENSIONAL;
-				case SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE;
-				case RELAYED_DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_DIMENSIONAL;
-				case RELAYED_SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_SYSTEM_WIDE;
-				case RELAYED_INTERSTELLAR -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERSTELLAR;
-				default -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERGALACTIC;
+				case DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_DIMENSIONAL.withInfo();
+				case SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_SYSTEM_WIDE.withInfo();
+				case RELAYED_DIMENSIONAL -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_DIMENSIONAL.withInfo();
+				case RELAYED_SYSTEM_WIDE -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_SYSTEM_WIDE.withInfo();
+				case RELAYED_INTERSTELLAR -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERSTELLAR.withInfo();
+				default -> TransporterInfo.Feedback.CONNECTION_ESTABLISHED_RELAYED_INTERGALACTIC.withInfo();
 			};
 		}
 		
-		return TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER;
+		return TransporterInfo.Feedback.COULD_NOT_REACH_TARGET_TRANSPORTER.withInfo();
 	}
 	
 	public boolean addConnection(TransporterConnection connection)
