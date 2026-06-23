@@ -273,6 +273,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		{
 			// try to set self as initiator of the removal
 			stargateEntity.setPendingGateRemovalFromPart(thisPart);
+
+			Optional.ofNullable(stargateEntity.blockCover)
+					.ifPresent(cover -> cover.mineBlockAt(level, null, thisPart, pos));
 		}
 
 		// if no entity was found (just in case)
