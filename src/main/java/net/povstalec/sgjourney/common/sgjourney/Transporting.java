@@ -1,10 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,17 +9,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.advancements.TransporterTravelCriterion;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import java.util.*;
@@ -148,10 +139,7 @@ public class Transporting
 		
 		reconstructEvent(receivingTransporter, player);
 		
-		double teleportationScale = DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType());
-		Vec3 transformedPos = new Vec3(initialPos.x * teleportationScale, initialPos.y, initialPos.z * teleportationScale);
-		
-		long distanceTraveled = Math.round(transformedPos.distanceTo(player.position()));
+		long distanceTraveled = Math.round(CoordinateHelper.distanceAcrossDimensions(initialLevel.dimensionType(), initialPos, destinationLevel.dimensionType(), destinationPosition));
 		
 		player.awardStat(StatisticsInit.TIMES_USED_TRANSPORTER.get());
 		player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_TRANSPORTER.get(), (int) distanceTraveled * 100);

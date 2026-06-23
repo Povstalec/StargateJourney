@@ -8,7 +8,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -152,11 +151,7 @@ public interface Transporter extends Comparable<Transporter>
 	default double distanceFrom(Transporter other)
 	{
 		if(getLevel() != null && other.getLevel() != null && getPosition() != null && other.getPosition() != null)
-		{
-			double teleportationScale = DimensionType.getTeleportationScale(getLevel().dimensionType(), other.getLevel().dimensionType());
-			Vec3 transformedPos = new Vec3(getPosition().x * teleportationScale, getPosition().y, getPosition().z * teleportationScale);
-			return teleportationScale * transformedPos.distanceTo(other.getPosition());
-		}
+			return CoordinateHelper.distanceAcrossDimensions(getLevel().dimensionType(), getPosition(), other.getLevel().dimensionType(), other.getPosition());
 		
 		return Double.NaN; // Distance not applicable
 	}

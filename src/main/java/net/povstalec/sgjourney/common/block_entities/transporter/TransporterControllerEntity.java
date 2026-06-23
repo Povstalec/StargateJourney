@@ -141,7 +141,6 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		}
 		
 		super.onLoad();
-		transporterCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override

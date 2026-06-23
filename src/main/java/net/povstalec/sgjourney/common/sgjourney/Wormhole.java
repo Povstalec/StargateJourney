@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
@@ -35,7 +33,6 @@ import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldin
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -240,10 +237,7 @@ public class Wormhole
 		
 		reconstructEvent(destinationLevel.getServer(), destinationStargate, player);
 		
-		double teleportationScale = DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType());
-		Vec3 transformedPos = new Vec3(initialPos.x * teleportationScale, initialPos.y, initialPos.z * teleportationScale);
-		
-		long distanceTraveled = Math.round(transformedPos.distanceTo(player.position()));
+		long distanceTraveled = Math.round(CoordinateHelper.distanceAcrossDimensions(initialLevel.dimensionType(), initialPos, destinationLevel.dimensionType(), destinationPosition));
 		
 		player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
 		player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled * 100);

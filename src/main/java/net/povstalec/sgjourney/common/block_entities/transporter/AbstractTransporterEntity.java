@@ -145,7 +145,6 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		}
 		
 		super.onLoad();
-		controllerCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override

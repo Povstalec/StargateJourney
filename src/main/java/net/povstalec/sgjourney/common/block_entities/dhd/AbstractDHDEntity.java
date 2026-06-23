@@ -176,7 +176,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		
 		super.onLoad();
-		stargateCache.fetch(); // Fetch when loading to prevent shenanigans with connections being formed and broken due to not having fetched yet
 	}
 	
 	@Override
