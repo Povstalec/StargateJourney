@@ -27,6 +27,12 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		super(properties);
 	}
 	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.TRANSFER;
+	}
+	
 	public static CompoundTag tagSetup(long maxTransfer)
 	{
 		CompoundTag tag = new CompoundTag();

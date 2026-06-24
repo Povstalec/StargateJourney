@@ -30,6 +30,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.ENERGY;
+	}
+	
+	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
 		return !StargateJourneyConfig.disable_energy_use.get() && getEnergy(stack) > 0;

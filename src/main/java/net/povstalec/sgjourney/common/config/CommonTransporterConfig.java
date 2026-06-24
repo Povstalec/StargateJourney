@@ -65,7 +65,7 @@ public class CommonTransporterConfig
 		
 		transporter_transport_distance_energy_cost = server
 				.comment("The amount of energy added to total energy cost of transporting per block travelled")
-				.defineInRange("server.transporter_transport_distance_energy_cost", 256L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.transporter_transport_distance_energy_cost", 64L, 0L, Long.MAX_VALUE);
 		
 		transporter_dimension_transport_energy_cost = server
 				.comment("The amount of energy added to total energy cost of transporting to another Dimension in the same Address Region")

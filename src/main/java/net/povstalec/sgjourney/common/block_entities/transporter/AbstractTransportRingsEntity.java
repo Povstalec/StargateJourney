@@ -56,7 +56,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final int MAX_TRANSPORT_HEIGHT = 16;
 	public static final int DEFAULT_TRANSFER_EFFICIENCY = 1;
 	
-	protected CrystalCache<AbstractTransportRingsEntity<?>> crystalCache = new CrystalCache<>(this, CrystalCache.ALL);
+	protected CrystalCache<AbstractTransportRingsEntity<?>> crystalCache = createCrystalCache();
 	
 	protected boolean hasNetworkRestrictions = false; // Network restrictions specified by Crystals (separate from those specified by computers)
 	protected Set<Integer> networksCrystalCache = new HashSet<>();// Networks specified by Crystals (separate from those specified by computers)
@@ -81,7 +81,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public AbstractTransportRingsEntity(BlockEntityType<?> blockEntityType, TransporterType<TR> transporterType, BlockPos pos, BlockState state, int defaultNetwork)
 	{
 		super(blockEntityType, transporterType, pos, state, defaultNetwork);
-		crystalCache.setOnRecalculateCrystals(AbstractTransportRingsEntity::recalculateCrystals);
 		
 		crystalItemHandler = createCrystalHandler();
 		lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
@@ -185,47 +184,66 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		};
 	}
 	
-	protected void recalculateCrystals()
+	protected CrystalCache<AbstractTransportRingsEntity<?>> createCrystalCache()
 	{
-		hasNetworkRestrictions = false;
-		networksCrystalCache.clear();
-		
-		transferEfficiency = DEFAULT_TRANSFER_EFFICIENCY;
-		
-		// Allow interdimensional transport if there is a Materialization Crystal placed in the center
-		allowInterdimensionalTransport = crystalItemHandler.getStackInSlot(0).getItem() instanceof MaterializationCrystalItem;
-		
-		// Check where the Crystals are and save their positions
-		for(int i = 1; i < 9; i++)
+		return new CrystalCache.Generic9<>(this, CrystalCache.ALL)
 		{
-			ItemStack stack = crystalItemHandler.getStackInSlot(i);
-			Item item = stack.getItem();
+			@Override
+			protected void onReset()
+			{
+				allowInterdimensionalTransport = false;
+				
+				hasNetworkRestrictions = false;
+				networksCrystalCache.clear();
+				
+				transferEfficiency = DEFAULT_TRANSFER_EFFICIENCY;
+			}
 			
-			if(item instanceof AbstractCrystalItem crystal)
-				crystalCache.addCrystal(i, crystal);
-		}
-		
-		crystalCache.controlCrystals().forEach((slot, controlCrystal) ->
-		{
-			//TODO Some special entry for Network Restriction
-			hasNetworkRestrictions = true;
-		});
-		
-		crystalCache.transferCrystals().forEach((slot, transferCrystal) ->
-		{
-			// Multiply the efficiency multiplier
-			transferEfficiency *= transferCrystal.getEfficiencyMultiplier();
-		});
-		
-		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
-		{
-			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
-			if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot)))
-				networksCrystalCache.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot)));
-		});
-		
-		controllerCache.markDirtyTwoWays();
-		updateTransporter();
+			@Override
+			protected void fetchCrystals()
+			{
+				for(int i = 1; i < 9; i++)
+				{
+					ItemStack stack = crystalItemHandler.getStackInSlot(i);
+					Item item = stack.getItem();
+					
+					if(item instanceof AbstractCrystalItem crystal)
+						crystalCache.addCrystal(i, crystal);
+				}
+			}
+			
+			@Override
+			protected void updateFromCrystals()
+			{
+				// Allow interdimensional transport if there is a Materialization Crystal placed in the center
+				allowInterdimensionalTransport = crystalItemHandler.getStackInSlot(0).getItem() instanceof MaterializationCrystalItem;
+				
+				crystalCache.controlCrystals().forEach(slot ->
+				{
+					//TODO Some special entry for Network Restriction
+					hasNetworkRestrictions = true;
+				});
+				
+				crystalCache.transferCrystals().forEach(slot ->
+				{
+					// Each neighboring Transfer Crystal increases efficiency of this crystal
+					int efficiency = slot.crystal.getEfficiencyMultiplier() + slot.countNeighborsOfType(Type.TRANSFER);
+					
+					// Increase efficiency for each neighboring Energy Crystal
+					slot.forEachNeighborOfType(Type.ENERGY, neighborSlot -> transferEfficiency *= efficiency);
+				});
+				
+				crystalCache.communicationCrystals().forEach(slot ->
+				{
+					// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
+					if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot.index)))
+						networksCrystalCache.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot.index)));
+				});
+				
+				controllerCache.markDirtyTwoWays();
+				updateTransporter();
+			}
+		};
 	}
 	
 	@Override
@@ -260,9 +278,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public long getTotalEnergyStored()
 	{
 		long energyStored = energyStorage.getTrueEnergyStored();
-		for(int slot : crystalCache.energyCrystals().getSlots())
+		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot).getCapability(ForgeCapabilities.ENERGY).resolve();
+			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
 			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyStored += sgjourneyEnergy.getTrueEnergyStored();
 		}
@@ -276,9 +294,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public long getTotalEnergyCapacity()
 	{
 		long energyCapacity = energyStorage.getTrueMaxEnergyStored();
-		for(int slot : crystalCache.energyCrystals().getSlots())
+		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot).getCapability(ForgeCapabilities.ENERGY).resolve();
+			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
 			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyCapacity += sgjourneyEnergy.getTrueMaxEnergyStored();
 		}
@@ -299,9 +317,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				
 				if(energyReceived < maxReceive) // If energy storage can't hold all the energy, try redirecting some of it to the Energy Crystals in the Crystal Inventory
 				{
-					for(int slot : crystalCache.energyCrystals().getSlots())
+					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot).getCapability(ForgeCapabilities.ENERGY).resolve();
+						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
 						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							energyReceived += sgjourneyEnergy.receiveLongEnergy(maxReceive - energyReceived, simulate);
@@ -334,9 +352,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				
 				if(energyExtracted < maxExtract) // If energy storage can't provide all the energy, try getting some of it to from Energy Crystals in the Crystal Inventory
 				{
-					for(int slot : crystalCache.energyCrystals().getSlots())
+					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot).getCapability(ForgeCapabilities.ENERGY).resolve();
+						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
 						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							// depleteEnergy() gets around the issue of Energy Crystals having their maximum extract rate set to 100k by default
@@ -406,9 +424,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	protected void saveDialAttempt(MemoryEntry<?> memoryEntry)
 	{
 		CompoundTag entry = memoryEntry.save();
-		for(int slot : crystalCache.memoryCrystals().getSlots())
+		for(var slot : crystalCache.memoryCrystals().getSlots())
 		{
-			ItemStack stack = crystalItemHandler.getStackInSlot(slot);
+			ItemStack stack = crystalItemHandler.getStackInSlot(slot.index);
 			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 				entry = memoryCrystal.saveCompound(stack, entry, true); // Save memory and move the oldest one to another crystal
 			
@@ -530,7 +548,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		this.progressOld = connectionTime;
 		
 		if(transportTicks - getTransportSoundLead() == connectionTime)
-			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT.get(), SoundSource.BLOCKS, 0.5F, 1F);
+			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT_PRE.get(), SoundSource.BLOCKS, 0.5F, 1F);
+		else if(transportTicks == connectionTime)
+			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT_POST.get(), SoundSource.BLOCKS, 0.5F, 1F);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity<?> rings)
@@ -597,7 +617,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public void setConnected(boolean connected)
 	{
 		BlockPos pos = this.getBlockPos();
-		BlockState state = getBlockState();
+		BlockState state = level.getBlockState(pos); // Using this instead of this.getBlockState() because it would break the game if you tried breaking the block
 		if(state.hasProperty(AbstractTransportRingsBlock.ACTIVATED))
 			level.setBlock(pos, state.setValue(AbstractTransportRingsBlock.ACTIVATED, connected), 2);
 		
@@ -607,7 +627,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	private int getEmptySpace()
 	{
 		BlockPos pos = this.getBlockPos();
-		BlockState state = getBlockState();
+		BlockState state = level.getBlockState(pos); // Using this instead of this.getBlockState() because it would break the game if you tried breaking the block
 		if(!state.hasProperty(AbstractTransportRingsBlock.FACING))
 			return 0;
 		

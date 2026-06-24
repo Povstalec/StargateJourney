@@ -13,6 +13,12 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		super(properties);
 	}
 	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.CONTROL;
+	}
+	
 	public enum FunctionTarget
 	{
 		CRYSTAL_INTERFACE,

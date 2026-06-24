@@ -318,7 +318,7 @@ public class StargateConnection
 		return true;
 	}
 	
-	private Address.Immutable getDialingAddress(MinecraftServer server)
+	private Address.Immutable getDialingAddress()
 	{
 		// Get dialing address and cache it for later use
 		if(this.dialingAddress == null)
@@ -327,9 +327,9 @@ public class StargateConnection
 		return this.dialingAddress;
 	}
 	
-	private void tickEstablishConnection(MinecraftServer server, int kawooshStartTicks)
+	private void tickEstablishConnection(int kawooshStartTicks)
 	{
-		Address.Immutable dialingAddress = getDialingAddress(server);
+		Address.Immutable dialingAddress = getDialingAddress();
 		
 		Address.Type addressType = dialingAddress.getType();
 		for(Stargate dialedStargate : this.dialedStargates)
@@ -469,7 +469,7 @@ public class StargateConnection
 		
 		// Dialing Stargate waits here while dialed Stargate is locking Chevrons, then both Stargates do kawoosh
 		if(this.connectionTime < maxKawooshTicks)
-			tickEstablishConnection(server, kawooshStartTicks);
+			tickEstablishConnection(kawooshStartTicks);
 		
 		// Prevents anything after this point from happening while the kawoosh has not yet finished
 		if(doKawoosh() && this.connectionTime < maxKawooshTicks)
@@ -519,7 +519,7 @@ public class StargateConnection
 			this.openTime = this.connectionTime - maxKawooshTicks;
 	}
 	
-	public void sendStargateMessage(MinecraftServer server, Address address, String message)
+	public void sendStargateMessage(Address address, String message)
 	{
 		if(address.equals(this.dialingStargate.get9ChevronAddress()))
 		{
@@ -603,7 +603,7 @@ public class StargateConnection
 		int kawooshStartTicks = getDialedStargate().dialedEngageTime(doKawoosh());
 		int kawooshTime = this.connectionTime - kawooshStartTicks;
 		
-		return kawooshTime < 0 ? 0 : kawooshTime;
+		return Math.max(kawooshTime, 0);
 	}
 	
 	/**
@@ -685,7 +685,6 @@ public class StargateConnection
 		return tag;
 	}
 	
-	@Nullable
 	public static StargateConnection deserialize(MinecraftServer server, UUID uuid, CompoundTag tag)
 	{
 		Type connectionType = Type.valueOf(tag.getString(CONNECTION_TYPE));

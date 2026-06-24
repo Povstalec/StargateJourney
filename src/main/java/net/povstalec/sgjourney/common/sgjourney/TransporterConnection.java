@@ -89,7 +89,7 @@ public class TransporterConnection
 		if(DISTANCE_TRANSPORT_ENERGY_COST == 0)
 			return Double.POSITIVE_INFINITY;
 		
-		return (double) (energy - TRANSPORT_ENERGY_COST) / DISTANCE_TRANSPORT_ENERGY_COST * transferEfficiency;
+		return Math.max(0, (double) (energy - TRANSPORT_ENERGY_COST) / DISTANCE_TRANSPORT_ENERGY_COST * transferEfficiency);
 	}
 	
 	public enum Type
@@ -288,6 +288,24 @@ public class TransporterConnection
 	public UUID getRelayID()
 	{
 		return this.relayID;
+	}
+	
+	public Transporter getTransporterA()
+	{
+		return transporterA;
+	}
+	
+	public Transporter getTransporterB()
+	{
+		return transporterB;
+	}
+	
+	public Transporter getOtherTransporter(TransporterID transporterID)
+	{
+		if(transporterID.equals(transporterA.getID()))
+			return transporterB;
+		else
+			return transporterA;
 	}
 	
 	//============================================================================================

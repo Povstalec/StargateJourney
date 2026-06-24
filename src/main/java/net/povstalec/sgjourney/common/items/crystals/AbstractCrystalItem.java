@@ -19,6 +19,8 @@ public abstract class AbstractCrystalItem extends Item
 	{
 		super(properties);
 	}
+	
+	public abstract CrystalCache.Type getType();
 
 	public boolean isLarge()
 	{

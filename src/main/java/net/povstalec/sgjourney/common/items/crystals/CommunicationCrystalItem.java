@@ -27,6 +27,12 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		super(properties);
 	}
 	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.COMMUNICATION;
+	}
+	
 	public static boolean hasFrequency(ItemStack stack)
 	{
 		if(stack.hasTag())

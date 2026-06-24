@@ -528,6 +528,22 @@
 			"sgjourney:transport_rings_transport"
 		]
 	},
+	"transport_rings_transport_pre":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_pre"
+		]
+	},
+	"transport_rings_transport_post":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_post"
+		]
+	},
 	
 	"ring_panel_press":
 	{

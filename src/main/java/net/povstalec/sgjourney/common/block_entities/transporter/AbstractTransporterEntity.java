@@ -460,7 +460,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(connectionID != null)
 			TransporterNetwork.get(level).terminateConnection(this.connectionID, feedback);
-		return resetTransporter(TransporterInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
+		return resetTransporter(feedback);
 	}
 	
 	public void updateBasicInterfaceBlocks(@Nullable String eventName, Object... objects)

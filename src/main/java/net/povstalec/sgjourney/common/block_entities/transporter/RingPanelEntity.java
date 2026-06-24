@@ -60,7 +60,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public static final String BUTTONS = "buttons";
 	
-	public final CrystalCache<RingPanelEntity> crystalCache = new CrystalCache<>(this, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION);
+	public final CrystalCache<RingPanelEntity> crystalCache = createCrystalCache();
 	
 	//------Button Stuff------
 	protected TransporterControllerButton.ButtonState panelState = TransporterControllerButton.ButtonState.DEFAULT;
@@ -80,7 +80,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public RingPanelEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.GOAULD_RING_PANEL.get(), pos, state);
-		crystalCache.setOnRecalculateCrystals(RingPanelEntity::recalculateCrystals);
 	}
 	
 	@Override
@@ -165,44 +164,58 @@ public class RingPanelEntity extends TransporterControllerEntity
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
-	protected void recalculateCrystals()
+	protected CrystalCache<RingPanelEntity> createCrystalCache()
 	{
-		networks.clear();
-		
-		energyTarget = 0;
-		maxEnergyTransfer = 0;
-		
-		// Check where the Crystals are and save their positions
-		for(int i = 0; i < 6; i++)
+		return new CrystalCache.Generic6<>(this, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION)
 		{
-			ItemStack stack = crystalItemHandler.getStackInSlot(i);
-			Item item = stack.getItem();
+			@Override
+			protected void onReset()
+			{
+				networks.clear();
+				
+				energyTarget = 0;
+				maxEnergyTransfer = 0;
+			}
 			
-			if(item instanceof AbstractCrystalItem crystal)
-				crystalCache.addCrystal(i, crystal);
-		}
-		
-		// If there are 4 regular crystals or 3 advanced crystals
-		if(crystalCache.energyCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
-			energyTarget = -1;
-		else
-			crystalCache.energyCrystals().forEach((slot, energyCrystal) -> energyTarget += energyCrystal.energyTargetIncrease());
-		
-		// If there are 4 regular crystals or 3 advanced crystals
-		if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
-			energyTarget = -1;
-		else
-			crystalCache.transferCrystals().forEach((slot, transferCrystal) -> maxEnergyTransfer += transferCrystal.getMaxTransfer());
-		
-		crystalCache.communicationCrystals().forEach((slot, communicationCrystal) ->
-		{
-			// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
-			if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot)))
-				networks.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot)));
-		});
-		
-		transporterCache.markDirtyTwoWays();
-		transporterCache.ifPresent(AbstractTransporterEntity::updateTransporter);
+			@Override
+			protected void fetchCrystals()
+			{
+				for(int i = 0; i < 6; i++)
+				{
+					ItemStack stack = crystalItemHandler.getStackInSlot(i);
+					Item item = stack.getItem();
+					
+					if(item instanceof AbstractCrystalItem crystal)
+						crystalCache.addCrystal(i, crystal);
+				}
+			}
+			
+			@Override
+			protected void updateFromCrystals()
+			{
+				// If there are 4 regular crystals or 3 advanced crystals
+				if(crystalCache.energyCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+					energyTarget = -1;
+				else
+					crystalCache.energyCrystals().forEach(slot -> energyTarget += slot.crystal.energyTargetIncrease());
+				
+				// If there are 4 regular crystals or 3 advanced crystals
+				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
+					energyTarget = -1;
+				else
+					crystalCache.transferCrystals().forEach(slot -> maxEnergyTransfer += slot.crystal.getMaxTransfer());
+				
+				crystalCache.communicationCrystals().forEach(slot ->
+				{
+					// Collect frequencies of different Communication Crystals and interpret them as networks the Transporter is in
+					if(CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(slot.index)))
+						networks.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot.index)));
+				});
+				
+				transporterCache.markDirtyTwoWays();
+				transporterCache.ifPresent(AbstractTransporterEntity::updateTransporter);
+			}
+		};
 	}
 	
 	//============================================================================================
@@ -488,7 +501,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	protected void setButtonsForNetworkControl(int network)
 	{
 		ServerLevel serverLevel = (ServerLevel) getLevel();
-		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance(), transporter ->
+		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
 				!transporterCache.get().transporterID.equals(transporter.getID()) &&
 						transporter.getNetworks().contains(network)).iterator();
 		
@@ -637,21 +650,21 @@ public class RingPanelEntity extends TransporterControllerEntity
 		for(int i = 0; i < 4; i++)
 		{
 			if(transporterIterator.hasNext())
-				buttons.set(i, nextInterdimensionalButton(serverLevel.getServer(), transporterIterator.next(), i));
+				buttons.set(i, nextInterdimensionalButton(transporterIterator.next(), i));
 			else
 				buttons.set(i, TransporterControllerButton.materializationButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
 		}
 		
 		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
 		if(transporterIterator.hasNext())
-			buttons.set(5, nextInterdimensionalButton(serverLevel.getServer(), transporterIterator.next(), 5));
+			buttons.set(5, nextInterdimensionalButton(transporterIterator.next(), 5));
 		else
 			buttons.set(5, TransporterControllerButton.materializationButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
 		
 		updateClient();
 	}
 	
-	protected TransporterControllerButton<RingPanelEntity> nextInterdimensionalButton(MinecraftServer server, Transporter transporter, int index)
+	protected TransporterControllerButton<RingPanelEntity> nextInterdimensionalButton(Transporter transporter, int index)
 	{
 		return TransporterControllerButton.materializationButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
@@ -668,7 +681,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//*******************************************Control******************************************
 	//============================================================================================
 	
-	private TransporterControllerButton<RingPanelEntity> nextButton(MinecraftServer server, int index, Iterator<Transporter> transporterIterator, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<RingPanelEntity> nextButton(int index, Iterator<Transporter> transporterIterator, TransporterControllerButton.ButtonStatus status)
 	{
 		TransporterControllerButton.ButtonState state = buttonStateAt(index);
 		
@@ -701,21 +714,21 @@ public class RingPanelEntity extends TransporterControllerEntity
 		boolean buttonHasEnergy = !REQUIRE_ENERGY || energyStorage.hasEnergy(buttonPressEnergyCost());
 		if(transporterCache.isPresent())
 		{
-			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, getBlockPos(), maxDiscoveryDistance(), transporter ->
-					!transporterCache.get().transporterID.equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
+			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
+					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
 							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
 							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
 			).iterator();
 			for(int i = 0; i < 6; i++)
 			{
-				buttons.set(i, nextButton(serverLevel.getServer(), i, transporterIterator, buttonHasEnergy ? TransporterControllerButton.ButtonStatus.ENABLED : TransporterControllerButton.ButtonStatus.NO_POWER));
+				buttons.set(i, nextButton(i, transporterIterator, buttonHasEnergy ? TransporterControllerButton.ButtonStatus.ENABLED : TransporterControllerButton.ButtonStatus.NO_POWER));
 			}
 		}
 		else
 		{
 			for(int i = 0; i < 6; i++)
 			{
-				buttons.set(i, nextButton(serverLevel.getServer(), i, null, TransporterControllerButton.ButtonStatus.NO_TRANSPORTER));
+				buttons.set(i, nextButton(i, null, TransporterControllerButton.ButtonStatus.NO_TRANSPORTER));
 			}
 		}
 		

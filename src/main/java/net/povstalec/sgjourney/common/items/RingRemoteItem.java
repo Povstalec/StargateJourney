@@ -190,6 +190,7 @@ public class RingRemoteItem extends HolderItem
 	
 	private void nearestTransport(ServerLevel level, Player player)
 	{
+		//TODO Nearest transport should be relative to the connected Transporter, not relative to the player
 		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(level, player.blockPosition(), 1024, transporter -> true).iterator(); // TODO Filtering, distance?
 		
 		if(transporterIterator.hasNext()) // Found Transpoter to start from

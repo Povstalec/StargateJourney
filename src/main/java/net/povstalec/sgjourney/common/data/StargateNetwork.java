@@ -642,7 +642,7 @@ public final class StargateNetwork extends SavedData
 	{
 		if(hasConnection(uuid))
 		{
-			this.connections.get(uuid).sendStargateMessage(server, sendingStargate.get9ChevronAddress(), messsage);
+			this.connections.get(uuid).sendStargateMessage(sendingStargate.get9ChevronAddress(), messsage);
 			return true;
 		}
 		else

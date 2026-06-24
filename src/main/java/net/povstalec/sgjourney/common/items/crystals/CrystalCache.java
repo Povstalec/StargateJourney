@@ -4,13 +4,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
+import java.util.*;
 import java.util.function.Consumer;
 
-public class CrystalCache<T extends BlockEntity>
+public abstract class CrystalCache<T extends BlockEntity>
 {
 	public static final Type[] ALL = new Type[] { Type.CONTROL, Type.MEMORY, Type.MATERIALIZATION, Type.ENERGY, Type.TRANSFER, Type.COMMUNICATION };
 	
@@ -24,10 +21,12 @@ public class CrystalCache<T extends BlockEntity>
 		COMMUNICATION
 	}
 	
-	protected T parent;
+	protected final T parent;
+	
 	protected boolean isDirty = true;
 	
-	protected Consumer<T> onRecalculateCrystals = parent -> {};
+	protected final int maxNeighbors;
+	protected final Map<Integer, Slot<?>> slots;
 	
 	@Nullable
 	protected Crystals<ControlCrystalItem> controlCrystals = null;
@@ -42,35 +41,30 @@ public class CrystalCache<T extends BlockEntity>
 	@Nullable
 	protected Crystals<CommunicationCrystalItem> communicationCrystals = null;
 	
-	public CrystalCache(T parent, Type... supportedTypes)
+	public CrystalCache(T parent, int size, int maxNeighbors, Type... supportedTypes)
 	{
 		this.parent = parent;
+		
+		this.maxNeighbors = maxNeighbors;
+		this.slots = new HashMap<>(size);
 		
 		for(Type type : supportedTypes)
 		{
 			switch(type)
 			{
-				case CONTROL:
-					controlCrystals = new Crystals<>();
-					break;
-				case MEMORY:
-					memoryCrystals = new Crystals<>();
-					break;
-				case MATERIALIZATION:
-					materializationCrystals = new Crystals<>();
-					break;
-				case ENERGY:
-					energyCrystals = new Crystals<>();
-					break;
-				case TRANSFER:
-					transferCrystals = new Crystals<>();
-					break;
-				case COMMUNICATION:
-					communicationCrystals = new Crystals<>();
-					break;
-				default:
+				case CONTROL -> controlCrystals = new Crystals<>(type);
+				case MEMORY -> memoryCrystals = new Crystals<>(type);
+				case MATERIALIZATION -> materializationCrystals = new Crystals<>(type);
+				case ENERGY -> energyCrystals = new Crystals<>(type);
+				case TRANSFER -> transferCrystals = new Crystals<>(type);
+				case COMMUNICATION -> communicationCrystals = new Crystals<>(type);
 			}
 		}
+	}
+	
+	public int size()
+	{
+		return slots.size();
 	}
 	
 	public void setDirty()
@@ -83,14 +77,11 @@ public class CrystalCache<T extends BlockEntity>
 		return isDirty;
 	}
 	
-	public void setOnRecalculateCrystals(Consumer<T> onRecalculateCrystals)
-	{
-		this.onRecalculateCrystals = onRecalculateCrystals;
-	}
+	public abstract int[] getNeighbors(int index);
 	
-	public void recalculateCrystals()
+	private void reset()
 	{
-		isDirty = false;
+		slots.clear();
 		
 		if(controlCrystals != null)
 			controlCrystals.reset();
@@ -105,7 +96,34 @@ public class CrystalCache<T extends BlockEntity>
 		if(communicationCrystals != null)
 			communicationCrystals.reset();
 		
-		onRecalculateCrystals.accept(parent);
+		onReset();
+	}
+	
+	protected abstract void onReset();
+	
+	protected abstract void fetchCrystals();
+	
+	protected abstract void updateFromCrystals();
+	
+	public final void recalculateCrystals()
+	{
+		isDirty = false;
+		reset();
+		fetchCrystals();
+		updateFromCrystals();
+		
+		//TODO Handle everything here
+	}
+	
+	public boolean hasCrystal(int index)
+	{
+		return slots.containsKey(index);
+	}
+	
+	@Nullable
+	public Slot<?> getSlot(int index)
+	{
+		return slots.get(index);
 	}
 	
 	@Nullable
@@ -164,18 +182,33 @@ public class CrystalCache<T extends BlockEntity>
 	
 	public void addCrystal(int slot, AbstractCrystalItem crystal)
 	{
-		if(controlCrystals != null && crystal instanceof ControlCrystalItem controlCrystal)
-			addControlCrystal(slot, controlCrystal);
-		else if(memoryCrystals != null && crystal instanceof MemoryCrystalItem memoryCrystal)
-			addMemoryCrystal(slot, memoryCrystal);
-		else if(materializationCrystals != null && crystal instanceof MaterializationCrystalItem materializationCrystal)
-			addMaterializationCrystal(slot, materializationCrystal);
-		else if(energyCrystals != null && crystal instanceof EnergyCrystalItem energyCrystal)
-			addEnergyCrystal(slot, energyCrystal);
-		else if(transferCrystals != null && crystal instanceof TransferCrystalItem transferCrystal)
-			addTransferCrystal(slot, transferCrystal);
-		else if(communicationCrystals != null && crystal instanceof CommunicationCrystalItem communicationCrystal)
-			addCommunicationCrystal(slot, communicationCrystal);
+		switch(crystal.getType())
+		{
+			case CONTROL:
+				if(controlCrystals != null)
+					addControlCrystal(slot, (ControlCrystalItem) crystal);
+				break;
+			case MEMORY:
+				if(memoryCrystals != null)
+					addMemoryCrystal(slot, (MemoryCrystalItem) crystal);
+				break;
+			case MATERIALIZATION:
+				if(materializationCrystals != null)
+					addMaterializationCrystal(slot, (MaterializationCrystalItem) crystal);
+				break;
+			case ENERGY:
+				if(energyCrystals != null)
+					addEnergyCrystal(slot, (EnergyCrystalItem) crystal);
+				break;
+			case TRANSFER:
+				if(transferCrystals != null)
+					addTransferCrystal(slot, (TransferCrystalItem) crystal);
+				break;
+			case COMMUNICATION:
+				if(communicationCrystals != null)
+					addCommunicationCrystal(slot, (CommunicationCrystalItem) crystal);
+				break;
+		}
 	}
 	
 	public void addControlCrystal(int slot, ControlCrystalItem controlCrystal)
@@ -226,15 +259,24 @@ public class CrystalCache<T extends BlockEntity>
 			StargateJourney.LOGGER.error("This crystal cache does not support Communication Crystals!");
 	}
 	
-	public static class Crystals<T extends AbstractCrystalItem>
+	public class Crystals<C extends AbstractCrystalItem>
 	{
+		public final Type type;
+		
 		private int regularCount = 0;
 		private int advancedCount = 0;
-		private final Map<Integer, T> crystals = new HashMap<>();
+		private final List<Slot<C>> crystals = new ArrayList<>(1);
 		
-		public void addCrystal(int slot, T crystal)
+		public Crystals(Type type)
 		{
-			crystals.put(slot, crystal);
+			this.type = type;
+		}
+		
+		public void addCrystal(int index, C crystal)
+		{
+			Slot<C> slot = new Slot<>(index, crystal);
+			slots.put(index, slot);
+			crystals.add(slot);
 			
 			if(crystal.isAdvanced())
 				advancedCount++;
@@ -242,12 +284,12 @@ public class CrystalCache<T extends BlockEntity>
 				regularCount++;
 		}
 		
-		public List<Integer> getSlots()
+		public List<Slot<C>> getSlots()
 		{
-			return crystals.keySet().stream().toList();
+			return crystals;
 		}
 		
-		public void forEach(BiConsumer<Integer, T> consumer)
+		public void forEach(Consumer<Slot<C>> consumer)
 		{
 			crystals.forEach(consumer);
 		}
@@ -267,6 +309,122 @@ public class CrystalCache<T extends BlockEntity>
 			crystals.clear();
 			regularCount = 0;
 			advancedCount = 0;
+		}
+	}
+	
+	public class Slot<C extends AbstractCrystalItem>
+	{
+		public final int index;
+		public final C crystal;
+		
+		public Slot(int index, C crystal)
+		{
+			this.index = index;
+			this.crystal = crystal;
+		}
+		
+		public void forEachNeighbor(Consumer<Slot<?>> consumer)
+		{
+			for(int neighborIndex : getNeighbors(index))
+			{
+				if(hasCrystal(neighborIndex))
+					consumer.accept(getSlot(neighborIndex));
+			}
+		}
+		
+		public void forEachNeighborOfType(Type type, Consumer<Slot<?>> consumer)
+		{
+			for(int neighborIndex : getNeighbors(index))
+			{
+				if(hasCrystal(neighborIndex) && getSlot(neighborIndex).crystal.getType() == type)
+					consumer.accept(getSlot(neighborIndex));
+			}
+		}
+		
+		public int countNeighborsOfType(Type type)
+		{
+			int count = 0;
+			
+			for(int neighborIndex : getNeighbors(index))
+			{
+				if(hasCrystal(neighborIndex) && getSlot(neighborIndex).crystal.getType() == type)
+					count++;
+			}
+			
+			return count;
+		}
+		
+		public int countNeighborsOfType(Type type, boolean advanced)
+		{
+			int count = 0;
+			
+			for(int neighborIndex : getNeighbors(index))
+			{
+				Slot<?> slot = getSlot(neighborIndex);
+				if(slot != null && slot.crystal.getType() == type && slot.crystal.isAdvanced() == advanced)
+					count++;
+			}
+			
+			return count;
+		}
+	}
+	
+	public static abstract class Generic9<T extends BlockEntity> extends CrystalCache<T>
+	{
+		public static final int[][] NEIGHBORS = {
+				{1, 3, 5, 7},
+				{8, 2},
+				{0, 1, 3},
+				{2, 4},
+				{0, 3, 5},
+				{4, 6},
+				{0, 5, 7},
+				{6, 8},
+				{0, 7, 1},
+				{}
+		};
+		
+		public Generic9(T parent, Type... supportedTypes)
+		{
+			super(parent, 9, 4, supportedTypes);
+		}
+		
+		@Override
+		public int[] getNeighbors(int index)
+		{
+			return switch(index)
+			{
+				case 0, 1, 2, 3, 4, 5, 6, 7, 8 -> NEIGHBORS[index];
+				default -> NEIGHBORS[9];
+			};
+		}
+	}
+	
+	public static abstract class Generic6<T extends BlockEntity> extends CrystalCache<T>
+	{
+		public static final int[][] NEIGHBORS = {
+				{1, 2},
+				{0, 3},
+				{0, 3, 4},
+				{1, 2, 5},
+				{2, 5},
+				{3, 4},
+				{}
+		};
+		
+		public Generic6(T parent, Type... supportedTypes)
+		{
+			super(parent, 6, 3, supportedTypes);
+		}
+		
+		@Override
+		public int[] getNeighbors(int index)
+		{
+			return switch(index)
+			{
+				case 0, 1, 2, 3, 4, 5 -> NEIGHBORS[index];
+				default -> NEIGHBORS[6];
+			};
 		}
 	}
 }

@@ -8,35 +8,36 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public abstract class StargateSound<T extends AbstractStargateEntity<?>> extends AbstractTickableSoundInstance
+public abstract class TransporterSound<T extends AbstractTransporterEntity<?>> extends AbstractTickableSoundInstance
 {
-	protected T stargate;
-	protected BlockPos stargatePos;
+	protected T transporter;
+	protected BlockPos transporterPos;
+	protected Minecraft minecraft = Minecraft.getInstance();
 	
 	/**
-	 * 
-	 * @param stargate Stargate the sound is centered around
+	 *
+	 * @param transporter Stargate the sound is centered around
 	 * @param soundEvent SoundEvent used in the sound
 	 */
-	protected StargateSound(T stargate, SoundEvent soundEvent)
+	protected TransporterSound(T transporter, SoundEvent soundEvent)
 	{
 		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
 		
-		this.stargate = stargate;
-		this.stargatePos = stargate.getBlockPos();
-		this.x = stargate.getCenterPos().getX();
-		this.y = stargate.getCenterPos().getY();
-		this.z = stargate.getCenterPos().getZ();
+		this.transporter = transporter;
+		this.transporterPos = transporter.getBlockPos();
+		this.x = transporter.getBlockPos().getX();
+		this.y = transporter.getBlockPos().getY();
+		this.z = transporter.getBlockPos().getZ();
 		this.relative = true;
 	}
 	
 	@Override
 	public void tick()
 	{
-		if(!(Minecraft.getInstance().level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?>))
+		if(!(Minecraft.getInstance().level.getBlockEntity(transporterPos) instanceof AbstractTransporterEntity<?>))
 			this.stop();
 	}
 	
@@ -58,7 +59,7 @@ public abstract class StargateSound<T extends AbstractStargateEntity<?>> extends
 	
 	public double getDistanceFromSource()
 	{
-		LocalPlayer player = Minecraft.getInstance().player;
+		LocalPlayer player = minecraft.player;
 		Vec3 playerPos = player.position();
 		return getPosition().distanceTo(playerPos);
 	}

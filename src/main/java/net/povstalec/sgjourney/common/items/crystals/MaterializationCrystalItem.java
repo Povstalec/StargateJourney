@@ -20,6 +20,12 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 		super(properties);
 	}
 	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.MATERIALIZATION;
+	}
+	
 	public int getRangeMultiplier()
 	{
 		return DEFAULT_RANGE_MULTIPLIER;

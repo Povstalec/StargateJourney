@@ -281,8 +281,8 @@ public class LocatorHelper
 		
 		return TransporterNetwork.get(level).getTransportersInDimension(level.dimension()).stream()
 				.filter(transporter -> transporter.getPosition() != null &&
-						transporter.distanceFromSqr(level.dimensionType(), centerPos) <= maxDistSqr &&
-						transporter.getDimension() != null)
+						transporter.getDimension() != null &&
+						transporter.distanceFromSqr(level.dimensionType(), centerPos) <= maxDistSqr)
 				.sorted(Comparator.comparing(transporter -> transporter.distanceFromSqr(level.dimensionType(), centerPos))).filter(filter).toList();
 	}
 	

@@ -30,6 +30,12 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.MEMORY;
+	}
+	
+	@Override
 	public boolean isBarVisible(ItemStack stack)
 	{
 		return getMemoryListSize(stack) > 0;

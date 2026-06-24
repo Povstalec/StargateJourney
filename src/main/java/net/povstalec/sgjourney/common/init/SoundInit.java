@@ -29,6 +29,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
 	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");
 	
 	public static final RegistryObject<SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
 	
