@@ -58,7 +58,7 @@ public class TransporterInfo
 		// End Connection
 		CONNECTION_ENDED_BY_DISCONNECT(7, TransporterInfo.FeedbackType.INFO, "connection_ended.disconnect"),
 		CONNECTION_ENDED_BY_NETWORK(8, TransporterInfo.FeedbackType.INFO, "connection_ended.transporter_network"),
-		CONNECTION_NOT_FINISHED(-19, TransporterInfo.FeedbackType.ERROR, "connection_not_finished"), //TODO Is this even necessary?
+		CONNECTION_NOT_FINISHED(-19, TransporterInfo.FeedbackType.ERROR, "connection_not_finished"),
 		
 		TRANSPORTER_DESTROYED(-20, TransporterInfo.FeedbackType.ERROR, "transporter_destroyed"),
 		COULD_NOT_REACH_TARGET_TRANSPORTER(-21, TransporterInfo.FeedbackType.MAJOR_ERROR, "could_not_reach_target_transporter"),

@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;

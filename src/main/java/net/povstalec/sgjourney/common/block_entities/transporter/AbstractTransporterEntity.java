@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;

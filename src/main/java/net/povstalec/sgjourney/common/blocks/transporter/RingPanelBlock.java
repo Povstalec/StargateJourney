@@ -27,7 +27,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;

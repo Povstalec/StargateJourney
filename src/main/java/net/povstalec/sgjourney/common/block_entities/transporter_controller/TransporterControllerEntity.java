@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.transporter;
+package net.povstalec.sgjourney.common.block_entities.transporter_controller;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -26,6 +26,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.misc.*;
@@ -341,7 +342,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	{
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
-		// Stores energy in the DHD buffer
+		// Stores energy in the Transporter Controller buffer
 		if(energyStorage.getTrueEnergyStored() < minStoredEnergy())
 		{
 			try

@@ -11,7 +11,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransporterControllerEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 
 import javax.annotation.Nullable;
 

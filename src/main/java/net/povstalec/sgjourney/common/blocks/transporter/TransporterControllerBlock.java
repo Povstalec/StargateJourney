@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransporterControllerEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 
 import javax.annotation.Nullable;

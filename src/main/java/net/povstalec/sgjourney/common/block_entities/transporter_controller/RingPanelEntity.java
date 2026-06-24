@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.block_entities.transporter;
+package net.povstalec.sgjourney.common.block_entities.transporter_controller;
 
 import java.util.*;
 
@@ -22,6 +22,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -502,7 +503,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	{
 		ServerLevel serverLevel = (ServerLevel) getLevel();
 		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
-				!transporterCache.get().transporterID.equals(transporter.getID()) &&
+				!transporterCache.get().getID().equals(transporter.getID()) &&
 						transporter.getNetworks().contains(network)).iterator();
 		
 		for(int i = 0; i < 4; i++)
@@ -637,7 +638,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 			if(transporterDimension == null || dimensions.contains(transporterDimension))
 				return false; // Attempt to collect only one Transporter from each Dimension at most
 			
-			boolean add = !transporterCache.get().transporterID.equals(transporter.getID()) &&
+			boolean add = !transporterCache.get().getID().equals(transporter.getID()) &&
 					!transporter.isNetworkRestricted(getTransporterNetworks()) &&
 					transporter.allowInterdimensionalTransport();
 			

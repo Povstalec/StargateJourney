@@ -21,7 +21,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfa
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
 
 public class BlockEntityInit
 {
