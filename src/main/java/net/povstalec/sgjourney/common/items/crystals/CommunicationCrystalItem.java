@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items.crystals;
 import java.util.List;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -68,25 +69,20 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		return DEFAULT_RANGE_INCREASE;
 	}
 
-	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		if(!hasFrequency(stack))
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.range", getRangeIncrease()).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		else
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.network").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}
-
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": ").withStyle(ChatFormatting.GRAY);
-        if(!hasFrequency(stack))
-            tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
+    	boolean hasFrequency = hasFrequency(stack);
+		
+        if(!hasFrequency)
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
         else
-        	tooltipComponents.add(description.append(Component.literal(Integer.toString(getFrequency(stack))).withStyle(ChatFormatting.GRAY)));
-
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": " + getFrequency(stack)).withStyle(ChatFormatting.GRAY));
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.communication_range_increase", !hasFrequency ? getRangeIncrease() : 0));
+		
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.communication_crystal.description"));
     }
     
     public static class Advanced extends CommunicationCrystalItem

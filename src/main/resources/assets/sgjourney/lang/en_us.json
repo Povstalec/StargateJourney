@@ -460,6 +460,10 @@
 	
 	"sounds.sgjourney.ring_panel_press" : "Ring Panel pressed",
 	
+	"sounds.sgjourney.transport_rings_transport": "Transport Rings transport",
+	"sounds.sgjourney.transport_rings_transport_pre": "Transport Rings transport starting",
+	"sounds.sgjourney.transport_rings_transport_post": "Transport Rings transport ending",
+	
 	"sounds.sgjourney.matok_fire" : "Staff Weapon fires",
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
 	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
@@ -793,7 +797,6 @@
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
 	"tooltip.sgjourney.dynamic_symbols": "Dynamic Symbols",
 	
-	"tooltip.sgjourney.crystal.none": "None",
 	"tooltip.sgjourney.crystal.in_dhd": "In DHD:",
 	"tooltip.sgjourney.crystal.in_ring_panel": "In Ring Panel:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Enables advanced protocols in Stargate",
@@ -801,11 +804,23 @@
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Increases the amount of Energy transferred to the Stargate by",
 	"tooltip.sgjourney.crystal.in_dhd.communication.range": "Increases the range at which the DHD can communicate with a Stargate by %s blocks",
 	"tooltip.sgjourney.crystal.in_dhd.communication.network": "Adds the Stargate to a network corresponding to the frequency",
+	
+	"tooltip.sgjourney.control_crystal.description": "Can change the functionality of technology based on uploaded programs",
+	"tooltip.sgjourney.control_crystal_large.description": "Activates Advanced Protocols when placed inside a DHD",
+	"tooltip.sgjourney.control_crystal_large.autoclose": "Stargate Autoclose Time",
+	"tooltip.sgjourney.memory_crystal.description": "Can store memory entries of Addresses, Transporter IDs, coordinates, etc.",
+	"tooltip.sgjourney.energy_crystal.description": "Can store Energy and increase the Energy Target",
+	"tooltip.sgjourney.energy_crystal.energy_target_increase": "Energy Target Increase",
+	"tooltip.sgjourney.transfer_crystal.description": "Can increase Energy Transfer rate and Transfer Efficiency",
+	"tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier": "Transfer Efficiency multiplier",
+	"tooltip.sgjourney.communication_crystal.description": "Can be tuned to a specific frequency or increase communication range",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frequency",
-	"tooltip.sgjourney.materialization_crystal": "Can increase range of Transporters and allow interdimensional transport",
+	"tooltip.sgjourney.communication_crystal.frequency_none": "No Frequency set",
+	"tooltip.sgjourney.communication_crystal.communication_range_increase": "Communication Range Increase: %s blocks",
+	"tooltip.sgjourney.materialization_crystal.description": "Enables interdimensional transport",
 
-	"tooltip.sgjourney.call_forwarding_device.in_dhd": "In DHD:",
-	"tooltip.sgjourney.call_forwarding_device.info": "Enables Call Forwarding",
+	"tooltip.sgjourney.call_forwarding_device.description": "When placed inside a DHD, redirects any incoming travelers to another Stargate if they can't pass through its filter",
+	"tooltip.sgjourney.call_forwarding_device.usage": "Right-click to open filter interface",
 	
 	"tooltip.sgjourney.ring_panel.crystal_slot.description": "Holds Crystals and Advanced Crystals",
 	"tooltip.sgjourney.ring_panel.energy_slot.description": "Holds energy providing items",

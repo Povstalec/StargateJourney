@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -356,7 +357,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public int autoclose()
 	{
-		return enableAdvancedProtocols() ? 10 : 0;
+		return enableAdvancedProtocols() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
 	}
 	
 	public long getStargateEnergy()

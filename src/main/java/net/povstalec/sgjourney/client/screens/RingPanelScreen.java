@@ -16,13 +16,14 @@ import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
 import org.jetbrains.annotations.NotNull;
 
-public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
+public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/ring_panel_gui.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/transporter_controller/ring_panel_gui.png");
 	
 	public static final int HINT_OFFSET_Y = 222;
 	public static final int CRYSTAL_HINT_OFFSET_X = 0;
 	public static final int ENERGY_HINT_OFFSET_X = 16;
+	public static final int CROSS_HINT_OFFSET_X = 32;
 	
     public RingPanelScreen(RingPanelMenu menu, Inventory playerInventory, Component title)
 	{
@@ -60,18 +61,9 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight + 1);
+        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 		
 		this.renderEnergyVertical(poseStack, x + 165, y + 30, 6, 64, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
-		
-		this.itemHint(poseStack, x + 5, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
-		this.itemHint(poseStack, x + 23, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
-		this.itemHint(poseStack, x + 5, y + 54, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
-		this.itemHint(poseStack, x + 23, y + 54, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 3);
-		this.itemHint(poseStack, x + 5, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 4);
-		this.itemHint(poseStack, x + 23, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
-		
-		this.itemHint(poseStack, x + 137, y + 30, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 9);
     }
 
     @Override
@@ -105,15 +97,6 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 				Component.translatable("tooltip.sgjourney.ring_panel.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
 				Component.translatable("tooltip.sgjourney.ring_panel.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.networks.usage.control_crystal"));
-		
-		this.itemTooltip(poseStack, mouseX, mouseY, 5, 36, 0, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 23, 36, 1, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 5, 54, 2, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 23, 54, 3, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 5, 72, 4, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		this.itemTooltip(poseStack, mouseX, mouseY, 23, 72, 5, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
-		
-		this.itemTooltip(poseStack, mouseX, mouseY, 137, 30, 6, ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_slot.description"));
     }
     
     @Override
@@ -131,5 +114,89 @@ public class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
 	protected void crystalEffectTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY, Component... components)
 	{
 		this.tooltip(poseStack, mouseX, mouseY, x, y, 16, 6, components);
+	}
+	
+	
+	
+	public static class Protected extends RingPanelScreen
+	{
+		public Protected(RingPanelMenu menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title);
+		}
+		
+		@Override
+		protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY)
+		{
+			super.renderBg(poseStack, partialTick, mouseX, mouseY);
+			
+			int x = (width - imageWidth) / 2;
+			int y = (height - imageHeight) / 2;
+			
+			this.itemHint(poseStack, x + 5, y + 36, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			this.itemHint(poseStack, x + 23, y + 36, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			this.itemHint(poseStack, x + 5, y + 54, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			this.itemHint(poseStack, x + 23, y + 54, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			this.itemHint(poseStack, x + 5, y + 72, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			this.itemHint(poseStack, x + 23, y + 72, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+			
+			this.itemHint(poseStack, x + 137, y + 30, CROSS_HINT_OFFSET_X, HINT_OFFSET_Y);
+		}
+		
+		@Override
+		public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+		{
+			super.render(poseStack, mouseX, mouseY, delta);
+			
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 36, 0, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 36, 1, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 54, 2, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 54, 3, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 72, 4, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 72, 5, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			
+			this.itemTooltip(poseStack, mouseX, mouseY, 137, 30, 6, ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_slot.description"));
+		}
+	}
+	
+	public static class Unprotected extends RingPanelScreen
+	{
+		public Unprotected(RingPanelMenu menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title);
+		}
+		
+		@Override
+		protected void renderBg(@NotNull PoseStack poseStack, float partialTick, int mouseX, int mouseY)
+		{
+			super.renderBg(poseStack, partialTick, mouseX, mouseY);
+			
+			int x = (width - imageWidth) / 2;
+			int y = (height - imageHeight) / 2;
+			
+			this.itemHint(poseStack, x + 5, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
+			this.itemHint(poseStack, x + 23, y + 36, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
+			this.itemHint(poseStack, x + 5, y + 54, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
+			this.itemHint(poseStack, x + 23, y + 54, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 3);
+			this.itemHint(poseStack, x + 5, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 4);
+			this.itemHint(poseStack, x + 23, y + 72, CRYSTAL_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
+			
+			this.itemHint(poseStack, x + 137, y + 30, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 9);
+		}
+		
+		@Override
+		public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+		{
+			super.render(poseStack, mouseX, mouseY, delta);
+			
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 36, 0, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 36, 1, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 54, 2, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 54, 3, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 5, 72, 4, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			this.itemTooltip(poseStack, mouseX, mouseY, 23, 72, 5, ComponentHelper.description("tooltip.sgjourney.ring_panel.crystal_slot.description"));
+			
+			this.itemTooltip(poseStack, mouseX, mouseY, 137, 30, 6, ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_slot.description"));
+		}
 	}
 }

@@ -4,6 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
@@ -14,38 +15,15 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public class RingPanelMenu extends InventoryMenu<RingPanelEntity>
+public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 {
-    public RingPanelMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+	public RingPanelMenu(@Nullable MenuType<?> type, int containerId, Inventory inventory, RingPanelEntity entity)
     {
-        this(containerId, inventory, (RingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
-    }
-
-    public RingPanelMenu(int containerId, Inventory inventory, RingPanelEntity entity)
-    {
-        super(MenuInit.RING_PANEL.get(), containerId, inventory, entity);
-		
-        checkContainerSize(inventory, 6);
-        addPlayerInventory(inventory, 8, 140);
-        addPlayerHotbar(inventory, 8, 198);
-        
-        this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
-        {
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 5, 36));
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 1, 23, 36));
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 2, 5, 54));
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 3, 23, 54));
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 4, 5, 72));
-            this.addBlockEntitySlot(new SlotItemHandler(handler, 5, 23, 72));
-        });
-		
-		this.blockEntity.getEnergyItemHandler().ifPresent(handler ->
-		{
-			this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 137, 30));
-		});
+        super(type, containerId, inventory, entity);
     }
 	
 	public long getTransporterEnergy()
@@ -138,4 +116,49 @@ public class RingPanelMenu extends InventoryMenu<RingPanelEntity>
         return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
                 player, BlockInit.GOAULD_RING_PANEL.get());
     }
+	
+	public static class Protected extends RingPanelMenu
+	{
+		public Protected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (RingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		}
+		
+		public Protected(int containerId, Inventory inventory, RingPanelEntity entity)
+		{
+			super(MenuInit.RING_PANEL_PROTECTED.get(), containerId, inventory, entity);
+		}
+	}
+	
+	public static class Unprotected extends RingPanelMenu
+	{
+		public Unprotected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (RingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			
+			checkContainerSize(inventory, 6);
+			addPlayerInventory(inventory, 8, 140);
+			addPlayerHotbar(inventory, 8, 198);
+			
+			this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
+			{
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 5, 36));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 1, 23, 36));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 2, 5, 54));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 3, 23, 54));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 4, 5, 72));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 5, 23, 72));
+			});
+			
+			this.blockEntity.getEnergyItemHandler().ifPresent(handler ->
+			{
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 137, 30));
+			});
+		}
+		
+		public Unprotected(int containerId, Inventory inventory, RingPanelEntity entity)
+		{
+			super(MenuInit.RING_PANEL_UNPROTECTED.get(), containerId, inventory, entity);
+		}
+	}
 }

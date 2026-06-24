@@ -50,21 +50,24 @@ public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if(blockEntity instanceof AncientTransportRingsEntity transportRings)
 		{
-			MenuProvider containerProvider = new MenuProvider()
+			if(transportRings.hasPermissions(player, true))
 			{
-				@Override
-				public @NotNull Component getDisplayName()
+				MenuProvider containerProvider = new MenuProvider()
 				{
-					return transportRings.hasCustomName() ? transportRings.getCustomName() : Component.translatable("screen.sgjourney.ancient_transport_rings");
-				}
-				
-				@Override
-				public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
-				{
-					return new TransportRingsMenu.Ancient(windowId, playerInventory, transportRings);
-				}
-			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return transportRings.hasCustomName() ? transportRings.getCustomName() : Component.translatable("screen.sgjourney.ancient_transport_rings");
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+					{
+						return new TransportRingsMenu.Ancient(windowId, playerInventory, transportRings);
+					}
+				};
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+			}
 		}
 		else
 			throw new IllegalStateException("Our named container provider is missing!");

@@ -32,18 +32,28 @@ public class ComponentHelper
 		return energy("tooltip.sgjourney.energy", energy);
 	}
 	
+	public static MutableComponent tickTimer(String name, int ticks, ChatFormatting formatting)
+	{
+		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks)).withStyle(formatting);
+	}
+	
 	public static MutableComponent tickTimer(String name, int ticks, int maxTicks, ChatFormatting formatting)
 	{
 		if(maxTicks <= 0)
-			return Component.translatable(name).append(": " + Conversion.ticksToString(ticks)).withStyle(formatting);
+			return tickTimer(name, ticks, formatting);
 		
 		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
+	}
+	
+	public static MutableComponent tickTimer(int ticks, ChatFormatting formatting)
+	{
+		return Component.literal(Conversion.ticksToString(ticks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent tickTimer(int ticks, int maxTicks, ChatFormatting formatting)
 	{
 		if(maxTicks <= 0)
-			return Component.literal(Conversion.ticksToString(ticks)).withStyle(formatting);
+			return tickTimer(ticks, formatting);
 		
 		return Component.literal(Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}

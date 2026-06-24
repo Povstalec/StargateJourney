@@ -78,7 +78,7 @@ public class RingPanelBlock extends TransporterControllerBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new RingPanelMenu(windowId, playerInventory, ringPanel);
+        				return ringPanel.hasPermissions(player, false) ? new RingPanelMenu.Unprotected(windowId, playerInventory, ringPanel) : new RingPanelMenu.Protected(windowId, playerInventory, ringPanel);
         			}
         		};
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

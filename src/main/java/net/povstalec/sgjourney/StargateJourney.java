@@ -192,7 +192,8 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsScreen.Ancient::new);
 			MenuScreens.register(MenuInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsScreen.Goauld::new);
 			
-        	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
+        	MenuScreens.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
+        	MenuScreens.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
 
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);

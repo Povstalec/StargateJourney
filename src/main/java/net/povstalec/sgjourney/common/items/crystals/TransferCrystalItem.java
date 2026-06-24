@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -74,19 +75,14 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	}
 
 	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.transfer").append(Component.literal(" " + SGJourneyEnergy.energyToString(getMaxTransfer()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}
-
-	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		long maxEnergyTransfer = getMaxTransfer(stack);
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(maxEnergyTransfer) + "/t")).withStyle(ChatFormatting.RED));
-        
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier").append(Component.literal(": " + getEfficiencyMultiplier())).withStyle(ChatFormatting.GOLD));
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.transfer_crystal.description"));
     }
 	
 	public static class Advanced extends TransferCrystalItem

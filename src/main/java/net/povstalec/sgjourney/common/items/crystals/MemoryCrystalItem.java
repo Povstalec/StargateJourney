@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.core.Vec3i;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import org.jetbrains.annotations.Nullable;
@@ -58,18 +59,6 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return CommonCrystalConfig.memory_crystal_capacity.get();
 	}
 
-	/*@Override
-	public Optional<Component> descriptionInDHD()
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.memory.basic").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}
-
-	@Override
-	public Optional<Component> descriptionInRing()
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_ring.memory.basic").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}*/
-
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
@@ -77,12 +66,14 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.memory_capacity").append(Component.literal(": " + list.size() + '/' + getMemoryCapacity())).withStyle(ChatFormatting.BLUE));
 		
-		for(int i = 0; i < list.size(); i++)
+		for(int i = 0; i < list.size() && i < 10; i++)
 		{
 			tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeComponentAt(list, i)));
 		}
-
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		if(list.size() >= 10)
+			tooltipComponents.add(Component.literal("...").withStyle(ChatFormatting.BLUE));
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.memory_crystal.description"));
 	}
 	
 	public static MemoryEntry.Type memoryTypeAt(ListTag list, int index)
@@ -314,18 +305,6 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		{
 			return CommonCrystalConfig.advanced_memory_crystal_capacity.get();
 		}
-
-		/*@Override
-		public Optional<Component> descriptionInDHD()
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.memory.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		}
-
-		@Override
-		public Optional<Component> descriptionInRing()
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_ring.memory.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		}*/
 
 		@Override
 		public boolean isAdvanced()

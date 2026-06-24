@@ -530,7 +530,7 @@
 	},
 	"transport_rings_transport_pre":
 	{
-		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"subtitle": "sounds.sgjourney.transport_rings_transport_pre",
 		"sounds":
 		[
 			"sgjourney:transport_rings_transport_pre"
@@ -538,7 +538,7 @@
 	},
 	"transport_rings_transport_post":
 	{
-		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"subtitle": "sounds.sgjourney.transport_rings_transport_post",
 		"sounds":
 		[
 			"sgjourney:transport_rings_transport_post"

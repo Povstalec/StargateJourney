@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
@@ -71,7 +72,7 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 				ComponentHelper.description("tooltip.sgjourney.dhd.advanced_protocols.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.advanced_protocols.usage"),
 				ComponentHelper.tickTimer("info.sgjourney.open_time", menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA),
-				ComponentHelper.tickTimer("info.sgjourney.last_traveler_time", menu.getStargateTimeSinceLastTraveler(), 200, ChatFormatting.DARK_PURPLE));
+				ComponentHelper.tickTimer("info.sgjourney.last_traveler_time", menu.getStargateTimeSinceLastTraveler(), ControlCrystalItem.AUTOCLOSE_TICKS, ChatFormatting.DARK_PURPLE));
 		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
 				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
 				ComponentHelper.description("tooltip.sgjourney.dhd.energy_target.description"),

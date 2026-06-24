@@ -452,12 +452,16 @@
 	"sounds.sgjourney.wormhole_enter" : "červí díra použita",
 	"sounds.sgjourney.wormhole_idle" : "červí díra vyčkává",
 	
-	"sounds.sgjourney.iris_thud" : "čnáraz do iris",
+	"sounds.sgjourney.iris_thud" : "náraz do iris",
 	
 	"sounds.sgjourney.dhd_enter" : "DHD zadáno",
 	"sounds.sgjourney.dhd_press" : "DHD zmáčknuto",
 	
-	"sounds.sgjourney.ring_panel_press" : "Ovládání kruhů zmáčknuto",
+	"sounds.sgjourney.ring_panel_press" : "ovládání kruhů zmáčknuto",
+	
+	"sounds.sgjourney.transport_rings_transport": "transportní kruhy transportují",
+	"sounds.sgjourney.transport_rings_transport_pre": "transportní kruhy začínají transportovat",
+	"sounds.sgjourney.transport_rings_transport_post": "transportní kruhy přestávají transportovat",
 	
 	"sounds.sgjourney.matok_fire" : "střela z tyčové zbraně",
 	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
@@ -793,18 +797,29 @@
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
 	"tooltip.sgjourney.dynamic_symbols": "Dynamické symboly",
 	
-	"tooltip.sgjourney.crystal.none": "-",
 	"tooltip.sgjourney.crystal.in_dhd": "V DHD:",
 	"tooltip.sgjourney.crystal.in_dhd.control.large": "Povolí bráně používat pokročilé nastavení",
 	"tooltip.sgjourney.crystal.in_dhd.energy": "Zvýší cílenou energetickou kapacitu v bráně o",
 	"tooltip.sgjourney.crystal.in_dhd.transfer": "Zvýší energii přenášenou do hvězdné brány o",
 	"tooltip.sgjourney.crystal.in_dhd.communication.range": "Zvýší vzdálenost ze které zvládne DHD komunikovat s hvězdnou bránou o %s bloků",
 	"tooltip.sgjourney.crystal.in_dhd.communication.network": "Přidá hvězdnou bránu do sítě korespondující dané frekvenci",
+	
+	"tooltip.sgjourney.control_crystal.description": "Dokáže změnit funkování technologie na základě uploadovaných programů",
+	"tooltip.sgjourney.control_crystal_large.description": "Aktivuje pokročilé nastavení, když je vložen do DHD",
+	"tooltip.sgjourney.control_crystal_large.autoclose": "Čas do automatického zavření brány",
+	"tooltip.sgjourney.memory_crystal.description": "Dokáže ukládat paměťové záznamy adres, ID transportérů, koordinátů, atd.",
+	"tooltip.sgjourney.energy_crystal.description": "Dokáže ukládat energii a zvýšit cílené množství energie",
+	"tooltip.sgjourney.energy_crystal.energy_target_increase": "Zvýšení cíleného množství energie",
+	"tooltip.sgjourney.transfer_crystal.description": "Dokáže zvýšit rychlost přenosu energie a účinnost přenosu",
+	"tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier": "Násobitel účinnosti přenosu",
+	"tooltip.sgjourney.communication_crystal.description": "Může být naladěn na specifickou frekvenci, nebo zvýšit komunikační dosah",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
-	"tooltip.sgjourney.materialization_crystal": "Dokáže zvýšit dosah transportérů a povolit transport mezi dimenzemi",
-
-	"tooltip.sgjourney.call_forwarding_device.in_dhd": "V DHD:",
-	"tooltip.sgjourney.call_forwarding_device.info": "Povolí přesměrování spojení",
+	"tooltip.sgjourney..communication_crystal.frequency_none": "Nenastavena žádná frekvence",
+	"tooltip.sgjourney.communication_crystal.communication_range": "Zvednutí komunkační vzdálenost o %s bloků",
+	"tooltip.sgjourney.materialization_crystal.description": "Umožňuje transport mezi dimenzemi",
+	
+	"tooltip.sgjourney.call_forwarding_device.description": "Když je vloženo do DHD, přesměruje veškeré cestovatele co neprojdou filtrem do jiné hvězdné brány",
+	"tooltip.sgjourney.call_forwarding_device.usage": "Pravé kliknutí otevře rozhraní filtru",
 	
 	"tooltip.sgjourney.ring_panel.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.ring_panel.energy_slot.description": "Drží předměty dodávající energii",

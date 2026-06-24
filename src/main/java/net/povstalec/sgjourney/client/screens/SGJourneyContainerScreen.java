@@ -29,10 +29,15 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		return false;
 	}
 	
+	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY)
+	{
+		this.blit(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY, 16, 16);
+	}
+	
 	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY, int slot)
 	{
 		if(!hasItem(slot))
-			this.blit(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY, 16, 16);
+			itemHint(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY);
 	}
 	
 	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component... components)
