@@ -49,10 +49,10 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<AncientTransportRingsEntity>> ANCIENT_TRANSPORT_RINGS = BLOCK_ENTITIES.register("ancient_transport_rings",
 			() -> BlockEntityType.Builder.of(AncientTransportRingsEntity::new, BlockInit.ANCIENT_TRANSPORT_RINGS.get()).build(null));
-	public static final RegistryObject<BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("goauld_transport_rings",
+	public static final RegistryObject<BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings", //TODO Rename to "goauld_transport_rings"
             () -> BlockEntityType.Builder.of(GoauldTransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<RingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("goauld_ring_panel",
+	public static final RegistryObject<BlockEntityType<RingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("ring_panel", //TODO Rename to "goauld_ring_panel"
             () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",

@@ -32,7 +32,7 @@ public class RemappingHelper
 	private static void remapBlock(@NotNull String oldName, @NotNull Supplier<? extends Block> blockSupplier)
 	{
 		OLD_BLOCK_MAPPINGS.put(StargateJourney.sgjourneyLocation(oldName), blockSupplier);
-		if(ForgeRegistries.ITEMS.containsKey(StargateJourney.sgjourneyLocation(oldName)))
+		if(ForgeRegistries.ITEMS.containsKey(StargateJourney.sgjourneyLocation(oldName))) // Register BlockItem, if the Block has one
 			remapItem(oldName, () -> ForgeRegistries.ITEMS.getValue(StargateJourney.sgjourneyLocation(oldName)));
 	}
 	
@@ -102,16 +102,19 @@ public class RemappingHelper
 	{
 		remapItems(event.getMappings(Registries.ITEM, StargateJourney.MODID));
 		remapBlocks(event.getMappings(Registries.BLOCK, StargateJourney.MODID));
+		// For some reason, the Forge snapshot doesn't have an entry for minecraft:block_entity_type, so this straight up just doesn't fire, how amazing
 		remapBlockEntities(event.getMappings(Registries.BLOCK_ENTITY_TYPE, StargateJourney.MODID));
 	}
 	
 	public static void setupRemapping()
 	{
 		// Block Entities
-		remapBlockEntity("transport_rings", BlockEntityInit.GOAULD_TRANSPORT_RINGS, BlockInit.GOAULD_TRANSPORT_RINGS);
-		remapBlockEntity("ring_panel", BlockEntityInit.GOAULD_RING_PANEL, BlockInit.GOAULD_RING_PANEL);
+		//remapBlockEntity("transport_rings", BlockEntityInit.GOAULD_TRANSPORT_RINGS, BlockInit.GOAULD_TRANSPORT_RINGS);
+		//remapBlockEntity("ring_panel", BlockEntityInit.GOAULD_RING_PANEL, BlockInit.GOAULD_RING_PANEL);
 		
 		// Blocks
+		remapBlock("transport_rings", BlockInit.GOAULD_TRANSPORT_RINGS);
+		remapBlock("ring_panel", BlockInit.GOAULD_RING_PANEL);
 		
 		// Items
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);

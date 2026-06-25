@@ -50,7 +50,9 @@ public final class StargateNetwork extends SavedData
 	private final Map<ResourceKey<Level>, List<Stargate>> dimensionStargates = new HashMap<>();
 	private final Map<ResourceKey<AddressRegion>, RegionStargates> regionStargates = new HashMap<>();
 	private final Map<UUID, StargateConnection> connections = new HashMap<>();
-	private int version = 0;
+	
+	private int version = 0; // The current version of theStargate Network
+	private int oldVersion = 0; // The version of the Stargate Network that was loaded, before the network update happened
 	
 	//============================================================================================
 	//******************************************Versions******************************************
@@ -61,6 +63,19 @@ public final class StargateNetwork extends SavedData
 		return this.version;
 	}
 	
+	public int getOldVersion()
+	{
+		return this.oldVersion;
+	}
+	
+	/**
+	 * @return True if the Stargate Network was updated during the loading of this game session
+	 */
+	public boolean wasUpdated()
+	{
+		return this.oldVersion == this.version;
+	}
+	
 	private void updateVersion()
 	{
 		this.version = UPDATE_VERSION;
@@ -68,6 +83,8 @@ public final class StargateNetwork extends SavedData
 	
 	public void updateNetwork()
 	{
+		oldVersion = getVersion();
+		
 		if(getVersion() == UPDATE_VERSION)
 		{
 			StargateJourney.LOGGER.debug("Stargate Network is up to date (Version: {})", version);

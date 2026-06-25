@@ -36,10 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, PDAStatus,
 		AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
@@ -57,7 +54,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	
 	protected Direction direction;
 	
-	protected Set<Integer> networks = new HashSet<>();
+	protected Set<Integer> networks = new TreeSet<>();
 	
 	protected long energyTarget = DEFAULT_ENERGY_TARGET;
 	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
@@ -147,6 +144,8 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	@Override
 	public void load(CompoundTag tag)
 	{
+		super.load(tag);
+		
 		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
 			isProtected = tag.getBoolean(PROTECTED);
 		
@@ -155,9 +154,8 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		else
 			transporterRelativePos = null;
 		
-		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
-		
-		super.load(tag);
+		if(tag.contains(ENERGY_INVENTORY, Tag.TAG_COMPOUND))
+			energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 	}
 	
 	@Override

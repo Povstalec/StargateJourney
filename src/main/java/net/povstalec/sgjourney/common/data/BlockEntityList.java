@@ -167,7 +167,7 @@ public class BlockEntityList extends SavedData
 	 */
 	public <T extends BlockEntityTransporter<?>> Transporter addTransporter(AbstractTransporterEntity<T> transporterEntity)
 	{
-		if(transporterEntity.getID() == null)
+		if(!transporterEntity.getID().isValid())
 			transporterEntity.setID(generateTransporterID());
 		
 		TransporterID transporterID = transporterEntity.getID();

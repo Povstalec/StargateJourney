@@ -63,8 +63,8 @@ public class DHDItem extends BlockItem
 			if(baseEntity instanceof AbstractDHDEntity dhd)
 				dhd.generateAdditional(StructureGenEntity.Step.READY);
 		}
-			
-			return false;
+		
+		return false;
 	}
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)

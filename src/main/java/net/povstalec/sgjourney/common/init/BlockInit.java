@@ -31,7 +31,7 @@ import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.RingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;

@@ -82,6 +82,8 @@ public class TransporterControllerItem extends BlockItem
 				controller.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else
 				controller.generateAdditional(StructureGenEntity.Step.SETUP);
+			
+			return true;
 		}
 		
 		return false;

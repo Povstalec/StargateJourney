@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.transporter;
+package net.povstalec.sgjourney.common.blocks.transporter_controller;
 
 import javax.annotation.Nullable;
 

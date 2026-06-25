@@ -39,12 +39,9 @@ public class CrystalReaderItem extends Item
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
 			{
-				if(transporter.getID() != null)
-				{
-					memoryCrystal.saveMemoryEntry(mainHandItem, new MemoryEntry.TransporterID("", level.getGameTime(), MemoryEntry.Type.TRANSPORTER_ID, transporter.getID()), false);
-					player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved.transporter_id").withStyle(ChatFormatting.BLUE), true);
-					return InteractionResult.SUCCESS;
-				}
+				memoryCrystal.saveMemoryEntry(mainHandItem, new MemoryEntry.TransporterID("", level.getGameTime(), MemoryEntry.Type.TRANSPORTER_ID, transporter.getID()), false);
+				player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved.transporter_id").withStyle(ChatFormatting.BLUE), true);
+				return InteractionResult.SUCCESS;
 			}
 		}
 		

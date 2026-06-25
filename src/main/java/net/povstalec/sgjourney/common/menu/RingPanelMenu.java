@@ -24,6 +24,10 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 	public RingPanelMenu(@Nullable MenuType<?> type, int containerId, Inventory inventory, RingPanelEntity entity)
     {
         super(type, containerId, inventory, entity);
+		
+		checkContainerSize(inventory, 6);
+		addPlayerInventory(inventory, 8, 140);
+		addPlayerHotbar(inventory, 8, 198);
     }
 	
 	public long getTransporterEnergy()
@@ -135,10 +139,11 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 		public Unprotected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
 			this(containerId, inventory, (RingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
-			
-			checkContainerSize(inventory, 6);
-			addPlayerInventory(inventory, 8, 140);
-			addPlayerHotbar(inventory, 8, 198);
+		}
+		
+		public Unprotected(int containerId, Inventory inventory, RingPanelEntity entity)
+		{
+			super(MenuInit.RING_PANEL_UNPROTECTED.get(), containerId, inventory, entity);
 			
 			this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
 			{
@@ -154,11 +159,6 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 			{
 				this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 137, 30));
 			});
-		}
-		
-		public Unprotected(int containerId, Inventory inventory, RingPanelEntity entity)
-		{
-			super(MenuInit.RING_PANEL_UNPROTECTED.get(), containerId, inventory, entity);
 		}
 	}
 }

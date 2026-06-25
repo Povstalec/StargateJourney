@@ -66,7 +66,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	protected TransporterInfo.FeedbackMessage recentFeedback = TransporterInfo.Feedback.NONE.withInfo();
 	
-	protected TransporterID.Immutable transporterID;
+	protected TransporterID.Immutable transporterID = new TransporterID.Immutable();
 	
 	protected Trinary restrictNetwork = Trinary.DEFAULT;
 	protected Set<Integer> networks = new TreeSet<>();
@@ -158,7 +158,6 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		
 		if(tag.contains(TRANSPORTER_ID, Tag.TAG_INT_ARRAY))
 			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
-		//TODO What about Transporters with old UUIDs?
     	
     	if(tag.contains(CUSTOM_NAME, 8))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
@@ -179,7 +178,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(generationStep != Step.GENERATED)
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
-		if(transporterID != null)
+		if(transporterID.isValid())
 			tag.putIntArray(TRANSPORTER_ID, transporterID.toArray());
 		
 		super.saveAdditional(tag);
@@ -249,7 +248,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	public void addTransporterToNetwork()
 	{
-		if(this.transporterID == null)
+		if(!this.transporterID.isValid())
 			setID(BlockEntityList.get(level).generateTransporterID());
 		
 		TransporterNetwork.get(level).addTransporterEntity(this);
@@ -266,7 +265,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		List<Component> status = new ArrayList<>();
 		
-		status.add(Component.translatable("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.AQUA).append(this.transporterID.toComponent(true)));
+		status.add(Component.translatable("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.DARK_AQUA).append(this.transporterID.toComponent(true)));
 		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
 		if(controllerCache.isPresent())
 			status.add(Component.translatable("info.sgjourney.transporter_controller_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(controllerCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
@@ -611,8 +610,15 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		addTransporterToNetwork();
 		
+		generateEnergyItem();
+		generateAdditional(Step.READY);
+		
 		generationStep = Step.GENERATED;
 	}
+	
+	public void generateAdditional(StructureGenEntity.Step generationStep) {}
+	
+	protected abstract void generateEnergyItem();
 	
 	//========================================================================================================
 	//**********************************************Transporter***********************************************

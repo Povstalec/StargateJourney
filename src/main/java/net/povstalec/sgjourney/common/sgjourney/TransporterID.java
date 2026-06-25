@@ -80,6 +80,11 @@ public abstract class TransporterID implements Cloneable, Comparable<Transporter
 		return idArray[number];
 	}
 	
+	public boolean isValid()
+	{
+		return getLength() == FULL_ID_LENGTH;
+	}
+	
 	public ChatFormatting getChatFormatting()
 	{
 		return ChatFormatting.DARK_AQUA;

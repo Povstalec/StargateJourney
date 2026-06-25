@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.blocks.transporter;
+package net.povstalec.sgjourney.common.blocks.transporter_controller;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

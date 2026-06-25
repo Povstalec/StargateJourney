@@ -23,7 +23,9 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.blocks.transporter.RingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.RingPanelBlock;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
@@ -87,10 +89,17 @@ public class RingPanelEntity extends TransporterControllerEntity
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
+		
 		if(tag.contains(CRYSTAL_INVENTORY))
 			crystalItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		else
 			crystalItemHandler.deserializeNBT(tag.getCompound("Inventory")); //TODO For legacy reasons
+		
+		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
+		{
+			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
+		}
 	}
 	
 	@Override
@@ -274,7 +283,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return lazyEnergyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -809,6 +818,6 @@ public class RingPanelEntity extends TransporterControllerEntity
 	@Override
 	public void generateEnergyItem()
 	{
-		energyItemHandler.setStackInSlot(0, PowerCellItem.liquidNaquadahSetup()); //TODO Randomize this
+		energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 	}
 }

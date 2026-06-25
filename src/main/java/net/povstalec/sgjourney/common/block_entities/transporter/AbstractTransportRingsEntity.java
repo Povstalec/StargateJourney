@@ -21,6 +21,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -28,8 +29,11 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
@@ -91,6 +95,12 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	{
 		super.load(tag);
 		crystalItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+		
+		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
+		{
+			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
+		}
 	}
 	
 	@Override
@@ -547,6 +557,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		this.progress = connectionTime;
 		this.progressOld = connectionTime;
 		
+		updateClient();
+		
 		if(transportTicks - getTransportSoundLead() == connectionTime)
 			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT_PRE.get(), SoundSource.BLOCKS, 0.5F, 1F);
 		else if(transportTicks == connectionTime)
@@ -675,5 +687,21 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public int getTransportSoundLead()
 	{
 		return this.transportSoundLead;
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		crystalCache.recalculateCrystals();
+	}
+	
+	@Override
+	public void generateEnergyItem()
+	{
+		energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 	}
 }

@@ -44,7 +44,9 @@ public final class TransporterNetwork extends SavedData
 	private final Map<ResourceKey<Level>, List<Transporter>> dimensionTransporters = new HashMap<>();
 	private final Map<ResourceKey<AddressRegion>, List<Transporter>> regionTransporters = new HashMap<>();
 	private final HashMap<UUID, TransporterConnection> connections = new HashMap<>();
-	private int version = 0;
+	
+	private int version = 0; // The current version of the Transporter Network
+	private int oldVersion = 0; // The version of the Transporter Network that was loaded, before the network update happened
 	
 	//============================================================================================
 	//******************************************Versions******************************************
@@ -55,13 +57,28 @@ public final class TransporterNetwork extends SavedData
 		return this.version;
 	}
 	
+	public int getOldVersion()
+	{
+		return this.oldVersion;
+	}
+	
 	private void updateVersion()
 	{
 		this.version = UPDATE_VERSION;
 	}
 	
+	/**
+	 * @return True if the Transporter Network was updated during the loading of this game session
+	 */
+	public boolean wasUpdated()
+	{
+		return this.oldVersion == this.version;
+	}
+	
 	public void updateNetwork()
 	{
+		oldVersion = getVersion();
+		
 		if(getVersion() == UPDATE_VERSION)
 		{
 			StargateJourney.LOGGER.info("Transporter Network is up to date (Version: {})", version);
@@ -136,7 +153,7 @@ public final class TransporterNetwork extends SavedData
 	{
 		Transporter transporter = BlockEntityList.get(server).addTransporter(transporterEntity);
 		
-		if(transporter != null && transporterEntity.getID() != null && transporterEntity.getID().equals(transporter.getID()))
+		if(transporter != null && transporterEntity.getID().isValid() && transporterEntity.getID().equals(transporter.getID()))
 			addTransporter(transporter);
 	}
 	

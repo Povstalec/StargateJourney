@@ -150,6 +150,8 @@ public class StargateBlockItem extends BlockItem
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+				
+				return true;
 			}
 		}
 		
@@ -178,6 +180,8 @@ public class StargateBlockItem extends BlockItem
 			}
 			else
 				stargate.generateAdditional(StructureGenEntity.Step.SETUP);
+			
+			return true;
 		}
 		
 		return false;

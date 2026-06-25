@@ -163,7 +163,7 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 		else if(!getID().equals(transporter.getID()))
 		{
 			StargateJourney.LOGGER.error("Block Entity ID wasn't equal to Transporter ID");
-			if(transporter.getID() == null) // In case Transporter ID becomes null for some reason during updating, it should get updated from this Transporter's ID
+			if(!transporter.getID().isValid()) // In case Transporter ID becomes invalid for some reason during updating, it should get updated from this Transporter's ID
 				transporter.setID(new TransporterID.Immutable(getID()));
 			else
 				return false;

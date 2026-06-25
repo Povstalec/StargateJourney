@@ -146,6 +146,18 @@ public class PowerCellItem extends FluidItem.Holder
 		return stack;
 	}
 	
+	public static ItemStack randomLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
+		
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		{
+			itemHandler.insertItem(0, VialItem.randomLiquidNaquadahSetup(minCapacity, maxCapacity), false);
+		});
+		
+		return stack;
+	}
+	
 	public static ItemStack heavyLiquidNaquadahSetup()
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
@@ -153,6 +165,18 @@ public class PowerCellItem extends FluidItem.Holder
 		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 		{
 			itemHandler.insertItem(0, VialItem.heavyLiquidNaquadahSetup(), false);
+		});
+		
+		return stack;
+	}
+	
+	public static ItemStack randomHeavyLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
+		
+		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		{
+			itemHandler.insertItem(0, VialItem.randomHeavyLiquidNaquadahSetup(minCapacity, maxCapacity), false);
 		});
 		
 		return stack;
