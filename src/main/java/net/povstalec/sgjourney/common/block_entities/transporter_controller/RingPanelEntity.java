@@ -513,7 +513,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		ServerLevel serverLevel = (ServerLevel) getLevel();
 		Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
 				!transporterCache.get().getID().equals(transporter.getID()) &&
-						transporter.getNetworks().contains(network)).iterator();
+						transporter.getNetworks().contains(network)
+		).iterator();
 		
 		for(int i = 0; i < 4; i++)
 		{
@@ -726,7 +727,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
 					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
-							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
+							// !transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
 							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
 			).iterator();
 			for(int i = 0; i < 6; i++)

@@ -326,12 +326,12 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
 		return stargateReturn(getServer(), stargate ->
 		{
-			int autoclose = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autoclose, 0);
-			if(autoclose <= 0)
+			int autocloseTicks = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autocloseTicks, 0);
+			if(autocloseTicks <= 0)
 				return false;
 			
-			return connection.getTimeSinceLastTraveler() > autoclose * 20;
-		}, false); //TODO Maybe move the "* 20" into DHD info?
+			return connection.getTimeSinceLastTraveler() > autocloseTicks;
+		}, false);
 	}
 	
 	//============================================================================================

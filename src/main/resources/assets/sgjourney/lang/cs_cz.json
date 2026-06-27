@@ -363,7 +363,7 @@
 	"item.sgjourney.trinium_hoe": "Triniová motyka",
 
 	"item.sgjourney.kara_kesh": "Ozbrojená ruka",
-	"item.sgjourney.ring_remote": "Ovládání kruhů",
+	"item.sgjourney.ring_remote": "Dálkový ovladač kruhů",
 	
 	"item.sgjourney.jaffa_staff_head": "Hlava Jaffské tyče",
 	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
@@ -491,6 +491,14 @@
 	"filled_map.sgjourney.archeologist": "Archeologova mapa",
 	"filled_map.sgjourney.astria_porta": "Mapa ke kruhu bohů",
 	"filled_map.sgjourney.chappa_ai": "Mapa k Chappa'ai",
+	
+	"transporter.sgjourney.abydos_pyramid": "Abydoská pyramida",
+	"transporter.sgjourney.stargate_pedestal": "Podstavec hvězdné brány",
+	"transporter.sgjourney.goauld_temple.desert_pyramid": "Pyramida v poušti",
+	"transporter.sgjourney.goauld_temple.desert_pyramid_chamber": "Komora pyramidy v poušti",
+	"transporter.sgjourney.goauld_temple.jungle_pyramid": "Pyramida v džungli",
+	"transporter.sgjourney.goauld_temple.badlands_ziggurat": "Zigurat v pustině",
+	"transporter.sgjourney.goauld_temple.badlands_ziggurat_chamber": "Komora ziguratu v pustině",
 	
 	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
 	"itemGroup.stargate_stuff": "Stargate Journey - Brány a ovládání",

@@ -146,6 +146,9 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	{
 		super.load(tag);
 		
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		
 		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
 			isProtected = tag.getBoolean(PROTECTED);
 		

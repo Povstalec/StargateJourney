@@ -61,10 +61,10 @@ public class CrystalReaderItem extends Item
 		{
 			ListTag list = MemoryCrystalItem.getMemoryList(mainHandStack);
 			
-			for(int i = 0; i < list.size(); i++)
+			/*for(int i = 0; i < list.size(); i++)
 			{
 				//TODO player.sendSystemMessage(Component.literal(memoryCrystal.memoryStringAt(list, i)));
-			}
+			}*/
 		}
 		
 		return super.use(level, player, usedHand);

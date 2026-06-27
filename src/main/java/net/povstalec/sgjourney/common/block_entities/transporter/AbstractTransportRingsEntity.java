@@ -482,7 +482,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		AABB localBox = new AABB((transportPos.getX() - 1), (transportPos.getY()), (transportPos.getZ() - 1),
 				(transportPos.getX() + 2), (transportPos.getY() + 3), (transportPos.getZ() + 2));
 		
-		return this.level.getEntitiesOfClass(Entity.class, localBox);
+		return this.level.getEntitiesOfClass(Entity.class, localBox, entity -> true);
 	}
 	
 	@Override

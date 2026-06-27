@@ -17,7 +17,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -355,7 +354,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.enableAdvancedProtocols;
 	}
 	
-	public int autoclose()
+	public int autocloseTicks()
 	{
 		return enableAdvancedProtocols() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
 	}

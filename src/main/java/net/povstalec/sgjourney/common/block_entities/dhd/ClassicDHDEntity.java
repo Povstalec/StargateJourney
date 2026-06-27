@@ -24,20 +24,6 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		
-		if(level.isClientSide())
-			return;
-		
-		if(stargateCache.isPresent()) // Copy from connected Stargate
-			setSymbolsFromStargate();
-		else // Generate from Dimension
-			setLocalSymbols();
-	}
-	
-	@Override
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);

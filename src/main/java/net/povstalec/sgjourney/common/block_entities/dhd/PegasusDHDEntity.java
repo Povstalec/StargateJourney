@@ -25,20 +25,6 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	public void onLoad()
-	{
-		super.onLoad();
-		
-		if(level.isClientSide())
-			return;
-		
-		if(stargateCache.isPresent()) // Copy from connected Stargate
-			setSymbolsFromStargate();
-		else // Generate from Dimension
-			setLocalSymbols();
-	}
-	
-	@Override
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);

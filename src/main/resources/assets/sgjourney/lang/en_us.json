@@ -494,6 +494,14 @@
 	"filled_map.sgjourney.astria_porta": "Map to the Ring of Gods",
 	"filled_map.sgjourney.chappa_ai": "Map to Chappa'ai",
 	
+	"transporter.sgjourney.abydos_pyramid": "Abydos Pyramid",
+	"transporter.sgjourney.stargate_pedestal": "Stargate Pedestal",
+	"transporter.sgjourney.goauld_temple.desert_pyramid": "Desert Pyramid",
+	"transporter.sgjourney.goauld_temple.desert_pyramid_chamber": "Desert Pyramid Chamber",
+	"transporter.sgjourney.goauld_temple.jungle_pyramid": "Jungle Pyramid",
+	"transporter.sgjourney.goauld_temple.badlands_ziggurat": "Badlands Ziggurat",
+	"transporter.sgjourney.goauld_temple.badlands_ziggurat_chamber": "Badlands Ziggurat Chamber",
+	
 	"itemGroup.stargate_blocks": "Stargate Journey - Blocks",
 	"itemGroup.stargate_stuff": "Stargate Journey - Stargate Stuff",
 	"itemGroup.stargate_items": "Stargate Journey - Items",

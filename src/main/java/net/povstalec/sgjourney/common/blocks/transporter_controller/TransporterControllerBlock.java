@@ -1,8 +1,14 @@
 package net.povstalec.sgjourney.common.blocks.transporter_controller;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -14,10 +20,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class TransporterControllerBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
 {
@@ -79,6 +89,28 @@ public abstract class TransporterControllerBlock extends HorizontalDirectionalBl
 		}
 		
 		return null;
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(TransporterControllerEntity.ENERGY, Tag.TAG_LONG))
+				energy = blockEntityTag.getLong(TransporterControllerEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
+		
+		if(blockEntityTag != null && blockEntityTag.contains(TransporterControllerEntity.GENERATION_STEP, Tag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(TransporterControllerEntity.GENERATION_STEP)))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+		
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 	
 	@Nullable

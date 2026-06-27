@@ -120,13 +120,6 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		if(stack.hasTag())
-		{
-			CompoundTag blockEntityTag = BlockItem.getBlockEntityData(stack);
-			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-		}
-		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.dhd.description"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.dialing_menu"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.crystal_menu"));
@@ -151,6 +144,9 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
+		
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

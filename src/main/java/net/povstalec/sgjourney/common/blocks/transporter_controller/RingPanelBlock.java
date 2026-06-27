@@ -3,8 +3,6 @@ package net.povstalec.sgjourney.common.blocks.transporter_controller;
 import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -15,7 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -31,11 +28,6 @@ import net.povstalec.sgjourney.common.block_entities.transporter_controller.Ring
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
-
-import java.util.List;
-
 
 public class RingPanelBlock extends TransporterControllerBlock
 {
@@ -133,23 +125,5 @@ public class RingPanelBlock extends TransporterControllerBlock
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
 		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), RingPanelEntity::tick);
-	}
-	
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
-	{
-		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		
-		long energy = 0;
-		
-		if(blockEntityTag != null)
-		{
-			if(blockEntityTag.contains(RingPanelEntity.ENERGY, Tag.TAG_LONG))
-				energy = blockEntityTag.getLong(RingPanelEntity.ENERGY);
-		}
-		
-		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
-		
-		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 }
