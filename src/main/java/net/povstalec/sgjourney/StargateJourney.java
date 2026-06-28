@@ -1,7 +1,10 @@
 package net.povstalec.sgjourney;
 
 import java.util.Calendar;
+import java.util.function.BiFunction;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraftforge.client.event.ModelEvent;
 import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
@@ -124,9 +127,17 @@ public class StargateJourney
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
-		
-		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
-				() -> new ConfigScreenHandler.ConfigScreenFactory((mc, screen) -> new ConfigScreen(screen)));
+
+		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
+				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
+				{
+					// Not using lambda to prevent class loading issues on dedicated server
+					@Override
+					public Screen apply(Minecraft mc, Screen screen)
+					{
+						return new ConfigScreen(screen);
+					}
+				}));
         
 		MinecraftForge.EVENT_BUS.register(this);
 		MinecraftForge.EVENT_BUS.addListener(MiscInit::registerCommands);
