@@ -31,11 +31,12 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transp
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
@@ -466,13 +467,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, TransporterID otherID)
 	{
-		saveDialAttempt(new MemoryEntry.TransporterIDConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_ID_CONNECTION_RESULT, new TransporterConnection.IDResult(otherID, feedback.feedback())));
+		saveDialAttempt(new TransporterConnectionEntry.ID("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_ID_CONNECTION_RESULT, new TransporterConnection.IDResult(otherID, feedback.feedback())));
 	}
 	
 	@Override
 	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, Vec3i coords)
 	{
-		saveDialAttempt(new MemoryEntry.TransporterCoordsConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_COORDS_CONNECTION_RESULT, new TransporterConnection.CoordsResult(coords, feedback.feedback())));
+		saveDialAttempt(new TransporterConnectionEntry.Coordinates("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_COORDS_CONNECTION_RESULT, new TransporterConnection.CoordsResult(coords, feedback.feedback())));
 	}
 	
 	@Override

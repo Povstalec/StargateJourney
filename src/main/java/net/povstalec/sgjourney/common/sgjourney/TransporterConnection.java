@@ -366,18 +366,18 @@ public class TransporterConnection
 		public static final String FEEDBACK = "feedback";
 		public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
 		
-		protected TransporterID transporterID;
+		protected TransporterID.Immutable transporterID;
 		protected TransporterInfo.Feedback feedback;
 		
 		public IDResult() {}
 		
 		public IDResult(TransporterID transporterID, TransporterInfo.Feedback feedback)
 		{
-			this.transporterID = transporterID;
+			this.transporterID = new TransporterID.Immutable(transporterID);
 			this.feedback = feedback;
 		}
 		
-		public TransporterID transporterID()
+		public TransporterID.Immutable transporterID()
 		{
 			return transporterID;
 		}

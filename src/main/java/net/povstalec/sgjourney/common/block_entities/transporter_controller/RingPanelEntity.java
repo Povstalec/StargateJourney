@@ -34,9 +34,11 @@ import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
-import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
@@ -433,11 +435,11 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	private TransporterControllerButton<RingPanelEntity> loadButtonFromMemoryCrystal(MinecraftServer server, ListTag list, int index)
 	{
-		MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, index);
+		MemoryEntry.Type<?> type = MemoryCrystalItem.memoryTypeAt(list, index);
 		
 		if(type == MemoryEntry.Type.TRANSPORTER_ID)
 		{
-			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+			TransporterIDEntry transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			Transporter transporter = BlockEntityList.get(server).getTransporter(transporterID.entry());
 			if(transporter != null)
 			{
@@ -452,7 +454,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		}
 		else if(type == MemoryEntry.Type.COORDINATES)
 		{
-			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+			CoordinateEntry coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			if(coords != null)
 				return memoryTransportButton(index).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
 			else

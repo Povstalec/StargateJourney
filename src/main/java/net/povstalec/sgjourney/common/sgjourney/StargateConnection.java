@@ -715,18 +715,18 @@ public class StargateConnection
 	{
 		public static final String FEEDBACK = "feedback";
 		
-		protected Address address;
+		protected Address.Immutable address;
 		protected StargateInfo.Feedback feedback;
 		
 		public Result() {}
 		
 		public Result(Address address, StargateInfo.Feedback feedback)
 		{
-			this.address = address;
+			this.address = new Address.Immutable(address);
 			this.feedback = feedback;
 		}
 		
-		public Address address()
+		public Address.Immutable address()
 		{
 			return address;
 		}

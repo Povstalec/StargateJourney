@@ -28,27 +28,6 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		return CrystalCache.Type.CONTROL;
 	}
 	
-	public enum FunctionTarget
-	{
-		CRYSTAL_INTERFACE,
-		STARGATE,
-		DHD,
-		TRANSPORT_RINGS;
-	}
-	
-	public enum Function
-	{
-		SEND_REDSTONE_SIGNAL(FunctionTarget.CRYSTAL_INTERFACE),
-		SAVE_TO_MEMORY_CRYSTAL(FunctionTarget.CRYSTAL_INTERFACE),
-		
-		INPUT_SYMBOL(FunctionTarget.STARGATE);
-		
-		Function(FunctionTarget target)
-		{
-			
-		}
-	}
-	
 	/*public enum Instruction
 	{
 		IF, //TODO () -> function(), (dhd) -> dhd.function(), (stargate)-> stargate.function(), ...

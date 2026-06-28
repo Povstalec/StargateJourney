@@ -15,7 +15,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 
 public class CrystalReaderItem extends Item
 {
@@ -39,7 +40,7 @@ public class CrystalReaderItem extends Item
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
 			{
-				memoryCrystal.saveMemoryEntry(mainHandItem, new MemoryEntry.TransporterID("", level.getGameTime(), MemoryEntry.Type.TRANSPORTER_ID, transporter.getID()), false);
+				memoryCrystal.saveMemoryEntry(mainHandItem, new TransporterIDEntry("", level.getGameTime(), MemoryEntry.Type.TRANSPORTER_ID, transporter.getID()), false);
 				player.displayClientMessage(Component.translatable("message.sgjourney.memory_crystal.saved.transporter_id").withStyle(ChatFormatting.BLUE), true);
 				return InteractionResult.SUCCESS;
 			}

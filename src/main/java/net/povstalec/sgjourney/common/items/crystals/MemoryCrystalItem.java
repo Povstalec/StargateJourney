@@ -1,11 +1,13 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import net.minecraft.core.Vec3i;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,11 +78,11 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.memory_crystal.description"));
 	}
 	
-	public static MemoryEntry.Type memoryTypeAt(ListTag list, int index)
+	public static MemoryEntry.Type<?> memoryTypeAt(ListTag list, int index)
 	{
 		CompoundTag tag = list.getCompound(index);
-		int ordinal = tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) ? tag.getInt(MemoryEntry.ENTRY_TYPE) : 0;
-		return MemoryEntry.Type.fromOrdinal(ordinal);
+		int id = tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) ? tag.getInt(MemoryEntry.ENTRY_TYPE) : 0;
+		return MemoryEntry.Type.fromId(id);
 	}
 	
 	public static Component memoryTypeComponentAt(ListTag list, int index)
@@ -104,7 +106,18 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return 0;
 	}
 	
-	public static int countMemoryEntriesOfType(ItemStack stack, MemoryEntry.Type... entryTypes)
+	public static boolean isMemoryEntryType(ListTag list, MemoryEntry.Type<?> entryType, int index)
+	{
+		CompoundTag tag = list.getCompound(index);
+		return entryType.is(tag.getInt(MemoryEntry.ENTRY_TYPE));
+	}
+	
+	public static boolean isMemoryEntryType(ItemStack stack, MemoryEntry.Type<?> entryType, int index)
+	{
+		return isMemoryEntryType(getMemoryList(stack), entryType, index);
+	}
+	
+	public static int countMemoryEntriesOfType(ItemStack stack, MemoryEntry.Type<?>... entryTypes)
 	{
 		if(entryTypes.length == 0)
 			return getMemoryListSize(stack);
@@ -114,9 +127,9 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		int count = 0;
 		for(int i = 0; i < list.size(); i++)
 		{
-			for(MemoryEntry.Type entryType : entryTypes)
+			for(MemoryEntry.Type<?> entryType : entryTypes)
 			{
-				if(loadMemoryEntry(list, entryType, i) != null)
+				if(isMemoryEntryType(list, entryType, i))
 				{
 					count++;
 					break;
@@ -197,23 +210,23 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Nullable
-	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ListTag list, MemoryEntry.Type entryType, int index)
+	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ListTag list, MemoryEntry.Type<T> entryType, int index)
 	{
 		CompoundTag tag = list.getCompound(index);
-		if(tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) && tag.getInt(MemoryEntry.ENTRY_TYPE) == entryType.ordinal())
-			return (T) entryType.loadFromTag(tag);
+		if(tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT) && entryType.is(tag.getInt(MemoryEntry.ENTRY_TYPE)))
+			return entryType.loadFromTag(tag);
 		
 		return null;
 	}
 	
 	@Nullable
-	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ItemStack stack, MemoryEntry.Type entryType, int index)
+	public static <T extends MemoryEntry<?>> T loadMemoryEntry(ItemStack stack, MemoryEntry.Type<T> entryType, int index)
 	{
 		return loadMemoryEntry(getMemoryList(stack), entryType, index);
 	}
 	
-	@Nullable
-	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ListTag list, MemoryEntry.Type entryType)
+	/*@Nullable
+	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ListTag list, MemoryEntry.Type<T> entryType)
 	{
 		for(int i = 0; i < list.size(); i++)
 		{
@@ -226,69 +239,35 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Nullable
-	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ItemStack stack, MemoryEntry.Type entryType)
+	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ItemStack stack, MemoryEntry.Type<T> entryType)
 	{
 		return loadFirstMemoryEntry(getMemoryList(stack), entryType);
+	}*/
+	
+	public static <T extends MemoryEntry<?>> void memoryEntryRun(ListTag list, MemoryEntry.Type<T> entryType, int index, Consumer<T> consumer)
+	{
+		T entry = loadMemoryEntry(list, entryType, index);
+		if(entry != null)
+			consumer.accept(entry);
 	}
 	
-	//============================================================================================
-	//************************************Specific Entry Types************************************
-	//============================================================================================
-	
-	@Nullable
-	public static String loadText(ListTag list, int index)
+	public static <T extends MemoryEntry<?>> void memoryEntryRun(ItemStack stack, MemoryEntry.Type<T> entryType, int index, Consumer<T> consumer)
 	{
-		MemoryEntry.Text text = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TEXT, index);
-		return text != null ? text.entry() : null;
+		memoryEntryRun(getMemoryList(stack), entryType, index, consumer);
 	}
 	
-	@Nullable
-	public String loadText(ItemStack stack, int index)
+	public static <T extends MemoryEntry<?>, R> R memoryEntryReturn(ListTag list, MemoryEntry.Type<T> entryType, int index, Function<T, R> function, R defaultValue)
 	{
-		MemoryEntry.Text text = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.TEXT, index);
-		return text != null ? text.entry() : null;
+		T entry = loadMemoryEntry(list, entryType, index);
+		if(entry != null)
+			return function.apply(entry);
+		
+		return defaultValue;
 	}
 	
-	@Nullable
-	public static Address loadAddress(ListTag list, int index)
+	public static <T extends MemoryEntry<?>, R> R memoryEntryReturn(ItemStack stack, MemoryEntry.Type<T> entryType, int index, Function<T, R> function, R defaultValue)
 	{
-		MemoryEntry.Address address = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.ADDRESS, index);
-		return address != null ? address.entry() : null;
-	}
-	
-	@Nullable
-	public Address loadAddress(ItemStack stack, int index)
-	{
-		MemoryEntry.Address address = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.ADDRESS, index);
-		return address != null ? address.entry() : null;
-	}
-	
-	@Nullable
-	public static TransporterID loadTransporterID(ListTag list, int index)
-	{
-		MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
-		return transporterID != null ? transporterID.entry() : null;
-	}
-	
-	@Nullable
-	public TransporterID loadTransporterID(ItemStack stack, int index)
-	{
-		MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.TRANSPORTER_ID, index);
-		return transporterID != null ? transporterID.entry() : null;
-	}
-	
-	@Nullable
-	public static Vec3i loadCoordinates(ListTag list, int index)
-	{
-		MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
-		return coords != null ? coords.entry() : null;
-	}
-	
-	@Nullable
-	public Vec3i loadCoordinates(ItemStack stack, int index)
-	{
-		MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(stack, MemoryEntry.Type.COORDINATES, index);
-		return coords != null ? coords.entry() : null;
+		return memoryEntryReturn(getMemoryList(stack), entryType, index, function, defaultValue);
 	}
 	
 	

@@ -1,29 +1,28 @@
-	package net.povstalec.sgjourney.common.structures;
-	
-	import java.util.Optional;
-	import java.util.Random;
-	
-	import com.mojang.serialization.Codec;
-	import com.mojang.serialization.codecs.RecordCodecBuilder;
-	import net.minecraft.core.BlockPos;
-	import net.minecraft.core.Holder;
-	import net.minecraft.resources.ResourceLocation;
-	import net.minecraft.util.RandomSource;
-	import net.minecraft.world.level.ChunkPos;
-	import net.minecraft.world.level.WorldGenLevel;
-	import net.minecraft.world.level.block.Rotation;
-	import net.minecraft.world.level.levelgen.Heightmap;
-	import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
-	import net.minecraft.world.level.levelgen.structure.Structure;
-	import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-	import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-	import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-	import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-	import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
-	import org.jetbrains.annotations.Nullable;
-	
-	public abstract class StargateStructure extends SGJourneyStructure
-	{
+package net.povstalec.sgjourney.common.structures;
+
+import java.util.Optional;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class StargateStructure extends SGJourneyStructure
+{
 	@Nullable
 	protected final Holder<StructureTemplatePool> obstructedStartPool;
 	
@@ -65,6 +64,8 @@
 	
 	public static class StargateModifiers
 	{
+		@Nullable
+		private final Address.Randomizable<Address.Immutable> randomizableAddress;
 		private final boolean displayID;
 		private final boolean upgraded;
 		private final boolean localPointOfOrigin;
@@ -73,6 +74,8 @@
 		private final boolean isProtected;
 		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Address.Randomizable.codec(Address.Immutable.CODEC).optionalFieldOf("address").forGetter(modifiers -> Optional.ofNullable(modifiers.randomizableAddress)),
+				
 				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.of(modifiers.displayID)),
 				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.of(modifiers.upgraded)),
 				
@@ -82,9 +85,11 @@
 				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
 		).apply(instance, StargateModifiers::new));
 		
-		public StargateModifiers(Optional<Boolean> displayID, Optional<Boolean> upgraded, Optional<Boolean> localPointOfOrigin,
-								 Optional<Boolean> primary, Optional<Boolean> isProtected)
+		public StargateModifiers(Optional<Address.Randomizable<Address.Immutable>> randomizableAddress, Optional<Boolean> displayID, Optional<Boolean> upgraded,
+								 Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary, Optional<Boolean> isProtected)
 		{
+			this.randomizableAddress = randomizableAddress.orElse(null);
+			
 			this.displayID = displayID.orElse(false);
 			this.upgraded = upgraded.orElse(false);
 			
@@ -96,6 +101,10 @@
 		
 		public void modifyStargate(AbstractStargateEntity<?> stargate)
 		{
+			//TODO Randomized address that depends on the seed (and also make sure it works properly depending on whether address randomization is on or not)
+			if(randomizableAddress != null && !randomizableAddress.isRandomizable())
+				stargate.set9ChevronAddress(randomizableAddress.address());
+			
 			if(displayID)
 				stargate.displayID();
 			
@@ -134,4 +143,4 @@
 				dhd.setProtected(true);
 		}
 	}
-	}
+}

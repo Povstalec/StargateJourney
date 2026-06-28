@@ -6,15 +6,16 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
-import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -132,10 +133,10 @@ public class RingRemoteItem extends HolderItem
 		}
 		
 		ListTag list = MemoryCrystalItem.getMemoryList(getHeldItem(ringRemoteStack));
-		MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, index);
+		MemoryEntry.Type<?> type = MemoryCrystalItem.memoryTypeAt(list, index);
 		if(type == MemoryEntry.Type.TRANSPORTER_ID)
 		{
-			MemoryEntry.TransporterID entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+			TransporterIDEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			if(entry.name().isEmpty())
 				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entry().toString()).withStyle(ChatFormatting.AQUA)), true);
 			else
@@ -143,7 +144,7 @@ public class RingRemoteItem extends HolderItem
 		}
 		else if(type == MemoryEntry.Type.COORDINATES)
 		{
-			MemoryEntry.Coordinates entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+			CoordinateEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			
 			if(entry.name().isEmpty())
 				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entry().toString()).withStyle(ChatFormatting.YELLOW)), true);
@@ -161,11 +162,11 @@ public class RingRemoteItem extends HolderItem
 		int index = getIndex(ringRemoteStack);
 		
 		ListTag list = MemoryCrystalItem.getMemoryList(crystalStack);
-		MemoryEntry.Type type = MemoryCrystalItem.memoryTypeAt(list, index);
+		MemoryEntry.Type<?> type = MemoryCrystalItem.memoryTypeAt(list, index);
 		
 		if(type == MemoryEntry.Type.TRANSPORTER_ID)
 		{
-			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(crystalStack, MemoryEntry.Type.TRANSPORTER_ID, index);
+			TransporterIDEntry transporterID = MemoryCrystalItem.loadMemoryEntry(crystalStack, MemoryEntry.Type.TRANSPORTER_ID, index);
 			if(transporterID != null)
 			{
 				idTransport(player, transporterID.entry(), connectedTransporter);
@@ -174,7 +175,7 @@ public class RingRemoteItem extends HolderItem
 		}
 		else if(type == MemoryEntry.Type.COORDINATES)
 		{
-			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(crystalStack, MemoryEntry.Type.COORDINATES, index);
+			CoordinateEntry coords = MemoryCrystalItem.loadMemoryEntry(crystalStack, MemoryEntry.Type.COORDINATES, index);
 			if(coords != null)
 			{
 				coordTransport(player, coords.entry(), connectedTransporter);
@@ -351,7 +352,7 @@ public class RingRemoteItem extends HolderItem
 			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
 			for(int i = 0; i < list.size(); i++)
 			{
-				MemoryEntry.Type memoryType = MemoryCrystalItem.memoryTypeAt(list, i);
+				MemoryEntry.Type<?> memoryType = MemoryCrystalItem.memoryTypeAt(list, i);
 				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, memoryType, i)));
 			}
 		}
@@ -359,17 +360,17 @@ public class RingRemoteItem extends HolderItem
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	private Component memoryComponentAt(ListTag list, MemoryEntry.Type type, int index)
+	private Component memoryComponentAt(ListTag list, MemoryEntry.Type<?> type, int index)
 	{
 		if(type == MemoryEntry.Type.TRANSPORTER_ID)
 		{
-			MemoryEntry.TransporterID transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
+			TransporterIDEntry transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			if(transporterID != null)
 				return transporterID.toComponent();
 		}
 		else
 		{
-			MemoryEntry.Coordinates coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
+			CoordinateEntry coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			if(coords != null)
 				return coords.toComponent();
 		}

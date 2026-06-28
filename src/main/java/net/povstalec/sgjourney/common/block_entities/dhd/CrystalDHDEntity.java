@@ -6,9 +6,10 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -206,7 +207,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address)
 	{
-		CompoundTag entry = new MemoryEntry.StargateConnectionResult("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback.feedback())).save();
+		CompoundTag entry = new StargateConnectionEntry("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback.feedback())).save();
 		for(var slot : crystalCache.memoryCrystals().getSlots())
 		{
 			ItemStack stack = crystalHandler.getStackInSlot(slot.index);

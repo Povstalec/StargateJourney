@@ -28,5 +28,16 @@
 			"spawns":
 			[]
 		}
+	},
+	
+	"stargate_modifiers":
+	{
+		"address": {"symbols": [5, 16, 20, 30, 34, 23, 4, 13, 0], "randomizable": true},
+		"primary": true,
+		"protected": true
+	},
+	"dhd_modifiers":
+	{
+		"protected": true
 	}
 }
