@@ -133,13 +133,12 @@ public class BlockEntityList extends SavedData
 		return stargateMap.get(address);
 	}
 	
-	public Address.Immutable generate9ChevronAddress()
+	public Address.Immutable generate9ChevronAddress(RandomSource randomSource)
 	{
-		Random random = new Random();
 		Address.Immutable address;
 		do
 		{
-			address = Address.Immutable.randomAddress(8, Address.ADDRESS_GENERATION_SYMBOLS, random.nextLong());
+			address = Address.Immutable.randomAddress(8, Address.ADDRESS_GENERATION_SYMBOLS, randomSource.nextLong());
 		} while(containsStargate(address));
 		
 		return address;

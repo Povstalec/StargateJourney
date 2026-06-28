@@ -18,6 +18,8 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +57,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 		super.generateBlockEntity(level, startPos, randomSource, generatedEntity);
 		
 		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity<?> stargate)
-			stargateModifiers.modifyStargate(stargate);
+			stargateModifiers.modifyStargate(level, randomSource, stargate);
 		else if(dhdModifiers != null && generatedEntity instanceof AbstractDHDEntity dhd)
 			dhdModifiers.modifyDHD(dhd);
 	}
@@ -65,7 +67,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 	public static class StargateModifiers
 	{
 		@Nullable
-		private final Address.Randomizable<Address.Immutable> randomizableAddress;
+		private final Address.Randomizable<Address.Immutable> address;
 		private final boolean displayID;
 		private final boolean upgraded;
 		private final boolean localPointOfOrigin;
@@ -74,7 +76,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 		private final boolean isProtected;
 		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Address.Randomizable.codec(Address.Immutable.CODEC).optionalFieldOf("address").forGetter(modifiers -> Optional.ofNullable(modifiers.randomizableAddress)),
+				Address.Randomizable.codec(Address.Immutable.CODEC).optionalFieldOf("address").forGetter(modifiers -> Optional.ofNullable(modifiers.address)),
 				
 				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.of(modifiers.displayID)),
 				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.of(modifiers.upgraded)),
@@ -85,10 +87,10 @@ public abstract class StargateStructure extends SGJourneyStructure
 				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
 		).apply(instance, StargateModifiers::new));
 		
-		public StargateModifiers(Optional<Address.Randomizable<Address.Immutable>> randomizableAddress, Optional<Boolean> displayID, Optional<Boolean> upgraded,
+		public StargateModifiers(Optional<Address.Randomizable<Address.Immutable>> address, Optional<Boolean> displayID, Optional<Boolean> upgraded,
 								 Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary, Optional<Boolean> isProtected)
 		{
-			this.randomizableAddress = randomizableAddress.orElse(null);
+			this.address = address.orElse(null);
 			
 			this.displayID = displayID.orElse(false);
 			this.upgraded = upgraded.orElse(false);
@@ -99,11 +101,15 @@ public abstract class StargateStructure extends SGJourneyStructure
 			this.isProtected = isProtected.orElse(false);
 		}
 		
-		public void modifyStargate(AbstractStargateEntity<?> stargate)
+		public void modifyStargate(WorldGenLevel level, RandomSource randomSource, AbstractStargateEntity<?> stargate)
 		{
-			//TODO Randomized address that depends on the seed (and also make sure it works properly depending on whether address randomization is on or not)
-			if(randomizableAddress != null && !randomizableAddress.isRandomizable())
-				stargate.set9ChevronAddress(randomizableAddress.address());
+			if(address != null)
+			{
+				if(address.isRandomizable() && StargateNetworkSettings.get(level.getLevel()).randomizeAddresses())
+					stargate.set9ChevronAddress(BlockEntityList.get(level.getLevel()).generate9ChevronAddress(randomSource));
+				else
+					stargate.set9ChevronAddress(address.address());
+			}
 			
 			if(displayID)
 				stargate.displayID();

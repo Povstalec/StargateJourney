@@ -53,7 +53,7 @@ public class SpaceLocation
 			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf(SYMBOLS).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.symbols)),
 			//TODO Coordinates
 			AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
-			Codec.BOOL.optionalFieldOf(PRELOAD_STARGATE, false).forGetter(spaceLocation -> spaceLocation.unityCrystalsGrow)
+			Codec.BOOL.optionalFieldOf(PRELOAD_STARGATE, false).forGetter(spaceLocation -> spaceLocation.preloadStargate)
 	).apply(instance, SpaceLocation::new));
 	
 	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>(); // Templates for how to create a Space Location for a Dimension based on its prefix

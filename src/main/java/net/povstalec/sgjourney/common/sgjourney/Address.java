@@ -478,14 +478,14 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		}
 		
 		/**
-		 * Extends the address with a point of origin, or leaves it as it is if it already has one
+		 * Extends any non-empty address with a Point of Origin, or leaves it as it is if it already has one
 		 * @param address Original address
 		 * @return Address with point of origin
 		 */
 		public static Address.Immutable extendWithPointOfOrigin(Address.Immutable address)
 		{
 			// The second check is here in case the last symbol is not the usual Point of Origin
-			if(!address.hasPointOfOrigin() && address.addressArray.length < MAX_ADDRESS_LENGTH)
+			if(!address.hasPointOfOrigin() && !address.isEmpty() && address.addressArray.length < MAX_ADDRESS_LENGTH)
 				return new Immutable(ArrayHelper.growIntArray(address.addressArray, POINT_OF_ORIGIN));
 			
 			return address;
