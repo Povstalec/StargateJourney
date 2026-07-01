@@ -14,12 +14,14 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface BlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends Transporter
 {
@@ -46,6 +48,16 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 			return consumer.apply(transporter);
 		
 		return defaultValue;
+	}
+	
+	default <T> T transporterReturnOrSupply(MinecraftServer server, Function<TransporterEntity, T> consumer, @NotNull Supplier<T> defaultValueSupplier)
+	{
+		TransporterEntity transporter = getTransporterEntity(server);
+		
+		if(transporter != null)
+			return consumer.apply(transporter);
+		
+		return defaultValueSupplier.get();
 	}
 	
 	static TransporterInfo.Feedback noTransporterEntity()

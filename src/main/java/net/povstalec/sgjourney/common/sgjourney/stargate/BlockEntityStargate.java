@@ -15,12 +15,14 @@ import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Wormhole;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public interface BlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends Stargate
 {
@@ -46,6 +48,16 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 			return function.apply(stargate);
 		
 		return defaultValue;
+	}
+	
+	default <T> T stargateReturnOrSupply(MinecraftServer server, Function<StargateEntity, T> function, @NotNull Supplier<T> supplier)
+	{
+		StargateEntity stargate = getStargateEntity(server);
+		
+		if(stargate != null)
+			return function.apply(stargate);
+		
+		return supplier.get();
 	}
 	
 	static StargateInfo.Feedback noStargateEntity()
