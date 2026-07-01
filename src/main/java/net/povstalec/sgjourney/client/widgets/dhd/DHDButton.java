@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.widgets;
+package net.povstalec.sgjourney.client.widgets.dhd;
 
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;

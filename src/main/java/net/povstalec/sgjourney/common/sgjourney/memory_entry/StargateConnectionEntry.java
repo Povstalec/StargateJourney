@@ -14,9 +14,9 @@ public class StargateConnectionEntry extends MemoryEntry<StargateConnection.Resu
 		super(tag);
 	}
 	
-	public StargateConnectionEntry(String name, long timeStamp, Type<?> entryType, StargateConnection.Result entry)
+	public StargateConnectionEntry(String name, long timeStamp, StargateConnection.Result entry)
 	{
-		super(name, timeStamp, entryType, entry);
+		super(name, timeStamp, Type.STARGATE_CONNECTION_RESULT, entry);
 	}
 	
 	@Override

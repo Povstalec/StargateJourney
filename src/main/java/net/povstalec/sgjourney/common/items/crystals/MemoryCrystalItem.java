@@ -4,11 +4,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.minecraft.core.Vec3i;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -19,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.sgjourney.Address;
 
 public class MemoryCrystalItem extends AbstractCrystalItem
 {
@@ -152,11 +149,11 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return new ListTag();
 	}
 	
-	private static void setMemoryList(ItemStack stack, ListTag list)
+	public static void setMemoryList(ItemStack stack, ListTag list)
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem && list != null)
 		{
-			CompoundTag tag = new CompoundTag();
+			CompoundTag tag = stack.getOrCreateTag();
 			tag.put(MEMORY_LIST, list);
 			stack.setTag(tag);
 		}
@@ -225,24 +222,21 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return loadMemoryEntry(getMemoryList(stack), entryType, index);
 	}
 	
-	/*@Nullable
-	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ListTag list, MemoryEntry.Type<T> entryType)
+	@Nullable
+	public static MemoryEntry<?> loadMemoryEntry(ListTag list, int index)
 	{
-		for(int i = 0; i < list.size(); i++)
-		{
-			T memoryEntry = loadMemoryEntry(list, entryType, i);
-			if(memoryEntry != null)
-				return memoryEntry;
-		}
+		CompoundTag tag = list.getCompound(index);
+		if(tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT))
+			return MemoryEntry.Type.fromId(tag.getInt(MemoryEntry.ENTRY_TYPE)).loadFromTag(tag);
 		
 		return null;
 	}
 	
 	@Nullable
-	public static <T extends MemoryEntry<?>> T loadFirstMemoryEntry(ItemStack stack, MemoryEntry.Type<T> entryType)
+	public static MemoryEntry<?> loadMemoryEntry(ItemStack stack, int index)
 	{
-		return loadFirstMemoryEntry(getMemoryList(stack), entryType);
-	}*/
+		return loadMemoryEntry(getMemoryList(stack), index);
+	}
 	
 	public static <T extends MemoryEntry<?>> void memoryEntryRun(ListTag list, MemoryEntry.Type<T> entryType, int index, Consumer<T> consumer)
 	{

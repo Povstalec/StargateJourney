@@ -44,6 +44,18 @@ public final class PacketHandlerInit
 				.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
 				.add();
 		
+		INSTANCE.messageBuilder(ClientboundCrystalComputerOpenMainScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+				.encoder(ClientboundCrystalComputerOpenMainScreenPacket::encode)
+				.decoder(ClientboundCrystalComputerOpenMainScreenPacket::new)
+				.consumerMainThread(ClientboundCrystalComputerOpenMainScreenPacket::handle)
+				.add();
+		
+		INSTANCE.messageBuilder(ClientboundCrystalComputerOpenSaveScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+				.encoder(ClientboundCrystalComputerOpenSaveScreenPacket::encode)
+				.decoder(ClientboundCrystalComputerOpenSaveScreenPacket::new)
+				.consumerMainThread(ClientboundCrystalComputerOpenSaveScreenPacket::handle)
+				.add();
+		
 		INSTANCE.messageBuilder(ClientboundArcheologistNotebookOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 				.encoder(ClientboundArcheologistNotebookOpenScreenPacket::encode)
 				.decoder(ClientboundArcheologistNotebookOpenScreenPacket::new)
@@ -149,6 +161,12 @@ public final class PacketHandlerInit
 				.encoder(ServerboundGDOUpdatePacket::encode)
 				.decoder(ServerboundGDOUpdatePacket::new)
 				.consumerMainThread(ServerboundGDOUpdatePacket::handle)
+				.add();
+		
+		INSTANCE.messageBuilder(ServerboundCrystalComputerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+				.encoder(ServerboundCrystalComputerUpdatePacket::encode)
+				.decoder(ServerboundCrystalComputerUpdatePacket::new)
+				.consumerMainThread(ServerboundCrystalComputerUpdatePacket::handle)
 				.add();
 		
 		INSTANCE.messageBuilder(ServerboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)

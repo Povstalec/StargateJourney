@@ -13,9 +13,9 @@ public class AddressEntry extends MemoryEntry<Address.Immutable> implements IAdd
 		super(tag);
 	}
 	
-	public AddressEntry(String name, long timeStamp, Type<?> entryType, Address.Immutable entry)
+	public AddressEntry(String name, long timeStamp, Address.Immutable entry)
 	{
-		super(name, timeStamp, entryType, entry);
+		super(name, timeStamp, Type.ADDRESS, entry);
 	}
 	
 	@Override

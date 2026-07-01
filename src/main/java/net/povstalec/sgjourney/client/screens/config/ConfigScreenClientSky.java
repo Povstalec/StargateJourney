@@ -12,9 +12,8 @@ import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 public class ConfigScreenClientSky extends Screen
 {
 	private final Screen parentScreen;
-	private ConfigList configList;
-
-    private static final int BACK_BUTTON_WIDTH = 200;
+	
+	private static final int BACK_BUTTON_WIDTH = 200;
     private static final int BACK_BUTTON_HEIGHT = 20;
     private static final int BACK_BUTTON_TOP_OFFSET = 26;
     
@@ -35,16 +34,16 @@ public class ConfigScreenClientSky extends Screen
     {
 		super.init();
 		
-		this.configList = new ConfigList(minecraft, this.width, this.height, 
+		ConfigList configList = new ConfigList(minecraft, this.width, this.height,
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_abydos_sky"), this.width, ClientSkyConfig.custom_abydos_sky));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_chulak_sky"), this.width, ClientSkyConfig.custom_chulak_sky));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_cavum_tenebrae_sky"), this.width, ClientSkyConfig.custom_cavum_tenebrae_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_abydos_sky"), this.width, ClientSkyConfig.custom_abydos_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_chulak_sky"), this.width, ClientSkyConfig.custom_chulak_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_cavum_tenebrae_sky"), this.width, ClientSkyConfig.custom_cavum_tenebrae_sky));
 		
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_lantea_sky"), this.width, ClientSkyConfig.custom_lantea_sky));
-		//this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_athos_sky"), this.width, ClientSkyConfig.custom_athos_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_lantea_sky"), this.width, ClientSkyConfig.custom_lantea_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_athos_sky"), this.width, ClientSkyConfig.custom_athos_sky));
 		
-		this.addWidget(this.configList);
+		this.addRenderableWidget(configList);
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 
 				(button) -> this.minecraft.setScreen(this.parentScreen))
@@ -55,7 +54,6 @@ public class ConfigScreenClientSky extends Screen
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.renderBackground(poseStack);
-        this.configList.render(poseStack, mouseX, mouseY, partialTick);
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
         super.render(poseStack, mouseX, mouseY, partialTick);
     }

@@ -19,7 +19,6 @@ import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
-import net.povstalec.sgjourney.common.items.energy_cores.LiquidNaquadahReactorCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
 
 public class ItemInit
@@ -261,8 +260,8 @@ public class ItemInit
 	public static final RegistryObject<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device", 
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
-	public static final RegistryObject<CrystalReaderItem> CRYSTAL_READER = ITEMS.register("crystal_reader",
-			() -> new CrystalReaderItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
+	public static final RegistryObject<CrystalComputerItem> POCKET_CRYSTAL_COMPUTER = ITEMS.register("pocket_crystal_computer",
+			() -> new CrystalComputerItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));

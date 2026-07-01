@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.widgets;
+package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.widgets;
+package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
@@ -12,15 +12,12 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.joml.Matrix4f;
 
 public abstract class DHDSymbolButton extends DHDButton

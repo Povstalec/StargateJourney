@@ -178,7 +178,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	protected CrystalCache<RingPanelEntity> createCrystalCache()
 	{
-		return new CrystalCache.Generic6<>(this, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION)
+		return new CrystalCache.Generic6<>(this, CrystalCache.ALL)
 		{
 			@Override
 			protected void onReset()
@@ -249,7 +249,10 @@ public class RingPanelEntity extends TransporterControllerEntity
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					return stack.getItem() instanceof AbstractCrystalItem;
+					if(stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge())
+						return crystalCache.isSupported(crystal.getType());
+					
+					return false;
 				}
 				
 				// Limits the number of items per slot
@@ -446,7 +449,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 				if(transporterID.name().isEmpty() && transporter.getName() != null)
 					return memoryTransportButton(index).setTransporter(transporter);
 				else
-					return memoryTransportButton(index).setTransporter(transporter, ChatFormatting.GREEN);
+					return memoryTransportButton(index).setTransporter(transporter, Component.literal(transporterID.name()).withStyle(ChatFormatting.GREEN));
 			}
 			else
 				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));

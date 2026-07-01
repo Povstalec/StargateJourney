@@ -17,9 +17,9 @@ public class TransporterConnectionEntry
 			super(tag);
 		}
 		
-		public ID(String name, long timeStamp, Type<?> entryType, TransporterConnection.IDResult entry)
+		public ID(String name, long timeStamp, TransporterConnection.IDResult entry)
 		{
-			super(name, timeStamp, entryType, entry);
+			super(name, timeStamp, Type.TRANSPORTER_ID_CONNECTION_RESULT, entry);
 		}
 		
 		@Override
@@ -56,9 +56,9 @@ public class TransporterConnectionEntry
 			super(tag);
 		}
 		
-		public Coordinates(String name, long timeStamp, Type<?> entryType, TransporterConnection.CoordsResult entry)
+		public Coordinates(String name, long timeStamp, TransporterConnection.CoordsResult entry)
 		{
-			super(name, timeStamp, entryType, entry);
+			super(name, timeStamp, Type.TRANSPORTER_COORDS_CONNECTION_RESULT, entry);
 		}
 		
 		@Override

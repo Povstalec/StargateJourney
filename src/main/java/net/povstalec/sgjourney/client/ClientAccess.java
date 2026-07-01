@@ -10,6 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -24,19 +26,29 @@ public class ClientAccess
 		SpaceLocation.currentGravity = gravity;
 	}
 	
-	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
+	public static void openArcheologistNotebookScreen(boolean mainHand, CompoundTag tag)
 	{
-		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
+		minecraft.setScreen(new ArcheologistNotebookScreen(mainHand, tag));
 	}
 	
-	public static void updateDialer(UUID playerId)
+	public static void updateDialer()
 	{
 		minecraft.setScreen(new DialerScreen());
 	}
 	
-	public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+	public static void openGDOScreen(boolean mainHand, String idc, int frequency)
 	{
-		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
+		minecraft.setScreen(new GDOScreen(mainHand, idc, frequency));
+	}
+	
+	public static void openCrystalComputerMainScreen(boolean mainHand)
+	{
+		minecraft.setScreen(new PocketCrystalComputerMainScreen(mainHand));
+	}
+	
+	public static void openCrystalComputerSaveScreen(boolean mainHand, BlockPos clickedPos)
+	{
+		minecraft.setScreen(new PocketCrystalComputerSaveScreen(mainHand, clickedPos));
 	}
 	
 	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
@@ -58,10 +70,5 @@ public class ClientAccess
 				minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
 			}
 		}
-	}
-	
-	public static void dumpCrystallizerTank(UUID playerId, boolean mainHand, String idc, int frequency)
-	{
-		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
 	}
 }

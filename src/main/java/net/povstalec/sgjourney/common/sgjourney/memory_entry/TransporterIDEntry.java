@@ -13,9 +13,9 @@ public class TransporterIDEntry extends MemoryEntry<TransporterID.Immutable> imp
 		super(tag);
 	}
 	
-	public TransporterIDEntry(String name, long timeStamp, Type<?> entryType, TransporterID.Immutable entry)
+	public TransporterIDEntry(String name, long timeStamp, TransporterID.Immutable entry)
 	{
-		super(name, timeStamp, entryType, entry);
+		super(name, timeStamp, Type.TRANSPORTER_ID, entry);
 	}
 	
 	@Override

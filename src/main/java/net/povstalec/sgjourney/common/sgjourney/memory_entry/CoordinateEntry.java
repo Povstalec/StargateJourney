@@ -17,9 +17,9 @@ public class CoordinateEntry extends MemoryEntry<Vec3i> implements ICoordinateEn
 		super(tag);
 	}
 	
-	public CoordinateEntry(String name, long timeStamp, Type<?> entryType, Vec3i entry)
+	public CoordinateEntry(String name, long timeStamp, Vec3i entry)
 	{
-		super(name, timeStamp, entryType, entry);
+		super(name, timeStamp, Type.COORDINATES, entry);
 	}
 	
 	public Vec3 asVec3()

@@ -84,7 +84,7 @@ public class TabInit
 				items.accept(ItemInit.ANCIENT_TRANSPORT_RING.get());
 				items.accept(ItemInit.GOAULD_TRANSPORT_RING.get());
 				
-				items.accept(ItemInit.CRYSTAL_READER.get());
+				items.accept(ItemInit.POCKET_CRYSTAL_COMPUTER.get());
 				items.accept(ItemInit.PDA.get());
 				//items.accept(ItemInit.ANCIENT_REMOTE.get());
 

@@ -12,6 +12,8 @@ import net.minecraft.world.level.Level;
 
 public class MaterializationCrystalItem extends AbstractCrystalItem
 {
+	//TODO Free absolute range increase
+	
 	public MaterializationCrystalItem(Properties properties)
 	{
 		super(properties);

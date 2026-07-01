@@ -166,16 +166,21 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		};
 	}
 	
-	public MutableComponent toComponent(boolean copyToClipboard)
+	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
 	{
 		Style style = Style.EMPTY;
 		if(copyToClipboard)
 		{
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.address")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(getChatFormatting()));
+		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
+		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
 	public boolean containsRegularSymbol(int symbol)

@@ -126,9 +126,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	protected boolean isValidCrystal(int slot, ItemStack stack)
 	{
 		if(slot == 0)
-			return stack.getItem() instanceof AbstractCrystalItem crystal && crystal.isLarge();
+			return stack.getItem() instanceof ControlCrystalItem crystal && crystal.isLarge();
 		
-		return (stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge()) || stack.getItem() instanceof CallForwardingDevice;
+		if(stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge())
+			return crystalCache.isSupported(crystal.getType());
+		
+		return false;
 	}
 	
 	protected CrystalCache<CrystalDHDEntity> createCrystalCache()
@@ -207,7 +210,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 	@Override
 	public void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address)
 	{
-		CompoundTag entry = new StargateConnectionEntry("", getLevel().getGameTime(), MemoryEntry.Type.STARGATE_CONNECTION_RESULT, new StargateConnection.Result(address, feedback.feedback())).save();
+		CompoundTag entry = new StargateConnectionEntry("", getLevel().getGameTime(), new StargateConnection.Result(address, feedback.feedback())).save();
 		for(var slot : crystalCache.memoryCrystals().getSlots())
 		{
 			ItemStack stack = crystalHandler.getStackInSlot(slot.index);

@@ -90,16 +90,21 @@ public abstract class TransporterID implements Cloneable, Comparable<Transporter
 		return ChatFormatting.DARK_AQUA;
 	}
 	
-	public MutableComponent toComponent(boolean copyToClipboard)
+	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
 	{
 		Style style = Style.EMPTY;
 		if(copyToClipboard)
 		{
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.transporter_id")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(getChatFormatting()));
+		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(chatFormatting));
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
+		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)

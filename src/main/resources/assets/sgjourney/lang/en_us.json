@@ -369,7 +369,7 @@
 	"item.sgjourney.jaffa_staff_head": "Jaffa Staff Head",
 	"item.sgjourney.matok": "Ma'Tok Staff Weapon",
 	
-	"item.sgjourney.crystal_reader": "Crystal Reader",
+	"item.sgjourney.pocket_crystal_computer": "Pocket Crystal Computer",
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.liquid_naquadah_reactor_core": "Liquid Naquadah Reactor Core",
 	"item.sgjourney.naquadah_generator_core": "Naquadah Generator Core",
@@ -1070,6 +1070,7 @@
 	"message.sgjourney.transporter.info.connection_established.relayed_intergalactic": "Intergalactic connection established",
 	
 	"message.sgjourney.transporter.error.invalid_transporter_id": "Invalid Transporter ID",
+	"message.sgjourney.transporter.error.no_transporter_at_coords": "No Transporter found at target coordinates",
 	"message.sgjourney.transporter.error.not_enough_power": "Not enough power (%s required)",
 	"message.sgjourney.transporter.error.not_enough_power_in_target": "Not enough power in target (%s required)",
 	"message.sgjourney.transporter.error.self_obstructed": "Local Transporter is obstructed",
@@ -1119,7 +1120,6 @@
 	"message.sgjourney.command.get_transporters.no_transporters": "No Transporters could be located in Dimension %s",
 	"message.sgjourney.command.transporter_network_reload": "Transporter Network reloaded",
 	"message.sgjourney.command.transporter_network_version": "Transporter Network version",
-	"message.sgjourney.command.click_to_copy.address": "Click to copy Address",
 	"message.sgjourney.command.primary_stargate_set": "Primary Stargate set",
 	"message.sgjourney.command.primary_stargate_unset": "Primary Stargate unset",
 	"message.sgjourney.command.primary_stargate": "Primary Stargate",
@@ -1127,6 +1127,9 @@
 	"message.sgjourney.command.protected_block_set": "Protected Block set",
 	"message.sgjourney.command.protected_block_unset": "Protected Block unset",
 	"message.sgjourney.command.not_protected_block": "Target is not a protectable Block",
+	
+	"message.sgjourney.click_to_copy.address": "Click to copy Address",
+	"message.sgjourney.click_to_copy.transporter_id": "Click to copy Transporter ID",
 	
 	"message.sgjourney.gdo.shielded": "Shielded",
 	"message.sgjourney.gdo.error.no_nearby_stargate": "No nearby Stargate",

@@ -173,7 +173,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return slot == 0 ? stack.getItem() instanceof MaterializationCrystalItem : stack.getItem() instanceof AbstractCrystalItem;
+				if(slot == 0)
+					return stack.getItem() instanceof MaterializationCrystalItem crystal && !crystal.isLarge();
+				
+				if(stack.getItem() instanceof AbstractCrystalItem crystal && !crystal.isLarge())
+					return crystalCache.isSupported(crystal.getType());
+				
+				return false;
 			}
 			
 			// Limits the number of items per slot
@@ -467,13 +473,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, TransporterID otherID)
 	{
-		saveDialAttempt(new TransporterConnectionEntry.ID("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_ID_CONNECTION_RESULT, new TransporterConnection.IDResult(otherID, feedback.feedback())));
+		saveDialAttempt(new TransporterConnectionEntry.ID("", getLevel().getGameTime(), new TransporterConnection.IDResult(otherID, feedback.feedback())));
 	}
 	
 	@Override
 	public void onDialAttempt(TransporterInfo.FeedbackMessage feedback, Vec3i coords)
 	{
-		saveDialAttempt(new TransporterConnectionEntry.Coordinates("", getLevel().getGameTime(), MemoryEntry.Type.TRANSPORTER_COORDS_CONNECTION_RESULT, new TransporterConnection.CoordsResult(coords, feedback.feedback())));
+		saveDialAttempt(new TransporterConnectionEntry.Coordinates("", getLevel().getGameTime(), new TransporterConnection.CoordsResult(coords, feedback.feedback())));
 	}
 	
 	@Override

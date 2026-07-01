@@ -12,9 +12,8 @@ import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 public class ConfigScreenClientDHD extends Screen
 {
 	private final Screen parentScreen;
-	private ConfigList configList;
-
-    private static final int BACK_BUTTON_WIDTH = 200;
+	
+	private static final int BACK_BUTTON_WIDTH = 200;
     private static final int BACK_BUTTON_HEIGHT = 20;
     private static final int BACK_BUTTON_TOP_OFFSET = 26;
     
@@ -35,18 +34,18 @@ public class ConfigScreenClientDHD extends Screen
     {
 		super.init();
 		
-		this.configList = new ConfigList(minecraft, this.width, this.height, 
+		ConfigList configList = new ConfigList(minecraft, this.width, this.height,
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
 				Component.translatable("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_dhd_button_layout"), this.width, ClientDHDConfig.pegasus_dhd_canon_button_layout,
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_dhd_button_layout"), this.width, ClientDHDConfig.pegasus_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
-		this.configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		
-		this.addWidget(this.configList);
+		this.addRenderableWidget(configList);
 
 		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 
 				(button) -> this.minecraft.setScreen(this.parentScreen))
@@ -57,7 +56,6 @@ public class ConfigScreenClientDHD extends Screen
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
         this.renderBackground(poseStack);
-        this.configList.render(poseStack, mouseX, mouseY, partialTick);
         drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
         super.render(poseStack, mouseX, mouseY, partialTick);
     }

@@ -53,7 +53,7 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
-	public static final int DHD_INFO_DISTANCE = 3;
+	public static final int DHD_INFO_DISTANCE = 5;
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";

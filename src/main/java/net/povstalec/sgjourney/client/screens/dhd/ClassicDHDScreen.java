@@ -1,12 +1,12 @@
-package net.povstalec.sgjourney.client.screens;
+package net.povstalec.sgjourney.client.screens.dhd;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.widgets.ClassicDHDSymbolButton;
-import net.povstalec.sgjourney.client.widgets.DHDBigButton;
-import net.povstalec.sgjourney.client.widgets.GenericDHDSymbolButton;
+import net.povstalec.sgjourney.client.widgets.dhd.ClassicDHDSymbolButton;
+import net.povstalec.sgjourney.client.widgets.dhd.DHDBigButton;
+import net.povstalec.sgjourney.client.widgets.dhd.GenericDHDSymbolButton;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
 
 public class ClassicDHDScreen extends AbstractDHDScreen<ClassicDHDMenu>

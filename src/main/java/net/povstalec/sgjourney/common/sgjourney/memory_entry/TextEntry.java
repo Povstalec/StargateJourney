@@ -11,9 +11,9 @@ public class TextEntry extends MemoryEntry<String> //TODO Maybe make a Component
 		super(tag);
 	}
 	
-	public TextEntry(String name, long timeStamp, Type<?> entryType, String entry)
+	public TextEntry(String name, long timeStamp, String entry)
 	{
-		super(name, timeStamp, entryType, entry);
+		super(name, timeStamp, Type.TEXT, entry);
 	}
 	
 	@Override

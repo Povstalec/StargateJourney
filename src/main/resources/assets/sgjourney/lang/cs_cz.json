@@ -236,7 +236,7 @@
 	
 	"block.sgjourney.ancient_transport_rings": "Antické transportní kruhy",
 	"block.sgjourney.goauld_transport_rings": "Goa'uldí transportní kruhy",
-	"block.sgjourney.goauld_ring_panel": "Goa'uldí ovládání kruhů",
+	"block.sgjourney.goauld_ring_panel": "Goa'uldí ovládací panel kruhů",
 	
 	"block.sgjourney.naquadah_reactor": "Naquadahový Reaktor",
 	"block.sgjourney.naquadah_reactor.description.mode": "Shift + pravé kliknutí na blok pro aktivaci/deaktivaci",
@@ -368,7 +368,7 @@
 	"item.sgjourney.jaffa_staff_head": "Hlava Jaffské tyče",
 	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
 	
-	"item.sgjourney.crystal_reader": "Čtečka krystalů",
+	"item.sgjourney.pocket_crystal_computer": "Kapesní krystalový počítač",
 	"item.sgjourney.pda": "PDA",
 	"item.sgjourney.liquid_naquadah_reactor_core": "Jádro tekutého naquadahového reaktoru",
 	"item.sgjourney.naquadah_generator_core": "Jádro naquadahového generátoru",
@@ -1069,6 +1069,7 @@
 	"message.sgjourney.transporter.info.connection_established.relayed_intergalactic": "Mezigalaktické spojení navázáno",
 	
 	"message.sgjourney.transporter.error.invalid_transporter_id": "Neplatné ID transportéru",
+	"message.sgjourney.transporter.error.no_transporter_at_coords": "Nenalezen žádný transportér na cílových koordinátech",
 	"message.sgjourney.transporter.error.not_enough_power": "Nedostatek energie (je třeba %s)",
 	"message.sgjourney.transporter.error.not_enough_power_in_target": "Nedostatek energie v cíli (je třeba %s)",
 	"message.sgjourney.transporter.error.self_obstructed": "Lokální transportér je blokován",
@@ -1118,7 +1119,6 @@
 	"message.sgjourney.command.get_transporters.no_transporters": "V dimenzi %s nebyly nalezeny žádné transportéry",
 	"message.sgjourney.command.transporter_network_reload": "Transportéry načteny",
 	"message.sgjourney.command.transporter_network_version": "Verze sítě transportérů",
-	"message.sgjourney.command.click_to_copy.address": "Klikněte pro zkopírování adresy",
 	"message.sgjourney.command.primary_stargate_set": "Primární hvězdná brána nastavena",
 	"message.sgjourney.command.primary_stargate_unset": "Primární hvězdná brána zrušena",
 	"message.sgjourney.command.primary_stargate": "Primární hvězdná brána",
@@ -1126,6 +1126,9 @@
 	"message.sgjourney.command.protected_block_set": "Chráněný blok nastaven",
 	"message.sgjourney.command.protected_block_unset": "Chráněný blok zrušen",
 	"message.sgjourney.command.not_protected_block": "Cíl není chránitelný blok",
+	
+	"message.sgjourney.click_to_copy.address": "Klikněte pro zkopírování adresy",
+	"message.sgjourney.click_to_copy.transporter_id": "Klikněte pro zkopírování ID transportéru",
 
 	"message.sgjourney.gdo.shielded": "Chráněno",
 	"message.sgjourney.gdo.error.no_nearby_stargate": "Žádná hvězdná brána poblíž",

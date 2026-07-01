@@ -110,9 +110,9 @@ public abstract class MemoryEntry<T>
 			super(tag);
 		}
 		
-		public Unknown(String name, long timeStamp, Type<?> entryType, Byte entry)
+		public Unknown(String name, long timeStamp, Byte entry)
 		{
-			super(name, timeStamp, entryType, entry);
+			super(name, timeStamp, Type.UNKNOWN, entry);
 		}
 		
 		@Override

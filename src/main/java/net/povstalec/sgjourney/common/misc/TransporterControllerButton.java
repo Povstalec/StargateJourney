@@ -119,9 +119,9 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(state.chatFormatting) : null, transporter.getPosition());
 	}
 	
-	public TransporterControllerButton<T> setTransporter(Transporter transporter, ChatFormatting chatFormatting)
+	public TransporterControllerButton<T> setTransporter(Transporter transporter, Component tooltip)
 	{
-		return setTransporter(transporter.getID(), transporter.getName() != null ? transporter.getName().copy().withStyle(chatFormatting) : null, transporter.getPosition());
+		return setTransporter(transporter.getID(), tooltip, transporter.getPosition());
 	}
 	
 	public ButtonState state()

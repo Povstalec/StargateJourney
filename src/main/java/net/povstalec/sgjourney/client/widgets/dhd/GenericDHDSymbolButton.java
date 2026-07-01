@@ -1,18 +1,13 @@
-package net.povstalec.sgjourney.client.widgets;
+package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper.CoordinateSystems;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 {

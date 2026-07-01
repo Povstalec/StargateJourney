@@ -44,7 +44,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	public static final String TRANSPORTER_POS = "transporter_pos";
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
-	public static final int CONTROLLER_INFO_DISTANCE = 3;
+	public static final int CONTROLLER_INFO_DISTANCE = 5;
 	
 	public static final int DEFAULT_ENERGY_TARGET = 0;
 	public static final int DEFAULT_ENERGY_TRANSFER = 0;

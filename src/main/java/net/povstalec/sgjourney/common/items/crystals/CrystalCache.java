@@ -28,6 +28,8 @@ public abstract class CrystalCache<T extends BlockEntity>
 	protected final int maxNeighbors;
 	protected final Map<Integer, Slot<?>> slots;
 	
+	protected final Set<Type> supportedTypes = new HashSet<>();
+	
 	@Nullable
 	protected Crystals<ControlCrystalItem> controlCrystals = null;
 	@Nullable
@@ -50,6 +52,7 @@ public abstract class CrystalCache<T extends BlockEntity>
 		
 		for(Type type : supportedTypes)
 		{
+			this.supportedTypes.add(type);
 			switch(type)
 			{
 				case CONTROL -> controlCrystals = new Crystals<>(type);
@@ -75,6 +78,11 @@ public abstract class CrystalCache<T extends BlockEntity>
 	public boolean isDirty()
 	{
 		return isDirty;
+	}
+	
+	public boolean isSupported(Type type)
+	{
+		return supportedTypes.contains(type);
 	}
 	
 	public abstract int[] getNeighbors(int index);
