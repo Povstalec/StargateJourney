@@ -600,6 +600,18 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	//============================================================================================
 	
 	@Override
+	public void setGenerationStep(Step step)
+	{
+		this.generationStep = step;
+	}
+	
+	@Override
+	public Step generationStep()
+	{
+		return generationStep;
+	}
+	
+	@Override
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)

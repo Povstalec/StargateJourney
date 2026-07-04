@@ -22,16 +22,16 @@ public abstract class PocketCrystalComputerScreen extends Screen
 {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/pocket_crystal_computer_gui.png");
 
-	protected int imageWidth = 176;
-	protected int imageHeight = 176;
+	protected int imageWidth = 256;
+	protected int imageHeight = 142;
 	
 	protected final InteractionHand interactionHand;
 	
-	public PocketCrystalComputerScreen(boolean mainHand)
+	public PocketCrystalComputerScreen(InteractionHand interactionHand)
 	{
 		super(Component.empty());
 		
-		this.interactionHand = mainHand ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
+		this.interactionHand = interactionHand;
 	}
 	
 	protected ItemStack getItemInHand(InteractionHand hand)

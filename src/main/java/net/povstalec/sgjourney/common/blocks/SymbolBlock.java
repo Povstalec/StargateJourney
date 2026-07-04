@@ -150,11 +150,11 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	}
 		
 		if(symbolNumber == 0)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
 		else
 		{
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);

@@ -179,7 +179,12 @@ public class StargateBlockItem extends BlockItem
 					StargateNetwork.get(level).updateStargateEntity(stargate);
 			}
 			else
+			{
 				stargate.generateAdditional(StructureGenEntity.Step.SETUP);
+				// Clear symbols manually when placing the gate here, because Minecraft fires onLoad() before any kind of useful loading of information actually happens
+				if(stargate instanceof PegasusStargateEntity pegasusStargate)
+					pegasusStargate.clearSymbols();
+			}
 			
 			return true;
 		}

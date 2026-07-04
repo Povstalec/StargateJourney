@@ -14,6 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 
 public class DHDItem extends BlockItem
 {
@@ -84,7 +85,12 @@ public class DHDItem extends BlockItem
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 				dhd.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else
+			{
 				dhd.generateAdditional(StructureGenEntity.Step.SETUP);
+				// Clear symbols manually when placing the gate here, because Minecraft fires onLoad() before any kind of useful loading of information actually happens
+				if(dhd instanceof PegasusDHDEntity pegasusDHD)
+					pegasusDHD.clearSymbols();
+			}
 			
 			return true;
 		}

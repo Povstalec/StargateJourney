@@ -53,6 +53,11 @@ public abstract class MemoryEntry<T>
 		return this.entry;
 	}
 	
+	public String entryString()
+	{
+		return this.entry.toString();
+	}
+	
 	protected abstract void saveEntry(CompoundTag tag);
 	
 	protected abstract T loadEntry(CompoundTag tag);
@@ -102,6 +107,11 @@ public abstract class MemoryEntry<T>
 	//============================================================================================
 	//******************************************Entries*******************************************
 	//============================================================================================
+	
+	public static Unknown unknown()
+	{
+		return new MemoryEntry.Unknown("", 0, (byte) 0);
+	}
 	
 	public static class Unknown extends MemoryEntry<Byte>
 	{

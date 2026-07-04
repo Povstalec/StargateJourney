@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NNN",
+		"GCR",
+		"NNN"
+	],
+	
+	"key": 
+	{
+		"C": { "item": "sgjourney:crystal_adapter" },
+		"N": { "tag": "sgjourney:naquadah_copper_alloy" },
+		"R": { "item": "minecraft:redstone" },
+		"G": { "item": "minecraft:glass_pane" }
+		
+	},
+	
+	"result": { "item": "sgjourney:pocket_crystal_computer" }
+}

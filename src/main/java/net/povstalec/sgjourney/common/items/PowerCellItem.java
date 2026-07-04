@@ -10,8 +10,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemPowerCellProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -38,20 +36,9 @@ public class PowerCellItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public ItemStack getHeldItem(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
-		
-		return itemHandler.getStackInSlot(0);
-	}
-	
-	@Override
 	public boolean isValidItem(ItemStack heldStack)
 	{
-		return heldStack.getItem() instanceof VialItem;
+		return heldStack.isEmpty() || heldStack.getItem() instanceof VialItem;
 	}
 	
 	public long getBufferEnergy(ItemStack stack)

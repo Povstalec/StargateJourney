@@ -64,6 +64,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
         if(this.level.isClientSide())
         	return;
 		
+		// Update symbols when loading
 		if(generationStep == Step.GENERATED)
 			setLocalSymbols();
     }
@@ -411,6 +412,12 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		
 		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+	}
+	
+	public void clearSymbols()
+	{
+		symbolInfo().setPointOfOrigin(null);
+		symbolInfo().setSymbols(null);
 	}
 	
 	@Override

@@ -73,6 +73,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 			tooltipComponents.add(Component.literal("...").withStyle(ChatFormatting.BLUE));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.memory_crystal.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.memory_crystal.crystal_computer"));
 	}
 	
 	public static MemoryEntry.Type<?> memoryTypeAt(ListTag list, int index)
@@ -222,17 +223,15 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return loadMemoryEntry(getMemoryList(stack), entryType, index);
 	}
 	
-	@Nullable
 	public static MemoryEntry<?> loadMemoryEntry(ListTag list, int index)
 	{
 		CompoundTag tag = list.getCompound(index);
 		if(tag.contains(MemoryEntry.ENTRY_TYPE, Tag.TAG_INT))
 			return MemoryEntry.Type.fromId(tag.getInt(MemoryEntry.ENTRY_TYPE)).loadFromTag(tag);
 		
-		return null;
+		return MemoryEntry.unknown();
 	}
 	
-	@Nullable
 	public static MemoryEntry<?> loadMemoryEntry(ItemStack stack, int index)
 	{
 		return loadMemoryEntry(getMemoryList(stack), index);

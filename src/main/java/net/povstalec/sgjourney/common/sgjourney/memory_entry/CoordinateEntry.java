@@ -28,6 +28,12 @@ public class CoordinateEntry extends MemoryEntry<Vec3i> implements ICoordinateEn
 	}
 	
 	@Override
+	public String entryString()
+	{
+		return Conversion.vec3iToString(entry);
+	}
+	
+	@Override
 	protected void saveEntry(CompoundTag tag)
 	{
 		tag.putIntArray(COORDINATES, Conversion.vecToIntArray(entry));

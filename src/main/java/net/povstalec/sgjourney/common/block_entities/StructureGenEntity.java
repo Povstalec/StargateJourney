@@ -7,6 +7,10 @@ public interface StructureGenEntity
 {
 	String GENERATION_STEP = "generation_step";
 	
+	void setGenerationStep(Step step);
+	
+	Step generationStep();
+	
 	void generateInStructure(WorldGenLevel level, RandomSource randomSource);
 	
 	enum Step

@@ -6,7 +6,10 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -114,14 +117,26 @@ public abstract class FluidItem extends Item
 	/**
 	 * Class representing an item that holds a fluid item inside it
 	 */
-	public abstract static class Holder extends FluidItem
+	public abstract static class Holder extends FluidItem implements IHolderItem
 	{
 		public Holder(Properties properties)
 		{
 			super(properties);
 		}
 		
-		public abstract ItemStack getHeldItem(ItemStack holderStack);
+		public void onSwapped(ItemStack holderStack, ItemStack insertedStack, ItemStack removedStack) {}
+		
+		@Override
+		public boolean overrideStackedOnOther(ItemStack holderStack, Slot slot, ClickAction clickAction, Player player)
+		{
+			return stackedOnOther(holderStack, slot, clickAction, player);
+		}
+		
+		@Override
+		public boolean overrideOtherStackedOnMe(ItemStack holderStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess)
+		{
+			return otherStackedOnMe(holderStack, otherStack, slot, clickAction, player, slotAccess);
+		}
 		
 		public abstract boolean isValidItem(ItemStack heldStack);
 		
@@ -152,7 +167,7 @@ public abstract class FluidItem extends Item
 				@Override
 				public boolean isValid(@NotNull ItemStack stack)
 				{
-					return !(stack.getItem() instanceof FluidItem.Holder) && isValidItem(stack);
+					return stack.isEmpty() || (!(stack.getItem() instanceof FluidItem.Holder) && isValidItem(stack));
 				}
 				
 				@Override
@@ -189,7 +204,7 @@ public abstract class FluidItem extends Item
 			};
 		}
 		
-		public boolean swapItem(Player player, ItemStack holderStack, ItemStack insertedStack)
+		public boolean swapItemInHand(Player player, ItemStack holderStack, ItemStack insertedStack)
 		{
 			IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
 			if(itemHandler != null)
@@ -214,7 +229,7 @@ public abstract class FluidItem extends Item
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			if(offHandStack.getItem() instanceof FluidItem.Holder holder)
 			{
-				if(!level.isClientSide() && holder.swapItem(player, offHandStack, player.getItemInHand(InteractionHand.MAIN_HAND)))
+				if(!level.isClientSide() && holder.swapItemInHand(player, offHandStack, player.getItemInHand(InteractionHand.MAIN_HAND)))
 					return InteractionResultHolder.success(offHandStack);
 			}
 			

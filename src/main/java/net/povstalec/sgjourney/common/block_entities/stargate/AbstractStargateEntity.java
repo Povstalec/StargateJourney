@@ -1715,6 +1715,19 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	//============================================================================================
 	
 	@Override
+	public void setGenerationStep(Step step)
+	{
+		System.out.println("Set Generation step: " + generationStep);
+		this.generationStep = step;
+	}
+	
+	@Override
+	public Step generationStep()
+	{
+		return generationStep;
+	}
+	
+	@Override
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)

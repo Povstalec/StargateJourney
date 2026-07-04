@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
@@ -41,14 +42,14 @@ public class ClientAccess
 		minecraft.setScreen(new GDOScreen(mainHand, idc, frequency));
 	}
 	
-	public static void openCrystalComputerMainScreen(boolean mainHand)
+	public static void openCrystalComputerMainScreen(InteractionHand interactionHand)
 	{
-		minecraft.setScreen(new PocketCrystalComputerMainScreen(mainHand));
+		minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand));
 	}
 	
-	public static void openCrystalComputerSaveScreen(boolean mainHand, BlockPos clickedPos)
+	public static void openCrystalComputerSaveScreen(InteractionHand interactionHand, BlockPos clickedPos)
 	{
-		minecraft.setScreen(new PocketCrystalComputerSaveScreen(mainHand, clickedPos));
+		minecraft.setScreen(new PocketCrystalComputerSaveScreen(interactionHand, clickedPos));
 	}
 	
 	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)

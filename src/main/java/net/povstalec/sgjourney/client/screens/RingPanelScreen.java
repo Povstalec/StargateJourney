@@ -93,10 +93,7 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
 				Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.networks.description"),
 				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
-				ComponentHelper.usage("tooltip.sgjourney.ring_panel.communication_range.usage"),
-				Component.translatable("tooltip.sgjourney.ring_panel.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
-				Component.translatable("tooltip.sgjourney.ring_panel.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
-				ComponentHelper.usage("tooltip.sgjourney.ring_panel.networks.usage.control_crystal"));
+				ComponentHelper.usage("tooltip.sgjourney.ring_panel.networks.usage.communication_crystal"));
     }
     
     @Override

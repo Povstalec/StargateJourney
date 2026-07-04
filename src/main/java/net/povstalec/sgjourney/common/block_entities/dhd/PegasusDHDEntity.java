@@ -25,6 +25,24 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		
+		if(this.level.isClientSide())
+			return;
+		
+		// Update symbols when loading
+		if(generationStep == Step.GENERATED)
+		{
+			if(stargateCache.isPresent()) // Copy from connected Stargate
+				setSymbolsFromStargate();
+			else // Generate from Dimension
+				setLocalSymbols();
+		}
+	}
+	
+	@Override
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
@@ -91,6 +109,12 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	//*****************************************Generation*****************************************
 	//============================================================================================
 	
+	public void clearSymbols()
+	{
+		symbolInfo().setPointOfOrigin(null);
+		symbolInfo().setSymbols(null);
+	}
+	
 	@Override
 	protected void generateEnergyCore()
 	{
@@ -100,7 +124,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	@Override
 	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
-		if(generationStep == StructureGenEntity.Step.SETUP)
+		if(generationStep == StructureGenEntity.Step.SETUP) // Set empty symbols before it's generated in a structure
 		{
 			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 				symbolInfo().setPointOfOrigin(null);

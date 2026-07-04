@@ -110,7 +110,7 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	@Override
 	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
-		if(generationStep == StructureGenEntity.Step.SETUP)
+		if(generationStep == StructureGenEntity.Step.SETUP) // Set empty symbols before it's generated in a structure
 		{
 			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 				symbolInfo().setPointOfOrigin(null);

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerEntryButton;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
@@ -9,9 +10,9 @@ import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 
 public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
 {
-	public PocketCrystalComputerMainScreen(boolean mainHand)
+	public PocketCrystalComputerMainScreen(InteractionHand interactionHand)
 	{
-		super(mainHand);
+		super(interactionHand);
 	}
     
     @Override

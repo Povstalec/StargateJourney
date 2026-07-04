@@ -83,6 +83,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.communication_crystal.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.communication_crystal.crystal_computer"));
     }
     
     public static class Advanced extends CommunicationCrystalItem

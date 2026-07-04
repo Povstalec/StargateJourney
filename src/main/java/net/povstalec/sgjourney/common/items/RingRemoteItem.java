@@ -63,7 +63,7 @@ public class RingRemoteItem extends HolderItem
 	}
 	
 	@Override
-	protected void onSwapped(ItemStack ringRemoteStack, ItemStack insertedStack, ItemStack removedStack)
+	public void onSwapped(ItemStack ringRemoteStack, ItemStack insertedStack, ItemStack removedStack)
 	{
 		int index = getIndex(ringRemoteStack);
 		int memoryListSize = MemoryCrystalItem.getMemoryListSize(getHeldItem(ringRemoteStack));
@@ -138,7 +138,7 @@ public class RingRemoteItem extends HolderItem
 		{
 			TransporterIDEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			if(entry.name().isEmpty())
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entry().toString()).withStyle(ChatFormatting.AQUA)), true);
+				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entryString()).withStyle(ChatFormatting.AQUA)), true);
 			else
 				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.name()).withStyle(ChatFormatting.GREEN)), true);
 		}
@@ -147,7 +147,7 @@ public class RingRemoteItem extends HolderItem
 			CoordinateEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			
 			if(entry.name().isEmpty())
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entry().toString()).withStyle(ChatFormatting.YELLOW)), true);
+				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entryString()).withStyle(ChatFormatting.YELLOW)), true);
 			else
 				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.name()).withStyle(ChatFormatting.GREEN)), true);
 		}
@@ -352,28 +352,19 @@ public class RingRemoteItem extends HolderItem
 			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
 			for(int i = 0; i < list.size(); i++)
 			{
-				MemoryEntry.Type<?> memoryType = MemoryCrystalItem.memoryTypeAt(list, i);
-				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, memoryType, i)));
+				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, i)));
 			}
 		}
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 	
-	private Component memoryComponentAt(ListTag list, MemoryEntry.Type<?> type, int index)
+	private Component memoryComponentAt(ListTag list, int index)
 	{
-		if(type == MemoryEntry.Type.TRANSPORTER_ID)
-		{
-			TransporterIDEntry transporterID = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
-			if(transporterID != null)
-				return transporterID.toComponent();
-		}
-		else
-		{
-			CoordinateEntry coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
-			if(coords != null)
-				return coords.toComponent();
-		}
+		MemoryEntry<?> memoryEntry = MemoryCrystalItem.loadMemoryEntry(list, index);
+		
+		if(memoryEntry.entryType() == MemoryEntry.Type.TRANSPORTER_ID || memoryEntry.entryType() == MemoryEntry.Type.COORDINATES)
+			return memoryEntry.toComponent();
 		
 		return Component.translatable("tooltip.sgjourney.invalid_entry").withStyle(ChatFormatting.DARK_RED);
 	}
