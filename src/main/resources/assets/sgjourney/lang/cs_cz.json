@@ -540,6 +540,15 @@
 	"screen.sgjourney.gdo.symbol.delete": "←",
 	"screen.sgjourney.gdo.toggle_frequency": "Přepnout mezi úpravou frekvence / IDC",
 	
+	"screen.sgjourney.crystal_computer.main_screen": "Zpět na hlavní obrazovku",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer": "Vybrat krystal v počítači: %s",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer.none": "Žádný krystal v počítači pro vybrání",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand": "Vybrat krystal v ruce: %s",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand.none": "Žádný krystal v ruce pro vybrání",
+	"screen.sgjourney.crystal_computer.save_to_selected_crystal": "Uložit do vybraného krystalu",
+	"screen.sgjourney.crystal_computer.save_coordinates": "Uložit koordináty",
+	"screen.sgjourney.crystal_computer.save_transporter_id": "Uložit ID transportéru",
+	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",
 	"biome.sgjourney.abydos_spires": "Abydoské věže",

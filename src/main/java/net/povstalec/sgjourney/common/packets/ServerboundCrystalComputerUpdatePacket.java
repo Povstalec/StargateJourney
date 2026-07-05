@@ -15,24 +15,24 @@ import java.util.function.Supplier;
 
 public class ServerboundCrystalComputerUpdatePacket
 {
-	public final CompoundTag mainHandCrystalTag;
-	public final CompoundTag offHandCrystalTag;
+	public final InteractionHand hand;
+	public final CompoundTag crystalTag;
 
-	public ServerboundCrystalComputerUpdatePacket(CompoundTag mainHandCrystalTag, CompoundTag offHandCrystalTag)
+	public ServerboundCrystalComputerUpdatePacket(InteractionHand hand, CompoundTag crystalTag)
 	{
-		this.mainHandCrystalTag = mainHandCrystalTag;
-		this.offHandCrystalTag = offHandCrystalTag;
+		this.hand = hand;
+		this.crystalTag = crystalTag;
 	}
 
 	public ServerboundCrystalComputerUpdatePacket(FriendlyByteBuf buffer)
 	{
-		this(buffer.readNbt(), buffer.readNbt());
+		this(buffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, buffer.readNbt());
 	}
 
 	public void encode(FriendlyByteBuf buffer)
 	{
-		buffer.writeNbt(mainHandCrystalTag);
-		buffer.writeNbt(offHandCrystalTag);
+		buffer.writeBoolean(hand == InteractionHand.MAIN_HAND);
+		buffer.writeNbt(crystalTag);
 	}
 	
 	private static ListTag getMemoryList(CompoundTag tag)
@@ -58,8 +58,8 @@ public class ServerboundCrystalComputerUpdatePacket
 		ctx.get().enqueueWork(() -> {
 			final ServerPlayer player = ctx.get().getSender();
 			
-			updateItemInHand(player, InteractionHand.MAIN_HAND, getMemoryList(mainHandCrystalTag));
-			updateItemInHand(player, InteractionHand.OFF_HAND, getMemoryList(offHandCrystalTag));
+			if(!crystalTag.isEmpty())
+				updateItemInHand(player, hand, getMemoryList(crystalTag));
 		});
 		return true;
 	}

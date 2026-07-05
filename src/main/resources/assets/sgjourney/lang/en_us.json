@@ -542,6 +542,15 @@
 	"screen.sgjourney.gdo.symbol.delete": "←",
 	"screen.sgjourney.gdo.toggle_frequency": "Toggle Frequency editing / IDC editing",
 	
+	"screen.sgjourney.crystal_computer.main_screen": "Back to main screen",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer": "Select Crystal in Computer: %s",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer.none": "No selectable Crystal in Computer",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand": "Select Crystal in hand: %s",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand.none": "No selectable Crystal in hand",
+	"screen.sgjourney.crystal_computer.save_to_selected_crystal": "Save to selected Crystal",
+	"screen.sgjourney.crystal_computer.save_coordinates": "Save Coordinates",
+	"screen.sgjourney.crystal_computer.save_transporter_id": "Save Transporter ID",
+	
 	"biome.sgjourney.abydos_desert": "Abydos Desert",
 	"biome.sgjourney.abydos_oasis": "Abydos Oasis",
 	"biome.sgjourney.abydos_spires": "Abydos Spires",

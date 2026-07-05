@@ -13,6 +13,7 @@ import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerScreen;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -44,12 +45,12 @@ public class ClientAccess
 	
 	public static void openCrystalComputerMainScreen(InteractionHand interactionHand)
 	{
-		minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand));
+		minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand, PocketCrystalComputerScreen.SelectedCrystal.NONE));
 	}
 	
 	public static void openCrystalComputerSaveScreen(InteractionHand interactionHand, BlockPos clickedPos)
 	{
-		minecraft.setScreen(new PocketCrystalComputerSaveScreen(interactionHand, clickedPos));
+		minecraft.setScreen(new PocketCrystalComputerSaveScreen(interactionHand, PocketCrystalComputerScreen.SelectedCrystal.NONE, clickedPos));
 	}
 	
 	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)

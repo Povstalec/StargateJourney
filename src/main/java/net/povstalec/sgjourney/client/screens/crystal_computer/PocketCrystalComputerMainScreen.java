@@ -10,9 +10,9 @@ import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 
 public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
 {
-	public PocketCrystalComputerMainScreen(InteractionHand interactionHand)
+	public PocketCrystalComputerMainScreen(InteractionHand interactionHand, SelectedCrystal selectedCrystal)
 	{
-		super(interactionHand);
+		super(interactionHand, selectedCrystal);
 	}
     
     @Override
@@ -22,7 +22,7 @@ public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		ItemStack stack = getItemInComputer();
+		ItemStack stack = getCrystalInComputer();
 		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
 			ListTag list = MemoryCrystalItem.getMemoryList(stack);
@@ -32,12 +32,15 @@ public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
 				addRenderableWidget(new CrystalComputerEntryButton(x - 10, y + i * 30, memoryEntry, button -> {}));
 			}
 		}
+		
+		// Already in main screen, so the button shouldn't be active
+		mainScreenButton.active = false;
 	}
 	
 	@Override
 	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
-		this.font.draw(stack, getItemInComputer().getHoverName(), x + 266F, y + 132F, 0xffffff);
+		this.font.draw(stack, getCrystalInComputer().getHoverName(), x + 266F, y + 132F, 0xffffff);
 	}
 	
 	void updateButtons()
