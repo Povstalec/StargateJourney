@@ -14,13 +14,15 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerPhysicalButton;
+import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.packets.ServerboundCrystalComputerUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+
+import java.util.function.Function;
 
 public abstract class PocketCrystalComputerScreen extends Screen
 {
@@ -38,10 +40,10 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	
 	protected final InteractionHand interactionHand;
 	
-	protected CrystalComputerPhysicalButton mainScreenButton;
+	protected CrystalComputerButton mainScreenButton;
 	
-	protected CrystalComputerPhysicalButton crystalInComputerButton;
-	protected CrystalComputerPhysicalButton crystalInHandButton;
+	protected CrystalComputerButton crystalInComputerButton;
+	protected CrystalComputerButton crystalInHandButton;
 	
 	protected SelectedCrystal selectedCrystal;
 	
@@ -58,14 +60,14 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	public void init()
 	{
 		// Button to take you to the main screen
-		mainScreenButton = CrystalComputerPhysicalButton.mainScreenButton(this.width / 2 + 83, this.height / 2 - 13,
+		mainScreenButton = CrystalComputerButton.mainScreenButton(this.width / 2 + 83, this.height / 2 - 13,
 				Component.empty(), Component.translatable("screen.sgjourney.crystal_computer.main_screen"),
 				button -> this.minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand, selectedCrystal)));
 		addRenderableWidget(mainScreenButton);
 		
 		ItemStack crystalInComputer = getCrystalInComputer();
 		// Button to set Crystal in computer as the target
-		crystalInComputerButton = CrystalComputerPhysicalButton.switchTargetButton(this.width / 2 + 83, this.height / 2 - 40 - 7,
+		crystalInComputerButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 - 40 - 7,
 				Component.empty(), crystalInComputer.isEmpty() ?
 						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer.none").withStyle(ChatFormatting.DARK_RED) :
 						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer", crystalInComputer.getDisplayName()),
@@ -75,7 +77,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		
 		ItemStack crystalInHand = getCrystalInHand();
 		// Button to set Crystal in hand as the target
-		crystalInHandButton = CrystalComputerPhysicalButton.switchTargetButton(this.width / 2 + 83, this.height / 2 + 40 - 7,
+		crystalInHandButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 + 40 - 7,
 				Component.empty(), crystalInHand.isEmpty() ?
 						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand.none").withStyle(ChatFormatting.DARK_RED) :
 						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand", crystalInHand.getDisplayName()),
@@ -163,30 +165,39 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		};
 	}
 	
-	public void saveToMemoryCrystal(MemoryEntry<?> memoryEntry)
+	public void executeOnCrystal(SelectedCrystal selectedCrystal, Function<ItemStack, Boolean> function)
 	{
 		if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER)
 		{
 			getItemInHand(interactionHand).getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 			{
-				ItemStack stack = itemHandler.extractItem(0, 1, false);
-				if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
-				{
-					memoryCrystal.saveMemoryEntry(stack, memoryEntry, true);
-					itemHandler.insertItem(0, stack, false);
+				ItemStack stack = itemHandler.extractItem(0, 1, false); // Extract item to work with it
+				boolean shouldUpdate = function.apply(stack);
+				itemHandler.insertItem(0, stack, false); // Insert item back so it doesn't disappear
+				if(shouldUpdate)
 					updateServer(selectedCrystal);
-				}
 			});
 		}
 		else if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_HAND)
 		{
 			ItemStack stack = getCrystalInHand();
+			if(function.apply(stack))
+				updateServer(selectedCrystal);
+		}
+	}
+	
+	public void saveToMemoryCrystal(MemoryEntry<?> memoryEntry)
+	{
+		executeOnCrystal(selectedCrystal, stack ->
+		{
 			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 			{
 				memoryCrystal.saveMemoryEntry(stack, memoryEntry, true);
-				updateServer(selectedCrystal);
+				return true;
 			}
-		}
+			
+			return false;
+		});
 	}
 	
 	public static CompoundTag listTagToCompoundTag(ListTag list)

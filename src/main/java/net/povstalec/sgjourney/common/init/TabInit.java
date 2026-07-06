@@ -246,7 +246,7 @@ public class TabInit
 		event.registerCreativeModeTab(STARGATE_BLOCKS, (builder) ->
 		{
 			builder.title(Component.translatable("itemGroup.stargate_blocks"))
-			.icon(() -> new ItemStack(BlockInit.NAQUADAH_IRON_BLOCK.get()))
+			.icon(() -> new ItemStack(BlockInit.NAQUADAH_BLOCK.get()))
 			.displayItems((flag, items, hasPermisions) ->
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
@@ -336,6 +336,7 @@ public class TabInit
 				items.accept(BlockInit.POLISHED_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_STAIRS.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_SLAB.get());
+				items.accept(BlockInit.CHISELED_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_BLOCK.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_STAIRS.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_SLAB.get());
@@ -366,6 +367,7 @@ public class TabInit
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get());
+				
 				items.accept(BlockInit.NAQUADAH_COPPER_PILLAR.get());
 				items.accept(BlockInit.EXPOSED_NAQUADAH_COPPER_PILLAR.get());
 				items.accept(BlockInit.WEATHERED_NAQUADAH_COPPER_PILLAR.get());
@@ -387,6 +389,11 @@ public class TabInit
 				items.accept(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.OXIDIZED_NAQUADAH_COPPER_LAMP.get());
+				
+				items.accept(BlockInit.CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.EXPOSED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WEATHERED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.OXIDIZED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
 				
 				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_COPPER_STAIRS.get());
@@ -426,6 +433,7 @@ public class TabInit
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_CUT_NAQUADAH_COPPER_SLAB.get());
+				
 				items.accept(BlockInit.WAXED_NAQUADAH_COPPER_PILLAR.get());
 				items.accept(BlockInit.WAXED_EXPOSED_NAQUADAH_COPPER_PILLAR.get());
 				items.accept(BlockInit.WAXED_WEATHERED_NAQUADAH_COPPER_PILLAR.get());
@@ -447,6 +455,11 @@ public class TabInit
 				items.accept(BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_STAIRS.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB.get());
 				items.accept(BlockInit.WAXED_OXIDIZED_NAQUADAH_COPPER_LAMP.get());
+				
+				items.accept(BlockInit.WAXED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_EXPOSED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_WEATHERED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
+				items.accept(BlockInit.WAXED_OXIDIZED_CHISELED_NAQUADAH_COPPER_BLOCK.get());
 				
 				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_BLOCK.get());
 				items.accept(BlockInit.WAXED_SMOOTH_NAQUADAH_COPPER_STAIRS.get());
@@ -472,11 +485,25 @@ public class TabInit
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.POLISHED_NAQUADAH_IRON_SLAB.get());
+				items.accept(BlockInit.CHISELED_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_BLOCK.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_STAIRS.get());
 				items.accept(BlockInit.SMOOTH_NAQUADAH_IRON_SLAB.get());
 				
 				items.accept(BlockInit.TRINIUM_BLOCK.get());
+				items.accept(BlockInit.TRINIUM_STAIRS.get());
+				items.accept(BlockInit.TRINIUM_SLAB.get());
+				items.accept(BlockInit.CUT_TRINIUM_BLOCK.get());
+				items.accept(BlockInit.CUT_TRINIUM_STAIRS.get());
+				items.accept(BlockInit.CUT_TRINIUM_SLAB.get());
+				items.accept(BlockInit.TRINIUM_PILLAR.get());
+				items.accept(BlockInit.POLISHED_TRINIUM_BLOCK.get());
+				items.accept(BlockInit.POLISHED_TRINIUM_STAIRS.get());
+				items.accept(BlockInit.POLISHED_TRINIUM_SLAB.get());
+				items.accept(BlockInit.CHISELED_TRINIUM_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_TRINIUM_BLOCK.get());
+				items.accept(BlockInit.SMOOTH_TRINIUM_STAIRS.get());
+				items.accept(BlockInit.SMOOTH_TRINIUM_SLAB.get());
 			});
 		});
 	}

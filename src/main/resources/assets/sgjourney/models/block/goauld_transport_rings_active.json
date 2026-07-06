@@ -2,7 +2,7 @@
     "parent": "block/cube",
     "textures": {
         "particle": "sgjourney:block/goauld_transport_rings_side",
-        "down": "sgjourney:block/goauld_transport_rings_side",
+        "down": "sgjourney:block/goauld_transport_rings_bottom",
         "up": "sgjourney:block/goauld_transport_rings_top_active",
         "north": "sgjourney:block/goauld_transport_rings_side",
         "east": "sgjourney:block/goauld_transport_rings_side",

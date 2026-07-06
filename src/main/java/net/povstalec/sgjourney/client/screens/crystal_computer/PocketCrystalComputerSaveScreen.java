@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerSaveButton;
+import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
@@ -25,7 +25,7 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 	protected EditBox editBox;
 	protected BlockPos clickedPos;
 	
-	protected List<CrystalComputerSaveButton> saveButtons = new ArrayList<>(2);
+	protected List<CrystalComputerButton> saveButtons = new ArrayList<>(2);
 	
 	public PocketCrystalComputerSaveScreen(InteractionHand interactionHand, SelectedCrystal selectedCrystal, BlockPos clickedPos)
 	{
@@ -47,16 +47,16 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 		// Choose what information to save
 		
 		// Button to save coordinates
-		saveButtons.add(CrystalComputerSaveButton.big(x + 22, y + 10 + 3 * BUTTON_Y_OFFSET,
-				Component.translatable("screen.sgjourney.crystal_computer.save_coordinates"), ComponentHelper.coordinate(clickedPos), false,
+		saveButtons.add(CrystalComputerButton.largeButton(x + 22, y + 10 + 3 * BUTTON_Y_OFFSET, false,
+				Component.translatable("screen.sgjourney.crystal_computer.save_coordinates"), ComponentHelper.coordinate(clickedPos),
 				button -> saveToMemoryCrystalAndClose(new CoordinateEntry(editBox.getValue(), this.minecraft.level.getGameTime(), clickedPos))));
 		addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
 		
 		if(this.minecraft.level.getBlockEntity(clickedPos) instanceof AbstractTransporterEntity<?> transporter) // Choice between saving position and Transporter ID
 		{
 			// Button to save Transporter ID
-			saveButtons.add(CrystalComputerSaveButton.big(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET,
-					Component.translatable("screen.sgjourney.crystal_computer.save_transporter_id"), transporter.getID().toComponent(false), false,
+			saveButtons.add(CrystalComputerButton.largeButton(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET, false,
+					Component.translatable("screen.sgjourney.crystal_computer.save_transporter_id"), transporter.getID().toComponent(false),
 					button -> saveToMemoryCrystalAndClose(new TransporterIDEntry(editBox.getValue(), this.minecraft.level.getGameTime(), transporter.getID()))));
 			addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
 		}
@@ -76,7 +76,7 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && !getCrystalInComputer().isEmpty();
 		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && !getCrystalInHand().isEmpty();
 		
-		for(CrystalComputerSaveButton button : saveButtons)
+		for(CrystalComputerButton button : saveButtons)
 		{
 			button.active = selectedCrystal != SelectedCrystal.NONE;
 		}

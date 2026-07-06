@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:cut_trinium_block"
+		}
+	},
+	"result":
+	{
+		"count": 6,
+		"item": "sgjourney:cut_trinium_slab"
+	}
+}

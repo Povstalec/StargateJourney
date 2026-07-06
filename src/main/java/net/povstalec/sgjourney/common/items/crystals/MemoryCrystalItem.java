@@ -237,6 +237,49 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		return loadMemoryEntry(getMemoryList(stack), index);
 	}
 	
+	public static boolean deleteMemoryEntry(ItemStack stack, int index)
+	{
+		ListTag list = getMemoryList(stack);
+		if(index < 0 || index >= list.size())
+			return false;
+		
+		list.remove(index);
+		setMemoryList(stack, list);
+		return true;
+	}
+	
+	public static boolean overwriteMemoryEntry(ItemStack stack, MemoryEntry<?> memoryEntry, int index)
+	{
+		ListTag list = getMemoryList(stack);
+		if(index < 0 || index >= list.size())
+			return false;
+		
+		list.remove(index);
+		list.add(index, memoryEntry.save());
+		setMemoryList(stack, list);
+		return true;
+	}
+	
+	public static boolean swapMemoryEntries(ItemStack stack, int indexA, int indexB)
+	{
+		ListTag list = getMemoryList(stack);
+		if(indexA < 0 || indexB < 0 || indexA >= list.size() || indexB >= list.size())
+			return false;
+		
+		int low = Math.min(indexA, indexB);
+		int high = Math.max(indexA, indexB);
+		
+		// Remove highest index first to maintain correct index for second removal
+		Tag highTag = list.remove(high);
+		Tag lowTag = list.remove(low);
+		
+		list.add(low, highTag);
+		list.add(high, lowTag);
+		
+		setMemoryList(stack, list);
+		return true;
+	}
+	
 	public static <T extends MemoryEntry<?>> void memoryEntryRun(ListTag list, MemoryEntry.Type<T> entryType, int index, Consumer<T> consumer)
 	{
 		T entry = loadMemoryEntry(list, entryType, index);

@@ -34,6 +34,8 @@
 		"sgjourney:polished_naquadah_stairs",
 		"sgjourney:polished_naquadah_slab",
 		
+		"sgjourney:chiseled_naquadah_block",
+		
 		"sgjourney:smooth_naquadah_block",
 		"sgjourney:smooth_naquadah_stairs",
 		"sgjourney:smooth_naquadah_slab",
@@ -128,6 +130,15 @@
 		"sgjourney:waxed_weathered_polished_naquadah_copper_slab",
 		"sgjourney:waxed_oxidized_polished_naquadah_copper_slab",
 		
+		"sgjourney:chiseled_naquadah_copper_block",
+		"sgjourney:exposed_chiseled_naquadah_copper_block",
+		"sgjourney:weathered_chiseled_naquadah_copper_block",
+		"sgjourney:oxidized_chiseled_naquadah_copper_block",
+		"sgjourney:waxed_chiseled_naquadah_copper_block",
+		"sgjourney:waxed_exposed_chiseled_naquadah_copper_block",
+		"sgjourney:waxed_weathered_chiseled_naquadah_copper_block",
+		"sgjourney:waxed_oxidized_chiseled_naquadah_copper_block",
+		
 		"sgjourney:smooth_naquadah_copper_block",
 		"sgjourney:exposed_smooth_naquadah_copper_block",
 		"sgjourney:weathered_smooth_naquadah_copper_block",
@@ -178,11 +189,31 @@
 		"sgjourney:polished_naquadah_iron_stairs",
 		"sgjourney:polished_naquadah_iron_slab",
 		
+		"sgjourney:chiseled_naquadah_iron_block",
+		
 		"sgjourney:smooth_naquadah_iron_block",
 		"sgjourney:smooth_naquadah_iron_stairs",
 		"sgjourney:smooth_naquadah_iron_slab",
 		
 		"sgjourney:trinium_block",
+		"sgjourney:trinium_stairs",
+		"sgjourney:trinium_slab",
+		
+		"sgjourney:cut_trinium_block",
+		"sgjourney:cut_trinium_stairs",
+		"sgjourney:cut_trinium_slab",
+		
+		"sgjourney:trinium_pillar",
+		
+		"sgjourney:polished_trinium_block",
+		"sgjourney:polished_trinium_stairs",
+		"sgjourney:polished_trinium_slab",
+		
+		"sgjourney:chiseled_trinium_block",
+		
+		"sgjourney:smooth_trinium_block",
+		"sgjourney:smooth_trinium_stairs",
+		"sgjourney:smooth_trinium_slab",
 		
 		"sgjourney:naquadah_reactor",
 		"sgjourney:naquadah_generator_mark_i",

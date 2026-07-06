@@ -3,7 +3,7 @@
 	{
 		"axis=x":
 		{
-			"model": "sgjourney:block/naquadah_block_horizontal",
+			"model": "sgjourney:block/weathered_naquadah_copper_pillar_horizontal",
 			"x": 90,
 			"y": 90
 		},

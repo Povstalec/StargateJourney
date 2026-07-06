@@ -125,6 +125,11 @@ public abstract class MemoryEntry<T>
 			super(name, timeStamp, Type.UNKNOWN, entry);
 		}
 		
+		public String entryString()
+		{
+			return "UNKNOWN";
+		}
+		
 		@Override
 		protected void saveEntry(CompoundTag tag) {}
 		
@@ -132,6 +137,23 @@ public abstract class MemoryEntry<T>
 		protected Byte loadEntry(CompoundTag tag)
 		{
 			return 0;
+		}
+		
+		@Override
+		public String toString()
+		{
+			if(name.isEmpty())
+				return "UNKNOWN";
+			
+			return '[' + name + "] UNKNOWN";
+		}
+		
+		@Override
+		public MutableComponent toComponent()
+		{
+			MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+			
+			return component.append(Component.translatable("tooltip.sgjourney.unknown").withStyle(entryChatFormatting()));
 		}
 	}
 	

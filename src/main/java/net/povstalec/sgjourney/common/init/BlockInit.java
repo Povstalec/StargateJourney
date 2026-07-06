@@ -183,7 +183,7 @@ public class BlockInit
 	public static final RegistryObject<Block> CUT_NAQUADAH_BLOCK = registerBlock("cut_naquadah_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_STAIRS = registerBlock("cut_naquadah_stairs",
-			() -> new StairBlock(() -> NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+			() -> new StairBlock(() -> CUT_NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_SLAB = registerBlock("cut_naquadah_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
@@ -196,6 +196,9 @@ public class BlockInit
 			() -> new StairBlock(() -> POLISHED_NAQUADAH_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> POLISHED_NAQUADAH_SLAB = registerBlock("polished_naquadah_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> CHISELED_NAQUADAH_BLOCK = registerBlock("chiseled_naquadah_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<Block> SMOOTH_NAQUADAH_BLOCK = registerBlock("smooth_naquadah_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
@@ -374,6 +377,23 @@ public class BlockInit
 	public static final RegistryObject<WaxedSlabBlock> WAXED_OXIDIZED_POLISHED_NAQUADAH_COPPER_SLAB = registerBlock("waxed_oxidized_polished_naquadah_copper_slab",
 			() -> new WaxedSlabBlock(BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
+	public static final RegistryObject<Block> CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("chiseled_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> EXPOSED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("exposed_chiseled_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.EXPOSED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WEATHERED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("weathered_chiseled_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.WEATHERED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> OXIDIZED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("oxidized_chiseled_naquadah_copper_block",
+			() -> new WeatheringFullBlock(SGJourneyWeatheringBlock.WeatherState.OXIDIZED, BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_chiseled_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_EXPOSED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_exposed_chiseled_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_WEATHERED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_weathered_chiseled_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> WAXED_OXIDIZED_CHISELED_NAQUADAH_COPPER_BLOCK = registerBlock("waxed_oxidized_chiseled_naquadah_copper_block",
+			() -> new WaxedFullBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
 	public static final RegistryObject<WeatheringPillarLampBlock> NAQUADAH_COPPER_LAMP = registerBlock("naquadah_copper_lamp",
 			() -> new WeatheringPillarLampBlock(SGJourneyWeatheringBlock.WeatherState.UNAFFECTED, BlockBehaviour.Properties.of(Material.METAL).sound(SoundType.COPPER).strength(5.0F, 9.0F).requiresCorrectToolForDrops(), 15));
 	public static final RegistryObject<WeatheringPillarLampBlock> EXPOSED_NAQUADAH_COPPER_LAMP = registerBlock("exposed_naquadah_copper_lamp",
@@ -452,7 +472,7 @@ public class BlockInit
 	public static final RegistryObject<Block> CUT_NAQUADAH_IRON_BLOCK = registerBlock("cut_naquadah_iron_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_IRON_STAIRS = registerBlock("cut_naquadah_iron_stairs",
-			() -> new StairBlock(() -> NAQUADAH_IRON_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+			() -> new StairBlock(() -> CUT_NAQUADAH_IRON_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> CUT_NAQUADAH_IRON_SLAB = registerBlock("cut_naquadah_iron_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
@@ -466,6 +486,9 @@ public class BlockInit
 	public static final RegistryObject<Block> POLISHED_NAQUADAH_IRON_SLAB = registerBlock("polished_naquadah_iron_slab",
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	
+	public static final RegistryObject<Block> CHISELED_NAQUADAH_IRON_BLOCK = registerBlock("chiseled_naquadah_iron_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+	
 	public static final RegistryObject<Block> SMOOTH_NAQUADAH_IRON_BLOCK = registerBlock("smooth_naquadah_iron_block",
 			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> SMOOTH_NAQUADAH_IRON_STAIRS = registerBlock("smooth_naquadah_iron_stairs",
@@ -474,7 +497,38 @@ public class BlockInit
 			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
 	// Trinium Blocks
 	public static final RegistryObject<Block> TRINIUM_BLOCK = registerBlock("trinium_block",
-			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> TRINIUM_STAIRS = registerBlock("trinium_stairs",
+			() -> new StairBlock(() -> TRINIUM_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> TRINIUM_SLAB = registerBlock("trinium_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> CUT_TRINIUM_BLOCK = registerBlock("cut_trinium_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_TRINIUM_STAIRS = registerBlock("cut_trinium_stairs",
+			() -> new StairBlock(() -> CUT_TRINIUM_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> CUT_TRINIUM_SLAB = registerBlock("cut_trinium_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> TRINIUM_PILLAR = registerBlock("trinium_pillar",
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> POLISHED_TRINIUM_BLOCK = registerBlock("polished_trinium_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> POLISHED_TRINIUM_STAIRS = registerBlock("polished_trinium_stairs",
+			() -> new StairBlock(() -> POLISHED_TRINIUM_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> POLISHED_TRINIUM_SLAB = registerBlock("polished_trinium_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> CHISELED_TRINIUM_BLOCK = registerBlock("chiseled_trinium_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	
+	public static final RegistryObject<Block> SMOOTH_TRINIUM_BLOCK = registerBlock("smooth_trinium_block",
+			() -> new Block(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> SMOOTH_TRINIUM_STAIRS = registerBlock("smooth_trinium_stairs",
+			() -> new StairBlock(() -> SMOOTH_TRINIUM_BLOCK.get().defaultBlockState(), BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<Block> SMOOTH_TRINIUM_SLAB = registerBlock("smooth_trinium_slab",
+			() -> new SlabBlock(BlockBehaviour.Properties.of(Material.METAL).strength(7.0F, 6.0F).requiresCorrectToolForDrops()));
 	// Archeology Blocks
 	public static final RegistryObject<GoldenIdolBlock> GOLDEN_IDOL = registerBlock("golden_idol", 
 			() -> new GoldenIdolBlock(BlockBehaviour.Properties.of(Material.METAL, MaterialColor.GOLD).strength(3.0F, 6.0F)
