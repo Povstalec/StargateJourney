@@ -117,7 +117,7 @@ public class TabInit
 				items.accept(ItemInit.TRINIUM_ARROW.get());
 				
 				items.accept(ItemInit.KARA_KESH.get());
-				items.accept(ItemInit.RING_REMOTE.get());
+				items.accept(ItemInit.GOAULD_RING_REMOTE.get());
 				
 				items.accept(ItemInit.JAFFA_STAFF_HEAD.get());
 				items.accept(ItemInit.MATOK.get());

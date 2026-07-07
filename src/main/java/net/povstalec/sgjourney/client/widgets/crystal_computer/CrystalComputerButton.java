@@ -7,6 +7,9 @@ import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
 public class CrystalComputerButton extends SGJourneyButton
 {
 	public static final int ENTRY_BUTTON_WIDTH = 110;
+	public static final int LARGE_BUTTON_WIDTH = 158;
+	public static final int SMALL_BUTTON_WIDTH = 112;
+	public static final int PAGE_BUTTON_WIDTH = 32;
 	
 	public CrystalComputerButton(int x, int y, int width, int height, int xOffset, int yOffset, boolean active, Component component, Component tooltip, OnPress press)
 	{
@@ -17,12 +20,12 @@ public class CrystalComputerButton extends SGJourneyButton
 	
 	public static CrystalComputerButton mainScreenButton(int x, int y, Component component, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 26, 26, 0, 108, true, component, tooltip, press);
+		return new CrystalComputerButton(x, y, 26, 26, 0, 156, true, component, tooltip, press);
 	}
 	
 	public static CrystalComputerButton switchTargetButton(int x, int y, Component component, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 26, 14, 26, 108, true, component, tooltip, press);
+		return new CrystalComputerButton(x, y, 26, 14, 26, 156, true, component, tooltip, press);
 	}
 	
 	
@@ -56,11 +59,27 @@ public class CrystalComputerButton extends SGJourneyButton
 	{
 		return new CrystalComputerButton(x, y, 16, 8, ENTRY_BUTTON_WIDTH + 64, 0, active, Component.empty(), tooltip, press);
 	}
+	
+	
+	public static CrystalComputerButton pageBackButton(int x, int y, boolean active, Component tooltip, OnPress press)
+	{
+		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, 0, 48, active, Component.empty(), tooltip, press);
+	}
+	
+	public static CrystalComputerButton smallButton(int x, int y, boolean active, Component component, Component tooltip, OnPress press)
+	{
+		return new CrystalComputerButton(x, y, SMALL_BUTTON_WIDTH, 16, PAGE_BUTTON_WIDTH, 48, active, component, tooltip, press);
+	}
+	
+	public static CrystalComputerButton pageForwardButton(int x, int y, boolean active, Component tooltip, OnPress press)
+	{
+		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, PAGE_BUTTON_WIDTH + SMALL_BUTTON_WIDTH, 48, active, Component.empty(), tooltip, press);
+	}
 
 	
 	
 	public static CrystalComputerButton largeButton(int x, int y, boolean active, Component component, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 158, 20, 0, 48, active, component, tooltip, press);
+		return new CrystalComputerButton(x, y, LARGE_BUTTON_WIDTH, 20, 0, 96, active, component, tooltip, press);
 	}
 }

@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
@@ -57,8 +58,17 @@ public class RingRemoteItem extends HolderItem
 			@Override
 			public boolean isValid(int slot, @NotNull ItemStack stack)
 			{
-				return stack.isEmpty() || stack.getItem() instanceof MemoryCrystalItem;
+				return stack.isEmpty() || stack.getItem() instanceof AbstractCrystalItem crystal && isCorrectCrystalType(crystal.getType());
 			}
+		};
+	}
+	
+	public boolean isCorrectCrystalType(CrystalCache.Type type)
+	{
+		return switch(type)
+		{
+			case MEMORY, MATERIALIZATION/*, COMMUNICATION*/ -> true;
+			default -> false;
 		};
 	}
 	
@@ -77,13 +87,7 @@ public class RingRemoteItem extends HolderItem
 		if(!ringRemoteStack.hasTag())
 			return 0;
 		
-		int index;
-		
-		CompoundTag tag = ringRemoteStack.getTag();
-		
-		index = tag.getInt(INDEX);
-		
-		return index;
+		return ringRemoteStack.getTag().getInt(INDEX);
 	}
 	
 	protected void setIndex(ItemStack ringRemoteStack, int index)
@@ -202,11 +206,12 @@ public class RingRemoteItem extends HolderItem
 	
 	// Communication Crystal
 	
-	protected void handleNetworkTransport(ServerLevel level, Player player, ItemStack ringRemoteStack, ItemStack crystalStack, AbstractTransporterEntity<?> connectedTransporter)
+	//TODO Doesn't work well because the Transporter may not be in the network that the Ring Remote uses
+	/*protected void handleNetworkTransport(ServerLevel level, Player player, ItemStack ringRemoteStack, ItemStack crystalStack, AbstractTransporterEntity<?> connectedTransporter)
 	{
 		if(!CommunicationCrystalItem.hasFrequency(crystalStack))
 		{
-			//TODO Message that there is no frequency
+			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_frequency_set").withStyle(ChatFormatting.DARK_RED), true);
 			return;
 		}
 		
@@ -223,14 +228,15 @@ public class RingRemoteItem extends HolderItem
 		}
 		else
 			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
-	}
+	}*/
 	
 	// Materialization Crystal
 	
-	protected void handleInterdimensionalTransport(ServerLevel level, Player player, ItemStack ringRemoteStack, ItemStack crystalStack, AbstractTransporterEntity<?> connectedTransporter)
+	//TODO Is there even a point to this? At the very least the Player should be able to pick which Dimension to go to
+	/*protected void handleInterdimensionalTransport(ServerLevel level, Player player, ItemStack ringRemoteStack, ItemStack crystalStack, AbstractTransporterEntity<?> connectedTransporter)
 	{
 		//TODO
-	}
+	}*/
 	
 	// Transport handling
 	
@@ -272,8 +278,8 @@ public class RingRemoteItem extends HolderItem
 				switch(type)
 				{
 					case MEMORY -> handleMemoryTransport(player, ringRemoteStack, crystalStack, transporter);
-					case COMMUNICATION -> handleNetworkTransport((ServerLevel) level, player, ringRemoteStack, crystalStack, transporter);
-					case MATERIALIZATION -> handleInterdimensionalTransport((ServerLevel) level, player, ringRemoteStack, crystalStack, transporter);
+					//case COMMUNICATION -> handleNetworkTransport((ServerLevel) level, player, ringRemoteStack, crystalStack, transporter);
+					//case MATERIALIZATION -> handleInterdimensionalTransport((ServerLevel) level, player, ringRemoteStack, crystalStack, transporter);
 					default -> nearestTransport((ServerLevel) level, player, transporter);
 				}
 			}
@@ -301,7 +307,7 @@ public class RingRemoteItem extends HolderItem
 	}
 	
 	@Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand)
 	{
 		ItemStack stack = player.getItemInHand(hand);
 		
@@ -324,8 +330,41 @@ public class RingRemoteItem extends HolderItem
 		return "[" + index + "] ";
 	}
 	
+	private Component memoryComponentAt(ListTag list, int index)
+	{
+		MemoryEntry<?> memoryEntry = MemoryCrystalItem.loadMemoryEntry(list, index);
+		
+		if(memoryEntry.entryType() == MemoryEntry.Type.TRANSPORTER_ID || memoryEntry.entryType() == MemoryEntry.Type.COORDINATES)
+			return memoryEntry.toComponent();
+		
+		return Component.translatable("tooltip.sgjourney.invalid_entry").withStyle(ChatFormatting.DARK_RED);
+	}
+	
+	public void displayMemoryCrystalEntries(List<Component> tooltipComponents, ItemStack heldItem, int indexAt)
+	{
+		if(!heldItem.isEmpty())
+		{
+			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
+			for(int i = 0; i < list.size(); i++)
+			{
+				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, i)));
+			}
+		}
+	}
+	
+	public void displayFrequency(List<Component> tooltipComponents, ItemStack heldItem)
+	{
+		if(!heldItem.isEmpty())
+		{
+			if(CommunicationCrystalItem.hasFrequency(heldItem))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": " + CommunicationCrystalItem.getFrequency(heldItem)).withStyle(ChatFormatting.GRAY));
+			else
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
+		}
+	}
+	
 	@Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
     {
 		ItemStack heldItem = getHeldItem(stack);
 		int indexAt = getIndex(stack);
@@ -337,35 +376,21 @@ public class RingRemoteItem extends HolderItem
 			itemComponent.append(heldItem.getDisplayName());
 		tooltipComponents.add(itemComponent);
 		
-		/*CrystalCache.Type crystalType = getCrystalType(heldItem);
+		CrystalCache.Type crystalType = getCrystalType(heldItem);
 		
-		ChatFormatting chatFormatting = switch(crystalType)
+		if(crystalType != null)
 		{
-			case MEMORY -> ChatFormatting.BLUE;
-			case COMMUNICATION -> ChatFormatting.GRAY;
-			case MATERIALIZATION -> ChatFormatting.DARK_AQUA;
-			default -> ChatFormatting.DARK_GRAY;
-		};*/
-		
-		if(!heldItem.isEmpty())
-		{
-			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
-			for(int i = 0; i < list.size(); i++)
+			switch(crystalType)
 			{
-				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, i)));
+				case MEMORY -> displayMemoryCrystalEntries(tooltipComponents, heldItem, indexAt);
+				case COMMUNICATION -> displayFrequency(tooltipComponents, heldItem);
 			}
 		}
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.ring_remote.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.ring_remote.usage.transport"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.ring_remote.usage.select"));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
-	
-	private Component memoryComponentAt(ListTag list, int index)
-	{
-		MemoryEntry<?> memoryEntry = MemoryCrystalItem.loadMemoryEntry(list, index);
-		
-		if(memoryEntry.entryType() == MemoryEntry.Type.TRANSPORTER_ID || memoryEntry.entryType() == MemoryEntry.Type.COORDINATES)
-			return memoryEntry.toComponent();
-		
-		return Component.translatable("tooltip.sgjourney.invalid_entry").withStyle(ChatFormatting.DARK_RED);
-	}
 }

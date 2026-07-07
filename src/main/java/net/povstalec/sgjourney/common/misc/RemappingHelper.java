@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.NotNull;
@@ -120,5 +119,6 @@ public class RemappingHelper
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);
 		remapItem("naquadah_alloy_nugget", ItemInit.NAQUADAH_IRON_NUGGET);
 		remapItem("naquadah_alloy_iris", ItemInit.NAQUADAH_IRON_IRIS);
+		remapItem("ring_remote", ItemInit.GOAULD_RING_REMOTE);
 	}
 }

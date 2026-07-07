@@ -109,7 +109,7 @@ public class ItemInit
 	public static final RegistryObject<VialItem> VIAL = ITEMS.register("vial", 
 			() -> new VialItem(new Item.Properties().stacksTo(1)));
 	
-	public static final RegistryObject<Item> RING_REMOTE = ITEMS.register("ring_remote", 
+	public static final RegistryObject<Item> GOAULD_RING_REMOTE = ITEMS.register("goauld_ring_remote",
 			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	public static final RegistryObject<Item> KARA_KESH = ITEMS.register("kara_kesh", 
 			() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));

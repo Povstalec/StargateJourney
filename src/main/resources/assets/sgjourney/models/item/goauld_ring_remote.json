@@ -2,6 +2,6 @@
     "parent": "item/generated",
     "textures": 
 	{
-        "layer0": "sgjourney:item/ring_remote"
+        "layer0": "sgjourney:item/goauld_ring_remote"
     }
 }

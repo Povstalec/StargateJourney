@@ -4,12 +4,14 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -17,16 +19,21 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.packets.ServerboundCrystalComputerUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.function.Function;
 
 public abstract class PocketCrystalComputerScreen extends Screen
 {
 	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/pocket_crystal_computer_gui.png");
+	
+	public static final int DARK_RED_COLOR = 11141120;
 	
 	public enum SelectedCrystal
 	{
@@ -93,7 +100,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
     	this.renderBackground(poseStack);
     	int x = (width - imageWidth) / 2;
@@ -113,9 +120,22 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	
 	// Crystal stuff
 	
+	@Nullable
+	public CrystalCache.Type selectedCrystalType(SelectedCrystal selectedCrystal)
+	{
+		ItemStack stack = getCrystal(selectedCrystal);
+		if(stack.getItem() instanceof AbstractCrystalItem crystal)
+			return crystal.getType();
+		
+		return null;
+	}
+	
 	protected void selectCrystal(SelectedCrystal selectedCrystal)
 	{
 		this.selectedCrystal = selectedCrystal;
+		
+		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && !getCrystalInComputer().isEmpty();
+		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && !getCrystalInHand().isEmpty();
 	}
 	
 	public static InteractionHand otherHand(InteractionHand hand)
@@ -165,6 +185,16 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		};
 	}
 	
+	public boolean memoryCrystalHasFreeSpace(SelectedCrystal selectedCrystal)
+	{
+		ItemStack stack = getCrystal(selectedCrystal);
+		
+		if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
+			return memoryCrystal.hasFreeSpace(stack);
+		
+		return false;
+	}
+	
 	public void executeOnCrystal(SelectedCrystal selectedCrystal, Function<ItemStack, Boolean> function)
 	{
 		if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER)
@@ -192,7 +222,21 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		{
 			if(stack.getItem() instanceof MemoryCrystalItem memoryCrystal)
 			{
-				memoryCrystal.saveMemoryEntry(stack, memoryEntry, true);
+				memoryCrystal.saveMemoryEntry(stack, memoryEntry, false);
+				return true;
+			}
+			
+			return false;
+		});
+	}
+	
+	public void overwriteMemoryEntry(int index, MemoryEntry<?> memoryEntry)
+	{
+		executeOnCrystal(selectedCrystal, stack ->
+		{
+			if(stack.getItem() instanceof MemoryCrystalItem)
+			{
+				MemoryCrystalItem.overwriteMemoryEntry(stack, memoryEntry, index);
 				return true;
 			}
 			
@@ -207,19 +251,49 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		return tag;
 	}
 	
-	public CompoundTag getMemoryCrystalTag(SelectedCrystal selectedCrystal)
+	public static CompoundTag frequencyToCompoundTag(int frequency)
+	{
+		CompoundTag tag = new CompoundTag();
+		tag.putInt(CommunicationCrystalItem.FREQUENCY, frequency);
+		return tag;
+	}
+	
+	public static CompoundTag noFrequencyToCompoundTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		tag.putBoolean(CommunicationCrystalItem.FREQUENCY, true);
+		return tag;
+	}
+	
+	public CompoundTag getCrystalTag(SelectedCrystal selectedCrystal)
 	{
 		ItemStack stack = getCrystal(selectedCrystal);
 		
-		if(stack.getItem() instanceof MemoryCrystalItem && stack.hasTag())
-			return listTagToCompoundTag(MemoryCrystalItem.getMemoryList(stack));
+		if(stack.hasTag() && stack.getItem() instanceof AbstractCrystalItem crystal)
+		{
+			if(crystal.getType() == CrystalCache.Type.MEMORY)
+				return listTagToCompoundTag(MemoryCrystalItem.getMemoryList(stack));
+			else if(crystal.getType() == CrystalCache.Type.COMMUNICATION)
+			{
+				if(CommunicationCrystalItem.hasFrequency(stack))
+					return frequencyToCompoundTag(CommunicationCrystalItem.getFrequency(stack));
+				else
+					return noFrequencyToCompoundTag();
+			}
+		}
 		
 		return new CompoundTag();
+	}
+	
+	public static void drawCenteredString(PoseStack poseStack, Font font, Component component, float x, float y, int color)
+	{
+		FormattedCharSequence formattedCharSequence = component.getVisualOrderText();
+		font.drawShadow(poseStack, formattedCharSequence, x - font.width(formattedCharSequence) / 2F, y, color);
 	}
 	
 	public void updateServer(SelectedCrystal selectedCrystal)
     {
 		if(selectedCrystal != SelectedCrystal.NONE)
-			PacketHandlerInit.INSTANCE.sendToServer(new ServerboundCrystalComputerUpdatePacket(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER ? interactionHand : otherHand(interactionHand), getMemoryCrystalTag(selectedCrystal)));
+			PacketHandlerInit.INSTANCE.sendToServer(new ServerboundCrystalComputerUpdatePacket(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER ? interactionHand : otherHand(interactionHand), getCrystalTag(selectedCrystal)));
     }
 }

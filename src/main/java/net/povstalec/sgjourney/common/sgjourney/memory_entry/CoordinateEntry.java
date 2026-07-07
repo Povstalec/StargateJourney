@@ -46,7 +46,7 @@ public class CoordinateEntry extends MemoryEntry<Vec3i> implements ICoordinateEn
 	}
 	
 	@Override
-	public ChatFormatting entryChatFormatting()
+	public ChatFormatting getChatFormatting()
 	{
 		return ChatFormatting.YELLOW;
 	}
@@ -56,7 +56,7 @@ public class CoordinateEntry extends MemoryEntry<Vec3i> implements ICoordinateEn
 	{
 		MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 		
-		return component.append(Component.literal(Conversion.vec3iToString(entry)).withStyle(entryChatFormatting()));
+		return component.append(Component.literal(Conversion.vec3iToString(entry)).withStyle(getChatFormatting()));
 	}
 	
 	@Override

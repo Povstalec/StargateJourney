@@ -37,7 +37,7 @@ public class TransporterConnectionEntry
 		}
 		
 		@Override
-		public ChatFormatting entryChatFormatting()
+		public ChatFormatting getChatFormatting()
 		{
 			return ChatFormatting.DARK_BLUE;
 		}
@@ -76,7 +76,7 @@ public class TransporterConnectionEntry
 		}
 		
 		@Override
-		public ChatFormatting entryChatFormatting()
+		public ChatFormatting getChatFormatting()
 		{
 			return ChatFormatting.DARK_BLUE;
 		}

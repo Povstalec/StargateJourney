@@ -32,8 +32,12 @@ public class PocketCrystalComputerDeleteScreen extends PocketCrystalComputerScre
 		
 		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 30, true,Component.translatable("screen.sgjourney.crystal_computer.confirm_delete").withStyle(ChatFormatting.DARK_RED),
 				Component.translatable("screen.sgjourney.crystal_computer.confirm_delete").append(": ").withStyle(ChatFormatting.DARK_RED).append(memoryEntry.toComponent()), button -> deleteEntry()));
-		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 75, true, Component.translatable("screen.sgjourney.crystal_computer.cancel_celete").withStyle(ChatFormatting.AQUA),
+		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 75, true, Component.translatable("screen.sgjourney.crystal_computer.cancel_delete").withStyle(ChatFormatting.AQUA),
 				Component.translatable("screen.sgjourney.crystal_computer.cancel_delete").append(": ").withStyle(ChatFormatting.AQUA).append(memoryEntry.toComponent()), button -> this.minecraft.setScreen(mainScreen)));
+		
+		mainScreenButton.active = false;
+		crystalInComputerButton.active = false;
+		crystalInHandButton.active = false;
 	}
 		
 	@Override

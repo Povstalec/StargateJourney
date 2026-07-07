@@ -34,7 +34,7 @@ public class StargateConnectionEntry extends MemoryEntry<StargateConnection.Resu
 	}
 	
 	@Override
-	public ChatFormatting entryChatFormatting()
+	public ChatFormatting getChatFormatting()
 	{
 		return ChatFormatting.DARK_BLUE;
 	}

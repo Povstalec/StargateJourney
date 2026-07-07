@@ -31,7 +31,7 @@ public class TransporterIDEntry extends MemoryEntry<TransporterID.Immutable> imp
 	}
 	
 	@Override
-	public ChatFormatting entryChatFormatting()
+	public ChatFormatting getChatFormatting()
 	{
 		return entry.getChatFormatting();
 	}

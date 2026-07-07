@@ -31,7 +31,7 @@ public class AddressEntry extends MemoryEntry<Address.Immutable> implements IAdd
 	}
 	
 	@Override
-	public ChatFormatting entryChatFormatting()
+	public ChatFormatting getChatFormatting()
 	{
 		return entry.getChatFormatting();
 	}

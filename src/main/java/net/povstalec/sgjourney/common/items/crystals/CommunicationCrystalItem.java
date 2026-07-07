@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -21,7 +22,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	
 	public static final int DEFAULT_FREQUENCY = 0;
 	
-	private static final String FREQUENCY = "frequency";
+	public static final String FREQUENCY = "frequency";
 	
 	public CommunicationCrystalItem(Properties properties)
 	{
@@ -34,10 +35,15 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		return CrystalCache.Type.COMMUNICATION;
 	}
 	
+	public static boolean containsFrequency(@NotNull CompoundTag tag)
+	{
+		return tag.contains(FREQUENCY);
+	}
+	
 	public static boolean hasFrequency(ItemStack stack)
 	{
 		if(stack.hasTag())
-			return stack.getTag().contains(FREQUENCY);
+			return containsFrequency(stack.getTag());
 		
 		return false;
 	}
@@ -53,6 +59,12 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	public static void setFrequency(ItemStack stack, int frequency)
 	{
 		stack.getOrCreateTag().putInt(FREQUENCY, frequency);
+	}
+	
+	public static void unsetFrequency(ItemStack stack)
+	{
+		if(stack.hasTag())
+			stack.getTag().remove(FREQUENCY);
 	}
 	
 	public static CompoundTag tagSetup(int frequency)

@@ -7,6 +7,7 @@ import java.util.function.Function;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -36,19 +37,19 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Override
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return getMemoryListSize(stack) > 0;
 	}
 	
 	@Override
-	public int getBarWidth(ItemStack stack)
+	public int getBarWidth(@NotNull ItemStack stack)
 	{
 		return (int) Math.floor(13.0F * (float) getMemoryListSize(stack) / getMemoryCapacity());
 	}
 	
 	@Override
-	public int getBarColor(ItemStack stack)
+	public int getBarColor(@NotNull ItemStack stack)
 	{
 		return BAR_COLOR_RGB;
 	}
@@ -69,7 +70,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		{
 			tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeComponentAt(list, i)));
 		}
-		if(list.size() >= 10)
+		if(list.size() > 10)
 			tooltipComponents.add(Component.literal("...").withStyle(ChatFormatting.BLUE));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.memory_crystal.description"));
@@ -92,16 +93,39 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
+	public static boolean containsMemoryListTag(@NotNull CompoundTag tag)
+	{
+		return tag.contains(MEMORY_LIST, Tag.TAG_LIST);
+	}
+	
+	public static ListTag memoryListTagFromCompoundTag(CompoundTag tag)
+	{
+		if(tag != null && containsMemoryListTag(tag))
+			return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND);
+		
+		return new ListTag();
+	}
+	
 	public static int getMemoryListSize(ItemStack stack)
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
 			CompoundTag tag = stack.getTag();
-			if(tag != null && tag.contains(MEMORY_LIST, Tag.TAG_LIST))
+			if(tag != null && containsMemoryListTag(tag))
 				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND).size();
 		}
 		
 		return 0;
+	}
+	
+	public boolean hasFreeSpace(ItemStack stack)
+	{
+		return getMemoryListSize(stack) < getMemoryCapacity();
+	}
+	
+	public boolean hasFreeSpace(ListTag list)
+	{
+		return list.size() < getMemoryCapacity();
 	}
 	
 	public static boolean isMemoryEntryType(ListTag list, MemoryEntry.Type<?> entryType, int index)
@@ -141,11 +165,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	public static ListTag getMemoryList(ItemStack stack)
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)
-		{
-			CompoundTag tag = stack.getTag();
-			if(tag != null && tag.contains(MEMORY_LIST, Tag.TAG_LIST))
-				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND);
-		}
+			return memoryListTagFromCompoundTag(stack.getTag());
 		
 		return new ListTag();
 	}
@@ -171,7 +191,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		ListTag list = getMemoryList(stack);
 		
-		if(list.size() < getMemoryCapacity())
+		if(hasFreeSpace(list))
 		{
 			ListTag newList = new ListTag();
 			newList.add(savedTag);

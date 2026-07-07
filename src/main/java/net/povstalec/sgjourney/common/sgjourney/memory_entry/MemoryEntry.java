@@ -33,6 +33,11 @@ public abstract class MemoryEntry<T>
 		this.entry = entry;
 	}
 	
+	public void setName(String newName)
+	{
+		this.name = newName;
+	}
+	
 	public String name()
 	{
 		return this.name;
@@ -92,7 +97,7 @@ public abstract class MemoryEntry<T>
 		return '[' + name + "] " + entry.toString();
 	}
 	
-	public ChatFormatting entryChatFormatting()
+	public ChatFormatting getChatFormatting()
 	{
 		return ChatFormatting.WHITE;
 	}
@@ -101,7 +106,7 @@ public abstract class MemoryEntry<T>
 	{
 		MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 		
-		return component.append(Component.literal(entry.toString()).withStyle(entryChatFormatting()));
+		return component.append(Component.literal(entry.toString()).withStyle(getChatFormatting()));
 	}
 	
 	//============================================================================================
@@ -153,7 +158,7 @@ public abstract class MemoryEntry<T>
 		{
 			MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 			
-			return component.append(Component.translatable("tooltip.sgjourney.unknown").withStyle(entryChatFormatting()));
+			return component.append(Component.translatable("tooltip.sgjourney.unknown").withStyle(getChatFormatting()));
 		}
 	}
 	

@@ -387,7 +387,7 @@
 	"item.sgjourney.trinium_hoe": "Triniová motyka",
 
 	"item.sgjourney.kara_kesh": "Ozbrojená ruka",
-	"item.sgjourney.ring_remote": "Dálkový ovladač kruhů",
+	"item.sgjourney.goauld_ring_remote": "Goa'uldí dálkový ovladač kruhů",
 	
 	"item.sgjourney.jaffa_staff_head": "Hlava Jaffské tyče",
 	"item.sgjourney.matok": "Tyčová zbraň Ma'Tok",
@@ -574,6 +574,21 @@
 	"screen.sgjourney.crystal_computer.cancel_delete": "Zrušít smazání",
 	"screen.sgjourney.crystal_computer.save_coordinates": "Uložit koordináty",
 	"screen.sgjourney.crystal_computer.save_transporter_id": "Uložit ID transportéru",
+	"screen.sgjourney.crystal_computer.memory_crystal_full": "Paměťový krystal je plný!",
+	"screen.sgjourney.crystal_computer.not_memory_crystal": "Není paměťový krystal!",
+	"screen.sgjourney.crystal_computer.move_entry_up": "Posunout záznam dolů",
+	"screen.sgjourney.crystal_computer.move_entry_down": "Posunout záznam nahoru",
+	"screen.sgjourney.crystal_computer.delete_entry": "Smazat záznam",
+	"screen.sgjourney.crystal_computer.create_entry": "Vytvořit nový záznam",
+	"screen.sgjourney.crystal_computer.page_back": "Předchozí strana",
+	"screen.sgjourney.crystal_computer.page_forward": "Další strana",
+	"screen.sgjourney.crystal_computer.cancel_entry_copy": "Zrušit kopírování",
+	"screen.sgjourney.crystal_computer.no_crystal_selected": "Nevybrán žádný krystal",
+	"screen.sgjourney.crystal_computer.entry_name": "Jméno záznamu",
+	"screen.sgjourney.crystal_computer.edit_entry": "Upravit záznam",
+	"screen.sgjourney.crystal_computer.cancel_entry_editing": "Zrušit úpravu",
+	"screen.sgjourney.crystal_computer.save_entry": "Uložit záznam",
+	"screen.sgjourney.crystal_computer.save_frequency": "Uložit frekvenci",
 	
 	"biome.sgjourney.abydos_desert": "Abydoská poušť",
 	"biome.sgjourney.abydos_oasis": "Abydoská oáza",
@@ -808,6 +823,9 @@
 	"info.sgjourney.network_restrictions": "Síťová omezení",
 	"info.sgjourney.transfer_efficiency": "Účinnost přenosu",
 	"info.sgjourney.networks": "Sítě",
+	"info.sgjourney.memory_entry": "Paměťový záznam",
+	"info.sgjourney.entry_type": "Typ záznamu",
+	"info.sgjourney.timestamp": "Časová značka",
 	
 	"tooltip.sgjourney.unknown": "Neznámé",
 	"tooltip.sgjourney.empty": "Prázdné",
@@ -862,6 +880,11 @@
 	"tooltip.sgjourney.call_forwarding_device.description": "Když je vloženo do DHD, přesměruje veškeré cestovatele co neprojdou filtrem do jiné hvězdné brány",
 	"tooltip.sgjourney.call_forwarding_device.usage": "Pravé kliknutí otevře rozhraní filtru",
 	
+	"tooltip.sgjourney.ring_remote.description": "Příruční zařízení, které zvládne držet paměťový krystal a ovládat transportní kruhy",
+	"tooltip.sgjourney.ring_remote.usage.transport": "Pravé kliknutí začne transport",
+	"tooltip.sgjourney.ring_remote.usage.select": "Shift + pravé kliknutí umožní procházet paměťové záznamy",
+	
+	"tooltip.sgjourney.ring_panel.description": "Zařízení pro ovládání transportních kruhů",
 	"tooltip.sgjourney.ring_panel.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.ring_panel.energy_slot.description": "Drží předměty dodávající energii",
 	"tooltip.sgjourney.ring_panel.button.not_enough_energy": "Nedostatek energie",
@@ -982,6 +1005,11 @@
 	
 	"tooltip.sgjourney.cable.zpm_transfer": "Dokáže vydržet přenos energie ze ZPM",
 	
+	"tooltip.sgjourney.pocket_crystal_computer.description": "Zařízení, které dokáže upravovat informace uložené v krystalech",
+	"tooltip.sgjourney.pocket_crystal_computer.usage": "Pravé kliknutí otevře rozhraní",
+	"tooltip.sgjourney.pocket_crystal_computer.usage.crystal": "Vlož krystal do počítače, nebo drž krystal ve druhé ruce",
+	"tooltip.sgjourney.pocket_crystal_computer.usage.block": "Pravé kliknutí na blok ho uloží",
+	
 	"tooltip.sgjourney.energy_transfer": "Max. přenos energie",
 	"tooltip.sgjourney.naquadah_power_cell.description": "Zařízení které konvertuje tekutý naquadah a těžký tekutý naquadah na energii",
 	"tooltip.sgjourney.naquadah_power_cell.reload": "Pravé kliknutí ve vedlejší ruce pro doplnění naquadahovou ampulkou v hlavní ruce",
@@ -1019,6 +1047,7 @@
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",
 	"message.sgjourney.ring_remote.error.no_transporters_nearby": "Žádný transportér poblíž",
 	"message.sgjourney.ring_remote.error.invalid_entry": "Paměťový záznam nelze použít pro transport",
+	"message.sgjourney.ring_remote.error.no_frequency_set": "Nenastavena žádná frekvence",
 	
 	"message.sgjourney.ring_panel.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_panel.error.not_enough_energy": "Ovládání kruhů nemá dost energie",

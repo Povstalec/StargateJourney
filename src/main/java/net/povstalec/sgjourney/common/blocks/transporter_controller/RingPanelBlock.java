@@ -13,6 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +29,9 @@ import net.povstalec.sgjourney.common.block_entities.transporter_controller.Ring
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+
+import java.util.List;
 
 public class RingPanelBlock extends TransporterControllerBlock
 {
@@ -125,5 +129,13 @@ public class RingPanelBlock extends TransporterControllerBlock
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
 		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), RingPanelEntity::tick);
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.ring_panel.description"));
 	}
 }
