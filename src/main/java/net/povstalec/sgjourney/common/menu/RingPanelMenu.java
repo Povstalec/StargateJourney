@@ -55,6 +55,11 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 		return Math.round(this.blockEntity.transporterCache.returnCachedOrDefault(AbstractTransporterEntity::maxTransportRange, 0D));
 	}
 	
+	public long getEnergyReach()
+	{
+		return Math.round(this.blockEntity.transporterCache.returnCachedOrDefault(AbstractTransporterEntity::energyReach, 0D));
+	}
+	
 	public boolean allowInterdimensionalTransport()
 	{
 		return this.blockEntity.transporterCache.returnCachedOrDefault(AbstractTransporterEntity::allowInterdimensionalTransport, false);

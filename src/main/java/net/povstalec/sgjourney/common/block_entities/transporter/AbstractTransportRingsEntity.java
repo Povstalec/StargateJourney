@@ -55,6 +55,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	public static final String INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
 	public static final String TRANSFER_EFFICIENCY = "transfer_efficiency";
 	
+	public static final String TRANSPORT_RANGE = "transport_range";
+	public static final String ENERGY_REACH = "energy_reach";
+	
 	public static final int TRANSPORT_TICKS = 21; // Number of ticks Transport Rings wait while in the hover position before they start transporting
 	public static final int HOVER_TICKS = 2 * TRANSPORT_TICKS; // Number of ticks Transport Rings wait while in the hover position before they start descending
 	
@@ -77,6 +80,10 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	private BlockPos transportPos = null;
 	public int emptySpace = 0;
 	public int transportHeight = 0;
+	
+	// Client update stuff
+	protected double maxTransportRange = 0;
+	protected double energyReach = 0;
 	
 	public int progress = -1;
 	public int progressOld = -1;
@@ -136,6 +143,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		
 		tag.putBoolean(INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
 		tag.putInt(TRANSFER_EFFICIENCY, transferEfficiency);
+		tag.putDouble(TRANSPORT_RANGE, maxTransportRange);
+		tag.putDouble(ENERGY_REACH, energyReach);
 		
 		return tag;
 	}
@@ -152,6 +161,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		// but the info needs to be sent to the Ring Panel even if you don't open the menu
 		allowInterdimensionalTransport = tag.getBoolean(INTERDIMENSIONAL_TRANSPORT);
 		transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
+		maxTransportRange = tag.getDouble(TRANSPORT_RANGE);
+		energyReach = tag.getDouble(ENERGY_REACH);
 	}
 	
 	public LazyOptional<IItemHandler> getCrystalItemHandler()
@@ -257,6 +268,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 						networksCrystalCache.add(CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(slot.index)));
 				});
 				
+				maxTransportRange = TransporterConnection.estimateMaxRange(getTotalEnergyCapacity(), getTransferEfficiency());
+				energyReach = TransporterConnection.estimateMaxRange(getTotalEnergyStored(), getTransferEfficiency());
+				
 				controllerCache.markDirtyTwoWays();
 				updateTransporter();
 			}
@@ -292,6 +306,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	/**
 	 * @return Total energy stored, including the energy inside Energy Crystals
 	 */
+	@Override
 	public long getTotalEnergyStored()
 	{
 		long energyStored = energyStorage.getTrueEnergyStored();
@@ -308,6 +323,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	/**
 	 * @return Total energy capacity, including the capacity of Energy Crystals
 	 */
+	@Override
 	public long getTotalEnergyCapacity()
 	{
 		long energyCapacity = energyStorage.getTrueMaxEnergyStored();
@@ -461,7 +477,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public double maxTransportRange()
 	{
-		return TransporterConnection.estimateMaxRange(getTotalEnergyCapacity(), getTransferEfficiency());
+		return maxTransportRange;
+	}
+	
+	@Override
+	public double energyReach()
+	{
+		return energyReach;
 	}
 	
 	@Override

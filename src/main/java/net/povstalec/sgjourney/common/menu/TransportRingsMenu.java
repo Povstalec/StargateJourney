@@ -75,6 +75,11 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 		return Math.round(this.blockEntity.maxTransportRange());
 	}
 	
+	public double getEnergyReach()
+	{
+		return Math.round(this.blockEntity.energyReach());
+	}
+	
 	public boolean allowInterdimensionalTransport()
 	{
 		return this.blockEntity.allowInterdimensionalTransport();

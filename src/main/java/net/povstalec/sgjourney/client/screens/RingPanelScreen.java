@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
@@ -77,6 +78,8 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
 		
 		this.crystalEffectTooltip(poseStack, 136, 51, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transporter.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transporter.connection_range.description"),
+				Component.translatable("tooltip.sgjourney.transporter.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
+				ComponentHelper.description("tooltip.sgjourney.transporter.energy_reach.description"),
 				Component.translatable("tooltip.sgjourney.transporter.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transporter.interdimensional_transport.description"));
 		this.crystalEffectTooltip(poseStack, 136, 63, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")

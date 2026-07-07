@@ -919,6 +919,8 @@
 	
 	"tooltip.sgjourney.transporter.connection_range": "Connection Range: %s Blocks",
 	"tooltip.sgjourney.transporter.connection_range.description": "Maximum range at which the Transporter can connect to another Transporter",
+	"tooltip.sgjourney.transporter.energy_reach": "Energy Reach: %s Blocks",
+	"tooltip.sgjourney.transporter.energy_reach.description": "Current range of the Transporter, given the amount of energy stored",
 	"tooltip.sgjourney.transporter.interdimensional_transport": "Interdimensional transport: %s",
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "If enabled, the Transporter will be able to transport across dimensions in the same Solar System",
 	

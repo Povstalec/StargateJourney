@@ -917,6 +917,8 @@
 	
 	"tooltip.sgjourney.transporter.connection_range":"Dosah spojení: %s bloků",
 	"tooltip.sgjourney.transporter.connection_range.description": "Maximální vzdálenost ze které se transportér dokáže spojit s dalším transportérem",
+	"tooltip.sgjourney.transporter.energy_reach": "Dosah s energií: %s bloků",
+	"tooltip.sgjourney.transporter.energy_reach.description": "Současný dosah transportéru s ohledem na množství energie v něm",
 	"tooltip.sgjourney.transporter.interdimensional_transport": "Mezidimenzionální transport: %s",
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "Pokud je aktivní,transportér bude schopný transportovat mezi dimenzemi ve stejném solárním systému",
 	

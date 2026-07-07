@@ -399,6 +399,8 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	public abstract double maxTransportRange();
 	
+	public abstract double energyReach();
+	
 	public abstract boolean allowInterdimensionalTransport();
 	
 	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
@@ -566,6 +568,26 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	public abstract void registerInterfaceMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper);
+	
+	//============================================================================================
+	//*******************************************Energy*******************************************
+	//============================================================================================
+	
+	/**
+	 * @return Total energy stored (including the energy inside Energy Crystals)
+	 */
+	public long getTotalEnergyStored()
+	{
+		return energyStorage.getTrueEnergyStored();
+	}
+	
+	/**
+	 * @return Total energy capacity, including the capacity of Energy Crystals
+	 */
+	public long getTotalEnergyCapacity()
+	{
+		return energyStorage.getTrueMaxEnergyStored();
+	}
 	
 	//============================================================================================
 	//********************************************Info********************************************

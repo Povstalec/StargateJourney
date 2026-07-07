@@ -75,7 +75,7 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 		
 		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transport_rings.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.connection_range.description"),
-				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", TransporterConnection.estimateMaxRange(totalEnergy, transferEfficiency)).withStyle(ChatFormatting.RED),
+				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.energy_reach.description"),
 				Component.translatable("tooltip.sgjourney.transport_rings.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.interdimensional_transport.description"),
