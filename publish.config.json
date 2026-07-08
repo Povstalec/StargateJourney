@@ -1,0 +1,166 @@
+{
+  "client": true,
+  "server": true,
+  "curseforge_enabled": true,
+  "modrinth_enabled": true,
+  "discord_enabled": true,
+  "discord_announce_nightly_builds": true,
+  "curseforge_project_slug": "sgjourney",
+  "curseforge_project_id": "689083",
+  "modrinth_project_id": "qlc8dxM6",
+  "discord_webhook": {
+    "discord_branch": "main",
+    "username": "Monolith architect",
+    "avatar_url": "https://cdn.discordapp.com/avatars/1053761029517082694/2ee4f7995d3a4ea68cabd90daf1af2e8.png?size=512",
+    "content": "# Stargate Journey v{version} released!",
+    "thumbnail_url": "https://media.forgecdn.net/avatars/thumbnails/938/585/256/256/638417849215075737.png",
+    "embed_color": "#8d533a",
+    "nightly_content": "# Experimental: Stargate Journey\nA new experimental build is available for download from GitHub\nv{version}"
+  },
+  "artifacts": [
+    {
+      "id": "1.19.2",
+      "file_glob": "build/libs/*-1.19.2-{version}.jar",
+      "branch": "stargatejourney-1.19.2",
+      "loaders": [
+        "forge"
+      ],
+      "game_versions": [
+        "1.19.2"
+      ],
+      "java_version": "17",
+      "version_properties": [
+        {
+          "file": "gradle.properties",
+          "property": "mod_version"
+        },
+        {
+          "file": "src/main/resources/META-INF/mods.toml",
+          "property": "version"
+        }
+      ]
+    },
+    {
+      "id": "1.19.3",
+      "file_glob": "build/libs/*-1.19.3-{version}.jar",
+      "branch": "stargatejourney-1.19.3",
+      "loaders": [
+        "forge"
+      ],
+      "game_versions": [
+        "1.19.3"
+      ],
+      "java_version": "17",
+      "version_properties": [
+        {
+          "file": "gradle.properties",
+          "property": "mod_version"
+        },
+        {
+          "file": "src/main/resources/META-INF/mods.toml",
+          "property": "version"
+        }
+      ]
+    },
+    {
+      "id": "1.19.4",
+      "file_glob": "build/libs/*-1.19.4-{version}.jar",
+      "branch": "stargatejourney-1.19.4",
+      "loaders": [
+        "forge"
+      ],
+      "game_versions": [
+        "1.19.4"
+      ],
+      "java_version": "17",
+      "version_properties": [
+        {
+          "file": "gradle.properties",
+          "property": "mod_version"
+        },
+        {
+          "file": "src/main/resources/META-INF/mods.toml",
+          "property": "version"
+        }
+      ]
+    },
+    {
+      "id": "1.20.1",
+      "file_glob": "build/libs/*-1.20.1-{version}.jar",
+      "branch": "stargatejourney-1.20.1",
+      "loaders": [
+        "forge"
+      ],
+      "game_versions": [
+        "1.20.1"
+      ],
+      "java_version": "17",
+      "version_properties": [
+        {
+          "file": "gradle.properties",
+          "property": "mod_version"
+        },
+        {
+          "file": "src/main/resources/META-INF/mods.toml",
+          "property": "version"
+        }
+      ]
+    },
+    {
+      "id": "main",
+      "file_glob": "build/libs/*-1.21.1-{version}.jar",
+      "branch": "main",
+      "loaders": [
+        "neoforge"
+      ],
+      "game_versions": [
+        "1.21.1"
+      ],
+      "java_version": "21",
+      "version_properties": [
+        {
+          "file": "gradle.properties",
+          "property": "mod_version"
+        }
+      ]
+    }
+  ],
+  "common_dependencies": {
+    "curseforge": [
+      {
+        "slug": "ad-astra",
+        "dependency_type": "optional"
+      },
+      {
+        "slug": "cc-tweaked",
+        "dependency_type": "optional"
+      },
+      {
+        "slug": "jei",
+        "dependency_type": "optional"
+      },
+      {
+        "slug": "stellarview",
+        "dependency_type": "optional"
+      }
+    ],
+    "modrinth": [
+      {
+        "dependency_type": "optional",
+        "slug": "ad-astra"
+      },
+      {
+        "slug": "cc-tweaked",
+        "dependency_type": "optional"
+      },
+      {
+        "slug": "jei",
+        "dependency_type": "optional"
+      },
+      {
+        "slug": "stellarview",
+        "dependency_type": "optional"
+      }
+    ]
+  }
+}
