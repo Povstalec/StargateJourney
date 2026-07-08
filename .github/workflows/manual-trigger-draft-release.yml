@@ -1,0 +1,39 @@
+# To create a new draft release, go to repository > Actions
+#   Select the "Draft new GitHub release" action in the left and click the "Run workflow" button in the right
+#
+# Recommended: change the reference to specific version of the workflow called in draft-release job
+
+name: Draft new GitHub release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Mod version to release, must follow semantic versioning at semver.org (e.g. 2.0.6-hotfix.1). Must NOT contain leading "v".
+        required: true
+        type: string
+      validate-only:
+        description: Only parse and validate the file publish.config.json
+        required: false
+        type: boolean
+        default: false
+
+# permissions required to create the GitHub release draft and to commit version bumps to the repository
+permissions:
+  contents: write
+
+jobs:
+  draft-release:
+    name: Draft new GitHub release
+    # Recommended: change the reference to a specific version of the reusable workflow
+    # Using a specific version prevents breaking your workflow when a breaking change is introduced
+    # If a specific commit hash is used, improves security
+    # The reference must be changed at TWO places                                       ↓ change this
+    uses: lukaskabc/Minecraft-Mod-Publish-Workflows/.github/workflows/draft-release.yml@v1.1.0
+    with:
+      # CHANGE THIS REFERENCE AS WELL
+      # This value must match the reference used in the "uses:" parameter (the value after "@")
+      workflow_ref: "v1.1.0"
+
+      # Passthrough for workflow dispatch inputs, do not change
+      version: ${{ inputs.version }}
+      validate-only: ${{ inputs.validate-only }}
