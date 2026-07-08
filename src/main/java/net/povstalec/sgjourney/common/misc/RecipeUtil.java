@@ -9,6 +9,7 @@ import net.minecraft.world.level.Level;
 public class RecipeUtil {
     public static <T> NonNullList<ItemStack> getAllVariants(Class<T> type, String typeKey) {
         NonNullList<ItemStack> variants = NonNullList.create();
+		//FIXME Causes a crash when loaded from server (like in the case of IC2)
         Level level = Minecraft.getInstance().level;
         if (level == null) return variants;
 

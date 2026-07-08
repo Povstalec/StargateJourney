@@ -46,14 +46,14 @@ public class StargateUpgradeItem extends Item
 		
 		return stargate;
 	}
-
-
-	@Override
+	
+	//FIXME Causes a crash when loaded from server (like in the case of IC2)
+	/*@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
 		if (this.allowedIn(tab)) {
             items.addAll(RecipeUtil.getAllVariants(this.getClass(), TYPE));
 		}
-	}
+	}*/
 
 
 	public static Optional<String> getStargateString(ItemStack stack)

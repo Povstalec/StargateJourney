@@ -45,15 +45,16 @@ public class StargateVariantItem extends Item
 	{
 		return stack.hasTag();
 	}
-
-
-	@Override
+	
+	
+	//FIXME Causes a crash when loaded from server (like in the case of IC2)
+	/*@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> items) {
 		if (this.allowedIn(tab)) {
 			items.add(new ItemStack(this));
 			items.addAll(RecipeUtil.getAllVariants(this.getClass(), VARIANT));
 		}
-	}
+	}*/
 
 
 	@Override
