@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.recipe;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -80,7 +81,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	}
 	
 	@Override
-	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container)
+	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container, @NotNull RegistryAccess registryAccess)
 	{
 		return ItemStack.EMPTY;
 	}
@@ -92,7 +93,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	}
 	
 	@Override
-	public @NotNull ItemStack getResultItem()
+	public @NotNull ItemStack getResultItem(@NotNull RegistryAccess registryAccess)
 	{
 		return ItemStack.EMPTY;
 	}

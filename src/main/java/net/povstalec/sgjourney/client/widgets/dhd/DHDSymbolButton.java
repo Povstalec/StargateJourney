@@ -149,7 +149,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	}
 	
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
 		Minecraft minecraft = Minecraft.getInstance();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -173,12 +173,11 @@ public abstract class DHDSymbolButton extends DHDButton
 			this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
 		}
 		
-		this.renderBg(poseStack, minecraft, mouseX, mouseY);
-		
 		if(ClientDHDConfig.dhd_symbols_numbers.get() == SGJourneyContainerScreen.isShiftDown())
 			renderNumber(poseStack, minecraft);
 		else
 			renderSymbol(poseStack);
+		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 	}
 	
     private static Component symbolComponent(int index)

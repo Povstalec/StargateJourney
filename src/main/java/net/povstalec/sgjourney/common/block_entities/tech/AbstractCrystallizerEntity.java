@@ -341,10 +341,10 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	public boolean canOutput(R recipe)
 	{
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
-		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem().getItem() instanceof StargateUpgradeItem)
+		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem(level.registryAccess()).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem());
+		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem(level.registryAccess()));
 	}
 	
 	@Override
@@ -364,8 +364,8 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		ItemStack outputStack = outputHandler.getStackInSlot(0);
 		
 		if(outputStack.isEmpty())
-			outputHandler.setStackInSlot(0, recipe.getResultItem());
-		else if(recipe.getResultItem().is(outputStack.getItem()))
+			outputHandler.setStackInSlot(0, recipe.getResultItem(level.registryAccess()));
+		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()))
 			outputStack.grow(1);
 	}
 	

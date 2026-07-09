@@ -193,12 +193,11 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
 	{
-		super.render(poseStack, mouseX, mouseY, partialTick);
 		if(this.visible)
 		{
 			updateRemapping();
 			this.isHovered = isOverButton(mouseX, mouseY);
-			this.renderButton(poseStack, mouseX, mouseY, partialTick);
+			this.renderWidget(poseStack, mouseX, mouseY, partialTick);
 			updateTooltip();
 		}
 	}

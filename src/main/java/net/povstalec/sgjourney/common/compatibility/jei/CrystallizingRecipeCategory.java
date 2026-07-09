@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +66,7 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		builder.addSlot(recipe.depleteSecondary() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.CATALYST, 87, 53).addItemStack(stack3);
 		
 		// Result Slot
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 36).addItemStack(recipe.getResultItem());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 36).addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
 	}
 	
 	//============================================================================================

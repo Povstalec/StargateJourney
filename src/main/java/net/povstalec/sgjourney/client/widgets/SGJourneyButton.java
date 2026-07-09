@@ -3,10 +3,12 @@ package net.povstalec.sgjourney.client.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -60,20 +62,50 @@ public abstract class SGJourneyButton extends Button
 	@Override
     public void render(PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
-    	this.isHovered = isHovered(mouseX, mouseY);
-		
-        Minecraft minecraft = Minecraft.getInstance();
-        Font font = minecraft.font;
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, texture);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-		int x = this.getXImage();
-        int y = this.getYImage(this.isHoveredOrFocused());
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
-        this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
-        int j = getFGColor();
-        drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+		if(this.visible)
+		{
+			this.isHovered = isHovered(mouseX, mouseY);
+			
+			Minecraft minecraft = Minecraft.getInstance();
+			Font font = minecraft.font;
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, texture);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+			int x = this.getXImage();
+			int y = this.getYImage(this.isHoveredOrFocused());
+			RenderSystem.enableBlend();
+			RenderSystem.defaultBlendFunc();
+			RenderSystem.enableDepthTest();
+			this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
+			int j = getFGColor();
+			drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+			
+			this.updateTooltip();
+		}
      }
+	
+	public void updateTooltip()
+	{
+		if(this.tooltip != null)
+		{
+			boolean isHoveredOrFocused = this.isHovered || this.isFocused() && Minecraft.getInstance().getLastInputType().isKeyboard();
+			if(isHoveredOrFocused != this.wasHoveredOrFocused)
+			{
+				if(isHoveredOrFocused)
+					this.hoverOrFocusedStartTime = Util.getMillis();
+				
+				this.wasHoveredOrFocused = isHoveredOrFocused;
+			}
+			
+			if(isHoveredOrFocused && Util.getMillis() - this.hoverOrFocusedStartTime > (long) this.tooltipMsDelay)
+			{
+				Screen screen = Minecraft.getInstance().screen;
+				if (screen != null) {
+					screen.setTooltipForNextRenderPass(this.tooltip, this.createTooltipPositioner(), this.isFocused());
+				}
+			}
+		}
+		
+		
+	}
 }

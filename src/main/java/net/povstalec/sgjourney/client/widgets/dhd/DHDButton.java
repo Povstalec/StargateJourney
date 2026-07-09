@@ -4,8 +4,11 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class DHDButton extends Button
 {
@@ -34,13 +37,19 @@ public class DHDButton extends Button
 	}
 	
 	@Override
+	protected @NotNull ClientTooltipPositioner createTooltipPositioner()
+	{
+		return DefaultTooltipPositioner.INSTANCE; // Makes sure the Tooltip is next to the cursor, instead of sticking to the button's edge
+	}
+	
+	@Override
 	public void playDownSound(SoundManager soundManager) {}
 	
 	public void updateTooltip()
 	{
 		if(this.tooltip != null)
 		{
-			boolean isHoveredOrFocused = this.isHoveredOrFocused();
+			boolean isHoveredOrFocused = this.isHovered || this.isFocused() && Minecraft.getInstance().getLastInputType().isKeyboard();
 			if(isHoveredOrFocused != this.wasHoveredOrFocused)
 			{
 				if(isHoveredOrFocused)
