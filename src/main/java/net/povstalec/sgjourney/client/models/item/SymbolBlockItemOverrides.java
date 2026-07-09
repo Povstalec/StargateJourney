@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -26,11 +26,11 @@ public class SymbolBlockItemOverrides extends ItemOverrides
 {
 	protected final Map<SymbolModelKey, BakedModel> cache = Maps.newHashMap(); // contains all the baked models since they'll never change
 	protected final ItemOverrides nested;
-	protected final ModelBaker baker;
+	protected final ModelBakery baker;
 	protected final IGeometryBakingContext owner;
 	protected final SymbolBlockModelLoader.SymbolBlockModelGeometry parent;
 	
-	public SymbolBlockItemOverrides(ItemOverrides nested, ModelBaker baker, IGeometryBakingContext owner, SymbolBlockModelLoader.SymbolBlockModelGeometry parent)
+	public SymbolBlockItemOverrides(ItemOverrides nested, ModelBakery baker, IGeometryBakingContext owner, SymbolBlockModelLoader.SymbolBlockModelGeometry parent)
 	{
 		this.nested = nested;
 		this.baker = baker;

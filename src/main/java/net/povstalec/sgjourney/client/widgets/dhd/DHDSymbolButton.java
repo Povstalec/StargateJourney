@@ -3,10 +3,11 @@ package net.povstalec.sgjourney.client.widgets.dhd;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 
+import com.mojang.math.Matrix4f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
@@ -18,12 +19,10 @@ import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import org.joml.Matrix4f;
 
 public abstract class DHDSymbolButton extends DHDButton
 {
 	protected AbstractDHDMenu<?> menu;
-	protected ResourceLocation widgets;
 	protected ResourceLocation overlay;
 	
 	protected final int symbol;
@@ -40,10 +39,9 @@ public abstract class DHDSymbolButton extends DHDButton
     public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
 						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
 	{
-		super(x, y, width, height, Component.empty(), (button) -> {});
+		super(widgets, x, y, width, height, Component.empty(), (button) -> {});
 		
 		this.menu = menu;
-		this.widgets = widgets;
 		this.overlay = overlay;
 		
 		this.symbol = symbol;
@@ -60,9 +58,9 @@ public abstract class DHDSymbolButton extends DHDButton
 			isRemapped = this.menu.isSymbolRemapped(getSymbol());
 			
 			if(isRemapped)
-				setTooltip(Tooltip.create(remappedSymbolComponent()));
+				setTooltip(remappedSymbolComponent());
 			else
-				setTooltip(Tooltip.create(symbolComponent()));
+				setTooltip(symbolComponent());
 		}
 	}
 	
@@ -105,7 +103,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, sprite.atlasLocation());
+		RenderSystem.setShaderTexture(0, sprite.atlas().location());
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -128,7 +126,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, sprite.atlasLocation());
+		RenderSystem.setShaderTexture(0, sprite.atlas().location());
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
@@ -145,7 +143,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	{
 		Font font = minecraft.font;
 		int j = getFGColor();
-		drawCenteredString(poseStack, font, symbolComponent(getSymbol()), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+		drawCenteredString(poseStack, font, symbolComponent(getSymbol()), this.x + this.width / 2, this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 	
     @Override
@@ -153,24 +151,24 @@ public abstract class DHDSymbolButton extends DHDButton
     {
 		Minecraft minecraft = Minecraft.getInstance();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, widgets);
+		RenderSystem.setShaderTexture(0, texture);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.enableDepthTest();
-		this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+		this.blit(poseStack, this.x, this.y, textureX, textureY, this.width, this.height);
 		
 		if(isEngaged())
 		{
 			RenderSystem.setShaderTexture(0, overlay);
 			RenderSystem.setShaderColor(engagedColor.red(), engagedColor.green(), engagedColor.blue(), engagedColor.alpha());
-			this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			this.blit(poseStack, this.x, this.y, textureX, textureY, this.width, this.height);
 		}
 		else if(this.isHoveredOrFocused())
 		{
 			RenderSystem.setShaderTexture(0, overlay);
 			RenderSystem.setShaderColor(hoverColor.red(), hoverColor.green(), hoverColor.blue(), hoverColor.alpha());
-			this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			this.blit(poseStack, this.x, this.y, textureX, textureY, this.width, this.height);
 		}
 		
 		this.renderBg(poseStack, minecraft, mouseX, mouseY);
@@ -179,6 +177,10 @@ public abstract class DHDSymbolButton extends DHDButton
 			renderNumber(poseStack, minecraft);
 		else
 			renderSymbol(poseStack);
+		
+		Screen screen = minecraft.screen;
+		if(screen != null && isHovered)
+			screen.renderTooltip(poseStack, tooltip, mouseX, mouseY);
 	}
 	
     private static Component symbolComponent(int index)

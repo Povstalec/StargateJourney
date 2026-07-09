@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
@@ -22,7 +21,7 @@ public class MilkyWayDHDSymbolButton extends GenericDHDSymbolButton
 		
 		this.canonSymbol = canonSymbol;
 		
-		setTooltip(Tooltip.create(symbolComponent()));
+		setTooltip(symbolComponent());
 	}
 	
 	public MilkyWayDHDSymbolButton(int x, int y, MilkyWayDHDMenu menu, int screenWidth, int screenHeight, int symbol, int canonSymbol, DefaultButton defaultButton)

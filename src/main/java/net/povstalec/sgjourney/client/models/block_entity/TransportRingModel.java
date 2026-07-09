@@ -2,7 +2,9 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import com.mojang.blaze3d.vertex.*;
 
-import com.mojang.math.Axis;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -12,8 +14,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 public class TransportRingModel<TransportRingsEntity extends AbstractTransportRingsEntity<?>>
 {
@@ -296,7 +296,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 		{
 			// Ring Segment
 			stack.pushPose();
-			stack.mulPose(Axis.YP.rotationDegrees(i * angle));
+			stack.mulPose(Vector3f.YP.rotationDegrees(i * angle));
 			matrix4 = stack.last().pose();
 			matrix3 = stack.last().normal();
 			renderRingSegment(ringTexture, matrix4, matrix3, combinedLight);
@@ -305,7 +305,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 			
 			// Divider
 			stack.pushPose();
-			stack.mulPose(Axis.YP.rotationDegrees(i * angle - angle / 2F));
+			stack.mulPose(Vector3f.YP.rotationDegrees(i * angle - angle / 2F));
 			matrix4 = stack.last().pose();
 			matrix3 = stack.last().normal();
 			renderDivider(ringTexture, matrix4, matrix3, combinedLight);

@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.widgets;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -42,7 +41,7 @@ public class RingPanelButton extends SGJourneyButton
 	public void onButtonUpdate()
 	{
 		this.active = this.button.enabled();
-		this.setTooltip(Tooltip.create(componentFromButton(this.button)));
+		this.setTooltip(componentFromButton(this.button));
 	}
 	
 	@Override

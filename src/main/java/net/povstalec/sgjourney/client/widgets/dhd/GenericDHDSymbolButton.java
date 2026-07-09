@@ -193,7 +193,6 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	@Override
 	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
 	{
-		super.render(poseStack, mouseX, mouseY, partialTick);
 		if(this.visible)
 		{
 			updateRemapping();
@@ -213,10 +212,10 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			{
 				
 				if(isEngaged())
-					renderPointOfOrigin(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderPointOfOrigin(poseStack.last().pose(), this.x + this.xCenter, this.y + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, pointOfOrigin, this.engagedColor);
 				else
-					renderPointOfOrigin(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderPointOfOrigin(poseStack.last().pose(), this.x + this.xCenter, this.y + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, pointOfOrigin, this.disengagedColor);
 			}
 		}
@@ -226,10 +225,10 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			if(symbols != null)
 			{
 				if(isEngaged())
-					renderSymbol(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderSymbol(poseStack.last().pose(), this.x + this.xCenter, this.y + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, symbols, getSymbol(), this.engagedColor);
 				else
-					renderSymbol(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderSymbol(poseStack.last().pose(), this.x + this.xCenter, this.y + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, symbols, getSymbol(), this.disengagedColor);
 			}
 		}

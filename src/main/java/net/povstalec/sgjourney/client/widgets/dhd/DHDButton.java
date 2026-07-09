@@ -6,12 +6,14 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
 
-public class DHDButton extends Button
+public class DHDButton extends SGJourneyButton
 {
-	public DHDButton(int x, int y, int width, int height, Component component, Button.OnPress onPress)
+	public DHDButton(ResourceLocation texture, int x, int y, int width, int height, Component component, OnPress onPress)
 	{
-		super(x, y, width, height, component, onPress, Button.DEFAULT_NARRATION);
+		super(texture, x, y, width, height, component, Component.empty(), onPress);
 	}
 	
 	@Override
@@ -38,7 +40,7 @@ public class DHDButton extends Button
 	
 	public void updateTooltip()
 	{
-		if(this.tooltip != null)
+		/*if(this.tooltip != null)
 		{
 			boolean isHoveredOrFocused = this.isHoveredOrFocused();
 			if(isHoveredOrFocused != this.wasHoveredOrFocused)
@@ -56,7 +58,7 @@ public class DHDButton extends Button
 					screen.setTooltipForNextRenderPass(this.tooltip, this.createTooltipPositioner(), this.isFocused());
 				}
 			}
-		}
+		}*/
 		
 	}
 }

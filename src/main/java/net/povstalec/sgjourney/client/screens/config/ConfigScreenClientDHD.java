@@ -47,9 +47,8 @@ public class ConfigScreenClientDHD extends Screen
 		
 		this.addRenderableWidget(configList);
 
-		this.addRenderableWidget(Button.builder(CommonComponents.GUI_BACK, 
-				(button) -> this.minecraft.setScreen(this.parentScreen))
-				.bounds((this.width - BACK_BUTTON_WIDTH) / 2, this.height - BACK_BUTTON_TOP_OFFSET, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT).build());
+		this.addRenderableWidget(new Button((this.width - BACK_BUTTON_WIDTH) / 2, this.height - BACK_BUTTON_TOP_OFFSET, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, CommonComponents.GUI_BACK,
+				(button) -> this.minecraft.setScreen(this.parentScreen)));
     }
 	
 	@Override

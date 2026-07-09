@@ -282,4 +282,9 @@ public class CoordinateHelper
 	{
 		return new Vec3(tag.getDouble(X), tag.getDouble(Y), tag.getDouble(Z));
 	}
+	
+	public static Vec3 blockPosCenter(BlockPos pos)
+	{
+		return new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+	}
 }

@@ -2,20 +2,20 @@ package net.povstalec.sgjourney.client.models.block;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.ChunkRenderTypeSet;
 import net.minecraftforge.client.RenderTypeGroup;
+import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +41,24 @@ public abstract class SymbolBakedModel extends SimpleBakedModel
 		if(!list.contains(RenderType.translucent()))
 			list.add(RenderType.translucent()); // Adding translucent render type in order to render the symbol overlay
 		this.chunkRenderTypeSet = ChunkRenderTypeSet.of(list);
+	}
+	
+	public static int toABGR(int argb)
+	{
+		return (argb & 0xFF00FF00) | ((argb >> 16) & 0x000000FF) | ((argb << 16) & 0x00FF0000);
+	}
+	
+	public static IQuadTransformer applyColorToQuad(int color)
+	{
+		final int fixedColor = toABGR(color);
+		return quad ->
+		{
+			int[] vertices = quad.getVertices();
+			for(int i = 0; i < 4; i++)
+			{
+				vertices[i * IQuadTransformer.STRIDE + IQuadTransformer.COLOR] = fixedColor;
+			}
+		};
 	}
 	
 	@Override

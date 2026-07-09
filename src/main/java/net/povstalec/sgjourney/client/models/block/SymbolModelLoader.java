@@ -8,7 +8,7 @@ import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -75,13 +75,13 @@ public abstract class SymbolModelLoader<T extends IUnbakedGeometry<T>> implement
 													   RenderTypeGroup renderTypes, int symbolTint);
 		
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext context, ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			TextureAtlasSprite particle = spriteGetter.apply(context.getMaterial("particle"));
 			
 			ResourceLocation renderTypeHint = context.getRenderTypeHint();
 			RenderTypeGroup renderTypes = renderTypeHint != null ? context.getRenderType(renderTypeHint) : RenderTypeGroup.EMPTY;
-			IModelBuilder<?> builder = getBuilder(context.useAmbientOcclusion(), context.useBlockLight(), context.isGui3d(),
+			IModelBuilder<?> builder = getBuilder(false/*Disabled ambient occlusion because the game insisted on making quads larger than 10x10 dark*/, context.useBlockLight(), context.isGui3d(),
 					context.getTransforms(), overrides, particle, renderTypes, symbolTint);
 			
 			addQuads(context, builder, baker, spriteGetter, modelState, modelLocation);
@@ -90,7 +90,7 @@ public abstract class SymbolModelLoader<T extends IUnbakedGeometry<T>> implement
 		}
 		
 		@Override
-		protected void addQuads(IGeometryBakingContext context, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation)
+		protected void addQuads(IGeometryBakingContext context, IModelBuilder<?> modelBuilder, ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation)
 		{
 			// If there is a root transform, undo the ModelState transform, apply it, then re-apply the ModelState transform.
 			// This is necessary because of things like UV locking, which should only respond to the ModelState, and as such

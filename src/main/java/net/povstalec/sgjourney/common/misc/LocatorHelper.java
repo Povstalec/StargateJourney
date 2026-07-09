@@ -288,7 +288,7 @@ public class LocatorHelper
 	
 	public static List<Transporter> findNearestTransportersInDimension(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
 	{
-		return findNearestTransportersInDimension(level, centerPos.getCenter(), maxDistance, filter);
+		return findNearestTransportersInDimension(level, CoordinateHelper.blockPosCenter(centerPos), maxDistance, filter);
 	}
 	
 	public static List<Transporter> findNearestTransportersInRegion(ServerLevel level, Vec3 centerPos, double maxDistance, Predicate<Transporter> filter)
@@ -304,6 +304,6 @@ public class LocatorHelper
 	
 	public static List<Transporter> findNearestTransportersInRegion(ServerLevel level, BlockPos centerPos, double maxDistance, Predicate<Transporter> filter)
 	{
-		return findNearestTransportersInRegion(level, centerPos.getCenter(), maxDistance, filter);
+		return findNearestTransportersInRegion(level, CoordinateHelper.blockPosCenter(centerPos), maxDistance, filter);
 	}
 }

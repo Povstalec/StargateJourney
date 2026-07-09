@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -83,7 +84,7 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	@Override
 	default @Nullable Vec3 getPosition()
 	{
-		return getBlockPos().getCenter();
+		return CoordinateHelper.blockPosCenter(getBlockPos());
 	}
 	
 	
@@ -92,7 +93,7 @@ public interface BlockEntityTransporter<TransporterEntity extends AbstractTransp
 	@Nullable
 	default Vec3 transportPos()
 	{
-		return transporterReturn(getServer(), transporter -> transporter.transportPos().getCenter(), null);
+		return transporterReturn(getServer(), transporter -> CoordinateHelper.blockPosCenter(transporter.transportPos()), null);
 	}
 	
 	@Override

@@ -39,7 +39,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		if(state.getValue(EXCITEMENT) < MAX_EXCITEMENT)
 			level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) + 1), 3);
 		else
-			level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.BLOCK);
+			level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Explosion.BlockInteraction.BREAK);
 	}
 	
 	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)

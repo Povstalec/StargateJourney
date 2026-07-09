@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.client.models.block;
 
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -11,7 +12,6 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.ForgeFaceData;
 import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
@@ -23,7 +23,6 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 import java.util.List;
 import java.util.Map;
@@ -52,17 +51,19 @@ public class CartoucheBakedModel extends SymbolBakedModel
 		
 		float[] uvs = divideSymbol ? (half == DoubleBlockHalf.UPPER ? new float[]{0, 0, 16, 8} : new float[]{0, 8, 16, 16}) : new float[]{0, 0, 16, 16};
 		
-		return switch(orientation)
+		BakedQuad quad = switch(orientation)
 		{
-			case UPWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 16 + SYMBOL_OFFSET, minY), new Vector3f(maxX, 16 + SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(uvs, 180),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction, 180), true, ID);
+			case UPWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 16 + SYMBOL_OFFSET, minY), new Vector3f(maxX, 16 + SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(uvs, 180)/*,
+					new ForgeFaceData(symbolTint, 0, 0, true)*/), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction, 180), true, ID);
 			
-			case DOWNWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 0 - SYMBOL_OFFSET, minY), new Vector3f(maxX, 0 - SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(uvs, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true, ID);
+			case DOWNWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 0 - SYMBOL_OFFSET, minY), new Vector3f(maxX, 0 - SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(uvs, 0)/*,
+					new ForgeFaceData(symbolTint, 0, 0, true)*/), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true, ID);
 			
-			default -> FACE_BAKERY.bakeQuad(new Vector3f(minX, minY, 16 + SYMBOL_OFFSET), new Vector3f(maxX, maxY, 16 + SYMBOL_OFFSET), new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(uvs, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
+			default -> FACE_BAKERY.bakeQuad(new Vector3f(minX, minY, 16 + SYMBOL_OFFSET), new Vector3f(maxX, maxY, 16 + SYMBOL_OFFSET), new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(uvs, 0)/*,
+					new ForgeFaceData(symbolTint, 0, 0, true)*/), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
 		};
+		applyColorToQuad(symbolTint).processInPlace(quad);
+		return quad;
 	}
 	
 	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)

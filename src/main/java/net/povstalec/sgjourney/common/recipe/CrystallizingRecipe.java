@@ -16,7 +16,9 @@ import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidContainer>
 {
@@ -34,9 +36,9 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		this.ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
 		this.amounts = new int[ingredients.size()];
 		
-		Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").asMap());
-		Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").asMap());
-		Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").asMap());
+		Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").entrySet());
+		Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").entrySet());
+		Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").entrySet());
 		
 		this.ingredients.set(0, crystalBase.getFirst());
 		this.amounts[0] = crystalBase.getSecond();
@@ -153,16 +155,22 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		return output.copy();
 	}
 	
-	public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
+	public static Pair<Ingredient, Integer> getIngredient(Set<Map.Entry<String, JsonElement>> set)
 	{
-		JsonElement item = pair.get("item");
+		Map<String, JsonElement> mapFromSet = new HashMap<String, JsonElement>();
+		for(Map.Entry<String, JsonElement> entry : set)
+		{
+			mapFromSet.put(entry.getKey(), entry.getValue());
+		}
+		
+		JsonElement item = mapFromSet.get("item");
 		JsonObject json = new JsonObject();
 		json.add("item", item);
 		
 		Ingredient ingredient = Ingredient.fromJson(json);
-		int amount = pair.get("amount").getAsInt();
+		int amount = mapFromSet.get("amount").getAsInt();
 		
-		return new Pair<>(ingredient, amount);
+		return new Pair<Ingredient, Integer>(ingredient, amount);
 	}
 	
 	@Override

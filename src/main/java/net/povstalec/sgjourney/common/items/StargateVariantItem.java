@@ -1,15 +1,8 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.povstalec.sgjourney.common.misc.RecipeUtil;
-import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;

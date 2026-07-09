@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.misc;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -99,10 +98,10 @@ public class RemappingHelper
 	
 	public static void startRemapping(MissingMappingsEvent event)
 	{
-		remapItems(event.getMappings(Registries.ITEM, StargateJourney.MODID));
-		remapBlocks(event.getMappings(Registries.BLOCK, StargateJourney.MODID));
+		remapItems(event.getMappings(ForgeRegistries.ITEMS.getRegistryKey(), StargateJourney.MODID));
+		remapBlocks(event.getMappings(ForgeRegistries.BLOCKS.getRegistryKey(), StargateJourney.MODID));
 		// For some reason, the Forge snapshot doesn't have an entry for minecraft:block_entity_type, so this straight up just doesn't fire, how amazing
-		remapBlockEntities(event.getMappings(Registries.BLOCK_ENTITY_TYPE, StargateJourney.MODID));
+		remapBlockEntities(event.getMappings(ForgeRegistries.BLOCK_ENTITY_TYPES.getRegistryKey(), StargateJourney.MODID));
 	}
 	
 	public static void setupRemapping()
