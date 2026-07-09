@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.packets;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import net.minecraft.core.BlockPos;
@@ -9,27 +10,25 @@ import net.povstalec.sgjourney.client.ClientAccess;
 
 public class ClientboundDialerOpenScreenPacket
 {
-    public final BlockPos pos;
-
-    public ClientboundDialerOpenScreenPacket(BlockPos pos)
-    {
-        this.pos = pos;
-    }
+    public ClientboundDialerOpenScreenPacket()
+	{
+		//TODO
+	}
 
     public ClientboundDialerOpenScreenPacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readBlockPos());
+		//TODO
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
-        buffer.writeBlockPos(this.pos);
+       //TODO
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateDialer(pos);
+        	ClientAccess.updateDialer();
         });
         return true;
     }

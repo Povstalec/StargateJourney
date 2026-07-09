@@ -1,9 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.Map;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -20,14 +18,10 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -39,15 +33,16 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy.Serializable;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 public class CommandInit
@@ -71,223 +66,200 @@ public class CommandInit
 		// Stargate Network Commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("address")
+						.then(Commands.literal("address").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getAddress))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getAddress)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("extragalacticAddress")
+						.then(Commands.literal("extragalacticAddress").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getExtragalacticAddress))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getExtragalacticAddress)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("getAllStargates")
+						.then(Commands.literal("getAllStargates").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getStargates))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getStargates)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("primaryStargate")
-								.then(Commands.argument("dimension", DimensionArgument.dimension())
+						.then(Commands.literal("version").requires(commandSourceStack -> commandSourceStack.hasPermission(0))
+								.executes(CommandInit::getStargateNetworkVersion))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("forceStellarUpdate").requires(commandSourceStack -> commandSourceStack.hasPermission(CommonPermissionConfig.stellar_update_permissions.get()))
+								.executes(CommandInit::forceStellarUpdate))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("get").requires(commandSourceStack -> commandSourceStack.hasPermission(0))
+										.executes(CommandInit::getSettings)))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("randomizeAddresses").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 										.then(Commands.literal("set")
-												.then(Commands.argument("address", new AddressArgumentType(Address.Type.ADDRESS_9_CHEVRON))
-											.executes(CommandInit::setPrimaryStargate))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("primaryStargate")
-								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.then(Commands.literal("unset")
-														.executes(CommandInit::unsetPrimaryStargate)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("primaryStargate")
-								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.then(Commands.literal("get")
-												.executes(CommandInit::getPrimaryStargate)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("version")
-								.executes(CommandInit::getVersion)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(0)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("forceStellarUpdate")
-								.executes(CommandInit::forceStellarUpdate)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+												.then(Commands.argument("randomizeAddresses", BoolArgumentType.bool())
+														.executes(CommandInit::randomizeAddresses)))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("settings")
-								.then(Commands.literal("get")
-										.executes(CommandInit::getSettings))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(0)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("settings")
-								.then(Commands.literal("set")
-										.then(Commands.literal("useDatapackAddresses")
-												.then(Commands.argument("useDatapackAddresses", BoolArgumentType.bool())
-														.executes(CommandInit::useDatapackAddresses))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
-		
-		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(STARGATE_NETWORK)
-						.then(Commands.literal("settings")
-								.then(Commands.literal("set")
-										.then(Commands.literal("generateRandomSolarSystems")
+								.then(Commands.literal("generateRandomSolarSystems").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("set")
 												.then(Commands.argument("generateRandomSolarSystems", BoolArgumentType.bool())
-														.executes(CommandInit::generateRandomSolarSystems))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::generateRandomSolarSystems)))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("settings")
-								.then(Commands.literal("set")
-										.then(Commands.literal("randomAddressFromSeed")
+								.then(Commands.literal("randomAddressFromSeed").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("set")
 												.then(Commands.argument("randomAddressFromSeed", BoolArgumentType.bool())
-														.executes(CommandInit::randomAddressFromSeed))))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+														.executes(CommandInit::randomAddressFromSeed)))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("primaryStargatePriority").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("set")
+												.then(Commands.argument("prioritizePrimaryStargates", BoolArgumentType.bool())
+														.executes(CommandInit::prioritizePrimaryStargate)))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("primaryStargate").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("set")
+												.then(Commands.argument("dimension", DimensionArgument.dimension())
+														.then(Commands.argument("address", new AddressArgumentType(Address.Type.ADDRESS_9_CHEVRON))
+																.executes(CommandInit::setPrimaryStargate))))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("primaryStargate").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("unset")
+												.then(Commands.argument("dimension", DimensionArgument.dimension())
+														.executes(CommandInit::unsetPrimaryStargate)))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(STARGATE_NETWORK)
+						.then(Commands.literal("settings")
+								.then(Commands.literal("primaryStargate").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+										.then(Commands.literal("get")
+												.then(Commands.argument("dimension", DimensionArgument.dimension())
+														.executes(CommandInit::getPrimaryStargate)))))));
 		
 		
 		
-		// Rings Network Commands
+		// Transporter Network Commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(TRANSPORTER_NETWORK)
-						.then(Commands.literal("getAllTransporters")
+						.then(Commands.literal("getAllTransporters").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 								.then(Commands.argument("dimension", DimensionArgument.dimension())
-										.executes(CommandInit::getTransporters))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::getTransporters)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(TRANSPORTER_NETWORK)
-						.then(Commands.literal("reload")
-								.executes(CommandInit::reloadTransporterNetwork)))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+						.then(Commands.literal("reload").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+								.executes(CommandInit::reloadTransporterNetwork))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+				.then(Commands.literal(TRANSPORTER_NETWORK)
+						.then(Commands.literal("version").requires(commandSourceStack -> commandSourceStack.hasPermission(0))
+								.executes(CommandInit::getTransportereNetworkVersion))));
 		
 		
 		
 		//Gene commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(GENE)
+				.then(Commands.literal(GENE).requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("ancient").executes(CommandInit::setAncientGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("ancient").executes(CommandInit::setAncientGene))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(GENE)
+				.then(Commands.literal(GENE).requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("inherited").executes(CommandInit::setInheritedGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("inherited").executes(CommandInit::setInheritedGene))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(GENE)
+				.then(Commands.literal(GENE).requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.argument("target", EntityArgument.entity())
 								.then(Commands.literal("add")
-										.then(Commands.literal("artificial").executes(CommandInit::setArtificialGene)))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.then(Commands.literal("artificial").executes(CommandInit::setArtificialGene))))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal(GENE)
+				.then(Commands.literal(GENE).requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.argument("target", EntityArgument.entity())
-								.then(Commands.literal("remove").executes(CommandInit::removeGene))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+								.then(Commands.literal("remove").executes(CommandInit::removeGene)))));
 		
 		
 		
 		//Protection commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("protection")
+				.then(Commands.literal("protection").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.literal("set")
 								.then(Commands.argument("pos", BlockPosArgument.blockPos())
-										.executes(CommandInit::setProtected))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::setProtected)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("protection")
+				.then(Commands.literal("protection").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
 						.then(Commands.literal("unset")
 								.then(Commands.argument("pos", BlockPosArgument.blockPos())
-										.executes(CommandInit::unsetProtected))))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+										.executes(CommandInit::unsetProtected)))));
 		
 		
 		
 		//Dev commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
-				.then(Commands.literal("debugInfo").executes(CommandInit::printStargateNetworkInfo))
-				.requires(commandSourceStack -> commandSourceStack.hasPermission(2)));
+				.then(Commands.literal("debugInfo").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+						.executes(CommandInit::printStargateNetworkInfo)));
+	}
+	
+	private static Component dimensionComponent(ResourceKey<Level> dimension)
+	{
+		return Component.literal(dimension.location().toString()).withStyle(ChatFormatting.GREEN);
 	}
 	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
+	{try{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
-		ServerPlayer player = context.getSource().getPlayer();
+		Level level = context.getSource().getLevel();
+		ResourceKey<Level> currentDimension = level.dimension();
 		
-		if(player == null || dimension == null)
+		Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyMap = Universe.get(level).getGalaxiesFromDimension(currentDimension);
+		if(galaxyMap == null || galaxyMap.isEmpty())
 		{
-			//TODO For each galaxy
-			
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
 			return Command.SINGLE_SUCCESS;
 		}
 		
-		Level level = player.getLevel();
-		
-		ResourceKey<Level> currentDimension = level.dimension();
-		
-		// List of Galaxies the dialing Dimension is located in
-		HashMap<Serializable, Address.Immutable> galaxyMap = Universe.get(level).getGalaxiesFromDimension(currentDimension);
-		
-		if(galaxyMap != null)
+		Universe universe = Universe.get(level);
+		for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyEntry : galaxyMap.entrySet())
 		{
-			List<Entry<Serializable, Address.Immutable>> galaxies = galaxyMap.entrySet().stream().toList();
-
-			if(!galaxies.isEmpty())
+			Galaxy galaxy = universe.getGalaxy(galaxyEntry.getKey());
+			if(galaxy != null)
 			{
-				// Creates a chat message for each galaxy the Dimension is located in
-				for(int i = 0; i < galaxies.size(); i++)
-				{
-					Entry<Serializable, Address.Immutable> galaxyEntry = galaxies.get(i);
-					Galaxy.Serializable galaxy = galaxyEntry.getKey();
-					
-					Address.Immutable address = Universe.get(level).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
-					
-					if(address == null)
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)
-								.append(Component.translatable("message.sgjourney.command.get_address.located").withStyle(ChatFormatting.WHITE))
-								.append(Component.literal(" ").append(galaxy.getTranslationName()).withStyle(ChatFormatting.LIGHT_PURPLE)));
-					else
-					{
-						context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address")
-								.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN)).append(Component.translatable("message.sgjourney.command.get_address.in_galaxy"))
-								.append(Component.literal(" ").append(galaxy.getTranslationName()).append(Component.literal(" ")).withStyle(ChatFormatting.LIGHT_PURPLE))
-								.append(Component.translatable("message.sgjourney.command.get_address.is")));
-						
-						Style style = Style.EMPTY;
-						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-						context.getSource().getPlayer().sendSystemMessage(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.GOLD)));
-					}
-				}
-				return Command.SINGLE_SUCCESS;
+				Address.Immutable address = universe.getAddressInGalaxyFromDimension(galaxy.getResourceKey(), dimension);
+				
+				if(address == null)
+					context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_address", dimensionComponent(dimension), galaxy.toComponent()).withStyle(ChatFormatting.DARK_RED));
+				else
+					context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address", dimensionComponent(dimension), galaxy.toComponent(), address.toComponent(true)));
 			}
 		}
-		
-		context.getSource().getPlayer().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.no_galaxy").withStyle(ChatFormatting.DARK_RED));
+	}catch(Exception e)
+	{
+		e.printStackTrace();
+	}
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -295,22 +267,14 @@ public class CommandInit
 	private static int getExtragalacticAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 		
-		if(address != null)
-		{
-			Style style = Style.EMPTY;
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, address.toString()));
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.address")
-					.append(Component.literal(" " + dimension.location().toString() + " ").withStyle(ChatFormatting.GREEN))
-					.append(Component.translatable("message.sgjourney.command.get_extragalactic_address.is")), false);
-			context.getSource().sendSuccess(Component.literal(address.toString()).setStyle(style.applyFormat(ChatFormatting.LIGHT_PURPLE)), false);
-		}
+		if(address == null)
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none", dimensionComponent(dimension)), false);
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none").withStyle(ChatFormatting.DARK_RED), false);
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address", dimensionComponent(dimension), address.toComponent(true)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -318,102 +282,34 @@ public class CommandInit
 	private static int getStargates(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
+		Level level = context.getSource().getLevel();
 		
-		if(solarSystem != null)
+		List<Stargate> stargates = StargateNetwork.get(level).getStargatesInDimension(dimension);
+		
+		if(!stargates.isEmpty())
 		{
-			if(!solarSystem.getStargates().isEmpty())
-			{
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates")
-						.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
-				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
-				
-				solarSystem.getStargates().stream().forEach(stargate ->
-				{
-					ResourceKey<Level> stargateDimension = stargate.getDimension();
-					Vec3 stargatePos = stargate.getPosition(context.getSource().getServer());
-					
-					if(dimension.equals(stargateDimension) && stargatePos != null)
-					{
-						
-						Style style = Style.EMPTY;
-						style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-						style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, stargate.get9ChevronAddress().toString()));
-						context.getSource().sendSuccess(Component.literal(stargate.get9ChevronAddress().toString()).setStyle(style.applyFormat(ChatFormatting.AQUA))
-								.append(Component.literal(" X: " + stargatePos.x() + " Y: " + stargatePos.y() + " Z: " + stargatePos.z()).withStyle(ChatFormatting.BLUE)), false);
-					}
-				});
-				context.getSource().sendSuccess(Component.literal("-------------------------"), false);
-				
-				return Command.SINGLE_SUCCESS;
-			}
-		}
-		
-		context.getSource().getPlayer().sendSystemMessage(Component.literal("No Stargates could be located in " + dimension.location().toString()).withStyle(ChatFormatting.RED));
-		
-		return Command.SINGLE_SUCCESS;
-	}
-	
-	private static int setPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
-		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
-		
-		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
-		
-		if(solarSystem != null)
-		{
-			solarSystem.setPrimaryStargate(address);
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_set").withStyle(ChatFormatting.DARK_GREEN), true);
-			return Command.SINGLE_SUCCESS;
-		}
-		
-		return Command.SINGLE_SUCCESS;
-	}
-	
-	private static int unsetPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
-		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		
-		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
-		
-		if(solarSystem != null)
-		{
-			solarSystem.setPrimaryStargate(null);
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_unset").withStyle(ChatFormatting.GREEN), true);
-			return Command.SINGLE_SUCCESS;
-		}
-		
-		return Command.SINGLE_SUCCESS;
-	}
-	
-	private static int getPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{
-		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		
-		Level level = context.getSource().getPlayer().getLevel();
-		SolarSystem.Serializable solarSystem = Universe.get(level).getSolarSystemFromDimension(dimension);
-		
-		if(solarSystem != null)
-		{
-			Address.Immutable address = solarSystem.primaryAddress();
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates.stargates", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 			
-			if(address != null)
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.AQUA), true);
-			else
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_none").withStyle(ChatFormatting.RED), true);
-			return Command.SINGLE_SUCCESS;
+			stargates.forEach(stargate ->
+			{
+				ResourceKey<Level> stargateDimension = stargate.getDimension();
+				Vec3 stargatePos = stargate.getPosition();
+				
+				if(dimension.equals(stargateDimension) && stargatePos != null)
+					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(" ").append(ComponentHelper.coordinate(stargatePos)), false);
+			});
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}
+		else
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates.no_stargates", dimensionComponent(dimension)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int getVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	private static int getStargateNetworkVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
@@ -423,9 +319,9 @@ public class CommandInit
 	
 	private static int forceStellarUpdate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
-		StargateNetwork.get(level).stellarUpdate(level.getServer(), true);
+		StargateNetwork.get(level).stellarUpdate();
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
@@ -435,24 +331,26 @@ public class CommandInit
 	
 	private static int getSettings(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		
-		boolean useDatapackAddresses = StargateNetworkSettings.get(level).useDatapackAddresses();
-		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomSolarSystems();
+		boolean randomizeAddresses = StargateNetworkSettings.get(level).randomizeAddresses();
+		boolean generateRandomSolarSystems = StargateNetworkSettings.get(level).generateRandomAddressRegions();
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
+		boolean primaryStargatePriority = StargateNetworkSettings.get(level).prioritizePrimaryStargates();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.use_datapack_addresses").append(Component.literal(": " + useDatapackAddresses)).withStyle(ChatFormatting.GOLD), false);
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(Component.literal(": " + generateRandomSolarSystems)).withStyle(ChatFormatting.GOLD), false);
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(Component.literal(": " + randomAddressFromSeed)).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.randomize_addresses").append(": " + randomizeAddresses).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(": " + generateRandomSolarSystems).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(": " + randomAddressFromSeed).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.primary_stargate_priority").append(": " + primaryStargatePriority).withStyle(ChatFormatting.GOLD), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	private static int useDatapackAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	private static int randomizeAddresses(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
-		boolean setting = BoolArgumentType.getBool(context, "useDatapackAddresses");
+		Level level = context.getSource().getLevel();
+		boolean setting = BoolArgumentType.getBool(context, "randomizeAddresses");
 		
-		StargateNetworkSettings.get(level).setUseDatapackAddresses(setting);
+		StargateNetworkSettings.get(level).setRandomizeAddresses(setting);
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
@@ -460,10 +358,10 @@ public class CommandInit
 	
 	private static int generateRandomSolarSystems(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		boolean setting = BoolArgumentType.getBool(context, "generateRandomSolarSystems");
 		
-		StargateNetworkSettings.get(level).setGenerateRandomSolarSystems(setting);
+		StargateNetworkSettings.get(level).setGenerateRandomAddressRegions(setting);
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
@@ -471,7 +369,7 @@ public class CommandInit
 	
 	private static int randomAddressFromSeed(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().level;
+		Level level = context.getSource().getLevel();
 		boolean setting = BoolArgumentType.getBool(context, "randomAddressFromSeed");
 		
 		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
@@ -480,39 +378,102 @@ public class CommandInit
 		return Command.SINGLE_SUCCESS;
 	}
 	
+	private static int prioritizePrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getLevel();
+		boolean prioritize = BoolArgumentType.getBool(context, "prioritizePrimaryStargates");
+		
+		StargateNetworkSettings.get(level).setPrioritizePrimaryStargates(prioritize);
+		
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int setPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
+		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
+		
+		Level level = context.getSource().getLevel();
+		
+		if(StargateNetwork.get(level).setPrimaryAddressForDimension(dimension, address))
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_set").withStyle(ChatFormatting.DARK_GREEN), true);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int unsetPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
+		
+		Level level = context.getSource().getLevel();
+		
+		if(StargateNetwork.get(level).setPrimaryAddressForDimension(dimension, null))
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_unset").withStyle(ChatFormatting.GREEN), true);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int getPrimaryStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
+		
+		Level level = context.getSource().getLevel();
+		
+		Address.Immutable address = StargateNetwork.get(level).getPrimaryAddressFromDimension(dimension);
+		if(address != null)
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.AQUA), true);
+		else
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_none").withStyle(ChatFormatting.RED), true);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
 	
 	
 	private static int getTransporters(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
-		Level level = context.getSource().getPlayer().getLevel();
-
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters")
-				.append(Component.literal(" " + dimension.location().toString()).withStyle(ChatFormatting.GOLD)), false);
-		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+		Level level = context.getSource().getLevel();
 		
-		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersFromDimension(dimension);
+		List<Transporter> transporters = TransporterNetwork.get(level).getTransportersInDimension(dimension);
 		
-		if(transporters != null)
+		if(!transporters.isEmpty())
 		{
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters.transporters", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			
 			for(Transporter transporter : transporters)
 			{
-				BlockPos coords = transporter.getBlockPos();
-				context.getSource().sendSuccess(Component.literal("X: " + coords.getX() + " Y: " + coords.getY() + " Z: " + coords.getZ()).withStyle(ChatFormatting.BLUE), false);
+				Vec3 coords = transporter.getPosition();
+				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(" ").append(ComponentHelper.coordinate(coords)), false);
 			}
+			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
 		}
-		context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+		else
+			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_transporters.no_transporters", dimensionComponent(dimension)));
 		
 		return Command.SINGLE_SUCCESS;
 	}
 	
 	private static int reloadTransporterNetwork(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
-		Level level = context.getSource().getPlayer().getLevel();
+		Level level = context.getSource().getLevel();
 		
-		TransporterNetwork.get(level).reloadNetwork(level.getServer(), true);
+		TransporterNetwork.get(level).reloadNetwork();
 		
 		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED), true);
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int getTransportereNetworkVersion(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getLevel();
+		
+		int version = TransporterNetwork.get(level).getVersion();
+		
+		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -520,7 +481,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ANCIENT));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -529,7 +490,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.inheritGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.INHERITED));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -538,7 +499,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.implantGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ARTIFICIAL));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -547,7 +508,7 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.removeGene());
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.NONE));
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -604,12 +565,13 @@ public class CommandInit
 		MinecraftServer server = context.getSource().getServer();
 
 		System.out.println("===============Universe===============");
-		Universe.get(server).printDimensions();
-		Universe.get(server).printSolarSystems();
+		SpaceLocation.printSpaceLocations();
+		Universe.get(server).printAddressRegions();
 		Universe.get(server).printGalaxies();
 		
 		System.out.println("===============Stargate Network===============");
 		BlockEntityList.get(server).printStargates();
+		StargateNetwork.get(server).printRegionStargates();
 		StargateNetwork.get(server).printConnections();
 
 		System.out.println("===============Transporter Network===============");

@@ -1,9 +1,28 @@
 {
-	"parent": "minecraft:block/cube_bottom_top",
+	"parent": "block/block",
+	"loader": "sgjourney:symbol_block_loader",
+	"symbol_tint": -3756431,
+	"render_type": "solid",
 	"textures":
 	{
-		"bottom": "minecraft:block/sandstone_top",
 		"side": "minecraft:block/sandstone_top",
-		"top": "sgjourney:block/sandstone_symbol"
-	}
+		"front": "sgjourney:block/sandstone_symbol",
+        "particle": "minecraft:block/sandstone_top"
+	},
+	"elements":
+	[
+		{  
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces":
+			{
+				"down":  { "texture": "#side", "cullface": "down" },
+				"up":    { "texture": "#side", "cullface": "up" },
+				"north": { "texture": "#front", "cullface": "north" },
+				"south": { "texture": "#side", "cullface": "south" },
+				"west":  { "texture": "#side", "cullface": "west" },
+				"east":  { "texture": "#side", "cullface": "east" }
+			}
+		}
+	]
 }

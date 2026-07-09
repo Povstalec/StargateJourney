@@ -58,6 +58,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		{
 			BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			
+			dropStargateItem(level, pos, oldState, null);
 			destroyStargate(level, baseBlockPos, getParts(false), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
@@ -65,11 +66,11 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
     }
 	
 	@Override
-	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
 		
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof AbstractStargateEntity<?> stargate)
 			return stargate;
 		
 		return null;

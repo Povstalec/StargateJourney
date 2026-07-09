@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.centauri",
-	"texture": "sgjourney:milky_way/points_of_origin/centauri.png"
+	"client_point_of_origin": "sgjourney:centauri"
 }

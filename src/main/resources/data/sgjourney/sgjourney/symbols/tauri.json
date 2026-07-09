@@ -1,6 +1,3 @@
 {
-	"name": "symbols.sgjourney.tauri",
-	"symbol_set": "sgjourney:galaxy_milky_way",
-	"texture": "sgjourney:milky_way/tauri.png",
-	"size": 38
+	"client_symbols": "sgjourney:tauri"
 }

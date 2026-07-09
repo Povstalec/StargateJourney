@@ -5,6 +5,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.povstalec.sgjourney.common.entities.Anthropoid;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class NearestThreatGoal<T extends LivingEntity> extends NearestAttackableTargetGoal<T>
 {
@@ -15,7 +16,7 @@ public class NearestThreatGoal<T extends LivingEntity> extends NearestAttackable
 	
 	public static boolean isHoldingWeapon(LivingEntity entity)
 	{
-		return Anthropoid.isWeapon(entity.getItemInHand(InteractionHand.MAIN_HAND).getItem()) ||
-				Anthropoid.isWeapon(entity.getItemInHand(InteractionHand.OFF_HAND).getItem());
+		return InventoryUtil.isWeapon(entity.getItemInHand(InteractionHand.MAIN_HAND).getItem()) ||
+				InventoryUtil.isWeapon(entity.getItemInHand(InteractionHand.OFF_HAND).getItem());
 	}
 }

@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "redstone",
+	"pattern":
+	[
+		" N ",
+		"NRN",
+		" N "
+	],
+	
+	"key": 
+	{
+		"R": { "item": "minecraft:redstone_lamp" },
+		"N": { "item": "sgjourney:weathered_polished_naquadah_copper_block" }
+		
+	},
+	
+	"result": { "item": "sgjourney:weathered_naquadah_copper_lamp", "count": 4 }
+}

@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key":
+	{
+		"#": { "item": "minecraft:stick" },
+		"X": { "tag": "sgjourney:trinium_ingot" }
+	},
+	"pattern":
+	[
+		"X",
+		"#",
+		"#"
+	],
+	"result": { "item": "sgjourney:trinium_shovel" },
+	"show_notification": true
+}

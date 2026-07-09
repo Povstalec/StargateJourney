@@ -1,6 +1,8 @@
 package net.povstalec.sgjourney.client.screens;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,15 +18,26 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		super(menu, playerInventory, title);
 	}
 	
+	public static boolean isShiftDown()
+	{
+		return InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_LSHIFT) ||
+				InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), InputConstants.KEY_RSHIFT);
+	}
+	
 	protected boolean hasItem(int slot)
 	{
-		return true;
+		return false;
+	}
+	
+	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY)
+	{
+		this.blit(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY, 16, 16);
 	}
 	
 	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY, int slot)
 	{
 		if(!hasItem(slot))
-			this.blit(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY, 16, 16);
+			itemHint(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY);
 	}
 	
 	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component... components)

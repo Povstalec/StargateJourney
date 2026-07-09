@@ -1,102 +1,81 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
 
-public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity
+public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<CrystallizingRecipe.AdvancedCrystallizer>
 {
+	public static final Map<Fluid, Boolean> VALID_FLUIDS_CACHE = new HashMap<>(); // Caching fluids the tank can hold
+	
 	public AdvancedCrystallizerEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), pos, state);
 	}
 
 	@Override
-	public Fluid getDesiredFluid()
+	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
-		return FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
+				.map(recipe -> (CrystallizingRecipe.AdvancedCrystallizer) recipe)
+				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	
-	protected boolean hasIngredients()
+	@Override
+	protected RecipeType<CrystallizingRecipe.AdvancedCrystallizer> getRecipeType()
 	{
-		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(5);
-		
-		inventory.setItem(0, crystalBaseHandler.getStackInSlot(0));
-		inventory.setItem(1, primaryIngredientHandler.getStackInSlot(0));
-		inventory.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
-		inventory.setItem(3, outputHandler.getStackInSlot(0));
-		inventory.setItem(4, fluidInputHandler.getStackInSlot(0));
-		
-		Optional<AdvancedCrystallizerRecipe> recipe = level.getRecipeManager()
-				.getRecipeFor(AdvancedCrystallizerRecipe.Type.INSTANCE, inventory, level);
-		
-		if(!recipe.isPresent())
-			return false;
-		
-		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
-		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() &&
-				recipe.get().getResultItem(null).getItem() instanceof StargateUpgradeItem)
-			return false;
-		
-		return hasSpaceInOutputSlot(inventory, recipe.get().getResultItem(null));
+		return CrystallizingRecipe.AdvancedCrystallizer.TYPE;
 	}
 	
-	protected void crystallize()
+	//============================================================================================
+	//*******************************************Fluids*******************************************
+	//============================================================================================
+	
+	@Override
+	public int inputFluidTankCapacity()
 	{
-		Level level = this.getLevel();
-		SimpleContainer inventory = new SimpleContainer(5);
-		
-		inventory.setItem(0, crystalBaseHandler.getStackInSlot(0));
-		inventory.setItem(1, primaryIngredientHandler.getStackInSlot(0));
-		inventory.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
-		inventory.setItem(3, outputHandler.getStackInSlot(0));
-		inventory.setItem(4, fluidInputHandler.getStackInSlot(0));
-		
-		Optional<AdvancedCrystallizerRecipe> recipe = level.getRecipeManager()
-				.getRecipeFor(AdvancedCrystallizerRecipe.Type.INSTANCE, inventory, level);
-		
-		if(hasIngredients())
-		{
-			useUpItems(recipe.get(), 0);
-			if(recipe.get().depletePrimary())
-				useUpItems(recipe.get(), 1);
-			if(recipe.get().depleteSecondary())
-				useUpItems(recipe.get(), 2);
-			
-			ItemStack outputStack = outputHandler.getStackInSlot(0);
-			
-			if(outputStack.isEmpty())
-				outputHandler.setStackInSlot(0, recipe.get().getResultItem(null));
-			else if(recipe.get().getResultItem(null).is(outputStack.getItem()))
-				outputStack.grow(1);
-			
-			this.progress = 0;
-		}
+		return CommonTechConfig.advanced_crystallizer_fluid_input_capacity.get();
 	}
 	
-	protected void useUpItems(AdvancedCrystallizerRecipe recipe, int slot)
+	@Override
+	public int maxFluidReceive()
 	{
-		switch(slot)
-		{
-			case 1:
-				primaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(1), false);
-				break;
-			case 2:
-				secondaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(2), false);
-				break;
-			default:
-				crystalBaseHandler.extractItem(0, recipe.getAmountInSlot(0), false);
-		}
+		return CommonTechConfig.advanced_crystallizer_max_fluid_receive.get();
+	}
+	
+	//============================================================================================
+	//*******************************************Energy*******************************************
+	//============================================================================================
+	
+	@Override
+	protected long getCapacity()
+	{
+		return CommonTechConfig.advanced_crystallizer_energy_capacity.get();
+	}
+	
+	@Override
+	protected long getMaxReceive()
+	{
+		return CommonTechConfig.advanced_crystallizer_max_energy_receive.get();
+	}
+	
+	@Override
+	protected long getMaxExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long energyPerProgressTick()
+	{
+		return CommonTechConfig.advanced_crystallizer_energy_per_tick.get();
 	}
 }

@@ -4,12 +4,12 @@ import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 
-public class RotatingStargateRingSound extends StargateSound<RotatingStargateEntity>
+public class RotatingStargateRingSound extends StargateSound<RotatingStargateEntity<?>>
 {
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 0.5F;
 	
-	public RotatingStargateRingSound(RotatingStargateEntity stargate, SoundEvent soundEvent)
+	public RotatingStargateRingSound(RotatingStargateEntity<?> stargate, SoundEvent soundEvent)
 	{
 		super(stargate, soundEvent);
         this.looping = true;
@@ -25,12 +25,6 @@ public class RotatingStargateRingSound extends StargateSound<RotatingStargateEnt
 			fadeOut();
 		
 		super.tick();
-	}
-	
-	@Override
-	public boolean canStartSilent()
-	{
-		return true;
 	}
 	
 	private void fadeIn()

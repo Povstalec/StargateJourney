@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NMN",
+		"M M",
+		"NMN"
+	],
+	"key":
+	{
+		"N": { "tag": "sgjourney:naquadah_ingot" },
+		"M": { "item": "sgjourney:matter_projector" }
+	},
+	"result": { "item": "sgjourney:goauld_transport_ring" }
+}

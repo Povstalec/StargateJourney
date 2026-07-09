@@ -3,6 +3,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -18,13 +21,10 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import net.povstalec.sgjourney.common.packets.ClientboundNaquadahGeneratorUpdatePacket;
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
@@ -35,7 +35,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public NaquadahGeneratorEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, true);
+		super(type, pos, state);
 	}
 	
 	@Override
@@ -57,6 +57,18 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt);
 		nbt.put("Inventory", itemHandler.serializeNBT());
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================
@@ -210,11 +222,6 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		return false;
 	}
 	
-	protected boolean receivesEnergy()
-	{
-		return false;
-	}
-	
 	//============================================================================================
 	//******************************************Ticking*******************************************
 	//============================================================================================
@@ -228,11 +235,13 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		{
 			if(NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0)))
 				this.progressReaction();
-			else
-				this.itemHandler.extractItem(0, 1, false); //TODO Maybe make fuel rods reusable?
+			//else
+			//	this.itemHandler.extractItem(0, 1, false);
+			//TODO Naquadah Reactor should use Refined Naquadah instead of Naquadah Fuel Rods
+			//TODO Add Enriched Naquadah
 		}
 		
-		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && getEnergyStored() < capacity() && canReceive(getEnergyPerTick()))
+		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && energyStorage.getTrueEnergyStored() < getCapacity() && energyStorage.canReceive(getEnergyPerTick()))
 			this.progressReaction();
 		
 		else if(reactionProgress >= getReactionTime())
@@ -260,7 +269,126 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 			generator.outputEnergy(direction.getCounterClockWise());
 		}
 		
+		generator.updateClient();
+	}
+	
+	
+	
+	public static class Reactor extends NaquadahGeneratorEntity
+	{
+		public Reactor(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.NAQUADAH_REACTOR.get(), pos, state);
+		}
 		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(generator.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(generator.worldPosition, generator.getReactionProgress(), generator.getEnergyStored()));
+		@Override
+		public long getReactionTime()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_reactor_reaction_time.get();
+		}
+		
+		@Override
+		public long getEnergyPerTick()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_reactor_energy_per_tick.get();
+		}
+		
+		@Override
+		public long getCapacity()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get();
+		}
+		
+		@Override
+		public long getMaxReceive()
+		{
+			return 0;
+		}
+		
+		@Override
+		public long getMaxExtract()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_reactor_max_transfer.get();
+		}
+	}
+	
+	
+	
+	public static class MarkI extends NaquadahGeneratorEntity
+	{
+		public MarkI(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), pos, state);
+		}
+		
+		@Override
+		public long getReactionTime()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_reaction_time.get();
+		}
+		
+		@Override
+		public long getEnergyPerTick()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
+		}
+		
+		@Override
+		public long getCapacity()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
+		}
+		
+		@Override
+		public long getMaxReceive()
+		{
+			return 0;
+		}
+		
+		@Override
+		public long getMaxExtract()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_max_transfer.get();
+		}
+	}
+	
+	
+	
+	public static class MarkII extends NaquadahGeneratorEntity
+	{
+		public MarkII(BlockPos pos, BlockState state)
+		{
+			super(BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), pos, state);
+		}
+		
+		@Override
+		public long getReactionTime()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_reaction_time.get();
+		}
+		
+		@Override
+		public long getEnergyPerTick()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
+		}
+		
+		@Override
+		public long getCapacity()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
+		}
+		
+		@Override
+		public long getMaxReceive()
+		{
+			return 0;
+		}
+		
+		@Override
+		public long getMaxExtract()
+		{
+			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
+		}
 	}
 }

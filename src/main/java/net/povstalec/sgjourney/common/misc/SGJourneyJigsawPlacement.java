@@ -33,7 +33,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Pretty much just a copy paste of the vanilla Jigsaw placement, but with rotation set to none
+ * Pretty much just a copy paste of the vanilla Jigsaw placement, but with the ability to specify rotation
  * @author Povstalec
  *
  */

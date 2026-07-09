@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.terra",
-	"texture": "sgjourney:milky_way/points_of_origin/terra.png"
+	"client_point_of_origin": "sgjourney:terra"
 }

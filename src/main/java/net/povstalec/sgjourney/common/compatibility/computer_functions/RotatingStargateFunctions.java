@@ -9,51 +9,51 @@ public class RotatingStargateFunctions
 	//**************************************Basic Interface***************************************
 	//============================================================================================
 	
-	public static int getCurrentSymbol(RotatingStargateEntity stargate)
+	public static int getCurrentSymbol(RotatingStargateEntity<?> stargate)
 	{
 		return stargate.getCurrentSymbol();
 	}
 	
-	public static boolean isCurrentSymbol(RotatingStargateEntity stargate, int symbol)
+	public static boolean isCurrentSymbol(RotatingStargateEntity<?> stargate, int symbol)
 	{
 		return stargate.isCurrentSymbol(symbol);
 	}
 	
-	public static StargateInfo.Feedback encodeChevron(RotatingStargateEntity stargate)
+	public static StargateInfo.Feedback encodeChevron(RotatingStargateEntity<?> stargate)
 	{
-		return stargate.encodeChevron();
+		return stargate.encodeChevron().feedback();
 	}
 	
-	public static int getRotation(RotatingStargateEntity stargate)
+	public static int getRotation(RotatingStargateEntity<?> stargate)
 	{
 		return stargate.getRotation();
 	}
 	
-	public static double getRotationDegrees(RotatingStargateEntity stargate)
+	public static double getRotationDegrees(RotatingStargateEntity<?> stargate)
 	{
 		return stargate.getRotationDegrees();
 	}
 	
-	public static StargateInfo.Feedback rotateClockwise(RotatingStargateEntity stargate, int desiredSymbol)
+	public static StargateInfo.Feedback rotateClockwise(RotatingStargateEntity<?> stargate, int desiredSymbol)
 	{
 		// Should handle following exception
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		return stargate.startRotation(desiredSymbol, true);
+		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.CLOCKWISE).feedback();
 	}
 	
-	public static StargateInfo.Feedback rotateAntiClockwise(RotatingStargateEntity stargate, int desiredSymbol)
+	public static StargateInfo.Feedback rotateAntiClockwise(RotatingStargateEntity<?> stargate, int desiredSymbol)
 	{
 		// Should handle following exception
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		return stargate.startRotation(desiredSymbol, false);
+		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.ANTICLOCKWISE).feedback();
 	}
 	
-	public static StargateInfo.Feedback endRotation(RotatingStargateEntity stargate)
+	public static StargateInfo.Feedback endRotation(RotatingStargateEntity<?> stargate)
 	{
-		return stargate.endRotation(true);
+		return stargate.endRotation(true).feedback();
 	}
 }

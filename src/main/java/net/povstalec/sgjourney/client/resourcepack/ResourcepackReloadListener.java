@@ -28,27 +28,27 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.client.resourcepack.symbols.SymbolSet;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ResourcepackReloadListener
 {
 	public static final String PATH = StargateJourney.MODID;
 	
 	public static final String STARGATE_VARIANT = "stargate_variant";
+	public static final String SYMBOL_SET = "symbol_set";
+	public static final String SYMBOLS = "symbols";
+	public static final String POINT_OF_ORIGIN = "point_of_origin";
 
 	public static final String UNIVERSE = "universe";
 	public static final String MILKY_WAY = "milky_way";
 	public static final String PEGASUS = "pegasus";
 	public static final String TOLLAN = "tollan";
 	public static final String CLASSIC = "classic";
-
-	public static final ResourceLocation UNIVERSE_STARGATE = new ResourceLocation(PATH, UNIVERSE + "_stargate");
-	public static final ResourceLocation MILKY_WAY_STARGATE = new ResourceLocation(PATH, MILKY_WAY + "_stargate");
-	public static final ResourceLocation PEGASUS_STARGATE = new ResourceLocation(PATH, PEGASUS + "_stargate");
-	public static final ResourceLocation TOLLAN_STARGATE = new ResourceLocation(PATH, TOLLAN + "_stargate");
-	public static final ResourceLocation CLASSIC_STARGATE = new ResourceLocation(PATH, CLASSIC + "_stargate");
-	
-	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
@@ -61,9 +61,12 @@ public class ResourcepackReloadListener
 		@Override
 		protected void apply(Map<ResourceLocation, JsonElement> jsonMap, ResourceManager manager, ProfilerFiller filler)
 		{
-    		ClientStargateVariants.clear();
+			SymbolSet.clearSymbolSets();
+			ClientSymbols.clearSymbols();
+			ClientPointOfOrigin.clearPointsOfOrigin();
+			ClientStargateVariants.clear();
     		
-			ClientPacketListener clientPacketListener = minecraft.getConnection();
+			ClientPacketListener clientPacketListener = Minecraft.getInstance().getConnection();
 			
 			if(clientPacketListener != null)
 			{
@@ -81,7 +84,13 @@ public class ResourcepackReloadListener
 				ResourceLocation location = jsonEntry.getKey();
 				JsonElement element = jsonEntry.getValue();
 				
-				if(canShortenPath(location, STARGATE_VARIANT))
+				if(canShortenPath(location, POINT_OF_ORIGIN))
+					addPointOfOrigin(shortenPath(location, POINT_OF_ORIGIN), element);
+				else if(canShortenPath(location, SYMBOLS))
+					addSymbols(shortenPath(location, SYMBOLS), element);
+				else if(canShortenPath(location, SYMBOL_SET))
+					addSymbolSet(shortenPath(location, SYMBOL_SET), element);
+				else if(canShortenPath(location, STARGATE_VARIANT))
 				{
 					location = shortenPath(location, STARGATE_VARIANT);
 					
@@ -101,6 +110,8 @@ public class ResourcepackReloadListener
 						addClassicStargateVariant(shortenPath(location, CLASSIC), element);
 				}
 			}
+			
+			ClientSymbols.assignSymbolSets();
 		}
 		
 		private static void addUniverseStargateVariant(ResourceLocation location, JsonElement element)
@@ -108,13 +119,13 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
+				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Universe Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addUniverseStargateVariant(location, stargateVariant);
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load Universe Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Universe Stargate Variant: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
@@ -124,13 +135,13 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
+				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Milky Way Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load Milky Way Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Milky Way Stargate Variant: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
@@ -140,13 +151,13 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
+				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Pegasus Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addPegasusStargateVariant(location, stargateVariant);
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load Pegasus Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Pegasus Stargate Variant: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
@@ -156,13 +167,13 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
+				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Tollan Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addTollanStargateVariant(location, stargateVariant);
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load Tollan Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Tollan Stargate Variant: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
@@ -172,13 +183,61 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant", msg));
+				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addClassicStargateVariant(location, stargateVariant);
 			}
 			catch(RuntimeException e)
 			{
-				StargateJourney.LOGGER.error("Could not load Classic Stargate Variant: " + location.toString());
+				StargateJourney.LOGGER.error("Could not load Classic Stargate Variant: {}", location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addSymbolSet(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, SYMBOL_SET);
+				SymbolSet symbolSet = SymbolSet.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Symbol Set {}", msg));
+				
+				SymbolSet.addSymbolSet(SymbolSet.keyFromLocation(location), symbolSet);
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Symbol Set: {}", location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addSymbols(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, SYMBOLS);
+				ClientSymbols symbols = ClientSymbols.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Symbols {}", msg));
+				
+				ClientSymbols.addSymbols(Conversion.locationToSymbols(location), symbols);
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Symbols: {}", location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addPointOfOrigin(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, POINT_OF_ORIGIN);
+				ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Point of Origin {}", msg));
+				
+				ClientPointOfOrigin.addPointOfOrigin(Conversion.locationToPointOfOrigin(location), pointOfOrigin);
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Point of Origin: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}

@@ -1,10 +1,12 @@
 package net.povstalec.sgjourney.common.blockstates;
 
+import com.mojang.math.Axis;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Matrix3f;
 
 public enum Orientation implements StringRepresentable
 {
@@ -150,5 +152,33 @@ public enum Orientation implements StringRepresentable
 		}
 		
 		return VECTORS[1];
+	}
+	
+	public static Tuple<Matrix3f, Matrix3f> xyRotationFromOrientation(Direction facingDirection, Orientation orientation)
+	{
+		return switch(orientation)
+		{
+			case REGULAR -> switch(facingDirection)
+			{
+				case EAST -> new Tuple<>(new Matrix3f(), new Matrix3f().rotate(Axis.YP.rotationDegrees(270)));
+				case SOUTH -> new Tuple<>(new Matrix3f(), new Matrix3f().rotate(Axis.YP.rotationDegrees(180)));
+				case WEST -> new Tuple<>(new Matrix3f(), new Matrix3f().rotate(Axis.YP.rotationDegrees(90)));
+				default -> new Tuple<>(new Matrix3f(), new Matrix3f());
+			};
+			case UPWARD -> switch(facingDirection)
+			{
+				case EAST -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(270)));
+				case SOUTH -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(180)));
+				case WEST -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(90)));
+				default -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(90)), new Matrix3f());
+			};
+			case DOWNWARD -> switch(facingDirection)
+			{
+				case EAST -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(270)));
+				case SOUTH -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(180)));
+				case WEST -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3f().rotate(Axis.YP.rotationDegrees(90)));
+				default -> new Tuple<>(new Matrix3f().rotate(Axis.XP.rotationDegrees(-90)), new Matrix3f());
+			};
+		};
 	}
 }

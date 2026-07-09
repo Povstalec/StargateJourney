@@ -19,8 +19,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
 
 public class BlockEntityInit
 {
@@ -46,11 +47,13 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<ClassicDHDEntity>> CLASSIC_DHD = BLOCK_ENTITIES.register("classic_dhd",
             () -> BlockEntityType.Builder.of(ClassicDHDEntity::new, BlockInit.CLASSIC_DHD.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<TransportRingsEntity>> TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings",
-            () -> BlockEntityType.Builder.of(TransportRingsEntity::new, BlockInit.TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AncientTransportRingsEntity>> ANCIENT_TRANSPORT_RINGS = BLOCK_ENTITIES.register("ancient_transport_rings",
+			() -> BlockEntityType.Builder.of(AncientTransportRingsEntity::new, BlockInit.ANCIENT_TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings", //TODO Rename to "goauld_transport_rings"
+            () -> BlockEntityType.Builder.of(GoauldTransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<RingPanelEntity>> RING_PANEL = BLOCK_ENTITIES.register("ring_panel",
-            () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.RING_PANEL.get()).build(null));
+	public static final RegistryObject<BlockEntityType<RingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("ring_panel", //TODO Rename to "goauld_ring_panel"
+            () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
             () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
@@ -66,10 +69,12 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.RedSandstone>> RED_SANDSTONE_SYMBOL = BLOCK_ENTITIES.register("red_sandstone_symbol",
 			() -> BlockEntityType.Builder.of(SymbolBlockEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_SYMBOL.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<NaquadahGeneratorMarkIEntity>> NAQUADAH_GENERATOR_MARK_I = BLOCK_ENTITIES.register("naquadah_generator_mark_i",
-            () -> BlockEntityType.Builder.of(NaquadahGeneratorMarkIEntity::new, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()).build(null));
-	public static final RegistryObject<BlockEntityType<NaquadahGeneratorMarkIIEntity>> NAQUADAH_GENERATOR_MARK_II = BLOCK_ENTITIES.register("naquadah_generator_mark_ii",
-            () -> BlockEntityType.Builder.of(NaquadahGeneratorMarkIIEntity::new, BlockInit.NAQUADAH_GENERATOR_MARK_II.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.Reactor>> NAQUADAH_REACTOR = BLOCK_ENTITIES.register("naquadah_reactor",
+			() -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.Reactor::new, BlockInit.NAQUADAH_REACTOR.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.MarkI>> NAQUADAH_GENERATOR_MARK_I = BLOCK_ENTITIES.register("naquadah_generator_mark_i",
+            () -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.MarkI::new, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.MarkII>> NAQUADAH_GENERATOR_MARK_II = BLOCK_ENTITIES.register("naquadah_generator_mark_ii",
+            () -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.MarkII::new, BlockInit.NAQUADAH_GENERATOR_MARK_II.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<BasicInterfaceEntity>> BASIC_INTERFACE = BLOCK_ENTITIES.register("basic_interface",
             () -> BlockEntityType.Builder.of(BasicInterfaceEntity::new, BlockInit.BASIC_INTERFACE.get()).build(null));

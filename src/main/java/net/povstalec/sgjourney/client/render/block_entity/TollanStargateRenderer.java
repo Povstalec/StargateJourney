@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -40,14 +38,14 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
 	@Override
 	protected TollanStargateVariant getClientVariant(TollanStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
+		if(stargateVariant != null)
 		{
-			if(stargateVariant.get().isFound())
-				return ClientStargateVariants.getTollanStargateVariant(stargateVariant.get().clientVariant());
-			else if(!stargateVariant.get().isMissing())
-				stargateVariant.get().handleLocation(ClientStargateVariants.hasTollanStargateVariant(stargateVariant.get().clientVariant()));
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getTollanStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasTollanStargateVariant(stargateVariant.clientVariant()));
 		}
 		
 		return ClientStargateVariants.getTollanStargateVariant(stargate.defaultVariant());

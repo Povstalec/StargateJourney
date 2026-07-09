@@ -87,44 +87,22 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return nextMode;
 	}
 	
+	public abstract void openMenu(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace);
+	
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
         if(!level.isClientSide()) 
         {
-			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if(blockEntity instanceof AbstractInterfaceEntity interfaceEntity) 
-        	{
-        		if(!player.isShiftKeyDown())
-        		{
-        			MenuProvider containerProvider = new MenuProvider() 
-            		{
-            			@Override
-            			public Component getDisplayName() 
-            			{
-            				return Component.translatable("screen.sgjourney." + interfaceEntity.getInterfaceType().getName());
-            			}
-            			
-            			@Override
-            			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
-            			{
-            				return new InterfaceMenu(windowId, playerInventory, blockEntity);
-            			}
-            		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
-        		}
-        		else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
-        		{
-        			InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
-        			
-        			if(nextMode != null)
-        				player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
-        		}
-        	}
-        	else
-        	{
-        		throw new IllegalStateException("Our named container provider is missing!");
-        	}
+			if(!player.isShiftKeyDown())
+				openMenu(state, level, pos, player, hand, trace);
+			else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity)
+			{
+				InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
+				
+				if(nextMode != null)
+					player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
+			}
         }
         return InteractionResult.SUCCESS;
     }
@@ -197,7 +175,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof AbstractStargateEntity stargate)
+		if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 			return stargate.getRedstoneSegmentOutput();
 		
 		return 0;
@@ -205,7 +183,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	private int getRotationOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof AbstractStargateEntity stargate)
+		if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 			return stargate.getRedstoneSymbolOutput();
 		
 		return 0;
@@ -213,14 +191,14 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	private int getChevronOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof AbstractStargateEntity stargate)
+		if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 			return stargate.getChevronsEngaged();
 		return 0;
 	}
 	
 	private int getConnectionOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof AbstractStargateEntity stargate)
+		if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 			return stargate.isConnected()
 					? (stargate.isDialingOut() ? 15 : 7)
 					: 0;
@@ -229,7 +207,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	private int getIrisOutput(EnergyBlockEntity blockEntity)
 	{
-		if(blockEntity instanceof IrisStargateEntity stargate)
+		if(blockEntity instanceof IrisStargateEntity<?> stargate)
 			return Math.round(15 * (float) stargate.irisInfo().getIrisProgress() / ShieldingState.MAX_PROGRESS);
 		
 		return 0;
@@ -237,23 +215,16 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	
 	public int comparatorOutput(BlockState state, EnergyBlockEntity blockEntity)
 	{
-		switch(state.getValue(MODE))
+		return switch(state.getValue(MODE))
 		{
-		case RING_SEGMENT:
-			return getRingSegmentOutput(blockEntity);
-		case RING_ROTATION:
-			return getRotationOutput(blockEntity);
-		case CHEVRONS_ACTIVE:
-			return getChevronOutput(blockEntity);
-		case WORMHOLE_ACTIVE:
-			return getConnectionOutput(blockEntity);
-		case IRIS:
-			return getIrisOutput(blockEntity);
-		//case SHIELDING:
-		//	return getIrisOutput(blockEntity);
-		default:
-			return 0;
-		}
+			case RING_SEGMENT -> getRingSegmentOutput(blockEntity);
+			case RING_ROTATION -> getRotationOutput(blockEntity);
+			case CHEVRONS_ACTIVE -> getChevronOutput(blockEntity);
+			case WORMHOLE_ACTIVE -> getConnectionOutput(blockEntity);
+			case IRIS -> getIrisOutput(blockEntity);
+			//case SHIELDING: -> getIrisOutput(blockEntity);
+			default -> 0;
+		};
 	}
 	
 	@Override

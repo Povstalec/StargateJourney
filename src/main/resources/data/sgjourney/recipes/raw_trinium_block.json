@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "TTT",
+    "TIT",
+    "TTT"
+  ],
+  "key": {
+    "I": {"item": "sgjourney:raw_trinium"},
+    "T": {"tag": "sgjourney:raw_trinium"}
+  },
+  "result": {
+    "item": "sgjourney:raw_trinium_block"
+  }
+}

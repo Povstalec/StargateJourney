@@ -393,7 +393,7 @@
     "galaxy.sgjourney.triangulum": "さんかく座銀河",
     "galaxy.sgjourney.andromeda": "アンドロメダ銀河",
 
-    "solar_system.sgjourney.milky_way": "地球",
+    "solar_system.sgjourney.terra": "地球",
     "solar_system.sgjourney.abydos": "アビドス",
     "solar_system.sgjourney.chulak": "チュラク",
     "solar_system.sgjourney.unitas": "ユニタス",
@@ -404,6 +404,14 @@
     "solar_system.sgjourney.end": "エンド",
     "solar_system.sgjourney.lantea": "ランティア",
     "solar_system.sgjourney.athos": "アトス",
+    
+    "planet.sgjourney.abydos": "アビドス",
+    "planet.sgjourney.chulak": "チュラク",
+    "planet.sgjourney.unitas": "ユニタス",
+    "planet.sgjourney.rima": "リマ",
+    "planet.sgjourney.cavum_tenebrae": "カヴム・テネブレ",
+    "planet.sgjourney.lantea": "ランティア",
+    "planet.sgjourney.athos": "アトス",
         
     "symbol_set.sgjourney.universal": "ユニバーサル記号セット",
     "symbol_set.sgjourney.galaxy_milky_way": "天の川銀河記号セット",

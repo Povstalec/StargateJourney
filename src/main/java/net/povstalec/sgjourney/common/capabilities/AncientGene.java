@@ -7,12 +7,15 @@ import net.minecraft.world.entity.Entity;
 
 public class AncientGene
 {
+	public static final String ANCIENT_GENE = "AncientGene";
+	
 	public enum ATAGene
 	{
 		ANCIENT(true),
 		INHERITED(true),
 		ARTIFICIAL(true),
-		NONE(false);
+		NONE(false),
+		UNDECIDED(false);
 		
 		private boolean canActivate;
 		
@@ -27,7 +30,6 @@ public class AncientGene
 		}
 	}
 	
-	private boolean firstJoin = true;
 	private ATAGene gene = ATAGene.NONE;
 	
 	public ATAGene getGeneType()
@@ -60,70 +62,81 @@ public class AncientGene
 		return this.gene.equals(ATAGene.NONE);
 	}
 	
-	public void giveGene()
+	public void setGene(ATAGene gene)
 	{
-		this.gene = ATAGene.ANCIENT;
+		this.gene = gene;
 	}
 	
-	public void inheritGene()
+	public static void spawnAncientGene(Entity entity)
 	{
-		this.gene = ATAGene.INHERITED;
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		{
+			if(cap.firstJoin())
+				cap.setGene(ATAGene.ANCIENT);
+		});
 	}
 	
-	public void implantGene()
+	public static void spawnInheritedGene(Entity entity)
 	{
-		this.gene = ATAGene.ARTIFICIAL;
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		{
+			if(cap.firstJoin())
+				cap.setGene(ATAGene.INHERITED);
+		});
 	}
 	
-	public void removeGene()
-	{
-		this.gene = ATAGene.NONE;
-	}
-	
-	public static void addAncient(Entity entity)
-	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.giveGene());
-	}
-	
-	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
+	public static void spawnInheritedGene(long seed, Entity entity, int inheritanceChance)
 	{
 		Random random = new Random(seed);
 		int chance = random.nextInt(1, 101);
 		
-		inheritGene(entity, inheritanceChance, chance);
+		spawnInheritedGene(entity, inheritanceChance, chance);
 	}
 	
-	public static void inheritGene(Entity entity, int inheritanceChance)
+	public static void spawnInheritedGene(Entity entity, int inheritanceChance)
 	{
 		Random random = new Random();
 		int chance = random.nextInt(1, 101);
 		
-		inheritGene(entity, inheritanceChance, chance);
+		spawnInheritedGene(entity, inheritanceChance, chance);
 	}
 	
-	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
+	private static void spawnInheritedGene(Entity entity, int inheritanceChance, int randomValue)
 	{
 		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
 		{
 			if(cap.firstJoin())
 			{
-				if(chance <= inheritanceChance)
-					cap.inheritGene();
-				
-				cap.markJoined();
+				if(randomValue <= inheritanceChance)
+					cap.setGene(ATAGene.INHERITED);
+				else
+					cap.setGene(ATAGene.NONE);
 			}
+		});
+	}
+	
+	public static void spawnArtificialGene(Entity entity)
+	{
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		{
+			if(cap.firstJoin())
+				cap.setGene(ATAGene.ARTIFICIAL);
+		});
+	}
+	
+	public static void spawnNoGene(Entity entity)
+	{
+		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		{
+			if(cap.firstJoin())
+				cap.setGene(ATAGene.NONE);
 		});
 	}
 	
 	
 	public boolean firstJoin()
 	{
-		return this.firstJoin;
-	}
-	
-	public void markJoined()
-	{
-		this.firstJoin = false;
+		return this.gene == ATAGene.UNDECIDED;
 	}
 	
 	public void copyFrom(AncientGene source)
@@ -133,13 +146,11 @@ public class AncientGene
 	
 	public void saveData(CompoundTag tag)
 	{
-		tag.putBoolean("FirstJoin", firstJoin);
-		tag.putString("AncientGene", this.gene.toString().toUpperCase());
+		tag.putString(ANCIENT_GENE, this.gene.toString().toUpperCase());
 	}
 	
 	public void loadData(CompoundTag tag)
 	{
-		this.firstJoin = tag.getBoolean("FirstJoin");
-		this.gene = ATAGene.valueOf(tag.getString("AncientGene"));
+		this.gene = ATAGene.valueOf(tag.getString(ANCIENT_GENE));
 	}
 }

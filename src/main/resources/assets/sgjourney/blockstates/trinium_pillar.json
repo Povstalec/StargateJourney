@@ -1,0 +1,21 @@
+
+{
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/trinium_pillar_horizontal",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/trinium_pillar"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/trinium_pillar_horizontal",
+			"x": 90
+		}
+	}
+}

@@ -1,6 +1,3 @@
 {
-	"name": "symbols.sgjourney.galaxy_ida",
-	"symbol_set": "sgjourney:galaxy_ida",
-	"texture": "sgjourney:ida/galaxy_ida.png",
-	"size": 35
+	"client_symbols": "sgjourney:galaxy_ida"
 }

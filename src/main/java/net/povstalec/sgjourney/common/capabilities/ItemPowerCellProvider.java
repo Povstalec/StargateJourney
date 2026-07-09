@@ -60,11 +60,11 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 			FluidStack fluidStack = getFluidInTank(0);
 			
 			if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
-				return fluidStack.getAmount() * CommonTechConfig.energy_from_liquid_naquadah.get() + this.energy;
+				return fluidStack.getAmount() * CommonTechConfig.energy_from_liquid_naquadah.get() + super.getTrueEnergyStored();
 			else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
-				return fluidStack.getAmount() * CommonTechConfig.energy_from_heavy_liquid_naquadah.get() + this.energy;
+				return fluidStack.getAmount() * CommonTechConfig.energy_from_heavy_liquid_naquadah.get() + super.getTrueEnergyStored();
 			else
-				return this.energy;
+				return super.getTrueEnergyStored();
 		}
 		
 		@Override
@@ -80,15 +80,15 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 		}
 		
 		@Override
-		public long extractLongEnergy(long maxExtract, boolean simulate)
+		public long depleteEnergy(long maxExtract, boolean simulate)
 		{
-			long currentEnergy = getTrueEnergyStored();
-			if(currentEnergy >= maxExtract)
-				return super.extractLongEnergy(maxExtract, simulate);
-			
+			long currentEnergy = super.getTrueEnergyStored();
+			if(currentEnergy >= maxExtract) // If there is energy stored in the buffer, use that
+				return super.depleteEnergy(maxExtract, simulate);
+			// Try converting liquid naquadah to energy
 			long convertedEnergy = convertLiquidNaquadahToEnergy(maxExtract, simulate);
-			if(convertedEnergy <= 0)
-				return super.extractLongEnergy(maxExtract, simulate);
+			if(convertedEnergy <= 0) // If no energy was converted, extract everything that's left in the buffer
+				return super.depleteEnergy(maxExtract, simulate);
 			currentEnergy += convertedEnergy;
 			
 			long extractedEnergy = Math.min(maxExtract, currentEnergy);
@@ -103,7 +103,8 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 	
 	private long convertFluidToEnergy(long maxExtract, long energyFromFluid, boolean simulate)
 	{
-		long drained = maxExtract / energyFromFluid;
+		// Try to drain at least 1 unit even if maxExtract is less than energyFromFluid
+		long drained = (maxExtract % energyFromFluid > 0 ? 1 : 0) + maxExtract / energyFromFluid;
 		
 		int toDrain = (int) Math.min(((PowerCellItem) stack.getItem()).getFluidAmount(stack), drained);
 		
