@@ -24,10 +24,10 @@ import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
+import dev.ryanhcode.sable.companion.math.Pose3dc;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -396,6 +396,28 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(tag.contains(COVER_BLOCKS))
 			blockCover.deserializeNBT(registries, tag.getCompound(COVER_BLOCKS));
 	}
+
+	public void refreshPosInNetwork()
+	{
+		if (!id9ChevronAddress.isEmpty())
+		{
+			var network = StargateNetwork.get(level);
+			var sg = network.getStargate(id9ChevronAddress);
+			// Some mods might place the new gate before removing the old one when moving the stargate.
+			// We want to remove the duplicate now so it won't linger in the stargate list forever.
+			if (sg != null)
+			{
+				if (sg.isSamePosition(this))
+				{
+					return; // No need to replace it if it hasn't moved.
+				}
+				// We assume whichever gate was placed most recently is the "correct" one with that address.
+				network.removeStargate(sg);
+			}
+			network.addStargate(this);
+			resetStargate(StargateInfo.Feedback.NONE);
+		}
+	}
 	
 	public void addStargateToNetwork()
 	{
@@ -596,7 +618,7 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 	public void chevronSound(short chevron, boolean incoming, boolean open, boolean encode)
 	{
 		if(!level.isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, chevron, incoming, open, encode));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunk(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, chevron, incoming, open, encode));
 	}
 	
 	public void openWormholeSound(boolean incoming)
@@ -1056,6 +1078,21 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
     	
     	return this.centerPosition;
 	}
+
+	// public BlockPos getSoundPos()
+	// {
+	// 	BlockPos soundPos = this.worldPosition;
+	// 	SubLevelAccess subLevelAccess = SableCompanion.INSTANCE.getContaining(getLevel(), (Vec3i) this.worldPosition);
+	// 	if (subLevelAccess != null) {
+	// 		Pose3dc pose = subLevelAccess.logicalPose();
+
+	// 		Vec3 offset = pose.transformPosition(new Vec3(soundPos.getX(),soundPos.getY(),soundPos.getZ()));
+
+	// 		soundPos = new BlockPos((int) offset.x, (int) offset.y, (int) offset.z);
+	// 	}
+		
+    // 	return soundPos;
+	// }
     
     public Vec3 getCenter()
     {
@@ -1066,11 +1103,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
     	
     	if(orientation != null && orientation != Orientation.REGULAR)
     		y = getHorizontalCenterHeight();
-    	
-    	return new Vec3(
+
+		Vec3 adaptedPos = new Vec3(
     			centerPos.getX() + 0.5, 
     			centerPos.getY() + y, 
     			centerPos.getZ() + 0.5);
+
+		// projects a position out of a sub-level (if it is one)
+		adaptedPos = SableCompanion.INSTANCE.projectOutOfSubLevel(getLevel(), (Position) adaptedPos);
+
+    	return adaptedPos;
     }
     
     public Vec3 getRelativeCenter()
@@ -1139,9 +1181,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(FORCE_LOAD_CHUNK)
 		{
 			if(connectionState != StargateConnection.State.IDLE)
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), true);
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), true);
 			else
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), false);
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), false);
 		}
 	}
 	

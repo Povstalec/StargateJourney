@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -7,6 +8,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -14,6 +16,13 @@ import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
+
+import org.joml.Quaterniondc;
+import org.joml.Vector3d;
+
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
+import dev.ryanhcode.sable.companion.math.Pose3dc;
 
 public interface Stargate
 {
@@ -53,12 +62,24 @@ public interface Stargate
 		return server.getLevel(dimension);
 	}
 	
+	default boolean isSamePosition(AbstractStargateEntity stargate)
+	{
+		return false;
+	}
+	
 	/**
 	 * @param server Current Minecraft Server
 	 * @return Position vector of the Stargate's center or null if it doesn't have a position
 	 */
 	@Nullable
 	Vec3 getPosition(MinecraftServer server);
+	
+	/**
+	 * @param server Current Minecraft Server
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position
+	 */
+	@Nullable
+	BlockPos getBlockPosition(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
@@ -95,11 +116,25 @@ public interface Stargate
 	 */
 	default Vec3 toStargateCoords(MinecraftServer server, Vec3 vector, boolean scaleWithStargate)
 	{
-		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+		Vector3d adaptedVec = new Vector3d(vector.x,vector.y,vector.z);
+
+		SubLevelAccess subLevelAccess = SableCompanion.INSTANCE.getContaining(server.getLevel(getDimension()), getBlockPosition(server));
+		if (subLevelAccess != null) {
+			Pose3dc pose = subLevelAccess.logicalPose();
+			Quaterniondc orientation = pose.orientation();
+			Vector3d rotation = new Vector3d(0);
+			rotation = orientation.getEulerAnglesXYZ(rotation);
+			// Rotate the position with the opposite of the orientation orientation
+			adaptedVec = (adaptedVec.rotateX(-rotation.x).rotateY(-rotation.y).rotateZ(-rotation.z));
+		}
+
+		Vec3 rotatedVec = new Vec3(adaptedVec.x,adaptedVec.y,adaptedVec.z);
+		
+		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(rotatedVec, getForward(server), getUp(server), getRight(server));
 		
 		if(scaleWithStargate)
-			return new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
-		
+			result = new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
+
 		return result;
 	}
 	
@@ -117,8 +152,21 @@ public interface Stargate
 		if(scaleWithStargate)
 			vector = new Vec3(vector.x(), vector.y() * getInnerRadius(), vector.z() * getInnerRadius());
 		
-		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward(server)), getUp(server), CoordinateHelper.Relative.mirrorVector(getRight(server))) :
-				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(server), getUp(server), getRight(server));
+		Vector3d adaptedPos = new Vector3d(vector.x,vector.y,vector.z);
+
+		SubLevelAccess subLevelAccess = SableCompanion.INSTANCE.getContaining(server.getLevel(getDimension()), getBlockPosition(server));
+		if (subLevelAccess != null) {
+			Pose3dc pose = subLevelAccess.logicalPose();
+			Quaterniondc orientation = pose.orientation();
+
+			// Rotate the position with the orientation
+			adaptedPos = adaptedPos.rotate(orientation);
+		}
+
+		Vec3 rotatedVec = new Vec3(adaptedPos.x,adaptedPos.y,adaptedPos.z);
+
+		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(rotatedVec, CoordinateHelper.Relative.mirrorVector(getForward(server)), getUp(server), CoordinateHelper.Relative.mirrorVector(getRight(server))) :
+				CoordinateHelper.Relative.toOrthogonalBasis(rotatedVec, getForward(server), getUp(server), getRight(server));
 	}
 	
 	/**

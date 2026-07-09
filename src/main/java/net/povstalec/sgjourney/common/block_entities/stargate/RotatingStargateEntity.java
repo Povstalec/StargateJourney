@@ -275,7 +275,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 		this.rotateClockwise = rotateClockwise;
 		
 		if(!this.level.isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStartup(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStartup(this.worldPosition));
 		
 		updateClient();
 		
@@ -292,7 +292,7 @@ public abstract class RotatingStargateEntity extends IrisStargateEntity
 	public StargateInfo.Feedback endRotation(boolean playSound)
 	{
 		if(!this.level.isClientSide() && playSound)
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStop(worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStop(this.worldPosition));
 		
 		if(!this.rotating)
 			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING);

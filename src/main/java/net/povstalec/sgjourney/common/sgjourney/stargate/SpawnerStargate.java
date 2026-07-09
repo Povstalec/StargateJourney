@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -79,11 +80,23 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public boolean isSamePosition(AbstractStargateEntity stargate)
+	{
+		return false;
+	}
+	
+	@Override
 	public @Nullable Vec3 getPosition(MinecraftServer server)
 	{
 		return null;
 	}
 	
+	@Override
+	public @Nullable BlockPos getBlockPosition(MinecraftServer server)
+	{
+		return null;
+	}
+
 	@Override
 	public @Nullable Vec3 getForward(MinecraftServer server)
 	{
