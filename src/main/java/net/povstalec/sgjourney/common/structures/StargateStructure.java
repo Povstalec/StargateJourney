@@ -103,10 +103,13 @@ public abstract class StargateStructure extends SGJourneyStructure
 		
 		public void modifyStargate(WorldGenLevel level, RandomSource randomSource, AbstractStargateEntity<?> stargate)
 		{
-			if(address != null && address.isRandomizable() && StargateNetworkSettings.get(level.getLevel()).randomizeAddresses())
-				stargate.set9ChevronAddress(BlockEntityList.get(level.getLevel()).generate9ChevronAddress(randomSource));
-			else
-				stargate.set9ChevronAddress(address.address());
+			if(address != null)
+			{
+				if(address.isRandomizable() && StargateNetworkSettings.get(level.getLevel()).randomizeAddresses())
+					stargate.set9ChevronAddress(BlockEntityList.get(level.getLevel()).generate9ChevronAddress(randomSource));
+				else
+					stargate.set9ChevronAddress(address.address());
+			}
 			
 			if(displayID)
 				stargate.displayID();
