@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/slab",
+	"textures":
+	{
+		"bottom": "sgjourney:block/cut_trinium_block",
+		"side": "sgjourney:block/cut_trinium_block",
+		"top": "sgjourney:block/cut_trinium_block"
+	}
+}

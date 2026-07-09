@@ -1,75 +1,68 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
-import java.util.List;
+import java.util.*;
 
-public class SGJourneyStargate implements Stargate
+public abstract class SGJourneyStargate implements Stargate
 {
 	public static final double MIN_TRAVELER_SPEED = 0.4;
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
 	
 	public static final int KAWOOSH_TICKS = 40;
 	
-	protected Address.Immutable address;
+	public static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	
-	@Nullable
-	protected WeakReference<AbstractStargateEntity> stargate;
+	protected final StargateType<?> type;
+	protected final MinecraftServer server;
+	
+	protected Address.Immutable id9ChevronAddress;
+	
 	protected ResourceKey<Level> dimension;
-	protected BlockPos blockPos;
 	
 	// Preferred Stargate decision
 	protected boolean hasDHD;
-	protected StargateInfo.Gen generation;
 	protected int timesOpened;
-	protected int network;
 	
-	protected Vec3 forward = null;
-	protected Vec3 up = null;
-	protected Vec3 right = null;
+	protected boolean hasNetworkRestrictions = false;
+	protected Set<Integer> networks = new HashSet<>();
 	
 	protected Wormhole wormhole = new Wormhole();
 	
-	public SGJourneyStargate() {}
-	
-	public SGJourneyStargate(AbstractStargateEntity stargate)
+	public SGJourneyStargate(StargateType<?> type, MinecraftServer server)
 	{
-		this.address = stargate.get9ChevronAddress();
-		
-		this.dimension = stargate.getLevel().dimension();
-		this.blockPos = stargate.getBlockPos();
-		
-		this.hasDHD = stargate.dhdInfo().hasDHD();
-		this.generation = stargate.getGeneration();
-		this.timesOpened = stargate.getTimesOpened();
-		this.network = stargate.getNetwork();
-		
-		cacheStargateEntity(stargate);
+		this.type = type;
+		this.server = server;
+	}
+	
+	public final StargateType<?> getStargateType()
+	{
+		return this.type;
+	}
+	
+	@Override
+	public MinecraftServer getServer()
+	{
+		return this.server;
 	}
 	
 	@Override
 	public Address.Immutable get9ChevronAddress()
 	{
-		return this.address;
+		return this.id9ChevronAddress;
 	}
 	
 	
@@ -79,78 +72,15 @@ public class SGJourneyStargate implements Stargate
 		return this.dimension;
 	}
 	
-	public BlockPos getBlockPos()
-	{
-		return this.blockPos;
-	}
-	
-	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
-	{
-		return StargateInfo.ChevronLockSpeed.FAST; //TODO Make this abstract
-	}
-	
-	@Override
-	public @Nullable Vec3 getPosition(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate.getCenter(), null);
-	}
-	
-	@Override
-	public @Nullable Vec3 getForward(MinecraftServer server)
-	{
-		if(forward == null)
-		{
-			forward = stargateReturn(server, stargate ->
-			{
-				Direction direction = stargate.getDirection();
-				Orientation orientation = stargate.getOrientation();
-				
-				return Orientation.getForwardVector(direction, orientation);
-			}, null);
-		}
-		
-		return forward;
-	}
-	
-	@Override
-	public @Nullable Vec3 getUp(MinecraftServer server)
-	{
-		if(up == null)
-		{
-			up = stargateReturn(server, stargate ->
-			{
-				Direction direction = stargate.getDirection();
-				Orientation orientation = stargate.getOrientation();
-				
-				return Orientation.getUpVector(direction, orientation);
-			}, null);
-		}
-		
-		return up;
-	}
-	
-	@Override
-	public Vec3 getRight(MinecraftServer server)
-	{
-		if(right == null)
-		{
-			if(getForward(server) != null && getUp(server) != null)
-				right = CoordinateHelper.Relative.vecRight(getForward(server), getUp(server));
-		}
-		
-		return right;
-	}
-	
 	@Override
 	public double getInnerRadius()
 	{
 		return INNER_RADIUS;
 	}
 	
-	@Override
-	public @Nullable SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	public Wormhole getWormhole()
 	{
-		return Universe.get(server).getSolarSystemFromDimension(getDimension());
+		return this.wormhole;
 	}
 	
 	
@@ -164,7 +94,7 @@ public class SGJourneyStargate implements Stargate
 	@Override
 	public StargateInfo.Gen getGeneration()
 	{
-		return this.generation;
+		return getStargateType().getGeneration();
 	}
 	
 	@Override
@@ -174,428 +104,159 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public int getNetwork()
+	public Set<Integer> getNetworks()
 	{
-		return this.network;
+		return this.networks;
 	}
 	
 	@Override
-	public Address.Mutable getAddress(MinecraftServer server)
+	public boolean isNetworkRestricted(Collection<Integer> testedNetworks)
 	{
-		return stargateReturn(server, stargate -> stargate.getAddress(), new Address.Mutable());
-	}
-	
-	private AbstractStargateEntity cacheStargateEntity(AbstractStargateEntity stargate)
-	{
-		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
+		// If Stargate has network restrictions turned on, check if the tested network matches any of the networks Stargate is in
+		if(hasNetworkRestrictions)
+			return Collections.disjoint(getNetworks(), testedNetworks);
 		
-		return stargate;
-	}
-	
-	private @Nullable AbstractStargateEntity tryCacheStargateEntity(MinecraftServer server)
-	{
-		ServerLevel level = server.getLevel(dimension);
-		
-		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
-			return cacheStargateEntity(stargate);
-		
-		return null;
-	}
-	
-	public @Nullable AbstractStargateEntity getStargateEntity(MinecraftServer server)
-	{
-		//if((this.stargate != null && this.stargate.get() != null) || server == null)
-		//	return this.stargate.get();
-		
-		return tryCacheStargateEntity(server);
-	}
-	
-	
-	
-	@Override
-	public StargateInfo.Feedback resetStargate(MinecraftServer server, StargateInfo.Feedback feedback, boolean updateInterfaces)
-	{
-		AbstractStargateEntity stargateEntity = getStargateEntity(server);
-		
-		this.stargate = null;
-		
-		if(stargateEntity != null)
-			return stargateEntity.resetStargate(feedback, updateInterfaces);
-		else
-			StargateJourney.LOGGER.error("Failed to reset Stargate as it does not exist");
-		
-		return feedback;
-	}
-	
-	@Override
-	public boolean isConnected(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate.isConnected(), false);
-	}
-	
-	@Override
-	public boolean isObstructed(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate.isConnected(), false);
-	}
-	
-	@Override
-	public boolean isPrimary(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate.isPrimary(), false);
-	}
-	
-	@Override
-	public boolean isValid(MinecraftServer server)
-	{
-		AbstractStargateEntity stargate = getStargateEntity(server);
-		
-		if(stargate != null)
-		{
-			stargate.checkStargate();
-			return true;
-		}
-		else
-		{
-			StargateJourney.LOGGER.error("Stargate not found");
-			return false;
-		}
-	}
-	
-	@Override
-	public boolean isLoaded(MinecraftServer server)
-	{
-		ServerLevel level  = server.getLevel(getDimension());
-		if(level == null)
-			return false;
-		
-		return level.isLoaded(getBlockPos());
-	}
-	
-	@Override
-	public void setChevronConfiguration(MinecraftServer server, int[] chevronConfiguration)
-	{
-		stargateRun(server, stargate -> stargate.setEngagedChevrons(chevronConfiguration));
-	}
-	
-	// Updating
-	
-	@Override
-	public void update(MinecraftServer server)
-	{
-		stargateRun(server, stargate->
-		{
-			this.hasDHD = stargate.dhdInfo().hasDHD();
-			this.generation = stargate.getGeneration();
-			this.timesOpened = stargate.getTimesOpened();
-			this.network = stargate.getNetwork();
-		});
-	}
-	
-	@Override
-	public void updateClient(MinecraftServer server)
-	{
-		stargateRun(server, stargate -> stargate.updateClient());
-	}
-	
-	@Override
-	public void updateInterfaceBlocks(MinecraftServer server, @Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
-	{
-		stargateRun(server, stargate ->
-		{
-			if(type == null)
-				stargate.updateInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.BASIC)
-				stargate.updateBasicInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.CRYSTAL)
-				stargate.updateCrystalInterfaceBlocks(eventName, objects);
-			else if(type == AbstractInterfaceEntity.InterfaceType.ADVANCED_CRYSTAL)
-				stargate.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
-		});
-	}
-	
-	// Communication
-	
-	@Override
-	public void receiveStargateMessage(MinecraftServer server, String message)
-	{
-		stargateRun(server, stargate -> stargate.receiveStargateMessage(message));
-	}
-	
-	@Override
-	public void forwardTransmission(MinecraftServer server, int transmissionJumps, int frequency, String transmission)
-	{
-		stargateRun(server, stargate -> stargate.forwardTransmission(transmissionJumps, frequency, transmission));
-	}
-	
-	@Override
-	public float checkStargateShieldingState(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate instanceof IrisStargateEntity irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F, 0F);
+		return false;
 	}
 	
 	// Energy
 	
 	@Override
-	public long getEnergyStored(MinecraftServer server)
+	public boolean canPowerFromOtherSide()
 	{
-		return stargateReturn(server, stargate -> stargate.getEnergyStored(), 0L);
-	}
-	
-	@Override
-	public long getEnergyCapacity(MinecraftServer server)
-	{
-		return stargateReturn(server, stargate -> stargate.getEnergyCapacity(), 0L);
-	}
-	
-	@Override
-	public long extractEnergy(MinecraftServer server, long energy, boolean simulate)
-	{
-		return stargateReturn(server, stargate -> stargate.depleteEnergy(energy, simulate), 0L);
+		return CommonStargateConfig.can_draw_power_from_both_ends.get();
 	}
 	
 	// Stargate Connection
 	
+	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
+	
 	@Override
-	public void connectionUpdate(MinecraftServer server, StargateConnection connection)
+	public int dialedEngageTime(boolean doKawoosh)
 	{
-		stargateRun(server, stargate ->
-		{
-			stargate.setKawooshTickCount(connection.getKawooshTime(server));
-			stargate.setOpenTime(connection.getOpenTime());
-			stargate.setTimeSinceLastTraveler(connection.getTimeSinceLastTraveler());
-		});
+		return getChevronLockSpeed(doKawoosh).getKawooshStartTicks();
 	}
 	
 	@Override
-	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
-	{
-		return stargateReturn(server, stargate -> stargate.getChevronLockSpeed(doKawoosh).getKawooshStartTicks(), StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks());
-	}
-	
-	//TODO
-	/*@Override
-	public int dialedEngageTime(MinecraftServer server, boolean doKawoosh)
-	{
-		return stargateReturn(server, stargate -> getChevronLockSpeed(doKawoosh).getKawooshStartTicks(), StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks());
-	}*/
-	
-	@Override
-	public int wormholeEstablishTime(MinecraftServer server, boolean doKawoosh)
+	public int wormholeEstablishTime(boolean doKawoosh)
 	{
 		return KAWOOSH_TICKS;
 	}
 	
-	private static StargateInfo.Feedback noStargate()
+	@Override
+	public StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
-		StargateJourney.LOGGER.error("SGJourneyStargate.noStargate: Stargate Entity could not be found");
-		return StargateInfo.Feedback.UNKNOWN_ERROR;
-	};
+		// If last Stargate is obstructed
+		if(isObstructed())
+			return StargateInfo.Feedback.TARGET_OBSTRUCTED.withInfo();
+		
+		// If last Stargate is restricted
+		if(isNetworkRestricted(dialingStargate.getNetworks()))
+			return StargateInfo.Feedback.TARGET_RESTRICTED.withInfo();
+		
+		// If last Stargate has a blacklist
+		if(addressFilterInfo().getFilterType().isBlacklist() && addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
+			return StargateInfo.Feedback.BLACKLISTED_BY_TARGET.withInfo();
+		
+		// If last Stargate has a whitelist
+		if(addressFilterInfo().getFilterType().isWhitelist() && !addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(getAddressRegion(), addressType)))
+			return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET.withInfo();
+		
+		return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
+	}
 	
 	@Override
-	public StargateInfo.Feedback tryConnect(MinecraftServer server, Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	public List<Stargate> getDialedStargates(Stargate dialingStargate, StargateConnection.Type connectionType)
 	{
-		return stargateReturn(server, stargate ->
+		if(!callForward())
+			return List.of(this);
+		
+		// Chooses a random Stargate to connect to
+		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
+		
+		AddressRegion addressRegion = this.getAddressRegion();
+		if(addressRegion == null)
+			return List.of(this);
+		
+		StargateNetwork stargateNetwork = StargateNetwork.get(server);
+			
+		if(connectionType == StargateConnection.Type.SYSTEM_WIDE) // Picks a random Stargate from the same Address Region
 		{
-			// If last Stargate is obstructed
-			if(stargate.isObstructed())
-				return StargateInfo.Feedback.TARGET_OBSTRUCTED;
-			
-			// If last Stargate is restricted
-			if(stargate.isRestricted(dialingStargate.getNetwork()))
-				return StargateInfo.Feedback.TARGET_RESTRICTED;
-			
-			// If last Stargate has a blacklist
-			if(stargate.addressFilterInfo().getFilterType().isBlacklist() && stargate.addressFilterInfo().isAddressBlacklisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
-				return StargateInfo.Feedback.BLACKLISTED_BY_TARGET;
-			
-			// If last Stargate has a whitelist
-			if(stargate.addressFilterInfo().getFilterType().isWhitelist() && !stargate.addressFilterInfo().isAddressWhitelisted(dialingStargate.getConnectionAddress(server, getSolarSystem(server), addressType)))
-				return StargateInfo.Feedback.NOT_WHITELISTED_BY_TARGET;
-			
-			return Dialing.connectStargates(server, dialingStargate, this, addressType, doKawoosh);
-		},
-		noStargate());
-	}
-	
-	@Override
-	public void connectStargate(MinecraftServer server, StargateConnection connection, StargateConnection.State connectionState)
-	{
-		stargateRun(server, stargate -> stargate.connectStargate(connection.getID(), connectionState));
-	}
-	
-	@Override
-	public void doWhileConnecting(MinecraftServer server, StargateConnection connection, boolean incoming, int kawooshStartTicks)
-	{
-		stargateRun(server, stargate -> stargate.doWhileConnecting(incoming, connection.doKawoosh(), kawooshStartTicks, connection.getConnectionTime()));
-	}
-	
-	@Override
-	public void doWhileDialed(MinecraftServer server, StargateConnection connection, Address connectedAddress, int kawooshStartTicks)
-	{
-		stargateRun(server, stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, connection.doKawoosh(), connection.getConnectionTime()));
-	}
-	
-	@Override
-	public void doWhileConnected(MinecraftServer server, StargateConnection connection, boolean incoming)
-	{
-		stargateRun(server, stargate -> stargate.doWhileConnected(incoming, connection.getConnectionTime()));
-	}
-	
-	protected void wormholeEntities(MinecraftServer server, StargateConnection connection, Stargate destinationStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
-	{
-		stargateRun(server, stargate ->
-		{
-			if(this.wormhole.wormholeEntities(server, connection, this, destinationStargate, wormholeTravel, wormholeCandidates))
-				connection.setUsed(true);
-		});
-	}
-	
-	@Override
-	public void doWormhole(MinecraftServer server, StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
-	{
-		stargateRun(server, stargate ->
-		{
-			List<Entity> wormholeCandidates = stargate.findWormholeCandidates();
-			
-			// If this Stargate has its iris closed, then there's no point in trying to transport Entities
-			if(stargate instanceof IrisStargateEntity irisStargate && irisStargate.irisInfo().isIrisClosed())
-				return;
-			
-			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
-			
-			if(!wormholeCandidates.isEmpty() && connection.used())
-				connection.setTimeSinceLastTraveler(0);
-			
-			//TODO Call Forwarding
-			wormholeEntities(server, connection, connectedStargate, incoming, wormholeTravel, wormholeCandidates);
-		});
-	}
-	
-	@Override
-	public @Nullable Entity receiveTraveler(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
-	{
-		return stargateReturn(server, stargate ->
-		{
-			// TODO Tie this to Advanced Protocols
-			Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -MIN_TRAVELER_SPEED ? new Vec3(-MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
-			
-			Vec3 destinationPosition = fromStargateCoords(server, relativePosition, true, true).add(stargate.getCenter());
-			Vec3 destinationMomentum = fromStargateCoords(server, tempMomentum, false, true);
-			Vec3 destinationLookAngle = fromStargateCoords(server, relativeLookAngle, false, true);
-			
-			if(stargate instanceof IrisStargateEntity irisStargate && !this.wormhole.checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
+			for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(addressRegion.getResourceKey(), randomSource))
 			{
-				this.wormhole.handleShielding(irisStargate, traveler);
-				return traveler;
+				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
+					return List.of(this, reroutedStargate);
 			}
-			
-			return this.wormhole.receiveTraveler((ServerLevel) stargate.getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
-		},
-		null);
-	}
-	
-	@Override
-	public boolean shouldAutoclose(MinecraftServer server, StargateConnection connection)
-	{
-		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		return stargateReturn(server, stargate ->
+		}
+		else // Picks a random Stargate from the same Galaxy
+		{
+			Universe universe = Universe.get(server);
+			for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : addressRegion.getGalacticAddresses().entrySet())
+			{
+				Galaxy galaxy = universe.getGalaxy(entry.getKey());
+				if(galaxy != null)
 				{
-					if(stargate.dhdInfo().autoclose() <= 0)
-						return false;
-					
-					return connection.getTimeSinceLastTraveler() > stargate.dhdInfo().autoclose() * 20;
-				}, false); //TODO Maybe move the "* 20" into DHD info?
-	}
-	
-	// Saving and loading
-	
-	@Override
-	public CompoundTag serializeNBT()
-	{
-		CompoundTag stargateTag = new CompoundTag();
-		ResourceKey<Level> level = this.getDimension();
-		BlockPos pos = this.getBlockPos();
+					for(AddressRegion randomAddressRegion : galaxy.getShuffledAddressRegions(randomSource))
+					{
+						for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(randomAddressRegion.getResourceKey(), randomSource))
+						{
+							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
+								return List.of(this, reroutedStargate);
+						}
+					}
+				}
+			}
+		}
 		
-		stargateTag.putString(DIMENSION, level.location().toString());
-		stargateTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
-		
-		stargateTag.putBoolean(HAS_DHD, hasDHD);
-		stargateTag.putInt(GENERATION, generation.getGen());
-		stargateTag.putInt(TIMES_OPENED, timesOpened);
-		stargateTag.putInt(NETWORK, network);
-		
-		return stargateTag;
+		return List.of(this);
 	}
 	
 	@Override
-	public void deserializeNBT(MinecraftServer server, Address.Immutable address, CompoundTag tag)
+	public boolean requiresEnergyBypass(int openTime)
 	{
-		this.address = address;
+		return openTime > MAX_OPEN_TIME;
+	}
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
+	
+	@Override
+	public void serializeNBT(CompoundTag tag)
+	{
+		tag.putString(DIMENSION, getDimension().location().toString());
+		
+		tag.putBoolean(HAS_DHD, hasDHD);
+		tag.putInt(TIMES_OPENED, timesOpened);
+		
+		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
+	}
+	
+	@Override
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
+	{
+		this.id9ChevronAddress = id9ChevronAddress;
 		
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
-		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		if(!tag.contains(HAS_DHD) || !tag.contains(GENERATION) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORK))
-		{
-			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof AbstractStargateEntity stargate)
-			{
-				this.hasDHD = stargate.dhdInfo().hasDHD();
-				this.generation = stargate.getGeneration();
-				this.timesOpened = stargate.getTimesOpened();
-				this.network = stargate.getNetwork();
-				
-				cacheStargateEntity(stargate);
-			}
-			else
-				StargateJourney.LOGGER.info("Failed to deserialize Stargate " + address.toString());
-		}
-		else
-		{
-			this.hasDHD = tag.getBoolean(HAS_DHD);
-			this.generation = StargateInfo.Gen.intToGen(tag.getInt(GENERATION));
-			this.timesOpened = tag.getInt(TIMES_OPENED);
-			this.network = tag.getInt(NETWORK);
-			
-			this.stargate = null;
-		}
+		this.hasDHD = tag.getBoolean(HAS_DHD);
+		this.timesOpened = tag.getInt(TIMES_OPENED);
+		
+		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 	}
 	
-	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
 	
 	@Override
 	public String toString()
 	{
-		return "[ " + this.address.toString() + " | DHD: " + this.hasDHD + " | Generation: " + this.generation + " | Times Opened: " + this.timesOpened + " ]";
-	}
-	
-	
-	
-	public interface StargateConsumer<S extends AbstractStargateEntity>
-	{
-		void run(S stargate);
-	}
-	
-	public interface ReturnStargateConsumer<T, S extends AbstractStargateEntity>
-	{
-		T run(S stargate);
-	}
-	
-	private void stargateRun(MinecraftServer server, StargateConsumer<AbstractStargateEntity> consumer)
-	{
-		AbstractStargateEntity stargate = getStargateEntity(server);
-		
-		if(stargate != null)
-			consumer.run(stargate);
-	}
-	
-	private <T> T stargateReturn(MinecraftServer server, ReturnStargateConsumer<T, AbstractStargateEntity> consumer, @Nullable T defaultValue)
-	{
-		AbstractStargateEntity stargate = getStargateEntity(server);
-		
-		if(stargate != null)
-			return consumer.run(stargate);
-		
-		return defaultValue;
+		return "[ " + get9ChevronAddress() + " | DHD: " + hasDHD() + " | Generation: " + getStargateType().getGeneration() + " | Times Opened: " + getTimesOpened() + " ]";
 	}
 }

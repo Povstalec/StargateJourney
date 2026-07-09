@@ -1,0 +1,20 @@
+{
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/naquadah_iron_pillar_horizontal",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/naquadah_iron_pillar"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/naquadah_iron_pillar_horizontal",
+			"x": 90
+		}
+	}
+}

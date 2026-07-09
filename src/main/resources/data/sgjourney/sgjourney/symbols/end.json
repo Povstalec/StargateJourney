@@ -1,6 +1,3 @@
 {
-	"name": "symbols.sgjourney.end",
-	"symbol_set": "sgjourney:galaxy_pegasus",
-	"texture": "sgjourney:pegasus/end.png",
-	"size": 38
+	"client_symbols": "sgjourney:end"
 }

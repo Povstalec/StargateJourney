@@ -4,14 +4,15 @@
 	"pattern":
 	[
 		"NGN",
-		"NAN",
+		"IAI",
 		"NCN"
 	],
 	
 	"key": 
 	{
 		"A": { "item": "sgjourney:advanced_control_crystal" },
-		"N": {"tag": "sgjourney:naquadah_alloy"},
+		"N": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"C": { "item": "sgjourney:advanced_communication_crystal" },
 		"G": { "item": "minecraft:glass_pane" }
 		

@@ -42,6 +42,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
@@ -90,11 +91,25 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 			
         	if(blockEntity instanceof PegasusDHDEntity dhd)
         	{
-        		dhd.setStargate();
-        		
-        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
-        			this.openCrystalMenu(player, dhd);
-        		else
+				if((trace.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.Pegasus(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
+				else
         		{
         			MenuProvider containerProvider = new MenuProvider() 
             		{
@@ -107,7 +122,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
             			@Override
             			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
             			{
-            				return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
+            				return new PegasusDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
@@ -186,7 +201,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		
 		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryUtil.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryUtil.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get())));

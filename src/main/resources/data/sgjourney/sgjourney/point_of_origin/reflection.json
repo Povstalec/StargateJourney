@@ -1,6 +1,5 @@
 {
-	"name": "point_of_origin.sgjourney.reflection",
-	"texture": "sgjourney:milky_way/points_of_origin/submitted/reflection.png",
+	"client_point_of_origin": "sgjourney:reflection",
 	"generated_galaxies":
 	[
 		"sgjourney:milky_way"

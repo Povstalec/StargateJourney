@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Nullable;
 
 import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
@@ -12,6 +13,8 @@ import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 
 public abstract class ClientStargateVariant
 {
+	public static final String DEFAULT_PATH = "textures/entity/stargate/";
+	
 	public static final String TEXTURE = "texture";
 	public static final String ENCODED_TEXTURE = "encoded_texture";
 	public static final String ENGAGED_TEXTURE = "engaged_texture";
@@ -58,17 +61,13 @@ public abstract class ClientStargateVariant
 	{
 		this.texture = texture;
 		
-		if(encodedTexture.isPresent())
-			this.encodedTexture = encodedTexture.get();
-		else
-			this.encodedTexture = engagedTexture;
+		this.encodedTexture = encodedTexture.orElse(engagedTexture);
 
 		this.engagedTexture = engagedTexture;
 		
 		this.wormhole = wormhole;
 		
-		if(shinyWormhole.isPresent())
-			this.shinyWormhole = shinyWormhole.get();
+		shinyWormhole.ifPresent(shiny -> this.shinyWormhole = shiny);
 		
 		this.symbols = symbols;
 		
@@ -91,6 +90,11 @@ public abstract class ClientStargateVariant
 	public ResourceLocation engagedTexture()
 	{
 		return engagedTexture;
+	}
+	
+	public ResourceLocation getOverlayTexture(boolean isConnected)
+	{
+		return isConnected ? engagedTexture() : encodedTexture();
 	}
 	
 	public ResourcepackModel.Wormhole wormhole()
@@ -138,5 +142,17 @@ public abstract class ClientStargateVariant
 	public ResourcepackSounds.Fail failSounds()
 	{
 		return failSounds;
+	}
+	
+	
+	
+	public static ResourceLocation simpleTexturePath(String stargateType, String textureName)
+	{
+		return StargateJourney.sgjourneyLocation(DEFAULT_PATH + stargateType + '/' + stargateType + '_' + textureName + ".png");
+	}
+	
+	public static ResourceLocation simpleSoundPath(String stargateType, String soundName)
+	{
+		return StargateJourney.sgjourneyLocation(stargateType + '_' + soundName);
 	}
 }

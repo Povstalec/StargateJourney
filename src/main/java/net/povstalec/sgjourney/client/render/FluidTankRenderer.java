@@ -43,7 +43,7 @@ public class FluidTankRenderer
 	private static final int TEXTURE_SIZE = 16;
 	private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
 	
-	 private final long capacity;
+	private final long capacity;
 	private final TooltipMode tooltipMode;
 	private final int width;
 	private final int height;
@@ -88,9 +88,8 @@ public class FluidTankRenderer
  private void drawFluid(PoseStack poseStack, final int width, final int height, FluidStack fluidStack)
  {
      Fluid fluid = fluidStack.getFluid();
-     if (fluid.isSame(Fluids.EMPTY)) {
+     if(fluid.isSame(Fluids.EMPTY))
          return;
-     }
 
      TextureAtlasSprite fluidStillSprite = getStillFluidSprite(fluidStack);
      int fluidColor = getColorTint(fluidStack);
@@ -98,12 +97,11 @@ public class FluidTankRenderer
      long amount = fluidStack.getAmount();
      long scaledAmount = (amount * height) / capacity;
 
-     if (amount > 0 && scaledAmount < MIN_FLUID_HEIGHT) {
+     if(amount > 0 && scaledAmount < MIN_FLUID_HEIGHT)
          scaledAmount = MIN_FLUID_HEIGHT;
-     }
-     if (scaledAmount > height) {
+	 
+     if(scaledAmount > height)
          scaledAmount = height;
-     }
 
      drawTiledSprite(poseStack, width, height, fluidColor, scaledAmount, fluidStillSprite);
  }
@@ -118,7 +116,8 @@ public class FluidTankRenderer
      return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
  }
 
- private int getColorTint(FluidStack ingredient) {
+ private int getColorTint(FluidStack ingredient)
+ {
      Fluid fluid = ingredient.getFluid();
      IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
      return renderProperties.getTintColor(ingredient);
@@ -137,13 +136,16 @@ public class FluidTankRenderer
 
      final int yStart = tiledHeight;
 
-     for (int xTile = 0; xTile <= xTileCount; xTile++) {
-         for (int yTile = 0; yTile <= yTileCount; yTile++) {
+     for(int xTile = 0; xTile <= xTileCount; xTile++)
+	 {
+         for(int yTile = 0; yTile <= yTileCount; yTile++)
+		 {
              int width = (xTile == xTileCount) ? xRemainder : TEXTURE_SIZE;
              long height = (yTile == yTileCount) ? yRemainder : TEXTURE_SIZE;
              int x = (xTile * TEXTURE_SIZE);
              int y = yStart - ((yTile + 1) * TEXTURE_SIZE);
-             if (width > 0 && height > 0) {
+             if(width > 0 && height > 0)
+			 {
                  long maskTop = TEXTURE_SIZE - height;
                  int maskRight = TEXTURE_SIZE - width;
 
@@ -169,8 +171,8 @@ public class FluidTankRenderer
      float uMax = textureSprite.getU1();
      float vMin = textureSprite.getV0();
      float vMax = textureSprite.getV1();
-     uMax = uMax - (maskRight / 16F * (uMax - uMin));
-     vMax = vMax - (maskTop / 16F * (vMax - vMin));
+	 uMin += ((maskRight / 16F) * (uMax - uMin));	// Improved math to make the process of a tank filling up feel more seamless
+	 vMin += ((maskTop / 16F) * (vMax - vMin));		//
 
      RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -189,10 +191,10 @@ public class FluidTankRenderer
      List<Component> tooltip = new ArrayList<>();
 
      Fluid fluidType = fluidStack.getFluid();
-     try {
-         if (fluidType.isSame(Fluids.EMPTY)) {
+     try
+	 {
+         if(fluidType.isSame(Fluids.EMPTY))
              return tooltip;
-         }
 
          Component displayName = fluidStack.getDisplayName();
          tooltip.add(displayName);
@@ -200,14 +202,19 @@ public class FluidTankRenderer
          long amount = fluidStack.getAmount();
          long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
 
-         if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
+         if(tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY)
+		 {
              MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
              tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
-         } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
+         }
+		 else if(tooltipMode == TooltipMode.SHOW_AMOUNT)
+		 {
              MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount", nf.format(milliBuckets));
              tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
          }
-     } catch (RuntimeException e) {
+     }
+	 catch (RuntimeException e)
+	 {
          LOGGER.error("Failed to get tooltip for fluid: " + e);
      }
 

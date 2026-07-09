@@ -1,0 +1,21 @@
+{
+	"variants":
+	{
+		"excitement=0": { "model": "sgjourney:block/deepslate_naquadria_ore" },
+		"excitement=1": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_low"},
+		"excitement=2": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_low"},
+		"excitement=3": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_low"},
+		"excitement=4": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_low"},
+		"excitement=5": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_low"},
+		"excitement=6": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_medium"},
+		"excitement=7": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_medium"},
+		"excitement=8": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_medium"},
+		"excitement=9": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_medium"},
+		"excitement=10": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_medium"},
+		"excitement=11": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_high"},
+		"excitement=12": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_high"},
+		"excitement=13": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_high"},
+		"excitement=14": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_high"},
+		"excitement=15": { "model": "sgjourney:block/deepslate_naquadria_ore_excited_high"}
+	}
+}

@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:technology/obtain_crystal",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:goauld_transport_rings"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_transport_rings.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_transport_rings.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_transport_rings": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"items":["sgjourney:goauld_transport_rings"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_transport_rings"
+		]
+	]
+}

@@ -2,18 +2,13 @@ package net.povstalec.sgjourney.client;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ClientUtil
 {
@@ -21,30 +16,9 @@ public class ClientUtil
 	//******************************************Stargate******************************************
 	//============================================================================================
 	
-	public static PointOfOrigin getPointOfOrigin(ResourceLocation pointOfOrigin)
+	public static TextureAtlasSprite getTexture(ResourceLocation texture)
 	{
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
-		if(pointOfOrigin != null)
-			return registry.get(pointOfOrigin);
-		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
-	}
-	
-	public static Symbols getSymbols(ResourceLocation symbols)
-	{
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
-		if(symbols != null)
-			return registry.get(symbols);
-		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 	}
 	
 	//============================================================================================
@@ -53,7 +27,7 @@ public class ClientUtil
 	
 	public static void addVertex(VertexConsumer consumer, TextureAtlasSprite sprite, Vec3 pos, Vec3 normal, float u, float v)
 	{
-		consumer.vertex(pos.x(), pos.y(), pos.z()) .uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
+		consumer.vertex(pos.x(), pos.y(), pos.z()).uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
 	}
 	
 	public static BakedQuad bakeQuad(TextureAtlasSprite sprite, Vec3 vec1, Vec3 vec2, Vec3 vec3, Vec3 vec4)

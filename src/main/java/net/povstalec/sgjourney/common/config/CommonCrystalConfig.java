@@ -12,6 +12,9 @@ public class CommonCrystalConfig
 	public static ForgeConfigSpec.LongValue transfer_crystal_max_transfer;
 	public static ForgeConfigSpec.LongValue advanced_transfer_crystal_max_transfer;
 	
+	public static ForgeConfigSpec.IntValue memory_crystal_capacity;
+	public static ForgeConfigSpec.IntValue advanced_memory_crystal_capacity;
+	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
 		energy_crystal_capacity = server
@@ -39,5 +42,15 @@ public class CommonCrystalConfig
 		advanced_transfer_crystal_max_transfer = server
 				.comment("The amount of energy an Advanced Transfer Crystal can transfer per tick")
 				.defineInRange("server.advanced_transfer_crystal_max_transfer", 5000L, 1L, Long.MAX_VALUE);
+		
+		
+		
+		memory_crystal_capacity = server
+				.comment("The memory capacity of the Memory Crystal")
+				.defineInRange("server.memory_crystal_capacity", 10, 1, 1000);
+		
+		advanced_memory_crystal_capacity = server
+				.comment("The memory capacity of the Advanced Memory Crystal")
+				.defineInRange("server.advanced_memory_crystal_capacity", 50, 1, 1000);
 	}
 }

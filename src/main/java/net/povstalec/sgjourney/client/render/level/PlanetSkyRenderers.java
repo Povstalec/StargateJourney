@@ -135,4 +135,17 @@ public class PlanetSkyRenderers
 	        this.renderMoon(bufferbuilder, lastMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(40), (float) Math.toRadians(180));
 		}
 	}
+	
+	public static class DestinySkyRenderer extends SGJourneySkyRenderer
+	{
+		public DestinySkyRenderer()
+		{
+			super(83173L, 600);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		{
+		
+		}
+	}
 }

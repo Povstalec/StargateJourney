@@ -74,11 +74,8 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	{
 		if(!stargateVariant.stargateModel().movieChevronLocking() && stargate.isChevronOpen())
 			return true;
-			
-		if(stargate.isConnected())
-			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
 		
-		return false;
+		return super.isPrimaryChevronEngaged(stargate, stargateVariant);
 	}
 	
 	@Override
@@ -89,19 +86,19 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		
 		int chevronsRendered = stargate.chevronsRendered();
 		
-		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
+		if(stargate.isConnected() && chevronNumber <= chevronsRendered)
 			return true;
 		
 		if(stargate.isChevronOpen())
 		{
-			if(stargate.getCurrentSymbol() == 0 || chevronsRendered >= 8)
+			Address address = stargate.getAddress();
+			if(stargate.getCurrentSymbol() == 0 || address.hasPointOfOriginOrMaxLength())
 			{
-				if(chevronNumber < chevronsRendered + 1)
+				if(chevronNumber <= chevronsRendered)
 					return true;
 			}
 			else
 			{
-				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.symbolAt(address.regularSymbolCount() - 1)))
 				{
 					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
@@ -129,33 +126,31 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	{
 		if(!stargateVariant.stargateModel().movieChevronLocking())
 			return false;
-
+		
 		int chevronsRendered = stargate.chevronsRendered();
 		
-		if(stargate.isConnected() && chevronNumber < chevronsRendered + 1)
+		if(stargate.isConnected() && chevronNumber <= chevronsRendered)
 			return true;
 		
 		if(stargate.isChevronOpen())
 		{
-			if(stargate.getCurrentSymbol() == 0 || chevronsRendered > 8)
+			Address address = stargate.getAddress();
+			if(stargate.getCurrentSymbol() == 0 || address.hasPointOfOriginOrMaxLength())
 			{
-				if(chevronNumber < chevronsRendered + 1)
+				if(chevronNumber <= chevronsRendered)
 					return true;
-			}
-			else
+			} else
 			{
-				Address address = stargate.getAddress();
 				if(stargate.isCurrentSymbol(address.symbolAt(address.regularSymbolCount() - 1)))
 				{
 					if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered))
 						return true;
-				}
-				else if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
+				} else if(AbstractStargateEntity.getChevron(stargate, chevronNumber) == AbstractStargateEntity.getChevron(stargate, chevronsRendered + 1))
 					return true;
 			}
 		}
 		
-		if(ClientStargateConfig.alternate_movie_chevron_locking.get() && chevronNumber < chevronsRendered + 1)
+		if(ClientStargateConfig.alternate_movie_chevron_locking.get() && chevronNumber <= chevronsRendered)
 			return true;
 		
 		return false;

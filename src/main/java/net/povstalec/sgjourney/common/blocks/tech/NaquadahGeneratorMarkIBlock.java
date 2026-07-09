@@ -26,7 +26,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorMarkIEntity;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -68,7 +67,7 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new NaquadahGeneratorMarkIEntity(pos, state);
+		return new NaquadahGeneratorEntity.MarkI(pos, state);
 	}
 	
 	@Override
@@ -93,27 +92,6 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 		
 		default -> SHAPE_NORTH_UP;
 		};
-	}
-	
-	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
-	{
-		BlockEntity blockentity = level.getBlockEntity(pos);
-		if (blockentity instanceof NaquadahGeneratorEntity)
-		{
-			if (!level.isClientSide && !player.isCreative())
-			{
-				ItemStack itemstack = new ItemStack(BlockInit.NAQUADAH_GENERATOR_MARK_I.get());
-				
-				blockentity.saveToItem(itemstack);
-
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
-			}
-		}
-
-		super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Nullable

@@ -17,7 +17,7 @@ public abstract class SGJourneyButton extends Button
 	private Minecraft minecraft = Minecraft.getInstance();
 	protected final ResourceLocation texture;
 	
-	protected final Component tooltip;
+	protected Component tooltip;
 	
 	protected final int xOffset;
 	protected final int yOffset;
@@ -39,17 +39,22 @@ public abstract class SGJourneyButton extends Button
 		this(texture, x, y, xSize, ySize, 0, 0, message, tooltip, press);
 	}
 	
+	public void setTooltip(Component tooltip)
+	{
+		this.tooltip = tooltip;
+	}
+	
+	protected int getXImage()
+	{
+		return 0;
+	}
+	
 	protected int getYImage(boolean isHovered)
     {
-    	int i = 1;
-    	
-    	if (!this.active)
-    		i = 0;
-    	
-    	else if(isHovered)
-    		i = 2;
-    	
-    	return i;
+		if(!this.active)
+			return 0;
+		
+    	return isHovered ? 2 : 1;
 	}
 	
 	protected boolean isHovered(int x, int y)
@@ -64,12 +69,12 @@ public abstract class SGJourneyButton extends Button
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-        int i = this.getYImage(this.isHoveredOrFocused());
+		int x = this.getXImage();
+        int y = this.getYImage(this.isHoveredOrFocused());
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(stack, this.x, this.y, xOffset, yOffset + i * this.height, this.width, this.height);
-        this.blit(stack, this.x + this.width / 2, this.y, 200 - this.width / 2, 46 + i * 20, this.width / 2, this.height);
+        this.blit(stack, this.x, this.y, xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
         this.renderBg(stack, minecraft, mouseX, mouseY);
         int j = getFGColor();
         drawCenteredString(stack, font, this.getMessage(), this.x + this.width / 2 , this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);

@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/stairs",
+	"textures":
+	{
+		"bottom": "sgjourney:block/weathered_cut_naquadah_copper_block",
+		"side": "sgjourney:block/weathered_cut_naquadah_copper_block",
+		"top": "sgjourney:block/weathered_cut_naquadah_copper_block"
+	}
+}

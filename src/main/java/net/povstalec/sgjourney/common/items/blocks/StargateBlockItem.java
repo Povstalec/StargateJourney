@@ -139,7 +139,7 @@ public class StargateBlockItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			
-			if(baseEntity instanceof AbstractStargateEntity stargate)
+			if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 			{
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.READY);
@@ -151,6 +151,8 @@ public class StargateBlockItem extends BlockItem
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+				
+				return true;
 			}
 		}
 		
@@ -159,7 +161,7 @@ public class StargateBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof AbstractStargateEntity stargate)
+		if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 		{
 			StructureGenEntity.Step generationStep;
 			
@@ -175,10 +177,17 @@ public class StargateBlockItem extends BlockItem
 				stargate.generateAdditional(StructureGenEntity.Step.GENERATED);
 				
 				if(!level.isClientSide())
-					StargateNetwork.get(level).updateStargate((ServerLevel) level, stargate);
+					StargateNetwork.get(level).updateStargateEntity(stargate);
 			}
 			else
+			{
 				stargate.generateAdditional(StructureGenEntity.Step.SETUP);
+				// Clear symbols manually when placing the gate here, because Minecraft fires onLoad() before any kind of useful loading of information actually happens
+				if(stargate instanceof PegasusStargateEntity pegasusStargate)
+					pegasusStargate.clearSymbols();
+			}
+			
+			return true;
 		}
 		
 		return false;

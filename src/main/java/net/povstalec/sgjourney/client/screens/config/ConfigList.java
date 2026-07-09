@@ -80,18 +80,23 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 		protected AbstractWidget cycleButton;
 		SGJourneyConfigValue.BooleanValue value;
 		
-		public BooleanConfigEntry(Component component, int screenWidth, SGJourneyConfigValue.BooleanValue value)
+		public BooleanConfigEntry(Component component, int screenWidth, SGJourneyConfigValue.BooleanValue value, Component trueComponent, Component falseComponent)
 		{
 			this.value = value;
-			this.cycleButton = CycleButton.booleanBuilder(
-					Component.translatable("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
-					Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED))
+			this.cycleButton = CycleButton.booleanBuilder(trueComponent, falseComponent)
 					.withInitialValue(value.get())
-					.create(0, 0, 200, 20, component, (cycleButton, isTrue) -> 
+					.create(0, 0, 200, 20, component, (cycleButton, isTrue) ->
 					{
 						value.set(isTrue);
 						this.cycleButton.playDownSound(Minecraft.getInstance().getSoundManager());
 					});
+		}
+		
+		public BooleanConfigEntry(Component component, int screenWidth, SGJourneyConfigValue.BooleanValue value)
+		{
+			this(component, screenWidth, value,
+					Component.translatable("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
+					Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED));
 		}
 		
 		@SuppressWarnings("unchecked")

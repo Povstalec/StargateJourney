@@ -14,8 +14,8 @@ public class AddressFilterInfo
 	public static final String BLACKLIST = "Blacklist";
 	
 	private FilterType filterType;
-	private ArrayList<HiddenAddress> whitelist;
-	private ArrayList<HiddenAddress> blacklist;
+	private final ArrayList<HiddenAddress> whitelist;
+	private final ArrayList<HiddenAddress> blacklist;
 	
 	public AddressFilterInfo()
 	{
@@ -181,7 +181,7 @@ public class AddressFilterInfo
 		WHITELIST(1),
 		BLACKLIST(-1);
 		
-		private int integerValue;
+		private final int integerValue;
 		
 		FilterType(int integerValue)
 		{
@@ -210,21 +210,18 @@ public class AddressFilterInfo
 		
 		public static FilterType getFilterType(int integerValue)
 		{
-			switch(integerValue)
+			return switch(integerValue)
 			{
-				case 1:
-					return WHITELIST;
-				case -1:
-					return BLACKLIST;
-				default:
-					return NONE;
-			}
+				case 1 -> WHITELIST;
+				case -1 -> BLACKLIST;
+				default -> NONE;
+			};
 		}
 	}
 	
 	public static class HiddenAddress
 	{
-		private Address.Immutable address;
+		private final Address.Immutable address;
 		private boolean isVisible;
 		
 		public HiddenAddress(Address address, boolean isVisible)

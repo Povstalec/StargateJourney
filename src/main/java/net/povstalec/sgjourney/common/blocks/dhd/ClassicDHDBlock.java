@@ -36,6 +36,7 @@ import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class ClassicDHDBlock extends CrystalDHDBlock
@@ -61,10 +62,24 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 			
         	if(blockEntity instanceof ClassicDHDEntity dhd)
         	{
-        		dhd.setStargate();
-				
-				if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
-					this.openCrystalMenu(player, dhd);
+        		if((trace.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.Classic(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
 				else
 				{
 					MenuProvider containerProvider = new MenuProvider()
@@ -78,7 +93,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 						@Override
 						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
 						{
-							return new ClassicDHDMenu(windowId, playerInventory, blockEntity);
+							return new ClassicDHDMenu(windowId, playerInventory, dhd);
 						}
 					};
 					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
@@ -158,7 +173,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		
 		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.COMMUNICATION_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(3, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryUtil.addItem(5, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
 		nbtTagList.add(InventoryUtil.addItem(7, InventoryUtil.itemName(ItemInit.TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonCrystalConfig.transfer_crystal_max_transfer.get())));

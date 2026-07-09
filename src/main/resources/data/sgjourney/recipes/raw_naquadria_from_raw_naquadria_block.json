@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients": 
+	[
+		{ "item": "sgjourney:raw_naquadria_block" }
+	],
+	"result": { "item": "sgjourney:raw_naquadria", "count": 9 }
+}

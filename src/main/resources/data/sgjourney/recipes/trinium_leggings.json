@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key":
+	{
+		"X": { "tag": "sgjourney:trinium_ingot" }
+	},
+	"pattern":
+	[
+		"XXX",
+		"X X",
+		"X X"
+	],
+	"result": { "item": "sgjourney:trinium_leggings" },
+	"show_notification": true
+}

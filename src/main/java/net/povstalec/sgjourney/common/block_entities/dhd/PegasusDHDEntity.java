@@ -7,14 +7,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class PegasusDHDEntity extends CrystalDHDEntity
 {
@@ -24,10 +25,28 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
+	public void onLoad()
+	{
+		super.onLoad();
+		
+		if(this.level.isClientSide())
+			return;
+		
+		// Update symbols when loading
+		if(generationStep == Step.GENERATED)
+		{
+			if(stargateCache.isPresent()) // Copy from connected Stargate
+				setSymbolsFromStargate();
+			else // Generate from Dimension
+				setLocalSymbols();
+		}
+	}
+	
+	@Override
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		addTransferCrystals(itemHandler);
+		addTransferCrystals(crystalHandler);
 	}
 	
 	protected long buttonPressEnergyCost()
@@ -36,19 +55,19 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long capacity()
+	protected long getCapacity()
 	{
 		return CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	protected long getMaxReceive()
 	{
 		return CommonDHDConfig.pegasus_dhd_max_energy_receive.get();
 	}
 	
 	@Override
-	public long maxEnergyDeplete()
+	public long maxEnergyTransfer()
 	{
 		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.pegasus_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
@@ -86,6 +105,16 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		}
 	}
 	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	public void clearSymbols()
+	{
+		symbolInfo().setPointOfOrigin(null);
+		symbolInfo().setSymbols(null);
+	}
+	
 	@Override
 	protected void generateEnergyCore()
 	{
@@ -93,14 +122,33 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP) // Set empty symbols before it's generated in a structure
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
+		}
+		else if(stargateCache.isPresent()) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
+		
+		crystalCache.recalculateCrystals();
+	}
+	
+	@Override
 	protected void generateCrystals()
 	{
-		itemHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
-		itemHandler.setStackInSlot(1, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(2, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
-		itemHandler.setStackInSlot(3, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(6, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
-		itemHandler.setStackInSlot(7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(1, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(2, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(3, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(6, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
 	}
 
 }

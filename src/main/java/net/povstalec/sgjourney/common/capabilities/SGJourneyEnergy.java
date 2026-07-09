@@ -60,34 +60,58 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 		if(!canExtract())
             return 0;
 		
-		long energyExtracted = Math.min(energy, Math.min(maxExtract(), maxExtract));
-        if(!simulate)
-        	energy -= energyExtracted;
-        
-        if(energyExtracted != 0)
-			onEnergyChanged(energyExtracted, simulate);
-        
-        return energyExtracted;
+		return depleteEnergy(Math.min(maxExtract(), maxExtract), simulate);
 	}
 	
+	/**
+	 * Alternative to {@link #extractLongEnergy(long maxExtract, boolean simulate)} meant to be used in places where it is unacceptable for pull-based energy systems to extract energy.
+	 * Unlike the aforementioned method, this one ignores {@link #canExtract()} and {@link #maxExtract()}, allowing it to act for systems that normally have maxExtract set to 0
+	 * @param maxExtract Maximum amount of energy to be extracted
+	 * @param simulate Whether to simulate the extraction or not
+	 * @return Energy that was actually extracted
+	 */
+	public long depleteEnergy(long maxExtract, boolean simulate)
+	{
+		long energyExtracted = Math.min(energy, maxExtract);
+		if(!simulate)
+			energy -= energyExtracted;
+		
+		if(energyExtracted != 0)
+			onEnergyChanged(energyExtracted, simulate);
+		
+		return energyExtracted;
+	}
+	
+	/**
+	 * @return Energy currently stored by this Energy Storage, but limited by max int value
+	 */
 	@Override
     public int getEnergyStored()
     {
         return regularEnergy(getTrueEnergyStored());
     }
 	
+	/**
+	 * @return Real energy currently stored by this Energy Storage, not limited by max int value
+	 */
 	public long getTrueEnergyStored()
 	{
 		return this.energy;
 	}
-
+	
+	/**
+	 * @return Capacity of this Energy Storage, but limited by max int value
+	 */
     @Override
     public int getMaxEnergyStored()
     {
         return regularEnergy(getTrueMaxEnergyStored());
     }
-    
-    public long getTrueMaxEnergyStored()
+	
+	/**
+	 * @return Real capacity of this Energy Storage, not limited by max int value
+	 */
+	public long getTrueMaxEnergyStored()
     {
         return capacity;
     }
@@ -101,12 +125,17 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
     @Override
     public boolean canReceive()
     {
-        return maxReceive() > 0 && this.energy < getTrueMaxEnergyStored();
+        return maxReceive() > 0;
     }
     
     public boolean canReceive(long receivedEnergy)
 	{
 		return energy + receivedEnergy <= getTrueMaxEnergyStored();
+	}
+	
+	public boolean hasEnergy(long energy)
+	{
+		return getTrueEnergyStored() >= energy;
 	}
     
     
@@ -120,32 +149,40 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	
 	public abstract void onEnergyChanged(long difference, boolean simulate);
 	
+	/**
+	 * @return The maximum amount of energy this Energy Storage can receive in a single tick from other Energy Storages
+	 */
 	public long maxReceive()
 	{
 		return this.maxReceive;
 	}
 	
+	/**
+	 * @return The maximum amount of energy that can be extracted from this Energy Storage in a single tick by other Energy Storages
+	 */
 	public long maxExtract()
 	{
 		return this.maxExtract;
 	}
-
-    @Override
-    public Tag serializeNBT()
-    {
-        return LongTag.valueOf(this.energy);
-    }
-
-    @Override
-    public void deserializeNBT(Tag nbt)
-    {
-    	if(!(nbt instanceof LongTag longTag))
-    		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-    	
-    	this.setEnergy(longTag.getAsLong());
-    }
+	
+	@Override
+	public Tag serializeNBT()
+	{
+	return LongTag.valueOf(this.energy);
+	}
+	
+	@Override
+	public void deserializeNBT(Tag nbt)
+	{
+		if(!(nbt instanceof LongTag longTag))
+			throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
+	
+		this.setEnergy(longTag.getAsLong());
+	}
     
-    public static int regularEnergy(long energy)
+ 
+	
+	public static int regularEnergy(long energy)
     {
     	return (int) Math.min(Integer.MAX_VALUE, energy);
     }

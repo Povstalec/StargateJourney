@@ -4,23 +4,21 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public class PegasusDHDMenu extends AbstractDHDMenu
+public class PegasusDHDMenu extends AbstractDHDMenu<PegasusDHDEntity>
 {
 	
-	public PegasusDHDMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
+	public PegasusDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.PEGASUS_DHD.get(), containerId, inv, extraData);
-        this.symbolsType = "sgjourney:pegasus";
+		super(MenuInit.PEGASUS_DHD.get(), containerId, inventory, (PegasusDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 	}
 
-    public PegasusDHDMenu(int containerId, Inventory inv, BlockEntity entity)
+    public PegasusDHDMenu(int containerId, Inventory inventory, PegasusDHDEntity dhd)
     {
-        super(MenuInit.PEGASUS_DHD.get(), containerId, inv, entity);
-        this.symbolsType = "sgjourney:pegasus";
+        super(MenuInit.PEGASUS_DHD.get(), containerId, inventory, dhd);
     }
 
 	@Override

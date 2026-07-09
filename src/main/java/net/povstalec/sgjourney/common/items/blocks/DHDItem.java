@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 
 public class DHDItem extends BlockItem
 {
@@ -58,6 +58,12 @@ public class DHDItem extends BlockItem
             	}
             }
 		}
+		else
+		{
+			BlockEntity baseEntity = level.getBlockEntity(pos);
+			if(baseEntity instanceof AbstractDHDEntity dhd)
+				dhd.generateAdditional(StructureGenEntity.Step.READY);
+		}
 		
 		return false;
 	}
@@ -66,14 +72,27 @@ public class DHDItem extends BlockItem
 	{
 		if(baseEntity instanceof AbstractDHDEntity dhd)
 		{
+			StructureGenEntity.Step generationStep;
+			
+			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP));
+			else
+				generationStep = StructureGenEntity.Step.GENERATED;
+			
 			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP)))
 				dhd.setToGenerate();
 			
-			if(baseEntity instanceof CrystalDHDEntity crystalDHD)
+			if(generationStep == StructureGenEntity.Step.GENERATED)
+				dhd.generateAdditional(StructureGenEntity.Step.GENERATED);
+			else
 			{
-				crystalDHD.recalculateCrystals();
-				return true;
+				dhd.generateAdditional(StructureGenEntity.Step.SETUP);
+				// Clear symbols manually when placing the gate here, because Minecraft fires onLoad() before any kind of useful loading of information actually happens
+				if(dhd instanceof PegasusDHDEntity pegasusDHD)
+					pegasusDHD.clearSymbols();
 			}
+			
+			return true;
 		}
 		
 		return false;

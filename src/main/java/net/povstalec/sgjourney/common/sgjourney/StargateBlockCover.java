@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -19,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
@@ -95,6 +98,63 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		return ItemStack.EMPTY;
 	}
 	
+	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, RandomSource randomSource)
+	{
+		getBlockAt(part).ifPresent(coverBlockState ->
+		{
+			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
+				weatheringBlock.changeOverTime(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+		});
+	}
+	
+	public boolean undoWeatheringAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> previousState = SGJourneyWeatheringBlock.getPrevious(state.get());
+			if(previousState.isPresent())
+			{
+				blockStates.put(part, previousState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean applyWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state.get());
+			if(waxedState.isPresent())
+			{
+				blockStates.put(part, waxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean removeWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> unwaxedState = SGJourneyWeatheringBlock.getUnwaxed(state.get());
+			if(unwaxedState.isPresent())
+			{
+				blockStates.put(part, unwaxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public CompoundTag serializeNBT()
 	{
@@ -125,6 +185,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				
 				if(result.isPresent())
 					blockStates.put(part, result.get());
+			} else {
+				removeBlockAt(part);
 			}
 		}
 	}

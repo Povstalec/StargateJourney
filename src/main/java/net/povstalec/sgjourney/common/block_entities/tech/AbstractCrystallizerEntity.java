@@ -3,18 +3,22 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -23,49 +27,42 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientboundCrystallizerUpdatePacket;
 
-public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
+import java.util.Optional;
+
+public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
 {
 	private static final String INVENTORY = "Inventory"; //TODO For legacy reasons
 	
-	private static final String PROGRESS = "progress";
 	private static final String CRYSTAL_BASE_INVENTORY = "crystal_base_inventory";
 	private static final String PRIMARY_INGREDIENT_INVENTORY = "primary_ingredient_inventory";
 	private static final String SECONDARY_INGREDIENT_INVENTORY = "secondary_ingredient_inventory";
 	private static final String OUTPUT_INVENTORY = "output_inventory";
 	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
-	
-	public static final int LIQUID_NAQUADAH_CAPACITY = 4000;
-	public static final int MAX_PROGRESS = 200;
     
-	protected final ItemStackHandler crystalBaseHandler = createCrystalBaseHandler();
+	public final ItemStackHandler crystalBaseHandler = createCrystalBaseHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalBaseHandler = LazyOptional.of(() -> crystalBaseHandler);
-	protected final ItemStackHandler primaryIngredientHandler = createIngredientHandler();
+	public final ItemStackHandler primaryIngredientHandler = createIngredientHandler();
 	protected final LazyOptional<IItemHandler> lazyPrimaryIngredientHandler = LazyOptional.of(() -> primaryIngredientHandler);
-	protected final ItemStackHandler secondaryIngredientHandler = createIngredientHandler();
+	public final ItemStackHandler secondaryIngredientHandler = createIngredientHandler();
 	protected final LazyOptional<IItemHandler> lazySecondaryIngredientHandler = LazyOptional.of(() -> secondaryIngredientHandler);
-	protected final ItemStackHandler outputHandler = createOutputHandler();
+	public final ItemStackHandler outputHandler = createOutputHandler();
 	protected final LazyOptional<IItemHandler> lazyOutputHandler = LazyOptional.of(() -> outputHandler);
-	protected final ItemStackHandler fluidInputHandler = createFluidInputHandler();
+	public final ItemStackHandler fluidInputHandler = createFluidInputHandler();
 	protected final LazyOptional<IItemHandler> lazyFluidInputHandler = LazyOptional.of(() -> fluidInputHandler);
 	
 	protected LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 	
-	public int progress = 0;
-	
 	public AbstractCrystallizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state);
+		super(type, pos, state, new SimpleFluidContainer(3, 1));
 	}
 	
 	@Override
 	public void onLoad()
 	{
 		super.onLoad();
-		lazyFluidHandler = LazyOptional.of(() -> fluidTank);
+		lazyFluidHandler = LazyOptional.of(() -> inputFluidTank);
 	}
 	
 	@Override
@@ -87,16 +84,16 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 	{
 		super.load(nbt);
 		
-		if(nbt.contains(INVENTORY))
+		if(nbt.contains(INVENTORY)) // Old inventory getting updated
 		{
-			ItemStackHandler itemHandler = new ItemStackHandler(5);
-			itemHandler.deserializeNBT(nbt.getCompound(INVENTORY));
+			ItemStackHandler tempHandler = new ItemStackHandler(5);
+			tempHandler.deserializeNBT(nbt.getCompound(INVENTORY));
 			
-			crystalBaseHandler.insertItem(0, itemHandler.getStackInSlot(0), false);
-			primaryIngredientHandler.insertItem(0, itemHandler.getStackInSlot(1), false);
-			secondaryIngredientHandler.insertItem(0, itemHandler.getStackInSlot(2), false);
-			outputHandler.insertItem(0, itemHandler.getStackInSlot(3), false);
-			fluidInputHandler.insertItem(0, itemHandler.getStackInSlot(4), false);
+			crystalBaseHandler.insertItem(0, tempHandler.getStackInSlot(0), false);
+			primaryIngredientHandler.insertItem(0, tempHandler.getStackInSlot(1), false);
+			secondaryIngredientHandler.insertItem(0, tempHandler.getStackInSlot(2), false);
+			outputHandler.insertItem(0, tempHandler.getStackInSlot(3), false);
+			fluidInputHandler.insertItem(0, tempHandler.getStackInSlot(4), false);
 		}
 		else
 		{
@@ -104,12 +101,11 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 			primaryIngredientHandler.deserializeNBT(nbt.getCompound(PRIMARY_INGREDIENT_INVENTORY));
 			secondaryIngredientHandler.deserializeNBT(nbt.getCompound(SECONDARY_INGREDIENT_INVENTORY));
 			outputHandler.deserializeNBT(nbt.getCompound(OUTPUT_INVENTORY));
+			InventoryUtil.expandSlotsIfNeeded(outputHandler, 2);
 			fluidInputHandler.deserializeNBT(nbt.getCompound(FLUID_INPUT_INVENTORY));
 		}
 		
-		fluidTank.readFromNBT(nbt);
-		
-		progress = nbt.getInt(PROGRESS);
+		inputFluidTank.readFromNBT(nbt);
 	}
 	
 	@Override
@@ -121,13 +117,21 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		nbt.put(OUTPUT_INVENTORY, outputHandler.serializeNBT());
 		nbt.put(FLUID_INPUT_INVENTORY, fluidInputHandler.serializeNBT());
 		
-		nbt = fluidTank.writeToNBT(nbt);
+		nbt = inputFluidTank.writeToNBT(nbt);
 		
-		nbt.putInt(PROGRESS, progress);
 		super.saveAdditional(nbt);
 	}
 	
-	public abstract Fluid getDesiredFluid();
+	public abstract boolean isDesiredInputFluid(FluidStack fluidStack);
+	
+	@Override
+	protected void updateSimpleContainer()
+	{
+		this.simpleContainer.setItem(0, crystalBaseHandler.getStackInSlot(0));
+		this.simpleContainer.setItem(1, primaryIngredientHandler.getStackInSlot(0));
+		this.simpleContainer.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
+		this.simpleContainer.setFluid(0, inputFluidTank.getFluid());
+	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
@@ -156,29 +160,34 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		return super.getCapability(capability, side);
 	}
 	
-	private final FluidTank fluidTank = new FluidTank(LIQUID_NAQUADAH_CAPACITY)
+	public abstract int inputFluidTankCapacity();
+	
+	public abstract int maxFluidReceive();
+	
+	private final FluidTank inputFluidTank = new FluidTank(inputFluidTankCapacity())
 	{
 		@Override
 		protected void onContentsChanged()
 		{
+			updateSimpleContainer();
 			setChanged();
 	    }
 		
 		@Override
 	    public boolean isFluidValid(FluidStack stack)
 	    {
-			return stack.getFluid() == getDesiredFluid();
+			return isDesiredInputFluid(stack);
 	    }
 	};
 	
 	public void setFluid(FluidStack fluidStack)
 	{
-		this.fluidTank.setFluid(fluidStack);
+		this.inputFluidTank.setFluid(fluidStack);
 	}
 	
-	public FluidStack getFluid()
+	public FluidStack getFluidStack()
 	{
-		return this.fluidTank.getFluid();
+		return this.inputFluidTank.getFluid();
 	}
 	
 	private ItemStackHandler createCrystalBaseHandler() // 0
@@ -188,13 +197,8 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 			@Override
 			protected void onContentsChanged(int slot)
 			{
+				updateSimpleContainer();
 				setChanged();
-			}
-			
-			@Override
-			public int getSlotLimit(int slot)
-			{
-				return 64;
 			}
 		};
 	}
@@ -206,20 +210,15 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 			@Override
 			protected void onContentsChanged(int slot)
 			{
+				updateSimpleContainer();
 				setChanged();
-			}
-			
-			@Override
-			public int getSlotLimit(int slot)
-			{
-				return 64;
 			}
 		};
 	}
 	
 	private ItemStackHandler createOutputHandler() // 3
 	{
-		return new ItemStackHandler(1)
+		return new ItemStackHandler(2)
 		{
 			@Override
 			protected void onContentsChanged(int slot)
@@ -228,15 +227,9 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 			}
 			
 			@Override
-			public int getSlotLimit(int slot)
-			{
-				return 64;
-			}
-			
-			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return false;
+				return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
 			}
 			
 			@Override
@@ -299,104 +292,95 @@ public abstract class AbstractCrystallizerEntity extends EnergyBlockEntity
 		return Direction.NORTH;
 	}
 
-	public boolean hasFluidItem()
+	public boolean hasInputFluidItem()
 	{
     	return fluidInputHandler.getStackInSlot(0).getCount() > 0;
 	}
 	
 	public void fillFluidTank(FluidStack stack, ItemStack container)
 	{
-		fluidTank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
+		inputFluidTank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
 
-        fluidInputHandler.extractItem(0, 1, false);
+		fluidInputHandler.extractItem(0, 1, false);
 		fluidInputHandler.insertItem(0, container, false);
     }
 	
-	public void drainFluidFromItem()
+	public void dumpEmptyFluidContainers()
+	{
+		ItemStack container = fluidInputHandler.getStackInSlot(0);
+		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+		if(fluidHandler.isPresent())
+		{
+			if(fluidHandler.get().getFluidInTank(0).isEmpty()) // Try placing the container in the dump
+				InventoryUtil.dumpIfPossible(fluidInputHandler, 0, outputHandler, 1);
+		}
+		else
+			InventoryUtil.dumpIfPossible(fluidInputHandler, 0, outputHandler, 1);
+	}
+	
+	public void drainFluidFromInputItem()
 	{
 		fluidInputHandler.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
 		{
-			int drainAmount = Math.min(fluidTank.getSpace(), 1000);
-			FluidStack stack = handler.getFluidInTank(0);
+			int drainAmount = Math.min(inputFluidTank.getSpace(), maxFluidReceive());
+			FluidStack fluidStack = handler.getFluidInTank(0);
 			
-			if(fluidTank.isFluidValid(stack))
+			if(inputFluidTank.isFluidValid(fluidStack) && isSameFluidOrEmpty(inputFluidTank.getFluidInTank(0), fluidStack))
 			{
-				stack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-				fillFluidTank(stack, handler.getContainer());
+				fluidStack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+				fillFluidTank(fluidStack, handler.getContainer());
 			}
 		});
 	}
 	
-	public LazyOptional<IItemHandler> getItemHandler(int slot)
+	public void dumpInputFluidTank()
 	{
-		return switch(slot)
-		{
-			case 1 -> lazyPrimaryIngredientHandler;
-			case 2 -> lazySecondaryIngredientHandler;
-			case 3 -> lazyOutputHandler;
-			case 4 -> lazyFluidInputHandler;
-			default -> lazyCrystalBaseHandler;
-		};
+		inputFluidTank.drain(inputFluidTank.getCapacity(), IFluidHandler.FluidAction.EXECUTE);
 	}
 	
-	//============================================================================================
-	//*******************************************Energy*******************************************
-	//============================================================================================
-
-	@Override
-	protected long capacity()
+	public boolean canOutput(R recipe)
 	{
-		return 0;
-	}
-
-	@Override
-	protected long maxReceive()
-	{
-		return 0;
-	}
-
-	@Override
-	protected long maxExtract()
-	{
-		return 0;
-	}
-	
-	protected static boolean hasSpaceInOutputSlot(SimpleContainer inventory, ItemStack stack)
-	{
-		if(inventory.getItem(3).getMaxStackSize() <= inventory.getItem(3).getCount())
+		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
+		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem().getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-        return inventory.getItem(3).getItem() == stack.getItem() || inventory.getItem(3).isEmpty();
-    }
-
-	protected abstract boolean hasIngredients();
-
-	protected abstract void crystallize();
-	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity crystallizer)
-	{
-		if(level.isClientSide())
-			return;
-		
-	    if(crystallizer.hasFluidItem())
-	    	crystallizer.drainFluidFromItem();
-	    
-	    if(crystallizer.hasIngredients() && crystallizer.fluidTank.getFluidAmount() > 0)
-	    {
-	    	crystallizer.progress++;
-	    	crystallizer.fluidTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
-	    	setChanged(level, pos, state);
-	    	
-	    	if(crystallizer.progress >= MAX_PROGRESS)
-	    		crystallizer.crystallize();
-	    }
-	    else
-	    {
-	    	crystallizer.progress = 0;
-	    	setChanged(level, pos, state);
-	    }
-	    
-	    PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(crystallizer.worldPosition)), new ClientboundCrystallizerUpdatePacket(crystallizer.worldPosition, crystallizer.getFluid(), crystallizer.progress));
+		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem());
 	}
 	
+	@Override
+	public void depleteIngredients(R recipe)
+	{
+		crystalBaseHandler.extractItem(0, recipe.getAmountInSlot(0), false);
+		if(recipe.depletePrimary())
+			primaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(1), false);
+		if(recipe.depleteSecondary())
+			secondaryIngredientHandler.extractItem(0, recipe.getAmountInSlot(2), false);
+		inputFluidTank.drain(recipe.getInputFluid(), IFluidHandler.FluidAction.EXECUTE);
+	}
+	
+	@Override
+	public void createOutput(R recipe)
+	{
+		ItemStack outputStack = outputHandler.getStackInSlot(0);
+		
+		if(outputStack.isEmpty())
+			outputHandler.setStackInSlot(0, recipe.getResultItem());
+		else if(recipe.getResultItem().is(outputStack.getItem()))
+			outputStack.grow(1);
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity<?> crystallizer)
+	{
+		if(!level.isClientSide())
+		{
+			if(crystallizer.hasInputFluidItem())
+				crystallizer.drainFluidFromInputItem();
+			crystallizer.dumpEmptyFluidContainers();
+		}
+		
+		ProgressRecipeEnergyBlockEntity.tick(level, pos, state, crystallizer);
+		
+		if(!level.isClientSide())
+	    	crystallizer.updateClient();
+	}
 }

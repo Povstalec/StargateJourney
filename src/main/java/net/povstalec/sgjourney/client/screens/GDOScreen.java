@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.screens;
 
-import java.util.UUID;
-
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,24 +18,23 @@ public class GDOScreen extends Screen
 {
 	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_background.png");
 
-	private int imageWidth = 240;
-	private int imageHeight = 120;
+	private final int imageWidth = 240;
+	private final int imageHeight = 120;
 	
-	private final UUID playerId;
 	private final boolean mainHand;
 	private String idc;
 	private int frequency;
 	
 	private boolean toggledFrequency = false;
 	
-	public GDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+	public GDOScreen(boolean mainHand, String idc, int frequency)
 	{
 		super(Component.empty());
 		
-		this.playerId = playerId;
+		this.mainHand = mainHand;
+		
 		this.idc = idc;
 		this.frequency = frequency;
-		this.mainHand = mainHand;
 	}
     
     @Override
@@ -172,7 +169,7 @@ public class GDOScreen extends Screen
     		if(idc.length() >= 16)
         		return;
         	
-        	idc = idc + String.valueOf(number);
+        	idc = idc + number;
     	}
     	else
     	{
@@ -192,7 +189,7 @@ public class GDOScreen extends Screen
     {
     	if(!toggledFrequency)
     	{
-        	if(idc.length() <= 0)
+        	if(idc.isEmpty())
         		return;
         	
         	idc = idc.substring(0, idc.length() - 1);

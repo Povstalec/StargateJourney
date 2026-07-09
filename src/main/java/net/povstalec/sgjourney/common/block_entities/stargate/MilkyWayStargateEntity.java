@@ -4,6 +4,8 @@ import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -11,35 +13,38 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundMilkyWayStargateUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayStargate;
+import org.jetbrains.annotations.NotNull;
 
-public class MilkyWayStargateEntity extends RotatingStargateEntity
+public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlockEntityStargate>
 {
+	public static final String IS_CHEVRON_OPEN = "is_chevron_open";
+	
 	public static final int MAX_ROTATION = 156;
 	
 	public static final int TOTAL_SYMBOLS = 39;
 	public static final int RING_SEGMENTS = 3;
 	public static final int SYMBOLS_PER_SEGMENT = TOTAL_SYMBOLS / RING_SEGMENTS;
 
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way_back_chevron");
+	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("milky_way_back_chevron");
 	
 	public boolean isChevronOpen = false;
 
 	public MilkyWayStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "milky_way/milky_way"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, MAX_ROTATION);
+		super(BlockEntityInit.MILKY_WAY_STARGATE.get(), StargateInit.MILKY_WAY.get(), StargateJourney.sgjourneyLocation("milky_way"), pos, state, TOTAL_SYMBOLS, 2, MAX_ROTATION);
 	}
 
 	@Override
@@ -47,8 +52,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	{
 		super.serializeStargateInfo(tag);
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		return tag;
 	}
@@ -56,13 +60,34 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	@Override
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
-		if(tag.contains(POINT_OF_ORIGIN))
-			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-		
-		if(tag.contains(SYMBOLS))
-			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
     	
     	super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		tag.putBoolean(IS_CHEVRON_OPEN, isChevronOpen);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+			
+			isChevronOpen = tag.getBoolean(IS_CHEVRON_OPEN);
+		}
 	}
 	
 	@Override
@@ -72,7 +97,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		if(this.isChevronOpen)
 		{
@@ -80,7 +105,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 			chevronSound(getCurrentChevron(), false, false, false);
 		}
 		
-		return super.resetStargate(feedback, updateInterfaces);
+		return super.resetStargate(feedback);
 	}
 	
 	private short getCurrentChevron()
@@ -102,23 +127,18 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback encodeChevron()
+	public StargateInfo.FeedbackMessage encodeChevron()
 	{
 		if(!isChevronOpen())
-			return setRecentFeedback(StargateInfo.Feedback.CHEVRON_NOT_OPEN);
+			return setRecentFeedback(StargateInfo.Feedback.CHEVRON_NOT_OPEN.withInfo());
 		
 		if(!level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 		
-		int symbol = getCurrentSymbol();
-		
-		if(symbol == 0)
-			return setRecentFeedback(StargateInfo.Feedback.CANNOT_ENCODE_POINT_OF_ORIGIN);
-		
-		return setRecentFeedback(encodeChevron(symbol, false, true));
+		return setRecentFeedback(encodeChevron(getCurrentSymbol(), false, true));
 	}
 	
-	public StargateInfo.Feedback openChevron()
+	public StargateInfo.FeedbackMessage openChevron()
 	{
 		if(!this.isChevronOpen)
 		{
@@ -129,35 +149,35 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 				this.isChevronOpen = true;
 				
 				if(!level.isClientSide())
-					synchronizeWithClient();
+					updateClient();
 				
-				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_RAISED);
+				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_OPENED.withInfo());
 			}
 			else
-				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
+				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo());
 		}
-		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_OPENED);
+		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_OPENED.withInfo());
 	}
 	
-	public StargateInfo.Feedback closeChevron()
+	public StargateInfo.FeedbackMessage closeChevron()
 	{
 		if(this.isChevronOpen)
 		{
 			this.isChevronOpen = false;
 			
-			StargateInfo.Feedback feedback = engageSymbol(getCurrentSymbol());
+			StargateInfo.FeedbackMessage feedback = directEngageSymbol(getCurrentSymbol(), true);
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
-			if(feedback == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)
+			if(feedback.feedback() == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)
 				chevronSound(getCurrentChevron(), false, false, false);
 			
 			return setRecentFeedback(feedback);
 		}
 		
 		if(!level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 		
-		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED);
+		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED.withInfo());
 	}
 	
 	//============================================================================================
@@ -169,14 +189,14 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	{
 		if(!isConnected() && !this.isChevronOpen)
 		{
-			if(this.rotating)
+			if(this.rotationDirection.isRotating)
 				rotateToTarget();
 			else if(this.signalStrength > 0 && this.signalStrength < 15)
 			{
 				if(this.signalStrength > 7)
-					rotate(false);
+					rotate(RotationDirection.ANTICLOCKWISE);
 				else
-					rotate(true);
+					rotate(RotationDirection.CLOCKWISE);
 			}
 			else
 				syncRotation();
@@ -187,10 +207,10 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback startRotation(int desiredSymbol, boolean rotateClockwise)
+	public StargateInfo.FeedbackMessage startRotation(int desiredSymbol, RotationDirection rotateClockwise)
 	{
 		if(this.isChevronOpen)
-			return StargateInfo.Feedback.ROTATION_BLOCKED;
+			return StargateInfo.Feedback.ROTATION_BLOCKED.withInfo();
 		
 		return super.startRotation(desiredSymbol, rotateClockwise);
 	}
@@ -209,29 +229,19 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 				if(!isConnected())
 					openChevron();
 				else
-					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN, true);
+					disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN.withInfo());
 			}
 		}
 		else if(this.signalStrength == 0 && this.previousSignalStrength == 15)
 			closeChevron();
 		
 		if(!this.level.isClientSide())
-			synchronizeWithClient();
+			updateClient();
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		RotatingStargateEntity.tick(level, pos, state, stargate);
-	}
-	
-	@Override
-	public boolean synchronizeWithClient()
-	{
-		if(!super.synchronizeWithClient())
-			return false;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundMilkyWayStargateUpdatePacket(this.worldPosition, this.isChevronOpen));
-		return true;
 	}
 
 	@Override
@@ -241,9 +251,9 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerMilkyWayStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerMilkyWayStargateMethods(wrapper);
 	}
 	
 	@Override
@@ -260,15 +270,15 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 	{
 		if(generationStep == StructureGenEntity.Step.SETUP)
 		{
-			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
 			
-			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
 		}
 		else
 		{
-			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 			{
 				if(localPointOfOrigin)
 					symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
@@ -276,7 +286,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity
 					symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 			}
 			
-			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
 		}
 	}

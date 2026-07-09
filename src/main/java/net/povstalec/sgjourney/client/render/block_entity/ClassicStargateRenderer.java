@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
@@ -36,14 +34,14 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
 	@Override
 	protected ClassicStargateVariant getClientVariant(ClassicStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
+		if(stargateVariant != null)
 		{
-			if(stargateVariant.get().isFound())
-				return ClientStargateVariants.getClassicStargateVariant(stargateVariant.get().clientVariant());
-			else if(!stargateVariant.get().isMissing())
-				stargateVariant.get().handleLocation(ClientStargateVariants.hasClassicStargateVariant(stargateVariant.get().clientVariant()));
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getClassicStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasClassicStargateVariant(stargateVariant.clientVariant()));
 		}
 		
 		return ClientStargateVariants.getClassicStargateVariant(stargate.defaultVariant());

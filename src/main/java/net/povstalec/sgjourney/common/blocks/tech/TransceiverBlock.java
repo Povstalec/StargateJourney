@@ -127,7 +127,7 @@ public class TransceiverBlock extends Block implements EntityBlock
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof TransceiverEntity) 
+        	if(blockEntity instanceof TransceiverEntity transceiver)
         	{
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -140,7 +140,7 @@ public class TransceiverBlock extends Block implements EntityBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new TransceiverMenu(windowId, playerInventory, blockEntity);
+        				return new TransceiverMenu(windowId, playerInventory, transceiver);
         			}
         		};
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

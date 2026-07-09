@@ -1,0 +1,6 @@
+{
+    "parent": "block/cube_all",
+    "textures": {
+        "all": "sgjourney:block/raw_naquadria_block"
+    }
+}

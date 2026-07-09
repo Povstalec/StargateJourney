@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.sound;
 
-import java.util.Optional;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
@@ -21,7 +19,7 @@ public class SoundAccess
 	
     public static void playWormholeOpenSound(BlockPos pos, boolean incoming)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, getWormholeOpenSound(stargate, incoming), 0.75F);
     		minecraft.getSoundManager().play(sound);
@@ -30,7 +28,7 @@ public class SoundAccess
 	
     public static void playWormholeIdleSound(BlockPos pos, boolean incoming)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		if(stargate.wormholeIdleSound == null || !stargate.wormholeIdleSound.hasSound())
     			stargate.wormholeIdleSound = new StargateSoundWrapper.WormholeIdle(stargate, incoming);
@@ -41,7 +39,7 @@ public class SoundAccess
 	
     public static void playWormholeCloseSound(BlockPos pos, boolean incoming)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, getWormholeCloseSound(stargate, incoming), 0.75F);
     		minecraft.getSoundManager().play(sound);
@@ -50,7 +48,7 @@ public class SoundAccess
 	
     public static void playIrisThudSound(BlockPos pos)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, SoundInit.IRIS_THUD.get(), 0.75F);
     		minecraft.getSoundManager().play(sound);
@@ -59,7 +57,7 @@ public class SoundAccess
 	
     public static void playChevronSound(BlockPos pos, short chevron, boolean incoming, boolean open, boolean encode)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate && (open || encode))
     		{
@@ -87,22 +85,22 @@ public class SoundAccess
     	}
     }
 	
-    public static void playFailSound(BlockPos pos)
+    public static void playFailSound(BlockPos pos, StargateInfo.Feedback feedback)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
-    		GenericStargateSound sound = new GenericStargateSound(stargate, getFailSound(stargate, StargateInfo.Feedback.UNKNOWN_ERROR), 0.5F); //TODO Accept different kinds of errors
+    		GenericStargateSound sound = new GenericStargateSound(stargate, getFailSound(stargate, feedback), 0.5F);
     		minecraft.getSoundManager().play(sound);
     	}
     }
 	
     public static void playRotationSound(BlockPos pos, boolean stop)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
     		if(stargate.spinSound == null)
     		{
-    			if(stargate instanceof RotatingStargateEntity rotatingStargate)
+    			if(stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 					stargate.spinSound = new StargateSoundWrapper.RingRotation(rotatingStargate);
     			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
     				stargate.spinSound = new StargateSoundWrapper.PegasusRingRotation(pegasusStargate);
@@ -126,7 +124,7 @@ public class SoundAccess
 	
     public static void playRotationStartupSound(BlockPos pos)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity<?> stargate)
     	{
     		if(stargate.buildupSound == null || !stargate.buildupSound.hasSound())
     			stargate.buildupSound = new StargateSoundWrapper.RotationStartup(stargate);
@@ -137,7 +135,7 @@ public class SoundAccess
 	
     public static void playRotationStopSound(BlockPos pos)
     {
-    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity stargate)
+    	if(minecraft.level.getBlockEntity(pos) instanceof RotatingStargateEntity<?> stargate)
     	{
     		GenericStargateSound sound = new GenericStargateSound(stargate, getRotationStopSound(stargate), 0.75F);
     		minecraft.getSoundManager().play(sound);
@@ -146,122 +144,122 @@ public class SoundAccess
     
     
     
-    private static SoundEvent getChevronEngageSound(AbstractStargateEntity stargate, short chevron)
+    private static SoundEvent getChevronEngageSound(AbstractStargateEntity<?> stargate, short chevron)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
-    	
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).chevronEngagedSounds().getSound(chevron));
+    	StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).chevronEngagedSounds().getSound(chevron));
 		
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).chevronEngagedSounds().getSound(chevron));
     }
     
     private static SoundEvent getChevronOpenSound(MilkyWayStargateEntity stargate, short chevron)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant()).chevronOpenSounds().getSound(chevron));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.clientVariant()).chevronOpenSounds().getSound(chevron));
     	
     	return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant()).chevronOpenSounds().getSound(chevron));
     }
     
     private static SoundEvent getChevronEncodeSound(MilkyWayStargateEntity stargate, short chevron)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant()).chevronEncodeSounds().getSound(chevron));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.clientVariant()).chevronEncodeSounds().getSound(chevron));
     	
     	return new SoundEvent(ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant()).chevronEncodeSounds().getSound(chevron));
     }
     
-    private static SoundEvent getChevronIncomingSound(AbstractStargateEntity stargate, short chevron)
+    private static SoundEvent getChevronIncomingSound(AbstractStargateEntity<?> stargate, short chevron)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).chevronIncomingSounds().getSound(chevron));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).chevronIncomingSounds().getSound(chevron));
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).chevronIncomingSounds().getSound(chevron));
     }
 	
 	public static SoundEvent getDialStartSound(UniverseStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getUniverseStargateVariant(stargateVariant.get().clientVariant()).dialStartSound());
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getUniverseStargateVariant(stargateVariant.clientVariant()).dialStartSound());
 		
 		return new SoundEvent(ClientStargateVariants.getUniverseStargateVariant(stargate.defaultVariant()).dialStartSound());
 	}
     
-    public static SoundEvent getRotationStartupSound(AbstractStargateEntity stargate)
+    public static SoundEvent getRotationStartupSound(AbstractStargateEntity<?> stargate)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.get().clientVariant(), stargate).rotationSounds().rotationStartupSound());
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.clientVariant(), stargate).rotationSounds().rotationStartupSound());
     	
     	return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationStartupSound());
     }
     
-    public static SoundEvent getRotationSound(AbstractStargateEntity stargate)
+    public static SoundEvent getRotationSound(AbstractStargateEntity<?> stargate)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.get().clientVariant(), stargate).rotationSounds().rotationSound());
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.clientVariant(), stargate).rotationSounds().rotationSound());
     	
     	return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationSound());
     }
     
-    public static SoundEvent getRotationStopSound(RotatingStargateEntity stargate)
+    public static SoundEvent getRotationStopSound(RotatingStargateEntity<?> stargate)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.get().clientVariant(), stargate).rotationSounds().rotationStopSound());
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargateVariant.clientVariant(), stargate).rotationSounds().rotationStopSound());
     	
     	return new SoundEvent(ClientStargateVariants.getRotatingStargateVariant(stargate.defaultVariant(), stargate).rotationSounds().rotationStopSound());
     }
     
-    private static SoundEvent getFailSound(AbstractStargateEntity stargate, StargateInfo.Feedback stargateFeedback)
+    private static SoundEvent getFailSound(AbstractStargateEntity<?> stargate, StargateInfo.Feedback stargateFeedback)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).failSounds().getSound(stargateFeedback));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).failSounds().getSound(stargateFeedback));
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).failSounds().getSound(stargateFeedback));
     }
     
-    private static SoundEvent getWormholeOpenSound(AbstractStargateEntity stargate, boolean incoming)
+    private static SoundEvent getWormholeOpenSound(AbstractStargateEntity<?> stargate, boolean incoming)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).wormholeSounds().getOpenSound(incoming));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).wormholeSounds().getOpenSound(incoming));
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).wormholeSounds().getOpenSound(incoming));
     }
     
-    public static SoundEvent getWormholeIdleSound(AbstractStargateEntity stargate, boolean incoming)
+    public static SoundEvent getWormholeIdleSound(AbstractStargateEntity<?> stargate, boolean incoming)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).wormholeSounds().getIdleSound(incoming));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).wormholeSounds().getIdleSound(incoming));
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).wormholeSounds().getIdleSound(incoming));
     }
     
-    private static SoundEvent getWormholeCloseSound(AbstractStargateEntity stargate, boolean incoming)
+    private static SoundEvent getWormholeCloseSound(AbstractStargateEntity<?> stargate, boolean incoming)
     {
-    	Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
-			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.get().clientVariant(), stargate).wormholeSounds().getCloseSound(incoming));
+		if(stargateVariant != null)
+			return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargateVariant.clientVariant(), stargate).wormholeSounds().getCloseSound(incoming));
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).wormholeSounds().getCloseSound(incoming));
     }

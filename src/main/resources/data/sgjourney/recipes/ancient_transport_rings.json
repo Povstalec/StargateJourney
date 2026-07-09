@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"TTT",
+		"TNT",
+		"EOC"
+	],
+	"key":
+	{
+		"T": { "item": "sgjourney:ancient_transport_ring" },
+		"N": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"E": { "item": "sgjourney:energy_crystal" },
+		"O": { "item": "sgjourney:control_crystal" },
+		"C": { "item": "sgjourney:communication_crystal" }
+	},
+	"result": { "item": "sgjourney:ancient_transport_rings" }
+}
