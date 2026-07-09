@@ -34,7 +34,15 @@ public class TabInit
 	
 	public static final RegistryObject<CreativeModeTab> STARGATE_BLOCKS = CREATIVE_MODE_TABS.register("stargate_blocks", () ->
 			CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.NAQUADAH_IRON_BLOCK.get()))
-					.title(Component.translatable("itemGroup.stargate_blocks")).build());
+					.title(Component.translatable("itemGroup.stargate_blocks"))
+					.displayItems((parameters, output) ->
+					{
+						if(parameters.hasPermissions())
+						{
+							//TODO
+						}
+					})
+					.build());
 	
 	public static final RegistryObject<CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->
 			CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))

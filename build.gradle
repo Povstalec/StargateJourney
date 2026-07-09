@@ -108,10 +108,10 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    //maven {
-    //    name = "jsg-api"
-    //    url = "https://maven.justsgmod.eu/api/"
-    //}
+    maven {
+        name = "jsg-api"
+        url = "https://maven.justsgmod.eu/api/"
+    }
 }
 
 dependencies {
@@ -127,7 +127,11 @@ dependencies {
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cct_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cct_version}"))
 
-    //compileOnly("dev.tauri:jsg:[version]")
+    implementation fg.deobf("maven.modrinth:mekanism:uxe1WQp4")
+    runtimeOnly fg.deobf("maven.modrinth:mekanism-generators:Th4Czz4N")
+
+    //compileOnly fg.deobf("dev.tauri:jsg:${jsg_version}")
+    //runtimeOnly fg.deobf("dev.tauri:jsg:${jsg_version}")
 }
 
 tasks.named('processResources', ProcessResources).configure {

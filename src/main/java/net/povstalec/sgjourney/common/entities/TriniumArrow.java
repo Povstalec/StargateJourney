@@ -35,8 +35,8 @@ public class TriniumArrow extends AbstractArrow
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult)
 	{
-		if(this.level.getBlockState(blockHitResult.getBlockPos()).is(TagInit.Blocks.TRINIUM_ARROW_CAN_BREAK) && this.getDeltaMovement().lengthSqr() >= MIN_BREAK_SPEED_SQR)
-			this.level.destroyBlock(blockHitResult.getBlockPos(), true);
+		if(this.level().getBlockState(blockHitResult.getBlockPos()).is(TagInit.Blocks.TRINIUM_ARROW_CAN_BREAK) && this.getDeltaMovement().lengthSqr() >= MIN_BREAK_SPEED_SQR)
+			this.level().destroyBlock(blockHitResult.getBlockPos(), true);
 		else
 			super.onHitBlock(blockHitResult);
 	}

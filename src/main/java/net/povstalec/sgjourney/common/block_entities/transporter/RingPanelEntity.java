@@ -473,7 +473,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public void startCoordTransport(Vec3 coords)
 	{
-		if(level.getBlockEntity(new BlockPos(coords)) instanceof AbstractTransporterEntity transporterEntity)
+		if(level.getBlockEntity(new BlockPos((int) Math.floor(coords.x()), (int) Math.floor(coords.y()), (int) Math.floor(coords.z()))) instanceof AbstractTransporterEntity transporterEntity)
 			startTransport(transporterEntity.getTransporter());
 	}
 	
