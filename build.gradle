@@ -94,10 +94,10 @@ repositories {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
     }
-    maven {
-        name "tterrag maven"
-        url "https://maven.tterrag.com/"
-    }
+    //maven {
+    //    name "tterrag maven"
+    //    url "https://maven.tterrag.com/"
+    //}
     maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
@@ -108,10 +108,10 @@ repositories {
             includeGroup "curse.maven"
         }
     }
-    maven {
-        name = "jsg-api"
-        url = "https://maven.justsgmod.eu/api/"
-    }
+    //maven {
+    //    name = "jsg-api"
+    //    url = "https://maven.justsgmod.eu/api/"
+    //}
 }
 
 dependencies {
