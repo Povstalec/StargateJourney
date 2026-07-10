@@ -1,3 +1,7 @@
 {
-    "parent": "sgjourney:block/goauld_transport_rings"
+	"parent": "item/generated",
+	"textures":
+	{
+		"layer0": "sgjourney:item/goauld_transport_rings"
+	}
 }

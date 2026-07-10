@@ -14,7 +14,7 @@ import net.minecraftforge.common.util.LazyOptional;
 
 public class AncientGeneProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
-	public static Capability<AncientGene> ANCIENT_GENE = CapabilityManager.get(new CapabilityToken<AncientGene>() {});
+	public static final Capability<AncientGene> ANCIENT_GENE = CapabilityManager.get(new CapabilityToken<AncientGene>() {});
 	private AncientGene ancientGene = null;
 	private final LazyOptional<AncientGene> optional = LazyOptional.of(this::getOrCreateAncientGene);
 	

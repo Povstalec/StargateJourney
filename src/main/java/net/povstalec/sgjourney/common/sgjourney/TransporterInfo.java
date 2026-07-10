@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.sgjourney;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
+import org.jetbrains.annotations.NotNull;
 
 public class TransporterInfo
 {
@@ -10,7 +10,6 @@ public class TransporterInfo
 	{
 		INFO,
 		ERROR,
-		SKIPPABLE_ERROR, // An error that can be skipped during dialing if there are other candidates for target Stargate
 		MAJOR_ERROR;
 		
 		public boolean isError()
@@ -20,30 +19,62 @@ public class TransporterInfo
 		
 		public boolean shouldPlaySound()
 		{
-			return this == MAJOR_ERROR || this == SKIPPABLE_ERROR;
+			return this == MAJOR_ERROR;
 		}
 	}
 	
 	public enum Feedback
 	{
 		NONE(0, TransporterInfo.FeedbackType.INFO, "none"),
-		UNKNOWN_ERROR(-1, TransporterInfo.FeedbackType.ERROR, "unknown");
+		UNKNOWN_ERROR(-1, TransporterInfo.FeedbackType.ERROR, "unknown"),
 		
-		private int code;
+		// Establishing Connection
+		CONNECTION_ESTABLISHED_DIMENSIONAL(1, TransporterInfo.FeedbackType.INFO, "connection_established.dimensional"),
+		CONNECTION_ESTABLISHED_SYSTEM_WIDE(2, TransporterInfo.FeedbackType.INFO, "connection_established.system_wide"),
+		CONNECTION_ESTABLISHED_RELAYED_DIMENSIONAL(3, TransporterInfo.FeedbackType.INFO, "connection_established.relayed_dimensional"),
+		CONNECTION_ESTABLISHED_RELAYED_SYSTEM_WIDE(4, TransporterInfo.FeedbackType.INFO, "connection_established.relayed_system_wide"),
+		CONNECTION_ESTABLISHED_RELAYED_INTERSTELLAR(5, TransporterInfo.FeedbackType.INFO, "connection_established.relayed_interstellar"),
+		CONNECTION_ESTABLISHED_RELAYED_INTERGALACTIC(6, TransporterInfo.FeedbackType.INFO, "connection_established.relayed_intergalactic"),
+		
+		INVALID_TRANSPORTER_ID(-2, TransporterInfo.FeedbackType.MAJOR_ERROR, "invalid_transporter_id"),
+		NO_TRANSPORTER_AT_COORDS(-3, TransporterInfo.FeedbackType.MAJOR_ERROR, "no_transporter_at_coords"),
+		NOT_ENOUGH_POWER(-4, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power"),
+		NOT_ENOUGH_POWER_IN_TARGET(-5, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_enough_power_in_target"),
+		SELF_OBSTRUCTED(-6, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_obstructed"),
+		TARGET_OBSTRUCTED(-7, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_obstructed"),
+		SELF_CONNECT(-8, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_connect"),
+		ALREADY_CONNECTED(-9, TransporterInfo.FeedbackType.MAJOR_ERROR, "already_connected"),
+		SELF_RESTRICTED(-10, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_restricted"),
+		TARGET_RESTRICTED(-11, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_restricted"),
+		TARGET_NOT_WHITELISTED(-12, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_not_whitelisted"),
+		NOT_WHITELISTED_BY_TARGET(-13, TransporterInfo.FeedbackType.MAJOR_ERROR, "not_whitelisted_by_target"),
+		TARGET_BLACKLISTED(-14, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_blacklisted"),
+		BLACKLISTED_BY_TARGET(-15, TransporterInfo.FeedbackType.MAJOR_ERROR, "blacklisted_by_target"),
+		
+		SELF_NO_INTERDIMENSIONAL_TRANSPORT(-16, TransporterInfo.FeedbackType.MAJOR_ERROR, "self_no_interdimensional_transport"),
+		TARGET_NO_INTERDIMENSIONAL_TRANSPORT(-17, TransporterInfo.FeedbackType.MAJOR_ERROR, "target_no_interdimensional_transport"),
+		NO_INTERSTELLAR_TRANSPORT(-18, TransporterInfo.FeedbackType.MAJOR_ERROR, "no_interstellar_transport"),
+		
+		// End Connection
+		CONNECTION_ENDED_BY_DISCONNECT(7, TransporterInfo.FeedbackType.INFO, "connection_ended.disconnect"),
+		CONNECTION_ENDED_BY_NETWORK(8, TransporterInfo.FeedbackType.INFO, "connection_ended.transporter_network"),
+		CONNECTION_NOT_FINISHED(-19, TransporterInfo.FeedbackType.ERROR, "connection_not_finished"),
+		
+		TRANSPORTER_DESTROYED(-20, TransporterInfo.FeedbackType.ERROR, "transporter_destroyed"),
+		COULD_NOT_REACH_TARGET_TRANSPORTER(-21, TransporterInfo.FeedbackType.MAJOR_ERROR, "could_not_reach_target_transporter"),
+		INTERRUPTED_BY_INCOMING_CONNECTION(-22, TransporterInfo.FeedbackType.ERROR, "interrupted_by_incoming_connection"), //TODO
+		
+		TARGET_NOT_LOADED(-23, TransporterInfo.FeedbackType.ERROR, "target_not_loaded");
+		
+		private final int code;
 		private final TransporterInfo.FeedbackType type;
 		private final String message;
-		private final Component feedbackMessage;
 		
 		Feedback(int code, TransporterInfo.FeedbackType type, String message)
 		{
 			this.code = code;
 			this.type = type;
 			this.message = message;
-			
-			if(type.isError())
-				this.feedbackMessage = createError(message, type == TransporterInfo.FeedbackType.MAJOR_ERROR || type == TransporterInfo.FeedbackType.SKIPPABLE_ERROR);
-			else
-				this.feedbackMessage = createInfo(message);
 		}
 		
 		public int getCode()
@@ -56,11 +87,6 @@ public class TransporterInfo
 			return this.message;
 		}
 		
-		public Component getFeedbackMessage()
-		{
-			return this.feedbackMessage;
-		}
-		
 		public boolean playFailSound()
 		{
 			return this.type.shouldPlaySound();
@@ -71,11 +97,6 @@ public class TransporterInfo
 			return this.type.isError();
 		}
 		
-		public boolean isSkippable()
-		{
-			return this.type == TransporterInfo.FeedbackType.SKIPPABLE_ERROR;
-		}
-		
 		public static TransporterInfo.Feedback fromOrdinal(int ordinal)
 		{
 			if(ordinal < 0 || ordinal >= TransporterInfo.Feedback.values().length)
@@ -83,17 +104,44 @@ public class TransporterInfo
 			
 			return TransporterInfo.Feedback.values()[ordinal];
 		}
-	}
-	
-	private static Component createInfo(String feedback)
-	{
-		return Component.translatable("message.sgjourney.transporter.info." + feedback);
-	}
-	
-	private static Component createError(String feedback, boolean majorError)
-	{
-		MutableComponent component = Component.translatable("message.sgjourney.transporter.error." + feedback);
 		
-		return majorError ? component.withStyle(ChatFormatting.DARK_RED) : component.withStyle(ChatFormatting.RED);
+		public FeedbackMessage withInfo(Object... additionalInfo)
+		{
+			return new FeedbackMessage(this, additionalInfo);
+		}
+	}
+	
+	public record FeedbackMessage(Feedback feedback, Object... additionalInfo)
+	{
+		public Component getMessageComponent()
+		{
+			if(feedback().isError())
+				return createError(feedback().message, feedback().type == FeedbackType.MAJOR_ERROR, additionalInfo());
+			else
+				return createInfo(feedback().message, additionalInfo());
+		}
+		
+		@Override
+		public @NotNull String toString()
+		{
+			StringBuilder message = new StringBuilder(feedback().getMessage());
+			
+			for(Object info : additionalInfo())
+			{
+				message.append(", ").append(info);
+			}
+			
+			return message.toString();
+		}
+	}
+	
+	private static Component createInfo(String feedback, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.transporter.info." + feedback, additionalInfo);
+	}
+	
+	private static Component createError(String feedback, boolean majorError, Object... additionalInfo)
+	{
+		return Component.translatable("message.sgjourney.transporter.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
 	}
 }

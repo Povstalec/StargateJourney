@@ -3,7 +3,7 @@
 	"textures":
 	{
 		"front": "sgjourney:block/heavy_naquadah_liquidizer_front",
-		"side": "sgjourney:block/heavy_naquadah_liquidizer_side",
-		"top": "sgjourney:block/heavy_naquadah_liquidizer_top"
+		"side": "sgjourney:block/chiseled_naquadah_block",
+		"top": "sgjourney:block/chiseled_naquadah_block"
 	}
 }

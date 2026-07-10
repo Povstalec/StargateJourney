@@ -1,19 +1,24 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.*;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public abstract class TransporterID
+public abstract class TransporterID implements Cloneable, Comparable<TransporterID>
 {
 	public static final String TRANSPORTER_ID = "transporter_id";
 	public static final String DIVIDER = "-";
 	
-	public static final byte FULL_ID_LENGTH = 9;
+	public static final byte FULL_ID_LENGTH = 7;
 	public static final byte MIN_SYMBOL = 1;
-	public static final byte MAX_SYMBOL = 6;
+	public static final byte MAX_SYMBOL = 8;
 	
 	protected int[] idArray = new int[0];
 	
@@ -53,12 +58,12 @@ public abstract class TransporterID
 	public static void verifyValidity(int[] idArray) throws IllegalArgumentException
 	{
 		if(idArray.length > FULL_ID_LENGTH)
-			throw new IllegalArgumentException("Transporter ID is too long <0, 9>");
+			throw new IllegalArgumentException("Transporter ID is too long <0, 7>");
 		
 		for(int j : idArray)
 		{
 			if(j < MIN_SYMBOL || j > MAX_SYMBOL)
-				throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 6>");
+				throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 8>");
 		}
 	}
 	
@@ -73,6 +78,33 @@ public abstract class TransporterID
 			return 0;
 		
 		return idArray[number];
+	}
+	
+	public boolean isValid()
+	{
+		return getLength() == FULL_ID_LENGTH;
+	}
+	
+	public ChatFormatting getChatFormatting()
+	{
+		return ChatFormatting.DARK_AQUA;
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
+	{
+		Style style = Style.EMPTY;
+		if(copyToClipboard)
+		{
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.transporter_id")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+		}
+		
+		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(chatFormatting));
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
+		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
 	public void saveToCompoundTag(CompoundTag tag, String name)
@@ -145,6 +177,22 @@ public abstract class TransporterID
 	}
 	
 	@Override
+	public TransporterID clone()
+	{
+		try
+		{
+			TransporterID transporterID = (TransporterID) super.clone();
+			transporterID.idArray = this.idArray.clone();
+			return transporterID;
+		}
+		catch(CloneNotSupportedException e)
+		{
+			StargateJourney.LOGGER.error("Could not clone TransporterID {}", String.valueOf(e));
+			return null;
+		}
+	}
+	
+	@Override
 	public boolean equals(Object object)
 	{
 		if(object instanceof TransporterID otherID)
@@ -156,7 +204,13 @@ public abstract class TransporterID
 	@Override
 	public int hashCode()
 	{
-		return Objects.hash(getSymbol(0), getSymbol(1), getSymbol(2), getSymbol(3), getSymbol(4), getSymbol(5), getSymbol(6), getSymbol(7), getSymbol(8));
+		return Objects.hash(getSymbol(0), getSymbol(1), getSymbol(2), getSymbol(3), getSymbol(4), getSymbol(5), getSymbol(6));
+	}
+	
+	@Override
+	public int compareTo(@NotNull TransporterID other)
+	{
+		return Arrays.compare(other.idArray, this.idArray);
 	}
 	
 	// Static functions
@@ -209,9 +263,15 @@ public abstract class TransporterID
 			super(idList);
 		}
 		
+		@Override
+		public Immutable clone()
+		{
+			return (TransporterID.Immutable) super.clone();
+		}
+		
 		// Static functions
 		
-		public static TransporterID.Immutable randomID(long seed)
+		public static Immutable randomID(long seed)
 		{
 			return new Immutable(randomTransporterIDArray(seed));
 		}
@@ -220,4 +280,78 @@ public abstract class TransporterID
 	//============================================================================================
 	//***********************************Mutable Transporter ID***********************************
 	//============================================================================================
+	
+	public static class Mutable extends TransporterID
+	{
+		
+		public Mutable(int... idArray)
+		{
+			super(idArray);
+		}
+		
+		public Mutable(TransporterID other)
+		{
+			super(other);
+		}
+		
+		public Mutable(String idString)
+		{
+			super(idString);
+		}
+		
+		public Mutable(Map<Double, Double> idTable)
+		{
+			super(idTable);
+		}
+		
+		public Mutable(List<Integer> idList)
+		{
+			super(idList);
+		}
+		
+		@Override
+		public Mutable clone()
+		{
+			return (TransporterID.Mutable) super.clone();
+		}
+		
+		// Static functions
+		
+		public static Mutable randomID(long seed)
+		{
+			return new Mutable(randomTransporterIDArray(seed));
+		}
+		
+		public Mutable reset()
+		{
+			idArray = new int[0];
+			return this;
+		}
+		
+		/**
+		 * @return Raw address array
+		 */
+		public int[] getArray()
+		{
+			return idArray;
+		}
+		
+		public boolean addSymbol(int symbol)
+		{
+			// Can't grow if it contains 0
+			if(!canGrow())
+				return false;
+			
+			if(symbol < 0)
+				return false;
+			
+			this.idArray = ArrayHelper.growIntArray(this.idArray, symbol);
+			return true;
+		}
+		
+		public boolean canGrow()
+		{
+			return idArray.length < FULL_ID_LENGTH;
+		}
+	}
 }

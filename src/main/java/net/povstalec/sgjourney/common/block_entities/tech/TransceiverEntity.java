@@ -89,7 +89,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();
 	}

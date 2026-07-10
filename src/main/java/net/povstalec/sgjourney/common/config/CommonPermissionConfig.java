@@ -4,8 +4,14 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonPermissionConfig
 {
+	public static SGJourneyConfigValue.IntValue stellar_update_permissions;
+	
 	public static SGJourneyConfigValue.IntValue protected_stargate_permissions;
 	public static SGJourneyConfigValue.IntValue protected_dhd_permissions;
+	
+	public static SGJourneyConfigValue.IntValue protected_transporter_permissions;
+	public static SGJourneyConfigValue.IntValue protected_transporter_controller_permissions;
+	
 	public static SGJourneyConfigValue.IntValue protected_zpm_hub_permissions;
 	
 	public static SGJourneyConfigValue.BooleanValue protected_inventory_access;
@@ -13,6 +19,12 @@ public class CommonPermissionConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
+		stellar_update_permissions = new SGJourneyConfigValue.IntValue(server, "server.stellar_update_permissions",
+				2, 0, 4,
+				"Decides the player permission level required for a player to run the Force Stellar Update command");
+		
+		
+		
 		protected_stargate_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_stargate_permissions",
 				0, 0, 4,
 				"Decides the player permission level required to modify or break protected Stargates");
@@ -20,6 +32,18 @@ public class CommonPermissionConfig
 		protected_dhd_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_dhd_permissions",
 				0, 0, 4,
 				"Decides the player permission level required to modify or break protected DHDs");
+		
+		
+		
+		protected_transporter_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_transporter_permissions",
+				0, 0, 4,
+				"Decides the player permission level required to modify or break protected Transporters");
+		
+		protected_transporter_controller_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_transporter_controller_permissions",
+				0, 0, 4,
+				"Decides the player permission level required to modify or break protected Transporter Controllers");
+		
+		
 		
 		protected_zpm_hub_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_hub_permissions",
 				0, 0, 4,

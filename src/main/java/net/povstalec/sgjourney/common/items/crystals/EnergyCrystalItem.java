@@ -7,6 +7,7 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -22,11 +23,17 @@ import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
-	public static final String ENERGY = "Energy";
+	public static final String ENERGY = "Energy"; //TODO Change this to "energy"
 	
 	public EnergyCrystalItem(Properties properties)
 	{
 		super(properties);
+	}
+	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.ENERGY;
 	}
 	
 	@Override
@@ -85,7 +92,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long energyTargetIncrease()
 	{
-		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
+		return CommonDHDConfig.energy_crystal_energy_target_increase.get();
 	}
 	
 	@Override
@@ -112,19 +119,14 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 			}
 		};
 	}
-
-	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").append(Component.literal(" " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-	}
 	
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_crystal.energy_target_increase").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.RED));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.energy_crystal.description"));
 	}
 	
 	public static final class Advanced extends EnergyCrystalItem
@@ -143,7 +145,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long energyTargetIncrease()
 		{
-			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
+			return CommonDHDConfig.advanced_energy_crystal_energy_target_increase.get();
 		}
 
 		@Override

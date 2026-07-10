@@ -1,0 +1,20 @@
+{
+	"variants":
+	{
+		"axis=x":
+		{
+			"model": "sgjourney:block/oxidized_naquadah_copper_block_horizontal",
+			"x": 90,
+			"y": 90
+		},
+		"axis=y":
+		{
+			"model": "sgjourney:block/oxidized_naquadah_copper_block"
+		},
+		"axis=z":
+		{
+			"model": "sgjourney:block/oxidized_naquadah_copper_block_horizontal",
+			"x": 90
+		}
+	}
+}

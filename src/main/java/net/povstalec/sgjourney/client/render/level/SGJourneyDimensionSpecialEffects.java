@@ -29,6 +29,8 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
 	public static final ResourceLocation ATHOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "athos");
 	
+	public static final ResourceLocation DESTINY_EFFECTS = new ResourceLocation(StargateJourney.MODID, "destiny");
+	
 	@Nullable
 	protected SGJourneySkyRenderer skyRenderer;
 	
@@ -107,6 +109,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.AbydosSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_abydos_sky.get();
@@ -121,6 +124,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.ChulakSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_chulak_sky.get();
@@ -135,6 +139,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.CavumTenebraeSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_cavum_tenebrae_sky.get();
@@ -149,6 +154,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.UnitasSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_unitas_sky.get();
@@ -163,6 +169,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.RimaSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_rima_sky.get();
@@ -181,6 +188,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.LanteaSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_lantea_sky.get();
@@ -195,9 +203,36 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			skyRenderer = new PlanetSkyRenderers.AthosSkyRenderer();
 		}
 		
+		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_athos_sky.get();
+		}
+	}
+	
+	//============================================================================================
+	//******************************************Destiny*******************************************
+	//============================================================================================
+	
+	public static class Destiny extends SGJourneyDimensionSpecialEffects
+	{
+		public Destiny()
+		{
+			super(192.0F, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.DestinySkyRenderer();
+		}
+		
+		@Override
+		@Nullable
+		public float[] getSunriseColor(float timeOfDay, float partialTicks)
+		{
+			return null;
+		}
+		
+		@Override
+		public boolean customSky()
+		{
+			return ClientSkyConfig.custom_destiny_sky.get();
 		}
 	}
 	
@@ -214,5 +249,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		// Pegasus
     	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
     	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
+		// Destiny
+		event.register(SGJourneyDimensionSpecialEffects.DESTINY_EFFECTS, new SGJourneyDimensionSpecialEffects.Destiny());
 	}
 }

@@ -9,7 +9,7 @@
 	
 	"key": 
 	{
-		"A": {"tag": "sgjourney:naquadah_iron_alloy"}
+		"A": {"item": "sgjourney:naquadah_iron_alloy"}
 	},
 	
 	"result": { "item": "sgjourney:naquadah_iron_rod", "count": 4 }

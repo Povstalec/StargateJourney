@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:stonecutting",
+	"count": 1,
+	
+	"ingredient": [{ "item": "sgjourney:naquadah_copper_block" }, { "item": "sgjourney:cut_naquadah_copper_block" }, { "item": "sgjourney:polished_naquadah_copper_block" }],
+	"result": "sgjourney:chiseled_naquadah_copper_block"
+}

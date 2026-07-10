@@ -1,6 +1,10 @@
 package net.povstalec.sgjourney.common.sgjourney.factions;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.povstalec.sgjourney.common.entities.FactionMember;
+import net.povstalec.sgjourney.common.init.EntityInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
@@ -10,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class GoauldFaction
+public class GoauldFaction extends AbstractFaction
 {
 	public static final int UPDATE_INTERVAL = 400;//24000;
 	
@@ -25,21 +29,28 @@ public class GoauldFaction
 	private static final Address.Immutable UNITAS = new Address.Immutable(2, 27, 8, 34, 24, 15);
 	
 	protected List<Address.Immutable> addresses = new ArrayList<>(); // Addresses this faction knows about and can attack
-	protected final SpawnerStargate stargate;
+	protected final SpawnerStargate spawnerStargate;
 	
 	protected final Random random;
 	@Nullable
 	protected Address.Immutable incursionTarget;
 	protected int incursionTime = 0;
 	
-	public GoauldFaction()
+	public GoauldFaction(MinecraftServer server)
 	{
 		this.addresses.add(TERRA);
 		//this.addresses.add(ABYDOS);
 		//this.addresses.add(RIMA);
 		//this.addresses.add(UNITAS);
 		
-		this.stargate = new SpawnerStargate(Address.Immutable.randomAddress(8, 36, 0), ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL);
+		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
+		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
+				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
+				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
+		{
+			if(entity instanceof FactionMember factionMember)
+				factionMember.setFaction(this);
+		});
 		
 		this.random = new Random(0);
 	}
@@ -56,20 +67,21 @@ public class GoauldFaction
 	
 	public boolean launchIncursion(MinecraftServer server)
 	{
-		if(stargate.isConnected(server))
-			return false;
-		
 		if(incursionTarget == null)
 			return false;
 		
-		stargate.encodeAddress(incursionTarget);
-		StargateInfo.Feedback feedback = stargate.dial(server);
+		if(spawnerStargate.isConnected())
+			return false;
 		
-		System.out.println("Dial attempt: " + feedback.getMessage());
+		spawnerStargate.encodeAddress(incursionTarget);
+		StargateInfo.FeedbackMessage feedback = spawnerStargate.dial();
 		
-		return !feedback.isError();
+		System.out.println("Dial attempt: " + feedback);
+		
+		return !feedback.feedback().isError();
 	}
 	
+	@Override
 	public void tickFaction(MinecraftServer server, int ticks)
 	{
 		int intervalTicks = ticks % UPDATE_INTERVAL;
@@ -83,5 +95,20 @@ public class GoauldFaction
 			else
 				incursionTarget = null;
 		}
+	}
+	
+	@Override
+	public CompoundTag serializeNBT()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		//TODO
+		
+		return tag;
+	}
+	
+	public void deserializeNBT(CompoundTag tag)
+	{
+		//TODO
 	}
 }

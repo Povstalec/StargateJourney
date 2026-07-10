@@ -1,6 +1,3 @@
 {
-	"name": "symbols.sgjourney.galaxy_othala",
-	"symbol_set": "sgjourney:galaxy_othala",
-	"texture": "sgjourney:othala/galaxy_othala.png",
-	"size": 35
+	"client_symbols": "sgjourney:galaxy_othala"
 }

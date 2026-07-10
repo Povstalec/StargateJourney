@@ -4,10 +4,10 @@
 	{
 		"down": "sgjourney:block/oxidized_naquadah_copper_lamp_horizontal",
 		"up": "sgjourney:block/oxidized_naquadah_copper_lamp_horizontal",
-		"north": "sgjourney:block/oxidized_smooth_naquadah_copper_block",
-		"south": "sgjourney:block/oxidized_smooth_naquadah_copper_block",
+		"north": "sgjourney:block/oxidized_naquadah_copper_lamp_top",
+		"south": "sgjourney:block/oxidized_naquadah_copper_lamp_top",
 		"west": "sgjourney:block/oxidized_naquadah_copper_lamp_vertical",
 		"east": "sgjourney:block/oxidized_naquadah_copper_lamp_vertical",
-		"particle": "sgjourney:block/oxidized_smooth_naquadah_copper_block"
+		"particle": "sgjourney:block/oxidized_naquadah_copper_lamp_top"
 	}
 }

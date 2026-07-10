@@ -29,18 +29,21 @@ public abstract class ZPMEnergyProvider implements ICapabilityProvider
 	
 	private final ZeroPointEnergy ENERGY_STORAGE = new ZeroPointEnergy(ZeroPointEnergy.MAX_ENTROPY, this.capacity(), this.maxReceive(), this.maxExtract())
 	{
+		@Override
 	    public long receiveLongEnergy(long maxReceive, boolean simulate)
 	    {
 	    	loadEnergy();
 	        return super.receiveLongEnergy(maxReceive, simulate);
 	    }
 	    
-	    public long extractLongEnergy(long maxExtract, boolean simulate)
+		@Override
+	    public long depleteEnergy(long maxExtract, boolean simulate)
 	    {
 	    	loadEnergy();
-	        return super.extractLongEnergy(maxExtract, simulate);
+	        return super.depleteEnergy(maxExtract, simulate);
 	    }
 		
+		@Override
 		public long getTrueEnergyStored()
 		{
 			loadEnergy();

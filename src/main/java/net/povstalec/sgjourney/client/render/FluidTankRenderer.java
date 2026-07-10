@@ -44,7 +44,7 @@ public class FluidTankRenderer
 	private static final int TEXTURE_SIZE = 16;
 	private static final int MIN_FLUID_HEIGHT = 1; // ensure tiny amounts of fluid are still visible
 	
-	 private final long capacity;
+	private final long capacity;
 	private final TooltipMode tooltipMode;
 	private final int width;
 	private final int height;
@@ -174,8 +174,8 @@ public class FluidTankRenderer
      float uMax = textureSprite.getU1();
      float vMin = textureSprite.getV0();
      float vMax = textureSprite.getV1();
-     uMax = uMax - (maskRight / 16F * (uMax - uMin));
-     vMax = vMax - (maskTop / 16F * (vMax - vMin));
+	 uMin += ((maskRight / 16F) * (uMax - uMin));	// Improved math to make the process of a tank filling up feel more seamless
+	 vMin += ((maskTop / 16F) * (vMax - vMin));		//
 
      RenderSystem.setShader(GameRenderer::getPositionTexShader);
 

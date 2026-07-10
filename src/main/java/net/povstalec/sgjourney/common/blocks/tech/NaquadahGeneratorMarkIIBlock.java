@@ -90,27 +90,6 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 		return new NaquadahGeneratorEntity.MarkII(pos, state);
 	}
 	
-	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
-	{
-		BlockEntity blockentity = level.getBlockEntity(pos);
-		if (blockentity instanceof NaquadahGeneratorEntity)
-		{
-			if (!level.isClientSide && !player.isCreative())
-			{
-				ItemStack itemstack = new ItemStack(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
-				
-				blockentity.saveToItem(itemstack);
-
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
-			}
-		}
-
-		super.playerWillDestroy(level, pos, state, player);
-	}
-	
 	@Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
@@ -121,7 +100,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 	@Override
 	public long energyPerTick()
 	{
-		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
 	}
 	
     @Override

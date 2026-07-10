@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_exposed_chiseled_naquadah_copper_block",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:waxed_exposed_polished_naquadah_copper_slab" }
+	},
+	"result": { "item": "sgjourney:waxed_exposed_chiseled_naquadah_copper_block" }
+}

@@ -2,9 +2,7 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -12,29 +10,44 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
+import net.povstalec.sgjourney.client.widgets.DumpTankButton;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
-public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu>
+public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends SGJourneyContainerScreen<CrystallizerMenu<T>>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png");
-	private FluidTankRenderer renderer;
+	public static final int HINT_OFFSET_Y = 174;
+	public static final int BUCKET_HINT_OFFSET_X = 0;
+	public static final int ENERGY_HINT_OFFSET_X = 16;
+	public static final int CRYSTAL_BASE_HINT_OFFSET_X = 32;
 	
-    public CrystallizerScreen(CrystallizerMenu menu, Inventory inventory, Component component)
+	private final ResourceLocation texture;
+	private FluidTankRenderer fluidTankRenderer;
+	
+    public CrystallizerScreen(CrystallizerMenu<T> menu, ResourceLocation texture, Inventory inventory, Component component)
     {
         super(menu, inventory, component);
+		this.texture = texture;
     }
 	
 	@Override
 	public void init()
 	{
+		int x = (width - imageWidth) / 2;
+		int y = (height - imageHeight) / 2;
+		
 		super.init();
+		
 		assignFluidRenderer();
+		this.addRenderableWidget(new DumpTankButton(x + 52, y + 16, button -> menu.pressDumpButton()));
 	}
 	
 	private void assignFluidRenderer()
 	{
-		this.renderer = new FluidTankRenderer(AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY, true, 16, 54);
+		this.fluidTankRenderer = new FluidTankRenderer(menu.blockEntity.inputFluidTankCapacity(), true, 16, 52);
 	}
 
     @Override
@@ -42,16 +55,19 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, TEXTURE);
+        RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
-
-        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
+		graphics.blit(texture, x, y, 0, 0, imageWidth, imageHeight);
+		
+		this.itemHint(graphics, texture, x + 8, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 4);
+		this.itemHint(graphics, texture, x + 142, y + 17, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
+		this.itemHint(graphics, texture, x + 71, y + 17, CRYSTAL_BASE_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
+		
+		this.renderEnergyVertical(graphics, texture, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+        this.renderProgress(graphics, x + 52, y + 40);
         
-        //this.renderEnergy(pPoseStack, x + 8, y + 62);
-        this.renderProgress(graphics, x + 28, y + 37);
-        
-        renderer.render(graphics, x + 12, y + 20, menu.getFluid());
+        fluidTankRenderer.render(graphics, x + 34, y + 17, menu.getFluidStack());
     }
 
 	@Override
@@ -60,46 +76,64 @@ public class CrystallizerScreen extends AbstractContainerScreen<CrystallizerMenu
         renderBackground(graphics);
         super.render(graphics, mouseX, mouseY, delta);
         renderTooltip(graphics, mouseX, mouseY);
-        
-        //this.energyTooltip(stack, 8, 62, mouseX, mouseY);
-        this.liquidNaquadahTooltip(graphics, 12, 20, mouseX, mouseY);
+		
+		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+        this.liquidNaquadahTooltip(graphics, mouseX, mouseY);
 	}
     
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
 	{
-    	graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-	    //this.font.draw(stack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
+		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
     }
     
     protected void renderProgress(GuiGraphics graphics, int x, int y)
     {
-    	float percentage = (float) this.menu.getProgress() / AbstractCrystallizerEntity.MAX_PROGRESS;
-    	int actual = Math.round(96 * percentage);
-    	graphics.blit(TEXTURE, x, y, 0, 166, actual, 12);
+		float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();
+		int actual = Math.round(54 * percentage);
+    	graphics.blit(texture, x, y, 0, 166, actual, 8);
     }
     
-    /*protected void renderEnergy(PoseStack stack, int x, int y)
+    protected void liquidNaquadahTooltip(GuiGraphics graphics, int mouseX, int mouseY)
     {
-    	float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
-    	int actual = Math.round(160 * percentage);
-    	this.blit(stack, x, y, 0, 168, actual, 6);
-    }*/
-    
-    protected void liquidNaquadahTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
-    {
-    	if(this.isHovering(x, y, 16, 54, (double) mouseX, (double) mouseY))
+    	if(this.isHovering(34, 17, 16, 54, mouseX, mouseY))
 	    {
-    		FluidStack fluidStack = new FluidStack(menu.getDesiredFluid(), 1);
-    		graphics.renderTooltip(this.font, Component.translatable(fluidStack.getTranslationKey()).append(Component.literal(": " + this.menu.getFluid().getAmount() + "/" + AbstractCrystallizerEntity.LIQUID_NAQUADAH_CAPACITY + "mB")).withStyle(ChatFormatting.GREEN), mouseX, mouseY);
+			FluidStack fluidStack = this.menu.getFluidStack();
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+			graphics.renderTooltip(this.font, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.inputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
-    
-    /*protected void energyTooltip(PoseStack stack, int x, int y, int mouseX, int mouseY)
-    {
-    	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-	    {
-	    	renderTooltip(stack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + this.menu.getEnergy() + "/" + this.menu.getMaxEnergy() + " FE")).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
-	    }
-    }*/
+	
+	@Override
+	protected boolean hasItem(int slot)
+	{
+		return switch(slot)
+		{
+			case 0 -> !menu.blockEntity.crystalBaseHandler.getStackInSlot(0).isEmpty();
+			case 1 -> !menu.blockEntity.primaryIngredientHandler.getStackInSlot(0).isEmpty();
+			case 2 -> !menu.blockEntity.secondaryIngredientHandler.getStackInSlot(0).isEmpty();
+			case 3 -> !menu.blockEntity.outputHandler.getStackInSlot(0).isEmpty();
+			case 4 -> !menu.blockEntity.fluidInputHandler.getStackInSlot(0).isEmpty();
+			default -> false;
+		};
+	}
+	
+	
+	
+	public static class Crystallizer extends CrystallizerScreen<CrystallizerEntity>
+	{
+		public Crystallizer(CrystallizerMenu<CrystallizerEntity> menu, Inventory inventory, Component component)
+		{
+			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png"), inventory, component);
+		}
+	}
+	
+	public static class AdvancedCrystallizer extends CrystallizerScreen<AdvancedCrystallizerEntity>
+	{
+		public AdvancedCrystallizer(CrystallizerMenu<AdvancedCrystallizerEntity> menu, Inventory inventory, Component component)
+		{
+			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/advanced_crystallizer_gui.png"), inventory, component);
+		}
+	}
 }

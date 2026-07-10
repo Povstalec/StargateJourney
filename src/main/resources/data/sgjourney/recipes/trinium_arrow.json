@@ -1,23 +1,20 @@
 {
 	"type": "minecraft:crafting_shaped",
 	"category": "equipment",
-	"key": {
-		"#": {
-			"item": "sgjourney:trinium_rod"
-		},
-		"X": {
-			"item": "sgjourney:trinium_nugget"
-		},
-		"Y": {
-			"item": "minecraft:feather"
-		}
+	"key":
+	{
+		"#": { "tag": "sgjourney:trinium_rod" },
+		"X": { "tag": "sgjourney:trinium_nugget" },
+		"Y": { "item": "minecraft:feather" }
 	},
-	"pattern": [
+	"pattern":
+	[
 		"X",
 		"#",
 		"Y"
 	],
-	"result": {
+	"result":
+	{
 		"count": 4,
 		"item": "sgjourney:trinium_arrow"
 	}

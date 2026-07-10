@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.abydos",
+	"point_of_origin": "sgjourney:abydos",
+	"symbols": "sgjourney:abydos",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [1, 17, 2, 34, 26, 9, 33], "randomizable": true},
+	"galactic_addresses":
+	{
+		"sgjourney:milky_way": {"address": {"symbols": [26, 6, 14, 31, 11, 29], "randomizable": true}}
+	}
+}

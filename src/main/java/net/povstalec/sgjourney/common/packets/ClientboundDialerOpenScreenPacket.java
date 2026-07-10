@@ -10,27 +10,25 @@ import net.povstalec.sgjourney.client.ClientAccess;
 
 public class ClientboundDialerOpenScreenPacket
 {
-    public final UUID playerId;
-
-    public ClientboundDialerOpenScreenPacket(UUID playerId)
-    {
-        this.playerId = playerId;
-    }
+    public ClientboundDialerOpenScreenPacket()
+	{
+		//TODO
+	}
 
     public ClientboundDialerOpenScreenPacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readUUID());
+		//TODO
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
-        buffer.writeUUID(this.playerId);
+       //TODO
     }
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-        	ClientAccess.updateDialer(playerId);
+        	ClientAccess.updateDialer();
         });
         return true;
     }

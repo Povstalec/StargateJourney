@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -52,16 +51,6 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt);
 		nbt.put(INVENTORY, itemHandler.serializeNBT());
-	}
-	
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	public CompoundTag getUpdateTag()
-	{
-		return this.saveWithoutMetadata();
 	}
 	
 	//============================================================================================
@@ -146,19 +135,19 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		protected long capacity()
+		protected long getCapacity()
 		{
 			return CommonTechConfig.large_naquadah_battery_capacity.get();
 		}
 		
 		@Override
-		protected long maxReceive()
+		protected long getMaxReceive()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}
 		
 		@Override
-		protected long maxExtract()
+		protected long getMaxExtract()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}

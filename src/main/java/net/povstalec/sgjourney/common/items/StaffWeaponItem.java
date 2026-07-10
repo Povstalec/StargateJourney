@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -15,7 +14,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -24,20 +22,15 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
-import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
@@ -107,7 +100,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 			// Reloading
 			if(offHandStack.getItem() instanceof StaffWeaponItem staffWeapon)
 			{
-				if(!level.isClientSide() && staffWeapon.swapItem(player, offHandStack, mainHandStack))
+				if(!level.isClientSide() && staffWeapon.swapItemInHand(player, offHandStack, mainHandStack))
 					return InteractionResultHolder.success(offHandStack);
 				
 				return InteractionResultHolder.pass(stack);
@@ -129,7 +122,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	
 	public float getExplosionPower(ItemStack stack)
 	{
-		// If the player is in Creative and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
+		// If the player is in Creative, and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
 		return getFluidStack(stack).getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get() ?
 				HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER : LIQUID_NAQUADAH_EXPLOSION_POWER;
 	}
@@ -146,16 +139,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)
 	{
 		return !player.isCreative();
-	}
-	
-	@Override
-	public ItemStack getHeldItem(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
-		
-		return itemHandler.getStackInSlot(0);
 	}
 	
 	@Override

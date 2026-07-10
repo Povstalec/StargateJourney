@@ -1,10 +1,28 @@
 {
-	"parent": "minecraft:block/orientable",
+	"parent": "block/block",
+	"loader": "sgjourney:symbol_block_loader",
+	"symbol_tint": -10856102,
+	"render_type": "solid",
 	"textures":
 	{
-		"top": "minecraft:block/stone",
-		"front": "minecraft:block/stone",
 		"side": "minecraft:block/stone",
-		"bottom": "sgjourney:block/stone_symbol"
-	}
+		"front": "sgjourney:block/stone_symbol",
+		"particle": "minecraft:block/stone"
+	},
+	"elements":
+	[
+		{
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces":
+			{
+				"down":  { "texture": "#front", "cullface": "down" },
+				"up":    { "texture": "#side", "cullface": "up" },
+				"north": { "texture": "#side", "cullface": "north" },
+				"south": { "texture": "#side", "cullface": "south" },
+				"west":  { "texture": "#side", "cullface": "west" },
+				"east":  { "texture": "#side", "cullface": "east" }
+			}
+		}
+	]
 }

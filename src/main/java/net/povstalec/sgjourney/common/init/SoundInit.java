@@ -28,6 +28,10 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");
+	
 	public static final RegistryObject<SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
 	
 	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
@@ -36,6 +40,7 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
 
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
+	public static final RegistryObject<SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
 	
 	public static final RegistryObject<SoundEvent> EMPTY = registerSoundEvent("empty");
 	

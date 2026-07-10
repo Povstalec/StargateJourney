@@ -8,7 +8,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.MissingMappingsEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +31,7 @@ public class RemappingHelper
 	private static void remapBlock(@NotNull String oldName, @NotNull Supplier<? extends Block> blockSupplier)
 	{
 		OLD_BLOCK_MAPPINGS.put(StargateJourney.sgjourneyLocation(oldName), blockSupplier);
-		if(ForgeRegistries.ITEMS.containsKey(StargateJourney.sgjourneyLocation(oldName)))
+		if(ForgeRegistries.ITEMS.containsKey(StargateJourney.sgjourneyLocation(oldName))) // Register BlockItem, if the Block has one
 			remapItem(oldName, () -> ForgeRegistries.ITEMS.getValue(StargateJourney.sgjourneyLocation(oldName)));
 	}
 	
@@ -56,7 +55,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Item " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Item {} to {}", oldKey, newKey);
 				}
 			}
 		}
@@ -74,7 +73,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Block " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Block {} to {}", oldKey, newKey);
 				}
 			}
 		}
@@ -92,7 +91,7 @@ public class RemappingHelper
 				if(newKey != null)
 				{
 					mapping.remap(supplier.get());
-					StargateJourney.LOGGER.debug("Remapped Block Entity Type " + oldKey + " to " + newKey);
+					StargateJourney.LOGGER.debug("Remapped Block Entity Type {} to {}", oldKey, newKey);
 				}
 			}
 		}
@@ -102,30 +101,24 @@ public class RemappingHelper
 	{
 		remapItems(event.getMappings(Registries.ITEM, StargateJourney.MODID));
 		remapBlocks(event.getMappings(Registries.BLOCK, StargateJourney.MODID));
+		// For some reason, the Forge snapshot doesn't have an entry for minecraft:block_entity_type, so this straight up just doesn't fire, how amazing
 		remapBlockEntities(event.getMappings(Registries.BLOCK_ENTITY_TYPE, StargateJourney.MODID));
 	}
 	
 	public static void setupRemapping()
 	{
 		// Block Entities
-		remapBlockEntity("transport_rings", BlockEntityInit.GOAULD_TRANSPORT_RINGS, BlockInit.GOAULD_TRANSPORT_RINGS);
-		remapBlockEntity("ring_panel", BlockEntityInit.GOAULD_RING_PANEL, BlockInit.GOAULD_RING_PANEL);
+		//remapBlockEntity("transport_rings", BlockEntityInit.GOAULD_TRANSPORT_RINGS, BlockInit.GOAULD_TRANSPORT_RINGS);
+		//remapBlockEntity("ring_panel", BlockEntityInit.GOAULD_RING_PANEL, BlockInit.GOAULD_RING_PANEL);
 		
 		// Blocks
-		remapBlock("naquadah_block", BlockInit.NAQUADAH_IRON_BLOCK);
-		remapBlock("naquadah_stairs", BlockInit.NAQUADAH_IRON_STAIRS);
-		remapBlock("naquadah_slab", BlockInit.NAQUADAH_IRON_SLAB);
-		remapBlock("cut_naquadah_block", BlockInit.CUT_NAQUADAH_IRON_BLOCK);
-		remapBlock("cut_naquadah_stairs", BlockInit.CUT_NAQUADAH_IRON_STAIRS);
-		remapBlock("cut_naquadah_slab", BlockInit.CUT_NAQUADAH_IRON_SLAB);
-		
-		// Naquadah-Iron Block -> Smooth Naquadah-Iron Block
-		// Cut Naquadah-Iron Block -> Naquadah-Iron Block
+		remapBlock("transport_rings", BlockInit.GOAULD_TRANSPORT_RINGS);
+		remapBlock("ring_panel", BlockInit.GOAULD_RING_PANEL);
 		
 		// Items
 		remapItem("naquadah_alloy", ItemInit.NAQUADAH_IRON_ALLOY);
 		remapItem("naquadah_alloy_nugget", ItemInit.NAQUADAH_IRON_NUGGET);
-		remapItem("naquadah_rod", ItemInit.NAQUADAH_IRON_ROD);
 		remapItem("naquadah_alloy_iris", ItemInit.NAQUADAH_IRON_IRIS);
+		remapItem("ring_remote", ItemInit.GOAULD_RING_REMOTE);
 	}
 }

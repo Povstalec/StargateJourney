@@ -45,7 +45,7 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractNaquadahLiquidizerEntity crystallizer) 
+        	if(blockEntity instanceof NaquadahLiquidizerEntity liquidizer)
         	{
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -58,7 +58,7 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new LiquidizerMenu.LiquidNaquadah(windowId, playerInventory, blockEntity);
+        				return new LiquidizerMenu.LiquidNaquadah(windowId, playerInventory, liquidizer);
         			}
         		};
         		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

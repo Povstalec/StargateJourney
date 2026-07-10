@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:cut_naquadah_iron_slab" }
+	},
+	"result": { "item": "sgjourney:naquadah_iron_pillar" }
+}

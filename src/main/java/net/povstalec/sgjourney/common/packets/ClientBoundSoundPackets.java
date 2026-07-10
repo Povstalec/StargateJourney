@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.sound.SoundAccess;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public abstract class ClientBoundSoundPackets
 {
@@ -37,7 +38,7 @@ public abstract class ClientBoundSoundPackets
     {
     	public final boolean incoming;
     	
-    	public WormholeSound(BlockPos pos, boolean stop, boolean incoming)
+    	public WormholeSound(BlockPos pos, boolean incoming)
     	{
     		super(pos, false);
     		
@@ -61,7 +62,7 @@ public abstract class ClientBoundSoundPackets
     {
     	public OpenWormhole(BlockPos pos, boolean incoming)
     	{
-    		super(pos, false, incoming);
+    		super(pos, incoming);
     	}
     	public OpenWormhole(FriendlyByteBuf buffer)
     	{
@@ -71,10 +72,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeOpenSound(pos, incoming);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playWormholeOpenSound(pos, incoming));
             return true;
         }
     }
@@ -83,7 +81,7 @@ public abstract class ClientBoundSoundPackets
     {
     	public IdleWormhole(BlockPos pos, boolean incoming)
     	{
-    		super(pos, false, incoming);
+    		super(pos, incoming);
     	}
     	public IdleWormhole(FriendlyByteBuf buffer)
     	{
@@ -93,10 +91,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeIdleSound(pos, incoming);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playWormholeIdleSound(pos, incoming));
             return true;
         }
     }
@@ -105,7 +100,7 @@ public abstract class ClientBoundSoundPackets
     {
     	public CloseWormhole(BlockPos pos, boolean incoming)
     	{
-    		super(pos, false, incoming);
+    		super(pos, incoming);
     	}
     	public CloseWormhole(FriendlyByteBuf buffer)
     	{
@@ -115,10 +110,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playWormholeCloseSound(pos, incoming);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playWormholeCloseSound(pos, incoming));
             return true;
         }
     }
@@ -143,10 +135,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playIrisThudSound(pos);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playIrisThudSound(pos));
             return true;
         }
     }
@@ -183,32 +172,36 @@ public abstract class ClientBoundSoundPackets
     	
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playChevronSound(pos, chevron, incoming, open, encode);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playChevronSound(pos, chevron, incoming, open, encode));
             return true;
         }
     }
 
     public static class Fail extends ClientBoundSoundPackets
     {
-    	public Fail(BlockPos pos)
+		public final StargateInfo.Feedback feedback;
+		
+    	public Fail(BlockPos pos, StargateInfo.Feedback feedback)
     	{
     		super(pos, false);
+			
+			this.feedback = feedback;
     	}
     	public Fail(FriendlyByteBuf buffer)
     	{
-    		super(buffer);
+    		this(buffer.readBlockPos(), buffer.readEnum(StargateInfo.Feedback.class));
     	}
+		
+		public void encode(FriendlyByteBuf buffer)
+		{
+			super.encode(buffer);
+			buffer.writeEnum(feedback);
+		}
     	
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playFailSound(pos);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playFailSound(pos, feedback));
             return true;
         }
     }
@@ -227,10 +220,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playRotationSound(pos, stop);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playRotationSound(pos, stop));
             return true;
         }
     }
@@ -249,10 +239,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playUniverseDialStartSound(pos);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playUniverseDialStartSound(pos));
             return true;
         }
     }
@@ -271,10 +258,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playRotationStartupSound(pos);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playRotationStartupSound(pos));
             return true;
         }
     }
@@ -293,10 +277,7 @@ public abstract class ClientBoundSoundPackets
     	@Override
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() ->
-            {
-            	SoundAccess.playRotationStopSound(pos);
-            });
+            ctx.get().enqueueWork(() -> SoundAccess.playRotationStopSound(pos));
             return true;
         }
     }

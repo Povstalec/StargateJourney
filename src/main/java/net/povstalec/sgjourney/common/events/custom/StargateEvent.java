@@ -66,7 +66,7 @@ public class StargateEvent extends Event
 	
 	/**
 	 * Fired when a Stargate attempts to form a connection with another Stargate (cancelable)
-	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when cancelled!!!
+	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
 	 * @author Povstalec
 	 *
 	 */

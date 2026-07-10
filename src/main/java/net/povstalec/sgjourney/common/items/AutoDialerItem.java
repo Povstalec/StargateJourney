@@ -26,11 +26,11 @@ public class AutoDialerItem extends Item
 
 		ItemStack stack = player.getItemInHand(usedHand);
 		
-		AbstractStargateEntity stargate = LocatorHelper.findNearestStargate(level, player.getOnPos().above(), 16);
+		AbstractStargateEntity<?> stargate = LocatorHelper.getNearestStargate(level, player.getOnPos().above(), 16);
 		if(stargate != null)
 		{
 			if(stargate.isConnected())
-				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
 			{
 				Address address = new Address.Immutable(26, 6, 14, 31, 11, 29);

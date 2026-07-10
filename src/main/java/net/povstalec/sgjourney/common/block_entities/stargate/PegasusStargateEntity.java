@@ -3,10 +3,13 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -26,8 +29,9 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 
-public class PegasusStargateEntity extends IrisStargateEntity
+public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntityStargate>
 {
+	public static final String CAN_ENGAGE = "can_engage";
 	public static final String ADDRESS_BUFFER = "AddressBuffer";
 	public static final String SYMBOL_BUFFER = "SymbolBuffer";
 	public static final String CURRENT_SYMBOL = "CurrentSymbol";
@@ -36,31 +40,20 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	
 	public static final int TOTAL_SYMBOLS = 48;
 	
-	private final ResourceLocation backVariant = new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus_back_chevron");
+	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus_back_chevron");
 	
-	public int currentSymbol = 0;
+	protected int currentSymbol = 0;
 	public Address.Mutable addressBuffer = new Address.Mutable();
+	protected boolean canEngage = false;
 	public int symbolBuffer = 0;
-	private boolean passedOver = false;
+	protected boolean passedOver = false;
 	
 	protected boolean dynamicSymbols = true;
 	
 	public PegasusStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.PEGASUS_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "pegasus/pegasus"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_3, 3);
+		super(BlockEntityInit.PEGASUS_STARGATE.get(), StargateInit.PEGASUS.get(), StargateJourney.sgjourneyLocation("pegasus"), pos, state, TOTAL_SYMBOLS, 3);
 		this.setOpenSoundLead(13);
-		
-		this.dhdInfo = new DHDInfo(this)
-		{
-			@Override
-			public void updateDHD()
-			{
-				if(hasDHD())
-					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address.Mutable(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
-			}
-		};
 	}
 	
 	@Override
@@ -71,6 +64,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
         if(this.level.isClientSide())
         	return;
 		
+		// Update symbols when loading
 		if(generationStep == Step.GENERATED)
 			setLocalSymbols();
     }
@@ -83,10 +77,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
 		
 		if(!dynamicSymbols)
-		{
-			tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-			tag.putString(SYMBOLS, symbolInfo().symbols().toString());
-		}
+			symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		return tag;
 	}
@@ -97,10 +88,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
 		
 		if(!dynamicSymbols)
-		{
-			symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-			symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
-		}
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
 	}
@@ -110,6 +98,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	{
         super.load(tag);
 		
+		canEngage = tag.getBoolean(CAN_ENGAGE);
 		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
         currentSymbol = tag.getInt(CURRENT_SYMBOL);
@@ -120,6 +109,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	{
 		super.saveAdditional(tag);
 		
+		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putInt(CURRENT_SYMBOL, currentSymbol);
@@ -130,9 +120,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	{
 		CompoundTag tag = super.getUpdateTag();
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
-		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putInt(CURRENT_SYMBOL, currentSymbol);
@@ -147,12 +136,8 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
-			if(tag.contains(POINT_OF_ORIGIN))
-				symbolInfo().setPointOfOrigin(new ResourceLocation(tag.getString(POINT_OF_ORIGIN)));
-			
-			if(tag.contains(SYMBOLS))
-				symbolInfo().setSymbols(new ResourceLocation(tag.getString(SYMBOLS)));
-			
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+			canEngage = tag.getBoolean(CAN_ENGAGE);
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
 			symbolBuffer = tag.getInt(SYMBOL_BUFFER);
 			currentSymbol = tag.getInt(CURRENT_SYMBOL);
@@ -162,6 +147,12 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	//============================================================================================
 	//*******************************************Other********************************************
 	//============================================================================================
+	
+	@Override
+	public void updateDHD(AbstractDHDEntity dhd)
+	{
+		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
+	}
 	
 	@Override
 	public ResourceLocation defaultVariant()
@@ -181,29 +172,26 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 	
 	@Override
-	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
+	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(level.isClientSide())
-			return StargateInfo.Feedback.NONE;
+			return StargateInfo.Feedback.NONE.withInfo();
+		
+		canEngage = canEngageStargate;
 		
 		if(isSymbolOutOfBounds(symbol))
-			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS;
+			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol);
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
-				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
 		
 		if(addressBuffer.containsSymbol(symbol))
-		{
-			if(symbol == 0)
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
-			else
-				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
-		}
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
 		
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
@@ -214,35 +202,27 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
 		
-		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
 	@Override
-	public StargateInfo.Feedback engageSymbol(int symbol)
+	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
 		if(!addressBuffer.containsSymbol(symbol))
 			addressBuffer.addSymbol(symbol);
 		
-		return super.engageSymbol(symbol);
+		return super.directEngageSymbol(symbol, canEngageStargate);
 	}
 	
 	@Override
-	protected StargateInfo.Feedback lockPrimaryChevron()
-	{
-		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		return super.lockPrimaryChevron();
-	}
-	
-	@Override
-	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, boolean incoming, boolean encode)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		StargateInfo.Feedback feedback = super.encodeChevron(symbol, incoming, encode);
+		StargateInfo.FeedbackMessage feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
@@ -251,6 +231,27 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		}
 		
 		return setRecentFeedback(feedback);
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage dhdEngageStargate()
+	{
+		if(!addressBuffer.canBeDialed())
+			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+		
+		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
+		if(address.getLength() < addressBuffer.getLength())
+		{
+			if(canEngage) // Interrupt Stargate rotation
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+			else
+			{
+				canEngage = true;
+				return StargateInfo.Feedback.NONE.withInfo();
+			}
+		}
+		else
+			return super.dhdEngageStargate();
 	}
 	
 	public int getChevronPosition(int chevron)
@@ -266,9 +267,14 @@ public class PegasusStargateEntity extends IrisStargateEntity
 		return this.currentSymbol;
 	}
 	
+	public boolean isSymbolSpinning()
+	{
+		return !isConnected() && addressBuffer.getLength() > symbolBuffer;
+	}
+	
 	private void animateSpin()
 	{
-		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
+		if(isSymbolSpinning())
 		{
 			int symbol = addressBuffer.symbolAt(symbolBuffer);
 			if(symbol == 0)
@@ -276,7 +282,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					engageSymbol(symbol);
+					directEngageSymbol(symbol, canEngage);
 				}
 				else
 					symbolWork();
@@ -291,7 +297,7 @@ public class PegasusStargateEntity extends IrisStargateEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					engageSymbol(symbol);
+					directEngageSymbol(symbol, canEngage);
 				}
 			}
 			else
@@ -349,12 +355,13 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 
 	@Override
-	protected void resetAddress(boolean updateInterfaces)
+	protected void resetAddress()
 	{
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		super.resetAddress(updateInterfaces);
+		canEngage = false;
+		super.resetAddress();
 	}
 
 	@Override
@@ -377,9 +384,9 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerPegasusStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerPegasusStargateMethods(wrapper);
 	}
 	
 	@Override
@@ -400,11 +407,17 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	
 	public void setLocalSymbols()
 	{
-		if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
 		
-		if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+	}
+	
+	public void clearSymbols()
+	{
+		symbolInfo().setPointOfOrigin(null);
+		symbolInfo().setSymbols(null);
 	}
 	
 	@Override
@@ -412,11 +425,11 @@ public class PegasusStargateEntity extends IrisStargateEntity
 	{
 		if(generationStep == StructureGenEntity.Step.SETUP)
 		{
-			if(!PointOfOrigin.validLocation(level.getServer(), symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
 			
-			if(!Symbols.validLocation(level.getServer(), symbolInfo().symbols()))
-				symbolInfo().setSymbols(StargateJourney.EMPTY_LOCATION);
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
 		}
 		else
 			setLocalSymbols();

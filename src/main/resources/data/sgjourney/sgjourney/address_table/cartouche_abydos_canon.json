@@ -2,8 +2,8 @@
 	"include_generated_addresses": false,
 	"addresses":
 	[
-		{"address": "sgjourney:chulak", "weight": 4, "galaxy": "sgjourney:milky_way"},
-		{"address": "sgjourney:unitas", "weight": 3, "galaxy": "sgjourney:milky_way"},
-		{"address": "sgjourney:cavum_tenebrae", "weight": 1, "galaxy": "sgjourney:milky_way"}
+		{ "address": { "dimension": "sgjourney:chulak", "galaxy": "sgjourney:milky_way" }, "weight": 4 },
+		{ "address": { "dimension": "sgjourney:unitas", "galaxy": "sgjourney:milky_way" }, "weight": 3 },
+		{ "address": { "dimension": "sgjourney:cavum_tenebrae", "galaxy": "sgjourney:milky_way" }, "weight": 1 }
 	]
 }

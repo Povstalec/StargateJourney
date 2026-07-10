@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
 import java.util.HashMap;
-import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -18,10 +17,10 @@ import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEn
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
+import javax.annotation.Nullable;
+
 public class ClientStargateVariants
 {
-	private static Minecraft minecraft = Minecraft.getInstance();
-	
 	private static final HashMap<ResourceLocation, UniverseStargateVariant> UNIVERSE_STARGATE_VARIANTS = new HashMap<>();
 	private static final HashMap<ResourceLocation, MilkyWayStargateVariant> MILKY_WAY_STARGATE_VARIANTS = new HashMap<>();
 	private static final HashMap<ResourceLocation, PegasusStargateVariant> PEGASUS_STARGATE_VARIANTS = new HashMap<>();
@@ -158,7 +157,7 @@ public class ClientStargateVariants
 	
 	
 	
-	public static ClientStargateVariant getClientStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	public static ClientStargateVariant getClientStargateVariant(ResourceLocation location, AbstractStargateEntity<?> stargate)
 	{
 		if(stargate instanceof UniverseStargateEntity)
 			return getUniverseStargateVariant(location);
@@ -179,7 +178,7 @@ public class ClientStargateVariants
 	
 	
 	
-	public static RotatingStargateVariant getRotatingStargateVariant(ResourceLocation location, AbstractStargateEntity stargate)
+	public static RotatingStargateVariant getRotatingStargateVariant(ResourceLocation location, AbstractStargateEntity<?> stargate)
 	{
 		if(stargate instanceof UniverseStargateEntity)
 			return getUniverseStargateVariant(location);
@@ -196,27 +195,24 @@ public class ClientStargateVariants
 	
 	/**
 	 * Method for getting the common variant of the Stargate
-	 * @param stargate
-	 * @return
+	 * @param stargate The Stargate Block Entity we're getting the variant from
+	 * @return Variant of the Stargate or null if it has no variant saved
 	 */
-	public static Optional<StargateVariant> getVariant(AbstractStargateEntity stargate)
+	@Nullable
+	public static StargateVariant getVariant(AbstractStargateEntity<?> stargate)
 	{
-		Optional<StargateVariant> optional = Optional.empty();
-		
 		if(!ClientStargateConfig.stargate_variants.get())
-			return optional;
+			return null;
 		
 		ResourceLocation variant = stargate.getVariant();
 		
 		if(variant == null || StargateJourney.EMPTY_LOCATION.equals(variant))
-			return optional;
+			return null;
 		
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
+		ClientPacketListener clientPacketListener = Minecraft.getInstance().getConnection();
 		RegistryAccess registries = clientPacketListener.registryAccess();
 		Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 		
-		optional = Optional.ofNullable(variantRegistry.get(variant));
-		
-		return optional;
+		return variantRegistry.get(variant);
 	}
 }

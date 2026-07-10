@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"AIA",
+		"RMR",
+		"NIN"
+	],
+	
+	"key": 
+	{
+		"M": { "item": "sgjourney:materialization_crystal" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"N": { "tag": "sgjourney:naquadah_iron_rod" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"R": { "item": "minecraft:redstone" }
+		
+	},
+	
+	"result": { "item": "sgjourney:matter_projector", "count": 8 }
+}

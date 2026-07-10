@@ -3,14 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		"ANA",
-		" T ",
-		"ARA"
+		"INI",
+		"|T|",
+		"IRI"
 	],
 	
 	"key": 
 	{
-		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"|": { "tag": "sgjourney:naquadah_rod" },
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"T": { "item": "sgjourney:transfer_crystal" },
 		"R": { "item": "minecraft:redstone" }

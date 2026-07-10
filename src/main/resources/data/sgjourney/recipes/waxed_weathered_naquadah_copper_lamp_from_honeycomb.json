@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "building",
+	"group": "waxed_weathered_naquadah_copper_lamp",
+	"ingredients":
+	[
+		{ "item": "sgjourney:weathered_naquadah_copper_lamp" },
+		{ "item": "minecraft:honeycomb" }
+	],
+	"result": { "count": 1, "item": "sgjourney:waxed_weathered_naquadah_copper_lamp" }
+}

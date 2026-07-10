@@ -5,6 +5,11 @@ import java.util.Optional;
 
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.HoneycombItem;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 
@@ -54,7 +59,6 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +82,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		this.stargateStateDefinition = stateDefinitionBuilder.create(Block::defaultBlockState, StargateBlockState::new);
 		
 		this.registerDefaultState(this.stargateStateDefinition.any().setValue(FACING, Direction.NORTH).setValue(ORIENTATION, Orientation.REGULAR)
-				.setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(PART, StargatePart.BASE));
+				.setValue(WATERLOGGED, false).setValue(PART, StargatePart.BASE));
 		shapeProvider = new VoxelShapeProvider(width, horizontalOffset);
 	}
 
@@ -141,7 +145,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	
 	public Optional<StargateBlockCover> getBlockCover(BlockGetter reader, BlockState state, BlockPos position)
 	{
-		AbstractStargateEntity stargate = getStargate(reader, position, state);
+		AbstractStargateEntity<?> stargate = getStargate(reader, position, state);
 		if(stargate != null)
 		{
 			return Optional.of(stargate.blockCover);
@@ -179,24 +183,34 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		dropStargateItem(level, pos, state, player);
+		super.playerWillDestroy(level, pos, state, player);
+	}
+	
+	public void dropStargateItem(Level level, BlockPos pos, BlockState state, @Nullable Player player)
+	{
+		if(level.isClientSide())
+			return;
+		
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		if(stargate != null)
 		{
-			stargate.resetStargate(StargateInfo.Feedback.STARGATE_DESTROYED, true);
-			if(!level.isClientSide() && !player.isCreative())
+			if(!stargate.isItemDropped() && (player == null || !player.isCreative()))
 			{
+				stargate.markItemAsDropped(); // Mark item as dropped because it did drop
+				
 				ItemStack itemstack = new ItemStack(asItem());
-
+				
 				stargate.saveToItem(itemstack);
-
+				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
 				itementity.setUnlimitedLifetime();
 				level.addFreshEntity(itementity);
 			}
+			else
+				stargate.markItemAsDropped(); // Mark item as dropped because it could have dropped, but something stopped it (like player being in Creative)
 		}
-
-		super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart stargatePart)
@@ -220,11 +234,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(!stargatePart.equals(part))
 			{
 				BlockPos ringPos = part.getRingPos(pos, direction, orientation);
-				BlockState state = level.getBlockState(ringPos);
+				BlockState ringState = level.getBlockState(ringPos);
 				
-				if(state.getBlock() instanceof AbstractStargateBlock)
+				if(ringState.getBlock() instanceof AbstractStargateBlock)
 				{
-					boolean waterlogged = state.getBlock() instanceof AbstractStargateRingBlock ? state.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+					boolean waterlogged = ringState.getBlock() instanceof AbstractStargateRingBlock ? ringState.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
 					
 					level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
 				}
@@ -244,7 +258,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return RenderShape.MODEL;
 	}
 	
-	public abstract AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state);
+	public abstract AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
 	@Override
 	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
@@ -255,7 +269,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	@Override
 	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
 	{
-		AbstractStargateEntity stargate = getStargate(reader, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(reader, pos, state);
 		if(stargate != null)
 			return stargate.hasPermissions(player, sendMessage);
 		
@@ -304,8 +318,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
-			AbstractStargateEntity stargate = getStargate(level, pos, state);
-			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+			AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+			if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			{
 				if(!hasPermissions(level, pos, state, player, true))
 					player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
@@ -329,6 +343,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		if(setCover(state, level, pos, player, hand, result))
 			return InteractionResult.SUCCESS;
 		else if(setIris(state, level, pos, player, hand, result))
+			return InteractionResult.SUCCESS;
+		else if(applyWax(state, level, pos, player, hand, result))
 			return InteractionResult.SUCCESS;
 		
 		return super.use(state, level, pos, player, hand, result);
@@ -365,7 +381,11 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				return stack;
 		}
 		
-        return super.getCloneItemStack(state, target, level, pos, player);
+		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		stargate.saveToItem(stack);
+		
+        return stack;
 	}
 	
 	@Nullable
@@ -396,5 +416,46 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return true;
 	}
 	
-	// TODO Axe scraping, wax
+	public boolean applyWax(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(stack.getItem() instanceof HoneycombItem)
+		{
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().applyWaxAt(state.getValue(PART)))
+			{
+				if(!player.isCreative())
+					stack.shrink(1);
+				level.gameEvent(GameEvent.BLOCK_CHANGE, result.getBlockPos(), GameEvent.Context.of(player, state));
+				level.levelEvent(player, 3003, result.getBlockPos(), 0);
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	@Nullable
+	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate)
+	{
+		ItemStack itemStack = context.getItemInHand();
+		if(ToolActions.AXE_SCRAPE == toolAction && itemStack.canPerformAction(toolAction))
+		{
+			Level level = context.getLevel();
+			BlockPos pos = context.getClickedPos();
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().undoWeatheringAt(state.getValue(PART)))
+				return state;
+		}
+		else if(ToolActions.AXE_WAX_OFF == toolAction && itemStack.canPerformAction(toolAction))
+		{
+			Level level = context.getLevel();
+			BlockPos pos = context.getClickedPos();
+			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
+			if(blockCover.isPresent() && blockCover.get().removeWaxAt(state.getValue(PART)))
+				return state;
+		}
+		
+		return super.getToolModifiedState(state, context, toolAction, simulate);
+	}
 }

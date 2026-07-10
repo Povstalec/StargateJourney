@@ -3,14 +3,14 @@
 	"category": "misc",
 	"pattern":
 	[
-		"ANA",
+		"INI",
 		"RHR",
-		"ANA"
+		"INI"
 	],
 	
 	"key": 
 	{
-		"A": {"tag": "sgjourney:naquadah_iron_alloy"},
+		"I": {"tag": "sgjourney:naquadah_ingot"},
 		"N": {"tag": "sgjourney:refined_naquadah"},
 		"R": { "item": "minecraft:redstone" },
 		"H": { "tag": "sgjourney:reaction_heater" }

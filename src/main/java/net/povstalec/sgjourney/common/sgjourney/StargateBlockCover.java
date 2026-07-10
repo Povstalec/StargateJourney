@@ -107,6 +107,54 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		});
 	}
 	
+	public boolean undoWeatheringAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> previousState = SGJourneyWeatheringBlock.getPrevious(state.get());
+			if(previousState.isPresent())
+			{
+				blockStates.put(part, previousState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean applyWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state.get());
+			if(waxedState.isPresent())
+			{
+				blockStates.put(part, waxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean removeWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> unwaxedState = SGJourneyWeatheringBlock.getUnwaxed(state.get());
+			if(unwaxedState.isPresent())
+			{
+				blockStates.put(part, unwaxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public CompoundTag serializeNBT()
 	{
@@ -137,6 +185,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				
 				if(result.isPresent())
 					blockStates.put(part, result.get());
+			} else {
+				removeBlockAt(part);
 			}
 		}
 	}

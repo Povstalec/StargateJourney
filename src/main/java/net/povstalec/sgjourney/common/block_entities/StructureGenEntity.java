@@ -7,13 +7,17 @@ public interface StructureGenEntity
 {
 	String GENERATION_STEP = "generation_step";
 	
+	void setGenerationStep(Step step);
+	
+	Step generationStep();
+	
 	void generateInStructure(WorldGenLevel level, RandomSource randomSource);
 	
 	enum Step
 	{
-		GENERATED,
-		READY,
-		SETUP;
+		GENERATED, // Already generated
+		READY, // Can generate as soon as the Block Entity is loaded
+		SETUP; // Prepared for generation, won't generate unless manually triggered
 		
 		public byte byteValue()
 		{

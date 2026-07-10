@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items;
 import java.util.List;
 import java.util.Random;
 
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -124,7 +125,7 @@ public class SyringeItem extends Item
 				
 				if(chance <= probability)
 				{
-					cap.implantGene();
+					cap.setGene(AncientGene.ATAGene.ARTIFICIAL);
 					
 					if(target instanceof Player player)
 						player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.got_ancient_gene").withStyle(ChatFormatting.AQUA));

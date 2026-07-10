@@ -520,6 +520,31 @@
 		]
 	},
 	
+	"transport_rings_transport":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport"
+		]
+	},
+	"transport_rings_transport_pre":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport_pre",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_pre"
+		]
+	},
+	"transport_rings_transport_post":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport_post",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_post"
+		]
+	},
+	
 	"ring_panel_press":
 	{
 		"subtitle": "sounds.sgjourney.ring_panel_press",
@@ -600,6 +625,19 @@
 	"equip_naquadah_armor":
 	{
 		"subtitle": "sounds.sgjourney.equip_naquadah_armor",
+		"sounds":
+		[
+			"minecraft:item/armor/equip_iron1",
+			"minecraft:item/armor/equip_iron2",
+			"minecraft:item/armor/equip_iron3",
+			"minecraft:item/armor/equip_iron4",
+			"minecraft:item/armor/equip_iron5",
+			"minecraft:item/armor/equip_iron6"
+		]
+	},
+	"equip_trinium_armor":
+	{
+		"subtitle": "sounds.sgjourney.equip_trinium_armor",
 		"sounds":
 		[
 			"minecraft:item/armor/equip_iron1",

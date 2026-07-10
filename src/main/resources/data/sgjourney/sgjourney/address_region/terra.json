@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.terra",
+	"point_of_origin": "sgjourney:terra",
+	"symbols": "sgjourney:terra",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [1, 35, 4, 31, 15, 30, 32], "randomizable": true},
+	"galactic_addresses":
+	{
+		"sgjourney:milky_way": {"address": {"symbols": [27, 25, 4, 35, 10, 28], "randomizable": true}}
+	}
+}

@@ -3,6 +3,9 @@ package net.povstalec.sgjourney.common.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -12,8 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
 
 import javax.annotation.Nullable;
 
@@ -62,15 +63,5 @@ public class WeatheringPillarLampBlock extends WeatheringRotatedPillarBlock
 	{
 		if(state.getValue(LIT) && !level.hasNeighborSignal(pos))
 			level.setBlock(pos, state.cycle(LIT), 2);
-	}
-	
-	@org.jetbrains.annotations.Nullable
-	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate)
-	{
-		ItemStack itemStack = context.getItemInHand();
-		if(ToolActions.AXE_SCRAPE == toolAction && itemStack.canPerformAction(toolAction))
-			return SGJourneyWeatheringBlock.getPrevious(state).orElse(null);
-		
-		return super.getToolModifiedState(state, context, toolAction, simulate);
 	}
 }
