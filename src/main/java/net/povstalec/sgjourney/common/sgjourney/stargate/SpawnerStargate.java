@@ -354,4 +354,10 @@ public class SpawnerStargate implements Stargate
 	{
 		return new AddressFilterInfo();
 	}
+	
+	@Override
+	public void tick()
+	{
+		//TODO
+	}
 }

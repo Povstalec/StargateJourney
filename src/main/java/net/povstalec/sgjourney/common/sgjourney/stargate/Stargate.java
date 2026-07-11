@@ -504,7 +504,18 @@ public interface Stargate extends Comparable<Stargate>
 	//**********************************Additional functionality**********************************
 	//============================================================================================
 	
+	/**
+	 * @return Address Filter Info used to decide which connections the Stargate will decline
+	 */
 	AddressFilterInfo addressFilterInfo();
+	
+	/**
+	 * Actions the Stargate will perform while ticking
+	 * <p>
+	 * Doesn't tick on its own, ticking must be handled from the outside
+	 * (for example, by having a Block Entity call this method while it's ticking)
+	 */
+	void tick();
 	
 	//============================================================================================
 	//*************************************Saving and Loading*************************************

@@ -137,7 +137,7 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
     {
 		public LiquidNaquadah(LiquidizerMenu<NaquadahLiquidizerEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/naquadah_liquidizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/naquadah_liquidizer_gui.png"), inventory, component);
 		}
     }
     
@@ -145,7 +145,7 @@ public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntit
     {
 		public HeavyLiquidNaquadah(LiquidizerMenu<HeavyNaquadahLiquidizerEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/heavy_naquadah_liquidizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/heavy_naquadah_liquidizer_gui.png"), inventory, component);
 		}
     }
 }

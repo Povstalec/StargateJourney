@@ -127,7 +127,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	{
 		public Crystallizer(CrystallizerMenu<CrystallizerEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/crystallizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/crystallizer_gui.png"), inventory, component);
 		}
 	}
 	
@@ -135,7 +135,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 	{
 		public AdvancedCrystallizer(CrystallizerMenu<AdvancedCrystallizerEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/advanced_crystallizer_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/advanced_crystallizer_gui.png"), inventory, component);
 		}
 	}
 }

@@ -164,7 +164,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	{
 		public Basic(InterfaceMenu<BasicInterfaceEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/interface/basic_interface_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/interface/basic_interface_gui.png"), inventory, component);
 		}
 	}
 	
@@ -172,7 +172,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	{
 		public Crystal(InterfaceMenu<CrystalInterfaceEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/interface/crystal_interface_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/interface/crystal_interface_gui.png"), inventory, component);
 		}
 	}
 	
@@ -180,7 +180,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	{
 		public AdvancedCrystal(InterfaceMenu<AdvancedCrystalInterfaceEntity> menu, Inventory inventory, Component component)
 		{
-			super(menu, new ResourceLocation(StargateJourney.MODID, "textures/gui/interface/advanced_crystal_interface_gui.png"), inventory, component);
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/interface/advanced_crystal_interface_gui.png"), inventory, component);
 		}
 	}
 }

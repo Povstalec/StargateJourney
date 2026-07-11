@@ -355,4 +355,15 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	{
 		return stargateReturn(getServer(), stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
 	}
+	
+	@Override
+	default void tick() {}
+	
+	/**
+	 * Actions the Stargate will perform while its respective Block Entity is ticking
+	 */
+	default void tick(StargateEntity stargateEntity)
+	{
+		tick();
+	}
 }
