@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.blockstates;
 
 import java.util.ArrayList;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -56,8 +55,6 @@ public enum StargatePart implements StringRepresentable
 	ABOVE5("above5", 0, 5),
 	RIGHT_ABOVE5("right_above5", -1, 5),
 	RIGHT2_ABOVE4("right2_above4", -2, 4);
-	
-	public static final Codec<StargatePart> CODEC = StringRepresentable.fromEnum(StargatePart::values);
 	
 	public static final ArrayList<StargatePart> DEFAULT_PARTS = getParts(false, false);
 	public static final ArrayList<StargatePart> DEFAULT_SHIELDED_PARTS = getParts(false, true);

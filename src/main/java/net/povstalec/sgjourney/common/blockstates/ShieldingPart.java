@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.blockstates;
 
 import java.util.ArrayList;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.StringRepresentable;
@@ -41,8 +40,6 @@ public enum ShieldingPart implements StringRepresentable
 	LEFT_ABOVE("left_above", 1, 1, ShieldingState.MOVING_1),
 	ABOVE("above", 0, 1, ShieldingState.MOVING_1),
 	RIGHT_ABOVE("right_above", -1, 1, ShieldingState.MOVING_1);
-	
-	public static final Codec<ShieldingPart> CODEC = StringRepresentable.fromEnum(ShieldingPart::values);
 	
 	public static final ArrayList<ShieldingPart> DEFAULT_PARTS = getParts();
 	

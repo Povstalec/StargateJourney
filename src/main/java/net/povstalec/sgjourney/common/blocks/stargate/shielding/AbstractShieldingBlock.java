@@ -43,7 +43,6 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import net.povstalec.sgjourney.common.scheduler.ShieldingDestruction;
 
 public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
@@ -237,7 +236,8 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 				{
 					if(shieldingPart.shieldingState().isBefore(irisStargate.irisInfo().getIrisProgress()))
 					{
-						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), true);
+						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+						stargateBlock.unsetIris(stargateState, level, baseBlockPos);
 					}
 				}
 			}
@@ -249,11 +249,6 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	public abstract ArrayList<ShieldingPart> getShieldingParts();
 	
 	public static void destroyShielding(Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation)
-	{
-		destroyShielding(level, baseBlockPos, parts, direction, orientation, false);
-	}
-
-	public static void destroyShielding(Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, boolean updateStargate)
 	{
 		if(direction == null)
 		{
@@ -267,10 +262,19 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			return;
 		}
 		
-		level.getServer().getWorldData().overworldData().getScheduledEvents().schedule(
-			StargateJourney.MODID + ":shielding_destruction_" + baseBlockPos.asLong(),
-			level.getServer().overworld().getGameTime() + 1,
-			new ShieldingDestruction(level.dimension(), baseBlockPos, parts, direction, orientation, updateStargate));
+		
+		for(ShieldingPart part : parts)
+		{
+			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
+			BlockState state = level.getBlockState(ringPos);
+			
+			if(state.getBlock() instanceof AbstractShieldingBlock)
+			{
+				boolean waterlogged = state.getValue(AbstractShieldingBlock.WATERLOGGED);
+				
+				level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
+			}
+		}
 	}
 	
 	public static void setIrisState(AbstractShieldingBlock irisBlock, Level level, BlockPos baseBlockPos, ArrayList<ShieldingPart> parts, Direction direction, Orientation orientation, ShieldingState shieldingState)
