@@ -330,7 +330,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public Set<Integer> getCachedNetworks()
 	{
 		Set<Integer> networks = new TreeSet<>(this.networks);
-		controllerCache.ifPresent(controller -> networks.addAll(controller.getNetworks()));
+		controllerCache.ifCached(controller -> networks.addAll(controller.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
