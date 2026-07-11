@@ -8,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -62,21 +61,16 @@ public interface Stargate
 		return server.getLevel(dimension);
 	}
 	
-	default boolean isSamePosition(AbstractStargateEntity stargate)
-	{
-		return false;
-	}
-	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Position vector of the Stargate's center or null if it doesn't have a position
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position. Adapted to sublevels
 	 */
 	@Nullable
 	Vec3 getPosition(MinecraftServer server);
 	
 	/**
 	 * @param server Current Minecraft Server
-	 * @return Position vector of the Stargate's center or null if it doesn't have a position
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position. Unaltered, will return plotyard on sublevels
 	 */
 	@Nullable
 	BlockPos getBlockPosition(MinecraftServer server);

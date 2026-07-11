@@ -11,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.EntityInit;
@@ -77,12 +76,6 @@ public class SpawnerStargate implements Stargate
 	public @Nullable ResourceKey<Level> getDimension()
 	{
 		return null;
-	}
-	
-	@Override
-	public boolean isSamePosition(AbstractStargateEntity stargate)
-	{
-		return false;
 	}
 	
 	@Override

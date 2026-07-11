@@ -95,16 +95,6 @@ public class SGJourneyStargate implements Stargate
 		return stargateReturn(server, stargate -> stargate.getCenter(), null);
 	}
 	
-	public boolean isSamePosition(AbstractStargateEntity stargate)
-	{
-		if (stargate.getLevel() == null)
-		{
-			return false;
-		}
-		return stargate.getLevel().dimension() == dimension &&
-				stargate.getBlockPos().equals(blockPos);
-	}
-	
 	@Override
 	public @Nullable BlockPos getBlockPosition(MinecraftServer server)
 	{

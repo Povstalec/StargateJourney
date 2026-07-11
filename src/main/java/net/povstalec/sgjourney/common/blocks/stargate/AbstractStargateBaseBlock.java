@@ -15,8 +15,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -54,7 +52,6 @@ import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock implements EntityBlock
 {
@@ -174,24 +171,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	public abstract BlockEntity newBlockEntity(BlockPos pos, BlockState state);
 	
 	public abstract BlockState ringState();
-	
-	@Override
-	public void onPlace(@NotNull BlockState pState, @NotNull Level pLevel, @NotNull BlockPos pPos, @NotNull BlockState pOldState, boolean pMovedByPiston)
-	{
-		super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
-		// We want to run refreshPosInNetwork, but can't because the block entity might not exist yet.
-		// We don't use IForgeBlock::onBlockStateChange because we can't guarantee it's fired.
-		pLevel.scheduleTick(pPos, this, 1);
-	}
-
-	@Override
-	public void tick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
-		super.tick(pState, pLevel, pPos, pRandom);
-		if (pLevel.getBlockEntity(pPos) instanceof AbstractStargateEntity sg)
-		{
-			sg.refreshPosInNetwork();
-		}
-	}
 	
 	@Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)

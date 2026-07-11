@@ -262,7 +262,6 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			return;
 		}
 		
-		
 		for(ShieldingPart part : parts)
 		{
 			BlockPos ringPos = part.getShieldingPos(baseBlockPos, direction, orientation);
