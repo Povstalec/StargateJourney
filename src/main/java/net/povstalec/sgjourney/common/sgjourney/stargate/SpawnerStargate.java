@@ -85,6 +85,12 @@ public class SpawnerStargate implements Stargate
 	}
 	
 	@Override
+	public @Nullable BlockPos getBlockPosition(MinecraftServer server)
+	{
+		return null;
+	}
+
+	@Override
 	public @Nullable Vec3 getForward(MinecraftServer server)
 	{
 		return null;

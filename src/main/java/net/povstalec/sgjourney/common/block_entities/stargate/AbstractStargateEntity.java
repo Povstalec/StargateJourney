@@ -24,10 +24,8 @@ import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
+import dev.ryanhcode.sable.companion.SableCompanion;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -1066,11 +1064,16 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
     	
     	if(orientation != null && orientation != Orientation.REGULAR)
     		y = getHorizontalCenterHeight();
-    	
-    	return new Vec3(
+
+		Vec3 adaptedPos = new Vec3(
     			centerPos.getX() + 0.5, 
     			centerPos.getY() + y, 
     			centerPos.getZ() + 0.5);
+
+		// projects a position out of a sub-level (if it is one)
+		adaptedPos = SableCompanion.INSTANCE.projectOutOfSubLevel(getLevel(), (Position) adaptedPos);
+
+    	return adaptedPos;
     }
     
     public Vec3 getRelativeCenter()
@@ -1139,9 +1142,9 @@ public abstract class AbstractStargateEntity extends EnergyBlockEntity implement
 		if(FORCE_LOAD_CHUNK)
 		{
 			if(connectionState != StargateConnection.State.IDLE)
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), true);
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), true);
 			else
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), false);
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), false);
 		}
 	}
 	

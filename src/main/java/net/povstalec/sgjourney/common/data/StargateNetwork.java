@@ -180,7 +180,7 @@ public final class StargateNetwork extends SavedData
 	{
 		addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
 	}
-	
+
 	public final void removeStargate(Stargate stargate)
 	{
 		if(stargate != null)

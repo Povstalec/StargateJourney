@@ -96,6 +96,12 @@ public class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public @Nullable BlockPos getBlockPosition(MinecraftServer server)
+	{
+		return stargateReturn(server, stargate -> stargate.getBlockPos(), null);
+	}
+	
+	@Override
 	public @Nullable Vec3 getForward(MinecraftServer server)
 	{
 		if(forward == null)

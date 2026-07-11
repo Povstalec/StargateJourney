@@ -34,6 +34,14 @@ repositories {
             includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
     maven {
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
@@ -163,6 +171,11 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // compileOnly("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") {
+    //     exclude group: "foundry.veil"
+    // }
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${sable_companion_version},)"))
 
     compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
