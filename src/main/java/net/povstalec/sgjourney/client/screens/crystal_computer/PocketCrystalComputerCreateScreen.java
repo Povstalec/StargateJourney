@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 
@@ -18,8 +19,8 @@ public class PocketCrystalComputerCreateScreen extends PocketCrystalComputerScre
 	}
 	
 	@Override
-	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y)
 	{
-		drawCenteredString(stack, font, Component.literal("TBD"), x + 101, y + 61, DARK_RED_COLOR);
+		graphics.drawCenteredString(font, Component.literal("TBD"), x + 101, y + 61, DARK_RED_COLOR);
 	}
 }

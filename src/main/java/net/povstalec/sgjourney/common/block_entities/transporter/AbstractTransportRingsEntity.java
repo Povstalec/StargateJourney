@@ -676,8 +676,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		{
 			for(int i = 4; i <= 16; i++)
 			{
-				if(!level.getBlockState(pos.below(i)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 2)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 3)).getMaterial().isReplaceable())
+				if(!level.getBlockState(pos.below(i)).canBeReplaced() && level.getBlockState(pos.below(i - 1)).canBeReplaced() &&
+					level.getBlockState(pos.below(i - 2)).canBeReplaced() && level.getBlockState(pos.below(i - 3)).canBeReplaced())
 				{
 					return -i + 1;
 				}
@@ -687,8 +687,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		{
 			for(int i = 1; i <= 16; i++)
 			{
-				if(level.getBlockState(pos.above(i)).getMaterial().isReplaceable() && level.getBlockState(pos.above(i + 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.above(i + 2)).getMaterial().isReplaceable())
+				if(level.getBlockState(pos.above(i)).canBeReplaced() && level.getBlockState(pos.above(i + 1)).canBeReplaced() &&
+					level.getBlockState(pos.above(i + 2)).canBeReplaced())
 				{
 					return i;
 				}

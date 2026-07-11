@@ -15,6 +15,6 @@ public abstract class SGJourneyMenu<T extends BlockEntity> extends AbstractConta
 	{
 		super(menu, containerId);
 		this.blockEntity = blockEntity;
-		this.level = inventory.player.level;
+		this.level = inventory.player.level();
 	}
 }

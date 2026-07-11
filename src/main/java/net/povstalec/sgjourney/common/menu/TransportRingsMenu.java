@@ -101,7 +101,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	{
 		public Ancient(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AncientTransportRingsEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (AncientTransportRingsEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Ancient(int containerId, Inventory inventory, AncientTransportRingsEntity blockEntity)
@@ -120,7 +120,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	{
 		public Goauld(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (GoauldTransportRingsEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldTransportRingsEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Goauld(int containerId, Inventory inventory, GoauldTransportRingsEntity blockEntity)

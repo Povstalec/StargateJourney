@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
@@ -100,23 +101,23 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	}
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-    	this.renderBackground(poseStack);
+    	this.renderBackground(graphics);
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 		
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+		graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
-    	super.render(poseStack, mouseX, mouseY, delta);
+    	super.render(graphics, mouseX, mouseY, delta);
         
-    	renderLabels(poseStack, mouseX, mouseY, x, y);
+    	renderLabels(graphics, mouseX, mouseY, x, y);
     }
     
-    protected abstract void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y);
+    protected abstract void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y);
 	
 	// Crystal stuff
 	
@@ -283,12 +284,6 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		}
 		
 		return new CompoundTag();
-	}
-	
-	public static void drawCenteredString(PoseStack poseStack, Font font, Component component, float x, float y, int color)
-	{
-		FormattedCharSequence formattedCharSequence = component.getVisualOrderText();
-		font.drawShadow(poseStack, formattedCharSequence, x - font.width(formattedCharSequence) / 2F, y, color);
 	}
 	
 	public void updateServer(SelectedCrystal selectedCrystal)

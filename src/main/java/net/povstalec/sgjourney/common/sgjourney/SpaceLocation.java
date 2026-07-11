@@ -420,7 +420,7 @@ public class SpaceLocation
 	public static void updatePlayerClientGravity(ServerPlayer player)
 	{
 		// Updates player gravity on the client
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundUpdatePlayerGravityPacket(SpaceLocation.fromDimension(player.getServer(), player.getLevel().dimension()).getParentGravity()));
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundUpdatePlayerGravityPacket(SpaceLocation.fromDimension(player.getServer(), player.level().dimension()).getParentGravity()));
 	}
 	
 	

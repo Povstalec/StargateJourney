@@ -37,226 +37,6 @@ public class TabInit
 					.title(Component.translatable("itemGroup.stargate_blocks"))
 					.displayItems((parameters, output) ->
 					{
-						if(parameters.hasPermissions())
-						{
-						
-						}
-						
-						output.accept(ItemInit.RAW_NAQUADAH.get());
-						output.accept(ItemInit.REFINED_NAQUADAH.get());
-						output.accept(ItemInit.NAQUADAH_INGOT.get());
-						output.accept(ItemInit.NAQUADAH_NUGGET.get());
-						
-						output.accept(ItemInit.NAQUADAH_COPPER_MIXTURE.get());
-						output.accept(ItemInit.NAQUADAH_COPPER_ALLOY.get());
-						output.accept(ItemInit.NAQUADAH_COPPER_NUGGET.get());
-						
-						output.accept(ItemInit.NAQUADAH_IRON_MIXTURE.get());
-						output.accept(ItemInit.NAQUADAH_IRON_ALLOY.get());
-						output.accept(ItemInit.NAQUADAH_IRON_NUGGET.get());
-						
-						output.accept(ItemInit.PURE_NAQUADAH.get());
-						output.accept(ItemInit.NAQUADAH.get());
-						
-						output.accept(ItemInit.RAW_NAQUADRIA.get());
-						
-						output.accept(ItemInit.RAW_TRINIUM.get());
-						output.accept(ItemInit.TRINIUM_INGOT.get());
-						output.accept(ItemInit.TRINIUM_NUGGET.get());
-						
-						output.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
-						output.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
-						output.accept(ItemInit.VIAL.get());
-						output.accept(VialItem.liquidNaquadahSetup());
-						output.accept(VialItem.heavyLiquidNaquadahSetup());
-						
-						output.accept(ItemInit.NAQUADAH_ROD.get());
-						output.accept(ItemInit.NAQUADAH_IRON_ROD.get());
-						output.accept(ItemInit.NAQUADAH_COPPER_ROD.get());
-						output.accept(ItemInit.TRINIUM_ROD.get());
-						output.accept(ItemInit.REACTION_CHAMBER.get());
-						output.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
-						output.accept(NaquadahFuelRodItem.fuelRodSetup());
-						//output.accept(ItemInit.LIQUID_NAQUADAH_REACTOR_CORE.get());
-						output.accept(ItemInit.PLASMA_CONVERTER.get());
-						output.accept(ItemInit.MATTER_PROJECTOR.get());
-						
-						output.accept(ItemInit.NAQUADAH_POWER_CELL.get());
-						output.accept(PowerCellItem.liquidNaquadahSetup());
-						output.accept(PowerCellItem.heavyLiquidNaquadahSetup());
-						
-						output.accept(ItemInit.ANCIENT_TRANSPORT_RING.get());
-						output.accept(ItemInit.GOAULD_TRANSPORT_RING.get());
-						
-						output.accept(ItemInit.POCKET_CRYSTAL_COMPUTER.get());
-						output.accept(ItemInit.PDA.get());
-						//output.accept(ItemInit.ANCIENT_REMOTE.get());
-						
-						output.accept(ItemInit.GDO.get());
-						
-						//output.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
-						
-						output.accept(ItemInit.NAQUADAH_SWORD.get());
-						output.accept(ItemInit.NAQUADAH_PICKAXE.get());
-						output.accept(ItemInit.NAQUADAH_AXE.get());
-						output.accept(ItemInit.NAQUADAH_SHOVEL.get());
-						output.accept(ItemInit.NAQUADAH_HOE.get());
-						
-						output.accept(ItemInit.NAQUADAH_HELMET.get());
-						output.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
-						output.accept(ItemInit.NAQUADAH_LEGGINGS.get());
-						output.accept(ItemInit.NAQUADAH_BOOTS.get());
-						
-						output.accept(ItemInit.TRINIUM_SWORD.get());
-						output.accept(ItemInit.TRINIUM_PICKAXE.get());
-						output.accept(ItemInit.TRINIUM_AXE.get());
-						output.accept(ItemInit.TRINIUM_SHOVEL.get());
-						output.accept(ItemInit.TRINIUM_HOE.get());
-						
-						output.accept(ItemInit.TRINIUM_HELMET.get());
-						output.accept(ItemInit.TRINIUM_CHESTPLATE.get());
-						output.accept(ItemInit.TRINIUM_LEGGINGS.get());
-						output.accept(ItemInit.TRINIUM_BOOTS.get());
-						
-						output.accept(ItemInit.TRINIUM_ARROW.get());
-						
-						output.accept(ItemInit.KARA_KESH.get());
-						output.accept(ItemInit.GOAULD_RING_REMOTE.get());
-						
-						output.accept(ItemInit.JAFFA_STAFF_HEAD.get());
-						output.accept(ItemInit.MATOK.get());
-						
-						output.accept(ItemInit.JACKAL_HELMET.get());
-						output.accept(ItemInit.FALCON_HELMET.get());
-						output.accept(ItemInit.JAFFA_HELMET.get());
-						output.accept(ItemInit.JAFFA_CHESTPLATE.get());
-						output.accept(ItemInit.JAFFA_LEGGINGS.get());
-						output.accept(ItemInit.JAFFA_BOOTS.get());
-						
-						output.accept(ItemInit.SYSTEM_LORD_HELMET.get());
-						output.accept(ItemInit.SYSTEM_LORD_CHESTPLATE.get());
-						output.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
-						output.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
-						
-						output.accept(ItemInit.ZPM.get());
-						output.accept(PersonalShieldItem.personalShieldSetup());
-						
-						output.accept(ItemInit.SYRINGE.get());
-						output.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
-						output.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
-						
-						output.accept(ItemInit.UNITY_SHARD.get());
-						
-						// output.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
-						
-						output.accept(ItemInit.CRYSTAL_BASE.get());
-						output.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
-						
-						output.accept(ItemInit.CRYSTAL_ADAPTER.get());
-						output.accept(ItemInit.ADVANCED_CRYSTAL_ADAPTER.get());
-						output.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
-						output.accept(ItemInit.CONTROL_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
-						output.accept(ItemInit.MEMORY_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
-						output.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
-						output.accept(ItemInit.ENERGY_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
-						output.accept(ItemInit.TRANSFER_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
-						output.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
-						output.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
-						
-						//output.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
-						
-						output.accept(ItemInit.GOAULD.get());
-						output.accept(ItemInit.GOAULD_CARCASS.get());
-						output.accept(ItemInit.COOKED_GOAULD.get());
-						output.accept(ItemInit.GOAULD_FOSSIL.get());
-					})
-					.build());
-	
-	public static final RegistryObject<CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->
-			CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
-					.title(Component.translatable("itemGroup.stargate_stuff"))
-					.withTabsBefore(STARGATE_BLOCKS_LOCATION)
-					.displayItems((parameters, output) ->
-					{
-						output.accept(BlockInit.UNIVERSE_STARGATE.get());
-						output.accept(BlockInit.MILKY_WAY_STARGATE.get());
-						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
-						output.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
-						output.accept(BlockInit.PEGASUS_STARGATE.get());
-						output.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
-						output.accept(PegasusDHDBlock.pegasusCrystalSetup());
-						output.accept(BlockInit.CLASSIC_STARGATE.get());
-						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
-						output.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
-						output.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
-						output.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-						output.accept(ClassicDHDBlock.classicCrystalSetup());
-						output.accept(BlockInit.TOLLAN_STARGATE.get());
-						
-						output.accept(ItemInit.FUSION_CORE.get());
-						output.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
-						output.accept(NaquadahFuelRodItem.fuelRodSetup());
-						//output.accept(ItemInit.LIQUID_NAQUADAH_REACTOR_CORE.get());
-						
-						output.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
-						
-						output.accept(BlockInit.BASIC_INTERFACE.get());
-						output.accept(BlockInit.CRYSTAL_INTERFACE.get());
-						output.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
-						
-						output.accept(ItemInit.STARGATE_SHIELDING_RING.get());
-						
-						output.accept(ItemInit.COPPER_IRIS.get());
-						output.accept(ItemInit.IRON_IRIS.get());
-						output.accept(ItemInit.GOLDEN_IRIS.get());
-						output.accept(ItemInit.DIAMOND_IRIS.get());
-						output.accept(ItemInit.NETHERITE_IRIS.get());
-						
-						output.accept(ItemInit.NAQUADAH_IRIS.get());
-						output.accept(ItemInit.NAQUADAH_COPPER_IRIS.get());
-						output.accept(ItemInit.NAQUADAH_IRON_IRIS.get());
-						output.accept(ItemInit.TRINIUM_IRIS.get());
-						
-						output.accept(ItemInit.BRONZE_IRIS.get());
-						output.accept(ItemInit.STEEL_IRIS.get());
-						
-						output.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
-						
-						if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
-						{
-							output.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
-							output.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
-							output.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
-							output.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
-						}
-						if(CommonStargateConfig.enable_stargate_variants.get())
-						{
-							parameters.holders()
-								.lookup(StargateVariant.REGISTRY_KEY)
-								.ifPresent(regLookup ->
-										regLookup.listElementIds()
-												.forEach(variantId ->
-														output.accept(
-																StargateVariantItem.stargateVariant(
-																		variantId.location().toString()
-																)
-														)
-												)
-								);
-						}
-						})
-						.build());
-	
-	public static final RegistryObject<CreativeModeTab> STARGATE_ITEMS = CREATIVE_MODE_TABS.register("stargate_items", () ->
-			CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
-					.title(Component.translatable("itemGroup.stargate_items"))
-					.displayItems((parameters, output) ->
-					{
 						output.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 						
 						output.accept(BlockInit.ANCIENT_TRANSPORT_RINGS.get());
@@ -512,6 +292,221 @@ public class TabInit
 						output.accept(BlockInit.SMOOTH_TRINIUM_BLOCK.get());
 						output.accept(BlockInit.SMOOTH_TRINIUM_STAIRS.get());
 						output.accept(BlockInit.SMOOTH_TRINIUM_SLAB.get());
+					})
+					.build());
+	
+	public static final RegistryObject<CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->
+			CreativeModeTab.builder().icon(() -> new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()))
+					.title(Component.translatable("itemGroup.stargate_stuff"))
+					.withTabsBefore(STARGATE_BLOCKS_LOCATION)
+					.displayItems((parameters, output) ->
+					{
+						output.accept(BlockInit.UNIVERSE_STARGATE.get());
+						output.accept(BlockInit.MILKY_WAY_STARGATE.get());
+						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
+						output.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+						output.accept(BlockInit.PEGASUS_STARGATE.get());
+						output.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get())));
+						output.accept(PegasusDHDBlock.pegasusCrystalSetup());
+						output.accept(BlockInit.CLASSIC_STARGATE.get());
+						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get())));
+						output.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
+						output.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
+						output.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
+						output.accept(ClassicDHDBlock.classicCrystalSetup());
+						output.accept(BlockInit.TOLLAN_STARGATE.get());
+						
+						output.accept(ItemInit.FUSION_CORE.get());
+						output.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+						output.accept(NaquadahFuelRodItem.fuelRodSetup());
+						//output.accept(ItemInit.LIQUID_NAQUADAH_REACTOR_CORE.get());
+						
+						output.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
+						
+						output.accept(BlockInit.BASIC_INTERFACE.get());
+						output.accept(BlockInit.CRYSTAL_INTERFACE.get());
+						output.accept(BlockInit.ADVANCED_CRYSTAL_INTERFACE.get());
+						
+						output.accept(ItemInit.STARGATE_SHIELDING_RING.get());
+						
+						output.accept(ItemInit.COPPER_IRIS.get());
+						output.accept(ItemInit.IRON_IRIS.get());
+						output.accept(ItemInit.GOLDEN_IRIS.get());
+						output.accept(ItemInit.DIAMOND_IRIS.get());
+						output.accept(ItemInit.NETHERITE_IRIS.get());
+						
+						output.accept(ItemInit.NAQUADAH_IRIS.get());
+						output.accept(ItemInit.NAQUADAH_COPPER_IRIS.get());
+						output.accept(ItemInit.NAQUADAH_IRON_IRIS.get());
+						output.accept(ItemInit.TRINIUM_IRIS.get());
+						
+						output.accept(ItemInit.BRONZE_IRIS.get());
+						output.accept(ItemInit.STEEL_IRIS.get());
+						
+						output.accept(ItemInit.CALL_FORWARDING_DEVICE.get());
+						
+						if(CommonStargateConfig.enable_classic_stargate_upgrades.get())
+						{
+							output.accept(StargateUpgradeItem.stargateType(BlockInit.UNIVERSE_STARGATE.get()));
+							output.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
+							output.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
+							output.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+						}
+						if(CommonStargateConfig.enable_stargate_variants.get())
+						{
+							parameters.holders()
+								.lookup(StargateVariant.REGISTRY_KEY)
+								.ifPresent(regLookup ->
+										regLookup.listElementIds()
+												.forEach(variantId ->
+														output.accept(
+																StargateVariantItem.stargateVariant(
+																		variantId.location().toString()
+																)
+														)
+												)
+								);
+						}
+						})
+						.build());
+	
+	public static final RegistryObject<CreativeModeTab> STARGATE_ITEMS = CREATIVE_MODE_TABS.register("stargate_items", () ->
+			CreativeModeTab.builder().icon(() -> new ItemStack(ItemInit.NAQUADAH.get()))
+					.title(Component.translatable("itemGroup.stargate_items"))
+					.displayItems((parameters, output) ->
+					{
+						output.accept(ItemInit.RAW_NAQUADAH.get());
+						output.accept(ItemInit.REFINED_NAQUADAH.get());
+						output.accept(ItemInit.NAQUADAH_INGOT.get());
+						output.accept(ItemInit.NAQUADAH_NUGGET.get());
+						
+						output.accept(ItemInit.NAQUADAH_COPPER_MIXTURE.get());
+						output.accept(ItemInit.NAQUADAH_COPPER_ALLOY.get());
+						output.accept(ItemInit.NAQUADAH_COPPER_NUGGET.get());
+						
+						output.accept(ItemInit.NAQUADAH_IRON_MIXTURE.get());
+						output.accept(ItemInit.NAQUADAH_IRON_ALLOY.get());
+						output.accept(ItemInit.NAQUADAH_IRON_NUGGET.get());
+						
+						output.accept(ItemInit.PURE_NAQUADAH.get());
+						output.accept(ItemInit.NAQUADAH.get());
+						
+						output.accept(ItemInit.RAW_NAQUADRIA.get());
+						
+						output.accept(ItemInit.RAW_TRINIUM.get());
+						output.accept(ItemInit.TRINIUM_INGOT.get());
+						output.accept(ItemInit.TRINIUM_NUGGET.get());
+						
+						output.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());
+						output.accept(ItemInit.HEAVY_LIQUID_NAQUADAH_BUCKET.get());
+						output.accept(ItemInit.VIAL.get());
+						output.accept(VialItem.liquidNaquadahSetup());
+						output.accept(VialItem.heavyLiquidNaquadahSetup());
+						
+						output.accept(ItemInit.NAQUADAH_ROD.get());
+						output.accept(ItemInit.NAQUADAH_IRON_ROD.get());
+						output.accept(ItemInit.NAQUADAH_COPPER_ROD.get());
+						output.accept(ItemInit.TRINIUM_ROD.get());
+						output.accept(ItemInit.REACTION_CHAMBER.get());
+						output.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
+						output.accept(NaquadahFuelRodItem.fuelRodSetup());
+						//output.accept(ItemInit.LIQUID_NAQUADAH_REACTOR_CORE.get());
+						output.accept(ItemInit.PLASMA_CONVERTER.get());
+						output.accept(ItemInit.MATTER_PROJECTOR.get());
+						
+						output.accept(ItemInit.NAQUADAH_POWER_CELL.get());
+						output.accept(PowerCellItem.liquidNaquadahSetup());
+						output.accept(PowerCellItem.heavyLiquidNaquadahSetup());
+						
+						output.accept(ItemInit.ANCIENT_TRANSPORT_RING.get());
+						output.accept(ItemInit.GOAULD_TRANSPORT_RING.get());
+						
+						output.accept(ItemInit.POCKET_CRYSTAL_COMPUTER.get());
+						output.accept(ItemInit.PDA.get());
+						//output.accept(ItemInit.ANCIENT_REMOTE.get());
+						
+						output.accept(ItemInit.GDO.get());
+						
+						//output.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
+						
+						output.accept(ItemInit.NAQUADAH_SWORD.get());
+						output.accept(ItemInit.NAQUADAH_PICKAXE.get());
+						output.accept(ItemInit.NAQUADAH_AXE.get());
+						output.accept(ItemInit.NAQUADAH_SHOVEL.get());
+						output.accept(ItemInit.NAQUADAH_HOE.get());
+						
+						output.accept(ItemInit.NAQUADAH_HELMET.get());
+						output.accept(ItemInit.NAQUADAH_CHESTPLATE.get());
+						output.accept(ItemInit.NAQUADAH_LEGGINGS.get());
+						output.accept(ItemInit.NAQUADAH_BOOTS.get());
+						
+						output.accept(ItemInit.TRINIUM_SWORD.get());
+						output.accept(ItemInit.TRINIUM_PICKAXE.get());
+						output.accept(ItemInit.TRINIUM_AXE.get());
+						output.accept(ItemInit.TRINIUM_SHOVEL.get());
+						output.accept(ItemInit.TRINIUM_HOE.get());
+						
+						output.accept(ItemInit.TRINIUM_HELMET.get());
+						output.accept(ItemInit.TRINIUM_CHESTPLATE.get());
+						output.accept(ItemInit.TRINIUM_LEGGINGS.get());
+						output.accept(ItemInit.TRINIUM_BOOTS.get());
+						
+						output.accept(ItemInit.TRINIUM_ARROW.get());
+						
+						output.accept(ItemInit.KARA_KESH.get());
+						output.accept(ItemInit.GOAULD_RING_REMOTE.get());
+						
+						output.accept(ItemInit.JAFFA_STAFF_HEAD.get());
+						output.accept(ItemInit.MATOK.get());
+						
+						output.accept(ItemInit.JACKAL_HELMET.get());
+						output.accept(ItemInit.FALCON_HELMET.get());
+						output.accept(ItemInit.JAFFA_HELMET.get());
+						output.accept(ItemInit.JAFFA_CHESTPLATE.get());
+						output.accept(ItemInit.JAFFA_LEGGINGS.get());
+						output.accept(ItemInit.JAFFA_BOOTS.get());
+						
+						output.accept(ItemInit.SYSTEM_LORD_HELMET.get());
+						output.accept(ItemInit.SYSTEM_LORD_CHESTPLATE.get());
+						output.accept(ItemInit.SYSTEM_LORD_LEGGINGS.get());
+						output.accept(ItemInit.SYSTEM_LORD_BOOTS.get());
+						
+						output.accept(ItemInit.ZPM.get());
+						output.accept(PersonalShieldItem.personalShieldSetup());
+						
+						output.accept(ItemInit.SYRINGE.get());
+						output.accept(SyringeItem.addContents(SyringeItem.Contents.PROTOTYPE_ATA));
+						output.accept(SyringeItem.addContents(SyringeItem.Contents.ATA));
+						
+						output.accept(ItemInit.UNITY_SHARD.get());
+						
+						// output.accept(ItemInit.CRYSTAL_CONFIGURATOR.get());
+						
+						output.accept(ItemInit.CRYSTAL_BASE.get());
+						output.accept(ItemInit.ADVANCED_CRYSTAL_BASE.get());
+						
+						output.accept(ItemInit.CRYSTAL_ADAPTER.get());
+						output.accept(ItemInit.ADVANCED_CRYSTAL_ADAPTER.get());
+						output.accept(ItemInit.LARGE_CONTROL_CRYSTAL.get());
+						output.accept(ItemInit.CONTROL_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_CONTROL_CRYSTAL.get());
+						output.accept(ItemInit.MEMORY_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_MEMORY_CRYSTAL.get());
+						output.accept(ItemInit.MATERIALIZATION_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_MATERIALIZATION_CRYSTAL.get());
+						output.accept(ItemInit.ENERGY_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+						output.accept(ItemInit.TRANSFER_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get());
+						output.accept(ItemInit.COMMUNICATION_CRYSTAL.get());
+						output.accept(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get());
+						
+						//output.accept(ItemInit.SMALL_NAQUADAH_BATTERY.get());
+						
+						output.accept(ItemInit.GOAULD.get());
+						output.accept(ItemInit.GOAULD_CARCASS.get());
+						output.accept(ItemInit.COOKED_GOAULD.get());
+						output.accept(ItemInit.GOAULD_FOSSIL.get());
 					})
 					.withTabsBefore(STARGATE_STUFF_LOCATION).build());
 	

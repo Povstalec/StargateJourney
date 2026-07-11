@@ -31,7 +31,7 @@ public class ServerboundCrystallizerUpdatePacket
     {
     	ctx.get().enqueueWork(() ->
 		{
-    		final BlockEntity blockEntity = ctx.get().getSender().level.getBlockEntity(blockPos);
+    		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
     		if(blockEntity instanceof AbstractCrystallizerEntity<?> crystallizer)
 				crystallizer.dumpInputFluidTank();
     	});

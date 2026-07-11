@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -88,7 +89,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		{
 			ingredient.toNetwork(friendlyByteBuf);
 		}
-		friendlyByteBuf.writeItemStack(this.getResultItem(), false);
+		friendlyByteBuf.writeItemStack(this.output.copy(), false);
 		
 		friendlyByteBuf.writeBoolean(this.depletePrimary);
 		friendlyByteBuf.writeBoolean(this.depleteSecondary);
@@ -136,7 +137,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	}
 	
 	@Override
-	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container)
+	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container, RegistryAccess pRegistryAccess)
 	{
 		return output.copy();
 	}
@@ -148,7 +149,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	}
 	
 	@Override
-	public @NotNull ItemStack getResultItem()
+	public @NotNull ItemStack getResultItem(RegistryAccess pRegistryAccess)
 	{
 		return output.copy();
 	}

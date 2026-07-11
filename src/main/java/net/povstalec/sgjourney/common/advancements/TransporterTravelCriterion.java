@@ -24,7 +24,7 @@ public class TransporterTravelCriterion extends SimpleCriterionTrigger<Transport
 	private static final ResourceLocation CRITERION_ID = new ResourceLocation(StargateJourney.MODID, "transporter_travel");
 	
 	@Override
-	protected TransportTravelTrigger createInstance(JsonObject obj, EntityPredicate.Composite playerPredicate, DeserializationContext predicateDeserializer)
+	protected TransportTravelTrigger createInstance(JsonObject obj, ContextAwarePredicate entity, DeserializationContext predicateDeserializer)
 	{
 		Optional<TransporterConnection.Type> connectionType = Optional.empty();
 		
@@ -67,7 +67,7 @@ public class TransporterTravelCriterion extends SimpleCriterionTrigger<Transport
 		if(GsonHelper.isNumberValue(obj, "distance"))
 			distanceTraveled = Optional.of(GsonHelper.getAsLong(obj, "distance"));
 		
-		return new TransportTravelTrigger(playerPredicate, connectionType,
+		return new TransportTravelTrigger(entity, connectionType,
 				initialDimension, destinationDimension, initialAddressRegion,
 				destinationAddressRegion, initialGalaxy, destinationGalaxy, distanceTraveled);
 	}
@@ -107,7 +107,7 @@ public class TransporterTravelCriterion extends SimpleCriterionTrigger<Transport
 		@Nullable
 		private final Long distanceTraveled;
 
-		public TransportTravelTrigger(EntityPredicate.Composite entity, Optional<TransporterConnection.Type> connectionType,
+		public TransportTravelTrigger(ContextAwarePredicate entity, Optional<TransporterConnection.Type> connectionType,
 									  Optional<ResourceLocation> initialDimension, Optional<ResourceLocation> destinationDimension,
 									  Optional<ResourceLocation> initialAddressRegion, Optional<ResourceLocation> destinationAddressRegion,
 									  Optional<ResourceLocation> initialGalaxy, Optional<ResourceLocation> destinationGalaxy,

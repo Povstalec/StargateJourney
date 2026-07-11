@@ -13,7 +13,7 @@ public class MilkyWayDHDMenu extends AbstractDHDMenu<MilkyWayDHDEntity>
 	
 	public MilkyWayDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.MILKY_WAY_DHD.get(), containerId, inventory, (MilkyWayDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		super(MenuInit.MILKY_WAY_DHD.get(), containerId, inventory, (MilkyWayDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 
     public MilkyWayDHDMenu(int containerId, Inventory inventory, MilkyWayDHDEntity dhd)

@@ -107,7 +107,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		this.itemHint(graphics, texture, x + 165, y + 18, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
 		
-		this.renderEnergyVertical(graphics, texture, x + 162, y + 17, 6, 138, 176, 0, this.menu.getEnergy(), this.menu.getMaxEnergy());
+		this.renderEnergyVertical(graphics, texture, x + 162, y + 17, 6, 138, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
 	}
 	
 	protected void modeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, Component name, Component... components)
@@ -132,7 +132,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		this.tooltip(graphics, mouseX, mouseY, 33, 16, 126, 20, ComponentHelper.energy("tooltip.sgjourney.energy_target", this.menu.getEnergyTarget()),
 				ComponentHelper.description("tooltip.sgjourney.interface.energy_target.description"));
-		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 138, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getMaxEnergy());
+		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 138, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
 		
 		this.modeTooltip(graphics, mouseX, mouseY, 9, 19, 16, 16,
 				Component.translatable("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
