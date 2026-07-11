@@ -51,10 +51,6 @@ repositories {
         url = "https://maven.blamejared.com/"
     }
     maven {
-        name "tterrag maven"
-        url "https://maven.tterrag.com/"
-    }
-    maven {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
