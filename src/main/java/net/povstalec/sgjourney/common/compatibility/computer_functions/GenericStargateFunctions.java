@@ -104,7 +104,7 @@ public class GenericStargateFunctions
 	//*************************************Crystal Interface**************************************
 	//============================================================================================
 	
-	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean engageDirectly, boolean canEngageStargate)
+	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean canEngageStargate, boolean engageDirectly)
 	{
 		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngageStargate).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngageStargate).feedback();
 	}
