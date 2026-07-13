@@ -33,11 +33,13 @@ jobs:
     # Using a specific version prevents breaking your workflow when a breaking change is introduced
     # If a specific commit hash is used, improves security
     # The reference must be changed at TWO places                                       ↓ change this
-    uses: lukaskabc/Minecraft-Mod-Publish-Workflows/.github/workflows/draft-release.yml@v1.2.1
+    # v2.0.2
+    uses: lukaskabc/Minecraft-Mod-Publish-Workflows/.github/workflows/draft-release.yml@4d5dc95fca018ede65532b1e8066d9fd369b15bd
     with:
       # CHANGE THIS REFERENCE AS WELL
       # This value must match the reference used in the "uses:" parameter (the value after "@")
-      workflow_ref: "v1.2.1"
+      # v2.0.2
+      workflow_ref: "4d5dc95fca018ede65532b1e8066d9fd369b15bd"
 
       # Passthrough for workflow dispatch inputs, do not change
       version: ${{ inputs.version }}
