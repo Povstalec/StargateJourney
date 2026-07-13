@@ -8,6 +8,7 @@
   "curseforge_project_slug": "sgjourney",
   "curseforge_project_id": "689083",
   "modrinth_project_id": "qlc8dxM6",
+  "default_release_type": "Beta",
   "discord_webhook": {
     "discord_branch": "main",
     "username": "Monolith architect",
@@ -23,7 +24,7 @@
       "file_glob": "build/libs/*-1.19.2-{version}.jar",
       "branch": "stargatejourney-1.19.2",
       "loaders": [
-        "forge"
+        "Forge"
       ],
       "game_versions": [
         "1.19.2"
@@ -45,7 +46,7 @@
       "file_glob": "build/libs/*-1.19.3-{version}.jar",
       "branch": "stargatejourney-1.19.3",
       "loaders": [
-        "forge"
+        "Forge"
       ],
       "game_versions": [
         "1.19.3"
@@ -67,7 +68,7 @@
       "file_glob": "build/libs/*-1.19.4-{version}.jar",
       "branch": "stargatejourney-1.19.4",
       "loaders": [
-        "forge"
+        "Forge"
       ],
       "game_versions": [
         "1.19.4"
@@ -89,7 +90,7 @@
       "file_glob": "build/libs/*-1.20.1-{version}.jar",
       "branch": "stargatejourney-1.20.1",
       "loaders": [
-        "forge"
+        "Forge"
       ],
       "game_versions": [
         "1.20.1"
@@ -111,7 +112,7 @@
       "file_glob": "build/libs/*-1.21.1-{version}.jar",
       "branch": "main",
       "loaders": [
-        "neoforge"
+        "Neoforge"
       ],
       "game_versions": [
         "1.21.1"
@@ -129,37 +130,37 @@
     "curseforge": [
       {
         "slug": "ad-astra",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       },
       {
         "slug": "cc-tweaked",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       },
       {
         "slug": "jei",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       },
       {
         "slug": "stellarview",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       }
     ],
     "modrinth": [
       {
-        "dependency_type": "optional",
+        "dependency_type": "Optional",
         "slug": "ad-astra"
       },
       {
         "slug": "cc-tweaked",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       },
       {
         "slug": "jei",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       },
       {
         "slug": "stellarview",
-        "dependency_type": "optional"
+        "dependency_type": "Optional"
       }
     ]
   }
