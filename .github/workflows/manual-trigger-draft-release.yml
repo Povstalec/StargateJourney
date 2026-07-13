@@ -21,6 +21,11 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ModPublish-v${{ inputs.version }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   draft-release:
     name: Draft new GitHub release

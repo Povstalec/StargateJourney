@@ -10,6 +10,11 @@ on:
   release:
     types: [released]
 
+concurrency:
+  group: ModPublish-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+  queue: max
+
 jobs:
   publish-mod:
     name: Upload the mod to several platforms
