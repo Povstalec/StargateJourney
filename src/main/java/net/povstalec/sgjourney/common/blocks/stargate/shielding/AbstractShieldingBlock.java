@@ -1,6 +1,9 @@
 package net.povstalec.sgjourney.common.blocks.stargate.shielding;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,7 +29,10 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.StargateJourney;
@@ -42,6 +48,8 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractShieldingBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
@@ -157,7 +165,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		};
 	}
 	
-	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockPos baseBlockPos = state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
 		
@@ -186,38 +194,56 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		return true;
 	}
 
-	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	private Optional<ItemStack> makeIrisItem(Level level, IrisInfo irisInfo)
 	{
-		BlockPos baseBlockPos = state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
-		
-		BlockState stargateState = level.getBlockState(baseBlockPos);
-		
-		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
+		if (level.isClientSide() || irisInfo == null || !irisInfo.hasIris())
 		{
-			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
-			if(stargate instanceof IrisStargateEntity<?> irisStargate)
+			return Optional.empty();
+		}
+		return Optional.of(irisInfo.getIris());
+	}
+
+	/**
+	 * Extracts block entity from the stargate base block and returns a single element list
+	 * with the item stack of the iris if the iris is present on the gate.
+	 *
+	 * @return List with the iris item stack or empty list if this part cannot provide the drop
+	 * @implSpec Requires {@link LootContextParams#ORIGIN} to be passed in the context, otherwise returns empty list.
+	 * @implNote Can be called only on the shielding part that initiated the removal, every other part will return an empty list.
+	 */
+	@Override
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
+	{
+		Vec3 posVec = builder.getOptionalParameter(LootContextParams.ORIGIN);
+		if (posVec == null || builder.getLevel().isClientSide() || !(state.getBlock() instanceof AbstractShieldingBlock))
+		{
+			return Collections.emptyList();
+		}
+		BlockPos shieldingPos = new BlockPos(posVec);
+
+		ShieldingPart thisPart = state.getValue(PART);
+		BlockPos baseBlockPos = thisPart.getBaseBlockPos(shieldingPos, state.getValue(FACING), state.getValue(ORIENTATION));
+		BlockState baseState = builder.getLevel().getBlockState(baseBlockPos);
+
+		if (!(baseState.getBlock() instanceof AbstractStargateBaseBlock))
+		{
+			return Collections.emptyList();
+		}
+
+		AbstractStargateEntity<?> stargateEntity = getStargate(builder.getLevel(), shieldingPos, state);
+		if (stargateEntity instanceof IrisStargateEntity<?> irisStargate)
+		{
+			ShieldingPart removalFromPart = irisStargate.getPendingShieldRemovalFromPart();
+			if (removalFromPart == null || removalFromPart.equals(thisPart))
 			{
-				ItemStack irisStack = irisStargate.irisInfo().getIris();
-				
-				if(!level.isClientSide() && !player.isCreative() && !irisStack.equals(ItemStack.EMPTY))
-				{
-					ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, irisStack);
-					itementity.setDefaultPickUpDelay();
-					itementity.setUnlimitedLifetime();
-					level.addFreshEntity(itementity);
-				}
+				return makeIrisItem(builder.getLevel(), irisStargate.irisInfo())
+						.map(List::of)
+						.orElseGet(Collections::emptyList);
 			}
 		}
-		
-		/*AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), state.getValue(FACING), state.getValue(ORIENTATION));
-		
-		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargate)
-				stargate.unsetIris(stargateState, level, baseBlockPos);*/
-
-		super.playerWillDestroy(level, pos, state, player);
+		return Collections.emptyList();
 	}
-	
+
 	@Override
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
 	{
@@ -237,8 +263,14 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 					// Check if the blockstate change was caused by the iris opening and break the rest of the iris if it wasn't
 					if(shieldingPart.shieldingState().isBefore(irisStargate.irisInfo().getIrisProgress()))
 					{
-						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
-						stargateBlock.unsetIris(stargateState, level, baseBlockPos);
+						if (irisStargate.getPendingGateRemovalFromPart() == null && irisStargate.getPendingShieldRemovalFromPart() == null) {
+							// check that only the iris is being removed and this part is initiating the removal
+							irisStargate.setPendingShieldRemovalFromPart(shieldingPart);
+							// when stargate is being destroyed, it calls destroy shielding itself
+							AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));
+							// schedule tick for gate block to remove iris
+							level.scheduleTick(baseBlockPos, stargateState.getBlock(), 0);
+						}
 					}
 				}
 			}

@@ -13,6 +13,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -23,6 +25,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -53,7 +57,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 {
 	public static final String EMPTY = StargateJourney.EMPTY;
 	public static final String LOCAL_POINT_OF_ORIGIN = AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN;
-	
+
 	public AbstractStargateBaseBlock(Properties properties, double width, double horizontalOffset)
 	{
 		super(properties, width, horizontalOffset);
@@ -205,13 +209,56 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				stargate.dhdCache.clearTwoWays();
     			stargate.removeStargateFromNetwork();
     		}
-    		
-			dropStargateItem(level, pos, oldState, null);
-    		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
-    		
-            super.onRemove(oldState, level, pos, newState, isMoving);
+
+			super.onRemove(oldState, level, pos, newState, isMoving);
         }
     }
+
+
+	@Override
+	public BlockState updateShape(BlockState baseState, Direction direction, BlockState neighborState, LevelAccessor levelAccessor, BlockPos basePos, BlockPos neighborPos)
+	{
+		AbstractStargateEntity<?> stargateEntity = getStargate(levelAccessor, basePos, baseState);
+
+		if (stargateEntity != null && stargateEntity.getPendingGateRemovalFromPart() != null) {
+			// stargate is being removed
+			levelAccessor.scheduleTick(basePos, baseState.getBlock(), 0);
+		}
+
+		return super.updateShape(baseState, direction, neighborState, levelAccessor, basePos, neighborPos);
+	}
+
+	/**
+	 * Processes scheduled ticks.
+	 * Destroys itself if the gate is being removed.
+	 * Deletes iris if its being removed.
+	 * @see LevelAccessor#scheduleTick(BlockPos, Block, int)
+	 */
+	@Override
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random)
+	{
+		super.tick(state, level, pos, random);
+
+		AbstractStargateEntity<?> stargateEntity = getStargate(level, pos, state);
+
+		if (stargateEntity == null)
+		{
+			return;
+		}
+
+		if (stargateEntity.getPendingGateRemovalFromPart() != null)
+		{
+			// stargate is being removed, destroy the base block
+			level.destroyBlock(pos, false);
+		}
+		else if (stargateEntity instanceof IrisStargateEntity<?> irisStargate &&
+				irisStargate.getPendingShieldRemovalFromPart() != null)
+		{
+			// the shielding is being removed, delete iris
+			irisStargate.irisInfo().removeIris();
+			irisStargate.resetPendingShieldRemoval();
+		}
+	}
 	
 	public void updateStargate(Level level, BlockPos pos, BlockState state, ShieldingState shieldingState)
 	{

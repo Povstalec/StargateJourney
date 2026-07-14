@@ -128,9 +128,12 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	private final StargateType<SG> stargateType;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
-	
-	// Stargate destruction
-	protected boolean isItemDropped = false;
+
+	/**
+	 * If set, the gate is being removed by the given part.
+	 * Once set, the value must not be changed.
+	 */
+	protected StargatePart pendingGateRemovalFromPart = null;
 	
 	// Basic Info
 	protected Address.Immutable id9ChevronAddress = new Address.Immutable();
@@ -1338,16 +1341,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return obstructingBlocks >= getMaxObstructiveBlocks();
 	}
 	
-	public void markItemAsDropped()
-	{
-		this.isItemDropped = true;
-	}
-	
-	public boolean isItemDropped()
-	{
-		return this.isItemDropped;
-	}
-	
 	@Override
 	public void saveToItem(ItemStack stack)
 	{
@@ -1808,7 +1801,29 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		return true;
 	}
-	
+
+	/**
+	 * Register a pending removal of the stargate multiblock structure which is being handled by the given part.
+	 * Does nothing if there is already a part registered.
+	 * @param removalInitiator the part initiating the removal.
+	 */
+	public void setPendingGateRemovalFromPart(StargatePart removalInitiator)
+	{
+		if (this.pendingGateRemovalFromPart == null && removalInitiator != null)
+		{
+			this.pendingGateRemovalFromPart = removalInitiator;
+		}
+	}
+
+	/**
+	 * The part that initiated the gate multiblock structure removal.
+	 * @return the stargate part or {@code null}
+	 */
+	public StargatePart getPendingGateRemovalFromPart()
+	{
+		return pendingGateRemovalFromPart;
+	}
+
 	@Override
 	public String toString()
 	{

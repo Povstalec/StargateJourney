@@ -1,13 +1,18 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
@@ -19,7 +24,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -180,40 +184,116 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return super.updateShape(oldState, direction, newState, levelAccessor, oldPos, newPos);
 	}
 
-	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	/**
+	 * Extracts {@link LootContextParams#ORIGIN} and resolves stargate entity at the given position.
+	 * @return The resolved stargate entity if found
+	 */
+	private Optional<AbstractStargateEntity<?>> getStargateEntityFromLootContext(BlockState state, LootContext.Builder builder)
 	{
-		dropStargateItem(level, pos, state, player);
-		super.playerWillDestroy(level, pos, state, player);
+		return Optional.ofNullable(builder.getOptionalParameter(LootContextParams.ORIGIN))
+				.map(BlockPos::new)
+				.map(originPos -> getStargate(builder.getLevel(), originPos, state));
 	}
-	
-	public void dropStargateItem(Level level, BlockPos pos, BlockState state, @Nullable Player player)
+
+	/**
+	 * Extracts block entity from the stargate base block and returns a single element list
+	 * with the item stack of the gate.
+	 *
+	 * @return List with the stargate item stack or empty list if this part cannot provide the drop
+	 * @implSpec Requires {@link LootContextParams#ORIGIN} to be passed in the context, otherwise returns empty list.
+	 * Requires {@link LootContextParams#BLOCK_ENTITY} to be present for the base block.
+	 * @implNote Can be called only on the stargate part that initiated the removal, every other part will return an empty list.
+	 */
+	@Override
+	public List<ItemStack> getDrops(BlockState state, LootContext.Builder builder)
 	{
-		if(level.isClientSide())
-			return;
-		
-		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
-		if(stargate != null)
+		StargatePart thisPart = state.getOptionalValue(PART).orElse(null);
+		if (thisPart == null || builder.getLevel().isClientSide())
 		{
-			if(!stargate.isItemDropped() && (player == null || !player.isCreative()))
-			{
-				stargate.markItemAsDropped(); // Mark item as dropped because it did drop
-				
-				ItemStack itemstack = new ItemStack(asItem());
-				
-				stargate.saveToItem(itemstack);
-				
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				itementity.setUnlimitedLifetime();
-				level.addFreshEntity(itementity);
-			}
-			else
-				stargate.markItemAsDropped(); // Mark item as dropped because it could have dropped, but something stopped it (like player being in Creative)
+			return Collections.emptyList();
+		}
+
+		// if the location is present find the respective stargate entity
+		// extract the block entity from the context (when the base block was mined)
+		return Optional.ofNullable(builder.getOptionalParameter(LootContextParams.BLOCK_ENTITY))
+				// or find it in the level (if a ring block was mined)
+				.or(() -> getStargateEntityFromLootContext(state, builder))
+				// check type and cast to stargate entity
+				.filter(blockEntity -> blockEntity instanceof AbstractStargateEntity<?>)
+				.map(blockEntity -> (AbstractStargateEntity<?>) blockEntity)
+				// discard entity if its being removed by a different part,
+				// only the part that initiated removal can provide drops
+				// allowing null when probed before removal
+				.filter(stargate -> stargate.getPendingGateRemovalFromPart() == null ||
+						thisPart.equals(stargate.getPendingGateRemovalFromPart()))
+				// make the item stack
+				.map(stargateEntity -> makeStargateItem(builder.getLevel(), stargateEntity))
+				.map(List::of)
+				// if null, the gate entity does not exist, or this part cannot provide the drops
+				.orElseGet(Collections::emptyList);
+	}
+
+	/**
+	 * Converts the stargate to an {@link ItemStack}.
+	 * @return the {@link ItemStack} if converted, or {@code null} if the gate is null or on clientside
+	 */
+	public ItemStack makeStargateItem(Level level, AbstractStargateEntity<?> stargate)
+	{
+		if(!level.isClientSide() && stargate != null)
+		{
+			ItemStack itemstack = new ItemStack(asItem());
+			stargate.saveToItem(itemstack);
+
+			removeCoverBlockFromStargateData(itemstack.getTagElement("BlockEntityTag"));
+			return itemstack;
+		}
+		return null;
+	}
+
+	private static void removeCoverBlockFromStargateData(CompoundTag tag) {
+		if (tag != null) {
+			tag.remove(AbstractStargateEntity.COVER_BLOCKS);
 		}
 	}
-	
-	public void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart stargatePart)
+
+	/**
+	 * Triggers removal of the whole gate except the base block,
+	 * that will remove itself on next tick in order to preserve the block entity for {@link #getDrops(BlockState, LootContext.Builder)}
+	 */
+	@Override
+	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean movedByPiston)
+	{
+		Direction direction = oldState.getValue(FACING);
+		Orientation orientation = oldState.getValue(ORIENTATION);
+		StargatePart thisPart = oldState.getValue(PART);
+		BlockPos baseBlockPos = thisPart.getBaseBlockPos(pos, direction, orientation);
+
+		AbstractStargateEntity<?> stargateEntity = getStargate(level, pos, oldState);
+		if (stargateEntity != null)
+		{
+			// try to set self as initiator of the removal
+			stargateEntity.setPendingGateRemovalFromPart(thisPart);
+
+			Optional.ofNullable(stargateEntity.blockCover)
+					.ifPresent(cover -> cover.mineBlockAt(level, null, thisPart, pos));
+		}
+
+		// if no entity was found (just in case)
+		// or if this part is handling the removal
+		// then destroy the gate, except for the base block
+		if (stargateEntity == null || stargateEntity.getPendingGateRemovalFromPart().equals(thisPart))
+		{
+			destroyStargate(level, baseBlockPos, getParts(), getShieldingParts(), direction, orientation, StargatePart.BASE);
+		}
+		super.onRemove(oldState, level, pos, newState, movedByPiston);
+	}
+
+	/**
+	 * Destroys all the blocks of the stargate multiblock structure except for the {@code excludedPart}
+	 * @param pos the position of the stargate base block
+	 * @param excludedPart part that should not be destroyed
+	 */
+	private void destroyStargate(Level level, BlockPos pos, ArrayList<StargatePart> parts, ArrayList<ShieldingPart> shieldingParts, Direction direction, Orientation orientation, StargatePart excludedPart)
 	{
 		if(direction == null)
 		{
@@ -231,17 +311,19 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		for(StargatePart part : parts)
 		{
-			if(!stargatePart.equals(part))
+			if(excludedPart.equals(part))
 			{
-				BlockPos ringPos = part.getRingPos(pos, direction, orientation);
-				BlockState ringState = level.getBlockState(ringPos);
-				
-				if(ringState.getBlock() instanceof AbstractStargateBlock)
-				{
-					boolean waterlogged = ringState.getBlock() instanceof AbstractStargateRingBlock ? ringState.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
-					
-					level.setBlock(ringPos, waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState(), 3);
-				}
+				continue;
+			}
+			BlockPos ringPos = part.getRingPos(pos, direction, orientation);
+			BlockState ringState = level.getBlockState(ringPos);
+
+			if(ringState.getBlock() instanceof AbstractStargateBlock)
+			{
+				boolean waterlogged = ringState.getBlock() instanceof AbstractStargateRingBlock ?
+						ringState.getValue(AbstractStargateRingBlock.WATERLOGGED) : false;
+				BlockState newState = waterlogged ? Blocks.WATER.defaultBlockState() : Blocks.AIR.defaultBlockState();
+				level.setBlock(ringPos, newState, Block.UPDATE_NEIGHBORS | Block.UPDATE_CLIENTS);
 			}
 		}
 	}
