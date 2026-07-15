@@ -11,8 +11,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.sgjourney.stargate.TollanBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.TollanStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanStargate;
 
 public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEntityStargate>
 {

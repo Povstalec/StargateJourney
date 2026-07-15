@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
@@ -17,6 +16,9 @@ import net.povstalec.sgjourney.common.sgjourney.*;
 import javax.annotation.Nullable;
 import java.util.*;
 
+/**
+ * Default implementation for an abstract instance of Stargate used by Stargate Journey
+ */
 public abstract class SGJourneyStargate implements Stargate
 {
 	public static final double MIN_TRAVELER_SPEED = 0.4;
@@ -48,6 +50,7 @@ public abstract class SGJourneyStargate implements Stargate
 		this.server = server;
 	}
 	
+	@Override
 	public final StargateType<?> getStargateType()
 	{
 		return this.type;
@@ -89,12 +92,6 @@ public abstract class SGJourneyStargate implements Stargate
 	public boolean hasDHD()
 	{
 		return this.hasDHD;
-	}
-	
-	@Override
-	public StargateInfo.Gen getGeneration()
-	{
-		return getStargateType().getGeneration();
 	}
 	
 	@Override

@@ -163,7 +163,10 @@ public interface Stargate extends Comparable<Stargate>
 	/**
 	 * @return Generation of the Stargate
 	 */
-	StargateInfo.Gen getGeneration();
+	default StargateInfo.Gen getGeneration()
+	{
+		return getStargateType().getGeneration();
+	}
 	
 	/**
 	 * @return Number of times the Stargate was opened

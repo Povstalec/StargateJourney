@@ -1,8 +1,10 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.pegasus;
 
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 public abstract class PegasusStargate extends SGJourneyStargate
 {
@@ -14,12 +16,6 @@ public abstract class PegasusStargate extends SGJourneyStargate
 	public static final StargateInfo.ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.pegasus_chevron_lock_speed.get();
 	
 	
-	
-	@Override
-	public StargateInfo.Gen getGeneration()
-	{
-		return StargateInfo.Gen.GEN_3;
-	}
 	
 	@Override
 	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)

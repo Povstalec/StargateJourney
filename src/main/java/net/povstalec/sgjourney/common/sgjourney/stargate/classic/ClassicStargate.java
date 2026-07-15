@@ -1,8 +1,10 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.classic;
 
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 public abstract class ClassicStargate extends SGJourneyStargate
 {
@@ -14,12 +16,6 @@ public abstract class ClassicStargate extends SGJourneyStargate
 	}
 	
 	
-	
-	@Override
-	public StargateInfo.Gen getGeneration()
-	{
-		return StargateInfo.Gen.NONE;
-	}
 	
 	@Override
 	public StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)

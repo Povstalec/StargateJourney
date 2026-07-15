@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.universe;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -7,18 +7,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
-public class PegasusBlockEntityStargate extends PegasusStargate implements BlockEntityStargate<PegasusStargateEntity>
+public class UniverseBlockEntityStargate extends UniverseStargate implements BlockEntityStargate<UniverseStargateEntity>
 {
-	protected WeakReference<PegasusStargateEntity> stargate;
+	protected WeakReference<UniverseStargateEntity> stargate;
 	
 	protected BlockPos blockPos;
 	
@@ -30,7 +32,7 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements Block
 	@Nullable
 	protected Vec3 right = null;
 	
-	public PegasusBlockEntityStargate(StargateType<?> type, MinecraftServer server)
+	public UniverseBlockEntityStargate(StargateType<?> type, MinecraftServer server)
 	{
 		super(type, server);
 	}
@@ -41,25 +43,25 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements Block
 		return this.blockPos;
 	}
 	
-	private PegasusStargateEntity cacheStargateEntity(PegasusStargateEntity stargate)
+	private UniverseStargateEntity cacheStargateEntity(UniverseStargateEntity stargate)
 	{
 		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
 		
 		return stargate;
 	}
 	
-	private @Nullable PegasusStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	private @Nullable UniverseStargateEntity tryCacheStargateEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof PegasusStargateEntity stargate)
+		if(level != null && level.getBlockEntity(blockPos) instanceof UniverseStargateEntity stargate)
 			return cacheStargateEntity(stargate);
 		
 		return null;
 	}
 	
 	@Override
-	public @Nullable PegasusStargateEntity getStargateEntity(MinecraftServer server)
+	public @Nullable UniverseStargateEntity getStargateEntity(MinecraftServer server)
 	{
 		//if((this.stargate != null && this.stargate.get() != null) || server == null)
 		//	return this.stargate.get();
@@ -171,7 +173,7 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements Block
 		
 		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORKS))
 		{
-			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof PegasusStargateEntity stargate)
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof UniverseStargateEntity stargate)
 				loadFromBlockEntity(stargate);
 		}
 	}

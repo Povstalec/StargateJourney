@@ -3,20 +3,19 @@ package net.povstalec.sgjourney.common.sgjourney.factions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.entities.FactionMember;
-import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
-import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 import javax.annotation.Nullable;
@@ -37,7 +36,7 @@ public class JaffaBurgers extends AbstractFaction
 	private static JaffaBurgers jaffaBurgers = null;
 	
 	protected Set<Address.Immutable> visitedAddresses = new HashSet<>();
-	protected final SpawnerStargate spawnerStargate;
+	protected final MilkyWaySpawnerStargate spawnerStargate;
 	
 	@Nullable
 	protected Address.Immutable visitTarget;
@@ -46,15 +45,26 @@ public class JaffaBurgers extends AbstractFaction
 	public JaffaBurgers(MinecraftServer server)
 	{
 		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
-		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
-				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
-				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
-				{
-					if(entity instanceof FactionMember factionMember)
-						factionMember.setFaction(this);
-					
-					entity.setItemSlot(EquipmentSlot.MAINHAND, makeJaffaBurgerStack());
-				});
+		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag());
+		
+		this.spawnerStargate.setEntityTypeRandomizer(this::entityTypeRandomizer);
+		this.spawnerStargate.setOnEntitySpawn(this::onEntitySpawn);
+		this.spawnerStargate.getSpawnerTimer()
+				.setInterval(ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL)
+				.setSpawnCount(ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT);
+	}
+	
+	public EntityType<?> entityTypeRandomizer(RandomSource randomSource)
+	{
+		return EntityInit.JAFFA.get();
+	}
+	
+	public void onEntitySpawn(Entity entity, RandomSource randomSource)
+	{
+		if(entity instanceof FactionMember factionMember)
+			factionMember.setFaction(this);
+		
+		entity.setItemSlot(EquipmentSlot.MAINHAND, makeJaffaBurgerStack());
 	}
 	
 	public static ItemStack makeJaffaBurgerStack()
