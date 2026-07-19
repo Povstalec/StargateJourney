@@ -3,14 +3,14 @@
 	"category": "misc",
 	"pattern":
 	[
-		"CNN",
+		"ANN",
 		"RIE",
-		"CNN"
+		"ANN"
 	],
 	
 	"key": 
 	{
-		"C": { "item": "sgjourney:advanced_control_crystal" },
+		"A": { "item": "sgjourney:advanced_crystal_adapter" },
 		"N": { "tag": "sgjourney:naquadah" },
 		"I": { "item": "sgjourney:crystal_interface" },
 		"E": { "item": "sgjourney:advanced_energy_crystal" },

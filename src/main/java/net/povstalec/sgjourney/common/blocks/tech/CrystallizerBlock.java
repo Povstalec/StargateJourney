@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -18,12 +16,13 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
+
+import javax.annotation.Nullable;
 
 public class CrystallizerBlock extends AbstractCrystallizerBlock
 {
@@ -53,7 +52,7 @@ public class CrystallizerBlock extends AbstractCrystallizerBlock
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractCrystallizerEntity crystallizer) 
+        	if(blockEntity instanceof CrystallizerEntity crystallizer)
         	{
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -66,7 +65,7 @@ public class CrystallizerBlock extends AbstractCrystallizerBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new CrystallizerMenu(windowId, playerInventory, blockEntity);
+        				return new CrystallizerMenu.Crystallizer(windowId, playerInventory, crystallizer);
         			}
         		};
 				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

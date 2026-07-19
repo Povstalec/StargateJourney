@@ -47,7 +47,7 @@ public class InterfaceMethods
 		{
 			Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
 			
-			return MethodResult.of(InterfaceFunctions.addressToString(addressTable).toString());
+			return MethodResult.of(InterfaceFunctions.addressToString(addressTable));
 		}
 	}
 	

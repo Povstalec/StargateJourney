@@ -4,14 +4,14 @@
 	"pattern":
 	[
 		"WWW",
-		"RCR",
+		"NRN",
 		"WWW"
 	],
 	
 	"key": 
 	{
+		"N": { "tag": "sgjourney:refined_naquadah" },
 		"R": { "item": "minecraft:redstone" },
-		"C": { "item": "sgjourney:energy_crystal" },
 		"W": { "item": "sgjourney:naquadah_wire" }
 	},
 	

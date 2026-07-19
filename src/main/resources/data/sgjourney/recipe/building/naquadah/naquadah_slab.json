@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:naquadah_block"}
+	},
+	"result":
+	{
+<<<<<<<< HEAD:src/main/resources/data/sgjourney/recipe/naquadah_stairs.json
+		"id": "sgjourney:naquadah_stairs"
+========
+		"item": "sgjourney:naquadah_slab", "count": 6
+>>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/recipe/building/naquadah/naquadah_slab.json
+	}
+}

@@ -1,10 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
@@ -15,11 +11,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
-
-import javax.annotation.Nullable;
 
 public class AddressTable
 {
@@ -59,21 +54,47 @@ public class AddressTable
         return registry.get(addressTable);
 	}
 	
-	public static Address randomAddress(MinecraftServer server, AddressTable addressTable)
+	public static Address randomAddress(ServerLevel level, AddressTable addressTable)
 	{
-		if(server == null || addressTable == null)
+		if(level == null || addressTable == null)
 			return null;
 		
-		List<WeightedAddress> addresses = new ArrayList<WeightedAddress>();
+		List<WeightedAddress> addresses = new ArrayList<>();
 		int totalWeight = 0;
 		
 		// Dimensions that are not in Datapack Solar Systems
 		if(addressTable.includeGeneratedAddresses())
 		{
-			List<ResourceKey<Level>> generatedDimensions =  Universe.get(server).getDimensionsWithGeneratedSolarSystems();
+			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyMap = Universe.get(level).getGalaxiesFromDimension(level.dimension());
+			
+			if(galaxyMap != null)
+			{
+				Universe universe = Universe.get(level);
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> galaxyEntry : galaxyMap.entrySet())
+				{
+					Galaxy galaxy = universe.getGalaxy(galaxyEntry.getKey());
+					if(galaxy != null)
+					{
+						// Get Addresses from all generated Address Regions in the Galaxies that this Dimension is located in
+						for(Map.Entry<Address.Immutable, AddressRegion> addressRegionEntry : galaxy.getAddressRegions(entry -> entry.getValue().isGenerated))
+						{
+							for(SpaceLocation spaceLocation : addressRegionEntry.getValue().getSpaceLocations())
+							{
+								WeightedAddress address = new WeightedAddress(new Address.Dimension(spaceLocation.getDimension()), 1);
+								addresses.add(address);
+								totalWeight += address.weight();
+							}
+						}
+					}
+					
+				}
+			}
+			
+			
+			List<ResourceKey<Level>> generatedDimensions =  Universe.get(level).getDimensionsWithGeneratedAddressRegions();
 			for(ResourceKey<Level> dimensionKey : generatedDimensions)
 			{
-				WeightedAddress address = new WeightedAddress(dimensionKey, 1);
+				WeightedAddress address = new WeightedAddress(new Address.Dimension(dimensionKey), 1);
 				addresses.add(address);
 				totalWeight += address.weight();
 			}
@@ -84,7 +105,7 @@ public class AddressTable
 		for(WeightedAddress address : datapackDimensions)
 		{
 			// Only add the address when the dimension exists
-			if(address.addressDimension().right().isPresent() || server.getLevel(address.addressDimension().left().get()) != null)
+			if(address.addressDimension().right().isPresent() || level.getServer().getLevel(address.addressDimension().left().get().getDimension()) != null)
 			{
 				addresses.add(address);
 				totalWeight += address.weight();
@@ -107,45 +128,40 @@ public class AddressTable
 			return null;
 		
 		if(weightedAddress.addressDimension().right().isPresent())
-			return weightedAddress.addressDimension().right().get();
+			return weightedAddress.addressDimension().right().get().clone();
 		
-		return new Address.Dimension(weightedAddress.addressDimension().left().get(), Optional.ofNullable(weightedAddress.galaxy()));
+		return weightedAddress.addressDimension().left().get().clone();
 	}
 	
 	
 	
 	public static class WeightedAddress
 	{
-		private final Either<ResourceKey<Level>, Address.Immutable> addressDimension;
+		private final Either<Address.Dimension, Address.Immutable> addressDimension;
 		private final int weight;
-		@Nullable
-		private ResourceKey<Galaxy> galaxy;
 		
 		public static final Codec<WeightedAddress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.either(Level.RESOURCE_KEY_CODEC, Address.Immutable.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
-				Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight),
-				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(weightedAddress -> Optional.ofNullable(weightedAddress.galaxy))
+				Codec.either(Address.Dimension.CODEC, Address.Immutable.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
+				Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight)
 		).apply(instance, WeightedAddress::new));
 		
-		public WeightedAddress(Either<ResourceKey<Level>, Address.Immutable> addressDimension, int weight, Optional<ResourceKey<Galaxy>> galaxy)
+		public WeightedAddress(Either<Address.Dimension, Address.Immutable> addressDimension, int weight)
 		{
 			this.addressDimension = addressDimension;
 			this.weight = weight;
-			
-			this.galaxy = galaxy.orElse(null);
 		}
 		
-		public WeightedAddress(ResourceKey<Level> dimension, int weight)
+		public WeightedAddress(Address.Dimension dimensionAddress, int weight)
 		{
-			this(Either.left(dimension), weight, Optional.empty());
+			this(Either.left(dimensionAddress), weight);
 		}
 		
 		public WeightedAddress(Address.Immutable address, int weight)
 		{
-			this(Either.right(address), weight, Optional.empty());
+			this(Either.right(address), weight);
 		}
 		
-		public Either<ResourceKey<Level>, Address.Immutable> addressDimension()
+		public Either<Address.Dimension, Address.Immutable> addressDimension()
 		{
 			return addressDimension;
 		}
@@ -153,12 +169,6 @@ public class AddressTable
 		public int weight()
 		{
 			return weight;
-		}
-		
-		@Nullable
-		public ResourceKey<Galaxy> galaxy()
-		{
-			return galaxy;
 		}
 	}
 }

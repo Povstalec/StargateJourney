@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_polished_naquadah_copper_slab",
+	"pattern":
+	[
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:waxed_polished_naquadah_copper_block"
+		}
+	},
+	"result":
+	{
+		"count": 6,
+		"item": "sgjourney:waxed_polished_naquadah_copper_slab"
+	}
+}

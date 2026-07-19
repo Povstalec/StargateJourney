@@ -1,15 +1,14 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import java.util.Random;
-
 import com.mojang.serialization.Codec;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.AttachmentTypeInit;
+
+import java.util.Random;
 
 public class AncientGene
 {
@@ -92,68 +91,87 @@ public class AncientGene
 	{
 		this.gene = gene;
 		this.entity.setData(AttachmentTypeInit.ATA_GENE, this.gene);
-		
 	}
 	
-	public void giveGene()
+	public static void spawnAncientGene(Entity entity)
 	{
-		setGene(ATAGene.ANCIENT);
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
+		{
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.ANCIENT);
+		}
 	}
 	
-	public void inheritGene()
+	public static void spawnInheritedGene(Entity entity)
 	{
-		setGene(ATAGene.INHERITED);
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
+		{
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.INHERITED);
+		}
 	}
 	
-	public void implantGene()
-	{
-		setGene(ATAGene.ARTIFICIAL);
-	}
-	
-	public void removeGene()
-	{
-		setGene(ATAGene.NONE);
-	}
-	
-	public static void inheritGene(long seed, Entity entity, int inheritanceChance)
+	public static void spawnInheritedGene(long seed, Entity entity, int inheritanceChance)
 	{
 		Random random = new Random(seed);
 		int chance = random.nextInt(1, 101);
 		
-		inheritGene(entity, inheritanceChance, chance);
+		spawnInheritedGene(entity, inheritanceChance, chance);
 	}
 	
-	public static void inheritGene(Entity entity, int inheritanceChance)
+	public static void spawnInheritedGene(Entity entity, int inheritanceChance)
 	{
 		Random random = new Random();
 		int chance = random.nextInt(1, 101);
 		
-		inheritGene(entity, inheritanceChance, chance);
+		spawnInheritedGene(entity, inheritanceChance, chance);
 	}
 	
-	private static void inheritGene(Entity entity, int inheritanceChance, int chance)
+	private static void spawnInheritedGene(Entity entity, int inheritanceChance, int randomValue)
 	{
 		AncientGene cap = entity.getCapability(ANCIENT_GENE_CAPABILITY);
 		if(cap != null)
 		{
 			if(cap.firstJoin())
 			{
-				if(chance <= inheritanceChance)
-					cap.inheritGene();
+				if(randomValue <= inheritanceChance)
+					cap.setGene(ATAGene.INHERITED);
 				else
 					cap.setGene(ATAGene.NONE);
 			}
 		}
 	}
 	
+	public static void spawnArtificialGene(Entity entity)
+	{
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
+		{
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.ARTIFICIAL);
+		}
+	}
+	
+	public static void spawnNoGene(Entity entity)
+	{
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
+		{
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.NONE);
+		}
+	}
+	
 	
 	public boolean firstJoin()
 	{
-		return this.getGeneType() == ATAGene.UNDECIDED;
+		return this.gene == ATAGene.UNDECIDED;
 	}
 	
 	public void copyFrom(AncientGene source)
 	{
-		setGene(source.gene);
+		this.gene = source.gene;
 	}
 }

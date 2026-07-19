@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -20,6 +21,12 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	public EnergyCrystalItem(Properties properties)
 	{
 		super(properties);
+	}
+	
+	@Override
+	public final CrystalCache.Type getType()
+	{
+		return CrystalCache.Type.ENERGY;
 	}
 	
 	@Override
@@ -58,21 +65,16 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long energyTargetIncrease()
 	{
-		return CommonDHDConfig.energy_crystal_dhd_energy_target.get();
-	}
-
-	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.energy").append(Component.literal(" " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		return CommonDHDConfig.energy_crystal_energy_target_increase.get();
 	}
 	
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_crystal.energy_target_increase").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.RED));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.energy_crystal.description"));
 	}
 	
 	public static final class Advanced extends EnergyCrystalItem
@@ -91,7 +93,7 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long energyTargetIncrease()
 		{
-			return CommonDHDConfig.advanced_energy_crystal_dhd_energy_target.get();
+			return CommonDHDConfig.advanced_energy_crystal_energy_target_increase.get();
 		}
 
 		@Override

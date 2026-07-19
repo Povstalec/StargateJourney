@@ -1,0 +1,11 @@
+{
+  "type": "sgjourney:destiny",
+  "generator": {
+    "type": "minecraft:noise",
+    "biome_source": {
+		"type": "minecraft:fixed",
+		"biome": "sgjourney:destiny"
+	},
+    "settings": "sgjourney:void"
+  }
+}

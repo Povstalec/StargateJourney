@@ -16,12 +16,12 @@ public class InterfaceFunctions
 	
 	public static long getEnergy(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.getEnergyStored();
+		return interfaceEntity.energyStorage.getTrueEnergyStored();
 	}
 	
 	public static long getEnergyCapacity(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.getEnergyCapacity();
+		return interfaceEntity.energyStorage.getTrueMaxEnergyStored();
 	}
 	
 	public static long getEnergyTarget(AbstractInterfaceEntity interfaceEntity)

@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.core.component.DataComponentType;
-import net.neoforged.neoforge.fluids.FluidStack;
-
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -11,6 +10,7 @@ import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Random;
 import java.util.function.Supplier;
 
 public class VialItem extends FluidItem
@@ -37,6 +37,8 @@ public class VialItem extends FluidItem
 		return CommonTechConfig.vial_capacity.get();
 	}
 	
+	// Liquid Naquadah Vial
+	
 	public static ItemStack liquidNaquadahSetup(int amount)
 	{
 		return FluidItem.fluidSetup(ItemInit.VIAL.get(), FluidInit.LIQUID_NAQUADAH_SOURCE.get(), amount);
@@ -46,6 +48,14 @@ public class VialItem extends FluidItem
 	{
 		return liquidNaquadahSetup(CommonTechConfig.vial_capacity.get());
 	}
+	
+	public static ItemStack randomLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		Random random = new Random();
+		return liquidNaquadahSetup(random.nextInt(minCapacity, maxCapacity + 1));
+	}
+	
+	// Heavy Liquid Naquadah Vial
 	
 	public static ItemStack heavyLiquidNaquadahSetup(int amount)
 	{
@@ -57,6 +67,11 @@ public class VialItem extends FluidItem
 		return heavyLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get());
 	}
 	
+	public static ItemStack randomHeavyLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		Random random = new Random();
+		return heavyLiquidNaquadahSetup(random.nextInt(minCapacity, maxCapacity + 1));
+	}
 	
 	
 	public static class FluidHandler extends FluidHandlerItemStack

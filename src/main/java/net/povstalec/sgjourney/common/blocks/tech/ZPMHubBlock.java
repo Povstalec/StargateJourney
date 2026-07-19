@@ -74,7 +74,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new ZPMHubMenu(windowId, playerInventory, blockEntity);
+        				return new ZPMHubMenu(windowId, playerInventory, zpmHub);
         			}
         		};
 				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

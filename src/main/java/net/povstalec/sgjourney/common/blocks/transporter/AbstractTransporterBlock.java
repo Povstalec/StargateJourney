@@ -1,33 +1,36 @@
 package net.povstalec.sgjourney.common.blocks.transporter;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 
-public abstract class AbstractTransporterBlock extends BaseEntityBlock
+import javax.annotation.Nullable;
+import java.util.List;
+
+public abstract class AbstractTransporterBlock extends BaseEntityBlock implements ProtectedBlock
 {
 	protected AbstractTransporterBlock(Properties properties)
 	{
@@ -46,9 +49,10 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
         {
             BlockEntity entity = level.getBlockEntity(pos);
             
-            if(entity instanceof AbstractTransporterEntity transporterEntity)
+            if(entity instanceof AbstractTransporterEntity<?> transporterEntity)
 			{
-				transporterEntity.disconnectTransporter();
+				transporterEntity.bypassDisconnectTransporter(TransporterInfo.Feedback.TRANSPORTER_DESTROYED);
+				transporterEntity.controllerCache.clearTwoWays();
 				transporterEntity.removeTransporterFromNetwork();
 			}
         }
@@ -56,14 +60,30 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
     }
 	
 	@Override
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player)
+	{
+		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
+		
+		BlockEntity blockentity = level.getBlockEntity(pos);
+		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
+		{
+			transporter.saveToItem(stack, level.registryAccess());
+			if(transporter.hasCustomName())
+				stack.set(DataComponents.ITEM_NAME, transporter.getCustomName());
+		}
+		
+		return stack;
+	}
+	
+	@Override
 	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof AbstractTransporterEntity transporter)
+		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
-				ItemStack itemstack = new ItemStack(BlockInit.TRANSPORT_RINGS.get());
+				ItemStack itemstack = new ItemStack(asItem());
 				
 				blockentity.saveToItem(itemstack, level.registryAccess());
 				if(transporter.hasCustomName())
@@ -83,14 +103,43 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		String id = blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.ID) ? blockEntityTag.getString(AbstractTransporterEntity.ID) : "-";
 		
-		tooltipComponents.add(Component.literal("ID: " + id).withStyle(ChatFormatting.AQUA));
-
-        if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(AbstractTransporterEntity.ENERGY, Tag.TAG_LONG))
+				energy = blockEntityTag.getLong(AbstractTransporterEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(ComponentHelper.energy(energy));
+		
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, Tag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
-            tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+		
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
+	
+	@Nullable
+	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
+			return transporter;
+		
+		return null;
+	}
+	
+	@Override
+	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	{
+		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		
+		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
+			return transporter.hasPermissions(player, sendMessage);
+		
+		return true;
+	}
 }

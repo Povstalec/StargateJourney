@@ -4,8 +4,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonDHDConfig
 {
-	public static ModConfigSpec.LongValue energy_crystal_dhd_energy_target;
-	public static ModConfigSpec.LongValue advanced_energy_crystal_dhd_energy_target;
+	public static ModConfigSpec.LongValue energy_crystal_energy_target_increase;
+	public static ModConfigSpec.LongValue advanced_energy_crystal_energy_target_increase;
 	
 	public static ModConfigSpec.LongValue milky_way_dhd_energy_buffer_capacity;
 	public static ModConfigSpec.LongValue milky_way_dhd_max_energy_receive;
@@ -24,13 +24,13 @@ public class CommonDHDConfig
 	
 	public static void init(ModConfigSpec.Builder server)
 	{
-		energy_crystal_dhd_energy_target = server
-				.comment("The amount by which the Energy Crystal increases a DHD's Energy Target")
-				.defineInRange("server.energy_crystal_dhd_energy_target", 50000L, 1L, Long.MAX_VALUE);
+		energy_crystal_energy_target_increase = server
+				.comment("The amount by which the Energy Crystal increases the Energy Target")
+				.defineInRange("server.energy_crystal_energy_target_increase", 50000L, 1L, Long.MAX_VALUE);
 		
-		advanced_energy_crystal_dhd_energy_target = server
-				.comment("The amount by which the AdvancedEnergy Crystal increases a DHD's Energy Target")
-				.defineInRange("server.advanced_energy_crystal_dhd_energy_target", 100000L, 1L, Long.MAX_VALUE);
+		advanced_energy_crystal_energy_target_increase = server
+				.comment("The amount by which the AdvancedEnergy Crystal increases the Energy Target")
+				.defineInRange("server.advanced_energy_crystal_energy_target_increase", 100000L, 1L, Long.MAX_VALUE);
 		
 		
 		

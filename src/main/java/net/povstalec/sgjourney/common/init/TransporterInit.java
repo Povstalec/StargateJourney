@@ -1,57 +1,34 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.transporter.*;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
+import net.povstalec.sgjourney.common.sgjourney.transporter.AncientBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.GoauldBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 public class TransporterInit
 {
-	private static final HashMap<ResourceLocation, TransporterConstructor> TRANSPORTERS = new HashMap<ResourceLocation, TransporterConstructor>();
-	private static final HashMap<Class<? extends Transporter>, ResourceLocation> LOCATIONS = new HashMap<Class<? extends Transporter>, ResourceLocation>();
+	public static final ResourceKey<Registry<TransporterType<?>>> TRANSPORTER_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(TransporterType.TRANSPORTER_TYPE_LOCATION);
+	public static final Registry<TransporterType<?>> TRANSPORTER_TYPE_REGISTRY = new RegistryBuilder<>(TRANSPORTER_TYPE_REGISTRY_KEY).sync(true).create();
+	public static final DeferredRegister<TransporterType<?>> TRANSPORTER_TYPES = DeferredRegister.create(TransporterType.TRANSPORTER_TYPE_LOCATION, StargateJourney.MODID);
 	
-	public static <T extends Transporter> void register(ResourceLocation resourceLocation, Class<T> objectClass, TransporterConstructor<T> constructor)
+	
+	
+	// Block Entity Transporters
+	public static final DeferredHolder<TransporterType<?>, TransporterType<AncientBlockEntityTransportRings>> ANCIENT_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("ancient_transport_rings", () ->
+			new TransporterType<>(AncientBlockEntityTransportRings::new));
+	public static final DeferredHolder<TransporterType<?>, TransporterType<GoauldBlockEntityTransportRings>> GOAULD_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("goauld_transport_rings", () ->
+			new TransporterType<>(GoauldBlockEntityTransportRings::new));
+	
+	
+	
+	public static void register(IEventBus eventBus)
 	{
-		if(TRANSPORTERS.containsKey(resourceLocation))
-			throw new IllegalStateException("Duplicate registration for " + resourceLocation.toString());
-		if(LOCATIONS.containsKey(objectClass))
-			throw new IllegalStateException("Duplicate registration for " + objectClass.getName());
-		
-		TRANSPORTERS.put(resourceLocation, constructor);
-		LOCATIONS.put(objectClass, resourceLocation);
-	}
-	
-	@Nullable
-	public static Transporter constructTransporter(ResourceLocation resourceLocation)
-	{
-		if(TRANSPORTERS.containsKey(resourceLocation))
-			return TRANSPORTERS.get(resourceLocation).create();
-		
-		return null;
-	}
-	
-	@Nullable
-	public static ResourceLocation getResourceLocation(Transporter transporter)
-	{
-		if(transporter != null && LOCATIONS.containsKey(transporter.getClass()))
-			return LOCATIONS.get(transporter.getClass());
-		
-		return null;
-	}
-	
-	
-	
-	public static void register()
-	{
-		register(StargateJourney.sgjourneyLocation("transport_rings"), TransportRings.class, TransportRings::new);
-	}
-	
-	
-	
-	public interface TransporterConstructor<T extends Transporter>
-	{
-		T create();
+		TRANSPORTER_TYPES.register(eventBus);
 	}
 }

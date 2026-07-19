@@ -3,14 +3,15 @@
 	"category": "misc",
 	"pattern":
 	[
-		" A ",
-		"NCN",
-		" A "
+		"ANA",
+		"ICI",
+		"ANA"
 	],
 	
 	"key": 
 	{
-		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"N": { "tag": "sgjourney:refined_naquadah" },
 		"C": { "item": "sgjourney:reaction_chamber" }
 	},

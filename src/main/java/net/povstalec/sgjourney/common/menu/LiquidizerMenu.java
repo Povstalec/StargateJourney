@@ -1,109 +1,84 @@
 package net.povstalec.sgjourney.common.menu;
 
-import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.packets.ServerboundLiquidizerUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class LiquidizerMenu extends InventoryMenu
+public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<?>> extends EnergyBlockMenu<T>
 {
-    protected final AbstractNaquadahLiquidizerEntity blockEntity;
-    protected final Level level;
     protected FluidStack fluidStack1;
     protected FluidStack fluidStack2;
-    
-    public LiquidizerMenu(MenuType<LiquidizerMenu> type, int containerId, Inventory inventory, BlockEntity blockEntity)
+	
+	protected int itemInputSlotIndex;
+	protected int fluidItemInputSlotIndex;
+	protected int fluidItemInputDumpSlotIndex;
+	protected int fluidItemOutputSlotIndex;
+	protected int fluidItemOutputDumpSlotIndex;
+	protected int energySlotIndex;
+
+    public LiquidizerMenu(MenuType<?> type, int containerId, Inventory inventory, T blockEntity)
     {
-        super(type, containerId);
-        checkContainerSize(inventory, 3);
-        this.blockEntity = ((AbstractNaquadahLiquidizerEntity) blockEntity);
-        this.level = inventory.player.level();
-        this.fluidStack1 = this.blockEntity.getFluid1();
-        this.fluidStack2 = this.blockEntity.getFluid2();
+        super(type, containerId, inventory, blockEntity);
 		
-		addPlayerInventory(inventory, 8, 84);
-		addPlayerHotbar(inventory, 8, 142);
+        checkContainerSize(inventory, 6);
+        this.fluidStack1 = this.blockEntity.getInputFluidStack();
+        this.fluidStack2 = this.blockEntity.getOutputFluidStack();
+
+        addPlayerInventory(inventory, 8, 84);
+        addPlayerHotbar(inventory, 8, 142);
 		
-		IItemHandler cap0 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.UP);
-		if(cap0 != null)
-			this.addSlot(new SlotItemHandler(cap0, 0, 80, 20));
+		this.itemInputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.itemInputHandler, 0, 62, 17)).index;
 		
-		IItemHandler cap1 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.NORTH);
-		if(cap1 != null)
-			this.addSlot(new SlotItemHandler(cap1, 0, 34, 20));
+		this.fluidItemInputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemInputHandler, 0, 8, 17)).index;
+		this.fluidItemOutputSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemInputHandler, 1, 116, 17)).index;
 		
-		IItemHandler cap2 = this.level.getCapability(Capabilities.ItemHandler.BLOCK, blockEntity.getBlockPos(), Direction.DOWN);
-		if(cap2 != null)
-			this.addSlot(new SlotItemHandler(cap2, 0, 126, 58));
+		this.fluidItemOutputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 0, 116, 53)).index;
+		this.fluidItemInputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 1, 8, 53)).index;
+		
+		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
     }
-    
-    public void setFluid1(FluidStack fluidStack)
+	
+	public void pressDumpButton(boolean inputTank)
 	{
-		this.fluidStack1 = fluidStack;
-	}
-    
-    public void setFluid2(FluidStack fluidStack)
-	{
-		this.fluidStack2 = fluidStack;
+		PacketDistributor.sendToServer(new ServerboundLiquidizerUpdatePacket(this.blockEntity.getBlockPos(), inputTank));
 	}
 	
-	public FluidStack getFluid1()
+	public FluidStack getInputFluidStack()
 	{
-		return this.blockEntity.getFluid1();
+		return this.blockEntity.getInputFluidStack();
 	}
 	
-	public FluidStack getFluid2()
+	public FluidStack getOutputFluidStack()
 	{
-		return this.blockEntity.getFluid2();
+		return this.blockEntity.getOutputFluidStack();
 	}
 	
-	public Fluid getDesiredFluid1()
+	public int getMaxProgress()
 	{
-		return this.blockEntity.getDesiredFluid1();
-	}
-	
-	public Fluid getDesiredFluid2()
-	{
-		return this.blockEntity.getDesiredFluid2();
+		return this.blockEntity.getMaxProgress();
 	}
 	
 	public int getProgress()
 	{
-		return this.blockEntity.progress;
+		return this.blockEntity.getProgress();
 	}
     
-    @Override
-    public boolean stillValid(Player player)
-    {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.NAQUADAH_LIQUIDIZER.get()) ||
-        		stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
-    }
-	
-	@Override
-	protected int blockEntitySlotCount()
-	{
-		return 3;
-	}
-    
-	private static final int TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX = 1;
-    private static final int TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX = 2;
-
-    /**
+	/**
      * Checks if the ItemStack has the required liquid for the liquidizer.
      * @return true if the ItemStack has the required liquid, false otherwise.
      */
@@ -111,7 +86,7 @@ public abstract class LiquidizerMenu extends InventoryMenu
 	{
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).is(blockEntity.getDesiredFluid1());
+			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
 		return false;
     }
@@ -124,7 +99,7 @@ public abstract class LiquidizerMenu extends InventoryMenu
     {
 		IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(fluidHandler != null)
-			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).is(blockEntity.getDesiredFluid2());
+			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluidStack().getFluid());
 		
 		return false;
     }
@@ -133,95 +108,62 @@ public abstract class LiquidizerMenu extends InventoryMenu
     {
         return first.getCount() == second.getCount();
     }
-
-    @Override
-    public ItemStack quickMoveStack(Player playerIn, int index) 
-    {
-        Slot sourceSlot = slots.get(index);
-        if (sourceSlot == null || !sourceSlot.hasItem()) return ItemStack.EMPTY;  //EMPTY_ITEM
-        ItemStack sourceStack = sourceSlot.getItem();
-        ItemStack copyOfSourceStack = sourceStack.copy();
-        boolean stopQuickMove = false;
-
-        // Check if the slot clicked is one of the vanilla container slots
-        if (index < VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT) 
-        {
-            // This is a vanilla container slot so merge the stack into the tile inventory
-
-            stopQuickMove = true;
-            // try to move it to the bucket slot first if it has the required liquid
-            if(hasRequiredLiquid(sourceStack))
-            {
-                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX,
-                        TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_INPUT_BUCKET_SLOT_INDEX + 1, false);
-                // we are trying a single slot which might fail
-            }
-            else if (canAcceptResultingLiquid(sourceSlot.getItem())) {
-                // try an empty bucket for the output slot
-                moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX,
-                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_OUTPUT_BUCKET_SLOT_INDEX + 1, false);
-            }
-
-            // if nothing was moved before, try all slots
-            if (countEquals(sourceStack, copyOfSourceStack) && !moveItemStackTo(sourceStack, TE_INVENTORY_FIRST_SLOT_INDEX,
-                    TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT, false))
-            {
-                return ItemStack.EMPTY;  // EMPTY_ITEM
-            }
-        } 
-        else if (index < TE_INVENTORY_FIRST_SLOT_INDEX + TE_INVENTORY_SLOT_COUNT) 
-        {
-            // This is a TE slot so merge the stack into the players inventory
-            if (!moveItemStackTo(sourceStack, VANILLA_FIRST_SLOT_INDEX, VANILLA_FIRST_SLOT_INDEX + VANILLA_SLOT_COUNT, false)) 
-            {
-                return ItemStack.EMPTY;
-            }
-        } else 
-        {
-            System.out.println("Invalid slotIndex:" + index);
-            return ItemStack.EMPTY;
-        }
-        // If stack size == 0 (the entire stack was moved) set slot contents to null
-        if (sourceStack.getCount() == 0) 
-        {
-            sourceSlot.set(ItemStack.EMPTY);
-        } else 
-        {
-            sourceSlot.setChanged();
-        }
-        sourceSlot.onTake(playerIn, sourceStack);
-        if (stopQuickMove) {
-            // Do not "overflow" to the next slot
-            return ItemStack.EMPTY;
-        }
-        return copyOfSourceStack;
-    }
 	
-    public static class LiquidNaquadah extends LiquidizerMenu
+	@Override
+	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
+	{
+		// Try moving energy stack to the energy slot
+		if(sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+			return true;
+		
+		// Try moving it to Liquid input slot
+		if(hasRequiredLiquid(sourceStack) && moveItemStackTo(sourceStack, fluidItemInputSlotIndex, fluidItemInputSlotIndex + 1, false))
+			return true;
+		
+		// Try moving it to Liquid output slot
+		if(canAcceptResultingLiquid(sourceStack) && moveItemStackTo(sourceStack, fluidItemOutputSlotIndex, fluidItemOutputSlotIndex + 1, false))
+			return true;
+		
+		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
+	}
+	
+	
+	
+    public static class LiquidNaquadah extends LiquidizerMenu<NaquadahLiquidizerEntity>
     {
         public LiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+            this(containerId, inventory, (NaquadahLiquidizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
         }
 
-		public LiquidNaquadah(int containerId, Inventory inventory, BlockEntity blockEntity)
+		public LiquidNaquadah(int containerId, Inventory inventory, NaquadahLiquidizerEntity blockEntity)
 		{
 			super(MenuInit.NAQUADAH_LIQUIDIZER.get(), containerId, inventory, blockEntity);
 		}
-    	
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.NAQUADAH_LIQUIDIZER.get());
+		}
     }
 	
-    public static class HeavyLiquidNaquadah extends LiquidizerMenu
+    public static class HeavyLiquidNaquadah extends LiquidizerMenu<HeavyNaquadahLiquidizerEntity>
     {
         public HeavyLiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+            this(containerId, inventory, (HeavyNaquadahLiquidizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
         }
 
-		public HeavyLiquidNaquadah(int containerId, Inventory inventory, BlockEntity blockEntity)
+		public HeavyLiquidNaquadah(int containerId, Inventory inventory, HeavyNaquadahLiquidizerEntity blockEntity)
 		{
 			super(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), containerId, inventory, blockEntity);
 		}
-    	
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get());
+		}
     }
 }

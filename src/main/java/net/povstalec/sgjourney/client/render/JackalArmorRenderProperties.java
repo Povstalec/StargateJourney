@@ -6,19 +6,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.povstalec.sgjourney.client.models.entity.JackalArmorModel;
+import org.jetbrains.annotations.NotNull;
 
 public class JackalArmorRenderProperties implements IClientItemExtensions
 {
 	public static final JackalArmorRenderProperties INSTANCE = new JackalArmorRenderProperties();
-
-    private JackalArmorRenderProperties() 
-    {
-    	
-    }
-
-    @Override
-    public HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel)
-    {
-        return JackalArmorModel.INSTANCE;
-    }
+	
+	@Override
+	public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel)
+	{
+		return JackalArmorModel.INSTANCE;
+	}
 }

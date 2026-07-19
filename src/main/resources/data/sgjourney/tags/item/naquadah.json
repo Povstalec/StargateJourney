@@ -3,6 +3,9 @@
 	"values":
 	[
 		"sgjourney:naquadah",
-		{"id": "#c:ingots/naquadah", "required": false}
+		"sgjourney:naquadah_ingot",
+		"sgjourney:naquadah_copper_alloy",
+		"sgjourney:naquadah_iron_alloy",
+		"sgjourney:trinium_ingot"
 	]
 }

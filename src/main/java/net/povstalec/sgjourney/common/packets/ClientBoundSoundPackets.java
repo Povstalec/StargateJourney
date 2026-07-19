@@ -1,21 +1,20 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundAccess;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ClientBoundSoundPackets
 {
-    public static record OpenWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
+    public record OpenWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<OpenWormhole> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_open_wormhole_sound"));
@@ -27,21 +26,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(OpenWormhole packet, IPayloadContext ctx)
 		{
-			ctx.enqueueWork(() ->
-			{
-				SoundAccess.playWormholeOpenSound(packet.blockPos, packet.incoming);
-			});
+			ctx.enqueueWork(() -> SoundAccess.playWormholeOpenSound(packet.blockPos, packet.incoming));
 		}
     }
     
-    public static record IdleWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
+    public record IdleWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<IdleWormhole> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_idle_wormhole_sound"));
@@ -53,21 +49,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(IdleWormhole packet, IPayloadContext ctx)
 		{
-			ctx.enqueueWork(() ->
-			{
-				SoundAccess.playWormholeIdleSound(packet.blockPos, packet.incoming);
-			});
+			ctx.enqueueWork(() -> SoundAccess.playWormholeIdleSound(packet.blockPos, packet.incoming));
 		}
     }
     
-    public static record CloseWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
+    public record CloseWormhole(BlockPos blockPos, boolean incoming) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<CloseWormhole> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_close_wormhole_sound"));
@@ -79,21 +72,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(CloseWormhole packet, IPayloadContext ctx)
 		{
-			ctx.enqueueWork(() ->
-			{
-				SoundAccess.playWormholeCloseSound(packet.blockPos, packet.incoming);
-			});
+			ctx.enqueueWork(() -> SoundAccess.playWormholeCloseSound(packet.blockPos, packet.incoming));
 		}
     }
     
-    public static record IrisThud(BlockPos blockPos) implements CustomPacketPayload
+    public record IrisThud(BlockPos blockPos) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<IrisThud> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_iris_thud_sound"));
@@ -104,21 +94,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
   
 		public static void handle(IrisThud packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playIrisThudSound(packet.blockPos);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playIrisThudSound(packet.blockPos));
         }
     }
 
-    public static record Chevron(BlockPos blockPos, short chevron, boolean incoming, boolean open, boolean encode) implements CustomPacketPayload
+    public record Chevron(BlockPos blockPos, short chevron, boolean incoming, boolean open, boolean encode) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<Chevron> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_chevron_sound"));
@@ -133,46 +120,41 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(Chevron packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playChevronSound(packet.blockPos, packet.chevron, packet.incoming, packet.open, packet.encode);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playChevronSound(packet.blockPos, packet.chevron, packet.incoming, packet.open, packet.encode));
         }
     }
 
-    public static record Fail(BlockPos blockPos) implements CustomPacketPayload
+    public record Fail(BlockPos blockPos, StargateInfo.Feedback feedback) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<Fail> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_fail_sound"));
 		
 		public static final StreamCodec<RegistryFriendlyByteBuf, Fail> STREAM_CODEC = StreamCodec.composite(
 				BlockPos.STREAM_CODEC, Fail::blockPos,
+				NeoForgeStreamCodecs.enumCodec(StargateInfo.Feedback.class), Fail::feedback,
 				Fail::new
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(Fail packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playFailSound(packet.blockPos);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playFailSound(packet.blockPos, packet.feedback));
         }
     }
     
-    public static record StargateRotation(BlockPos blockPos, boolean stop) implements CustomPacketPayload
+    public record StargateRotation(BlockPos blockPos, boolean stop) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<StargateRotation> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_rotation"));
@@ -184,21 +166,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(StargateRotation packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playRotationSound(packet.blockPos, packet.stop);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playRotationSound(packet.blockPos, packet.stop));
         }
     }
     
-    public static record UniverseStart(BlockPos blockPos) implements CustomPacketPayload
+    public record UniverseStart(BlockPos blockPos) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<UniverseStart> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_universe_start_sound"));
@@ -209,21 +188,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(UniverseStart packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playUniverseDialStartSound(packet.blockPos);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playUniverseDialStartSound(packet.blockPos));
         }
     }
     
-    public static record RotationStartup(BlockPos blockPos) implements CustomPacketPayload
+    public record RotationStartup(BlockPos blockPos) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<RotationStartup> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_rotation_startup_sound"));
@@ -234,21 +210,18 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(RotationStartup packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playRotationStartupSound(packet.blockPos);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playRotationStartupSound(packet.blockPos));
         }
     }
     
-    public static record RotationStop(BlockPos blockPos) implements CustomPacketPayload
+    public record RotationStop(BlockPos blockPos) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<RotationStop> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_rotation_stop_sound"));
@@ -259,17 +232,14 @@ public abstract class ClientBoundSoundPackets
 		);
 		
 		@Override
-		public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
 			return TYPE;
 		}
 		
 		public static void handle(RotationStop packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() ->
-            {
-            	SoundAccess.playRotationStopSound(packet.blockPos);
-            });
+            ctx.enqueueWork(() -> SoundAccess.playRotationStopSound(packet.blockPos));
         }
     }
 }

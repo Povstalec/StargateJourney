@@ -5,16 +5,12 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
 
@@ -25,24 +21,63 @@ public class ItemInit
 	// Materials
 	public static final DeferredItem<Item> RAW_NAQUADAH = ITEMS.register("raw_naquadah",
 			() -> new Item(new Item.Properties().fireResistant()));
-	public static final DeferredItem<Item> NAQUADAH_ALLOY = ITEMS.register("naquadah_alloy",
+	public static final DeferredItem<Item> NAQUADAH_INGOT = ITEMS.register("naquadah_ingot",
 			() -> new Item(new Item.Properties().fireResistant()));
-	public static final DeferredItem<Item> NAQUADAH_ALLOY_NUGGET = ITEMS.register("naquadah_alloy_nugget",
+	public static final DeferredItem<Item> NAQUADAH_NUGGET = ITEMS.register("naquadah_nugget",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_COPPER_MIXTURE = ITEMS.register("naquadah_copper_mixture",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_COPPER_ALLOY = ITEMS.register("naquadah_copper_alloy",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_COPPER_NUGGET = ITEMS.register("naquadah_copper_nugget",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_IRON_MIXTURE = ITEMS.register("naquadah_iron_mixture",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_IRON_ALLOY = ITEMS.register("naquadah_iron_alloy",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_IRON_NUGGET = ITEMS.register("naquadah_iron_nugget",
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final DeferredItem<Item> REFINED_NAQUADAH = ITEMS.register("refined_naquadah",
 			() -> new Item(new Item.Properties().fireResistant()));
+	//TODO Enriched Naquadah
 	public static final DeferredItem<Item> PURE_NAQUADAH = ITEMS.register("pure_naquadah",
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
 	public static final DeferredItem<Item> NAQUADAH = ITEMS.register("naquadah",
 			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16).fireResistant()));
 	
+	
+	public static final DeferredItem<Item> RAW_NAQUADRIA = ITEMS.register("raw_naquadria",
+			() -> new Item(new Item.Properties().fireResistant()));
+	
+	public static final DeferredItem<Item> RAW_TRINIUM = ITEMS.register("raw_trinium",
+			() -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TRINIUM_INGOT = ITEMS.register("trinium_ingot",
+			() -> new Item(new Item.Properties()));
+	public static final DeferredItem<Item> TRINIUM_NUGGET = ITEMS.register("trinium_nugget",
+			() -> new Item(new Item.Properties()));
+	//TODO Refined Trinium
+	
 	// Crafting Items
 	public static final DeferredItem<Item> NAQUADAH_ROD = ITEMS.register("naquadah_rod",
 			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_IRON_ROD = ITEMS.register("naquadah_iron_rod",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> NAQUADAH_COPPER_ROD = ITEMS.register("naquadah_copper_rod",
+			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> TRINIUM_ROD = ITEMS.register("trinium_rod",
+			() -> new Item(new Item.Properties()));
+	
 	public static final DeferredItem<Item> REACTION_CHAMBER = ITEMS.register("reaction_chamber",
 			() -> new Item(new Item.Properties().fireResistant()));
 	public static final DeferredItem<Item> PLASMA_CONVERTER = ITEMS.register("plasma_converter",
 			() -> new Item(new Item.Properties().fireResistant()));
+	public static final DeferredItem<Item> MATTER_PROJECTOR = ITEMS.register("matter_projector",
+			() -> new Item(new Item.Properties().fireResistant()));
+	
+	public static final DeferredItem<Item> ANCIENT_TRANSPORT_RING = ITEMS.register("ancient_transport_ring",
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
+	public static final DeferredItem<Item> GOAULD_TRANSPORT_RING = ITEMS.register("goauld_transport_ring",
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).fireResistant()));
 	
 	public static final DeferredItem<Item> UNITY_SHARD = ITEMS.register("unity_shard",
 			() -> new Item(new Item.Properties()));
@@ -53,6 +88,10 @@ public class ItemInit
 			() -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	
 	// Food
+	public static final DeferredItem<Item> GOAULD_BURGER = ITEMS.register("goauld_burger",
+			() -> new Item(new Item.Properties().food(FoodInit.GOAULD_BURGER)));
+	public static final DeferredItem<Item> JAFFA_CAKE = ITEMS.register("jaffa_cake",
+			() -> new Item(new Item.Properties().food(FoodInit.JAFFA_CAKE)));
 	
 	// Useful Items
 	public static final DeferredItem<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket",
@@ -63,7 +102,7 @@ public class ItemInit
 	public static final DeferredItem<VialItem> VIAL = ITEMS.register("vial",
 			() -> new VialItem(new Item.Properties().stacksTo(1)));
 	
-	public static final DeferredItem<Item> RING_REMOTE = ITEMS.register("ring_remote",
+	public static final DeferredItem<Item> GOAULD_RING_REMOTE = ITEMS.register("goauld_ring_remote",
 			() -> new RingRemoteItem(new RingRemoteItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
 	public static final DeferredItem<Item> KARA_KESH = ITEMS.register("kara_kesh",
 			() -> new KaraKeshItem(new KaraKeshItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
@@ -77,9 +116,11 @@ public class ItemInit
 	public static final DeferredItem<Item> PDA = ITEMS.register("pda",
 			() -> new PDAItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.RARE).fireResistant()));
 	
-	/*public static final RegistryObject<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer", 
+	/*public static final DeferredItem<Item> UNIVERSE_DIALER = ITEMS.register("universe_dialer",
 			() -> new DialerItem(new PDAItem.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 	
+	/*public static final DeferredItem<Item> LIQUID_NAQUADAH_REACTOR_CORE = ITEMS.register("liquid_naquadah_reactor_core",
+			() -> new LiquidNaquadahReactorCoreItem(new LiquidNaquadahReactorCoreItem.Properties().stacksTo(1)));*/
 	public static final DeferredItem<Item> NAQUADAH_GENERATOR_CORE = ITEMS.register("naquadah_generator_core",
 			() -> new NaquadahGeneratorCoreItem(new NaquadahGeneratorCoreItem.Properties().stacksTo(1)));
 	public static final DeferredItem<Item> FUSION_CORE = ITEMS.register("fusion_core",
@@ -95,6 +136,8 @@ public class ItemInit
 			() -> new ArcheologistNotebook(new Item.Properties().stacksTo(1)));
 	
 	// Crystals
+	public static final DeferredItem<Item> CRYSTAL_ADAPTER = ITEMS.register("crystal_adapter",
+			() -> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final DeferredItem<ControlCrystalItem> CONTROL_CRYSTAL = ITEMS.register("control_crystal",
 			() -> new ControlCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final DeferredItem<ControlCrystalItem> LARGE_CONTROL_CRYSTAL = ITEMS.register("large_control_crystal",
@@ -109,7 +152,9 @@ public class ItemInit
 			() -> new TransferCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
 	public static final DeferredItem<CommunicationCrystalItem> COMMUNICATION_CRYSTAL = ITEMS.register("communication_crystal",
 			() -> new CommunicationCrystalItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(16)));
-
+	
+	public static final DeferredItem<Item> ADVANCED_CRYSTAL_ADAPTER = ITEMS.register("advanced_crystal_adapter",
+			() -> new Item(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	public static final DeferredItem<ControlCrystalItem> ADVANCED_CONTROL_CRYSTAL = ITEMS.register("advanced_control_crystal",
 			() -> new ControlCrystalItem.Advanced(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	public static final DeferredItem<MemoryCrystalItem> ADVANCED_MEMORY_CRYSTAL = ITEMS.register("advanced_memory_crystal",
@@ -130,15 +175,29 @@ public class ItemInit
 	
 	// Tools
 	public static final DeferredItem<SwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword",
-			() -> new SwordItem(ToolMaterialInit.NAQUADAH, (new Item.Properties().fireResistant()).attributes(SwordItem.createAttributes(ToolMaterialInit.NAQUADAH, 4, -2.4F))));
+			() -> new SwordItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(ToolMaterialInit.NAQUADAH, 4, -2.4F))));
 	public static final DeferredItem<PickaxeItem> NAQUADAH_PICKAXE = ITEMS.register("naquadah_pickaxe",
-			() -> new PickaxeItem(ToolMaterialInit.NAQUADAH, (new Item.Properties().fireResistant()).attributes(PickaxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 2, -2.8F))));
+			() -> new PickaxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 2, -2.8F))));
 	public static final DeferredItem<AxeItem> NAQUADAH_AXE = ITEMS.register("naquadah_axe",
-			() -> new AxeItem(ToolMaterialInit.NAQUADAH, (new Item.Properties().fireResistant()).attributes(AxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 6, -3.0F))));
+			() -> new AxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 6, -3.0F))));
 	public static final DeferredItem<ShovelItem> NAQUADAH_SHOVEL = ITEMS.register("naquadah_shovel",
-			() -> new ShovelItem(ToolMaterialInit.NAQUADAH, (new Item.Properties().fireResistant()).attributes(ShovelItem.createAttributes(ToolMaterialInit.NAQUADAH, 2.5F, -3.0F))));
+			() -> new ShovelItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(ToolMaterialInit.NAQUADAH, 2.5F, -3.0F))));
 	public static final DeferredItem<HoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe",
-			() -> new HoeItem(ToolMaterialInit.NAQUADAH, (new Item.Properties().fireResistant()).attributes(ShovelItem.createAttributes(ToolMaterialInit.NAQUADAH, -2, 0))));
+			() -> new HoeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(ToolMaterialInit.NAQUADAH, -2, 0))));
+	
+	public static final DeferredItem<SwordItem> TRINIUM_SWORD = ITEMS.register("trinium_sword",
+			() -> new SwordItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(SwordItem.createAttributes(ToolMaterialInit.TRINIUM, 4, -2.4f))));
+	public static final DeferredItem<PickaxeItem> TRINIUM_PICKAXE = ITEMS.register("trinium_pickaxe",
+			() -> new PickaxeItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(PickaxeItem.createAttributes(ToolMaterialInit.TRINIUM, 2, -2.8f))));
+	public static final DeferredItem<AxeItem> TRINIUM_AXE = ITEMS.register("trinium_axe",
+			() -> new AxeItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(AxeItem.createAttributes(ToolMaterialInit.TRINIUM, 6.0f, -3.0f))));
+	public static final DeferredItem<ShovelItem> TRINIUM_SHOVEL = ITEMS.register("trinium_shovel",
+			() -> new ShovelItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(ShovelItem.createAttributes(ToolMaterialInit.TRINIUM, 2.5f, -3.0f))));
+	public static final DeferredItem<HoeItem> TRINIUM_HOE = ITEMS.register("trinium_hoe",
+			() -> new HoeItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(HoeItem.createAttributes(ToolMaterialInit.TRINIUM, -2, 0.0f))));
+	
+	public static final DeferredItem<Item> TRINIUM_ARROW = ITEMS.register("trinium_arrow",
+			() -> new TriniumArrowItem(new Item.Properties()));
 	
 	// Armor
 	public static final DeferredItem<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet",
@@ -150,14 +209,14 @@ public class ItemInit
 	public static final DeferredItem<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots",
 			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
 	
-	public static final DeferredItem<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final DeferredItem<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final DeferredItem<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1).fireResistant()));
-	public static final DeferredItem<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<ArmorItem> TRINIUM_HELMET = ITEMS.register("trinium_helmet",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<ArmorItem> TRINIUM_CHESTPLATE = ITEMS.register("trinium_chestplate",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<ArmorItem> TRINIUM_LEGGINGS = ITEMS.register("trinium_leggings",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<ArmorItem> TRINIUM_BOOTS = ITEMS.register("trinium_boots",
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1)));
 	
 	public static final DeferredItem<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet",
 			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
@@ -173,6 +232,15 @@ public class ItemInit
 	public static final DeferredItem<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet",
 			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
 	
+	public static final DeferredItem<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1).fireResistant()));
+	public static final DeferredItem<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
+	
 	public static final DeferredItem<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod",
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
 	
@@ -185,42 +253,46 @@ public class ItemInit
 	public static final DeferredItem<CallForwardingDevice> CALL_FORWARDING_DEVICE = ITEMS.register("call_forwarding_device",
 			() -> new CallForwardingDevice(new Item.Properties().rarity(Rarity.RARE).stacksTo(1).fireResistant()));
 	
-	public static final DeferredItem<CrystalReaderItem> CRYSTAL_READER = ITEMS.register("crystal_reader",
-			() -> new CrystalReaderItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<CrystalComputerItem> POCKET_CRYSTAL_COMPUTER = ITEMS.register("pocket_crystal_computer",
+			() -> new CrystalComputerItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1)));
 	
 	public static final DeferredItem<GDOItem> GDO = ITEMS.register("gdo",
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));
 	
-	public static final DeferredItem<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
-			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));
+	/*public static final DeferredItem<AutoDialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
+			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));*/
 	
 	// Shielding
 	public static final DeferredItem<Item> STARGATE_SHIELDING_RING = ITEMS.register("stargate_shielding_ring",
 			() -> new Item(new Item.Properties().stacksTo(1)));
 	
 	// Irises
-	public static final DeferredItem<StargateIrisItem.Copper> COPPER_IRIS = ITEMS.register("copper_iris",
-			() -> new StargateIrisItem.Copper(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<StargateIrisItem.Iron> IRON_IRIS = ITEMS.register("iron_iris",
-			() -> new StargateIrisItem.Iron(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<StargateIrisItem.Gold> GOLDEN_IRIS = ITEMS.register("golden_iris",
-			() -> new StargateIrisItem.Gold(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<StargateIrisItem.Diamond> DIAMOND_IRIS = ITEMS.register("diamond_iris",
-			() -> new StargateIrisItem.Diamond(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<StargateIrisItem.Netherite> NETHERITE_IRIS = ITEMS.register("netherite_iris",
-			() -> new StargateIrisItem.Netherite(new Item.Properties().stacksTo(1).fireResistant()));
-
-	public static final DeferredItem<StargateIrisItem.NaquadahAlloy> NAQUADAH_ALLOY_IRIS = ITEMS.register("naquadah_alloy_iris",
-			() -> new StargateIrisItem.NaquadahAlloy(new Item.Properties().stacksTo(1).fireResistant()));
-	public static final DeferredItem<StargateIrisItem.Trinium> TRINIUM_IRIS = ITEMS.register("trinium_iris",
-			() -> new StargateIrisItem.Trinium(new Item.Properties().stacksTo(1)));
-
-	public static final DeferredItem<StargateIrisItem.Bronze> BRONZE_IRIS = ITEMS.register("bronze_iris",
-			() -> new StargateIrisItem.Bronze(new Item.Properties().stacksTo(1)));
-	public static final DeferredItem<StargateIrisItem.Steel> STEEL_IRIS = ITEMS.register("steel_iris",
-			() -> new StargateIrisItem.Steel(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<StargateIrisItem> COPPER_IRIS = ITEMS.register("copper_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.COPPER_IRIS, () -> CommonIrisConfig.copper_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> IRON_IRIS = ITEMS.register("iron_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.IRON_IRIS, () -> CommonIrisConfig.iron_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> GOLDEN_IRIS = ITEMS.register("golden_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.GOLD_IRIS, () -> CommonIrisConfig.gold_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> DIAMOND_IRIS = ITEMS.register("diamond_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.DIAMOND_IRIS, () -> CommonIrisConfig.diamond_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> NETHERITE_IRIS = ITEMS.register("netherite_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NETHERITE_IRIS, () -> CommonIrisConfig.netherite_iris_durability.get()));
 	
-	/*public static final RegistryObject<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
+	public static final DeferredItem<StargateIrisItem> NAQUADAH_IRIS = ITEMS.register("naquadah_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NAQUADAH_IRIS, () -> CommonIrisConfig.naquadah_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> NAQUADAH_COPPER_IRIS = ITEMS.register("naquadah_copper_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NAQUADAH_COPPER_ALLOY_IRIS, () -> CommonIrisConfig.naquadah_copper_alloy_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> NAQUADAH_IRON_IRIS = ITEMS.register("naquadah_iron_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1).fireResistant(), StargateIrisItem.NAQUADAH_IRON_ALLOY_IRIS, () -> CommonIrisConfig.naquadah_iron_alloy_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> TRINIUM_IRIS = ITEMS.register("trinium_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.TRINIUM_IRIS, () -> CommonIrisConfig.trinium_iris_durability.get()));
+
+	public static final DeferredItem<StargateIrisItem> BRONZE_IRIS = ITEMS.register("bronze_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.BRONZE_IRIS, () -> CommonIrisConfig.bronze_iris_durability.get()));
+	public static final DeferredItem<StargateIrisItem> STEEL_IRIS = ITEMS.register("steel_iris",
+			() -> new StargateIrisItem(new Item.Properties().stacksTo(1), StargateIrisItem.STEEL_IRIS, () -> CommonIrisConfig.steel_iris_durability.get()));
+	
+	/*public static final DeferredItem<BatteryItem> SMALL_NAQUADAH_BATTERY = ITEMS.register("small_naquadah_battery",
 			() -> new BatteryItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(1)));*/
 	
 	public static final DeferredItem<GoauldItem> GOAULD = ITEMS.register("goauld",
@@ -229,6 +301,8 @@ public class ItemInit
 			() -> new Item(new Item.Properties().food(FoodInit.RAW_GOAULD)));
 	public static final DeferredItem<Item> COOKED_GOAULD = ITEMS.register("cooked_goauld",
 			() -> new Item(new Item.Properties().food(FoodInit.COOKED_GOAULD)));
+	public static final DeferredItem<Item> GOAULD_FOSSIL = ITEMS.register("goauld_fossil",
+			() -> new Item(new Item.Properties()));
 		
 	
 	public static void register(IEventBus eventBus)

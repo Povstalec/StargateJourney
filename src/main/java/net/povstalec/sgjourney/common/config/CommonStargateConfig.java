@@ -107,7 +107,7 @@ public class CommonStargateConfig
 				.define("server.allow_interstellar_8_chevron_addresses", false);
 				
 		allow_system_wide_connections = server
-				.comment("Decides if two Stargates from the same Solar System should be able to connect")
+				.comment("Decides if two Stargates from the same Solar System should be able to connect when a 9-chevron address is used")
 				.define("server.allow_system_wide_connections", true);
 		
 		

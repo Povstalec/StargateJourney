@@ -6,99 +6,54 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
+import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerScreen;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 
 public class ClientAccess
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
 	
-	public static void openArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
+	public static void updatePlayerGravity(double gravity)
 	{
-		minecraft.setScreen(new ArcheologistNotebookScreen(playerId, mainHand, tag));
+		SpaceLocation.currentGravity = gravity;
 	}
 	
-	public static void updateDialer(UUID playerId)
+	public static void openArcheologistNotebookScreen(boolean mainHand, CompoundTag tag)
+	{
+		minecraft.setScreen(new ArcheologistNotebookScreen(mainHand, tag));
+	}
+	
+	public static void updateDialer()
 	{
 		minecraft.setScreen(new DialerScreen());
 	}
 	
-	public static void openGDOScreen(UUID playerId, boolean mainHand, String idc, int frequency)
+	public static void openGDOScreen(boolean mainHand, String idc, int frequency)
 	{
-		minecraft.setScreen(new GDOScreen(playerId, mainHand, idc, frequency));
-	}
-    
-    public static void updateRingPanel(BlockPos pos, List<BlockPos> ringsPos, List<Component> ringsName)
-    {
-        final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final RingPanelEntity panel)
-        {
-        	panel.ringsPos = new ArrayList<BlockPos>(ringsPos);
-        	panel.ringsName = new ArrayList<Component>(ringsName);
-        }
-    }
-    
-    public static void updateDHD(BlockPos pos, long energy, ResourceLocation pointOfOrigin, ResourceLocation symbols, int[] address, boolean isCenterButtonEngaged)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractDHDEntity dhd)
-        {
-			dhd.setEnergy(energy);
-			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
-			dhd.symbolInfo().setSymbols(symbols);
-			dhd.setAddress(new Address.Mutable(address));
-			dhd.setCenterButtonEngaged(isCenterButtonEngaged);
-		}
+		minecraft.setScreen(new GDOScreen(mainHand, idc, frequency));
 	}
 	
-	public static void updateStargate(BlockPos pos, long energy, int openTime, int timeSinceLastTraveler, int[] address, int[] engagedChevrons, int kawooshTick, int tick, short irisProgress,
-									  ResourceLocation pointOfOrigin, ResourceLocation symbols, ResourceLocation variant, ItemStack iris)
+	public static void openCrystalComputerMainScreen(InteractionHand interactionHand)
 	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final AbstractStargateEntity stargate)
-		{
-			stargate.setEnergy(energy);
-			stargate.setOpenTime(openTime);
-			stargate.setTimeSinceLastTraveler(timeSinceLastTraveler);
-			stargate.setAddress(new Address.Mutable(address));
-			stargate.setEngagedChevrons(engagedChevrons);
-			stargate.setKawooshTickCount(kawooshTick);
-			stargate.setTickCount(tick);
-			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
-			stargate.symbolInfo().setSymbols(symbols);
-			stargate.setVariant(variant);
-			
-			if(blockEntity instanceof IrisInfo.Interface irisStargate)
-			{
-				irisStargate.irisInfo().setIrisProgress(irisProgress);
-				
-				if(!iris.isEmpty())
-					irisStargate.irisInfo().setIris(iris);
-				else
-					irisStargate.irisInfo().unsetIris();
-			}
-        }
-    }
+		minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand, PocketCrystalComputerScreen.SelectedCrystal.NONE));
+	}
+	
+	public static void openCrystalComputerSaveScreen(InteractionHand interactionHand, BlockPos clickedPos)
+	{
+		minecraft.setScreen(new PocketCrystalComputerSaveScreen(interactionHand, PocketCrystalComputerScreen.SelectedCrystal.NONE, clickedPos));
+	}
     
     public static void spawnStargateParticles(BlockPos pos, Map<StargatePart, BlockState> blockStates)
     {
@@ -110,9 +65,6 @@ public class ClientAccess
         	Direction direction = state.getValue(AbstractStargateBlock.FACING);
         	Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
         	
-        	if(part == null || direction == null || orientation == null)
-        		return;
-        	
         	BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
         	
         	for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
@@ -123,103 +75,4 @@ public class ClientAccess
         	}
         }
     }
-    
-    public static void updateStargateState(BlockPos pos, StargateConnection.State connectionState, boolean canSinkGate, Map<StargatePart, BlockState> blockStates)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractStargateEntity stargate)
-        {
-			stargate.setConnectionState(connectionState);
-			stargate.blockCover.blockStates = new HashMap<StargatePart, BlockState>(blockStates);
-        	stargate.blockCover.canSinkGate = canSinkGate;
-        }
-    }
-	
-	public static void updateRotatingStargate(BlockPos pos, int rotation, int oldRotation, int signalStrength, boolean computerRotation, boolean rotateClockwise, int desiredRotation)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final RotatingStargateEntity stargate)
-		{
-			stargate.setRotation(oldRotation, rotation);
-			stargate.signalStrength = signalStrength;
-			stargate.rotating = computerRotation;
-			stargate.rotateClockwise = rotateClockwise;
-			stargate.desiredRotation = desiredRotation;
-		}
-	}
-	
-	public static void updateUniverseStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final UniverseStargateEntity stargate)
-		{
-			stargate.symbolBuffer = symbolBuffer;
-			stargate.addressBuffer.fromArray(addressBuffer);
-		}
-	}
-	
-	public static void updateMilkyWayStargate(BlockPos pos, boolean isChevronOpen)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final MilkyWayStargateEntity stargate)
-			stargate.isChevronOpen = isChevronOpen;
-    }
-    
-    public static void updatePegasusStargate(BlockPos pos, int symbolBuffer, int[] addressBuffer, int currentSymbol)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final PegasusStargateEntity stargate)
-        {
-        	stargate.symbolBuffer = symbolBuffer;
-			stargate.addressBuffer.fromArray(addressBuffer);
-        	stargate.currentSymbol = currentSymbol;
-        }
-    }
-
-    public static void updateNaquadahGenerator(BlockPos pos, int reactionProgress, long energy)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final NaquadahGeneratorEntity generator)
-        {
-        	generator.setReactionProgress(reactionProgress);
-        	generator.setEnergy(energy);
-        }
-    }
-
-    public static void updateCrystallizer(BlockPos pos, FluidStack fluidStack, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractCrystallizerEntity crystallizer)
-        {
-        	crystallizer.setFluid(fluidStack);
-        	crystallizer.progress = progress;
-        }
-    }
-
-    public static void updateNaquadahLiquidizer(BlockPos pos, FluidStack fluidStack1, FluidStack fluidStack2, int progress)
-    {
-    	final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-        
-        if(blockEntity instanceof final AbstractNaquadahLiquidizerEntity naquadahLiquidizer)
-        {
-        	naquadahLiquidizer.setFluid1(fluidStack1);
-        	naquadahLiquidizer.setFluid2(fluidStack2);
-        	naquadahLiquidizer.progress = progress;
-        }
-    }
-	
-	public static void updateBatteryBlock(BlockPos pos, long energy)
-	{
-		final BlockEntity blockEntity = minecraft.level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof final BatteryBlockEntity battery)
-			battery.setEnergy(energy);
-	}
 }

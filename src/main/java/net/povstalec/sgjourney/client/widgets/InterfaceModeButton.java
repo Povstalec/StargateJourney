@@ -1,10 +1,7 @@
 package net.povstalec.sgjourney.client.widgets;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -16,18 +13,18 @@ import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
-	public static final ResourceLocation WIDGETS_LOCATION = StargateJourney.sgjourneyLocation("textures/gui/interface_widgets.png");
+	public static final ResourceLocation WIDGETS_LOCATION = StargateJourney.sgjourneyLocation("textures/gui/interface/interface_widgets.png");
 	
-	protected InterfaceScreen screen;
+	protected InterfaceScreen<?> screen;
 	
-	public InterfaceModeButton(int x, int y, Component component, Component tooltip, OnPress press, InterfaceScreen screen)
+	public InterfaceModeButton(int x, int y, Component component, Component tooltip, OnPress press, InterfaceScreen<?> screen)
 	{
 		super(WIDGETS_LOCATION, x, y, 16, 16, component, tooltip, press);
 		
 		this.screen = screen;
 	}
 
-    public InterfaceModeButton(int x, int y, Component component, OnPress press, InterfaceScreen screen)
+    public InterfaceModeButton(int x, int y, Component component, OnPress press, InterfaceScreen<?> screen)
 	{
 		this(x, y, component, component, press, screen);
 	}

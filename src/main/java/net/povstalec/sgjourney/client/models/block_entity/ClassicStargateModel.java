@@ -1,5 +1,8 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -13,8 +16,6 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStarg
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateEntity, ClassicStargateVariant>
 {
@@ -281,7 +282,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	
 	protected void renderSymbols(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		ClientPointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
 		if(pointOfOrigin != null)
 		{
@@ -291,39 +292,32 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
-			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
 		}
 		
-		Symbols symbols = getSymbols(stargate, stargateVariant);
+		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
 		
 		if(symbols == null)
 			return;
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
-		for(int j = 1; j < this.numberOfSymbols; j++)
+		for(int symbol = 1; symbol < this.numberOfSymbols; symbol++)
 		{
 			boolean symbolEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
 			{
-				for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
-				{
-					int addressSymbol = stargate.getAddress().getArray()[i];
-					if(addressSymbol == j)
-						symbolEngaged = true;
-				}
+				if(stargate.isSymbolInAddress(symbol))
+					symbolEngaged = true;
 			}
 			else if(stargate.isConnected())
 				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			
 			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, j, symbols.getTextureOffset(j), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+					MAX_LIGHT : combinedLight, symbol, ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
 		}
 	}
 	
-	protected void renderSymbol(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
-			int symbolNumber, float symbolOffset, int textureXSize, float rotation, ColorUtil.RGBA symbolColor)
+	protected void renderSymbol(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
+								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
 		if(symbolNumber >= this.numberOfSymbols)
 			return;
@@ -333,27 +327,28 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		Matrix4f matrix4 = stack.last().pose();
 		PoseStack.Pose pose = stack.last();
 		
-		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(sprite.atlasLocation()));
+		SGJourneyModel.createSpriteQuad(consumer, matrix4, pose, combinedLight, sprite, 0, 0, 1,
 				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-SPINNY_RING_OUTER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 8.5F/16,
 				SYMBOL_OFFSET,
-				symbolOffset - (SPINNY_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0,
+				8F - (SPINNY_RING_OUTER_CENTER * 32), 0,
 				
 				-SPINNY_RING_INNER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 0.5F/16,
 				SYMBOL_OFFSET,
-				symbolOffset - (SPINNY_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F - (SPINNY_RING_INNER_CENTER * 32), 16,
 				
 				SPINNY_RING_INNER_CENTER, 
 				SPINNY_RING_INNER_RADIUS + 0.5F/16,
 				SYMBOL_OFFSET,
-				symbolOffset + (SPINNY_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F + (SPINNY_RING_INNER_CENTER * 32), 16,
 				
 				SPINNY_RING_OUTER_CENTER,
 				SPINNY_RING_INNER_RADIUS + 8.5F/16,
 				SYMBOL_OFFSET,
-				symbolOffset + (SPINNY_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0);
+				8F + (SPINNY_RING_OUTER_CENTER * 32), 0);
 		
 		stack.popPose();
 	}

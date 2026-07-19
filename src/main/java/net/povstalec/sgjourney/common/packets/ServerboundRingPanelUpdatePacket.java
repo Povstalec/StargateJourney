@@ -7,8 +7,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
 
 public record ServerboundRingPanelUpdatePacket(BlockPos blockPos, int number) implements CustomPacketPayload
 {
@@ -33,7 +33,7 @@ public record ServerboundRingPanelUpdatePacket(BlockPos blockPos, int number) im
 			final BlockEntity blockEntity = ctx.player().level().getBlockEntity(packet.blockPos);
 			
 			if(blockEntity instanceof RingPanelEntity ringPanel)
-				ringPanel.activateRings(packet.number);
+				ringPanel.pressButton(packet.number);
 		});
     }
 }

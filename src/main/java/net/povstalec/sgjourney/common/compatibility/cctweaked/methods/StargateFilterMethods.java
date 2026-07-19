@@ -32,9 +32,9 @@ public class StargateFilterMethods
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");
 	}
 	
-	public static ArrayList<List<Integer>> addressListToIntList(ArrayList<Address.Immutable> addressList)
+	public static ArrayList<List<Integer>> addressListToIntList(List<Address.Immutable> addressList)
 	{
-		ArrayList<List<Integer>> integerList = new ArrayList<List<Integer>>();
+		ArrayList<List<Integer>> integerList = new ArrayList<>();
 		for(Address.Immutable address : addressList)
 		{
 			integerList.add(address.toList());
@@ -43,7 +43,7 @@ public class StargateFilterMethods
 		return integerList;
 	}
 	
-	public static class GetFilterType implements InterfaceMethod<AbstractStargateEntity>
+	public static class GetFilterType implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -52,13 +52,13 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(StargateFilterFunctions.getFilterType(stargate));
 		}
 	}
 	
-	public static class SetFilterType implements InterfaceMethod<AbstractStargateEntity>
+	public static class SetFilterType implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -67,7 +67,7 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int filterType = arguments.getInt(0);
 			return MethodResult.of(StargateFilterFunctions.setFilterType(stargate, filterType));
@@ -76,7 +76,7 @@ public class StargateFilterMethods
 	
 	
 	
-	public static class AddToWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	public static class AddToWhitelist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -86,7 +86,7 @@ public class StargateFilterMethods
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			int[] addressArray = ArrayHelper.tableToArray(addressMap);
@@ -104,7 +104,7 @@ public class StargateFilterMethods
 		}
 	}
 	
-	public static class RemoveFromWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	public static class RemoveFromWhitelist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -114,7 +114,7 @@ public class StargateFilterMethods
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			int[] addressArray = ArrayHelper.tableToArray(addressMap);
@@ -124,7 +124,7 @@ public class StargateFilterMethods
 		}
 	}
 	
-	public static class GetWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	public static class GetWhitelist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -133,13 +133,13 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicWhitelist(stargate))});
 		}
 	}
 	
-	public static class ClearWhitelist implements InterfaceMethod<AbstractStargateEntity>
+	public static class ClearWhitelist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -148,7 +148,7 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {StargateFilterFunctions.clearWhitelist(stargate)});
 		}
@@ -156,7 +156,7 @@ public class StargateFilterMethods
 	
 	
 	
-	public static class AddToBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	public static class AddToBlacklist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -166,7 +166,7 @@ public class StargateFilterMethods
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			int[] addressArray = ArrayHelper.tableToArray(addressMap);
@@ -184,7 +184,7 @@ public class StargateFilterMethods
 		}
 	}
 	
-	public static class RemoveFromBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	public static class RemoveFromBlacklist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -194,7 +194,7 @@ public class StargateFilterMethods
 		
 		@SuppressWarnings("unchecked")
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			Map<Double, Double> addressMap = (Map<Double, Double>) arguments.getTable(0);
 			int[] addressArray = ArrayHelper.tableToArray(addressMap);
@@ -204,7 +204,7 @@ public class StargateFilterMethods
 		}
 	}
 	
-	public static class GetBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	public static class GetBlacklist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -213,13 +213,13 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {addressListToIntList(StargateFilterFunctions.getPublicBlacklist(stargate))});
 		}
 	}
 	
-	public static class ClearBlacklist implements InterfaceMethod<AbstractStargateEntity>
+	public static class ClearBlacklist implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -228,7 +228,7 @@ public class StargateFilterMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {StargateFilterFunctions.clearBlacklist(stargate)});
 		}

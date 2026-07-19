@@ -1,13 +1,16 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,7 +23,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.SingleItemHandler;
-import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -86,31 +89,14 @@ public abstract class FluidItem extends Item
 			fluidHandler.drain(amount, IFluidHandler.FluidAction.EXECUTE);
 	}
 	
-	protected ChatFormatting fluidComponentColor(FluidStack fluidStack)
-	{
-		if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
-			return ChatFormatting.GREEN;
-		else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
-			return ChatFormatting.DARK_GREEN;
-		
-		return ChatFormatting.WHITE;
-	}
-	
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		
-		MutableComponent fluidComponent = Component.translatable("tooltip.sgjourney.fluid").append(Component.literal(": "));
-		if(fluidStack.isEmpty())
-			fluidComponent.append("0 mB");
-		else
-		{
-			fluidComponent.append(fluidStack.getFluidType().getDescription());
-			fluidComponent.append(Component.literal(" " + fluidStack.getAmount() + "mB"));
-		}
-		fluidComponent.withStyle(fluidComponentColor(fluidStack));
-		tooltipComponents.add(fluidComponent);
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.fluid").append(Component.literal(": ")).append(
+				ComponentHelper.fluidAmountComponent(fluidStack.getFluidType().getDescriptionId(fluidStack),
+				fluidStack.getAmount(), ComponentHelper.fluidComponentColor(fluidStack.getFluid()))));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
@@ -119,14 +105,26 @@ public abstract class FluidItem extends Item
 	/**
 	 * Class representing an item that holds a fluid item inside it
 	 */
-	public abstract static class Holder extends FluidItem
+	public abstract static class Holder extends FluidItem implements IHolderItem
 	{
 		public Holder(Properties properties)
 		{
 			super(properties);
 		}
 		
-		public abstract ItemStack getHeldItem(ItemStack holderStack);
+		public void onSwapped(ItemStack holderStack, ItemStack insertedStack, ItemStack removedStack) {}
+		
+		@Override
+		public boolean overrideStackedOnOther(ItemStack holderStack, Slot slot, ClickAction clickAction, Player player)
+		{
+			return stackedOnOther(holderStack, slot, clickAction, player);
+		}
+		
+		@Override
+		public boolean overrideOtherStackedOnMe(ItemStack holderStack, ItemStack otherStack, Slot slot, ClickAction clickAction, Player player, SlotAccess slotAccess)
+		{
+			return otherStackedOnMe(holderStack, otherStack, slot, clickAction, player, slotAccess);
+		}
 		
 		public abstract boolean isValidItem(ItemStack heldStack);
 		
@@ -149,7 +147,7 @@ public abstract class FluidItem extends Item
 			return FluidStack.EMPTY;
 		}
 		
-		public boolean swapItem(Player player, ItemStack holderStack, ItemStack insertedStack)
+		public boolean swapItemInHand(Player player, ItemStack holderStack, ItemStack insertedStack)
 		{
 			IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
 			if(itemHandler != null)
@@ -174,7 +172,7 @@ public abstract class FluidItem extends Item
 			ItemStack offHandStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			if(offHandStack.getItem() instanceof FluidItem.Holder holder)
 			{
-				if(!level.isClientSide() && holder.swapItem(player, offHandStack, player.getItemInHand(InteractionHand.MAIN_HAND)))
+				if(!level.isClientSide() && holder.swapItemInHand(player, offHandStack, player.getItemInHand(InteractionHand.MAIN_HAND)))
 					return InteractionResultHolder.success(offHandStack);
 			}
 			

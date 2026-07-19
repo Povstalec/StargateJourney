@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:technology/mine_raw_naquadah",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:naquadah_iron_mixture"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_naquadah_mixture.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_naquadah_mixture.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_naquadah_mixture": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"items":["sgjourney:naquadah_copper_mixture", "sgjourney:naquadah_iron_mixture"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_naquadah_mixture"
+		]
+	]
+}

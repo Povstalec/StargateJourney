@@ -1,10 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import net.minecraft.core.HolderLookup;
-import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
@@ -13,33 +11,36 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
-import net.povstalec.sgjourney.common.misc.LocatorHelper;
+import net.povstalec.sgjourney.common.misc.*;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -47,14 +48,16 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity
+public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
+	public static final int DHD_INFO_DISTANCE = 5;
+	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
+	
 	public static final String POINT_OF_ORIGIN = "point_of_origin";
 	public static final String SYMBOLS = "symbols";
 	
@@ -65,89 +68,133 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public static final String STARGATE_POS = "stargate_pos";
 	
-	public static final int DEFAULT_ENERGY_TARGET = 150000;
-	public static final int DEFAULT_ENERGY_TRANSFER = 2500;
+	public static final int DEFAULT_ENERGY_TARGET = 0;
+	public static final int DEFAULT_ENERGY_TRANSFER = 0;
 	public static final int DEFAULT_CONNECTION_DISTANCE = 16;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	protected Direction direction;
 	
-	@Nullable
-	protected AbstractStargateEntity stargate;
-	@Nullable
-	protected Vec3i stargateRelativePos;
+	protected boolean isCenterButtonEngaged = false;
+	protected Address.Mutable address = new Address.Mutable();
 	
-	protected boolean isCenterButtonEngaged;
-	protected Address.Mutable address;
+	protected boolean enableAdvancedProtocols = false;
+	protected boolean enableCallForwarding = false;
+	protected boolean hasNetworkRestrictions = false;
+	protected Set<Integer> networks = new TreeSet<>();
 	
-	protected boolean enableAdvancedProtocols;
-	protected boolean enableCallForwarding;
+	protected long energyTarget = DEFAULT_ENERGY_TARGET;
+	protected long maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
+	protected int maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
 	
-	protected long energyTarget;
-	protected int maxEnergyTransfer;
-	
-	protected final ItemStackHandler energyItemHandler;
+	public final ItemStackHandler energyItemHandler;
 	protected final Lazy<IItemHandler> lazyEnergyItemHandler;
 	
 	protected SymbolInfo symbolInfo;
 	
 	protected boolean isProtected = false;
 	
+	@Nullable
+	protected Vec3i stargateRelativePos = null;
+	public final AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> stargateCache = new AutoCache.Receiver<>(this);
+	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
 		super(blockEntity, pos, state);
 		
-		this.isCenterButtonEngaged = false;
-		this.address = new Address.Mutable();
-		
-		this.enableAdvancedProtocols = false;
-		this.enableCallForwarding = false;
-		
-		this.energyTarget = DEFAULT_ENERGY_TARGET;
-		this.maxEnergyTransfer = DEFAULT_ENERGY_TRANSFER;
-		
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = Lazy.of(() -> energyItemHandler);
 		
-		this.symbolInfo = new SymbolInfo();;
-		
-		symbolInfo.setPointOfOrigin(StargateJourney.EMPTY_LOCATION);
-		symbolInfo.setSymbols(StargateJourney.EMPTY_LOCATION);
+		this.symbolInfo = new SymbolInfo();
 	}
 	
 	@Override
 	public void onLoad()
 	{
+		if(getLevel().isClientSide())
+		{
+			// Revalidation
+			stargateCache.setRevalidate(() ->
+			{
+				if(stargateRelativePos == null)
+					return false;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+					return stargateCache.getCached() == stargate; // Check if the Stargate at the saved pos is the same Stargate
+				
+				return false;
+			});
+			// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
+			stargateCache.setFetch(() ->
+			{
+				if(stargateRelativePos == null)
+					return null;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+					return stargate;
+				
+				return null;
+			});
+		}
+		else
+		{
+			// Revalidation - check if it's not too far
+			stargateCache.setRevalidate(() ->
+			{
+				if(stargateRelativePos == null)
+					return false;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+					return stargateCache.getCached() == stargate && CoordinateHelper.Relative.distanceSqr(stargatePos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Stargate at the saved pos is the same Stargate
+				
+				return false;
+			});
+			// Find nearest Stargate that isn't connected to a DHD
+			stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, maxConnectionDistance,
+					stargate -> !stargate.dhdCache.isCached()));
+			
+			stargateCache.setOnChanged((oldStargate, newStargate) ->
+			{
+				if(newStargate != null)
+					stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newStargate.getBlockPos());
+				else
+					stargateRelativePos = null;
+				
+				updateClient();
+			});
+			
+			if(generationStep == StructureGenEntity.Step.READY)
+				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
+			
+			updateClient();
+		}
+		
 		super.onLoad();
-		
-		if(this.getLevel().isClientSide())
-			return;
-		
-		if(generationStep == StructureGenEntity.Step.READY)
-			generate();
-		
-		this.setStargate();
 	}
 	
 	@Override
 	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		if(tag.contains(STARGATE_POS))
-		{
-			int[] pos = tag.getIntArray(STARGATE_POS);
-			stargateRelativePos = new Vec3i(pos[0], pos[1], pos[2]);
-		}
-		else
-			stargateRelativePos = null;
-			
 		energyItemHandler.deserializeNBT(registries, tag.getCompound(ENERGY_INVENTORY));
+		InventoryUtil.expandSlotsIfNeeded(energyItemHandler, 2);
 		
-		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+		if(tag.contains(GENERATION_STEP, Tag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
-		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
+		if(tag.contains(PROTECTED, Tag.TAG_BYTE))
 			isProtected = tag.getBoolean(PROTECTED);
+		
+		if(tag.contains(STARGATE_POS, Tag.TAG_INT_ARRAY))
+			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
+		else
+			stargateRelativePos = null;
+		
+		address.fromArray(tag.getIntArray(ADDRESS));
+		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
 		
 		super.loadAdditional(tag, registries);
 	}
@@ -157,9 +204,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		super.saveAdditional(tag, registries);
 		
-		if(stargateRelativePos != null)
-			tag.putIntArray(STARGATE_POS, new int[] {stargateRelativePos.getX(), stargateRelativePos.getY(), stargateRelativePos.getZ()});
-		
 		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT(registries));
 		
 		if(generationStep != Step.GENERATED)
@@ -167,12 +211,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		if(isProtected)
 			tag.putBoolean(PROTECTED, true);
-	}
-	
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
+		
+		if(stargateRelativePos != null)
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
+		
+		address.saveToCompoundTag(tag, ADDRESS);
+		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
 	}
 	
 	@Override
@@ -180,36 +224,54 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		tag.putLong(ENERGY, ENERGY_STORAGE.getTrueEnergyStored());
+		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
 		
-		tag.putString(POINT_OF_ORIGIN, symbolInfo().pointOfOrigin().toString());
-		tag.putString(SYMBOLS, symbolInfo().symbols().toString());
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		address.saveToCompoundTag(tag, ADDRESS);
 		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
 		
+		if(stargateRelativePos != null)
+			tag.putIntArray(STARGATE_POS, Conversion.vecToIntArray(stargateRelativePos));
+		
 		return tag;
+	}
+	
+	@Override
+	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries)
+	{
+		energyStorage.setEnergy(tag.getLong(ENERGY));
+		
+		symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		address.fromArray(tag.getIntArray(ADDRESS));
+		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+		
+		if(tag.contains(STARGATE_POS, Tag.TAG_INT_ARRAY))
+			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
+		else
+			stargateRelativePos = null;
+		stargateCache.markDirty();
 	}
 	
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
 		CompoundTag tag = packet.getTag();
-		
-		ENERGY_STORAGE.setEnergy(tag.getLong(ENERGY));
-		
-		if(tag.contains(POINT_OF_ORIGIN))
-			symbolInfo().setPointOfOrigin(ResourceLocation.tryParse(tag.getString(POINT_OF_ORIGIN)));
-		if(tag.contains(SYMBOLS))
-			symbolInfo().setSymbols(ResourceLocation.tryParse(tag.getString(SYMBOLS)));
-		
-		address.fromArray(tag.getIntArray(ADDRESS));
-		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
+		if(tag != null)
+			handleUpdateTag(tag, registries);
 	}
 	
+	@Override
+	public AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> receiverCache()
+	{
+		return stargateCache;
+	}
+	
+	@Override
 	public SymbolInfo symbolInfo()
 	{
-		return this.symbolInfo;
+		return symbolInfo;
 	}
 	
 	
@@ -265,9 +327,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	
 	
-	public int getMaxDistance()
+	public int getMaxConnectionDistance()
 	{
-		return DEFAULT_CONNECTION_DISTANCE;
+		return maxConnectionDistance;
+	}
+	
+	public long getMaxConnectionDistanceSqr()
+	{
+		return (long) maxConnectionDistance * maxConnectionDistance;
 	}
 	
 	public long getEnergyTarget()
@@ -280,109 +347,31 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.enableAdvancedProtocols;
 	}
 	
+	public int autocloseTicks()
+	{
+		return enableAdvancedProtocols() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
+	}
+	
 	public long getStargateEnergy()
 	{
-		if(stargate == null)
-			return -1;
-		
-		return stargate.getEnergyStored();
+		return stargateCache.returnOrDefault(stargate -> stargate.energyStorage.getTrueEnergyStored(), -1L);
 	}
 	
 	public int getStargateOpenTime()
 	{
-		if(stargate == null)
-			return 0;
-		
-		return stargate.getOpenTime();
+		return stargateCache.returnOrDefault(AbstractStargateEntity::getOpenTime, 0);
 	}
 	
 	public int getStargateTimeSinceLastTraveler()
 	{
-		if(stargate == null)
-			return 0;
-		
-		return stargate.getTimeSinceLastTraveler();
+		return stargateCache.returnOrDefault(AbstractStargateEntity::getTimeSinceLastTraveler, 0);
 	}
 	
-	protected void updateStargate()
+	public void updateDHD(Address.Mutable address, boolean isCenterButtonEngaged)
 	{
-		if(stargate == null)
-			return;
-		
-		stargate.dhdInfo().setDHD(this, this.enableAdvancedProtocols ? 10 : 0);
-	}
-	
-	protected boolean setStargateFromPos(BlockPos pos)
-	{
-		BlockEntity blockEntity = this.getLevel().getBlockEntity(pos);
-		if(blockEntity instanceof AbstractStargateEntity stargate)
-		{
-			this.stargate = stargate;
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	/**
-	 * Sets the DHD's Stargate to the position specified by the DHD's saved Stargate relative position.
-	 * If there is no Stargate at that position, the DHD will remove that position from its memory.
-	 * If there is no position saved, DHD will attempt to find a new Stargate
-	 */
-	public void setStargate()
-	{
-		if(this.getLevel() == null)
-			return;
-			
-		updateStargate();
-		
-		if(stargate != null)
-		{
-			if(distance(this.getBlockPos(), stargate.getBlockPos()) > getMaxDistance())
-				unsetStargate();
-			
-			return;
-		}
-
-		if(stargateRelativePos == null)
-			stargateRelativePos = findNearestStargate(getMaxDistance());
-
-		if(stargateRelativePos != null)
-		{
-			Vec3i pos = stargateRelativePos;
-			Direction direction = getDirection();
-			
-			if(direction != null)
-			{
-				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(direction, this.getBlockPos(), pos);
-				
-				if(stargatePos != null && !setStargateFromPos(stargatePos))
-					stargateRelativePos = null;
-			}
-		}
-		
-		this.setChanged();
-	}
-	
-	public void unsetStargate()
-	{
-		if(stargate != null)
-		{
-			stargate.dhdInfo().unsetDHD(false);
-			stargate = null;
-		}
-		
-		stargateRelativePos = null;
-		
-		updateDHD(new Address.Mutable(), false);
-		
-		this.setChanged();
-	}
-	
-	public void updateDHD(Address.Mutable address, boolean isStargateConnected)
-	{
-		this.setAddress(address);
-		this.setCenterButtonEngaged(isStargateConnected);
+		stargateCache.ifPresentOrElse(stargate -> setAddress(stargate.symbolMap.remapAddress(address)), () -> setAddress(address));
+		this.setCenterButtonEngaged(isCenterButtonEngaged);
+		updateClient();
 	}
 	
 	public void setAddress(Address.Mutable address)
@@ -422,10 +411,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public long minStoredEnergy()
 	{
-		return getEnergyCapacity() * 2 / 3;
+		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
 	}
 	
-	public abstract long maxEnergyDeplete();
+	public abstract long maxEnergyTransfer();
 	
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
@@ -434,30 +423,27 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	@Override
-	public long maxExtract()
+	public long getMaxExtract()
 	{
-		return CommonDHDConfig.milky_way_dhd_max_energy_extract.get();
+		return 0;
 	}
 	
-	private boolean stackHasEnergy(ItemStack stack)
+	@Override
+	public long getMaxDeplete()
 	{
-		IEnergyStorage energyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-		if(energyStorage != null)
-			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
-		
-		return false;
+		return Long.MAX_VALUE;
 	}
 	
 	private void tryStoreEnergy(ItemStack energyStack)
 	{
 		ItemStack inputStack = energyItemHandler.getStackInSlot(1);
 		// Generates energy if needed
-		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, energyItemHandler.getStackInSlot(1)) <= (getEnergyCapacity() - getEnergyStored()))
+		if(energyStack.getItem() instanceof IEnergyCore energyCore && energyCore.maxGeneratedEnergy(energyStack, energyItemHandler.getStackInSlot(1)) <= (energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored()))
 		{
 			long generatedEnergy = energyCore.generateEnergy(energyStack, inputStack);
 			
 			if(generatedEnergy > 0)
-				receiveEnergy(generatedEnergy, false);
+				energyStorage.receiveLongEnergy(generatedEnergy, false);
 		}
 		else if(energyStack.getCapability(Capabilities.EnergyStorage.ITEM) != null)
 		{
@@ -466,47 +452,47 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			{
 				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
-					long energyNeeded = getEnergyCapacity() - getEnergyStored();
+					long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
 					long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
+					energyStorage.receiveLongEnergy(energyExtracted, false);
 				}
 				else
 				{
-					int energyNeeded = (int) Math.min(getEnergyCapacity() - getEnergyStored(), Integer.MAX_VALUE);
+					int energyNeeded = (int) Math.min(energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored(), Integer.MAX_VALUE);
 					int energyExtracted = energy.extractEnergy(energyNeeded, false);
-					receiveEnergy(energyExtracted, false);
+					energyStorage.receiveLongEnergy(energyExtracted, false);
 				}
 			}
 		}
 	}
 	
-	private void tryPowerStargate(ItemStack energyStack)
+	private void tryPowerStargate(AbstractStargateEntity<?> stargate, ItemStack energyStack)
 	{
-		if(stargate.getEnergyStored() < getEnergyTarget())
+		if(stargate.energyStorage.getTrueEnergyStored() < getEnergyTarget())
 		{
-			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.getEnergyStored(), maxEnergyDeplete());
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.energyStorage.getTrueEnergyStored(), maxEnergyTransfer());
 			
-			// Uses energy from a Energy Item if one is present
-			if (stackHasEnergy(energyStack))
+			// Uses energy from an Energy Item if one is present
+			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
 				
-				if (energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
 					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
-					stargate.receiveEnergy(energySent, false);
+					stargate.energyStorage.receiveLongEnergy(energySent, false);
 				}
 				else
 				{
 					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
-					stargate.receiveEnergy(energySent, false);
+					stargate.energyStorage.receiveLongEnergy(energySent, false);
 				}
 			}
 			// Uses energy from the DHD energy buffer
 			else
 			{
-				long energySent = depleteEnergy(needed, false);
-				stargate.receiveEnergy(energySent, false);
+				long energySent = energyStorage.depleteEnergy(needed, false);
+				stargate.energyStorage.receiveLongEnergy(energySent, false);
 			}
 		}
 	}
@@ -514,13 +500,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	protected void outputEnergy(Direction outputDirection)
 	{
-		if(this.stargate == null)
-			return;
-		
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
 		// Stores energy in the DHD buffer
-		if(getEnergyStored() < minStoredEnergy())
+		if(energyStorage.getTrueEnergyStored() < minStoredEnergy())
 		{
 			try
 			{
@@ -533,7 +516,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		// Sends energy to the Stargate
 		else
-			tryPowerStargate(energyStack);
+			stargateCache.ifPresent(stargate -> tryPowerStargate(stargate, energyStack));
 	}
 
 	public void setCallForwardingState(boolean enableCallForwarding)
@@ -545,20 +528,24 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		return this.enableCallForwarding;
 	}
-    
-    protected BlockState getState()
-    {
-    	BlockPos gatePos = this.getBlockPos();
-		return this.level.getBlockState(gatePos);
-    }
+	
+	public boolean hasNetworkRestrictions()
+	{
+		return this.hasNetworkRestrictions;
+	}
+	
+	public Set<Integer> getNetworks()
+	{
+		return this.networks;
+	}
 	
 	public Direction getDirection()
 	{
 		if(this.direction == null)
 		{
-			BlockState gateState = getState();
+			BlockState gateState = getBlockState();
 			
-			if(gateState.getBlock() instanceof AbstractDHDBlock)
+			if(gateState.hasProperty(AbstractDHDBlock.FACING))
 				this.direction = gateState.getValue(AbstractDHDBlock.FACING);
 			else
 				StargateJourney.LOGGER.error("Couldn't find DHD Direction");
@@ -567,90 +554,91 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.direction;
 	}
 	
-	private double distance(BlockPos pos, BlockPos targetPos)
-	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		double stargateDistance = Math.sqrt(x*x + y*y + z*z);
-		
-		return stargateDistance;
-	}
-	
-	public Vec3i findNearestStargate(int maxDistance)
-	{
-		List<AbstractStargateEntity> stargates = LocatorHelper.getNearbyStargates(this.getLevel(), this.getBlockPos(), maxDistance);
-		
-		stargates.sort((stargateA, stargateB) ->
-				Double.valueOf(distance(this.getBlockPos(), stargateA.getBlockPos()))
-				.compareTo(Double.valueOf(distance(this.getBlockPos(), stargateB.getBlockPos()))));
-		
-		if(!stargates.isEmpty())
-		{
-			Iterator<AbstractStargateEntity> iterator = stargates.iterator();
-			
-			while(iterator.hasNext())
-			{
-				AbstractStargateEntity stargate = iterator.next();
-				
-				if(!stargate.dhdInfo().hasDHD())
-				{
-					Direction direction = getDirection();
-					
-					if(direction != null)
-					{
-						this.stargate = stargate;
-						return CoordinateHelper.Relative.getRelativeOffset(direction, this.getBlockPos(), stargate.getBlockPos());
-					}
-				}
-				
-			}
-		}
-		
-		return null;
-	}
-	
 	public void sendMessageToNearbyPlayers(Component message, int distance)
 	{
-		AABB localBox = new AABB((getBlockPos().getX() - distance), (getBlockPos().getY() - distance), (getBlockPos().getZ() - distance), 
-				(getBlockPos().getX() + 1 + distance), (getBlockPos().getY() + 1 + distance), (getBlockPos().getZ() + 1 + distance));
-		level.getEntitiesOfClass(Player.class, localBox).stream().forEach((player) -> player.displayClientMessage(message, true));
+		AABB localBox = new AABB(getBlockPos()).inflate(distance);
+		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
 	protected abstract SoundEvent getEnterSound();
 	
 	protected abstract SoundEvent getPressSound();
 	
-	/**
-	 * Engages the next Stargate chevron
-	 * @param symbol
-	 */
-	public void engageChevron(int symbol)
+	public abstract void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address);
+	
+	public void pressButton(int index)
 	{
-		if(this.stargate != null)
-		{
-			if(!StargateJourneyConfig.disable_energy_use.get() && getEnergyStored() < buttonPressEnergyCost())
-			{
-				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 5);
-				return;
-			}
-			
-			if(symbol == 0)
-				level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
-			else
-				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.25F, 1F);
-			
-			stargate.dhdEngageSymbol(symbol);
-			depleteEnergy(buttonPressEnergyCost(), false);
-		}
+		if(index < 0)
+			engageStargate();
 		else
-			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), 5);
+			encodeSymbol(index);
 	}
 	
-	public boolean isSymbolEngaged(int symbol)
+	public void engageStargate()
+	{
+		stargateCache.ifPresentOrElse(stargate ->
+				{
+					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
+					{
+						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+						return;
+					}
+					
+					level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
+					
+					stargate.dhdEngageStargate();
+					stargate.updateDHD(this);
+					
+					if(REQUIRE_ENERGY)
+						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
+				},
+				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+	}
+	
+	public void encodeSymbol(int symbol)
+	{
+		stargateCache.ifPresentOrElse(stargate ->
+				{
+					if(stargate.isConnected())
+					{
+						sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo().getMessageComponent(), DHD_INFO_DISTANCE);
+						return;
+					}
+					
+					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
+					{
+						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+						return;
+					}
+					
+					level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
+					
+					// Remap symbol if needed while Advanced Protocols are enabled
+					if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
+						stargate.indirectEngageSymbol(stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray()), false);
+					else
+						stargate.indirectEngageSymbol(symbol, false);
+					stargate.updateDHD(this);
+					
+					if(REQUIRE_ENERGY)
+						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
+				},
+				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+	}
+	
+	public boolean isSymbolEncoded(int symbol)
 	{
 		return this.address.containsSymbol(symbol);
+	}
+	
+	public boolean isSymbolRemapped(int symbol)
+	{
+		return stargateCache.returnOrDefault(stargate -> stargate.symbolMap.isReplacingSymbol(symbol), false);
+	}
+	
+	public int getRemappedOriginalSymbol(int symbol)
+	{
+		return stargateCache.returnOrDefault(stargate -> stargate.symbolMap.getOriginalSymbol(symbol), symbol);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)
@@ -659,13 +647,52 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			return;
 		
 		dhd.outputEnergy(null);
-		dhd.updateClient();
     }
 	
-	public void updateClient()
+	@Override
+	public List<Component> getStatus()
 	{
-		if(!level.isClientSide())
-			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
+		List<Component> status = new ArrayList<>();
+		
+		if(symbolInfo().pointOfOrigin() != null)
+			status.add(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + symbolInfo().pointOfOrigin().location())).withStyle(ChatFormatting.DARK_PURPLE));
+		if(symbolInfo().symbols() != null)
+			status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		if(stargateCache.isPresent())
+			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(stargateCache.get().getBlockPos()))).withStyle(ChatFormatting.AQUA));
+		else
+			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA));
+		
+		return status;
+	}
+	
+	public void setLocalSymbols()
+	{
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+			symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+			symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+	}
+	
+	public void setSymbolsFromStargate()
+	{
+		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+		{
+			if(PointOfOrigin.isValid(level.getServer(), stargateCache.get().symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(stargateCache.get().symbolInfo().pointOfOrigin());
+			else // Use dimension Point of Origin if Stargate Point of Origin isn't valid
+				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+		}
+		
+		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+		{
+			if(Symbols.isValid(level.getServer(), stargateCache.get().symbolInfo().symbols()))
+				symbolInfo().setSymbols(stargateCache.get().symbolInfo().symbols());
+			else
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
 	}
 	
 	//============================================================================================
@@ -673,22 +700,37 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	//============================================================================================
 	
 	@Override
+	public void setGenerationStep(Step step)
+	{
+		this.generationStep = step;
+	}
+	
+	@Override
+	public Step generationStep()
+	{
+		return generationStep;
+	}
+	
+	@Override
 	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
 	{
 		if(generationStep == Step.SETUP)
-			generationStep = Step.READY;
+			generationStep = Step.READY; // Marks the DHD as ready for generation
 	}
 	
 	public void generate()
 	{
 		generateEnergyCore();
+		generateAdditional(Step.READY);
 		
 		generationStep = Step.GENERATED;
 	}
 	
+	public void generateAdditional(StructureGenEntity.Step generationStep) {}
+	
 	public void setToGenerate()
 	{
-		generationStep = Step.SETUP;
+		generationStep = Step.SETUP; //TODO What does this do?
 	}
 	
 	protected abstract void generateEnergyCore();

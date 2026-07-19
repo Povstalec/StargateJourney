@@ -1,15 +1,6 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.MapCodec;
-import net.minecraft.world.item.Item;
-import org.joml.Vector3d;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.FrontAndTop;
@@ -17,6 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -28,11 +20,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorMarkIIEntity;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import org.joml.Vector3d;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 {
@@ -98,28 +95,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
-		return new NaquadahGeneratorMarkIIEntity(pos, state);
-	}
-	
-	@Override
-	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
-	{
-		BlockEntity blockentity = level.getBlockEntity(pos);
-		if (blockentity instanceof NaquadahGeneratorEntity)
-		{
-			if (!level.isClientSide && !player.isCreative())
-			{
-				ItemStack itemstack = new ItemStack(BlockInit.NAQUADAH_GENERATOR_MARK_II.get());
-				
-				blockentity.saveToItem(itemstack, level.registryAccess());
-
-				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
-				itementity.setDefaultPickUpDelay();
-				level.addFreshEntity(itementity);
-			}
-		}
-
-		return super.playerWillDestroy(level, pos, state, player);
+		return new NaquadahGeneratorEntity.MarkII(pos, state);
 	}
 	
 	@Nullable
@@ -132,7 +108,7 @@ public class NaquadahGeneratorMarkIIBlock extends NaquadahGeneratorBlock
 	@Override
 	public long energyPerTick()
 	{
-		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_energy_per_tick.get();
+		return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_energy_per_tick.get();
 	}
 	
     @Override

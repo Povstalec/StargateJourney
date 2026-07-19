@@ -1,11 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-import java.util.Random;
-
 import com.mojang.serialization.Codec;
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
@@ -20,6 +16,9 @@ import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+
+import java.util.List;
+import java.util.Random;
 
 public class SyringeItem extends Item
 {
@@ -126,7 +125,7 @@ public class SyringeItem extends Item
 			
 			if(chance <= probability)
 			{
-				cap.implantGene();
+				cap.setGene(AncientGene.ATAGene.ARTIFICIAL);
 				
 				if(target instanceof Player player)
 					player.sendSystemMessage(Component.translatable("message.sgjourney.syringe.got_ancient_gene").withStyle(ChatFormatting.AQUA));

@@ -1,62 +1,70 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import javax.annotation.Nullable;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
-import net.povstalec.sgjourney.common.sgjourney.Transporting;
+import net.povstalec.sgjourney.common.sgjourney.*;
 
-public class SGJourneyTransporter implements Transporter
+import java.util.*;
+
+public abstract class SGJourneyTransporter implements Transporter
 {
+	public static final String ALLOW_INTERDIMENSIONAL_TRANSPORT = "interdimensional_transport";
+	public static final String TRANSFER_EFFICIENCY = "transfer_efficiency";
+	
 	public static final Vec3 FORWARD = new Vec3(1, 0, 0);
 	public static final Vec3 UP = new Vec3(0, 1, 0);
 	public static final Vec3 RIGHT = new Vec3(0, 0, 1);
-	public static final double INNER_RADIUS = 2;
 	
-	private UUID id;
-	private ResourceKey<Level> dimension;
-	private BlockPos blockPos;
+	protected final TransporterType<?> type;
+	protected final MinecraftServer server;
+	
+	protected TransporterID transporterID;
+	protected ResourceKey<Level> dimension;
+	
+	protected boolean hasNetworkRestrictions = false;
+	protected Set<Integer> networks = new HashSet<>();
+	
+	protected int transferEfficiency = 1;
+	
+	protected boolean allowInterdimensionalTransport = false;
 	
 	@Nullable
-	private Component name;
+	protected Component name;
 	
-	public SGJourneyTransporter() {}
-	
-	public SGJourneyTransporter(UUID id, ResourceKey<Level> dimension, BlockPos blockPos, Component name)
+	public SGJourneyTransporter(TransporterType<?> type, MinecraftServer server)
 	{
-		this.id = id;
-		this.dimension = dimension;
-		this.blockPos = blockPos;
-		
-		this.name = name;
-	}
-	
-	public SGJourneyTransporter(AbstractTransporterEntity transporterEntity)
-	{
-		this(transporterEntity.getID(), transporterEntity.getLevel().dimension(), transporterEntity.getBlockPos(), transporterEntity.getCustomName());
+		this.type = type;
+		this.server = server;
 	}
 	
 	@Override
-	public UUID getID()
+	public final TransporterType<?> getTransporterType()
 	{
-		return id;
+		return this.type;
+	}
+	
+	@Override
+	public MinecraftServer getServer()
+	{
+		return this.server;
+	}
+	
+	@Override
+	public TransporterID getID()
+	{
+		return transporterID;
 	}
 	
 	@Override
@@ -65,51 +73,20 @@ public class SGJourneyTransporter implements Transporter
 		return dimension;
 	}
 	
-	public BlockPos getBlockPos()
+	@Override
+	public Set<Integer> getNetworks()
 	{
-		return blockPos;
+		return this.networks;
 	}
 	
 	@Override
-	public @Nullable Vec3 getPosition(MinecraftServer server)
+	public boolean isNetworkRestricted(Collection<Integer> testedNetworks)
 	{
-		return getBlockPos().getCenter();
-	}
-	
-	@Override
-	public @Nullable Vec3 getForward(MinecraftServer server)
-	{
-		return FORWARD;
-	}
-	
-	@Override
-	public @Nullable Vec3 getUp(MinecraftServer server)
-	{
-		return UP;
-	}
-	
-	@Override
-	public @Nullable Vec3 getRight(MinecraftServer server)
-	{
-		return RIGHT;
-	}
-	
-	@Override
-	public double getInnerRadius()
-	{
-		return INNER_RADIUS;
-	}
-	
-	@Override
-	@Nullable
-	public Vec3 transportPos(MinecraftServer server)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		// If Transporter has network restrictions turned on, check if the tested network matches any of the networks Transporter is in
+		if(hasNetworkRestrictions)
+			return Collections.disjoint(getNetworks(), testedNetworks);
 		
-		if(transporter != null)
-			return transporter.transportPos().getCenter();
-		
-		return null;
+		return false;
 	}
 	
 	@Override
@@ -118,171 +95,125 @@ public class SGJourneyTransporter implements Transporter
 		return name != null ? name : Component.empty();
 	}
 	
-	@Nullable
-	public AbstractTransporterEntity getTransporterEntity(MinecraftServer server)
+	@Override
+	public boolean receiveTraveler(TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
-		ServerLevel level = server.getLevel(dimension);
+		Vec3 destinationPosition = fromTransporterCoords(relativePosition, true).add(transportPos());
+		Vec3 destinationMomentum = fromTransporterCoords(relativeMomentum, false);
+		Vec3 destinationLookAngle = fromTransporterCoords(relativeLookAngle, false);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity transporter)
-			return transporter;
-		
-		return null;
+		return Transporting.receiveTraveler(connection, getLevel(), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 	}
 	
 	@Override
-	public int getTimeOffset(MinecraftServer server)
+	public TransporterInfo.FeedbackMessage tryConnect(Transporter initiatingTransporter)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		// If Transporter is obstructed
+		if(isObstructed())
+			return TransporterInfo.Feedback.TARGET_OBSTRUCTED.withInfo();
 		
-		if(transporter != null)
-			return transporter.getTimeOffset();
+		// If Transporter is restricted
+		if(isNetworkRestricted(initiatingTransporter.getNetworks()))
+			return TransporterInfo.Feedback.TARGET_RESTRICTED.withInfo();
 		
-		return 0;
+		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(initiatingTransporter.getID()))
+			return TransporterInfo.Feedback.BLACKLISTED_BY_TARGET.withInfo();
+		
+		// If Transporter has a whitelist
+		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(initiatingTransporter.getID()))
+			return TransporterInfo.Feedback.NOT_WHITELISTED_BY_TARGET.withInfo();
+		
+		return Dialing.connectTransporters(server, initiatingTransporter, this);
 	}
 	
 	@Override
-	public List<Entity> entitiesToTransport(MinecraftServer server)
+	public int getTransferEfficiency()
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return transporter.entitiesToTransport();
-		
-		return ImmutableList.of();
+		return transferEfficiency;
 	}
 	
 	@Override
-	public void transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter receivingTransporter, List<Entity> travelers)
+	public boolean allowInterdimensionalTransport()
 	{
-		transporterRun(server, transporter ->
-		{
-			Transporting.transportTravelers(server, connection, this, receivingTransporter, travelers);
-		});
+		return allowInterdimensionalTransport;
+	}
+	
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
+	
+	@Override
+	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
+	{
+		if(isObstructed())
+			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
+		if(transporterIDFilterInfo().getFilterType().isBlacklist() && transporterIDFilterInfo().isIDBlacklisted(otherID))
+			return TransporterInfo.Feedback.TARGET_BLACKLISTED.withInfo();
+		
+		if(transporterIDFilterInfo().getFilterType().isWhitelist() && !transporterIDFilterInfo().isIDWhitelisted(otherID))
+			return TransporterInfo.Feedback.TARGET_NOT_WHITELISTED.withInfo();
+		
+		return Dialing.dialTransporterID(server, this, otherID, false);
 	}
 	
 	@Override
-	public boolean receiveTraveler(MinecraftServer server, TransporterConnection connection, Transporter sendingTransporter, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	public TransporterInfo.FeedbackMessage dialTransporter(Vec3i coords)
 	{
-		Vec3 destinationPosition = fromTransporterCoords(server, relativePosition, true).add(transportPos(server));
-		Vec3 destinationMomentum = fromTransporterCoords(server, relativeMomentum, false);
-		Vec3 destinationLookAngle = fromTransporterCoords(server, relativeLookAngle, false);
+		if(isObstructed())
+			return resetTransporter(TransporterInfo.Feedback.SELF_OBSTRUCTED);
 		
-		return Transporting.receiveTraveler(getLevel(server), this, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		return Dialing.dialTransporterCoords(server, this, coords, false);
 	}
 	
-	@Override
-	public void connect(MinecraftServer server, UUID connectionID)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.connectTransporter(connectionID);
-	}
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
 	
 	@Override
-	public void disconnect(MinecraftServer server)
+	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.disconnectTransporter();
-	}
-	
-	@Override
-	public void reset(MinecraftServer server)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.resetTransporter();
-	}
-	
-	@Override
-	public boolean isConnected(MinecraftServer server)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return transporter.isConnected();
-		
-		return false;
-	}
-	
-	@Override
-	public void updateTicks(MinecraftServer server, int connectionTime)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			transporter.updateTicks(connectionTime);
-	}
-	
-	
-	
-	@Override
-	public String toString()
-	{
-		String nameString = name != null ? name.getString() : id.toString();
-		
-		return "[ " + nameString + " | Pos: " + blockPos.toString() + " ]";
-	}
-	
-	
-	@Override
-	public CompoundTag serializeNBT(HolderLookup.Provider registries)
-	{
-		CompoundTag transporterTag = new CompoundTag();
-		ResourceKey<Level> level = this.getDimension();
-		BlockPos pos = this.getBlockPos();
-		
-		transporterTag.putString(DIMENSION, level.location().toString());
-		transporterTag.putIntArray(COORDINATES, new int[] {pos.getX(), pos.getY(), pos.getZ()});
+		tag.putString(DIMENSION, getDimension().location().toString());
 		
 		if(this.name != null)
-			transporterTag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, registries));
+			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, registries));
 		
-		return transporterTag;
+		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
+		tag.putIntArray(NETWORKS, networks.stream().toList());
+		
+		tag.putInt(TRANSFER_EFFICIENCY, transferEfficiency);
+		
+		tag.putBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
 	}
 	
-	public void deserializeNBT(MinecraftServer server, UUID uuid, CompoundTag tag, HolderLookup.Provider registries)
+	@Override
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag, HolderLookup.Provider registries)
 	{
+		this.transporterID = transporterID;
+		
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
-		this.blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
 		
-		this.id = uuid;
-	}
-	
-	
-	
-	public interface TransporterConsumer
-	{
-		void run(AbstractTransporterEntity transporter);
-	}
-	
-	public interface ReturnTransporterConsumer<T>
-	{
-		T run(AbstractTransporterEntity transporter);
-	}
-	
-	private void transporterRun(MinecraftServer server, TransporterConsumer consumer)
-	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
+		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
+		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
+			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
+		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 		
-		if(transporter != null)
-			consumer.run(transporter);
+		this.transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
+		
+		this.allowInterdimensionalTransport = tag.getBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT);
 	}
 	
-	private <T> T transporterReturn(MinecraftServer server, ReturnTransporterConsumer<T> consumer, @Nullable T defaultValue)
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
+	
+	@Override
+	public String toString()
 	{
-		AbstractTransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return consumer.run(transporter);
-		
-		return defaultValue;
+		return "[ Name: " + getName().getString() + " | ID: " + getID() + " | Dim: " + getDimension().location() + " | Pos: " + getPosition() + " ]";
 	}
 }

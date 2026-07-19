@@ -5,6 +5,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StargateFilterFunctions
 {
@@ -12,17 +13,17 @@ public class StargateFilterFunctions
 	//*********************************Advanced Crystal Interface*********************************
 	//============================================================================================
 	
-	public static int getFilterType(AbstractStargateEntity stargate)
+	public static int getFilterType(AbstractStargateEntity<?> stargate)
 	{
 		return stargate.addressFilterInfo().getFilterType().getIntegerValue();
 	}
 	
-	public static int setFilterType(AbstractStargateEntity stargate, int filterType)
+	public static int setFilterType(AbstractStargateEntity<?> stargate, int filterType)
 	{
 		return stargate.addressFilterInfo().setFilterType(filterType).getIntegerValue();
 	}
 	
-	public static String addToWhitelist(AbstractStargateEntity stargate, int[] addressArray, boolean isVisible)
+	public static boolean addToWhitelist(AbstractStargateEntity<?> stargate, int[] addressArray, boolean isVisible)
 	{
 		// Should Handle the following exceptions
 		/*if(addressArray.length < 6)
@@ -37,13 +38,10 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().addToWhitelist(new Address.Immutable(addressArray), isVisible))
-			return "Address whitelisted successfully";
-		else
-			return "Address visibility changed successfully";
+		return stargate.addressFilterInfo().addToWhitelist(new Address.Immutable(addressArray), isVisible);
 	}
 	
-	public static String addToBlacklist(AbstractStargateEntity stargate, int[] addressArray, boolean isVisible)
+	public static boolean addToBlacklist(AbstractStargateEntity<?> stargate, int[] addressArray, boolean isVisible)
 	{
 		// Should Handle the following exceptions
 		/*if(addressArray.length < 6)
@@ -58,13 +56,10 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().addToBlacklist(new Address.Immutable(addressArray), isVisible))
-			return "Address blacklisted successfully";
-		else
-			return "Address visibility changed successfully";
+		return stargate.addressFilterInfo().addToBlacklist(new Address.Immutable(addressArray), isVisible);
 	}
 	
-	public static String removeFromWhitelist(AbstractStargateEntity stargate, int[] addressArray)
+	public static boolean removeFromWhitelist(AbstractStargateEntity<?> stargate, int[] addressArray)
 	{
 		// Should Handle the following exceptions
 		/*if(addressArray.length < 6)
@@ -79,13 +74,10 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().removeFromWhitelist(new Address.Immutable(addressArray)))
-			return "Address removed from whitelist successfully";
-		else
-			return "Address is not whitelisted";
+		return stargate.addressFilterInfo().removeFromWhitelist(new Address.Immutable(addressArray));
 	}
 	
-	public static String removeFromBlacklist(AbstractStargateEntity stargate, int[] addressArray)
+	public static boolean removeFromBlacklist(AbstractStargateEntity<?> stargate, int[] addressArray)
 	{
 		// Should Handle the following exceptions
 		/*if(addressArray.length < 6)
@@ -100,15 +92,12 @@ public class StargateFilterFunctions
 		else if(!ArrayHelper.isArrayInBounds(addressArray, 1, 47))
 			throw new LuaException("Array contains numbers which are out of bounds <1,47>");*/
 		
-		if(stargate.addressFilterInfo().removeFromBlacklist(new Address.Immutable(addressArray)))
-			return "Address removed from blacklist successfully";
-		else
-			return "Address is not blacklisted";
+		return stargate.addressFilterInfo().removeFromBlacklist(new Address.Immutable(addressArray));
 	}
 	
-	public static ArrayList<Address.Immutable> getPublicWhitelist(AbstractStargateEntity stargate)
+	public static List<Address.Immutable> getPublicWhitelist(AbstractStargateEntity<?> stargate)
 	{
-		ArrayList<Address.Immutable> addresses = new ArrayList<Address.Immutable>();
+		ArrayList<Address.Immutable> addresses = new ArrayList<>();
 		for(AddressFilterInfo.HiddenAddress address : stargate.addressFilterInfo().getWhitelist())
 		{
 			if(address.isVisible())
@@ -118,9 +107,9 @@ public class StargateFilterFunctions
 		return addresses;
 	}
 	
-	public static ArrayList<Address.Immutable> getPublicBlacklist(AbstractStargateEntity stargate)
+	public static List<Address.Immutable> getPublicBlacklist(AbstractStargateEntity<?> stargate)
 	{
-		ArrayList<Address.Immutable> addresses = new ArrayList<Address.Immutable>();
+		List<Address.Immutable> addresses = new ArrayList<>();
 		for(AddressFilterInfo.HiddenAddress address : stargate.addressFilterInfo().getBlacklist())
 		{
 			if(address.isVisible())
@@ -130,14 +119,14 @@ public class StargateFilterFunctions
 		return addresses;
 	}
 	
-	public static String clearWhitelist(AbstractStargateEntity stargate)
+	public static String clearWhitelist(AbstractStargateEntity<?> stargate)
 	{
 		stargate.addressFilterInfo().clearWhitelist();
 		
 		return "Whitelist cleared";
 	}
 	
-	public static String clearBlacklist(AbstractStargateEntity stargate)
+	public static String clearBlacklist(AbstractStargateEntity<?> stargate)
 	{
 		stargate.addressFilterInfo().clearBlacklist();
 		

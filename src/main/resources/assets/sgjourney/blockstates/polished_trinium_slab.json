@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "sgjourney:block/polished_trinium_slab"
+    },
+    "type=double": {
+      "model": "sgjourney:block/polished_trinium_slab_block"
+    },
+    "type=top": {
+      "model": "sgjourney:block/polished_trinium_slab_top"
+    }
+  }
+}

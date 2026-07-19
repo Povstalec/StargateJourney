@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -51,16 +50,6 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	{
 		super.saveAdditional(nbt, registries);
 		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
-	}
-	
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries)
-	{
-		return this.saveWithoutMetadata(registries);
 	}
 	
 	//============================================================================================
@@ -116,12 +105,6 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		};
 	}
 	
-	public void updateClient()
-	{
-		if(!level.isClientSide())
-			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
-	}
-	
 	//============================================================================================
 	//******************************************Ticking*******************************************
 	//============================================================================================
@@ -147,19 +130,19 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		protected long capacity()
+		protected long getCapacity()
 		{
 			return CommonTechConfig.large_naquadah_battery_capacity.get();
 		}
 		
 		@Override
-		protected long maxReceive()
+		protected long getMaxReceive()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}
 		
 		@Override
-		protected long maxExtract()
+		protected long getMaxExtract()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}

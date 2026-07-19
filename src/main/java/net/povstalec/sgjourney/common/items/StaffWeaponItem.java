@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.Arrays;
-import java.util.List;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
@@ -30,6 +27,9 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class StaffWeaponItem extends FluidItem.Holder
 {
@@ -92,7 +92,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 			// Reloading
 			if(offHandStack.getItem() instanceof StaffWeaponItem staffWeapon)
 			{
-				if(!level.isClientSide() && staffWeapon.swapItem(player, offHandStack, mainHandStack))
+				if(!level.isClientSide() && staffWeapon.swapItemInHand(player, offHandStack, mainHandStack))
 					return InteractionResultHolder.success(offHandStack);
 				
 				return InteractionResultHolder.pass(stack);
@@ -114,7 +114,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	
 	public float getExplosionPower(ItemStack stack)
 	{
-		// If the player is in Creative and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
+		// If the player is in Creative, and it's empty, the explosions will be the same size as if it was filled with Liquid Naquadah
 		return getFluidStack(stack).getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get() ?
 				HEAVY_LIQUID_NAQUADAH_EXPLOSION_POWER : LIQUID_NAQUADAH_EXPLOSION_POWER;
 	}
@@ -131,16 +131,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)
 	{
 		return !player.isCreative();
-	}
-	
-	@Override
-	public ItemStack getHeldItem(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
-		
-		return itemHandler.getStackInSlot(0);
 	}
 	
 	@Override
@@ -238,7 +228,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack)
 		{
-			return stack.is(ItemInit.VIAL.get());
+			return stack.isEmpty() || stack.is(ItemInit.VIAL.get());
 		}
 	}
 }

@@ -1,10 +1,10 @@
 {
-	"parent": "sgjourney:technology/mine_raw_naquadah",
+	"parent": "sgjourney:technology/obtain_naquadah_mixture",
 	"display": 
 	{
 		"icon": 
 		{
-			"id": "sgjourney:naquadah_alloy"
+			"item": "sgjourney:naquadah_iron_alloy"
 		},
 		"title": 
 		{
@@ -29,7 +29,7 @@
 			{
 				"items":
 				[
-          			{"items":["sgjourney:naquadah_alloy"]}
+          			{"items":["sgjourney:naquadah_iron_alloy", "sgjourney:naquadah_copper_alloy"]}
         		]
 			}
 		}

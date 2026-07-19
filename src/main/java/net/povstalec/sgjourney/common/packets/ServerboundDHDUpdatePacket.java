@@ -32,7 +32,7 @@ public record ServerboundDHDUpdatePacket(BlockPos blockPos, int symbol) implemen
     	ctx.enqueueWork(() -> {
     		final BlockEntity blockEntity = ctx.player().level().getBlockEntity(packet.blockPos);
     		if(blockEntity instanceof AbstractDHDEntity dhd)
-    			dhd.engageChevron(packet.symbol);
+    			dhd.pressButton(packet.symbol);
     	});
     }
 }

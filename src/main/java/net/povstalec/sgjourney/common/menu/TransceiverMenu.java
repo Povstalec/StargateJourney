@@ -3,80 +3,70 @@ package net.povstalec.sgjourney.common.menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
 
-public class TransceiverMenu extends AbstractContainerMenu
+public class TransceiverMenu extends SGJourneyMenu<TransceiverEntity>
 {
-	private final TransceiverEntity transceiverEntity;
-	private final Level level;
-	
 	public TransceiverMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		this(containerId, inventory, inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inventory, (TransceiverEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 	
-	public TransceiverMenu(int containerId, Inventory inventory, BlockEntity blockEntity)
+	public TransceiverMenu(int containerId, Inventory inventory, TransceiverEntity blockEntity)
 	{
-		super(MenuInit.TRANSCEIVER.get(), containerId);
-		
-		transceiverEntity = ((TransceiverEntity) blockEntity);
-		this.level = inventory.player.level();
+		super(MenuInit.TRANSCEIVER.get(), containerId, inventory, blockEntity);
 	}
 	
 	@Override
 	public boolean stillValid(Player player)
 	{
-		return stillValid(ContainerLevelAccess.create(level, transceiverEntity.getBlockPos()),
-				player, BlockInit.TRANSCEIVER.get());
+		return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.TRANSCEIVER.get());
 	}
 	
 	@Override
 	public ItemStack quickMoveStack(Player playerIn, int index) 
 	{
-		return null;
+		return ItemStack.EMPTY;
 	}
 	
 	public boolean editingFrequency()
 	{
-		return transceiverEntity.editingFrequency();
+		return blockEntity.editingFrequency();
 	}
 	
 	public int getFrequency()
 	{
-		return transceiverEntity.getFrequency();
+		return blockEntity.getFrequency();
 	}
 	
 	public String getCurrentCode()
 	{
-		return transceiverEntity.getCurrentCode();
+		return blockEntity.getCurrentCode();
 	}
     
     public void toggleFrequency()
     {
-		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(transceiverEntity.getBlockPos(), false, true, 0, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, true, 0, false));
     }
     
     public void sendTransmission()
     {
-		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(transceiverEntity.getBlockPos(), false, false, 0, true));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, 0, true));
     }
     
     public void addToCode(boolean toggledFrequency, int number)
     {
-		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(transceiverEntity.getBlockPos(), false, false, number, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, number, false));
     }
     
     public void removeFromCode(boolean toggledFrequency)
     {
-		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(transceiverEntity.getBlockPos(), true, false, 0, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), true, false, 0, false));
     }
 }

@@ -13,6 +13,8 @@ public class ClientSkyConfig
 	public static SGJourneyConfigValue.BooleanValue custom_lantea_sky;
 	public static SGJourneyConfigValue.BooleanValue custom_athos_sky;
 	
+	public static SGJourneyConfigValue.BooleanValue custom_destiny_sky;
+	
 	public static void init(ModConfigSpec.Builder client)
 	{
 		custom_abydos_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_abydos_sky", 
@@ -44,5 +46,9 @@ public class ClientSkyConfig
 		custom_athos_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_athos_sky", 
 				true, 
 				"If true you will render a custom Athos sky");
+		
+		custom_destiny_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_destiny_sky",
+				true,
+				"If true you will render a custom Destiny sky");
 	}
 }

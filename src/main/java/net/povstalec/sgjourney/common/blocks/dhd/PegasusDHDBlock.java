@@ -38,6 +38,10 @@ import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
@@ -89,15 +93,29 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	{
         if(level.isClientSide())
 			return;
-
+		
 		BlockEntity blockEntity = level.getBlockEntity(pos);
-
+		
 		if(blockEntity instanceof PegasusDHDEntity dhd)
 		{
-			dhd.setStargate();
-
-			if(hitResult.getDirection() != Direction.UP || player.isShiftKeyDown())
-				this.openCrystalMenu(player, dhd);
+			if((hitResult.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public Component getDisplayName()
+					{
+						return Component.translatable("screen.sgjourney.dhd");
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+					{
+						return new DHDCrystalMenu.Pegasus(windowId, playerInventory, dhd);
+					}
+				};
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+			}
 			else
 			{
 				MenuProvider containerProvider = new MenuProvider()
@@ -107,7 +125,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 					{
 						return Component.translatable("screen.sgjourney.dhd");
 					}
-
+					
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
 					{
@@ -118,9 +136,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 			}
 		}
 		else
-		{
 			throw new IllegalStateException("Our named container provider is missing!");
-		}
     }
 
 	@Override

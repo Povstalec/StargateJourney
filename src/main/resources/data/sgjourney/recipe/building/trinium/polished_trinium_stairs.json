@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"B  ",
+		"BB ",
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:polished_trinium_block"
+		}
+	},
+	"result":
+	{
+		"count": 4,
+		"item": "sgjourney:polished_trinium_stairs"
+	}
+}

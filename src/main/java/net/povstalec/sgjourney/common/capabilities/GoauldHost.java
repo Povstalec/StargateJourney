@@ -25,12 +25,18 @@ public class GoauldHost
 	public static final EntityCapability<GoauldHost, Void> GOAULD_HOST_CAPABILITY = EntityCapability.createVoid(
 			StargateJourney.sgjourneyLocation(GOAULD_HOST), GoauldHost.class);
 	
+	public static final String BLOODSTREAM_NAQUADAH = "bloodstream_naquadah";
 	public static final String HOST_DATA = "host_data";
-	public static final String CUSTOM_NAME = "CustomName"; //TODO This needs to change on 1.21.1
+	public static final String CUSTOM_NAME = "custom_name";
 	
-	private LivingEntity entity;
+	public static final int HEAL_DURATION = 20 * 5;
+	
+	private final LivingEntity entity;
+	
 	private CompoundTag hostData = null;
 	private Goauld.Info goauldInfo = null;
+	
+	private boolean naquadahInBloodstream;
 	
 	public GoauldHost(LivingEntity entity)
 	{
@@ -44,6 +50,8 @@ public class GoauldHost
 		}
 		if(goauldHost.contains(HOST_DATA))
 			this.hostData = goauldHost.getCompound(HOST_DATA);
+		
+		this.naquadahInBloodstream = goauldHost.getBoolean(BLOODSTREAM_NAQUADAH);
 	}
 	
 	public boolean isHost()
@@ -51,22 +59,33 @@ public class GoauldHost
 		return goauldInfo != null;
 	}
 	
+	public boolean hasNaquadahInBloodstream()
+	{
+		return this.naquadahInBloodstream;
+	}
+	
+	public void setNaquadahInBloodstream(boolean naquadahInBloodstream)
+	{
+		this.naquadahInBloodstream = naquadahInBloodstream;
+	}
+	
 	//============================================================================================
 	//***************************************Host takeover****************************************
 	//============================================================================================
 	
-	public boolean takeOverHost(Goauld.Info goauldInfo, Mob host)
+	public boolean takeOverHost(Goauld.Info goauldInfo, LivingEntity host)
 	{
 		if(this.goauldInfo != null || goauldInfo == null || host == null)
 			return false;
 		
-		saveHostData(host);
-		addGoauldHostGoals(host);
-		BloodstreamNaquadah cap = host.getCapability(BloodstreamNaquadah.BLOODSTREAM_NAQUADAH_CAPABILITY);
-		if(cap != null)
-			cap.addNaquadahToBloodstream();
+		if(!(host instanceof Player))
+			saveHostData(host);
+		if(host instanceof Mob mob)
+			addGoauldHostMobGoals(mob);
 		
-		if(goauldInfo.name() != null)
+		setNaquadahInBloodstream(true);
+		
+		if(goauldInfo.name() != null && !(host instanceof Player))
 			host.setCustomName(goauldInfo.name());
 		
 		this.goauldInfo = goauldInfo;
@@ -75,7 +94,7 @@ public class GoauldHost
 		return true;
 	}
 	
-	public boolean takeOverHost(Goauld goauld, Mob host)
+	public boolean takeOverHost(Goauld goauld, LivingEntity host)
 	{
 		if(goauld == null)
 			return false;
@@ -88,7 +107,7 @@ public class GoauldHost
 		return res;
 	}
 	
-	public boolean takeOverHost(ItemStack stack, Mob host)
+	public boolean takeOverHost(ItemStack stack, LivingEntity host)
 	{
 		if(stack == null || !(stack.getItem() instanceof GoauldItem))
 			return false;
@@ -96,7 +115,7 @@ public class GoauldHost
 		return takeOverHost(Goauld.Info.fromItemStack(host.getServer(), stack), host);
 	}
 	
-	public void leaveHost(Mob host)
+	public void leaveHost(LivingEntity host)
 	{
 		if(host == null || this.goauldInfo == null)
 			return;
@@ -107,8 +126,10 @@ public class GoauldHost
 		
 		host.level().addFreshEntity(goauld);
 		
-		removeGoauldHostGoals(host);
-		restoreHostData(host);
+		if(host instanceof Mob mob)
+			removeGoauldHostMobGoals(mob);
+		if(!(host instanceof Player))
+			restoreHostData(host);
 		goauldInfo = null;
 		
 		update(host.getServer());
@@ -118,7 +139,7 @@ public class GoauldHost
 	//***************************************Takeover data****************************************
 	//============================================================================================
 	
-	public static void addGoauldHostGoals(Mob host)
+	public static void addGoauldHostMobGoals(Mob host)
 	{
 		//host.goalSelector.addGoal(0, new EvacuateHostGoal(host)); //TODO Goa'uld should only evacuate a host rarely, maybe have an arrogance meter that decides this?
 		
@@ -126,7 +147,7 @@ public class GoauldHost
 		host.targetSelector.addGoal(2, new NearestThreatGoal<>(host, Human.class, true));
 	}
 	
-	public static void removeGoauldHostGoals(Mob host)
+	public static void removeGoauldHostMobGoals(Mob host)
 	{
 		host.goalSelector.removeAllGoals(goal -> goal instanceof EvacuateHostGoal || goal instanceof NearestThreatGoal);
 		
@@ -136,7 +157,7 @@ public class GoauldHost
 		host.setAggressive(false);
 	}
 	
-	public void saveHostData(Mob host)
+	public void saveHostData(LivingEntity host)
 	{
 		hostData = new CompoundTag();
 		
@@ -144,7 +165,7 @@ public class GoauldHost
 			hostData.putString(CUSTOM_NAME, Component.Serializer.toJson(host.getCustomName(), host.getServer().registryAccess()));
 	}
 	
-	public void restoreHostData(Mob host)
+	public void restoreHostData(LivingEntity host)
 	{
 		if(hostData != null)
 		{
@@ -158,13 +179,34 @@ public class GoauldHost
 	}
 	
 	//============================================================================================
+	//***************************************Goa'uld stuff****************************************
+	//============================================================================================
+	
+	public void tick(LivingEntity host)
+	{
+		if(!isHost())
+			return;
+		
+		//TODO Add a cooldown for these
+		/*if(host.hasEffect(MobEffects.POISON))
+			host.removeEffect(MobEffects.POISON);
+		if(host.hasEffect(MobEffects.WITHER))
+			host.removeEffect(MobEffects.WITHER);
+		
+		if(host.getHealth() < host.getMaxHealth() / 2F)
+			host.addEffect(new MobEffectInstance(MobEffects.REGENERATION, HEAL_DURATION, 1));*/
+	}
+	
+	//============================================================================================
 	//*************************************Saving and Loading*************************************
 	//============================================================================================
 	
 	public void copyFrom(GoauldHost source)
 	{
-		if(this.goauldInfo != null)
+		if(source.goauldInfo != null)
 			this.goauldInfo = source.goauldInfo.copy();
+		
+		this.naquadahInBloodstream = source.naquadahInBloodstream;
 	}
 	
 	public void update(MinecraftServer server)
@@ -176,6 +218,8 @@ public class GoauldHost
 		
 		if(this.hostData != null)
 			goauldHost.put(HOST_DATA, this.hostData);
+		
+		goauldHost.putBoolean(BLOODSTREAM_NAQUADAH, this.naquadahInBloodstream);
 		
 		this.entity.setData(AttachmentTypeInit.GOAULD_HOST, goauldHost);
 	}

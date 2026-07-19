@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.pontem",
-	"texture": "sgjourney:pegasus/points_of_origin/pontem.png"
+	"client_point_of_origin": "sgjourney:pontem"
 }

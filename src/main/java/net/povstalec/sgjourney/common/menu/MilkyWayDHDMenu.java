@@ -4,30 +4,27 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 
-public class MilkyWayDHDMenu extends AbstractDHDMenu
+public class MilkyWayDHDMenu extends AbstractDHDMenu<MilkyWayDHDEntity>
 {
 	
-	public MilkyWayDHDMenu(int containerId, Inventory inv, FriendlyByteBuf extraData)
+	public MilkyWayDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.MILKY_WAY_DHD.get(), containerId, inv, extraData);
-        this.symbolsType = "sgjourney:milky_way";
+		super(MenuInit.MILKY_WAY_DHD.get(), containerId, inventory, (MilkyWayDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 	}
 
-    public MilkyWayDHDMenu(int containerId, Inventory inv, BlockEntity entity)
+    public MilkyWayDHDMenu(int containerId, Inventory inventory, MilkyWayDHDEntity dhd)
     {
-        super(MenuInit.MILKY_WAY_DHD.get(), containerId, inv, entity);
-        this.symbolsType = "sgjourney:milky_way";
+        super(MenuInit.MILKY_WAY_DHD.get(), containerId, inventory, dhd);
     }
 
 	@Override
     public boolean stillValid(Player player)
     {
-        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()),
-                player, BlockInit.MILKY_WAY_DHD.get());
+        return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.MILKY_WAY_DHD.get());
     }
 
 }

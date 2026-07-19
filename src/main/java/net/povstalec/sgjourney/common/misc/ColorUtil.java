@@ -16,6 +16,16 @@ public class ColorUtil
 	public static final String BLUE = "blue";
 	public static final String ALPHA = "alpha";
 	
+	public static int getTint(int red, int green, int blue, int alpha)
+	{
+		int tint = (alpha & 255) << 24;
+		tint += (red & 255) << 16;
+		tint += (green & 255) << 8;
+		tint += blue & 255;
+		
+		return tint;
+	}
+	
 	public static class RGBA
 	{
 		protected final float red;
@@ -43,6 +53,11 @@ public class ColorUtil
 			this.alpha = alpha;
 		}
 		
+		public RGBA(float red, float green, float blue)
+		{
+			this(red, green, blue, 1F);
+		}
+		
 		public RGBA(int red, int green, int blue, int alpha)
 		{
 			if(red > MAX_INT_VALUE || green > MAX_INT_VALUE || blue > MAX_INT_VALUE || alpha > MAX_INT_VALUE)
@@ -54,6 +69,11 @@ public class ColorUtil
 			this.green = green / 255F;
 			this.blue = blue / 255F;
 			this.alpha = alpha / 255F;
+		}
+		
+		public RGBA(int red, int green, int blue)
+		{
+			this(red, green, blue, 255);
 		}
 		
 		public float red()

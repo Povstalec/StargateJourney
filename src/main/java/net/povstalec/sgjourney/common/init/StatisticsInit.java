@@ -23,6 +23,9 @@ public class StatisticsInit
 	public static final DeferredHolder<ResourceLocation, ResourceLocation> TIMES_SMASHED_AGAINST_IRIS = STATISTICS.register("times_smashed_against_iris", () -> registerDefaultStatistic("times_smashed_against_iris"));
 	public static final DeferredHolder<ResourceLocation, ResourceLocation> DISTANCE_TRAVELED_BY_STARGATE = STATISTICS.register("distance_traveled_by_stargate", () -> registerDistanceStatistic("distance_traveled_by_stargate"));
 	
+	public static final RegistryObject<ResourceLocation> TIMES_USED_TRANSPORTER = STATISTICS.register("times_used_transporter", () -> registerDefaultStatistic("times_used_transporter"));
+	public static final RegistryObject<ResourceLocation> DISTANCE_TRAVELED_BY_TRANSPORTER = STATISTICS.register("distance_traveled_by_transporter", () -> registerDistanceStatistic("distance_traveled_by_transporter"));
+	
 	
 	private static ResourceLocation registerDefaultStatistic(String key)
 	{

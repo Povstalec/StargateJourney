@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": 
+	[
+		{ "item": "sgjourney:naquadah_block" }
+	],
+<<<<<<<< HEAD:src/main/resources/data/sgjourney/recipe/naquadah_alloy_from_naquadah_block.json
+	"result": { "id": "sgjourney:naquadah_alloy", "count": 4 }
+========
+	"result": { "item": "sgjourney:naquadah_ingot", "count": 9 }
+>>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/recipe/naquadah_ingot_from_naquadah_block.json
+}

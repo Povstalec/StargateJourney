@@ -1,35 +1,30 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
 {
@@ -42,9 +37,7 @@ public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		 MilkyWayStargateEntity stargate = new MilkyWayStargateEntity(pos, state);
-		
-		 return stargate;
+		 return new MilkyWayStargateEntity(pos, state);
 	}
 	
 	@Override
@@ -75,41 +68,20 @@ public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-    	Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
+    	CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
-		if(clientPacketListener != null)
+		if(blockEntityTag != null)
 		{
-			RegistryAccess registries = clientPacketListener.registryAccess();
-			Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-			Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-	    	
-	    	String pointOfOrigin = "";
-			boolean hasData = stack.has(DataComponents.BLOCK_ENTITY_DATA);
-			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractStargateEntity.POINT_OF_ORIGIN))
-			{
-				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractStargateEntity.POINT_OF_ORIGIN));
-				if(location.toString().equals("sgjourney:empty"))
-					pointOfOrigin = "Empty";
-				else if(pointOfOriginRegistry.containsKey(location))
-					pointOfOrigin = pointOfOriginRegistry.get(location).getName();
-				else
-					pointOfOrigin = "Error";
-			}
+			String pointOfOrigin = "";
+			if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
+				pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "Error");
+			
 			String symbols = "";
-			if(hasData && stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().contains(AbstractStargateEntity.SYMBOLS))
-			{
-				ResourceLocation location = ResourceLocation.parse(stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe().getString(AbstractStargateEntity.SYMBOLS));
-				if(location.toString().equals("sgjourney:empty"))
-					symbols = "Empty";
-				else if(symbolsRegistry.containsKey(location))
-					symbols = symbolsRegistry.get(location).getTranslationName(!ClientStargateConfig.unique_symbols.get());
-				else
-					symbols = "Error";
-			}
+			if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
+				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
 			
 	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-	        tooltipComponents.add(Component.translatable(Symbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+	        tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);

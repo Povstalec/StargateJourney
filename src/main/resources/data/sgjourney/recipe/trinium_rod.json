@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"T",
+		"T"
+	],
+	
+	"key": 
+	{
+		"T": {"tag": "sgjourney:trinium_ingot"}
+	},
+	
+	"result": { "item": "sgjourney:trinium_rod", "count": 4 }
+}

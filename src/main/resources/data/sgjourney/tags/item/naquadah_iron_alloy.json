@@ -1,0 +1,13 @@
+{
+	"replace": false,
+	"values":
+	[
+<<<<<<<< HEAD:src/main/resources/data/sgjourney/tags/item/naquadah_alloy.json
+		"sgjourney:naquadah_alloy",
+		{"id": "#c:ingots/naquadah_alloy", "required": false}
+========
+		"sgjourney:naquadah_iron_alloy",
+		{"id": "#forge:ingots/naquadah_alloy", "required": false}
+>>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/tags/item/naquadah_iron_alloy.json
+	]
+}

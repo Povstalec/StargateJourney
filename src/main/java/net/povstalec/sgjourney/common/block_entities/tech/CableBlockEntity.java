@@ -25,8 +25,8 @@ public abstract class CableBlockEntity extends BlockEntity
 {
 	public static final String NETWORK_ID = "network_id";
 	
-	protected SGJourneyEnergy ENERGY_STORAGE = createEnergyStorage();
-	private Lazy<IEnergyStorage> lazyEnergyHandler = Lazy.of(() -> ENERGY_STORAGE);
+	public final SGJourneyEnergy energyStorage = createEnergyStorage();
+	private Lazy<IEnergyStorage> lazyEnergyHandler = Lazy.of(() -> energyStorage);
 	
 	private int networkID = 0;
 	private ConduitNetworks.ConduitNetwork cableNetwork = null;
@@ -231,7 +231,7 @@ public abstract class CableBlockEntity extends BlockEntity
 	
 	public IEnergyStorage getEnergyHandler(Direction direction)
 	{
-		return ENERGY_STORAGE;
+		return energyStorage;
 	}
 	
 	

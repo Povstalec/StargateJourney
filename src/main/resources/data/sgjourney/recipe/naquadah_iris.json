@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III",
+		"ISI",
+		"III"
+	],
+	"key":
+	{
+		"I": { "item": "sgjourney:naquadah_ingot" },
+		"S": { "item": "sgjourney:stargate_shielding_ring" }
+	},
+	"result":
+	{
+<<<<<<<< HEAD:src/main/resources/data/sgjourney/recipe/naquadah_alloy_iris.json
+		"id": "sgjourney:naquadah_alloy_iris"
+========
+		"item": "sgjourney:naquadah_iris"
+>>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/recipe/naquadah_iris.json
+	}
+}

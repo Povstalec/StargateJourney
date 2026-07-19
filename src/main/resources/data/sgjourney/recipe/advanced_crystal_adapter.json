@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		" CS",
+		"NTR",
+		"WN "
+	],
+	
+	"key": 
+	{
+		"S": { "item": "sgjourney:advanced_control_crystal" },
+		"W": { "item": "sgjourney:naquadah_wire" },
+		"N": { "tag": "sgjourney:naquadah_ingot" },
+		"T": { "item": "minecraft:redstone_torch" },
+		"R": { "item": "minecraft:repeater" },
+		"C": { "item": "minecraft:comparator" }
+	},
+	
+	"result": { "item": "sgjourney:advanced_crystal_adapter", "count": 1 }
+}
