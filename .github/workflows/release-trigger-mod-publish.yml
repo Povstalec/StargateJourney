@@ -1,0 +1,39 @@
+# This workflow is automatically triggered once a GitHub release is RELEASED
+#   The workflow will only trigger to NON-PRE-RELEASES
+#   If you create a GitHub pre-release it will NOT be uploaded to other platforms, this may be usefull for dev builds.
+#   If you change a pre-release to a normal release, it WILL be uploaded.
+#
+# Recommended: change the reference to specific version of the workflow called in publish-mod job
+
+name: Upload the mod to several platforms
+on:
+  release:
+    types: [released]
+
+concurrency:
+  group: ModPublish-${{ github.event.release.tag_name }}
+  cancel-in-progress: false
+  queue: max
+
+jobs:
+  publish-mod:
+    name: Upload the mod to several platforms
+    # Recommended: change the reference to a specific version of the reusable workflow
+    # Using a specific version prevents breaking your workflow when a breaking change is introduced
+    # If a specific commit hash is used, improves security
+    # The reference must be changed at TWO places                                     ↓ change this
+    # v2.0.2
+    uses: lukaskabc/Minecraft-Mod-Publish-Workflows/.github/workflows/mod-publish.yml@4d5dc95fca018ede65532b1e8066d9fd369b15bd
+    with:
+      # CHANGE THIS REFERENCE AS WELL
+      # This value must match the reference used in the "uses:" parameter (the value after "@")
+      # v2.0.2
+      workflow_ref: "4d5dc95fca018ede65532b1e8066d9fd369b15bd"
+
+      # The tag with associated release dynamically pulled from the GitHub event payload
+      release_tag: ${{ github.event.release.tag_name }}
+
+    secrets:
+      CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+      MODRINTH_API_KEY: ${{ secrets.MODRINTH_API_KEY }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
