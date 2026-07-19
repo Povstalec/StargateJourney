@@ -10,17 +10,20 @@
   "modrinth_project_id": "qlc8dxM6",
   "default_release_type": "Beta",
   "discord_webhook": {
-    "discord_branch": "main",
     "username": "Monolith architect",
     "avatar_url": "https://cdn.discordapp.com/avatars/1053761029517082694/2ee4f7995d3a4ea68cabd90daf1af2e8.png?size=512",
-    "content": "# Stargate Journey v{version} released!",
-    "thumbnail_url": "https://media.forgecdn.net/avatars/thumbnails/938/585/256/256/638417849215075737.png",
-    "embed_color": "#8d533a",
+    "release_content": "<@&1104024513689178112>",
+    "release_embed": {
+      "description": "# Stargate Journey v{version} released!\n{changelog}",
+      "color": "#ffdc00",
+      "thumbnail": {
+        "url": "https://media.forgecdn.net/avatars/thumbnails/938/585/256/256/638417849215075737.png"
+      }
+    },
     "nightly_content": "# Experimental: Stargate Journey\nA new experimental build is available for download from GitHub\nv{version}"
   },
-  "artifacts": [
-    {
-      "id": "1.19.2",
+  "artifacts": {
+    "1.19.2": {
       "file_glob": "build/libs/*-1.19.2-{version}.jar",
       "branch": "stargatejourney-1.19.2",
       "loaders": [
@@ -41,8 +44,7 @@
         }
       ]
     },
-    {
-      "id": "1.19.3",
+    "1.19.3": {
       "file_glob": "build/libs/*-1.19.3-{version}.jar",
       "branch": "stargatejourney-1.19.3",
       "loaders": [
@@ -63,8 +65,7 @@
         }
       ]
     },
-    {
-      "id": "1.19.4",
+    "1.19.4": {
       "file_glob": "build/libs/*-1.19.4-{version}.jar",
       "branch": "stargatejourney-1.19.4",
       "loaders": [
@@ -85,8 +86,7 @@
         }
       ]
     },
-    {
-      "id": "1.20.1",
+    "1.20.1": {
       "file_glob": "build/libs/*-1.20.1-{version}.jar",
       "branch": "stargatejourney-1.20.1",
       "loaders": [
@@ -107,8 +107,7 @@
         }
       ]
     },
-    {
-      "id": "main",
+    "1.21.1": {
       "file_glob": "build/libs/*-1.21.1-{version}.jar",
       "branch": "main",
       "loaders": [
@@ -125,7 +124,7 @@
         }
       ]
     }
-  ],
+  },
   "common_dependencies": {
     "curseforge": [
       {
