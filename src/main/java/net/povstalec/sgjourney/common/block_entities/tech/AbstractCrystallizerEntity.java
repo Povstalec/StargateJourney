@@ -1,9 +1,13 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -16,19 +20,14 @@ import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipeInput;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
+public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, CrystallizingRecipeInput>
 {
 	private static final String CRYSTAL_BASE_INVENTORY = "crystal_base_inventory";
 	private static final String PRIMARY_INGREDIENT_INVENTORY = "primary_ingredient_inventory";
@@ -52,7 +51,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	
 	public AbstractCrystallizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, new SimpleFluidContainer(3, 1));
+		super(type, pos, state, new CrystallizingRecipeInput());
 	}
 	
 	@Override

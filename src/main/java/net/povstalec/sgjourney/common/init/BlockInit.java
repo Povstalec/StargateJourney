@@ -113,7 +113,7 @@ public class BlockInit
 	public static final DeferredBlock<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron",
 			() -> new ChevronBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F)
 					.requiresCorrectToolForDrops().noOcclusion().noCollission()
-					.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? 7 : 0)), Rarity.UNCOMMON, 16);
+					.lightLevel(litBlockEmission(7))), Rarity.UNCOMMON, 16);
 	// Transporters
 	public static final DeferredBlock<AncientTransportRingsBlock> ANCIENT_TRANSPORT_RINGS = registerTransporterBlock("ancient_transport_rings",
 			() -> new AncientTransportRingsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
@@ -632,10 +632,7 @@ public class BlockInit
 	
 	private static ToIntFunction<BlockState> litBlockEmission(int lightValue)
 	{
-		return (state) ->
-		{
-			return (Boolean) state.getValue(BlockStateProperties.LIT) ? lightValue : 0;
-		};
+		return state -> state.getValue(BlockStateProperties.LIT) ? lightValue : 0;
 	}
 	
 	private static <T extends Block>DeferredBlock<T> registerBlock(String name, Supplier<T> block)

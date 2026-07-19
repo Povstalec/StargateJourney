@@ -3,8 +3,10 @@ package net.povstalec.sgjourney.common.init;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.transporter.AncientBlockEntityTransportRings;
@@ -30,5 +32,11 @@ public class TransporterInit
 	public static void register(IEventBus eventBus)
 	{
 		TRANSPORTER_TYPES.register(eventBus);
+	}
+	
+	@SubscribeEvent
+	public static void registerRegistries(NewRegistryEvent event)
+	{
+		event.register(TRANSPORTER_TYPE_REGISTRY);
 	}
 }

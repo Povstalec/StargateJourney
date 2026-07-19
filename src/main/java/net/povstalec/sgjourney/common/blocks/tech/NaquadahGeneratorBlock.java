@@ -135,7 +135,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
     }
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof NaquadahGeneratorEntity)
@@ -144,7 +144,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -152,7 +152,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 			}
 		}
 		
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	public abstract long energyPerTick();

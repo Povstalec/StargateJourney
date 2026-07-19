@@ -1,9 +1,5 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,15 +18,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.tech.AncientTech;
 import net.povstalec.sgjourney.common.tech.GoauldTech;
+
+import java.util.List;
 
 public class PDAItem extends Item implements AncientTech, GoauldTech
 {
@@ -70,35 +67,29 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 			}
 		}
 		
-		tryFindEnergySignature(blockEntity, player);
+		tryFindEnergySignature(level, blockPos, player);
 		
 		return super.useOn(context);
 	}
 	
-	private static void showEnergySignature(LazyOptional<IEnergyStorage> capability, Player player)
+	private static void showEnergySignature(IEnergyStorage energyStorage, Player player)
 	{
-		capability.ifPresent(energyStorage ->
-		{
-			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()));
-			else
-				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()));
-		});
+		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()));
+		else
+			player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()));
 	}
 	
-	private static void tryFindEnergySignature(BlockEntity blockEntity, Player player)
+	private static void tryFindEnergySignature(Level level, BlockPos pos, Player player)
 	{
-		if(blockEntity.getCapability(ForgeCapabilities.ENERGY).isPresent())
-			showEnergySignature(blockEntity.getCapability(ForgeCapabilities.ENERGY), player);
-		else
+		IEnergyStorage energyStorage;
+		for(Direction direction : Direction.values())
 		{
-			for(Direction direction : Direction.values())
+			energyStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, direction);
+			if(energyStorage != null)
 			{
-				if(blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).isPresent())
-				{
-					showEnergySignature(blockEntity.getCapability(ForgeCapabilities.ENERGY, direction), player);
-					return;
-				}
+				showEnergySignature(energyStorage, player);
+				return;
 			}
 		}
 	}

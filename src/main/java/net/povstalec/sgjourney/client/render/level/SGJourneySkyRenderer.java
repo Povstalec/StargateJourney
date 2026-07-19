@@ -29,7 +29,7 @@ public abstract class SGJourneySkyRenderer
 {
 	protected static final ResourceLocation MOON_HALO_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/blue_halo.png");
 	protected static final ResourceLocation MOON_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/moon_phases.png");
-	protected static final ResourceLocation SUN_LOCATION = StargateJourney.location("textures/environment/sun.png");
+	protected static final ResourceLocation SUN_LOCATION = ResourceLocation.tryParse("textures/environment/sun.png");
 	protected static final ResourceLocation BLACK_HOLE_HALO_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/black_hole_halo.png");
 	protected static final ResourceLocation BLACK_HOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/environment/black_hole.png");
 	

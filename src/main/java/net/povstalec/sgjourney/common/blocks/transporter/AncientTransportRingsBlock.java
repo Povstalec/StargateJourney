@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.common.blocks.transporter;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -14,20 +14,26 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.TransportRingsMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
 public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 {
+	public static final MapCodec<AncientTransportRingsBlock> CODEC = simpleCodec(AncientTransportRingsBlock::new);
+	
 	public AncientTransportRingsBlock(Properties properties)
 	{
 		super(properties);
+	}
+	
+	protected MapCodec<AncientTransportRingsBlock> codec() {
+		return CODEC;
 	}
 	
 	@Nullable
@@ -45,7 +51,7 @@ public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 	}
 	
 	@Override
-	public void openMenu(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace)
+	public void openMenu(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		if(blockEntity instanceof AncientTransportRingsEntity transportRings)
@@ -66,7 +72,7 @@ public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 						return new TransportRingsMenu.Ancient(windowId, playerInventory, transportRings);
 					}
 				};
-				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 		}
 		else

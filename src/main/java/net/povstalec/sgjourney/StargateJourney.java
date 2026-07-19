@@ -71,7 +71,6 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
@@ -105,8 +104,6 @@ public class StargateJourney
 
 	public StargateJourney(IEventBus eventBus, ModContainer modContainer, Dist dist)
 	{
-		RemappingHelper.setupRemapping();
-		
 		DataComponentInit.register(eventBus);
 		ItemInit.register(eventBus);
 		BlockInit.register(eventBus);
@@ -148,6 +145,8 @@ public class StargateJourney
 		
 		eventBus.addListener(StargateJourney::onRegisterCapabilities);
 		eventBus.addListener(GalaxyInit::registerRegistries);
+		eventBus.addListener(StargateInit::registerRegistries);
+		eventBus.addListener(TransporterInit::registerRegistries);
 		eventBus.addListener(this::commonSetup);
 		eventBus.addListener(PacketHandlerInit::registerPackets);
 		eventBus.addListener(Layers::registerLayers);

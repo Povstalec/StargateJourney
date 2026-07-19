@@ -26,7 +26,7 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity<Crystallizing
 	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
 		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
-				.map(recipe -> (CrystallizingRecipe.Crystallizer) recipe)
+				.map(recipe -> (CrystallizingRecipe.Crystallizer) recipe.value())
 				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	

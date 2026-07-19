@@ -3,19 +3,18 @@ package net.povstalec.sgjourney.common.misc;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.minecraft.world.item.*;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 
 import javax.annotation.Nullable;
@@ -115,12 +114,9 @@ public class InventoryUtil
 	
 	public static boolean stackHasEnergy(ItemStack stack)
 	{
-		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
-		{
-			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
-			
+		IEnergyStorage energyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		if(energyStorage != null)
 			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
-		}
 		
 		return false;
 	}
@@ -147,18 +143,8 @@ public class InventoryUtil
 	@Nullable
 	public static String getPlayerNameFromHead(ItemStack stack)
 	{
-		if(stack.is(Items.PLAYER_HEAD) && stack.hasTag())
-		{
-			CompoundTag tag = stack.getTag();
-			if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_STRING))
-				return tag.getString(PlayerHeadItem.TAG_SKULL_OWNER);
-			else if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_COMPOUND))
-			{
-				CompoundTag ownerTag = tag.getCompound(PlayerHeadItem.TAG_SKULL_OWNER);
-				if(ownerTag.contains(NAME, Tag.TAG_STRING))
-					return ownerTag.getString(NAME);
-			}
-		}
+		if(stack.getItem() instanceof PlayerHeadItem playerHead)
+			return playerHead.getName(stack).getString();
 		
 		return null;
 	}

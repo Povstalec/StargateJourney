@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -274,7 +275,13 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return -1;
 	}
 	
-	default Optional<BlockState> changeOverTime(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	default boolean passesProbability(RandomSource randomSource)
+	{
+		return randomSource.nextFloat() < PROBABILITY;
+	}
+	
+	@Override
+	default @NotNull Optional<BlockState> getNextState(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
 	{
 		int age = this.getAge().ordinal();
 		int sameAge = 0;
@@ -304,43 +311,6 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 			return this.getNext(state);
 		
 		return Optional.empty();
-	}
-	
-	default boolean passesProbability(RandomSource randomSource)
-	{
-		return randomSource.nextFloat() < PROBABILITY;
-	}
-	
-	@Override
-	default void applyChangeOverTime(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
-	{
-		int age = this.getAge().ordinal();
-		int sameAge = 0;
-		int older = 0;
-		
-		for(BlockPos otherPos : BlockPos.withinManhattan(pos, 1, 1, 1))
-		{
-			if(!otherPos.equals(pos))
-			{
-				BlockState otherState = level.getBlockState(otherPos);
-				int otherAge = getWeatherAge(otherState, level, otherPos);
-				if(otherAge >= 0)
-				{
-					if(otherAge < age) // If there is a younger block nearby, don't increase age further
-						return;
-					
-					if(otherAge > age)
-						older++;
-					else
-						sameAge++;
-				}
-			}
-		}
-		
-		float modifier = (float)(older + 1) / (float)(older + sameAge + 1);
-		float probability = modifier * modifier * this.getChanceModifier();
-		if(randomSource.nextFloat() < probability)
-			this.getNext(state).ifPresent((nextState) -> level.setBlockAndUpdate(pos, nextState));
 	}
 	
 	enum WeatherState

@@ -3,8 +3,10 @@
 	"values":
 	[
 		"sgjourney:naquadah_helmet",
+		"sgjourney:trinium_helmet",
 		"sgjourney:jaffa_helmet",
 		"sgjourney:jackal_helmet",
-		"sgjourney:falcon_helmet"
+		"sgjourney:falcon_helmet",
+		"sgjourney:system_lord_helmet"
 	]
 }

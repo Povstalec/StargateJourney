@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -9,9 +11,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -22,18 +24,22 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 public interface Stargate extends Comparable<Stargate>
 {
-	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	String STARGATE = "stargate"; //TODO Change this to "dimension"
 	
-	String DIMENSION = "Dimension";
+	BlockCapability<Stargate, Direction> STARGATE_CAPABILITY_BLOCK = BlockCapability.create(
+			StargateJourney.sgjourneyLocation(STARGATE), Stargate.class, Direction.class);
+	EntityCapability<Stargate, Void> STARGATE_CAPABILITY_ENTITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(STARGATE), Stargate.class);
 	
-	String HAS_DHD = "HasDHD";
-	String TIMES_OPENED = "TimesOpened";
+	String DIMENSION = "Dimension"; //TODO Change this to "dimension"
+	
+	String HAS_DHD = "HasDHD"; //TODO Change this to "has_dhd"
+	String TIMES_OPENED = "TimesOpened"; //TODO Change this to "times_opened"
 	
 	String NETWORK_RESTRICTIONS = "network_restrictions";
 	String NETWORKS = "networks";
@@ -514,12 +520,12 @@ public interface Stargate extends Comparable<Stargate>
 	 * Serializes Stargate info into a tag
 	 * @param tag CompoundTag that will store the serialized information
 	 */
-	void serializeNBT(CompoundTag tag);
+	void serializeNBT(CompoundTag tag, HolderLookup.Provider registries);
 	
 	/**
 	 * Deserializes the Stargate info
 	 * @param id9ChevronAddress 9-Chevron Address of the Stargate
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
-	void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag);
+	void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries);
 }

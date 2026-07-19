@@ -6,8 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
@@ -49,7 +49,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if(sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
@@ -101,7 +101,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	{
 		public Ancient(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AncientTransportRingsEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (AncientTransportRingsEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Ancient(int containerId, Inventory inventory, AncientTransportRingsEntity blockEntity)
@@ -120,7 +120,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	{
 		public Goauld(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (GoauldTransportRingsEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldTransportRingsEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Goauld(int containerId, Inventory inventory, GoauldTransportRingsEntity blockEntity)

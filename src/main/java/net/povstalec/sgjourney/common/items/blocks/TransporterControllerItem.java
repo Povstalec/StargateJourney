@@ -12,6 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 import javax.annotation.Nullable;
 
@@ -34,7 +35,7 @@ public class TransporterControllerItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		CompoundTag compoundtag = getBlockEntityData(stack);
+		CompoundTag compoundtag = InventoryUtil.getBlockEntityTag(stack);
 		if(compoundtag != null)
 		{
 			BlockEntity blockentity = level.getBlockEntity(pos);
@@ -43,14 +44,14 @@ public class TransporterControllerItem extends BlockItem
             	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
             		return false;
             	
-            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
+            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(level.registryAccess());
             	CompoundTag compoundtag2 = compoundtag1.copy();
             	
             	compoundtag1.merge(compoundtag);
             	
             	if(!compoundtag1.equals(compoundtag2))
             	{
-            		blockentity.load(compoundtag1);
+            		blockentity.loadCustomOnly(compoundtag1, level.registryAccess());
             		blockentity.setChanged();
             		
             		return setupBlockEntity(level, blockentity, compoundtag);

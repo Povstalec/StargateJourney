@@ -1,63 +1,40 @@
 package net.povstalec.sgjourney.common.recipe;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContainer>
+public abstract class LiquidizingRecipe extends ProgressRecipe<LiquidizingRecipeInput>
 {
-	private final Ingredient ingredient;
-	private final FluidStack inputFluid;
-	private final FluidStack outputFluid;
+	protected final Ingredient ingredient;
+	protected final FluidStack inputFluid;
+	protected final FluidStack outputFluid;
 	
-	protected LiquidizingRecipe(ResourceLocation recipeID, JsonObject serializedRecipe)
+	protected LiquidizingRecipe(int progress, Ingredient ingredient, FluidStack inputFluid, FluidStack outputFluid)
 	{
-		super(recipeID, serializedRecipe);
+		super(progress);
 		
-		JsonElement ingredientElement = GsonHelper.isArrayNode(serializedRecipe, "ingredient") ?
-				GsonHelper.getAsJsonArray(serializedRecipe, "ingredient") : GsonHelper.getAsJsonObject(serializedRecipe, "ingredient");
-		this.ingredient = Ingredient.fromJson(ingredientElement);
-		
-		if(serializedRecipe.has("input_fluid"))
-			this.inputFluid = deserializeFluidStack(GsonHelper.getAsJsonObject(serializedRecipe, "input_fluid"), defaultInputFluid());
-		else
-			this.inputFluid = defaultInputFluid();
-		
-		if(serializedRecipe.has("output_fluid"))
-			this.outputFluid = deserializeFluidStack(GsonHelper.getAsJsonObject(serializedRecipe, "output_fluid"), defaultOutputFluid());
-		else
-			this.outputFluid = defaultOutputFluid();
-	}
-	
-	protected LiquidizingRecipe(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-	{
-		super(recipeID, friendlyByteBuf);
-		
-		this.ingredient = Ingredient.fromNetwork(friendlyByteBuf);
-		this.inputFluid = FluidStack.readFromPacket(friendlyByteBuf);
-		this.outputFluid = FluidStack.readFromPacket(friendlyByteBuf);
-	}
-	
-	@Override
-	public void toNetwork(FriendlyByteBuf friendlyByteBuf)
-	{
-		super.toNetwork(friendlyByteBuf);
-		
-		this.ingredient.toNetwork(friendlyByteBuf);
-		this.inputFluid.writeToPacket(friendlyByteBuf);
-		this.outputFluid.writeToPacket(friendlyByteBuf);
+		this.ingredient = ingredient;
+		this.inputFluid = inputFluid;
+		this.outputFluid = outputFluid;
 	}
 	
 	public FluidStack getInputFluid()
@@ -71,16 +48,16 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	}
 	
 	@Override
-	public boolean matches(@NotNull SimpleFluidContainer container, Level level)
+	public boolean matches(@NotNull LiquidizingRecipeInput recipeInput, Level level)
 	{
 		if(level.isClientSide())
 			return false;
 		
-		return ingredient.test(container.getItem(0)) && container.testFluid(0, inputFluid);
+		return ingredient.test(recipeInput.getItem(0)) && recipeInput.testFluid(0, inputFluid);
 	}
 	
 	@Override
-	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container)
+	public @NotNull ItemStack assemble(@NotNull LiquidizingRecipeInput recipeInput, @NotNull HolderLookup.Provider provider)
 	{
 		return ItemStack.EMPTY;
 	}
@@ -92,7 +69,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	}
 	
 	@Override
-	public @NotNull ItemStack getResultItem()
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider)
 	{
 		return ItemStack.EMPTY;
 	}
@@ -105,10 +82,6 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 		return ingredients;
 	}
 	
-	protected abstract FluidStack defaultInputFluid();
-	
-	protected abstract FluidStack defaultOutputFluid();
-	
 	//============================================================================================
 	//*************************************Naquadah Liquidizer************************************
 	//============================================================================================
@@ -117,14 +90,9 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	{
 		public static final RecipeType<NaquadahLiquidizer> TYPE = new RecipeType<>(){};
 		
-		protected NaquadahLiquidizer(ResourceLocation recipeID, JsonObject serializedRecipe)
+		protected NaquadahLiquidizer(int progress, Ingredient ingredient, FluidStack inputFluid, FluidStack outputFluid)
 		{
-			super(recipeID, serializedRecipe);
-		}
-		
-		protected NaquadahLiquidizer(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-		{
-			super(recipeID, friendlyByteBuf);
+			super(progress, ingredient, inputFluid, outputFluid);
 		}
 		
 		@Override
@@ -138,38 +106,58 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 		{
 			return TYPE;
 		}
-		
-		protected FluidStack defaultInputFluid()
-		{
-			return new FluidStack(Fluids.LAVA, 100);
-		}
-		
-		protected FluidStack defaultOutputFluid()
-		{
-			return new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100);
-		}
 	}
 	
 	public static class NaquadahLiquidizerSerializer implements RecipeSerializer<NaquadahLiquidizer>
 	{
 		public static final NaquadahLiquidizerSerializer INSTANCE = new NaquadahLiquidizerSerializer();
+		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("naquadah_liquidizing");
 		
-		@Override
-		public @NotNull LiquidizingRecipe.NaquadahLiquidizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
+		public static final MapCodec<NaquadahLiquidizer> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
+				recipeBuilder.group(
+								Codec.INT.optionalFieldOf("progress", 100).forGetter((recipe) -> recipe.progressTime),
+								Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> recipe.ingredient),
+								FluidStack.CODEC.optionalFieldOf("input_fluid", new FluidStack(Fluids.LAVA, 100)).forGetter((recipe) -> recipe.inputFluid),
+								FluidStack.CODEC.optionalFieldOf("output_fluid", new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100)).forGetter((recipe) -> recipe.outputFluid))
+						.apply(recipeBuilder, NaquadahLiquidizer::new));
+		
+		public static final StreamCodec<RegistryFriendlyByteBuf, NaquadahLiquidizer> STREAM_CODEC = StreamCodec.of(NaquadahLiquidizerSerializer::toNetwork, NaquadahLiquidizerSerializer::fromNetwork);
+		
+		public NaquadahLiquidizerSerializer() {}
+		
+		private static NaquadahLiquidizer fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf)
 		{
-			return new NaquadahLiquidizer(recipeID, serializedRecipe);
+			int progress = friendlyByteBuf.readInt();
+			
+			Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			
+			FluidStack inputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			FluidStack outputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			
+			return new NaquadahLiquidizer(progress, ingredient, inputFluid, outputFluid);
+		}
+		
+		private static void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, NaquadahLiquidizer recipe)
+		{
+			friendlyByteBuf.writeInt(recipe.progressTime);
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.ingredient);
+			
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.inputFluid);
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.outputFluid);
+			
 		}
 		
 		@Override
-		public @Nullable LiquidizingRecipe.NaquadahLiquidizer fromNetwork(@NotNull ResourceLocation recipeID, @NotNull FriendlyByteBuf friendlyByteBuf)
+		public @NotNull MapCodec<NaquadahLiquidizer> codec()
 		{
-			return new NaquadahLiquidizer(recipeID, friendlyByteBuf);
+			return CODEC;
 		}
 		
-		@Override
-		public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf, NaquadahLiquidizer recipe)
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, NaquadahLiquidizer> streamCodec()
 		{
-			recipe.toNetwork(friendlyByteBuf);
+			return STREAM_CODEC;
 		}
 	}
 	
@@ -181,14 +169,9 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	{
 		public static final RecipeType<HeavyNaquadahLiquidizer> TYPE = new RecipeType<>(){};
 		
-		protected HeavyNaquadahLiquidizer(ResourceLocation recipeID, JsonObject serializedRecipe)
+		protected HeavyNaquadahLiquidizer(int progress, Ingredient ingredient, FluidStack inputFluid, FluidStack outputFluid)
 		{
-			super(recipeID, serializedRecipe);
-		}
-		
-		protected HeavyNaquadahLiquidizer(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-		{
-			super(recipeID, friendlyByteBuf);
+			super(progress, ingredient, inputFluid, outputFluid);
 		}
 		
 		@Override
@@ -202,38 +185,58 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 		{
 			return TYPE;
 		}
-		
-		protected FluidStack defaultInputFluid()
-		{
-			return new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100);
-		}
-		
-		protected FluidStack defaultOutputFluid()
-		{
-			return new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), 200);
-		}
 	}
 	
 	public static class HeavyNaquadahLiquidizerSerializer implements RecipeSerializer<HeavyNaquadahLiquidizer>
 	{
 		public static final HeavyNaquadahLiquidizerSerializer INSTANCE = new HeavyNaquadahLiquidizerSerializer();
+		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("heavy_naquadah_liquidizing");
 		
-		@Override
-		public @NotNull LiquidizingRecipe.HeavyNaquadahLiquidizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
+		public static final MapCodec<HeavyNaquadahLiquidizer> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
+				recipeBuilder.group(
+								Codec.INT.optionalFieldOf("progress", 100).forGetter((recipe) -> recipe.progressTime),
+								Ingredient.CODEC.fieldOf("ingredient").forGetter((recipe) -> recipe.ingredient),
+								FluidStack.CODEC.optionalFieldOf("input_fluid", new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100)).forGetter((recipe) -> recipe.inputFluid),
+								FluidStack.CODEC.optionalFieldOf("output_fluid", new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), 200)).forGetter((recipe) -> recipe.outputFluid))
+						.apply(recipeBuilder, HeavyNaquadahLiquidizer::new));
+		
+		public static final StreamCodec<RegistryFriendlyByteBuf, HeavyNaquadahLiquidizer> STREAM_CODEC = StreamCodec.of(HeavyNaquadahLiquidizerSerializer::toNetwork, HeavyNaquadahLiquidizerSerializer::fromNetwork);
+		
+		public HeavyNaquadahLiquidizerSerializer() {}
+		
+		private static HeavyNaquadahLiquidizer fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf)
 		{
-			return new HeavyNaquadahLiquidizer(recipeID, serializedRecipe);
+			int progress = friendlyByteBuf.readInt();
+			
+			Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			
+			FluidStack inputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			FluidStack outputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			
+			return new HeavyNaquadahLiquidizer(progress, ingredient, inputFluid, outputFluid);
+		}
+		
+		private static void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, HeavyNaquadahLiquidizer recipe)
+		{
+			friendlyByteBuf.writeInt(recipe.progressTime);
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.ingredient);
+			
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.inputFluid);
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.outputFluid);
+			
 		}
 		
 		@Override
-		public @Nullable LiquidizingRecipe.HeavyNaquadahLiquidizer fromNetwork(@NotNull ResourceLocation recipeID, @NotNull FriendlyByteBuf friendlyByteBuf)
+		public @NotNull MapCodec<HeavyNaquadahLiquidizer> codec()
 		{
-			return new HeavyNaquadahLiquidizer(recipeID, friendlyByteBuf);
+			return CODEC;
 		}
 		
-		@Override
-		public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf, HeavyNaquadahLiquidizer recipe)
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, HeavyNaquadahLiquidizer> streamCodec()
 		{
-			recipe.toNetwork(friendlyByteBuf);
+			return STREAM_CODEC;
 		}
 	}
 }

@@ -29,7 +29,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	public static final ResourceLocation LANTEA_EFFECTS = StargateJourney.sgjourneyLocation("lantea");
 	public static final ResourceLocation ATHOS_EFFECTS = StargateJourney.sgjourneyLocation("athos");
 	
-	public static final ResourceLocation DESTINY_EFFECTS = new ResourceLocation(StargateJourney.MODID, "destiny");
+	public static final ResourceLocation DESTINY_EFFECTS = StargateJourney.sgjourneyLocation("destiny");
 	
 	@Nullable
 	protected SGJourneySkyRenderer skyRenderer;

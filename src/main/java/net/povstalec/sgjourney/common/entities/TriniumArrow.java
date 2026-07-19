@@ -11,6 +11,8 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+
 public class TriniumArrow extends AbstractArrow
 {
 	public static final double MIN_BREAK_SPEED = 2; // Minimum speed needed to break blocks
@@ -21,13 +23,13 @@ public class TriniumArrow extends AbstractArrow
 		super(type, level);
 	}
 	
-	public TriniumArrow(Level level, LivingEntity owner)
+	public TriniumArrow(Level level, LivingEntity owner, ItemStack pickupItemStack, @Nullable ItemStack firedFromWeapon)
 	{
-		super(EntityInit.TRINIUM_ARROW.get(), owner, level);
+		super(EntityInit.TRINIUM_ARROW.get(), owner, level, pickupItemStack, firedFromWeapon);
 	}
 	
 	@Override
-	protected @NotNull ItemStack getPickupItem()
+	protected @NotNull ItemStack getDefaultPickupItem()
 	{
 		return new ItemStack(ItemInit.TRINIUM_ARROW.get());
 	}
@@ -35,8 +37,8 @@ public class TriniumArrow extends AbstractArrow
 	@Override
 	protected void onHitBlock(BlockHitResult blockHitResult)
 	{
-		if(this.level.getBlockState(blockHitResult.getBlockPos()).is(TagInit.Blocks.TRINIUM_ARROW_CAN_BREAK) && this.getDeltaMovement().lengthSqr() >= MIN_BREAK_SPEED_SQR)
-			this.level.destroyBlock(blockHitResult.getBlockPos(), true);
+		if(this.level().getBlockState(blockHitResult.getBlockPos()).is(TagInit.Blocks.TRINIUM_ARROW_CAN_BREAK) && this.getDeltaMovement().lengthSqr() >= MIN_BREAK_SPEED_SQR)
+			this.level().destroyBlock(blockHitResult.getBlockPos(), true);
 		else
 			super.onHitBlock(blockHitResult);
 	}

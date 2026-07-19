@@ -143,7 +143,7 @@ public class PlanetSkyRenderers
 			super(83173L, 600);
 		}
 		
-		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		protected void renderCelestials(ClientLevel level, float partialTicks, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Runnable setupFog, Tesselator tesselator, float rain)
 		{
 		
 		}

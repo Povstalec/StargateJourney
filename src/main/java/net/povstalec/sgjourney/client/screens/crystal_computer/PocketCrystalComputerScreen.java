@@ -1,23 +1,22 @@
 package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
@@ -31,7 +30,7 @@ import java.util.function.Function;
 
 public abstract class PocketCrystalComputerScreen extends Screen
 {
-	public static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/pocket_crystal_computer_gui.png");
+	public static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/pocket_crystal_computer_gui.png");
 	
 	public static final int DARK_RED_COLOR = 11141120;
 	
@@ -100,23 +99,22 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	}
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
-    	this.renderBackground(poseStack);
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 		
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
+		graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 
-    	super.render(poseStack, mouseX, mouseY, delta);
+    	super.render(graphics, mouseX, mouseY, delta);
         
-    	renderLabels(poseStack, mouseX, mouseY, x, y);
+    	renderLabels(graphics, mouseX, mouseY, x, y);
     }
     
-    protected abstract void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y);
+    protected abstract void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y);
 	
 	// Crystal stuff
 	
@@ -155,14 +153,15 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	
 	public ItemStack getCrystalInComputer()
 	{
-		return getItemInHand(interactionHand).getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler ->
+		IItemHandler itemHandler = getItemInHand(interactionHand).getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
 		{
 			ItemStack stack = itemHandler.getStackInSlot(0);
 			if(stack.getItem() instanceof AbstractCrystalItem crystal && isCorrectCrystalType(crystal.getType()))
 				return stack;
-			
-			return ItemStack.EMPTY;
-		}).orElse(ItemStack.EMPTY);
+		}
+		
+		return ItemStack.EMPTY;
 	}
 	
 	public ItemStack getCrystalInHand()
@@ -199,14 +198,15 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	{
 		if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER)
 		{
-			getItemInHand(interactionHand).getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+			IItemHandler itemHandler = getItemInHand(interactionHand).getCapability(Capabilities.ItemHandler.ITEM);
+			if(itemHandler != null)
 			{
 				ItemStack stack = itemHandler.extractItem(0, 1, false); // Extract item to work with it
 				boolean shouldUpdate = function.apply(stack);
 				itemHandler.insertItem(0, stack, false); // Insert item back so it doesn't disappear
 				if(shouldUpdate)
 					updateServer(selectedCrystal);
-			});
+			}
 		}
 		else if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_HAND)
 		{
@@ -269,7 +269,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	{
 		ItemStack stack = getCrystal(selectedCrystal);
 		
-		if(stack.hasTag() && stack.getItem() instanceof AbstractCrystalItem crystal)
+		if(stack.getItem() instanceof AbstractCrystalItem crystal)
 		{
 			if(crystal.getType() == CrystalCache.Type.MEMORY)
 				return listTagToCompoundTag(MemoryCrystalItem.getMemoryList(stack));
@@ -285,15 +285,9 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		return new CompoundTag();
 	}
 	
-	public static void drawCenteredString(PoseStack poseStack, Font font, Component component, float x, float y, int color)
-	{
-		FormattedCharSequence formattedCharSequence = component.getVisualOrderText();
-		font.drawShadow(poseStack, formattedCharSequence, x - font.width(formattedCharSequence) / 2F, y, color);
-	}
-	
 	public void updateServer(SelectedCrystal selectedCrystal)
     {
 		if(selectedCrystal != SelectedCrystal.NONE)
-			PacketHandlerInit.INSTANCE.sendToServer(new ServerboundCrystalComputerUpdatePacket(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER ? interactionHand : otherHand(interactionHand), getCrystalTag(selectedCrystal)));
+			PacketDistributor.sendToServer(new ServerboundCrystalComputerUpdatePacket(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER ? interactionHand : otherHand(interactionHand), getCrystalTag(selectedCrystal)));
     }
 }

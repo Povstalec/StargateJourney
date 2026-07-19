@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.entities;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
@@ -10,6 +11,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
@@ -29,6 +31,12 @@ public class Mastadge extends Animal
 	public Mastadge(EntityType<? extends Animal> type, Level level)
 	{
 		super(type, level);
+	}
+	
+	@Override
+	public boolean isFood(ItemStack stack)
+	{
+		return stack.is(ItemTags.HORSE_FOOD); //TODO Make a custom tag
 	}
 	
 	@Override

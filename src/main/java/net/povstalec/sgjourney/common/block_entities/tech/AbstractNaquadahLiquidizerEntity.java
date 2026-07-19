@@ -1,8 +1,14 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import javax.annotation.Nonnull;
-
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -12,20 +18,13 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
+import net.povstalec.sgjourney.common.recipe.LiquidizingRecipeInput;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
+import javax.annotation.Nonnull;
 
-public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
+public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, LiquidizingRecipeInput>
 {
 	private static final String INPUT_INVENTORY = "input_inventory";
 	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
@@ -47,7 +46,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	
 	public AbstractNaquadahLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, new SimpleFluidContainer(1, 2));
+		super(type, pos, state, new LiquidizingRecipeInput());
 	}
 	
 	@Override

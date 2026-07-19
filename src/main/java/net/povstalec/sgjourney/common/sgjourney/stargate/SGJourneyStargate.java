@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
@@ -222,7 +223,7 @@ public abstract class SGJourneyStargate implements Stargate
 	//============================================================================================
 	
 	@Override
-	public void serializeNBT(CompoundTag tag)
+	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putString(DIMENSION, getDimension().location().toString());
 		
@@ -234,7 +235,7 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries)
 	{
 		this.id9ChevronAddress = id9ChevronAddress;
 		

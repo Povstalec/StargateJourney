@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.init;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.*;
@@ -37,5 +39,11 @@ public class StargateInit
 	public static void register(IEventBus eventBus)
 	{
 		STARGATE_TYPES.register(eventBus);
+	}
+	
+	@SubscribeEvent
+	public static void registerRegistries(NewRegistryEvent event)
+	{
+		event.register(STARGATE_TYPE_REGISTRY);
 	}
 }

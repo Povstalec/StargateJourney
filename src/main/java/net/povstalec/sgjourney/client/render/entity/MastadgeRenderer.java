@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.entities.Mastadge;
 
 public class MastadgeRenderer extends MobRenderer<Mastadge, MastadgeModel>
 {
-	private static final ResourceLocation MASTADGE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/mastadge.png");
+	private static final ResourceLocation MASTADGE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/mastadge.png");
 	
 	public MastadgeRenderer(EntityRendererProvider.Context context)
 	{

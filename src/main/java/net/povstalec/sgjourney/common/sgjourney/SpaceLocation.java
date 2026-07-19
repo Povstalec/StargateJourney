@@ -6,14 +6,12 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundUpdatePlayerGravityPacket;
 
@@ -25,7 +23,7 @@ import java.util.*;
  */
 public class SpaceLocation
 {
-	public static final ResourceKey<Registry<SpaceLocation>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "space_location"));
+	public static final ResourceKey<Registry<SpaceLocation>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("space_location"));
 	public static final Codec<ResourceKey<SpaceLocation>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	public static final String TEMLPATE_INFO = "template_info";
@@ -420,7 +418,7 @@ public class SpaceLocation
 	public static void updatePlayerClientGravity(ServerPlayer player)
 	{
 		// Updates player gravity on the client
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundUpdatePlayerGravityPacket(SpaceLocation.fromDimension(player.getServer(), player.getLevel().dimension()).getParentGravity()));
+		PacketDistributor.sendToPlayer(player, new ClientboundUpdatePlayerGravityPacket(SpaceLocation.fromDimension(player.getServer(), player.level().dimension()).getParentGravity()));
 	}
 	
 	

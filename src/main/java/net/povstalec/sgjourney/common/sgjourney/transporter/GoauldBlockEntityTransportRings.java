@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -74,17 +75,17 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 	//============================================================================================
 	
 	@Override
-	public void serializeNBT(CompoundTag tag)
+	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putIntArray(COORDINATES, Conversion.blockPosToIntArray(blockPos));
 		
-		super.serializeNBT(tag);
+		super.serializeNBT(tag, registries);
 	}
 	
-	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag, HolderLookup.Provider registries)
 	{
 		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		super.deserializeNBT(transporterID, tag);
+		super.deserializeNBT(transporterID, tag, registries);
 	}
 }

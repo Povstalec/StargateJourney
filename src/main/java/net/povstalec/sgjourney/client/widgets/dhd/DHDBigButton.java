@@ -83,7 +83,6 @@ public class DHDBigButton extends DHDButton
 			graphics.blit(widgetsLocation, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
 			int j = getFGColor();
 			graphics.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
-			this.updateTooltip();
 		}
 	}
 	

@@ -8,6 +8,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +66,7 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		builder.addSlot(recipe.depleteSecondary() ? RecipeIngredientRole.INPUT : RecipeIngredientRole.CATALYST, 87, 53).addItemStack(stack3);
 		
 		// Result Slot
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 36).addItemStack(recipe.getResultItem());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 112, 36).addItemStack(recipe.getResultItem(Minecraft.getInstance().level.registryAccess()));
 	}
 	
 	//============================================================================================
@@ -74,13 +75,13 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 	
 	public static class Crystallizer extends CrystallizingRecipeCategory<CrystallizingRecipe.Crystallizer>
 	{
-		public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "crystallizing");
+		public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("crystallizing");
 		
 		public static final RecipeType<CrystallizingRecipe.Crystallizer> TYPE = new RecipeType<>(RECIPE_ID, CrystallizingRecipe.Crystallizer.class);
 		
 		public Crystallizer(IGuiHelper helper)
 		{
-			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/crystallizer_gui.png"), new ItemStack(BlockInit.CRYSTALLIZER.get()));
+			super(helper, StargateJourney.sgjourneyLocation("textures/gui/jei/crystallizer_gui.png"), new ItemStack(BlockInit.CRYSTALLIZER.get()));
 		}
 		
 		@Override
@@ -102,13 +103,13 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 	
 	public static class AdvancedCrystallizer extends CrystallizingRecipeCategory<CrystallizingRecipe.AdvancedCrystallizer>
 	{
-		public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "advanced_crystallizing");
+		public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("advanced_crystallizing");
 		
 		public static final RecipeType<CrystallizingRecipe.AdvancedCrystallizer> TYPE = new RecipeType<>(RECIPE_ID, CrystallizingRecipe.AdvancedCrystallizer.class);
 		
 		public AdvancedCrystallizer(IGuiHelper helper)
 		{
-			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/advanced_crystallizer_gui.png"), new ItemStack(BlockInit.ADVANCED_CRYSTALLIZER.get()));
+			super(helper, StargateJourney.sgjourneyLocation("textures/gui/jei/advanced_crystallizer_gui.png"), new ItemStack(BlockInit.ADVANCED_CRYSTALLIZER.get()));
 		}
 		
 		@Override

@@ -17,9 +17,9 @@ import java.util.Map;
 
 public record ClientPointOfOrigin(String name, ResourceLocation texture)
 {
-	public static final ResourceLocation UNIVERSAL_LOCATION = new ResourceLocation(StargateJourney.MODID, "universal");
+	public static final ResourceLocation UNIVERSAL_LOCATION = StargateJourney.sgjourneyLocation("universal");
 	
-	public static final ResourceLocation POINT_OF_ORIGIN_LOCATION = new ResourceLocation(StargateJourney.MODID, "point_of_origin");
+	public static final ResourceLocation POINT_OF_ORIGIN_LOCATION = StargateJourney.sgjourneyLocation("point_of_origin");
 	public static final ResourceKey<Registry<ClientPointOfOrigin>> REGISTRY_KEY = ResourceKey.createRegistryKey(POINT_OF_ORIGIN_LOCATION);
 	public static final Codec<ResourceKey<ClientPointOfOrigin>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	

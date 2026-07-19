@@ -13,13 +13,13 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.model.CompositeModel;
-import net.minecraftforge.client.model.DynamicFluidContainerModel;
-import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.StandaloneGeometryBakingContext;
+import net.neoforged.neoforge.client.RenderTypeGroup;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.CompositeModel;
+import net.neoforged.neoforge.client.model.IModelBuilder;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.StandaloneGeometryBakingContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.item.SymbolBlockItemOverrides;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
@@ -28,7 +28,7 @@ import java.util.function.Function;
 
 public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLoader.SymbolBlockModelGeometry>
 {
-	public static final String SYMBOL_BLOCK_LOADER = "symbol_block_loader";
+	public static final ResourceLocation SYMBOL_BLOCK_LOADER = StargateJourney.sgjourneyLocation("symbol_block_loader");
 	
 	@Override
 	public SymbolBlockModelGeometry getGeometry(JsonObject jsonObject, JsonDeserializationContext deserializationContext, List<BlockElement> elements, int symbolTint)
@@ -72,13 +72,13 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 		}
 		
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides)
 		{
 			if(symbolNumber >= 0)
 			{
 				TextureAtlasSprite particle = spriteGetter.apply(context.getMaterial("particle"));
 				
-				var itemContext = StandaloneGeometryBakingContext.builder(context).build(modelLocation);
+				var itemContext = StandaloneGeometryBakingContext.builder(context).build(SymbolBlockBakedModel.ID);
 				var modelBuilder = CompositeModel.Baked.builder(context, particle, new SymbolBlockItemOverrides(overrides, baker, itemContext, this), context.getTransforms());
 				
 				// Symbol Layer
@@ -87,12 +87,12 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 					modelBuilder.addQuads(new RenderTypeGroup(RenderType.translucent(), Sheets.translucentCullBlockSheet()), SymbolBlockBakedModel.makeSymbolQuad(Direction.NORTH, Orientation.REGULAR, symbolSprite, symbolTint));
 				
 				// Block Layer
-				modelBuilder.addLayer(super.bake(context, baker, spriteGetter, modelState, new SymbolBlockItemOverrides(overrides, baker, context, this), modelLocation));
+				modelBuilder.addLayer(super.bake(context, baker, spriteGetter, modelState, new SymbolBlockItemOverrides(overrides, baker, context, this)));
 				
 				return modelBuilder.build();
 			}
 			else
-				return super.bake(context, baker, spriteGetter, modelState, new SymbolBlockItemOverrides(overrides, baker, context, this), modelLocation);
+				return super.bake(context, baker, spriteGetter, modelState, new SymbolBlockItemOverrides(overrides, baker, context, this));
 		}
 		
 		@Override

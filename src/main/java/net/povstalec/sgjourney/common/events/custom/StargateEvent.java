@@ -9,7 +9,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
-public class StargateEvent extends Event implements ICancellableEvent
+public class StargateEvent extends Event
 {
 	private final MinecraftServer server;
 	private final Stargate stargate;

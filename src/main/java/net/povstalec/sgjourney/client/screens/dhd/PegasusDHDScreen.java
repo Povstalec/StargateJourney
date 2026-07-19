@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
 
 public class PegasusDHDScreen extends AbstractDHDScreen<PegasusDHDMenu>
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_background.png");
 	
 	public PegasusDHDScreen(PegasusDHDMenu pMenu, Inventory pPlayerInventory, Component pTitle)
 	{

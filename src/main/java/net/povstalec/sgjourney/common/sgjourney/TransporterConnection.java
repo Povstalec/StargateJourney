@@ -5,6 +5,10 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -101,6 +105,34 @@ public class TransporterConnection
 		RELAYED_SYSTEM_WIDE("relayed_system_wide", 0, true), // Within one system, relayed through a Stargate
 		RELAYED_INTERSTELLAR("relayed_interstellar", 0, true), // Across two solar systems, relayed through a Stargate
 		RELAYED_INTERGALACTIC("relayed_intergalactic", 0, true); // Across two galaxies, relayed through a Stargate
+		
+		public static final Codec<TransporterConnection.Type> CODEC = new PrimitiveCodec<>()
+		{
+			@Override
+			public <T> DataResult<TransporterConnection.Type> read(final DynamicOps<T> ops, final T input)
+			{
+				String string = ops.getStringValue(input).toString();
+				
+				TransporterConnection.Type type = TransporterConnection.Type.fromString(string);
+				
+				if(type != null)
+					return DataResult.success(type);
+				
+				return DataResult.error(() -> "Not a TransporterConnection.Type: " + input);
+			}
+			
+			@Override
+			public <T> T write(final DynamicOps<T> ops, final TransporterConnection.Type value)
+			{
+				return ops.createString(value.getSerializedName());
+			}
+			
+			@Override
+			public String toString()
+			{
+				return "TransporterConnection.Type";
+			}
+		};
 		
 		private final String name;
 		public final long energyCost;

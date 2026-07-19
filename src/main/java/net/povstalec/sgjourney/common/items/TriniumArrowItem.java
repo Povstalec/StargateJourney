@@ -8,6 +8,8 @@ import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.entities.TriniumArrow;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
+
 public class TriniumArrowItem extends ArrowItem
 {
 	public TriniumArrowItem(Properties properties)
@@ -16,8 +18,8 @@ public class TriniumArrowItem extends ArrowItem
 	}
 	
 	@Override
-	public @NotNull AbstractArrow createArrow(Level level, ItemStack stack, LivingEntity owner)
+	public @NotNull AbstractArrow createArrow(Level level, ItemStack ammo, LivingEntity owner, @Nullable ItemStack weapon)
 	{
-		return new TriniumArrow(level, owner);
+		return new TriniumArrow(level, owner, ammo.copyWithCount(1), weapon);
 	}
 }

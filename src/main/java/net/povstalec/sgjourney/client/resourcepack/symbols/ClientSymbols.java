@@ -17,9 +17,9 @@ import java.util.*;
 
 public class ClientSymbols
 {
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol/error");
+	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("symbol/error");
 	
-	public static final ResourceLocation SYMBOLS_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbols");
+	public static final ResourceLocation SYMBOLS_LOCATION = StargateJourney.sgjourneyLocation("symbols");
 	public static final ResourceKey<Registry<ClientSymbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
 	public static final Codec<ResourceKey<ClientSymbols>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	

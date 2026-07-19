@@ -25,7 +25,7 @@ public class NaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<L
 	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
 		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
-				.map(recipe -> (LiquidizingRecipe.NaquadahLiquidizer) recipe)
+				.map(recipe -> (LiquidizingRecipe.NaquadahLiquidizer) recipe.value())
 				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	

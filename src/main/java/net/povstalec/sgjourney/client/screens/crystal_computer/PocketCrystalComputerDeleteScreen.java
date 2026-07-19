@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
@@ -41,7 +42,7 @@ public class PocketCrystalComputerDeleteScreen extends PocketCrystalComputerScre
 	}
 		
 	@Override
-	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) {}
+	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) {}
 	
 	public void deleteEntry()
 	{

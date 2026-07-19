@@ -1,35 +1,36 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.SimpleContainer;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.recipe.ProgressRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C>, C extends SimpleContainer> extends EnergySlotBlockEntity
+public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<I>, I extends RecipeInput> extends EnergySlotBlockEntity
 {
 	public static final String PROGRESS = "progress";
 	
-	protected C simpleContainer;
+	protected I recipeInput;
 	protected int maxProgress = 100;
 	protected int progress = 0;
 	
-	public ProgressRecipeEnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, C simpleContainer)
+	public ProgressRecipeEnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, I recipeInput)
 	{
 		super(type, pos, state);
 		
-		this.simpleContainer = simpleContainer;
+		this.recipeInput = recipeInput;
 	}
 	
 	@Override
@@ -40,31 +41,31 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
+		super.loadAdditional(nbt, registries);
 		progress = nbt.getInt(PROGRESS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
 		nbt.putInt(PROGRESS, progress);
-		super.saveAdditional(nbt);
+		super.saveAdditional(nbt, registries);
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = this.saveWithoutMetadata();
+		CompoundTag tag = this.saveWithoutMetadata(registries);
 		tag.putInt("max_progress", maxProgress);
 		return tag;
 	}
 	
 	@Override
-	public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection connection, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(connection, packet);
+		super.onDataPacket(connection, packet, registries);
 		maxProgress = packet.getTag().getInt("max_progress");
 	}
 	
@@ -75,17 +76,17 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 	
 	protected abstract RecipeType<R> getRecipeType();
 	
-	protected Stream<Recipe<?>> getAvailableRecipes()
+	protected Stream<RecipeHolder<?>> getAvailableRecipes()
 	{
-		return level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.getType().equals(getRecipeType()));
+		return level.getRecipeManager().getRecipes().stream().filter(recipe -> recipe.value().getType().equals(getRecipeType()));
 	}
 	
-	protected Optional<R> getRecipe()
+	protected Optional<RecipeHolder<R>> getRecipe()
 	{
 		if(level == null)
 			return Optional.empty();
 		
-		return level.getRecipeManager().getRecipeFor(getRecipeType(), simpleContainer, level);
+		return level.getRecipeManager().getRecipeFor(getRecipeType(), recipeInput, level);
 	}
 	
 	public int getMaxProgress()
@@ -112,9 +113,9 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 	{
 		getRecipe().ifPresentOrElse(recipe -> // Has base ingredients, progress
 		{
-			maxProgress = recipe.getProgressTime(); // Update max progress time
+			maxProgress = recipe.value().getProgressTime(); // Update max progress time
 			
-			if(progress < recipe.getProgressTime()) // Progress recipe
+			if(progress < recipe.value().getProgressTime()) // Progress recipe
 			{
 				if(energyStorage.hasEnergy(energyPerProgressTick()))
 				{
@@ -123,12 +124,12 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 					setChanged();
 				}
 			}
-			else if(progress >= recipe.getProgressTime()) // Wait until it's possible to output
+			else if(progress >= recipe.value().getProgressTime()) // Wait until it's possible to output
 			{
-				if(canOutput(recipe)) // Check if there's space for the output
+				if(canOutput(recipe.value())) // Check if there's space for the output
 				{
-					depleteIngredients(recipe);
-					createOutput(recipe);
+					depleteIngredients(recipe.value());
+					createOutput(recipe.value());
 					resetProgress();
 					setChanged();
 				}

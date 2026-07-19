@@ -15,7 +15,7 @@ import java.util.Map;
 
 public record SymbolSet(String name, List<ResourceLocation> textures)
 {
-	public static final ResourceLocation SYMBOL_SET_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol_set");
+	public static final ResourceLocation SYMBOL_SET_LOCATION = StargateJourney.sgjourneyLocation("symbol_set");
 	public static final ResourceKey<Registry<SymbolSet>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_SET_LOCATION);
 	public static final Codec<ResourceKey<SymbolSet>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	

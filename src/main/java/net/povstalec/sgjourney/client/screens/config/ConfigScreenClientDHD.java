@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -34,8 +34,8 @@ public class ConfigScreenClientDHD extends Screen
     {
 		super.init();
 		
-		ConfigList configList = new ConfigList(minecraft, this.width, this.height,
-				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+		ConfigList configList = new ConfigList(minecraft, this.width,
+				this.height - OPTIONS_LIST_TOP_HEIGHT - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_TOP_HEIGHT, OPTIONS_LIST_ITEM_HEIGHT);
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
 				Component.translatable("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
@@ -53,11 +53,10 @@ public class ConfigScreenClientDHD extends Screen
     }
 	
 	@Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
-    {
-        this.renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
-        super.render(poseStack, mouseX, mouseY, partialTick);
-    }
+	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+	{
+		super.render(graphics, mouseX, mouseY, partialTick);
+		graphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 16777215);
+	}
 	
 }

@@ -1,25 +1,25 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonTransporterConfig
 {
-	public static ForgeConfigSpec.LongValue ring_panel_energy_capacity;
-	public static ForgeConfigSpec.LongValue ring_panel_max_energy_receive;
-	public static ForgeConfigSpec.LongValue ring_panel_max_energy_extract;
-	public static ForgeConfigSpec.LongValue ring_panel_button_press_energy_cost;
+	public static ModConfigSpec.LongValue ring_panel_energy_capacity;
+	public static ModConfigSpec.LongValue ring_panel_max_energy_receive;
+	public static ModConfigSpec.LongValue ring_panel_max_energy_extract;
+	public static ModConfigSpec.LongValue ring_panel_button_press_energy_cost;
 	
-	public static ForgeConfigSpec.LongValue ancient_transport_rings_energy_capacity;
-	public static ForgeConfigSpec.LongValue ancient_transport_rings_max_energy_receive;
+	public static ModConfigSpec.LongValue ancient_transport_rings_energy_capacity;
+	public static ModConfigSpec.LongValue ancient_transport_rings_max_energy_receive;
 	
-	public static ForgeConfigSpec.LongValue goauld_transport_rings_energy_capacity;
-	public static ForgeConfigSpec.LongValue goauld_transport_rings_max_energy_receive;
+	public static ModConfigSpec.LongValue goauld_transport_rings_energy_capacity;
+	public static ModConfigSpec.LongValue goauld_transport_rings_max_energy_receive;
 	
-	public static ForgeConfigSpec.LongValue transporter_transport_energy_cost;
-	public static ForgeConfigSpec.LongValue transporter_transport_distance_energy_cost;
-	public static ForgeConfigSpec.LongValue transporter_dimension_transport_energy_cost;
+	public static ModConfigSpec.LongValue transporter_transport_energy_cost;
+	public static ModConfigSpec.LongValue transporter_transport_distance_energy_cost;
+	public static ModConfigSpec.LongValue transporter_dimension_transport_energy_cost;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		ring_panel_energy_capacity = server
 				.comment("Energy capacity of the Ring Panel")

@@ -1,12 +1,16 @@
 package net.povstalec.sgjourney.common.recipe;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public record CrystalRecipeInput(ItemStack crystalBase, ItemStack primaryIngredient, ItemStack secondaryIngredient, FluidStack inputFluid) implements RecipeInput
+public class CrystallizingRecipeInput extends SGJourneyRecipeInput
 {
+	protected ItemStack crystalBase = ItemStack.EMPTY;
+	protected ItemStack primaryIngredient = ItemStack.EMPTY;
+	protected ItemStack secondaryIngredient = ItemStack.EMPTY;
+	protected FluidStack inputFluid = FluidStack.EMPTY;
+	
 	@Override
 	public @NotNull ItemStack getItem(int index)
 	{
@@ -23,5 +27,41 @@ public record CrystalRecipeInput(ItemStack crystalBase, ItemStack primaryIngredi
 	public int size()
 	{
 		return 3;
+	}
+	
+	@Override
+	public void setItem(int index, ItemStack itemStack)
+	{
+		switch(index)
+		{
+			case 0 -> this.crystalBase = itemStack;
+			case 1 -> this.primaryIngredient = itemStack;
+			case 2 -> this.secondaryIngredient = itemStack;
+			default -> throw new IllegalArgumentException("No item for index " + index);
+		};
+	}
+	
+	@Override
+	public @NotNull FluidStack getFluid(int index)
+	{
+		if(index == 0)
+			return this.inputFluid;
+		
+		throw new IllegalArgumentException("No fluid for index " + index);
+	}
+	
+	@Override
+	public void setFluid(int index, FluidStack fluidStack)
+	{
+		if(index == 0)
+			this.inputFluid = fluidStack;
+		
+		throw new IllegalArgumentException("No fluid for index " + index);
+	}
+	
+	@Override
+	public int fluidContainersSize()
+	{
+		return 1;
 	}
 }

@@ -264,7 +264,7 @@ public class BlockEntityList extends SavedData
 			if(stargate != null)
 			{
 				CompoundTag stargateTag = new CompoundTag();
-				stargate.serializeNBT(stargateTag);
+				stargate.serializeNBT(stargateTag, server.registryAccess());
 				StargateType.addTypeToTag(stargate.getStargateType(), stargateTag);
 				
 				stargates.put(stargateID.toString(), stargateTag);
@@ -283,7 +283,7 @@ public class BlockEntityList extends SavedData
 		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
 			CompoundTag transporterTag = new CompoundTag();
-			transporter.serializeNBT(transporterTag);
+			transporter.serializeNBT(transporterTag, server.registryAccess());
 			TransporterType.addTypeToTag(transporter.getTransporterType(), transporterTag);
 			
 			transportersTag.put(ringsID.toString(), transporterTag);
@@ -332,7 +332,7 @@ public class BlockEntityList extends SavedData
 			StargateType.getTypeFromTag(stargateTag).ifPresentOrElse(type ->
 			{
 				Stargate stargate = type.constructStargate(server);
-				stargate.deserializeNBT(address, stargateTag);
+				stargate.deserializeNBT(address, stargateTag, server.registryAccess());
 				this.stargateMap.put(address, stargate);
 			}, () ->
 			{
@@ -390,7 +390,7 @@ public class BlockEntityList extends SavedData
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
 					Transporter transporter = type.constructTransporter(server);
-					transporter.deserializeNBT(transporterID, transporterTag);
+					transporter.deserializeNBT(transporterID, transporterTag, server.registryAccess());
 					this.transporterMap.put(transporterID, transporter);
 				}, () ->
 				{

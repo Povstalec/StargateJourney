@@ -67,7 +67,7 @@ public class TransporterBlockItem extends BlockItem
 				transporter.addTransporterToNetwork();
 				transporter.generateAdditional(StructureGenEntity.Step.READY);
 				
-				if(stack.hasCustomHoverName())
+				if(stack.has(DataComponents.CUSTOM_NAME))
 					transporter.setCustomName(stack.getHoverName());
 				
 				return true;
