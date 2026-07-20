@@ -474,22 +474,22 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 				-stargateSymbolRingOuterCenter,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				STARGATE_RING_OFFSET - 1F/16,
-				8F - (stargateSymbolRingOuterCenter * 32), (8 - STARGATE_SYMBOL_RING_HEIGHT/2 * 32),
+				0.5F - (stargateSymbolRingOuterCenter * 2), (0.5F - STARGATE_SYMBOL_RING_HEIGHT),
 				
 				-stargateSymbolRingInnerCenter, 
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				STARGATE_RING_OFFSET - 1F/16,
-				8F - (stargateSymbolRingInnerCenter * 32), (8 + STARGATE_SYMBOL_RING_HEIGHT/2 * 32),
+				0.5F - (stargateSymbolRingInnerCenter * 2), (0.5F + STARGATE_SYMBOL_RING_HEIGHT),
 				
 				stargateSymbolRingInnerCenter,
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				STARGATE_RING_OFFSET - 1F/16,
-				8F + (stargateSymbolRingInnerCenter * 32), (8 + STARGATE_SYMBOL_RING_HEIGHT/2 * 32),
+				0.5F + (stargateSymbolRingInnerCenter * 2), (0.5F + STARGATE_SYMBOL_RING_HEIGHT),
 				
 				stargateSymbolRingOuterCenter,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				STARGATE_RING_OFFSET - 1F/16,
-				8F + (stargateSymbolRingOuterCenter * 32), (8 - STARGATE_SYMBOL_RING_HEIGHT/2 * 32));
+				0.5F + (stargateSymbolRingOuterCenter * 2), (0.5F - STARGATE_SYMBOL_RING_HEIGHT));
 		
 		stack.popPose();
 	}

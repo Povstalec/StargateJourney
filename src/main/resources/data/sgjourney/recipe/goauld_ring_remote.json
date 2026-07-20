@@ -13,6 +13,6 @@
     "C": { "item": "sgjourney:communication_crystal" }
   },
   "result": {
-    "item": "sgjourney:goauld_ring_remote"
+    "id": "sgjourney:goauld_ring_remote"
   }
 }

@@ -47,7 +47,7 @@ public class GoauldFaction extends AbstractFaction
 		//this.addresses.add(UNITAS);
 		
 		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
-		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag());
+		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag(), server.registryAccess());
 		
 		this.spawnerStargate.setEntityTypeRandomizer(this::entityTypeRandomizer);
 		this.spawnerStargate.setOnEntitySpawn(this::onEntitySpawn);

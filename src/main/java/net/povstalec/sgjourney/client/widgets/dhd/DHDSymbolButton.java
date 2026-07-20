@@ -110,9 +110,9 @@ public abstract class DHDSymbolButton extends DHDButton
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(sprite.getU(0F), sprite.getV(0F));
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(sprite.getU(0F), sprite.getV(16F));
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(sprite.getU(16F), sprite.getV(16F));
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(sprite.getU(16F), sprite.getV(0F));
+		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(sprite.getU(0F), sprite.getV(1F));
+		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(sprite.getU(1F), sprite.getV(1F));
+		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(sprite.getU(1F), sprite.getV(0F));
 		BufferUploader.drawWithShader(bufferbuilder.build());
 	}
 	
@@ -132,9 +132,9 @@ public abstract class DHDSymbolButton extends DHDButton
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(sprite.getU(0F), sprite.getV(0F));
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(sprite.getU(0F), sprite.getV(16F));
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(sprite.getU(16F), sprite.getV(16F));
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(sprite.getU(16F), sprite.getV(0F));
+		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(sprite.getU(0F), sprite.getV(1F));
+		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(sprite.getU(1F), sprite.getV(1F));
+		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(sprite.getU(1F), sprite.getV(0F));
 		BufferUploader.drawWithShader(bufferbuilder.build());
 	}
 	
