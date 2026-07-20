@@ -25,8 +25,8 @@ import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
 
 public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntityStargate>

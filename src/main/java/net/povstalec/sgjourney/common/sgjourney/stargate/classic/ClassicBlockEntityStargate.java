@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.classic;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -8,18 +8,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 
-public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements BlockEntityStargate<MilkyWayStargateEntity>
+public class ClassicBlockEntityStargate extends ClassicStargate implements BlockEntityStargate<ClassicStargateEntity>
 {
-	protected WeakReference<MilkyWayStargateEntity> stargate;
+	protected WeakReference<ClassicStargateEntity> stargate;
 	
 	protected BlockPos blockPos;
 	
@@ -31,7 +33,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	@Nullable
 	protected Vec3 right = null;
 	
-	public MilkyWayBlockEntityStargate(StargateType<?> type, MinecraftServer server)
+	public ClassicBlockEntityStargate(StargateType<?> type, MinecraftServer server)
 	{
 		super(type, server);
 	}
@@ -42,25 +44,25 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 		return this.blockPos;
 	}
 	
-	private MilkyWayStargateEntity cacheStargateEntity(MilkyWayStargateEntity stargate)
+	private ClassicStargateEntity cacheStargateEntity(ClassicStargateEntity stargate)
 	{
 		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
 		
 		return stargate;
 	}
 	
-	private @Nullable MilkyWayStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	private @Nullable ClassicStargateEntity tryCacheStargateEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof MilkyWayStargateEntity stargate)
+		if(level != null && level.getBlockEntity(blockPos) instanceof ClassicStargateEntity stargate)
 			return cacheStargateEntity(stargate);
 		
 		return null;
 	}
 	
 	@Override
-	public @Nullable MilkyWayStargateEntity getStargateEntity(MinecraftServer server)
+	public @Nullable ClassicStargateEntity getStargateEntity(MinecraftServer server)
 	{
 		//if((this.stargate != null && this.stargate.get() != null) || server == null)
 		//	return this.stargate.get();
@@ -172,7 +174,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 		
 		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORKS))
 		{
-			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof MilkyWayStargateEntity stargate)
+			if(server.getLevel(dimension).getBlockEntity(blockPos) instanceof ClassicStargateEntity stargate)
 				loadFromBlockEntity(stargate);
 		}
 	}

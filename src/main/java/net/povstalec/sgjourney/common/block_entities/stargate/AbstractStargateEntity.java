@@ -936,7 +936,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public Set<Integer> getCachedNetworks()
 	{
 		Set<Integer> networks = new TreeSet<>(this.networks);
-		dhdCache.ifPresent(dhd -> networks.addAll(dhd.getNetworks()));
+		dhdCache.ifCached(dhd -> networks.addAll(dhd.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;

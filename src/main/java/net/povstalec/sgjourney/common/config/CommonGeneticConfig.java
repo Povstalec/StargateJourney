@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.config;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.povstalec.sgjourney.StargateJourney;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class CommonGeneticConfig
 	public static void init(ModConfigSpec.Builder server)
 	{
 		ancient_players = server.comment("A list of Player names who will receive the Ancient Gene when they join the world for the first time")
-				.defineList("server.ancient_players", () -> List.of("Dev", "Woldericz_junior", "cookta2012", "mistersecret312", "_MaGistR____", "Redangel121"), name -> true);
+				.defineList("server.ancient_players", StargateJourney::ancientGenePlayers, name -> true);
 		
 		inherited_ancient_gene_players = server.comment("A list of Player names who will inherit the Ancient Gene when they join the world for the first time")
 				.defineList("server.inherited_ancient_gene_players", List::of, name -> true);

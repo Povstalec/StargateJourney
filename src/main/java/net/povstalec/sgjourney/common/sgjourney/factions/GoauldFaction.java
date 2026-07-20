@@ -2,12 +2,15 @@ package net.povstalec.sgjourney.common.sgjourney.factions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.povstalec.sgjourney.common.entities.FactionMember;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneySpawnerStargate;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class GoauldFaction extends AbstractFaction
 	private static final Address.Immutable UNITAS = new Address.Immutable(2, 27, 8, 34, 24, 15);
 	
 	protected List<Address.Immutable> addresses = new ArrayList<>(); // Addresses this faction knows about and can attack
-	protected final SpawnerStargate spawnerStargate;
+	protected final SGJourneySpawnerStargate spawnerStargate;
 	
 	protected final Random random;
 	@Nullable
@@ -44,15 +47,26 @@ public class GoauldFaction extends AbstractFaction
 		//this.addresses.add(UNITAS);
 		
 		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
-		this.spawnerStargate.loadStargate(Address.Immutable.randomAddress(8, 36, 0),
-				ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT, ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL,
-				randomSource -> EntityInit.JAFFA.get(), (entity, randomSource) ->
-		{
-			if(entity instanceof FactionMember factionMember)
-				factionMember.setFaction(this);
-		});
+		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag());
+		
+		this.spawnerStargate.setEntityTypeRandomizer(this::entityTypeRandomizer);
+		this.spawnerStargate.setOnEntitySpawn(this::onEntitySpawn);
+		this.spawnerStargate.getSpawnerTimer()
+				.setInterval(ATTACKER_MIN_INTERVAL, ATTACKER_MAX_INTERVAL)
+				.setSpawnCount(ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT);
 		
 		this.random = new Random(0);
+	}
+	
+	public EntityType<?> entityTypeRandomizer(RandomSource randomSource)
+	{
+		return EntityInit.JAFFA.get();
+	}
+	
+	public void onEntitySpawn(Entity entity, RandomSource randomSource)
+	{
+		if(entity instanceof FactionMember factionMember)
+			factionMember.setFaction(this);
 	}
 	
 	public void prepareNextIncursions(int intervalTicks)

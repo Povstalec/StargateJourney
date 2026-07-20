@@ -21,6 +21,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		super(BlockEntityInit.PEGASUS_DHD.get(), pos, state);
 	}
 	
+	//TODO Dynamic symbols and static symbols
 	@Override
 	public void onLoad()
 	{

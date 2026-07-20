@@ -23,8 +23,8 @@ import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.MilkyWayStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

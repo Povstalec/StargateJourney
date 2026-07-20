@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.tollans;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +13,8 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;

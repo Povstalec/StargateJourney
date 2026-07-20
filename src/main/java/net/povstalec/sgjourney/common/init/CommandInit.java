@@ -229,7 +229,7 @@ public class CommandInit
 	}
 	
 	private static int getAddress(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
-	{try{
+	{
 		ResourceKey<Level> dimension = DimensionArgument.getDimension(context, "dimension").dimension();
 		
 		Level level = context.getSource().getLevel();
@@ -256,10 +256,6 @@ public class CommandInit
 					context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_address.address", dimensionComponent(dimension), galaxy.toComponent(), address.toComponent(true)));
 			}
 		}
-	}catch(Exception e)
-	{
-		e.printStackTrace();
-	}
 		
 		return Command.SINGLE_SUCCESS;
 	}

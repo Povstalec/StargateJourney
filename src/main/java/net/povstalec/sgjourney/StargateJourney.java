@@ -83,6 +83,7 @@ import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.util.Calendar;
+import java.util.List;
 
 @Mod(StargateJourney.MODID)
 public class StargateJourney
@@ -517,5 +518,20 @@ public class StargateJourney
 	{
 		Calendar calendar = Calendar.getInstance();
 		return calendar.get(Calendar.MONTH) + 1 == 4 && calendar.get(Calendar.DAY_OF_MONTH) == 1;
+	}
+	
+	/**
+	 * @return Default list of players (player names) who will get the Ancient Gene upon joining a world
+	 */
+	public static List<String> ancientGenePlayers()
+	{
+		return List.of(
+				"Dev", // Dev player, used for testing
+				"Woldericz_junior", // Creator of the mod
+				"cookta2012", // Contributor
+				"mistersecret312", // Contributor
+				"_MaGistR____", // Contributor
+				"Redangel121" // Contributor
+		);
 	}
 }

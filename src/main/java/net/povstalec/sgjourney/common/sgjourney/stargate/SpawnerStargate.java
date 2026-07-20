@@ -1,324 +1,153 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
-import java.util.UUID;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-
-public class SpawnerStargate implements Stargate
+/**
+ * Represents a Stargate that doesn't physically exist anywhere in the world,
+ * but is used as the outgoing side of a connection that spawns Entities
+ */
+public interface SpawnerStargate extends Stargate
 {
-	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
-	
-	public static final int KAWOOSH_TICKS = 40;
-	
-	private final StargateType<?> type;
-	private final MinecraftServer server;
-	
-	protected Address.Immutable id9ChevronAddress;
-	
-	protected int attackerMinCount;
-	protected int attackerMaxCount;
-	protected int attackerMinInterval;
-	protected int attackerMaxInverval;
-	
-	protected Address.Mutable address = new Address.Mutable();
-	@Nullable
-	protected UUID connectionID = null;
-	
-	protected Random random;
-	protected int counter;
-	protected int timer;
-	
-	protected Function<RandomSource, EntityType<?>> randomizedEntityType;
-	protected BiConsumer<Entity, RandomSource> onEntitySpawn;
-	
-	public SpawnerStargate(StargateType<?> type, MinecraftServer server)
-	{
-		this.type = type;
-		this.server = server;
-	}
-	
-	public void loadStargate(Address.Immutable address, int attackerMinCount, int attackerMaxCount, int attackerMinInterval, int attackerMaxInverval, Function<RandomSource, EntityType<?>> randomizedEntityType, BiConsumer<Entity, RandomSource> onEntitySpawn)
-	{
-		this.id9ChevronAddress = address;
-		
-		this.random = new Random();
-		this.attackerMinCount = attackerMinCount;
-		this.attackerMaxCount = attackerMaxCount;
-		this.attackerMinInterval = attackerMinInterval;
-		this.attackerMaxInverval = attackerMaxInverval;
-		
-		this.timer = nextAttackerInterval();
-		this.counter = nextAttackerCount();
-		
-		this.randomizedEntityType = randomizedEntityType;
-		this.onEntitySpawn = onEntitySpawn;
-	}
-	
-	protected int nextAttackerInterval()
-	{
-		return random.nextInt(attackerMinInterval, attackerMaxInverval + 1);
-	}
-	
-	protected int nextAttackerCount()
-	{
-		return random.nextInt(attackerMinCount, attackerMaxCount + 1);
-	}
-	
 	@Override
-	public StargateType<?> getStargateType()
-	{
-		return type;
-	}
-	
-	@Override
-	public MinecraftServer getServer()
-	{
-		return this.server;
-	}
-	
-	@Override
-	public Address.Immutable get9ChevronAddress()
-	{
-		return this.id9ChevronAddress;
-	}
-	
-	@Override
-	public @Nullable ResourceKey<Level> getDimension()
-	{
-		return Conversion.stringToDimension("sgjourney:abydos"); // TODO Don't have it in Abydos
-	}
-	
-	@Override
-	public @Nullable Vec3 getPosition()
+	default @Nullable Vec3 getPosition()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getForward()
+	default @Nullable Vec3 getForward()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getUp()
+	default @Nullable Vec3 getUp()
 	{
 		return null;
 	}
 	
 	@Override
-	public @Nullable Vec3 getRight()
+	default @Nullable Vec3 getRight()
 	{
 		return null;
 	}
 	
 	@Override
-	public double getInnerRadius()
+	default double getInnerRadius()
 	{
-		return 0;
+		return Wormhole.INNER_RADIUS;
 	}
 	
 	@Override
-	public boolean hasDHD()
+	default boolean isObstructed()
 	{
-		return true;
+		return false; // No point in having the Spawner Stargate be obstructed
 	}
 	
 	@Override
-	public StargateInfo.Gen getGeneration()
+	default boolean checkValidity()
 	{
-		return StargateInfo.Gen.GEN_2;
+		return true; // Doesn't exist anywhere in the world, so let's treat it as always valid
 	}
 	
 	@Override
-	public int getTimesOpened()
+	default boolean isLoaded()
 	{
-		return 0; //TODO Actually count the number of times opened
+		return true; // Doesn't exist anywhere in the world, so let's treat it as always loaded
 	}
 	
 	@Override
-	public Address.Mutable getAddress()
+	default float checkStargateShieldingState()
 	{
-		return this.address;
+		return 0; // No point in having the Spawner Stargate shielded
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
-	{
-		this.connectionID = null;
-		this.address.reset();
-		
-		this.timer = nextAttackerInterval();
-		this.counter = nextAttackerCount();
-		return feedback;
-	}
-	
-	@Override
-	public boolean isConnected()
-	{
-		return this.connectionID != null;
-	}
-	
-	@Override
-	public boolean isObstructed()
+	default boolean canPowerFromOtherSide()
 	{
 		return false;
 	}
 	
 	@Override
-	public boolean checkValidity()
-	{
-		return true;
-	}
-	
-	@Override
-	public boolean isLoaded()
-	{
-		return true;
-	}
-	
-	@Override
-	public float checkStargateShieldingState()
-	{
-		return 0;
-	}
-	
-	@Override
-	public long getEnergyStored()
-	{
-		return CommonStargateConfig.intergalactic_connection_energy_cost.get(); // CommonStargateConfig.interstellar_connection_energy_cost.get(); //TODO Add some actual energy handling
-	}
-	
-	@Override
-	public long getEnergyCapacity()
-	{
-		return CommonStargateConfig.stargate_energy_capacity.get();
-	}
-	
-	@Override
-	public boolean canPowerFromOtherSide()
-	{
-		return false;
-	}
-	
-	@Override
-	public long extractEnergy(long energy, boolean simulate)
-	{
-		return Math.min(energy, getEnergyStored());
-	}
-	
-	@Override
-	public int dialedEngageTime(boolean doKawoosh)
-	{
-		return StargateInfo.ChevronLockSpeed.SLOW.getKawooshStartTicks();
-	}
-	
-	@Override
-	public int wormholeEstablishTime(boolean doKawoosh)
-	{
-		return KAWOOSH_TICKS;
-	}
-	
-	public void encodeAddress(Address address)
-	{
-		this.address = new Address.Mutable(address);
-	}
-	
-	public StargateInfo.FeedbackMessage dial()
-	{
-		return Dialing.dialStargate(server, this, getAddress(), true, true);
-	}
-	
-	@Override
-	public StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	default StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
 	{
 		StargateJourney.LOGGER.error("Stargate does not permit connections");
 		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
 	}
 	
 	@Override
-	public void connectStargate(StargateConnection connection, StargateConnection.State connectionState)
+	default void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
 	{
-		this.connectionID = connection.getID();
-	}
-	
-	@Nullable
-	protected Entity createEntity(ServerLevel level)
-	{
-		if(randomizedEntityType == null)
-			return null;
+		getSpawnerTimer().tick();
 		
-		EntityType<?> entityType = randomizedEntityType.apply(level.getRandom());
-		
-		if(entityType == null)
-			return null;
-		
-		return entityType.create(level);
-	}
-	
-	protected void spawnEntity(ServerLevel level, Entity entity)
-	{
-		if(entity instanceof Mob mob)
-			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, null);
-		
-		onEntitySpawn.accept(entity, level.getRandom());
-	}
-	
-	@Override
-	public void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
-	{
-		Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
-		
-		if(timer > 0)
-			timer--;
-		else if(0 < counter && connectedStargate != null)
+		if(getSpawnerTimer().shouldSpawn())
 		{
-			ServerLevel level = connectedStargate.getLevel();
-			
-			if(level != null)
+			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
+			if(connectedStargate != null)
 			{
-				timer = nextAttackerInterval();
-				counter--;
+				ServerLevel level = connectedStargate.getLevel();
 				
-				Entity entity = createEntity(level);
-				if(entity != null)
+				if(level != null)
 				{
-					Entity traveler = connectedStargate.receiveTraveler(connection, this, entity, new Vec3(0, -2.0/INNER_RADIUS, random.nextDouble(-1.5/INNER_RADIUS, 1.5/INNER_RADIUS)), new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
-					if(traveler != null)
+					Entity entity = createEntity(level);
+					if(entity != null)
 					{
-						connection.setTimeSinceLastTraveler(0);
-						connection.setUsed(true);
-						
-						spawnEntity(level, traveler);
+						Entity traveler = connectedStargate.receiveTraveler(connection, this, entity,
+								new Vec3(0, -2.0/getInnerRadius(), getSpawnerTimer().getRandom().nextDouble(-1.5/getInnerRadius(), 1.5/getInnerRadius())),
+								new Vec3(-0.4, 0, 0), new Vec3(-1, 0, 0));
+						if(traveler != null)
+						{
+							connection.setTimeSinceLastTraveler(0);
+							connection.setUsed(true);
+							
+							spawnEntity(level, traveler);
+						}
+						else
+							entity.discard();
 					}
-					else
-						entity.discard();
 				}
 			}
 		}
 	}
 	
 	@Override
-	public @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
+	default boolean shouldAutoclose(StargateConnection connection)
+	{
+		return connection.getOpenTime() > 200;
+	}
+	
+	@Override
+	default boolean requiresEnergyBypass(int openTime)
+	{
+		return openTime > SGJourneyStargate.MAX_OPEN_TIME;
+	}
+	
+	@Override
+	default AddressFilterInfo addressFilterInfo()
+	{
+		return new AddressFilterInfo();
+	}
+	
+	@Override
+	default void tick() {}
+	
+	//TODO Make an actual dialing method instead of the one below
+	
+	default StargateInfo.FeedbackMessage dial()
+	{
+		return Dialing.dialStargate(getServer(), this, getAddress(), true, true/*Only search for loaded Stargates*/);
+	}
+	
+	@Override
+	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
 			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
@@ -326,33 +155,17 @@ public class SpawnerStargate implements Stargate
 		return null;
 	}
 	
-	@Override
-	public boolean shouldAutoclose(StargateConnection connection)
-	{
-		return connection.getOpenTime() > 200;
-	}
+	//============================================================================================
+	//**************************************Entity Spawning***************************************
+	//============================================================================================
 	
-	@Override
-	public boolean requiresEnergyBypass(int openTime)
-	{
-		return openTime > SGJourneyStargate.MAX_OPEN_TIME;
-	}
+	/**
+	 * @return Spawner timer that randomizes the amount of Entities that spawn and the intervals between each individual spawn
+	 */
+	SpawnerTimer getSpawnerTimer();
 	
-	@Override
-	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
-	{
-		//TODO
-	}
+	@Nullable
+	Entity createEntity(ServerLevel level);
 	
-	@Override
-	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries)
-	{
-		//TODO
-	}
-	
-	@Override
-	public AddressFilterInfo addressFilterInfo()
-	{
-		return new AddressFilterInfo();
-	}
+	void spawnEntity(ServerLevel level, Entity entity);
 }

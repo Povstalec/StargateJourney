@@ -17,8 +17,8 @@ import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicStargate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

@@ -1,8 +1,10 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.universe;
 
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 public abstract class UniverseStargate extends SGJourneyStargate
 {
@@ -11,12 +13,6 @@ public abstract class UniverseStargate extends SGJourneyStargate
 	public UniverseStargate(StargateType<?> type, MinecraftServer server)
 	{
 		super(type, server);
-	}
-	
-	@Override
-	public StargateInfo.Gen getGeneration()
-	{
-		return StargateInfo.Gen.GEN_1;
 	}
 	
 	@Override
