@@ -159,7 +159,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(tag.contains(TRANSPORTER_ID, Tag.TAG_INT_ARRAY))
 			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
     	
-    	if(tag.contains(CUSTOM_NAME, 8))
+    	if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));

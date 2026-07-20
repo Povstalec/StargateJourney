@@ -103,7 +103,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		getBlockAt(part).ifPresent(coverBlockState ->
 		{
 			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
-				weatheringBlock.changeOverTime(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+				weatheringBlock.getNextState(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
 		});
 	}
 	
