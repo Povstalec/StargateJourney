@@ -12,5 +12,5 @@
 		"T": {"tag": "sgjourney:trinium_ingot"}
 	},
 	
-	"result": { "item": "sgjourney:trinium_rod", "count": 4 }
+	"result": { "id": "sgjourney:trinium_rod", "count": 4 }
 }

@@ -12,6 +12,6 @@
 		"X#",
 		" #"
 	],
-	"result": { "item": "sgjourney:trinium_axe" },
+	"result": { "id": "sgjourney:trinium_axe" },
 	"show_notification": true
 }

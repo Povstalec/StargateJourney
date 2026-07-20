@@ -11,8 +11,5 @@
 	{
 		"I": {"item": "sgjourney:naquadah_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:naquadah_stairs", "count": 4
-	}
+	"result": { "id": "sgjourney:naquadah_stairs", "count": 4 }
 }

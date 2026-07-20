@@ -12,9 +12,5 @@
 			"item": "sgjourney:polished_naquadah_block"
 		}
 	},
-	"result":
-	{
-		"count": 6,
-		"item": "sgjourney:polished_naquadah_slab"
-	}
+	"result": { "id": "sgjourney:polished_naquadah_slab", "count": 6 }
 }

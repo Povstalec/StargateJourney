@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:polished_naquadah_slab" }
 	},
-	"result": { "item": "sgjourney:chiseled_naquadah_block" }
+	"result": { "id": "sgjourney:chiseled_naquadah_block" }
 }

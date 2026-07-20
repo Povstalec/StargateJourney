@@ -2,12 +2,7 @@
 	"replace": false,
 	"values":
 	[
-<<<<<<<< HEAD:src/main/resources/data/sgjourney/tags/item/naquadah_alloy_nugget.json
-		"sgjourney:naquadah_alloy_nugget",
-		{"id": "#c:nuggets/naquadah_alloy", "required": false}
-========
 		"sgjourney:naquadah_iron_nugget",
-		{"id": "#forge:nuggets/naquadah_alloy", "required": false}
->>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/tags/item/naquadah_iron_nugget.json
+		{"id": "#c:nuggets/naquadah_alloy", "required": false}
 	]
 }

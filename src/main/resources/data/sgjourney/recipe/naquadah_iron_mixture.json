@@ -8,5 +8,5 @@
 		{ "item": "sgjourney:raw_naquadah" },
 		{ "item": "sgjourney:raw_naquadah" }
 	],
-	"result": { "item": "sgjourney:naquadah_iron_mixture", "count": 4 }
+	"result": { "id": "sgjourney:naquadah_iron_mixture", "count": 4 }
 }

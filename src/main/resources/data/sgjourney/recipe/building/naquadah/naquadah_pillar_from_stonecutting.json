@@ -3,5 +3,5 @@
 	"count": 1,
 	
 	"ingredient": [{ "item": "sgjourney:naquadah_block" }, { "item": "sgjourney:cut_naquadah_block" }],
-	"result": "sgjourney:naquadah_pillar"
+	"result": { "id": "sgjourney:naquadah_pillar" }
 }

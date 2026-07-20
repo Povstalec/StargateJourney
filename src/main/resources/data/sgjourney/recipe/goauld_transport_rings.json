@@ -15,5 +15,5 @@
 		"O": { "item": "sgjourney:control_crystal" },
 		"C": { "item": "sgjourney:communication_crystal" }
 	},
-	"result": { "item": "sgjourney:goauld_transport_rings" }
+	"result": { "id": "sgjourney:goauld_transport_rings" }
 }

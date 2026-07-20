@@ -7,5 +7,5 @@
 		{ "item": "sgjourney:oxidized_naquadah_copper_pillar" },
 		{ "item": "minecraft:honeycomb" }
 	],
-	"result": { "count": 1, "item": "sgjourney:waxed_oxidized_naquadah_copper_pillar" }
+	"result": { "id": "sgjourney:waxed_oxidized_naquadah_copper_pillar" }
 }

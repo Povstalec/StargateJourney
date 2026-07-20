@@ -11,6 +11,6 @@
 		"XXX",
 		"XXX"
 	],
-	"result": { "item": "sgjourney:trinium_chestplate" },
+	"result": { "id": "sgjourney:trinium_chestplate" },
 	"show_notification": true
 }

@@ -7,5 +7,5 @@
 	{
 		"item": "sgjourney:goauld_carcass"
 	},
-	"result": "sgjourney:cooked_goauld"
+	"result": {"id": "sgjourney:cooked_goauld"}
 }

@@ -10,8 +10,5 @@
 	{
 		"I": {"item": "sgjourney:waxed_oxidized_naquadah_copper_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:waxed_oxidized_naquadah_copper_slab", "count": 6
-	}
+	"result": { "id": "sgjourney:waxed_oxidized_naquadah_copper_slab", "count": 6 }
 }

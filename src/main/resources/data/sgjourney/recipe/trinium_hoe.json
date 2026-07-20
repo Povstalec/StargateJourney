@@ -12,6 +12,6 @@
 		" #",
 		" #"
 	],
-	"result": { "item": "sgjourney:trinium_hoe" },
+	"result": { "id": "sgjourney:trinium_hoe" },
 	"show_notification": true
 }

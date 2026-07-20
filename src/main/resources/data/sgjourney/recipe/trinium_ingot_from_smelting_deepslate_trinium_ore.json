@@ -1,7 +1,7 @@
 {
 	"type": "minecraft:smelting",
 	"ingredient": { "item": "sgjourney:deepslate_trinium_ore" },
-	"result": { "item": "sgjourney:trinium_ingot" },
+	"result": { "id": "sgjourney:trinium_ingot" },
 	"experience": 1.0,
 	"cookingtime": 200
 }

@@ -12,8 +12,5 @@
 		"I": { "item": "sgjourney:trinium_ingot" },
 		"T": { "tag": "sgjourney:trinium_ingot" }
 	},
-	"result":
-	{
-		"item": "sgjourney:trinium_block"
-	}
+	"result": { "id": "sgjourney:trinium_block" }
 }

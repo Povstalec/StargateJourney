@@ -1,7 +1,6 @@
 {
 	"type": "minecraft:stonecutting",
-	"count": 1,
 	
 	"ingredient": [{ "item": "sgjourney:exposed_naquadah_copper_block" }, { "item": "sgjourney:exposed_cut_naquadah_copper_block" }],
-	"result": "sgjourney:exposed_cut_naquadah_copper_stairs"
+	"result": { "id": "sgjourney:exposed_cut_naquadah_copper_stairs" }
 }

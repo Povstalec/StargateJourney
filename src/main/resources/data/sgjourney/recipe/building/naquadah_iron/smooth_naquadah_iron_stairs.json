@@ -14,9 +14,5 @@
 			"item": "sgjourney:smooth_naquadah_iron_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:smooth_naquadah_iron_stairs"
-	}
+	"result": { "id": "sgjourney:smooth_naquadah_iron_stairs", "count": 4 }
 }

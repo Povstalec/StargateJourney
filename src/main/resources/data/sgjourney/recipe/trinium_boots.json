@@ -10,6 +10,6 @@
 		"X X",
 		"X X"
 	],
-	"result": { "item": "sgjourney:trinium_boots" },
+	"result": { "id": "sgjourney:trinium_boots" },
 	"show_notification": true
 }

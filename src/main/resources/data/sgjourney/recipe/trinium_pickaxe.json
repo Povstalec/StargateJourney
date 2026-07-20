@@ -12,6 +12,6 @@
 		" # ",
 		" # "
 	],
-	"result": { "item": "sgjourney:trinium_pickaxe" },
+	"result": { "id": "sgjourney:trinium_pickaxe" },
 	"show_notification": true
 }

@@ -12,8 +12,5 @@
 		"I": { "item": "sgjourney:naquadah_iron_alloy" },
 		"T": { "tag": "sgjourney:naquadah_iron_alloy" }
 	},
-	"result":
-	{
-		"item": "sgjourney:naquadah_iron_block"
-	}
+	"result": { "id": "sgjourney:naquadah_iron_block" }
 }

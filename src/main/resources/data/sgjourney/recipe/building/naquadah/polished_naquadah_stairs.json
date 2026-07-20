@@ -14,9 +14,5 @@
 			"item": "sgjourney:polished_naquadah_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:polished_naquadah_stairs"
-	}
+	"result": { "id": "sgjourney:polished_naquadah_stairs", "count": 4 }
 }

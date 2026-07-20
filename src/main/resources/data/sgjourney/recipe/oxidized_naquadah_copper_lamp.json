@@ -15,5 +15,5 @@
 		
 	},
 	
-	"result": { "item": "sgjourney:oxidized_naquadah_copper_lamp", "count": 4 }
+	"result": { "id": "sgjourney:oxidized_naquadah_copper_lamp", "count": 4 }
 }

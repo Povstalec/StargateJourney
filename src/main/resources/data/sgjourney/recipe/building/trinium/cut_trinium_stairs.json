@@ -14,9 +14,5 @@
 			"item": "sgjourney:cut_trinium_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:cut_trinium_stairs"
-	}
+	"result": { "id": "sgjourney:cut_trinium_stairs", "count": 4 }
 }

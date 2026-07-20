@@ -28,7 +28,7 @@ public class RecipeTypeInit
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CrystallizingRecipe.AdvancedCrystallizer>> ADVANCED_CRYSTALLIZING_SERIALIZER = SERIALIZERS.register("advanced_crystallizing", () -> CrystallizingRecipe.AdvancedCrystallizerSerializer.INSTANCE);
 	
 	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<LiquidizingRecipe.NaquadahLiquidizer>> NAQUADAH_LIQUIDIZING_SERIALIZER = SERIALIZERS.register("naquadah_liquidizing", () -> LiquidizingRecipe.NaquadahLiquidizerSerializer.INSTANCE);
-	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<LiquidizingRecipe.HeavyNaquadahLiquidizer>> HEAVY_NAQUADAH_LIQUIDIZING_SERIALIZER = SERIALIZERS.register("heavy_naquadah_liquidizing", () -> LiquidizingRecipe.HeavyNaquadahLiquidizerSerializer.INSTANCE);
+	public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<LiquidizingRecipe.HeavyNaquadahLiquidizer>> HEAVY_NAQUADAH_LIQUIDIZING_SERIALIZER = SERIALIZERS.register("naquadah_heavy_liquidizing", () -> LiquidizingRecipe.HeavyNaquadahLiquidizerSerializer.INSTANCE);
 	
 	
 	

@@ -11,8 +11,5 @@
 	{
 		"I": {"item": "sgjourney:weathered_naquadah_copper_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:weathered_naquadah_copper_stairs", "count": 4
-	}
+	"result": { "id": "sgjourney:weathered_naquadah_copper_stairs", "count": 4 }
 }

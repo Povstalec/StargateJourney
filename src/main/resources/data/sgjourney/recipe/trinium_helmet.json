@@ -10,6 +10,6 @@
 		"XXX",
 		"X X"
 	],
-	"result": { "item": "sgjourney:trinium_helmet" },
+	"result": { "id": "sgjourney:trinium_helmet" },
 	"show_notification": true
 }

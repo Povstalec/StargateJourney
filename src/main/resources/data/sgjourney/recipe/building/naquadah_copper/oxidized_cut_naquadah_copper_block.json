@@ -13,9 +13,5 @@
 			"item": "sgjourney:oxidized_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:oxidized_cut_naquadah_copper_block"
-	}
+	"result": { "id": "sgjourney:oxidized_cut_naquadah_copper_block", "count": 4 }
 }

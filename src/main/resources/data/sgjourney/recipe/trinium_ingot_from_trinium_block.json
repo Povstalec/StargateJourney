@@ -4,5 +4,5 @@
 	[
 		{ "item": "sgjourney:trinium_block" }
 	],
-	"result": { "item": "sgjourney:trinium_ingot", "count": 9 }
+	"result": { "id": "sgjourney:trinium_ingot", "count": 9 }
 }

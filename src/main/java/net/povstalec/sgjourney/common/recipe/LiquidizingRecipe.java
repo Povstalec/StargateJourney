@@ -190,7 +190,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<LiquidizingRecipe
 	public static class HeavyNaquadahLiquidizerSerializer implements RecipeSerializer<HeavyNaquadahLiquidizer>
 	{
 		public static final HeavyNaquadahLiquidizerSerializer INSTANCE = new HeavyNaquadahLiquidizerSerializer();
-		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("heavy_naquadah_liquidizing");
+		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("naquadah_heavy_liquidizing");
 		
 		public static final MapCodec<HeavyNaquadahLiquidizer> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
 				recipeBuilder.group(

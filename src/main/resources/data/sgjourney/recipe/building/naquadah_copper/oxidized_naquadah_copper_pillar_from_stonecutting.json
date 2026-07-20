@@ -1,7 +1,6 @@
 {
 	"type": "minecraft:stonecutting",
-	"count": 1,
 	
 	"ingredient": [{ "item": "sgjourney:oxidized_naquadah_copper_block" }, { "item": "sgjourney:oxidized_cut_naquadah_copper_block" }],
-	"result": "sgjourney:oxidized_naquadah_copper_pillar"
+	"result": { "id": "sgjourney:oxidized_naquadah_copper_pillar" }
 }

@@ -12,5 +12,5 @@
 		"N": { "tag": "sgjourney:naquadah_iron_alloy" },
 		"M": { "item": "sgjourney:matter_projector" }
 	},
-	"result": { "item": "sgjourney:ancient_transport_ring" }
+	"result": { "id": "sgjourney:ancient_transport_ring" }
 }

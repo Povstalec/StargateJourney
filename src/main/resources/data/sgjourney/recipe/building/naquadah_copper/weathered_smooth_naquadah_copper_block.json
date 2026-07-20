@@ -13,9 +13,5 @@
 			"item": "sgjourney:weathered_polished_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:weathered_smooth_naquadah_copper_block"
-	}
+	"result": { "id": "sgjourney:weathered_smooth_naquadah_copper_block", "count": 4 }
 }

@@ -13,9 +13,5 @@
 			"item": "sgjourney:polished_naquadah_iron_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:smooth_naquadah_iron_block"
-	}
+	"result": { "id": "sgjourney:smooth_naquadah_iron_block", "count": 4 }
 }

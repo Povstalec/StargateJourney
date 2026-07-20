@@ -7,5 +7,5 @@
 		{ "item": "sgjourney:cut_naquadah_copper_block" },
 		{ "item": "minecraft:honeycomb" }
 	],
-	"result": { "count": 1, "item": "sgjourney:waxed_cut_naquadah_copper_block" }
+	"result": { "id": "sgjourney:waxed_cut_naquadah_copper_block", "count": 4 }
 }

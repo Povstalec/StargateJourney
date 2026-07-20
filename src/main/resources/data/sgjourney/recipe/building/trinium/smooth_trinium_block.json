@@ -13,9 +13,5 @@
 			"item": "sgjourney:polished_trinium_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:smooth_trinium_block"
-	}
+	"result": { "id": "sgjourney:smooth_trinium_block", "count": 4 }
 }

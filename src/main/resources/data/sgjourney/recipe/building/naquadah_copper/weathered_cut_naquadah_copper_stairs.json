@@ -14,9 +14,5 @@
 			"item": "sgjourney:weathered_cut_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:weathered_cut_naquadah_copper_stairs"
-	}
+	"result": { "id": "sgjourney:weathered_cut_naquadah_copper_stairs", "count": 4 }
 }

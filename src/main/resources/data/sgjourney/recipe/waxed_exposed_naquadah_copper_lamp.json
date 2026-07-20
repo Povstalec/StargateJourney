@@ -16,5 +16,5 @@
 		
 	},
 	
-	"result": { "item": "sgjourney:waxed_exposed_naquadah_copper_lamp", "count": 4 }
+	"result": { "id": "sgjourney:waxed_exposed_naquadah_copper_lamp", "count": 4 }
 }

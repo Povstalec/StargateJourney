@@ -14,10 +14,6 @@
 	},
 	"result":
 	{
-<<<<<<<< HEAD:src/main/resources/data/sgjourney/recipe/naquadah_alloy_iris.json
-		"id": "sgjourney:naquadah_alloy_iris"
-========
-		"item": "sgjourney:naquadah_iris"
->>>>>>>> stargatejourney-1.19.3:src/main/resources/data/sgjourney/recipe/naquadah_iris.json
+		"id": "sgjourney:naquadah_iris"
 	}
 }

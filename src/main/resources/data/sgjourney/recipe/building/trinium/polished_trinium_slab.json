@@ -12,9 +12,5 @@
 			"item": "sgjourney:polished_trinium_block"
 		}
 	},
-	"result":
-	{
-		"count": 6,
-		"item": "sgjourney:polished_trinium_slab"
-	}
+	"result": { "id": "sgjourney:polished_trinium_slab", "count": 6 }
 }

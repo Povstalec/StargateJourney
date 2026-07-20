@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:polished_trinium_slab" }
 	},
-	"result": { "item": "sgjourney:chiseled_trinium_block" }
+	"result": { "id": "sgjourney:chiseled_trinium_block" }
 }

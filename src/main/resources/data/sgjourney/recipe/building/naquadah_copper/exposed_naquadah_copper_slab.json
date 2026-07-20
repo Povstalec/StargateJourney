@@ -9,8 +9,5 @@
 	{
 		"I": {"item": "sgjourney:exposed_naquadah_copper_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:exposed_naquadah_copper_slab", "count": 6
-	}
+	"result": { "id": "sgjourney:exposed_naquadah_copper_slab", "count": 6 }
 }

@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:oxidized_polished_naquadah_copper_slab" }
 	},
-	"result": { "item": "sgjourney:oxidized_chiseled_naquadah_copper_block" }
+	"result": { "id": "sgjourney:oxidized_chiseled_naquadah_copper_block" }
 }

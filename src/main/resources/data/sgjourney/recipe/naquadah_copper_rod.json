@@ -12,5 +12,5 @@
 		"A": {"item": "sgjourney:naquadah_copper_alloy"}
 	},
 	
-	"result": { "item": "sgjourney:naquadah_copper_rod", "count": 4 }
+	"result": { "id": "sgjourney:naquadah_copper_rod", "count": 4 }
 }

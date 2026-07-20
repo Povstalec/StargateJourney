@@ -5,5 +5,5 @@
 	[
 		{ "item": "sgjourney:raw_naquadria_block" }
 	],
-	"result": { "item": "sgjourney:raw_naquadria", "count": 9 }
+	"result": { "id": "sgjourney:raw_naquadria", "count": 9 }
 }

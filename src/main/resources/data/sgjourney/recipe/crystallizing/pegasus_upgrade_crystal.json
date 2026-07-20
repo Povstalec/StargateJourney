@@ -10,5 +10,7 @@
 		{
 			"sgjourney:stargate_upgrade": "sgjourney:pegasus_stargate"
 		}
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

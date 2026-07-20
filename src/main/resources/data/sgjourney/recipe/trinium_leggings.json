@@ -11,6 +11,6 @@
 		"X X",
 		"X X"
 	],
-	"result": { "item": "sgjourney:trinium_leggings" },
+	"result": { "id": "sgjourney:trinium_leggings" },
 	"show_notification": true
 }

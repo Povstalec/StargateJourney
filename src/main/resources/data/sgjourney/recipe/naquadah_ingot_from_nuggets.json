@@ -12,7 +12,7 @@
     "###"
   ],
   "result": {
-    "item": "sgjourney:naquadah_ingot"
+    "id": "sgjourney:naquadah_ingot"
   },
   "show_notification": true
 }

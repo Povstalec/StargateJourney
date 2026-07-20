@@ -12,9 +12,5 @@
 			"item": "sgjourney:cut_naquadah_block"
 		}
 	},
-	"result":
-	{
-		"count": 6,
-		"id": "sgjourney:cut_naquadah_slab"
-	}
+	"result": { "id": "sgjourney:cut_naquadah_slab", "count": 6 }
 }

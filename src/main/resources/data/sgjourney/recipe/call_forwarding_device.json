@@ -16,5 +16,5 @@
 		
 	},
 	
-	"result": { "item": "sgjourney:call_forwarding_device" }
+	"result": { "id": "sgjourney:call_forwarding_device" }
 }

@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:weathered_cut_naquadah_copper_slab" }
 	},
-	"result": { "item": "sgjourney:weathered_naquadah_copper_pillar" }
+	"result": { "id": "sgjourney:weathered_naquadah_copper_pillar" }
 }

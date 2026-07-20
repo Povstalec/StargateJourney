@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:cut_trinium_slab" }
 	},
-	"result": { "item": "sgjourney:trinium_pillar" }
+	"result": { "id": "sgjourney:trinium_pillar" }
 }

@@ -7,5 +7,5 @@
 		{ "item": "sgjourney:exposed_naquadah_copper_lamp" },
 		{ "item": "minecraft:honeycomb" }
 	],
-	"result": { "count": 1, "item": "sgjourney:waxed_exposed_naquadah_copper_lamp" }
+	"result": { "id": "sgjourney:waxed_exposed_naquadah_copper_lamp" }
 }

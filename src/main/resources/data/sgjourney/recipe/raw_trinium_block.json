@@ -11,6 +11,6 @@
     "T": {"tag": "sgjourney:raw_trinium"}
   },
   "result": {
-    "item": "sgjourney:raw_trinium_block"
+    "id": "sgjourney:raw_trinium_block"
   }
 }

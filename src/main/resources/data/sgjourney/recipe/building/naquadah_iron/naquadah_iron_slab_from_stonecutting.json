@@ -1,10 +1,9 @@
 {
 	"type": "minecraft:stonecutting",
-	"count": 2,
 	
 	"ingredient":
 	{
 		"item": "sgjourney:naquadah_iron_block"
 	},
-	"result": "sgjourney:naquadah_iron_slab"
+	"result": { "id": "sgjourney:naquadah_iron_slab", "count": 2 }
 }

@@ -6,5 +6,7 @@
 	"output":
 	{
 		"id": "sgjourney:large_control_crystal"
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

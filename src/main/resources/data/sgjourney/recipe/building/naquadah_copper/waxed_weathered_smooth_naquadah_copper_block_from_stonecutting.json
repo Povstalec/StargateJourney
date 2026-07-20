@@ -1,7 +1,6 @@
 {
 	"type": "minecraft:stonecutting",
-	"count": 1,
 	
 	"ingredient": [{ "item": "sgjourney:waxed_weathered_naquadah_copper_block" }, { "item": "sgjourney:waxed_weathered_cut_naquadah_copper_block" }, { "item": "sgjourney:waxed_weathered_polished_naquadah_copper_block" }],
-	"result": "sgjourney:waxed_weathered_smooth_naquadah_copper_block"
+	"result": { "id": "sgjourney:waxed_weathered_smooth_naquadah_copper_block" }
 }

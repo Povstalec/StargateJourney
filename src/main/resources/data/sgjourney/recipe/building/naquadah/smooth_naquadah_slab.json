@@ -9,8 +9,5 @@
 	{
 		"I": {"item": "sgjourney:smooth_naquadah_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:smooth_naquadah_slab", "count": 6
-	}
+	"result": { "id": "sgjourney:smooth_naquadah_slab", "count": 6 }
 }

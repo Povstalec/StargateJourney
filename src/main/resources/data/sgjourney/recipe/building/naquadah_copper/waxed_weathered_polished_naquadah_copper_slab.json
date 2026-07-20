@@ -14,9 +14,5 @@
 			"item": "sgjourney:waxed_weathered_polished_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 6,
-		"item": "sgjourney:waxed_weathered_polished_naquadah_copper_slab"
-	}
+	"result": { "id": "sgjourney:waxed_weathered_polished_naquadah_copper_slab", "count": 6 }
 }

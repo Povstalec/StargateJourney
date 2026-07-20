@@ -9,8 +9,5 @@
 	{
 		"I": {"item": "sgjourney:smooth_trinium_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:smooth_trinium_slab", "count": 6
-	}
+	"result": { "id": "sgjourney:smooth_trinium_slab", "count": 6 }
 }

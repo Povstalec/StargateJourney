@@ -14,9 +14,5 @@
 			"item": "sgjourney:waxed_exposed_polished_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:waxed_exposed_smooth_naquadah_copper_block"
-	}
+	"result": { "id": "sgjourney:waxed_exposed_smooth_naquadah_copper_block", "count": 4 }
 }

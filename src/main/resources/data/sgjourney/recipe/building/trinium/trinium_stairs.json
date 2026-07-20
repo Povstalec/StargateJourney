@@ -11,8 +11,5 @@
 	{
 		"I": {"item": "sgjourney:trinium_block"}
 	},
-	"result":
-	{
-		"item": "sgjourney:trinium_stairs", "count": 4
-	}
+	"result": { "id": "sgjourney:trinium_stairs", "count": 4 }
 }

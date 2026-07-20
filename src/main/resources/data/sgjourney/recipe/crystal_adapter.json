@@ -18,5 +18,5 @@
 		"C": { "item": "minecraft:comparator" }
 	},
 	
-	"result": { "item": "sgjourney:crystal_adapter", "count": 1 }
+	"result": { "id": "sgjourney:crystal_adapter", "count": 1 }
 }

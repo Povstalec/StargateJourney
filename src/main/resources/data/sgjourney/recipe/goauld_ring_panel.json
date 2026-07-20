@@ -15,5 +15,5 @@
 		"E": { "item": "minecraft:emerald" },
 		"T": { "item": "minecraft:red_terracotta" }
 	},
-	"result": { "item": "sgjourney:goauld_ring_panel" }
+	"result": { "id": "sgjourney:goauld_ring_panel" }
 }

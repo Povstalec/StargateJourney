@@ -14,9 +14,5 @@
 			"item": "sgjourney:exposed_polished_naquadah_copper_block"
 		}
 	},
-	"result":
-	{
-		"count": 4,
-		"item": "sgjourney:exposed_polished_naquadah_copper_stairs"
-	}
+	"result": { "id": "sgjourney:exposed_polished_naquadah_copper_stairs", "count": 4 }
 }

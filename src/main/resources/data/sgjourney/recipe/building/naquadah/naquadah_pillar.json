@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:cut_naquadah_slab" }
 	},
-	"result": { "item": "sgjourney:naquadah_pillar" }
+	"result": { "id": "sgjourney:naquadah_pillar" }
 }

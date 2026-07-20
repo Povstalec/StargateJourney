@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:waxed_exposed_cut_naquadah_copper_slab" }
 	},
-	"result": { "item": "sgjourney:waxed_exposed_naquadah_copper_pillar" }
+	"result": { "id": "sgjourney:waxed_exposed_naquadah_copper_pillar" }
 }

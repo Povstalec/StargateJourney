@@ -12,6 +12,6 @@
 		"X",
 		"#"
 	],
-	"result": { "item": "sgjourney:trinium_sword" },
+	"result": { "id": "sgjourney:trinium_sword" },
 	"show_notification": true
 }

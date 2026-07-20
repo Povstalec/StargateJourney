@@ -15,5 +15,5 @@
 		
 	},
 	
-	"result": { "item": "sgjourney:naquadah_copper_lamp", "count": 4 }
+	"result": { "id": "sgjourney:naquadah_copper_lamp", "count": 4 }
 }

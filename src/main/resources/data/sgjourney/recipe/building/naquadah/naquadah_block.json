@@ -12,8 +12,5 @@
 		"I": { "item": "sgjourney:naquadah_ingot" },
 		"T": { "tag": "sgjourney:naquadah_ingot" }
 	},
-	"result":
-	{
-		"id": "sgjourney:naquadah_block"
-	}
+	"result": { "id": "sgjourney:naquadah_block" }
 }

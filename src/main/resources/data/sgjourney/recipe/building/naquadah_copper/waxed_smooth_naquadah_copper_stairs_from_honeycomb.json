@@ -7,5 +7,5 @@
 		{ "item": "sgjourney:smooth_naquadah_copper_stairs" },
 		{ "item": "minecraft:honeycomb" }
 	],
-	"result": { "count": 1, "item": "sgjourney:waxed_smooth_naquadah_copper_stairs" }
+	"result": { "id": "sgjourney:waxed_smooth_naquadah_copper_stairs" }
 }

@@ -12,6 +12,6 @@
 		"#",
 		"#"
 	],
-	"result": { "item": "sgjourney:trinium_shovel" },
+	"result": { "id": "sgjourney:trinium_shovel" },
 	"show_notification": true
 }
