@@ -37,9 +37,9 @@ public interface Transporter extends Comparable<Transporter>
 	EntityCapability<Transporter, Void> TRANSPORTER_CAPABILITY_ENTITY = EntityCapability.createVoid(
 			StargateJourney.sgjourneyLocation(TRANSPORTER), Transporter.class);
 	
-	String DIMENSION = "Dimension"; //TODO Change this to "dimension"
+	String DIMENSION = "dimension";
 	
-	String CUSTOM_NAME = "CustomName"; //TODO Change this to "custom_name"
+	String CUSTOM_NAME = "custom_name";
 	
 	String NETWORK_RESTRICTIONS = "network_restrictions";
 	String NETWORKS = "networks";

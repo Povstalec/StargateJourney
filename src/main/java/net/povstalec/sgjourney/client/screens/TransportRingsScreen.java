@@ -104,13 +104,6 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 		
 		this.itemTooltip(graphics, mouseX, mouseY, 142, 17, 9, ComponentHelper.description("tooltip.sgjourney.transport_rings.energy_slot.description"));
     }
-    
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
-	{
-		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
-		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752);
-    }
 	
 	@Override
 	protected boolean hasItem(int slot)

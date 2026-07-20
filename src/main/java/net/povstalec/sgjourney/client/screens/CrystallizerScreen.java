@@ -83,13 +83,6 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
         this.liquidNaquadahTooltip(graphics, mouseX, mouseY);
 	}
     
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) 
-	{
-		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
-		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752);
-    }
-    
     protected void renderProgress(GuiGraphics graphics, int x, int y)
     {
     	float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();

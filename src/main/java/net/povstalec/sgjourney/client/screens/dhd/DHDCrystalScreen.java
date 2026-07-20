@@ -107,13 +107,6 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		this.itemTooltip(graphics, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot.description"));
 		this.itemTooltip(graphics, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot.description"));
     }
-    
-    @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
-	{
-		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
-    }
 	
 	@Override
 	protected boolean hasItem(int slot)

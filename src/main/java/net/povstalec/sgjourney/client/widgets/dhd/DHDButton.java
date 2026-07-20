@@ -1,17 +1,16 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.povstalec.sgjourney.client.widgets.SGJourneyWidgetTooltipHolder;
 
 public class DHDButton extends Button
 {
 	public DHDButton(int x, int y, int width, int height, Component component, Button.OnPress onPress)
 	{
 		super(x, y, width, height, component, onPress, Button.DEFAULT_NARRATION);
+		tooltip = new SGJourneyWidgetTooltipHolder();
 	}
 	
 	@Override

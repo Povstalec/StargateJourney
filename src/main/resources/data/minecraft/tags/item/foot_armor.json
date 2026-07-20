@@ -1,0 +1,11 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_boots",
+		"sgjourney:trinium_boots",
+		
+		"sgjourney:jaffa_boots",
+		"sgjourney:system_lord_boots"
+	]
+}
