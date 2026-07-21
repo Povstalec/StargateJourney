@@ -99,7 +99,7 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
     @Override
     protected void renderLabels(@NotNull GuiGraphics graphics, int mouseX, int mouseY)
 	{
-		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, 128, 4210752);
+		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, 128, 4210752, false);
     }
 	
 	@Override

@@ -139,22 +139,17 @@ public class StargateBlockItem extends BlockItem
 			
 			if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 			{
+				stargate.setupServerAutoCache();
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.READY);
 				
 				// Sets up symbols on the Milky Way Stargate
 				if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
-				{
 					milkyWayStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
-					//TODO Is this necessary? milkyWayStargate.symbolInfo().setSymbols(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-				}
 				
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
-				{
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
-					//TODO Is this necessary? classicStargate.symbolInfo().setSymbols(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
-				}
 				
 				return true;
 			}
@@ -176,6 +171,7 @@ public class StargateBlockItem extends BlockItem
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
+				stargate.setupServerAutoCache();
 				// Registers it as one of the Block Entities in the list
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.GENERATED);

@@ -64,6 +64,7 @@ public class TransporterBlockItem extends BlockItem
 			
 			if(baseEntity instanceof AbstractTransporterEntity<?> transporter)
 			{
+				transporter.setupServerAutoCache();
 				transporter.addTransporterToNetwork();
 				transporter.generateAdditional(StructureGenEntity.Step.READY);
 				
@@ -93,6 +94,7 @@ public class TransporterBlockItem extends BlockItem
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
+				transporter.setupServerAutoCache();
 				// Registers it as one of the Block Entities in the list
 				transporter.addTransporterToNetwork();
 			}

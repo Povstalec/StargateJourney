@@ -83,7 +83,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
-		this.addRenderableWidget(new InterfaceModeButton(x + 9, y + 19, Component.empty(), Component.empty(), button ->
+		this.addRenderableWidget(new InterfaceModeButton(x + 4, y + 23, Component.empty(), Component.empty(), button ->
 		{
 			if(isShiftDown())
 				menu.setEnergyTargetAndMode(parsePositiveOrZero(this.editBox.getValue()), menu.getMode().previous(this.menu.getInterfaceType().hasAdvancedCrystalMethods()));
@@ -144,11 +144,11 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	{
 		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 		
-		graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 20, 56, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 20, 66, 0xffffff, false);
-		graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 20, 76, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 20, 86, 0xffffff, false);
-		graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 20, 96, 0xffffff, false);
+		graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 34, 57, 0xffffff, false);
+		graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff, false);
+		graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 34, 77, 0xffffff, false);
+		graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff, false);
+		graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff, false);
 	}
 	
 	@Override

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
@@ -107,9 +108,13 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		RenderSystem.setShader(GameRenderer::getPositionTexColorShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
+		
+		this.renderBackground(graphics, mouseX, mouseY, delta);
 		graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
-
-    	super.render(graphics, mouseX, mouseY, delta);
+		for(Renderable renderable : renderables)
+		{
+			renderable.render(graphics, mouseX, mouseY, delta);
+		}
         
     	renderLabels(graphics, mouseX, mouseY, x, y);
     }
