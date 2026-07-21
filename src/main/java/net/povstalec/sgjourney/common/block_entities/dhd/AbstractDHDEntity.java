@@ -143,31 +143,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		else
 		{
-			// Revalidation - check if it's not too far
-			stargateCache.setRevalidate(() ->
-			{
-				if(stargateRelativePos == null)
-					return false;
-				
-				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
-					return stargateCache.getCached() == stargate && CoordinateHelper.Relative.distanceSqr(stargatePos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Stargate at the saved pos is the same Stargate
-				
-				return false;
-			});
-			// Find nearest Stargate that isn't connected to a DHD
-			stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, maxConnectionDistance,
-					stargate -> !stargate.dhdCache.isCached()));
-			
-			stargateCache.setOnChanged((oldStargate, newStargate) ->
-			{
-				if(newStargate != null)
-					stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newStargate.getBlockPos());
-				else
-					stargateRelativePos = null;
-				
-				updateClient();
-			});
+			setupServerAutoCache();
 			
 			if(generationStep == StructureGenEntity.Step.READY)
 				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
@@ -268,6 +244,35 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> receiverCache()
 	{
 		return stargateCache;
+	}
+	
+	public void setupServerAutoCache()
+	{
+		// Revalidation - check if it's not too far
+		stargateCache.setRevalidate(() ->
+		{
+			if(stargateRelativePos == null)
+				return false;
+			
+			BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+			if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
+				return stargateCache.getCached() == stargate && CoordinateHelper.Relative.distanceSqr(stargatePos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Stargate at the saved pos is the same Stargate
+			
+			return false;
+		});
+		// Find nearest Stargate that isn't connected to a DHD
+		stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, maxConnectionDistance,
+				stargate -> !stargate.dhdCache.isCached()));
+		
+		stargateCache.setOnChanged((oldStargate, newStargate) ->
+		{
+			if(newStargate != null)
+				stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newStargate.getBlockPos());
+			else
+				stargateRelativePos = null;
+			
+			updateClient();
+		});
 	}
 	
 	@Override

@@ -106,38 +106,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		}
 		else
 		{
-			//=====Setting up cache logic=====
-			controllerCache.setRevalidate(() ->
-			{
-				if(controllerRelativePos == null)
-					return false;
-				
-				BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
-				if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity controller)
-					return controllerCache.getCached() == controller && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= controller.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
-				
-				return false;
-			});
-			controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
-					controller -> !controller.transporterCache.isCached()));
-			
-			controllerCache.setOnChanged((oldController, newController) ->
-			{
-				if(newController != null)
-				{
-					controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newController.getBlockPos());
-					controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newController.getBlockPos(), getBlockPos())));
-					// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
-					if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
-						controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
-				}
-				else
-					controllerRelativePos = null;
-				
-				updateTransporter();
-				updateClient();
-			});
-			//==========
+			setupServerAutoCache();
 			
 			checkTransporter();
 			
@@ -227,6 +196,40 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public AutoCache.Controller<TransporterControllerEntity, AbstractTransporterEntity<?>> controllerCache()
 	{
 		return controllerCache;
+	}
+	
+	public void setupServerAutoCache()
+	{
+		controllerCache.setRevalidate(() ->
+		{
+			if(controllerRelativePos == null)
+				return false;
+			
+			BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
+			if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity controller)
+				return controllerCache.getCached() == controller && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= controller.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+			
+			return false;
+		});
+		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
+				controller -> !controller.transporterCache.isCached()));
+		
+		controllerCache.setOnChanged((oldController, newController) ->
+		{
+			if(newController != null)
+			{
+				controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newController.getBlockPos());
+				controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newController.getBlockPos(), getBlockPos())));
+				// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
+				if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
+					controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
+			}
+			else
+				controllerRelativePos = null;
+			
+			updateTransporter();
+			updateClient();
+		});
 	}
 	
 	public final TransporterType<T> getTransporterType()

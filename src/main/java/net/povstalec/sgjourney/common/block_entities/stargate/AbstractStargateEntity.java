@@ -234,38 +234,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		else
 		{
-			//=====Setting up cache logic=====
-			dhdCache.setRevalidate(() ->
-			{
-				if(dhdRelativePos == null)
-					return false;
-				
-				BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
-				if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
-					return dhdCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(dhdPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
-				
-				return false;
-			});
-			dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, dhdSearchDistance,
-					dhd -> !dhd.stargateCache.isCached()));
-			
-			dhdCache.setOnChanged((oldDHD, newDHD) ->
-			{
-				if(newDHD != null)
-				{
-					dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
-					dhdSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
-					// Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
-					if(dhdSearchDistance < MIN_DHD_SEARCH_DISTANCE)
-						dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE; // Make sure the distance is at least 64
-				}
-				else
-					dhdRelativePos = null;
-				
-				updateStargate();
-				updateClient();
-			});
-			//==========
+			setupServerAutoCache();
 			
 			checkStargate();
 			
@@ -915,6 +884,40 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public AutoCache.Controller<AbstractDHDEntity, AbstractStargateEntity<?>> controllerCache()
 	{
 		return dhdCache;
+	}
+	
+	public void setupServerAutoCache()
+	{
+		dhdCache.setRevalidate(() ->
+		{
+			if(dhdRelativePos == null)
+				return false;
+			
+			BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
+			if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
+				return dhdCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(dhdPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+			
+			return false;
+		});
+		dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, dhdSearchDistance,
+				dhd -> !dhd.stargateCache.isCached()));
+		
+		dhdCache.setOnChanged((oldDHD, newDHD) ->
+		{
+			if(newDHD != null)
+			{
+				dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
+				dhdSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
+				// Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
+				if(dhdSearchDistance < MIN_DHD_SEARCH_DISTANCE)
+					dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE; // Make sure the distance is at least 64
+			}
+			else
+				dhdRelativePos = null;
+			
+			updateStargate();
+			updateClient();
+		});
 	}
 	
 	@Override
