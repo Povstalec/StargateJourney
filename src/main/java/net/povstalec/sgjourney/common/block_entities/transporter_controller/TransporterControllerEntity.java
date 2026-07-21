@@ -108,30 +108,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		else
 		{
 			// Revalidation - check if it's not too far
-			transporterCache.setRevalidate(() ->
-			{
-				if(transporterRelativePos == null)
-					return false;
-				
-				BlockPos transporterPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), transporterRelativePos);
-				if(transporterPos != null && level.getBlockEntity(transporterPos) instanceof AbstractTransporterEntity<?> transporter)
-					return transporterCache.getCached() == transporter && CoordinateHelper.Relative.distanceSqr(transporterPos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Transporter at the saved pos is the same Transporter
-				
-				return false;
-			});
-			// Find nearest Transporter that isn't connected to a Controller
-			transporterCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractTransporterEntity.class, level, worldPosition, maxConnectionDistance,
-					transporter -> !transporter.controllerCache.isCached()));
-			
-			transporterCache.setOnChanged((oldTransporter, newTransporter) ->
-			{
-				if(newTransporter != null)
-					transporterRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newTransporter.getBlockPos());
-				else
-					transporterRelativePos = null;
-				
-				updateClient();
-			});
+			setupServerAutoCache();
 			
 			if(generationStep == StructureGenEntity.Step.READY)
 				generate();
@@ -220,6 +197,34 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	public AutoCache.Receiver<TransporterControllerEntity, AbstractTransporterEntity<?>> receiverCache()
 	{
 		return transporterCache;
+	}
+	
+	public void setupServerAutoCache()
+	{
+		transporterCache.setRevalidate(() ->
+		{
+			if(transporterRelativePos == null)
+				return false;
+			
+			BlockPos transporterPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), transporterRelativePos);
+			if(transporterPos != null && level.getBlockEntity(transporterPos) instanceof AbstractTransporterEntity<?> transporter)
+				return transporterCache.getCached() == transporter && CoordinateHelper.Relative.distanceSqr(transporterPos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Transporter at the saved pos is the same Transporter
+			
+			return false;
+		});
+		// Find nearest Transporter that isn't connected to a Controller
+		transporterCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractTransporterEntity.class, level, worldPosition, maxConnectionDistance,
+				transporter -> !transporter.controllerCache.isCached()));
+		
+		transporterCache.setOnChanged((oldTransporter, newTransporter) ->
+		{
+			if(newTransporter != null)
+				transporterRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newTransporter.getBlockPos());
+			else
+				transporterRelativePos = null;
+			
+			updateClient();
+		});
 	}
 	
 	public Set<Integer> getNetworks()
