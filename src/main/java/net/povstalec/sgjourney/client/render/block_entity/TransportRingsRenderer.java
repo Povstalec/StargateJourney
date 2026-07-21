@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
@@ -97,6 +98,14 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 		}
 		
 	    stack.popPose();
+	}
+	
+	@Override
+	public @NotNull AABB getRenderBoundingBox(T transportRings)
+	{
+		BlockPos pos = transportRings.getBlockPos();
+		return new AABB(pos.getX() - 3, pos.getY() - (3 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() - 3,
+				pos.getX() + 4, pos.getY() + (4 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() + 4);
 	}
 	
 	

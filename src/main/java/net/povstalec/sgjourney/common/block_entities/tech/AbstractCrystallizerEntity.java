@@ -317,7 +317,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem(level.registryAccess()).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return InventoryUtil.canInsertStackInto(recipeInput.getItem(3), recipe.getResultItem(level.registryAccess()));
+		return InventoryUtil.canInsertStackInto(outputHandler.getStackInSlot(0), recipe.getResultItem(level.registryAccess()));
 	}
 	
 	@Override

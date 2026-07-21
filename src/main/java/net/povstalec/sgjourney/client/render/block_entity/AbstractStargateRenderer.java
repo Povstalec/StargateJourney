@@ -26,6 +26,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStarga
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
 {
@@ -103,8 +104,9 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	}
 	
 	@Override
-	public AABB getRenderBoundingBox(AbstractStargateEntity stargate)
+	public @NotNull AABB getRenderBoundingBox(StargateEntity stargate)
 	{
-		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3, stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
+		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3,
+				stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
 	}
 }

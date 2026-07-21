@@ -46,8 +46,8 @@ public class CrystallizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			return this.inputFluid;
-		
-		throw new IllegalArgumentException("No fluid for index " + index);
+		else
+			throw new IllegalArgumentException("No fluid for index " + index);
 	}
 	
 	@Override
@@ -55,8 +55,8 @@ public class CrystallizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			this.inputFluid = fluidStack;
-		
-		throw new IllegalArgumentException("No fluid for index " + index);
+		else
+			throw new IllegalArgumentException("No fluid for index " + index);
 	}
 	
 	@Override

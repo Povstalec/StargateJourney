@@ -14,8 +14,8 @@ public class LiquidizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			return this.inputItem;
-		
-		throw new IllegalArgumentException("No item for index " + index);
+		else
+			throw new IllegalArgumentException("No item for index " + index);
 	}
 	
 	@Override
@@ -29,8 +29,8 @@ public class LiquidizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			this.inputItem = itemStack;
-		
-		throw new IllegalArgumentException("No item for index " + index);
+		else
+			throw new IllegalArgumentException("No item for index " + index);
 	}
 	
 	@Override
@@ -38,8 +38,8 @@ public class LiquidizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			return this.inputFluid;
-		
-		throw new IllegalArgumentException("No fluid for index " + index);
+		else
+			throw new IllegalArgumentException("No fluid for index " + index);
 	}
 	
 	@Override
@@ -47,8 +47,8 @@ public class LiquidizingRecipeInput extends SGJourneyRecipeInput
 	{
 		if(index == 0)
 			this.inputFluid = fluidStack;
-		
-		throw new IllegalArgumentException("No fluid for index " + index);
+		else
+			throw new IllegalArgumentException("No fluid for index " + index);
 	}
 	
 	@Override

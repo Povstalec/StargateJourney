@@ -263,6 +263,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		{
 			setAddress(lowerCartouche.address);
 			setSymbols(lowerCartouche.symbols);
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 		}
 	}
 	
