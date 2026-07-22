@@ -24,10 +24,13 @@ It allows controlling stargates, encoding symbols, dialing an address, and suppl
 
 ## Inventory
 Each DHD has a dialing user interface with symbol buttons, which can be opened by **right-clicking the DHD from the top**.
+By default, the DHD shows symbols, respective numbers are shown while holding shift.
 
-{: .future }
-In the future, the numbers will be replaced with actual symbols,
-with an option to still view numbers while holding the shift key.
+This behavior can be changed in `sgjourney-client.toml` config file.
+```toml
+#If true, DHD buttons will render symbols by default, otherwise they'll be render numbers by default
+dhd_symbols_numbers = true
+```
 
 <div class="flex-row flex-wrap">
 <img alt="Milkyway DHD interface" class="max-width-512" style="margin: 1rem"
@@ -39,7 +42,7 @@ with an option to still view numbers while holding the shift key.
 
 Secondly, it has a crystal inventory, which can be opened by **right-clicking the DHD from any side, except the top**
 (or by shift-right clicking from the top with an empty hand).
-The inventory holds crystals modifying DHD capabilities and a power source.
+The inventory holds crystals modifying DHD capabilities, Stargate behavior and a power source.
 
 
 ![Empty DHD inventory]({{ '/assets/img/gui/dhd_inventory_empty.png' | absolute_url }})
@@ -66,9 +69,12 @@ The power source slot to the right can hold **any modded container (a battery)**
 Naturally generated DHDs contain the [fusion core]({{ '/items/functional-items/fusion-core/' | absolute_url }}).
 It can be replaced with the [naquadah generator core]({{ '/items/functional-items/naquadah-generator-core/' | absolute_url }}),
 which requires fuel to run. The fuel can be provided in the second slot underneath the first one.
+Naquadah power cell can be used as a power source as well.
+
+[//]: # (TODO: Add link to naquadah power cell)
 
 In the creative, the [Zero Point Module (ZPM)]({{ '/items/functional-items/zpm/' | absolute_url }}) 
-can also be used as a powerful power source in the DHD.
+can also be used as a powerful power source directly in the DHD.
 
 ## Crafting
 
@@ -88,3 +94,5 @@ When the DHD with a large control crystal enables advanced protocols, the gate w
 
 See [Stargate Technology / DHD Crystals]({{ '/stargate-technology/crystals/dhd-crystals' | absolute_url }})
 for a description of specific crystals.
+
+[//]: # (TODO: explain what each crystal does when placed in DHD)

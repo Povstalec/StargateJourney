@@ -76,19 +76,19 @@ function toggleSymbolNumbers() {
 <div class="symbols-container">
 
 MilkyWay
-<img alt="MilkyWay symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
+<img alt="MilkyWay symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
 <img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 Pegasus  
-<img alt="Pegasus symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
+<img alt="Pegasus symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/pegasus/galaxy_pegasus.png">
 <img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 Universal  
-<img alt="Universal symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
+<img alt="Universal symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/universal/universal.png">
 <img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/universal_symbol_numbers.png' | absolute_url }}">
 
 Kaliem  
-<img alt="Kaliem symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/refs/heads/main/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
+<img alt="Kaliem symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/kaliem/galaxy_kaliem.png">
 <img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 </div>
