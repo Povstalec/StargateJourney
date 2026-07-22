@@ -23,7 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.blocks.transporter_controller.RingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
@@ -55,7 +55,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class RingPanelEntity extends TransporterControllerEntity
+public class GoauldRingPanelEntity extends TransporterControllerEntity
 {
 	//TODO Interdimensional transport (Materialization Crystals)
 	
@@ -65,11 +65,11 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	public static final String BUTTONS = "buttons";
 	
-	public final CrystalCache<RingPanelEntity> crystalCache = createCrystalCache();
+	public final CrystalCache<GoauldRingPanelEntity> crystalCache = createCrystalCache();
 	
 	//------Button Stuff------
 	protected TransporterControllerButton.ButtonState panelState = TransporterControllerButton.ButtonState.DEFAULT;
-	protected List<TransporterControllerButton<RingPanelEntity>> buttons = Arrays.asList(
+	protected List<TransporterControllerButton<GoauldRingPanelEntity>> buttons = Arrays.asList(
 			TransporterControllerButton.defaultButton(this, 0, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 1, TransporterControllerButton.ButtonStatus.DISABLED),
 			TransporterControllerButton.defaultButton(this, 2, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 3, TransporterControllerButton.ButtonStatus.DISABLED),
 			TransporterControllerButton.defaultButton(this, 4, TransporterControllerButton.ButtonStatus.DISABLED), TransporterControllerButton.defaultButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED)
@@ -82,7 +82,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	protected final ItemStackHandler crystalItemHandler = createCrystalItemHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
 	
-	public RingPanelEntity(BlockPos pos, BlockState state)
+	public GoauldRingPanelEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.GOAULD_RING_PANEL.get(), pos, state);
 	}
@@ -161,8 +161,8 @@ public class RingPanelEntity extends TransporterControllerEntity
 		{
 			BlockState gateState = getBlockState();
 			
-			if(gateState.hasProperty(RingPanelBlock.FACING))
-				this.direction = gateState.getValue(RingPanelBlock.FACING);
+			if(gateState.hasProperty(GoauldRingPanelBlock.FACING))
+				this.direction = gateState.getValue(GoauldRingPanelBlock.FACING);
 			else
 				StargateJourney.LOGGER.error("Couldn't find Ring Panel Direction");
 		}
@@ -176,7 +176,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
 	}
 	
-	protected CrystalCache<RingPanelEntity> createCrystalCache()
+	protected CrystalCache<GoauldRingPanelEntity> createCrystalCache()
 	{
 		return new CrystalCache.Generic6<>(this, CrystalCache.ALL)
 		{
@@ -341,7 +341,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//*******************************************Buttons******************************************
 	//============================================================================================
 	
-	private TransporterControllerButton<RingPanelEntity> pageForwardButton(boolean enabled)
+	private TransporterControllerButton<GoauldRingPanelEntity> pageForwardButton(boolean enabled)
 	{
 		return TransporterControllerButton.pageForwardButton(this, 5, page + 1, enabled).setOnPress(button ->
 		{
@@ -354,7 +354,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		});
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> pageBackButton()
+	private TransporterControllerButton<GoauldRingPanelEntity> pageBackButton()
 	{
 		return TransporterControllerButton.pageBackButton(this, 4, page - 1).setOnPress(button ->
 		{
@@ -367,7 +367,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		});
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> defaultButton(Transporter transporter, int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> defaultButton(Transporter transporter, int index, TransporterControllerButton.ButtonStatus status)
 	{
 		return TransporterControllerButton.defaultButton(this, index, status).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
@@ -382,7 +382,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	// ======= Memory Crystal =======
 	
-	private TransporterControllerButton<RingPanelEntity> memoryButton(int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> memoryButton(int index, TransporterControllerButton.ButtonStatus status)
 	{
 		ItemStack stack = crystalItemHandler.getStackInSlot(index);
 		int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(stack, MemoryEntry.Type.TRANSPORTER_ID, MemoryEntry.Type.COORDINATES);
@@ -436,7 +436,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		updateClient();
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> loadButtonFromMemoryCrystal(MinecraftServer server, ListTag list, int index)
+	private TransporterControllerButton<GoauldRingPanelEntity> loadButtonFromMemoryCrystal(MinecraftServer server, ListTag list, int index)
 	{
 		MemoryEntry.Type<?> type = MemoryCrystalItem.memoryTypeAt(list, index);
 		
@@ -467,7 +467,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.no_entry").withStyle(ChatFormatting.BLUE));
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> memoryTransportButton(int index)
+	private TransporterControllerButton<GoauldRingPanelEntity> memoryTransportButton(int index)
 	{
 		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setCloseScreen(true).setOnPress(button ->
 		{
@@ -488,7 +488,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	// ======= Communication Crystal =======
 	
-	private TransporterControllerButton<RingPanelEntity> communicationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> communicationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
 	{
 		if(!CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(index)))
 			return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency.none"));
@@ -538,7 +538,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		updateClient();
 	}
 	
-	protected TransporterControllerButton<RingPanelEntity> nextNetworkButton(MinecraftServer server, Transporter transporter, int index)
+	protected TransporterControllerButton<GoauldRingPanelEntity> nextNetworkButton(MinecraftServer server, Transporter transporter, int index)
 	{
 		return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
@@ -553,7 +553,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	// ======= Control Crystal =======
 	
-	private TransporterControllerButton<RingPanelEntity> controlCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> controlCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
 	{
 		if(!status.isEnabled)
 			return TransporterControllerButton.manualControlButton(this, index, status);
@@ -605,7 +605,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		updateClient();
 	}
 	
-	private TransporterControllerButton<RingPanelEntity> nextManualButton(int index)
+	private TransporterControllerButton<GoauldRingPanelEntity> nextManualButton(int index)
 	{
 		if(encodedID.canGrow())
 			return TransporterControllerButton.manualControlButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)))
@@ -620,7 +620,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	
 	// ======= Materialization Crystal =======
 	
-	private TransporterControllerButton<RingPanelEntity> materializationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> materializationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
 	{
 		if(!status.isEnabled)
 			return TransporterControllerButton.materializationButton(this, index, status);
@@ -680,7 +680,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		updateClient();
 	}
 	
-	protected TransporterControllerButton<RingPanelEntity> nextInterdimensionalButton(Transporter transporter, int index)
+	protected TransporterControllerButton<GoauldRingPanelEntity> nextInterdimensionalButton(Transporter transporter, int index)
 	{
 		return TransporterControllerButton.materializationButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTransporter(transporter).setCloseScreen(true).setOnPress(button ->
 		{
@@ -697,7 +697,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 	//*******************************************Control******************************************
 	//============================================================================================
 	
-	private TransporterControllerButton<RingPanelEntity> nextButton(int index, Iterator<Transporter> transporterIterator, TransporterControllerButton.ButtonStatus status)
+	private TransporterControllerButton<GoauldRingPanelEntity> nextButton(int index, Iterator<Transporter> transporterIterator, TransporterControllerButton.ButtonStatus status)
 	{
 		TransporterControllerButton.ButtonState state = buttonStateAt(index);
 		
@@ -762,7 +762,7 @@ public class RingPanelEntity extends TransporterControllerEntity
 		tryUpdateButtons(-1);
 	}
 	
-	public TransporterControllerButton<RingPanelEntity> getButtonAt(int index)
+	public TransporterControllerButton<GoauldRingPanelEntity> getButtonAt(int index)
 	{
 		return buttons.get(index);
 	}

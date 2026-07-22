@@ -1,8 +1,8 @@
 package net.povstalec.sgjourney.common.blocks.transporter_controller;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -25,22 +25,26 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-public class RingPanelBlock extends TransporterControllerBlock
+public class GoauldRingPanelBlock extends TransporterControllerBlock
 {
 	protected static final VoxelShape NORTH = Block.box(2.0D, 0.0D, 13.0D, 14.0D, 16.0D, 16.0D);
 	protected static final VoxelShape SOUTH = Block.box(2.0D, 0.0D, 0.0D, 14.0D, 16.0D, 3.0D);
 	protected static final VoxelShape EAST = Block.box(0.0D, 0.0D, 2.0D, 3.0D, 16.0D, 14.0D);
 	protected static final VoxelShape WEST = Block.box(13.0D, 0.0D, 2.0D, 16.0D, 16.0D, 14.0D);
 	
-	public RingPanelBlock(Properties properties) 
+	public GoauldRingPanelBlock(Properties properties)
 	{
 		super(properties);
 	}
@@ -49,7 +53,7 @@ public class RingPanelBlock extends TransporterControllerBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		return new RingPanelEntity(pos, state);
+		return new GoauldRingPanelEntity(pos, state);
 	}
 	
 	@Override
@@ -59,7 +63,7 @@ public class RingPanelBlock extends TransporterControllerBlock
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof RingPanelEntity ringPanel)
+        	if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
         	{
 				ringPanel.tryUpdateButtons();
 				
@@ -89,7 +93,7 @@ public class RingPanelBlock extends TransporterControllerBlock
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof RingPanelEntity)
+		if(blockentity instanceof GoauldRingPanelEntity)
 		{
 			if(!level.isClientSide() && !player.isCreative())
 			{
@@ -128,7 +132,7 @@ public class RingPanelBlock extends TransporterControllerBlock
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type)
 	{
-		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), RingPanelEntity::tick);
+		return createTickerHelper(type, BlockEntityInit.GOAULD_RING_PANEL.get(), GoauldRingPanelEntity::tick);
 	}
 	
 	@Override
@@ -137,5 +141,33 @@ public class RingPanelBlock extends TransporterControllerBlock
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.ring_panel.description"));
+	}
+	
+	public static ItemStack ringPanelItemSetup()
+	{
+		ItemStack stack = new ItemStack(BlockInit.GOAULD_RING_PANEL.get());
+		CompoundTag blockEntityTag = new CompoundTag();
+		
+		blockEntityTag.putString("id", "sgjourney:goauld_ring_panel");
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		
+		CompoundTag energyInventory = new CompoundTag();
+		energyInventory.putInt("Size", 1);
+		energyInventory.put("Items", setupEnergyInventory());
+		blockEntityTag.put(GoauldRingPanelEntity.ENERGY_INVENTORY, energyInventory);
+		
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	private static ListTag setupEnergyInventory()
+	{
+		ListTag nbtTagList = new ListTag();
+		
+		ItemStack stack = PowerCellItem.liquidNaquadahSetup();
+		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(stack.getItem()), 1, stack.getTag()));
+		
+		return nbtTagList;
 	}
 }
