@@ -18,6 +18,9 @@ import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
@@ -175,16 +178,16 @@ public class TabInit
 					items.accept(BlockInit.UNIVERSE_STARGATE.get());
 					items.accept(BlockInit.MILKY_WAY_STARGATE.get());
 					items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
-					items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
+					items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(parameters.holders()));
 					items.accept(BlockInit.PEGASUS_STARGATE.get());
 					items.accept(PegasusStargateBlock.localSymbols(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), BlockEntityInit.PEGASUS_STARGATE.get()));
-					items.accept(PegasusDHDBlock.pegasusCrystalSetup());
+					items.accept(PegasusDHDBlock.pegasusCrystalSetup(parameters.holders()));
 					items.accept(BlockInit.CLASSIC_STARGATE.get());
 					items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), BlockEntityInit.CLASSIC_STARGATE.get()));
 					items.accept(BlockInit.CLASSIC_STARGATE_BASE_BLOCK.get());
 					items.accept(BlockInit.CLASSIC_STARGATE_CHEVRON_BLOCK.get());
 					items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
-					items.accept(ClassicDHDBlock.classicCrystalSetup());
+					items.accept(ClassicDHDBlock.classicCrystalSetup(parameters.holders()));
 					items.accept(BlockInit.TOLLAN_STARGATE.get());
 					
 					items.accept(ItemInit.FUSION_CORE.get());
@@ -241,9 +244,9 @@ public class TabInit
 				{
 					items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 					
-					items.accept(BlockInit.ANCIENT_TRANSPORT_RINGS.get());
-					items.accept(BlockInit.GOAULD_TRANSPORT_RINGS.get());
-					items.accept(BlockInit.GOAULD_RING_PANEL.get());
+					items.accept(AncientTransportRingsBlock.transportRingsItemSetup(parameters.holders()));
+					items.accept(GoauldTransportRingsBlock.transportRingsItemSetup(parameters.holders()));
+					items.accept(GoauldRingPanelBlock.ringPanelItemSetup(parameters.holders()));
 					
 					items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
 					items.accept(BlockInit.GOLDEN_IDOL.get());

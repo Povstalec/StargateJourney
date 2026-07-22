@@ -9,7 +9,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
@@ -19,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
+public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 {
-	public RingPanelMenu(@Nullable MenuType<?> type, int containerId, Inventory inventory, RingPanelEntity entity)
+	public RingPanelMenu(@Nullable MenuType<?> type, int containerId, Inventory inventory, GoauldRingPanelEntity entity)
     {
         super(type, containerId, inventory, entity);
 		
@@ -130,10 +130,10 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 	{
 		public Protected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (RingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
-		public Protected(int containerId, Inventory inventory, RingPanelEntity entity)
+		public Protected(int containerId, Inventory inventory, GoauldRingPanelEntity entity)
 		{
 			super(MenuInit.RING_PANEL_PROTECTED.get(), containerId, inventory, entity);
 		}
@@ -143,10 +143,10 @@ public abstract class RingPanelMenu extends InventoryMenu<RingPanelEntity>
 	{
 		public Unprotected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (RingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
-		public Unprotected(int containerId, Inventory inventory, RingPanelEntity entity)
+		public Unprotected(int containerId, Inventory inventory, GoauldRingPanelEntity entity)
 		{
 			super(MenuInit.RING_PANEL_UNPROTECTED.get(), containerId, inventory, entity);
 			

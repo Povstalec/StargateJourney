@@ -21,7 +21,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfa
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter_controller.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 
 public class BlockEntityInit
 {
@@ -52,8 +52,8 @@ public class BlockEntityInit
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("goauld_transport_rings",
             () -> BlockEntityType.Builder.of(GoauldTransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
 	
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<RingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("goauld_ring_panel",
-            () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GoauldRingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("goauld_ring_panel",
+            () -> BlockEntityType.Builder.of(GoauldRingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
             () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));

@@ -33,7 +33,7 @@ import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
-import net.povstalec.sgjourney.common.blocks.transporter_controller.RingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -122,8 +122,8 @@ public class BlockInit
 			() -> new GoauldTransportRingsBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	// Transporter Controllers
-	public static final DeferredBlock<RingPanelBlock> GOAULD_RING_PANEL = registerTransporterControllerBlock("goauld_ring_panel",
-			() -> new RingPanelBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
+	public static final DeferredBlock<GoauldRingPanelBlock> GOAULD_RING_PANEL = registerTransporterControllerBlock("goauld_ring_panel",
+			() -> new GoauldRingPanelBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	// Natural Blocks
 	public static final DeferredBlock<ColoredFallingBlock> SULFUR_SAND = registerBlock("sulfur_sand",
