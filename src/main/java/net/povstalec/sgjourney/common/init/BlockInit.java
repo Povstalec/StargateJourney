@@ -776,6 +776,10 @@ public class BlockInit
 	public static void register(IEventBus eventBus)
 	{
 		BLOCKS.register(eventBus);
+		
+		// Aliases
+		BLOCKS.addAlias(StargateJourney.sgjourneyLocation("transport_rings"), StargateJourney.sgjourneyLocation("goauld_transport_rings"));
+		BLOCKS.addAlias(StargateJourney.sgjourneyLocation("ring_panel"), StargateJourney.sgjourneyLocation("goauld_ring_panel"));
 	}
 	
 	

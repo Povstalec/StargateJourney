@@ -77,6 +77,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		primaryIngredientHandler.deserializeNBT(registries, nbt.getCompound(PRIMARY_INGREDIENT_INVENTORY));
 		secondaryIngredientHandler.deserializeNBT(registries, nbt.getCompound(SECONDARY_INGREDIENT_INVENTORY));
 		outputHandler.deserializeNBT(registries, nbt.getCompound(OUTPUT_INVENTORY));
+		InventoryUtil.expandSlotsIfNeeded(outputHandler, 2);
 		fluidInputHandler.deserializeNBT(registries, nbt.getCompound(FLUID_INPUT_INVENTORY));
 		
 		inputFluidTank.readFromNBT(registries, nbt);

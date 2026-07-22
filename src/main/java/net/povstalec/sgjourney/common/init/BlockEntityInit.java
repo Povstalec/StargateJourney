@@ -116,7 +116,7 @@ public class BlockEntityInit
 		BLOCK_ENTITIES.register(eventBus);
 		
 		// Aliases
-		BLOCK_ENTITIES.addAlias(StargateJourney.sgjourneyLocation("goauld_transport_rings"), StargateJourney.sgjourneyLocation("transport_rings"));
-		BLOCK_ENTITIES.addAlias(StargateJourney.sgjourneyLocation("goauld_ring_panel"), StargateJourney.sgjourneyLocation("ring_panel"));
+		BLOCK_ENTITIES.addAlias(StargateJourney.sgjourneyLocation("transport_rings"), StargateJourney.sgjourneyLocation("goauld_transport_rings"));
+		BLOCK_ENTITIES.addAlias(StargateJourney.sgjourneyLocation("ring_panel"), StargateJourney.sgjourneyLocation("goauld_ring_panel"));
 	}
 }

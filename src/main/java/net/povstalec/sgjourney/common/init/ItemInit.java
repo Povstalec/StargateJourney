@@ -308,5 +308,14 @@ public class ItemInit
 	public static void register(IEventBus eventBus)
 	{
 		ITEMS.register(eventBus);
+		
+		// Aliases
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("transport_rings"), StargateJourney.sgjourneyLocation("goauld_transport_rings"));
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("ring_panel"), StargateJourney.sgjourneyLocation("goauld_ring_panel"));
+		
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("naquadah_alloy"), StargateJourney.sgjourneyLocation("naquadah_iron_alloy"));
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("naquadah_alloy_nugget"), StargateJourney.sgjourneyLocation("naquadah_iron_alloy_nugget"));
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("naquadah_alloy_iris"), StargateJourney.sgjourneyLocation("naquadah_iron_alloy_iris"));
+		ITEMS.addAlias(StargateJourney.sgjourneyLocation("ring_remote"), StargateJourney.sgjourneyLocation("goauld_ring_remote"));
 	}
 }

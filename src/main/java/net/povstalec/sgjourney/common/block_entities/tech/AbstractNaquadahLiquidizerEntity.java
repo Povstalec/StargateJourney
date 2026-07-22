@@ -69,7 +69,9 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		
 		itemInputHandler.deserializeNBT(registries, tag.getCompound(INPUT_INVENTORY));
 		fluidItemInputHandler.deserializeNBT(registries, tag.getCompound(FLUID_INPUT_INVENTORY));
+		InventoryUtil.expandSlotsIfNeeded(fluidItemInputHandler, 2);
 		fluidItemOutputHandler.deserializeNBT(registries, tag.getCompound(FLUID_OUTPUT_INVENTORY));
+		InventoryUtil.expandSlotsIfNeeded(fluidItemOutputHandler, 2);
 		
 		inputFluidTank.readFromNBT(registries, tag.getCompound(FLUID_TANK_1));
 		outputFluidTank.readFromNBT(registries, tag.getCompound(FLUID_TANK_2));
