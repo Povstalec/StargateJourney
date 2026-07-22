@@ -1305,8 +1305,8 @@ ___
 
 {% include components/computercraft_function.html
     name="engageSymbol"
-    arguments="symbol"
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L95"
+    arguments="symbol, engageDirectly"
+    source="https://github.com/Povstalec/StargateJourney/blob/77e5a6efd596a5b3e7df99fda6c58ea6f3093bee/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L115"
 %}
 Crystal Interface
 {: .label .label-green }
@@ -1322,6 +1322,8 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 **Parameters**
 1. `symbol`: `number` A symbol to encode. The symbol must be in a supported range by the Stargate type. 
 <!-- TODO: add link to supported symbol range -->
+2. `engageDirectly`: `boolean` (Optional, default `false`) Whether to engage the symbol directly. Skips the rotation on Pegasus or Universe Stargates.
+3. `canEngageStargate`: `boolean` (Optional, default `true`) Whether engaging the symbol can engage the Stargate and initiate a new connection.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`

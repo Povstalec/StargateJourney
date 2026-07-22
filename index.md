@@ -46,7 +46,7 @@ Stargate Journey is a mod for Minecraft with many additions, such as several dim
 </div>
 
 {: .note }
-This project is in early development, and a lot of stuff still needs to be implemented.
+This project is still in development, and a lot of stuff still needs to be implemented.
 Things may be buggy, unfinished, or unobtainable in survival.  
 If you find a bug, it will be appreciated if you report it to 
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
@@ -58,13 +58,13 @@ Stargate, they call it - check [What's that Stargate anyway?]({{ '/what-is-starg
 If you are playing All the Mods 9 modpack, check the [Modpacks / All the Mods 9]({{ '/modpacks/atm9' | absolute_url }}) section.
 
 The documentation is divided into a few main parts:
+* [Configuration]({{ '/configuration' | absolute_url }}): Explanation of configuration options and their impacts.
 * [Survival Guide]({{ '/survival' | absolute_url }}): A ~~recommended~~ possible way to progress through the mod in survival.
 * [Stargate Technology]({{ '/stargate-technology' | absolute_url }}): A look at Stargate mechanics and related technology, including DHDs, crystals and the iris.
-* [Stargate Network]({{ '/stargate-network' | absolute_url }}): How are Stargates addressed and how they connect to each other.
-* [Blocks]({{ '/blocks' | absolute_url }}): Details about special blocks, ores, their generation and machines.
-* [Items]({{ '/items' | absolute_url }}): Crafting and resources processing, weapons and tools. Although, for crafting recipes it is strongly recommended to use the [JEI](https://www.curseforge.com/minecraft/mc-mods/jei) mod.
+* [Stargate Network]({{ '/stargate-technology/stargate-network' | absolute_url }}): How are Stargates addressed and how they connect to each other.
+* [Blocks]({{ '/blocks' | absolute_url }}): Details about special blocks, machines, ores, their generation and machines.
+* [Items]({{ '/items' | absolute_url }}): Crafting resources, their processing, weapons and tools. Although, for crafting recipes it is strongly recommended to use the [JEI](https://www.curseforge.com/minecraft/mc-mods/jei) mod.
 * [Dimensions]({{ '/dimensions' | absolute_url }}): A list of new planets, how to get there and what to expect.
-* [Structures]({{ '/structures' | absolute_url }}): Information about the structures that generate around the world.
 * [Commands]({{ '/commands' | absolute_url }}): List of commands and their usage available for operators.
 * [Computercraft]({{ '/computercraft' | absolute_url }}): API documentation for compatibility integration with [ComputerCraft Tweaked](https://tweaked.cc/) mod.
 * [Datapacks and Resourcepacks]({{ '/datapacks' | absolute_url }}): Explanation of resourcepack and datapack features available for customization.
@@ -78,9 +78,9 @@ The documentation is divided into a few main parts:
 
 ## Compatibility with other mods
 Stargate Journey is compatible with multiple other mods:
- - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
- - [CC:Tweaked](https://tweaked.cc/), which allows the control of Stargates with interfaces
- - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
+ - [Stellar View](https://modrinth.com/mod/stellarview) can be used to enhance your experience of different planetary night skies
+ - [CC:Tweaked](https://modrinth.com/mod/cc-tweaked), which allows the control of Stargates with interfaces
+ - [Ad Astra](https://modrinth.com/mod/ad-astra) and [Stellaris](https://modrinth.com/mod/stellaris)two default Solar Systems are also considered Solar Systems within Stargate Journey
 
 ## Known incompatibilities
 Mods that have been found to break stargates or their generation: 

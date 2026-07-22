@@ -1,6 +1,7 @@
 ---
 title: Stargate Network
-nav_order: 50
+nav_order: 0
+parent: Stargate Technology
 ---
 
 {: .note }
