@@ -1,8 +1,10 @@
 package net.povstalec.sgjourney.common.misc;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -78,18 +80,13 @@ public class InventoryUtil
     	return BuiltInRegistries.ITEM.getKey(item).toString();
     }
     
-    public static CompoundTag addItem(int slot, String id, int count, @Nullable CompoundTag tag)
+    public static Tag addItem(HolderLookup.Provider registries, int slot, ItemStack itemStack)
     {
         CompoundTag itemTag = new CompoundTag();
         
         itemTag.putInt("Slot", slot);
-        itemTag.putString("id", id);
-        itemTag.putByte("Count", (byte) count);
         
-        if(tag != null)
-            itemTag.put("tag", tag);
-        
-        return itemTag;
+        return itemStack.save(registries, itemTag);
     }
     
     @Nullable

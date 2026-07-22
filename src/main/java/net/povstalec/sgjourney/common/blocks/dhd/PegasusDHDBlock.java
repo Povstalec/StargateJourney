@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -166,7 +167,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		return stack;
 	}
 	
-	public static ItemStack pegasusCrystalSetup()
+	public static ItemStack pegasusCrystalSetup(HolderLookup.Provider registries)
 	{
 		ItemStack stack = new ItemStack(BlockInit.PEGASUS_DHD.get());
         CompoundTag blockEntityTag = new CompoundTag();
@@ -176,12 +177,12 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		
 		CompoundTag crystalInventory = new CompoundTag();
 		crystalInventory.putInt("Size", 9);
-		crystalInventory.put("Items", setupCrystalInventory());
+		crystalInventory.put("Items", setupCrystalInventory(registries));
 		blockEntityTag.put(CrystalDHDEntity.CRYSTAL_INVENTORY, crystalInventory);
 		
 		CompoundTag energyInventory = new CompoundTag();
 		energyInventory.putInt("Size", 2);
-			energyInventory.put("Items", setupEnergyInventory());
+			energyInventory.put("Items", setupEnergyInventory(registries));
 			blockEntityTag.put(AbstractDHDEntity.ENERGY_INVENTORY, energyInventory);
 		
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
@@ -189,25 +190,25 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		return stack;
 	}
 	
-	private static ListTag setupEnergyInventory()
+	private static ListTag setupEnergyInventory(HolderLookup.Provider registries)
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.FUSION_CORE.get()), 1, null));
+		nbtTagList.add(InventoryUtil.addItem(registries, 0, new ItemStack(ItemInit.FUSION_CORE.get())));
 		
 		return nbtTagList;
 	}
 	
-	private static ListTag setupCrystalInventory()
+	private static ListTag setupCrystalInventory(HolderLookup.Provider registries)
 	{
 		ListTag nbtTagList = new ListTag();
 		
-		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, null));
+		nbtTagList.add(InventoryUtil.addItem(registries, 0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get())));
+		nbtTagList.add(InventoryUtil.addItem(registries, 1, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get())));
+		nbtTagList.add(InventoryUtil.addItem(registries, 2, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get())));
+		nbtTagList.add(InventoryUtil.addItem(registries, 3, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get())));
+		nbtTagList.add(InventoryUtil.addItem(registries, 5, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get())));
+		nbtTagList.add(InventoryUtil.addItem(registries, 7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get())));
 		
 		return nbtTagList;
 	}
