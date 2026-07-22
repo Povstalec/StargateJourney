@@ -201,45 +201,45 @@ public class ItemInit
 	
 	// Armor
 	public static final DeferredItem<ArmorItem> NAQUADAH_HELMET = ITEMS.register("naquadah_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> NAQUADAH_CHESTPLATE = ITEMS.register("naquadah_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> NAQUADAH_LEGGINGS = ITEMS.register("naquadah_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> NAQUADAH_BOOTS = ITEMS.register("naquadah_boots",
-			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.NAQUADAH, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	
 	public static final DeferredItem<ArmorItem> TRINIUM_HELMET = ITEMS.register("trinium_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1)));
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(25))));
 	public static final DeferredItem<ArmorItem> TRINIUM_CHESTPLATE = ITEMS.register("trinium_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1)));
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(25))));
 	public static final DeferredItem<ArmorItem> TRINIUM_LEGGINGS = ITEMS.register("trinium_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1)));
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(25))));
 	public static final DeferredItem<ArmorItem> TRINIUM_BOOTS = ITEMS.register("trinium_boots",
-			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1)));
+			() -> new ArmorItem(ArmorMaterialInit.TRINIUM, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(25))));
 	
 	public static final DeferredItem<ArmorItem> JAFFA_HELMET = ITEMS.register("jaffa_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> JAFFA_CHESTPLATE = ITEMS.register("jaffa_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> JAFFA_LEGGINGS = ITEMS.register("jaffa_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> JAFFA_BOOTS = ITEMS.register("jaffa_boots",
-			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	
 	public static final DeferredItem<JackalArmorItem> JACKAL_HELMET = ITEMS.register("jackal_helmet",
-			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new JackalArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<FalconArmorItem> FALCON_HELMET = ITEMS.register("falcon_helmet",
-			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new FalconArmorItem(ArmorMaterialInit.JAFFA, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	
 	public static final DeferredItem<ArmorItem> SYSTEM_LORD_HELMET = ITEMS.register("system_lord_helmet",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.HELMET, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.HELMET, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> SYSTEM_LORD_CHESTPLATE = ITEMS.register("system_lord_chestplate",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.CHESTPLATE, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.CHESTPLATE, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> SYSTEM_LORD_LEGGINGS = ITEMS.register("system_lord_leggings",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.LEGGINGS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.LEGGINGS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	public static final DeferredItem<ArmorItem> SYSTEM_LORD_BOOTS = ITEMS.register("system_lord_boots",
-			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.BOOTS, new Item.Properties().stacksTo(1).fireResistant()));
+			() -> new ArmorItem(ArmorMaterialInit.SYSTEM_LORD, ArmorItem.Type.BOOTS, new Item.Properties().durability(ArmorItem.Type.CHESTPLATE.getDurability(42)).fireResistant()));
 	
 	public static final DeferredItem<NaquadahFuelRodItem> NAQUADAH_FUEL_ROD = ITEMS.register("naquadah_fuel_rod",
 			() -> new NaquadahFuelRodItem(new Item.Properties().rarity(Rarity.UNCOMMON).stacksTo(1).fireResistant()));
