@@ -2,7 +2,7 @@
 title: Iris
 parent: Stargate Technology
 nav_order: 40
-iris_types: [Naquadah Alloy, Steel, Copper, Iron, Golden, Diamond, Netherite, Bronze]
+iris_types: [Copper, Iron, Golden, Diamond, Netherite, Naquadah, Naquadah Copper, Naquadah Iron, Trinium, Bronze, Steel]
 ---
 
 
@@ -34,7 +34,7 @@ which you can craft with four iron ingots and four redstone dusts.
 Then, you can use the ring in the middle of the crafting table
 and surround it with a material for the [iris type](#iris-types).
 
-{% minecraft_recipe_crafting item:"sgjourney:naquadah_alloy_iris" %}
+{% minecraft_recipe_crafting item:"sgjourney:naquadah_iris" %}
 
 <details markdown="block">
 <summary id="iris-types">Iris types</summary>

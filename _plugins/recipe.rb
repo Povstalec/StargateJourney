@@ -29,8 +29,9 @@
 # You can clone the fork repository
 # in the cloned repository create directory `neoforge/run/mods` and copy the SGJourney mod jar for NeoForge 1.21.1 there
 # Run Neoforge client with gradle (the game will export assets during loading and then exit)
+# gradlew :neoforge:runExportClient
 #
-# After exporting the assets, copy/move the directory `neoforge/run/.assets/item/sgjourney` to the documentation repository to `exported/sgjourney`
+# After exporting the assets, copy/move the directory `neoforge/run/.assets/item/render/sgjourney` to the documentation repository to `exported/sgjourney`
 # You can use `scripts/update_exported.sh` script to automatically update git tracked files in the static directory with files from the exported directory
 # Or you can manually just add files to the `assets/img/items/crafting/sgjourney/static` directory
 
