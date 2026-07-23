@@ -25,13 +25,13 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 	public NaquadriaOreBlock(Properties properties, float radius)
 	{
 		super(properties, radius);
-		this.registerDefaultState(this.stateDefinition.any().setValue(EXCITEMENT, MIN_EXCITEMENT));
+		this.registerDefaultState(this.stateDefinition.any().setValue(EXCITEMENT, MIN_EXCITEMENT).setValue(UNSTABLE, false));
 	}
 	
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
 	{
-		builder.add(EXCITEMENT);
+		builder.add(EXCITEMENT).add(UNSTABLE);
 	}
 	
 	public void excite(BlockState state, ServerLevel level, BlockPos pos)
@@ -39,7 +39,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		if(state.getValue(EXCITEMENT) < MAX_EXCITEMENT)
 			level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) + 1), 3);
 		else
-			level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.BLOCK);
+			setUnstable(state, level, pos);
 	}
 	
 	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
@@ -74,7 +74,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 	}
 	
 	@Override
-	public void wasExploded(Level level, BlockPos pos, Explosion explosion)
+	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
 	{
 		if(level.isClientSide())
 			return;
