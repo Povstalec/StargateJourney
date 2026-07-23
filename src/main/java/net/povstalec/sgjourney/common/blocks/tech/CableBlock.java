@@ -30,6 +30,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -179,9 +180,9 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		if(state.getBlock() instanceof CableBlock)
 			return state.getBlock() == level.getBlockState(pos).getBlock() ? ConnectorType.CABLE : ConnectorType.NONE;
 		
-		BlockEntity blockEntity = level.getBlockEntity(otherPos);
-		if(blockEntity != null)
-			return level.getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, otherDirection) != null ? ConnectorType.BLOCK : ConnectorType.NONE; // Old code
+		IEnergyStorage energyStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, otherDirection);
+		if(energyStorage != null)
+			return ConnectorType.BLOCK;
 		
 		if(state.getBlock() instanceof LightningRodBlock && state.getValue(LightningRodBlock.FACING) == direction)
 			return ConnectorType.BLOCK;

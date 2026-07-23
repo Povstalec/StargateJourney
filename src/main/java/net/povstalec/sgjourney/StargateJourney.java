@@ -12,12 +12,17 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,9 +60,12 @@ import net.povstalec.sgjourney.client.screens.dhd.ClassicDHDScreen;
 import net.povstalec.sgjourney.client.screens.dhd.DHDCrystalScreen;
 import net.povstalec.sgjourney.client.screens.dhd.MilkyWayDHDScreen;
 import net.povstalec.sgjourney.client.screens.dhd.PegasusDHDScreen;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
 import net.povstalec.sgjourney.common.capabilities.JaffaPouch;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -199,11 +207,16 @@ public class StargateJourney
 		// Block Entity Capabilities
 		
 		// Energy
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.UNIVERSE_STARGATE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MILKY_WAY_STARGATE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.PEGASUS_STARGATE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.TOLLAN_STARGATE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CLASSIC_STARGATE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.UNIVERSE_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.UNIVERSE_RING.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.MILKY_WAY_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.MILKY_WAY_RING.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.PEGASUS_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.PEGASUS_RING.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.TOLLAN_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.TOLLAN_RING.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_RING.get());
 		
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
@@ -284,6 +297,18 @@ public class StargateJourney
 		
 		event.registerEntity(JaffaPouch.JAFFA_POUCH_CAPABILITY, EntityInit.HUMAN.get(), (entity, context) -> new JaffaPouch(entity));
 		event.registerEntity(JaffaPouch.JAFFA_POUCH_CAPABILITY, EntityType.PLAYER, (entity, context) -> new JaffaPouch(entity));
+	}
+	
+	public static <C> SGJourneyEnergy getStargateEnergy(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction)
+	{
+		if(level.getBlockState(pos).getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, pos, state);
+			if(stargate != null)
+				return stargate.energyStorage;
+		}
+		
+		return null;
 	}
 	
 	public static boolean isStellarViewLoaded()

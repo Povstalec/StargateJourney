@@ -139,7 +139,7 @@ public abstract class CableBlockEntity extends BlockEntity
 		{
 			BlockPos outputPos = getBlockPos().relative(direction);
 			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
-			if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
+			if(!(blockEntity instanceof CableBlockEntity))
 			{
 				IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
 				if(energy != null)
@@ -174,14 +174,10 @@ public abstract class CableBlockEntity extends BlockEntity
 		for(Direction direction : getConnectedSides())
 		{
 			BlockPos outputPos = getBlockPos().relative(direction);
-			BlockEntity blockEntity = level.getBlockEntity(outputPos);
-			if(blockEntity != null)
-			{
-				IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
-
-				if(energy != null && energy.canReceive() && energy.receiveEnergy(Integer.MAX_VALUE, true) > 0)
-					outputs++;
-			}
+			IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
+			
+			if(energy != null && energy.canReceive() && energy.receiveEnergy(Integer.MAX_VALUE, true) > 0)
+				outputs++;
 		}
 		return outputs;
 	}
@@ -189,9 +185,6 @@ public abstract class CableBlockEntity extends BlockEntity
 	public long outputEnergy(Direction direction, long toOutput, boolean simulate, boolean zeroPointEnergy)
 	{
 		BlockPos outputPos = getBlockPos().relative(direction);
-		BlockEntity blockEntity = level.getBlockEntity(outputPos);
-		if(blockEntity == null)
-			return 0;
 		
 		IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
 		if(energy == null || !energy.canReceive())

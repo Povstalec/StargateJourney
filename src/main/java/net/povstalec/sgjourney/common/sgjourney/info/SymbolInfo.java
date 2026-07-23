@@ -95,8 +95,8 @@ public class SymbolInfo
 	
 	public interface Interface
 	{
-		String POINT_OF_ORIGIN = "PointOfOrigin";
-		String SYMBOLS = "Symbols";
+		String POINT_OF_ORIGIN = "point_of_origin";
+		String SYMBOLS = "symbols";
 		
 		SymbolInfo symbolInfo();
 	}
