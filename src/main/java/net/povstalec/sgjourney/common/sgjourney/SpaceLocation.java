@@ -55,32 +55,46 @@ public class SpaceLocation
 			AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
 			Codec.BOOL.optionalFieldOf(PRELOAD_STARGATE, false).forGetter(spaceLocation -> spaceLocation.preloadStargate)
 	).apply(instance, SpaceLocation::new));
-	
-	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>(); // Templates for how to create a Space Location for a Dimension based on its prefix
-	private static final Map<ResourceKey<Level>, SpaceLocation> DIMENSION_SPACE_LOCATIONS = new HashMap<>(); // Map of Dimensions with Space Locations assigned to them
-	private static final List<SpaceLocation> GENERATED_ADDRESS_DIMENSIONS = new ArrayList<>(); // List of Dimensions that allow their Addresses to be found on Cartouches
-	
-	public static double currentGravity = 0; // For controlling gravity on the Client side
-	
+
+	/// Templates for how to create a Space Location for a Dimension based on its prefix
+	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>();
+	/// Map of Dimensions with Space Locations assigned to them
+	private static final Map<ResourceKey<Level>, SpaceLocation> DIMENSION_SPACE_LOCATIONS = new HashMap<>();
+	/// List of Dimensions that allow their Addresses to be found on Cartouches
+	private static final List<SpaceLocation> GENERATED_ADDRESS_DIMENSIONS = new ArrayList<>();
+
+	/// For controlling gravity on the Client side
+	public static double currentGravity = 0;
+
+	/// If not null, this Space Location can be used as a template for Space Locations (for example, ones added at runtime)
 	@Nullable
-	private final TemplateInfo templateInfo; // If not null, this Space Location can be used as a template for Space Locations (for example, ones added at runtime)
-	private final boolean inStargateNetwork; // If false, any Stargate located in this location will not be able to establish any sort of connection
-	private final double parentGravity; // Gravity of the parent body this location might be orbiting - 0.07 for Cavum Tenebrae
+	private final TemplateInfo templateInfo;
+	/// If false, any Stargate located in this location will not be able to establish any sort of connection
+	private final boolean inStargateNetwork;
+	/// Gravity of the parent body this location might be orbiting - 0.07 for Cavum Tenebrae
+	private final double parentGravity;
 	//private boolean allowFactionPresence; // If true, factions will be able to appear in this Dimension
-	private final boolean generateInAddressTables; // If true, dimension address will appear in Address Tables with generated addresses
-	private final boolean unityCrystalsGrow; // If true, Unity Crystals can grow in this location
-	
+	/// If true, dimension address will appear in Address Tables with generated addresses
+	private final boolean generateInAddressTables;
+	/// If true, Unity Crystals can grow in this location
+	private final boolean unityCrystalsGrow;
+
+	/// Point of Origin any Stargates generated in this Space Location will use
 	@Nullable
-	private final ResourceKey<PointOfOrigin> pointOfOrigin; // Point of Origin any Stargates generated in this Space Location will use
+	private final ResourceKey<PointOfOrigin> pointOfOrigin;
+	/// Symbols any Stargates generated in this Space Location will use
 	@Nullable
-	private final ResourceKey<Symbols> symbols; // Symbols any Stargates generated in this Space Location will use
-	
-	private ResourceKey<Level> dimension; // Dimension this Space Location represents
+	private final ResourceKey<Symbols> symbols;
+
+	/// Dimension this Space Location represents
+	private ResourceKey<Level> dimension;
+	/// Address Region this Space Location is a part of
 	@Nullable
-	private ResourceKey<AddressRegion> addressRegionKey; // Address Region this Space Location is a part of
+	private ResourceKey<AddressRegion> addressRegionKey;
 	@Nullable
 	private AddressRegion addressRegion = null;
-	private final boolean preloadStargate; // If true and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures during Stellar Update
+	/// If true and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures during Stellar Update
+	private final boolean preloadStargate;
 	
 	public SpaceLocation(Optional<TemplateInfo> templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean generateInAddressTables, boolean unityCrystalsGrow,
 						 Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<AddressRegion>> addressRegionKey, boolean preloadStargate)
@@ -267,58 +281,100 @@ public class SpaceLocation
 	{
 		return DIMENSION_SPACE_LOCATIONS.computeIfAbsent(dimension, dimensionKey -> prepareSpaceLocation(dimensionKey, createNewSpaceLocation(server, dimensionKey)));
 	}
+
+    /**
+     * Searches registered location {@link #TEMPLATES} and returns the space location
+     * with most specific (longest) matching prefix if any.
+     *
+     * @param dimension The dimension to match against the template prefix
+     * @return Space location template with most specific matching prefix or {@code null}
+     */
+    @Nullable
+    static SpaceLocation findSpaceLocationTemplate(ResourceKey<Level> dimension)
+    {
+        final String dimLocation = dimension.location().toString();
+        SpaceLocation bestTemplate = null;
+
+        for (Map.Entry<String, SpaceLocation> templateEntry : TEMPLATES.subMap("", true, dimLocation, true).entrySet()) // <- Submap so we're only searching through possible prefixes
+        {
+            final String prefix = templateEntry.getKey();
+            final SpaceLocation locationTemplate = templateEntry.getValue();
+
+            Objects.requireNonNull(locationTemplate.templateInfo, "TemplateInfo of a registered SpaceLocation template cannot be null!");
+            final boolean isMoreSpecific = bestTemplate == null || bestTemplate.templateInfo.prefix.length() < prefix.length();
+
+            if (dimLocation.startsWith(prefix) && isMoreSpecific)
+            {
+                bestTemplate = templateEntry.getValue(); // Update with template that fits the prefix the best
+            }
+        }
+        return bestTemplate;
+    }
+
+    /**
+     * Generates address region from the given {@code template}.
+     * <p>
+     * The address region is registered in respective galaxies.
+     *
+     * @param templateInfo The {@link TemplateInfo} to use for region generation
+     * @param dimension    dimension for which the address region is being created
+     */
+    private static AddressRegion generateAddressRegion(SpaceLocation.TemplateInfo templateInfo, MinecraftServer server, ResourceKey<Level> dimension)
+    {
+        // Assign Space Location to a Galaxy if possible
+        // The only case in which it doesn't get assigned to at least one Galaxy is when the provided list of galaxies is empty
+        if (templateInfo.galaxies != null)
+        {
+            List<Galaxy> galaxyList = new ArrayList<>();
+            for (ResourceKey<Galaxy> galaxyKey : templateInfo.galaxies)
+            {
+                Galaxy galaxy = Universe.get(server).getGalaxy(galaxyKey);
+                if (galaxy != null)
+                    galaxyList.add(galaxy);
+                else
+                    StargateJourney.LOGGER.error("Could not assign Space Location {} to Galaxy {} because the Galaxy is not registered!", dimension.location(), galaxyKey.location());
+            }
+
+            return Universe.get(server).generateNewAddressRegion(dimension, galaxyList);
+        }
+        else
+        {
+            return Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+        }
+    }
+
+    private static SpaceLocation createFromTemplate(SpaceLocation template, MinecraftServer server, ResourceKey<Level> dimension)
+    {
+        Objects.requireNonNull(template.templateInfo, "TemplateInfo cannot be null for SpaceLocation template!");
+        // Create a new Space Location based on an existing template
+        SpaceLocation spaceLocation = template.copyWithoutTemplateInfo();
+        // Generate a new Address Region for the Space Location
+        if (template.templateInfo.generateAddressRegion && Universe.get(server).generateRandomAddressRegions())
+        {
+            AddressRegion region = generateAddressRegion(template.templateInfo, server, dimension);
+            spaceLocation.setAddressRegion(region);
+        }
+        // Assign Space Location to an existing Address Region
+        else if (spaceLocation.addressRegionKey != null)
+        {
+            AddressRegion addressRegion = Universe.get(server).getAddressRegionFromKey(spaceLocation.addressRegionKey);
+            if (addressRegion != null)
+                spaceLocation.setAddressRegion(addressRegion);
+            else
+                StargateJourney.LOGGER.error("Could not assign Space Location {} to Address Region {} because it is not a registered Address Region", dimension.location(), spaceLocation.addressRegionKey.location());
+        }
+        return spaceLocation;
+    }
 	
 	public static SpaceLocation createNewSpaceLocation(MinecraftServer server, ResourceKey<Level> dimension)
 	{
 		// Try finding a template for this Space Location
-		SpaceLocation template = null;
-		for(Map.Entry<String, SpaceLocation> templateEntry : TEMPLATES.subMap("", dimension.location().toString()).entrySet()) // <- Submap so we're only searching through possible prefixes
-		{
-			if(dimension.location().toString().startsWith(templateEntry.getKey()))
-				template = templateEntry.getValue(); // Update with template that fits the prefix the best
-		}
+        SpaceLocation template = findSpaceLocationTemplate(dimension);
 		
 		SpaceLocation spaceLocation;
-		if(template != null)
-		{
-			// Create a new Space Location based on an existing template
-			spaceLocation = template.copyWithoutTemplateInfo();
-			// Generate a new Address Region for the Space Location
-			if(template.templateInfo.generateAddressRegion && Universe.get(server).generateRandomAddressRegions())
-			{
-				// Assign Space Location to a Galaxy if possible (The only case in which it doesn't get assigned to at least one Galaxy is when the provided list of galaxies is empty)
-				if(template.templateInfo.galaxies != null)
-				{
-					List<Galaxy> galaxyList = new ArrayList<>();
-					for(ResourceKey<Galaxy> galaxyKey : template.templateInfo.galaxies)
-					{
-						Galaxy galaxy = Universe.get(server).getGalaxy(galaxyKey);
-						if(galaxy != null)
-							galaxyList.add(galaxy);
-						else
-							StargateJourney.LOGGER.error("Could not assign Space Location {} to Galaxy {} because it is not a registered Galaxy", dimension.location(), galaxyKey.location());
-					}
-					
-					// Assign Space Location to Address Region
-					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, galaxyList);
-					spaceLocation.setAddressRegion(addressRegion);
-				}
-				else
-				{
-					AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
-					spaceLocation.setAddressRegion(addressRegion);
-				}
-			}
-			// Assign Space Location to an existing Address Region
-			else if(spaceLocation.addressRegionKey != null)
-			{
-				AddressRegion addressRegion = Universe.get(server).getAddressRegionFromKey(spaceLocation.addressRegionKey);
-				if(addressRegion != null)
-					spaceLocation.setAddressRegion(addressRegion);
-				else
-					StargateJourney.LOGGER.error("Could not assign Space Location {} to Address Region {} because it is not a registered Address Region", dimension.location(), spaceLocation.addressRegionKey.location());
-			}
-			
+        if (template != null)
+        {
+            spaceLocation = createFromTemplate(template, server, dimension);
 		}
 		else
 		{
