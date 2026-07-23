@@ -1,23 +1,36 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.*;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.Tag;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -26,32 +39,19 @@ import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.misc.*;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
@@ -65,6 +65,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public static final String IS_CENTER_BUTTON_ENGAGED = "is_center_button_engaged";
 	public static final String ADDRESS = Address.ADDRESS;
+	
+	//TODO A temporary addition to make sure every DHD will update with symbols when the mod is updated
+	public static final String IS_NEW = "is_new";
 	
 	public static final String STARGATE_POS = "stargate_pos";
 	
@@ -92,6 +95,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected final Lazy<IItemHandler> lazyEnergyItemHandler;
 	
 	protected SymbolInfo symbolInfo;
+	protected boolean isNew = false;
 	
 	protected boolean isProtected = false;
 	
@@ -138,6 +142,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				
 				return null;
 			});
+			
 		}
 		else
 		{
@@ -145,6 +150,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			
 			if(generationStep == StructureGenEntity.Step.READY)
 				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
+			
+			if(!isNew && generationStep != Step.SETUP) //TODO Remove this, it's only here to update old DHDs
+			{
+				if(stargateCache.isPresent()) // Copy from connected Stargate
+					setSymbolsFromStargate();
+				else // Generate from Dimension
+					setLocalSymbols();
+			}
 			
 			updateClient();
 		}
@@ -172,6 +185,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		address.fromArray(tag.getIntArray(ADDRESS));
 		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
 		
+		isNew = tag.getBoolean(IS_NEW);
+		
 		super.loadAdditional(tag, registries);
 	}
 	
@@ -193,6 +208,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		address.saveToCompoundTag(tag, ADDRESS);
 		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
+		
+		tag.putBoolean(IS_NEW, true);
 	}
 	
 	@Override
