@@ -80,6 +80,8 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 			return;
 		
 		exciteNearbyBlocks((ServerLevel) level, pos, level.getRandom(), 16);
+		
+		super.onBlockExploded(state, level, pos, explosion);
 	}
 	
 	@Override
