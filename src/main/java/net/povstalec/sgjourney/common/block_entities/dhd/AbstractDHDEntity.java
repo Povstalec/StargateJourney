@@ -64,9 +64,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public static final String IS_CENTER_BUTTON_ENGAGED = "is_center_button_engaged";
 	public static final String ADDRESS = Address.ADDRESS;
 	
-	//TODO A temporary addition to make sure people can use DHDs for energy transfer even after updating from older versions
-	public static final String CRYSTAL_MODE = "CrystalMode";
-	public static final String ENERGY_TRANSFER = "ENERGY_TRANSFER";
+	//TODO A temporary addition to make sure every DHD will update with symbols when the mod is updated
+	public static final String IS_NEW = "is_new";
 	
 	public static final String STARGATE_POS = "stargate_pos";
 	
@@ -94,6 +93,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
 	protected SymbolInfo symbolInfo;
+	protected boolean isNew = false;
 	
 	protected boolean isProtected = false;
 	
@@ -140,6 +140,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				
 				return null;
 			});
+			
 		}
 		else
 		{
@@ -147,6 +148,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			
 			if(generationStep == StructureGenEntity.Step.READY)
 				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
+			
+			if(!isNew && generationStep != Step.SETUP) //TODO Remove this, it's only here to update old DHDs
+			{
+				if(stargateCache.isPresent()) // Copy from connected Stargate
+					setSymbolsFromStargate();
+				else // Generate from Dimension
+					setLocalSymbols();
+			}
 			
 			updateClient();
 		}
@@ -174,6 +183,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		address.fromArray(tag.getIntArray(ADDRESS));
 		isCenterButtonEngaged = tag.getBoolean(IS_CENTER_BUTTON_ENGAGED);
 		
+		isNew = tag.getBoolean(IS_NEW);
+		
 		super.load(tag);
 	}
 	
@@ -195,6 +206,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		address.saveToCompoundTag(tag, ADDRESS);
 		tag.putBoolean(IS_CENTER_BUTTON_ENGAGED, isCenterButtonEngaged);
+		
+		tag.putBoolean(IS_NEW, true);
 	}
 	
 	@Override
