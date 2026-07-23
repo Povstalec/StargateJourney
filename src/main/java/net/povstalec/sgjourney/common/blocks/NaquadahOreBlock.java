@@ -26,8 +26,8 @@ public class NaquadahOreBlock extends ExplosiveBlock
 		builder.add(UNSTABLE);
 	}
 	
-	public void transform(ServerLevel level, BlockPos pos, int excitement)
+	public void transform(BlockState state, ServerLevel level, BlockPos pos, int excitement)
 	{
-		level.setBlock(pos, naquadriaBlock.get().defaultBlockState().setValue(NaquadriaOreBlock.EXCITEMENT, excitement), Block.UPDATE_ALL);
+		level.setBlock(pos, naquadriaBlock.get().defaultBlockState().setValue(UNSTABLE, state.getValue(UNSTABLE)).setValue(NaquadriaOreBlock.EXCITEMENT, excitement), Block.UPDATE_ALL);
 	}
 }

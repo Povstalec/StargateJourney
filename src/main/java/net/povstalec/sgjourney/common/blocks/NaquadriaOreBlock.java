@@ -54,7 +54,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 				if(otherState.getBlock() instanceof NaquadriaOreBlock naquadriaOre)
 					naquadriaOre.excite(otherState, level, pos);
 				else if(otherState.getBlock() instanceof NaquadahOreBlock naquadahOre)
-					naquadahOre.transform(level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
+					naquadahOre.transform(otherState, level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
 			}
 		});
 	}
