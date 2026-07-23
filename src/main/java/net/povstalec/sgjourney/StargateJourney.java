@@ -185,7 +185,6 @@ public class StargateJourney
 		// Item Capabilities
 		
 		// Energy
-		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new EnergyCrystalItem.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ENERGY_CRYSTAL);
 		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new EnergyCrystalItem.Energy(stack), ItemInit.ENERGY_CRYSTAL, ItemInit.ADVANCED_ENERGY_CRYSTAL);
 		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new PowerCellItem.Energy(stack), ItemInit.NAQUADAH_POWER_CELL);
 		event.registerItem(Capabilities.EnergyStorage.ITEM, (stack, context) -> new ZeroPointModule.Energy(stack), ItemInit.ZPM);
