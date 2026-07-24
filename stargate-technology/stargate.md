@@ -13,7 +13,7 @@ check [What’s that Stargate thing anyway?]({{ '/what-is-stargate/' | absolute_
 
 In order to interact with the stargate, to read it's state using redstone
 or communicate with [CC:Tweaked](https://tweaked.cc) computers, 
-a [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}) is required.
+an [interface]({{ '/stargate-technology/interface/' | absolute_url }}) is required.
 
 <details>
 <summary>Dr. Jackson's instructional video on Stargate</summary>
@@ -34,10 +34,10 @@ The `unique_symbols` configuration option was inspired by the original Stargate 
 Each stargate, except for the Universe, will pick the symbols of the local solar system when generated,
 or placed for the first time. 
 Additionally, since the Pegasus stargate is digital, it will change the symbols each time it is placed,
-unless it was [disabled by a computer]({{ '/computercraft/stargate_interface/#dynamicSymbols' | absolute_url }}).
+unless dynamic symbols were [disabled by a computer]({{ '/computercraft/stargate_interface/#dynamicSymbols' | absolute_url }}).
 
 Each symbol represents a number that is used for a more user-friendly address representation.
-Starting with zero which is always the [point of origin](#point-of-origin).
+Zero always represents the [point of origin](#point-of-origin) and is at the end of every address.
 
 There are 4 symbol sets for galaxies, and additional sets for each solar system, when unique symbols are enabled.
 Those are in the base mod, more symbols can be added by [resourcepacks]({{ '/datapacks' | absolute_url }}).
@@ -75,8 +75,8 @@ function toggleSymbolNumbers() {
 
 <div class="symbols-container">
 
-MilkyWay
-<img alt="MilkyWay symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
+Milky Way
+<img alt="Milky Way symbols" class="width-100 min-width-1000 pixel-image" src="https://raw.githubusercontent.com/Povstalec/StargateJourney/7a24f017dbda18a34a5f64a5186a8ded243ececb/src/main/resources/assets/sgjourney/textures/symbols/milky_way/galaxy_milky_way.png">
 <img alt="Symbol numbers" class="symbol-numbers-img width-100 min-width-1000 pixel-image" src="{{ '/assets/img/symbol_numbers.png' | absolute_url }}">
 
 Pegasus  
@@ -97,14 +97,14 @@ ___
 
 ### Point of Origin
 
-Point of Origin is a unique* symbol on each stargate that represents the location from which the stargate is dialing.  
-*There is a limited set of point of origin symbols for each galaxy, 
-so they are not exactly unique, but randomly chosen for each gate.  
-The point of origin can also be overridden by a [stargate variant](#stargate-variants).
+The Point of Origin is a unique* symbol on each stargate that represents the location from which the stargate is dialing.    
+*There is a limited amount of point of origin symbols for each galaxy,
+so they are not exactly unique, but randomly chosen for each gate based on the current Solar System and Galaxy. 
+
+The point of origin can also be overridden by a [stargate variant](#stargate-variants), or, in case of Pegasus gate, [with a computer]({{ '/computercraft/stargate-interface/#overridePointOfOrigin' | absolute_url }}).
 
 The point of origin always represents the number zero.
-To confirm dialed address, the point of origin (number zero) must be encoded at the end to initialize the connection.
-On the DHD it is automatically encoded by pressing the big button in the middle.
+To confirm dialed address, the point of origin (number zero) must be encoded at the end of every address.
 
 ___
 
@@ -128,11 +128,18 @@ However, the fusion core cannot be refueled; once it runs out, it must be replac
 See the [Dial Home Device (DHD)]({{ '/stargate-technology/dhd' | absolute_url }}) page for DHD crystal configuration
 and fusion core replacement options.
 
-In addition to DHD, the gate can be powered with a [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }})
-and any other source of **Forge energy (FE)**.
+In addition to DHD, the gate can be powered directly using a cable or with an [interface]({{ '/stargate-technology/interface/' | absolute_url }})
+and any source of **Forge energy (FE)**.
+Note that the stargate itself has a large amount of energy capacity (1 TFE), if you connect a cable directly to the gate, 
+it wont stop draining the power until its capacity is full.
+You can use the [interface]({{ '/stargate-technology/interface/' | absolute_url }}) 
+to limit the amount of power to which the gate should be charged using the [Energy Target]({{ '/stargate-technology/interface/#energy-target' | absolute_url }}).
+
 
 ![Stargate interface powering the gate]({{ '/assets/img/survival/stargate_interface_power.png' | absolute_url }})
 {: .max-width-512 }
+
+[//]: # (TODO: 0.6.45 introduced direct connection of cables to the gate - update the schema)
 
 The stargate interface must face the gate (the black side facing away from the gate).
 And there must be a power supply connected to the interface from any side.
@@ -152,15 +159,9 @@ By default, a single gate[*](#beta-stargate) generates in
 [Overworld]({{ '/dimensions/overworld' | absolute_url }}),
 [Nether]({{ '/dimensions/nether' | absolute_url }}),
 [The End]({{ '/dimensions/the-end' | absolute_url }}),
-[Abydos]({{ '/dimensions/abydos' | absolute_url }}),
-[Chulak]({{ '/dimensions/chulak' | absolute_url }}),
-[Rima]({{ '/dimensions/rima' | absolute_url }}),
-[Unitas]({{ '/dimensions/unitas' | absolute_url }}),
-[Cavum Tenebrae]({{ '/dimensions/cavum-tenebrae' | absolute_url }}),
-[Lantea]({{ '/dimensions/lantea' | absolute_url }}),
-[Athos]({{ '/dimensions/athos' | absolute_url }}),
+[Stargate Journey dimensions]({{ '/dimensions/' | absolute_url }}),
 and [Glacio from Ad Astra]({{ '/dimensions/glacio' | absolute_url }}).
-Generation in other dimensions can be achieved with datapacks.
+Generation in other dimensions can be achieved with [datapacks]({{ '/datapacks' | absolute_url }}).
 
 [//]: # (TODO: add link to generation datapacks)
 
@@ -169,7 +170,7 @@ the **Alpha gate** is buried with a seal containing the address to the [Abydos](
 The gate can be found with an archeologist's help.  
 [Survival Guide / Finding a Stargate]({{ '/survival/finding-gate' | absolute_url }}) can guide you through the steps.
 
-![Stargate buried with seal in desert]({{ '/assets/img/structures/gate_buried_desert.png' | absolute_url }})
+![Stargate buried with seal in desert]({{ '/assets/img/structures/stargate/buried_desert.png' | absolute_url }})
 {: .max-width-768 }
 
 <details markdown="block">
@@ -190,21 +191,11 @@ The gate can be found with an archeologist's help.
 
 The **Beta gate** can be found in a cave.
 To find it, dial your stargate to a different dimension and remove the DHD from your stargate in the overworld.
-That way, the Beta gate in the cave will be the only gate in the overworld
+That way, the Beta gate in the cave will be the only gate in the overworld with a DHD
 and will **take priority** once you dial back to the overworld.
 However, that will only work when the **Beta gate** structure was already generated.
 
-If you end up again in your stargate, there is a second option.
-Travel to other StargateJourney dimension (Chulak, Rima or a different one which has a stargate pedestal).
-Note the coordinates (X and Z can be displayed by pressing `F3`)
-of the stargate in the other dimension, and visit the same coordinates in the overworld.
-Remember that you need to dig.
-You are looking for a cave with the beta stargate.
-Also, don't forget the DHD that is in the cave with the gate.
-
-Note that this trick will change in the future and the gate will be at different locations in different dimensions.
-
-![Stargate buried in a cave]({{ '/assets/img/structures/terra_gate.png' | absolute_url }})
+![Stargate buried in a cave]({{ '/assets/img/structures/stargate/terra_gate.png' | absolute_url }})
 {: .max-width-768 }
 
 </details>
@@ -219,7 +210,7 @@ ___
 ## Crafting
 
 The classic stargate can be created by building a structure described below.
-The [classic stargate](#classic-stargate) can be upgraded to other types using an [upgrade crystal]({{ '/stargate-technology/crystals/stargate-upgrade-crystals/' | absolute_url }}).
+The [classic stargate](#classic-stargate) can be "upgraded" to other types using an [upgrade crystal]({{ '/stargate-technology/crystals/stargate-upgrade-crystals/' | absolute_url }}).
 The stargate visuals can be changed with a [variant crystal]({{ '/stargate-technology/crystals/stargate-variant-crystals/' | absolute_url }}).
 
 To build a Classic Stargate, you will need the following:
@@ -265,9 +256,9 @@ ___
 
 {: .lore }
 Ancients developed 3 generations of stargates over time.
-Starting with Universe stargate, the generation 1, improving the gate in generation 2 for the MilkyWay galaxy
+Starting with Universe stargate, the generation 1, improving the gate in generation 2 for the Milky Way galaxy
 and digital generation 3 built for the Pegasus galaxy.
-Tollans and Nox built their own "Tollan stargate" based on the generation 2 stargates in the MilkyWay galaxy.
+Tollans and Nox built their own "Tollan stargate" based on the generation 2 stargates in the Milky Way galaxy.
 
 All four stargate types are available in the mod alongside with the classic stargate introduced as the generation 0
 which was inspired by the [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft) mod.
@@ -302,10 +293,9 @@ Generation 0
 Initially inspired by the [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft) mod.
 
 The gate has 38 physical symbols (+ point of origin).
-Can't dial Symbols above 38.  
-The gate ring can rotate when powered by redstone or when instructed to by a computer.  
-It can be dialed by rotating the ring with a redstone or any stargate interface.
-Additionally, can also be dialed by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+Can't dial Symbols above 38.
+It can be dialed by rotating the ring with a redstone or any interface.
+Additionally, can also be dialed by directly engaging the symbols with a DHD or a crystal interface.
 
 When generated or placed for a first time, the gate will use the symbols of the solar system and will keep them even after breaking.
 The only way to change them on an existing stargate is with a command or a variant that overrides the symbols.
@@ -356,9 +346,12 @@ The gate has only 35 physical symbols (+ point of origin).
 Can't dial symbols above 35.
 The gate has always the Universal symbols, unless changed by a gate variant.
 
+The gate is able to dial symbols above 35 when advanced protocol are active in DHD and hence symbol remapping can be used.
+Alternatively symbol remapping is also available for computers using crystal interface.
+
 The whole gate rotates during dialing, always encoding the symbol at the top.
-It can be dialed by rotating the ring with a redstone or any stargate interface.
-Additionally, can also be dialed by directly engaging the symbols with a DHD or a (advanced) crystal interface.
+It can be dialed by rotating the ring with a redstone or any interface.
+Additionally, can also be dialed by directly engaging the symbols a (advanced) crystal interface.
 
 <table class="text-center">
     <thead>
@@ -543,6 +536,10 @@ This is how it looks like when placed in the Milky Way galaxy.
 </details>
 
 ___
+
+[//]: # (TODO: rename all occurences of Stargate interface to just interface, they can now be used with transporters)
+
+[//]: # (TODO: update stargate feedbacks)
 
 ## Stargate Feedback
 

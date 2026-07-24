@@ -33,7 +33,7 @@ dhd_symbols_numbers = true
 ```
 
 <div class="flex-row flex-wrap">
-<img alt="Milkyway DHD interface" class="max-width-512" style="margin: 1rem"
+<img alt="Milky Way DHD interface" class="max-width-512" style="margin: 1rem"
     src="{{ '/assets/img/gui/milkyway_dhd_gui.png' | absolute_url }}">
 <img alt="Pegasus DHD interface" class="max-width-512" style="margin: 1rem"
     src="{{ '/assets/img/gui/pegasus_dhd_gui.png' | absolute_url }}">
@@ -50,9 +50,9 @@ The inventory holds crystals modifying DHD capabilities, Stargate behavior and a
 
 <details>
 <summary>Default crystal configuration for a generated DHD</summary>
-<img alt="Milkyway DHD inventory" class="max-width-512" src="{{ '/assets/img/gui/milkyway_dhd_inventory.png' | absolute_url }}">
+<img alt="Milky Way DHD inventory" class="max-width-512" src="{{ '/assets/img/gui/milkyway_dhd_inventory.png' | absolute_url }}">
 <img alt="Pegasus DHD inventory" class="max-width-512" src="{{ '/assets/img/gui/pegasus_dhd_inventory.png' | absolute_url }}">
-<p>Classic and Milkyway DHD on the left, Pegasus DHD with advanced crystals on the right.</p>
+<p>Classic and Milky Way DHD on the left, Pegasus DHD with advanced crystals on the right.</p>
 </details>
 
 ## Power & Energy Target

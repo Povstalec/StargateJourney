@@ -42,10 +42,11 @@ Abydos spires biome contains stone pillars (spires) with a decent amount of Naqu
 
 ## Processing Naquadah
 
-**Raw Naquadah** can be crafted into **Naquadah Alloy**.
-Fired into **Refined Naquadah** in the blasting furnace.
-Liquidized in the Naquadah liquidizer into **Liquid Naquadah**, and **Heavy liquid Naquadah**.
-And the **Pure Naquadah** can be processed into **Weapons grade Naquadah** in the blast furnace.
+**Raw Naquadah** can be mixed with either copper or iron to create an alloy.
+
+**Raw Naquadah** can be Liquidized in the **Naquadah liquidizer** into **Liquid Naquadah**, and then using **Pure Naquadah** into **Heavy liquid Naquadah**.
+
+The **Pure Naquadah** can be processed into **Weapons grade Naquadah** in the blast furnace.
 
 Naquadah can then be used to craft crystals, tools, weapons, and even your own Stargate.
 

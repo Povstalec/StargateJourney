@@ -55,7 +55,7 @@ Its number representation is `-26-6-14-31-11-29-`.
 
 ___
 
-## Power
+## Energy Supply
 The stargate requires **power** to operate.
 The buried stargate was found with a DHD containing a [**Fusion Core**]({{ '/items/functional-items/fusion-core/' | absolute_url }}) 
 that is able to supply the gate with energy

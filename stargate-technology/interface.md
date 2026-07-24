@@ -1,5 +1,5 @@
 ---
-title: Stargate Interface
+title: Interface
 parent: Stargate Technology
 nav_order: 30
 ---
@@ -10,7 +10,7 @@ nav_order: 30
 1. Table of Contents
 {:toc}
 
-# Stargate Interface
+# Interface
 
 _[Basic Interface]({{ site.baseurl }}/blocks/technological_blocks/#basic-interface) / [Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#crystal-interface) / [Advanced Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#advanced-crystal-interface)_
 

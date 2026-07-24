@@ -5,8 +5,9 @@
 There are several ways to encode the address based on the stargate type used.
 The options are: Using a **Dial Home Device (DHD)**, **manual dialing with redstone**, or using a **computer** from CC:Tweaked (Computercraft).
 When a computer is used, it can either rotate the gate encoding the symbol at the top, or engage the symbols directly, like a DHD.
-To engage a symbol in the same way as the DHD does, the computer requires the crystal stargate interface (or the advanced stargate interface).
-For dialing using rotation, the basic stargate interface is sufficient, but not every gate can be dialed with it.
+To engage a symbol in the same way as the DHD does, the computer requires the [crystal interface (or the advanced crystal interface)]({{ '/stargate-technology/interface/' | absolute_url }}).
+For dialing using rotation, the [basic interface]({{ '/stargate-technology/interface/' | absolute_url }}) is sufficient, 
+but not every gate can be dialed with it.
 
 Table below summarizes the available dialing methods for each Stargate type.
 
@@ -22,8 +23,6 @@ Table below summarizes the available dialing methods for each Stargate type.
     font-weight: bold;
 }
 </style>
-
-[//]: # (TODO: Add links to stargate interfaces in the table below)
 
 <table class="text-center">
     <thead>
@@ -82,17 +81,18 @@ Table below summarizes the available dialing methods for each Stargate type.
 
 <details id="dialing-using-a-dial-home-device-dhd-youtube-video">
 <summary><b>[Spoiler]</b> Youtube video</summary>
-{% include youtubePlayer.html id="NRQBZ53qCYM" %}
+{% include youtubePlayer.html id="XnmbQJnrqew" %}
 </details>
 
-![DHD GUI]({{ site.baseurl }}/assets/img/survival/dhd_gui.png)
+![Milky Way DHD GUI]({{ site.baseurl }}/assets/img/gui/milkyway_dhd_gui.png)
 {: .max-width-512 .m-auto .d-flex .flex-justify-around }
 
 1. First, place down the gate, and then place DHD anywhere near it.  
-   The DHD with a single [communication crystal](/stargate-technology/crystals/dhd-crystals/#communication-crystal)
-   is able to connect to the gate within a **32-block range**.
-2. Right-click the DHD and **enter the address** (the order of the numbers matters).
-3. Finally, click the **big red button** in the middle to encode the Point of Origin (symbol 0) and activate the gate.
+   The DHD with no [communication crystal](/stargate-technology/crystals/dhd-crystals/#communication-crystal)
+   is able to connect to the gate within a **16-block range**.
+2. Right-click the DHD and **enter the address** (the order of the numbers matters).  
+**Do not forget to enter the Point of Origin (number 0) at the end**.
+3. Finally, click the **big red button** in the middle to activate the gate.
 
 </details>
 
@@ -120,7 +120,7 @@ You will need it later. That is not a case for the Universe Stargate.
 |   change from 15 to 0    |      Close chevron      |
 
 To dial the Stargate with redstone,
-provide [power](#power) to the gate with a DHD or stargate interface.
+provide [power](#energy-supply) to the gate with a DHD or stargate interface.
 Use different redstone signal strengths to **spin the ring** and position the desired **symbol** under the **top chevron**.
 You can see the symbols and their order on the **cartouche**.
 Once the symbol is in place, use signal strength **15** to **open the chevron** and then cut the signal (change from 15 to 0) to **close the chevron**.
