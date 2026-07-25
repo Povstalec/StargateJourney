@@ -57,8 +57,6 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class GoauldRingPanelEntity extends TransporterControllerEntity
 {
-	//TODO Interdimensional transport (Materialization Crystals)
-	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";

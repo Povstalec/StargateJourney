@@ -170,6 +170,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		protected void onContentsChanged()
 		{
 			updateSimpleContainer();
+			updateClient();
 			setChanged();
 	    }
 		
@@ -379,8 +380,5 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		}
 		
 		ProgressRecipeEnergyBlockEntity.tick(level, pos, state, crystallizer);
-		
-		if(!level.isClientSide())
-	    	crystallizer.updateClient();
 	}
 }

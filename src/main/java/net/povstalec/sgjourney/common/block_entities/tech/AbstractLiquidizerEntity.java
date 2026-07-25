@@ -27,7 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import java.util.Optional;
 
-public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
+public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
 {
 	private static final String INVENTORY = "Inventory"; //TODO For legacy reasons
 	
@@ -45,7 +45,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	protected LazyOptional<IFluidHandler> lazyFluidHandler1 = LazyOptional.empty();
 	protected LazyOptional<IFluidHandler> lazyFluidHandler2 = LazyOptional.empty();
 	
-	public AbstractNaquadahLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	public AbstractLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state, new SimpleFluidContainer(1, 2));
 	}
@@ -163,6 +163,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		protected void onContentsChanged()
 		{
 			updateSimpleContainer();
+			updateClient();
 			setChanged();
 	    }
 		
@@ -182,6 +183,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		@Override
 		protected void onContentsChanged()
 		{
+			updateClient();
 			setChanged();
 	    }
 		
@@ -376,7 +378,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		});
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity<?> liquidizer)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractLiquidizerEntity<?> liquidizer)
 	{
 		if(!level.isClientSide())
 		{
@@ -395,7 +397,5 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		liquidizer.dumpFullFluidContainers();
 		
 		liquidizer.outputLiquid();
-		
-		liquidizer.updateClient();
 	}
 }

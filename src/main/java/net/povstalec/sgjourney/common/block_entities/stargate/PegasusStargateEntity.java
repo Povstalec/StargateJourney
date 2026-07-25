@@ -302,6 +302,8 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			}
 			else
 				symbolWork();
+			
+			updateClient();
 		}
 	}
 	
@@ -313,7 +315,6 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			return;
 		
 		stargate.animateSpin();
-		stargate.updateClient();
 	}
 	
 	private boolean spinClockwise()

@@ -11,14 +11,14 @@ import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
 import net.povstalec.sgjourney.client.widgets.DumpTankButton;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class LiquidizerScreen<T extends AbstractNaquadahLiquidizerEntity<?>> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
+public abstract class LiquidizerScreen<T extends AbstractLiquidizerEntity<?>> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
 {
 	public static final int HINT_OFFSET_Y = 174;
 	public static final int BUCKET_HINT_OFFSET_X = 0;

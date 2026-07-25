@@ -35,10 +35,12 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		builder.add(EXCITEMENT).add(UNSTABLE);
 	}
 	
-	public void excite(BlockState state, ServerLevel level, BlockPos pos)
+	public void excite(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
 	{
-		if(state.getValue(EXCITEMENT) < MAX_EXCITEMENT)
-			level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) + 1), 3);
+		int newExcitement = randomSource.nextInt(1, excitement) + state.getValue(EXCITEMENT);
+		
+		if(newExcitement < MAX_EXCITEMENT)
+			level.setBlock(pos, state.setValue(EXCITEMENT, newExcitement), Block.UPDATE_ALL);
 		else
 			setUnstable(state, level, pos);
 	}
@@ -52,7 +54,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 			{
 				BlockState otherState = level.getBlockState(otherPos);
 				if(otherState.getBlock() instanceof NaquadriaOreBlock naquadriaOre)
-					naquadriaOre.excite(otherState, level, pos);
+					naquadriaOre.excite(otherState, level, otherPos, randomSource, excitement);
 				else if(otherState.getBlock() instanceof NaquadahOreBlock naquadahOre)
 					naquadahOre.transform(otherState, level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
 			}
@@ -65,13 +67,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		
 		exciteNearbyBlocks(level, pos, randomSource, state.getValue(EXCITEMENT) + 1);
 		
-		level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) - 1), 3);
-	}
-	
-	@Override
-	public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
-	{
-		return false;
+		level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) - 1), Block.UPDATE_ALL);
 	}
 	
 	@Override

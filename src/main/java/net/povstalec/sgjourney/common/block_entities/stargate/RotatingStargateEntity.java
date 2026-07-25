@@ -283,6 +283,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		this.rotation -= this.rotation % rotationStep;
 		
+		updateClient();
 		setChanged();
 	}
 	
@@ -330,10 +331,11 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	protected void syncRotation()
 	{
-		this.oldRotation = this.rotation;
-		
-		if(!this.level.isClientSide())
+		if(this.oldRotation != this.rotation)
+		{
+			this.oldRotation = this.rotation;
 			updateClient();
+		}
 	}
 	
 	public void playBuildupSound()

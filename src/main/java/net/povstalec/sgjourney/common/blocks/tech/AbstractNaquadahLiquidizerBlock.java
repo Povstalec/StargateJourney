@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 
 public abstract class AbstractNaquadahLiquidizerBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
@@ -52,7 +52,7 @@ public abstract class AbstractNaquadahLiquidizerBlock extends HorizontalDirectio
 	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof AbstractNaquadahLiquidizerEntity)
+		if(blockentity instanceof AbstractLiquidizerEntity)
 		{
 			if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 			{
