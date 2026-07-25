@@ -55,7 +55,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class GoauldRingPanelEntity extends TransporterControllerEntity
+public class GoauldRingPanelEntity extends TransporterControllerEntity implements CrystalCache.Interface<GoauldRingPanelEntity>
 {
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
@@ -172,6 +172,12 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 	{
 		AABB localBox = new AABB(getBlockPos()).inflate(distance);
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
+	}
+	
+	@Override
+	public CrystalCache<GoauldRingPanelEntity> getCrystalCache()
+	{
+		return crystalCache;
 	}
 	
 	protected CrystalCache<GoauldRingPanelEntity> createCrystalCache()
@@ -755,8 +761,15 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 			updateButtons();
 	}
 	
-	public void tryUpdateButtons()
+	public void tryUpdate()
 	{
+		transporterCache.ifPresent(transporter ->
+		{
+			// Recalculates the crystals whenever the Ring Panel GUI is opened, because sometimes the game has trouble syncing info due to the weird loading order
+			if(transporter instanceof CrystalCache.Interface<?> crystalCacheEntity)
+				crystalCacheEntity.getCrystalCache().recalculateCrystals();
+		});
+		
 		tryUpdateButtons(-1);
 	}
 	

@@ -66,7 +66,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
 			
         	if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
         	{
-				ringPanel.tryUpdateButtons();
+				ringPanel.tryUpdate();
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{

@@ -1,17 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import javax.annotation.Nonnull;
-
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.items.crystals.*;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,9 +12,19 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class CrystalDHDEntity extends AbstractDHDEntity
+import javax.annotation.Nonnull;
+
+public abstract class CrystalDHDEntity extends AbstractDHDEntity implements CrystalCache.Interface<CrystalDHDEntity>
 {
 	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
@@ -132,6 +130,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 			return crystalCache.isSupported(crystal.getType());
 		
 		return false;
+	}
+	
+	@Override
+	public CrystalCache<CrystalDHDEntity> getCrystalCache()
+	{
+		return crystalCache;
 	}
 	
 	protected CrystalCache<CrystalDHDEntity> createCrystalCache()
