@@ -36,6 +36,7 @@ import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -169,7 +170,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
         CompoundTag blockEntityTag = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
-        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get());
 		
 		CompoundTag crystalInventory = new CompoundTag();
 		crystalInventory.putInt("Size", 9);

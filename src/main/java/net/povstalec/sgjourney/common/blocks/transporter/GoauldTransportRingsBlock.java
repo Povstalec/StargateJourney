@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -90,7 +91,7 @@ public class GoauldTransportRingsBlock extends AbstractTransportRingsBlock
 		CompoundTag blockEntityTag = new CompoundTag();
 		
 		blockEntityTag.putString("id", "sgjourney:goauld_transport_rings");
-		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonTransporterConfig.goauld_transport_rings_energy_capacity.get());
 		
 		CompoundTag crystalInventory = new CompoundTag();
 		crystalInventory.putInt("Size", 9);
@@ -122,7 +123,7 @@ public class GoauldTransportRingsBlock extends AbstractTransportRingsBlock
 		ListTag nbtTagList = new ListTag();
 		
 		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.MATERIALIZATION_CRYSTAL.get()), 1, null));
-		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(ItemInit.ENERGY_CRYSTAL.get().getCapacity())));
 		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonCrystalConfig.transfer_crystal_max_transfer.get())));
 		
 		return nbtTagList;

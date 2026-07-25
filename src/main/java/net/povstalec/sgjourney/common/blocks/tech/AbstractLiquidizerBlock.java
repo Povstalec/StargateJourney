@@ -4,10 +4,15 @@ import javax.annotation.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -18,10 +23,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
-public abstract class AbstractNaquadahLiquidizerBlock extends HorizontalDirectionalBlock implements EntityBlock
+import java.util.List;
+
+public abstract class AbstractLiquidizerBlock extends HorizontalDirectionalBlock implements EntityBlock
 {
-	public AbstractNaquadahLiquidizerBlock(Properties properties)
+	public AbstractLiquidizerBlock(Properties properties)
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
@@ -67,5 +77,23 @@ public abstract class AbstractNaquadahLiquidizerBlock extends HorizontalDirectio
 		}
 
 		super.playerWillDestroy(level, pos, state, player);
+	}
+	
+	public abstract long getEnergyCapacity();
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	{
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(TransporterControllerEntity.ENERGY, Tag.TAG_LONG))
+				energy = blockEntityTag.getLong(TransporterControllerEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy", energy, getEnergyCapacity()));
 	}
 }

@@ -729,7 +729,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 		if(transporterCache.isPresent())
 		{
 			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
-					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
+					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Transporter the Ring Panel is connected to
 							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
 							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
 			).iterator();
