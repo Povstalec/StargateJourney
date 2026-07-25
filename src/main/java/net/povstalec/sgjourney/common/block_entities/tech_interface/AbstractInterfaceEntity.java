@@ -356,7 +356,6 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 			return false;
 		
 		this.rotationDirection = rotationDirection;
-		//TODO
 		return true;
 	}
 	
