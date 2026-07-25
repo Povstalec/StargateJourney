@@ -32,7 +32,7 @@ public class MilkyWayStargateMethods
 				else if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
-				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateClockwise(stargate, desiredSymbol));
+				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateClockwise(interfaceEntity, stargate, desiredSymbol));
 			});
 			
 			return result;
@@ -59,7 +59,7 @@ public class MilkyWayStargateMethods
 				else if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
-				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateAntiClockwise(stargate, desiredSymbol));
+				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateAntiClockwise(interfaceEntity, stargate, desiredSymbol));
 			});
 			
 			return result;

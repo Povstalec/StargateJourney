@@ -309,7 +309,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
 	{
-		AbstractStargateEntity.tick(level, pos, state, stargate);
+		IrisStargateEntity.tick(level, pos, state, stargate);
 		
 		if(level.isClientSide())
 			return;

@@ -482,6 +482,6 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(stargate.isRotating())
 			stargate.updateInterfaceBlocks(null);
 		
-		AbstractStargateEntity.tick(level, pos, state, stargate);
+		IrisStargateEntity.tick(level, pos, state, stargate);
 	}
 }

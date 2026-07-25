@@ -6,23 +6,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -31,14 +23,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
-import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
@@ -171,6 +161,18 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			else
 				interfaceEntity.signalStrength = 0;
 		}
+	}
+	
+	@Override
+	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		if(oldState.getBlock() != newState.getBlock())
+		{
+			if(level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity)
+				interfaceEntity.disconnectFromBlockEntity();
+		}
+		
+		super.onRemove(oldState, level, pos, newState, isMoving);
 	}
 	
 	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
