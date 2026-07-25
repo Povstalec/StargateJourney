@@ -147,9 +147,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 				if(!level.isClientSide())
 					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
 				this.isChevronOpen = true;
-				
-				if(!level.isClientSide())
-					updateClient();
+				updateClient();
 				
 				return setRecentFeedback(StargateInfo.Feedback.CHEVRON_OPENED.withInfo());
 			}
@@ -164,6 +162,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(this.isChevronOpen)
 		{
 			this.isChevronOpen = false;
+			updateClient();
 			
 			StargateInfo.FeedbackMessage feedback = directEngageSymbol(getCurrentSymbol(), true);
 			
@@ -173,9 +172,6 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			
 			return setRecentFeedback(feedback);
 		}
-		
-		if(!level.isClientSide())
-			updateClient();
 		
 		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED.withInfo());
 	}
