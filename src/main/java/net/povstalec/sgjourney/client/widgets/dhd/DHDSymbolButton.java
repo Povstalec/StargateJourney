@@ -179,6 +179,7 @@ public abstract class DHDSymbolButton extends DHDButton
 			renderNumber(guiGraphics, minecraft);
 		else
 			renderSymbol(guiGraphics);
+		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 	}
 	
     private static Component symbolComponent(int index)

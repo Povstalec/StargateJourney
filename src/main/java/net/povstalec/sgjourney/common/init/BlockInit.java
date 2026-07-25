@@ -15,6 +15,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -170,10 +171,10 @@ public class BlockInit
 	public static final DeferredBlock<Block> RAW_TRINIUM_BLOCK = registerBlock("raw_trinium_block",
 			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops()));
 	// Liquids
-	public static final DeferredBlock<LiquidBlock> LIQUID_NAQUADAH_BLOCK = registerBlock("liquid_naquadah",
-			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable()));
-	public static final DeferredBlock<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = registerBlock("heavy_liquid_naquadah",
-			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), BlockBehaviour.Properties.of().mapColor(MapColor.WATER).noCollission().strength(100.0F).noLootTable()));
+	public static final DeferredBlock<LiquidBlock> LIQUID_NAQUADAH_BLOCK = BLOCKS.register("liquid_naquadah",
+			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY)));
+	public static final DeferredBlock<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = BLOCKS.register("heavy_liquid_naquadah",
+			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), BlockBehaviour.Properties.of().mapColor(MapColor.WATER).replaceable().noCollission().strength(100.0F).pushReaction(PushReaction.DESTROY).noLootTable().liquid().sound(SoundType.EMPTY)));
 	// Naquadah Blocks
 	public static final DeferredBlock<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(4.0F, 6.0F).requiresCorrectToolForDrops()));
