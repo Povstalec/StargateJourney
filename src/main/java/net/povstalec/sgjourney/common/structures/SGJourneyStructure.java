@@ -100,7 +100,7 @@ public abstract class SGJourneyStructure extends Structure
 		return this.rotation == null ?
 				JigsawPlacement.addPieces(
 						context,
-						this.startPool,
+						getStartPool(),
 						Optional.ofNullable(this.startJigsawName),
 						this.size,
 						blockPos,
@@ -112,7 +112,7 @@ public abstract class SGJourneyStructure extends Structure
 						JigsawStructure.DEFAULT_LIQUID_SETTINGS) :
 				SGJourneyJigsawPlacement.addPieces(
 						context,
-						this.startPool,
+						getStartPool(),
 						Optional.ofNullable(this.startJigsawName),
 						this.size,
 						blockPos,
