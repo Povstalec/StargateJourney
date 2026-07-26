@@ -513,7 +513,7 @@ public class TabInit
 			event.accept(ClassicDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.TOLLAN_STARGATE.get(), new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			
-			event.accept(InventoryUtil.generationStep(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(InventoryUtil.generationStep(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.GOAULD_RING_PANEL.get(), new ItemStack(BlockInit.GOAULD_RING_PANEL.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 		}
