@@ -401,11 +401,17 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	public abstract boolean allowInterdimensionalTransport();
 	
+	private static TransporterInfo.Feedback noTransporter()
+	{
+		StargateJourney.LOGGER.error("AbstractTransporterEntity.noTransporter: This Transporter could not be found in Transporter Network");
+		return TransporterInfo.Feedback.UNKNOWN_ERROR;
+	}
+	
 	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, otherID);
 		}
 		return this.recentFeedback;
@@ -415,7 +421,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
+			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, coords);
 		}
 		return this.recentFeedback;

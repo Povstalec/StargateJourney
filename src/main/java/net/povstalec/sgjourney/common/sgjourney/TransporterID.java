@@ -31,7 +31,7 @@ public abstract class TransporterID implements Cloneable, Comparable<Transporter
 		}
 		catch(IllegalArgumentException e)
 		{
-			StargateJourney.LOGGER.error("Error parsing address " + idIntArrayToString(idArray), e);
+			StargateJourney.LOGGER.error("Error parsing Transporter ID " + idIntArrayToString(idArray), e);
 		}
 	}
 	
