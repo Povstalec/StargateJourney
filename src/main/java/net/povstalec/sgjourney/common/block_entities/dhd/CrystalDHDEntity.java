@@ -186,8 +186,8 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 					crystalCache.energyCrystals().forEach(slot -> energyTarget += slot.crystal.energyTargetIncrease());
 				
 				// If there are 4 regular crystals or 3 advanced crystals
-				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
-					energyTarget = -1;
+				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.transferCrystals().count(true) >= 3)
+					maxEnergyTransfer = -1;
 				else
 					crystalCache.transferCrystals().forEach(slot -> maxEnergyTransfer += slot.crystal.getMaxTransfer());
 				
