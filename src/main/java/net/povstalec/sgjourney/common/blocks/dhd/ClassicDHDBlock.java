@@ -1,12 +1,10 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
@@ -24,18 +22,21 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
-import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
+
+import javax.annotation.Nullable;
 
 public class ClassicDHDBlock extends CrystalDHDBlock
 {
@@ -141,7 +142,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 		CompoundTag blockEntityTag = new CompoundTag();
 		
 		blockEntityTag.putString("id", "sgjourney:classic_dhd");
-		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonDHDConfig.classic_dhd_energy_buffer_capacity.get());
 		
 		CompoundTag crystalInventory = new CompoundTag();
 		crystalInventory.putInt("Size", 9);

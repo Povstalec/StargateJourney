@@ -8,6 +8,7 @@ import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import net.minecraft.ChatFormatting;
@@ -77,6 +78,13 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.energy_crystal.description"));
 	}
 	
+	public static ItemStack energySetup(long energy)
+	{
+		ItemStack stack = new ItemStack(ItemInit.ENERGY_CRYSTAL.get());
+		stack.set(DataComponentInit.ENERGY, energy);
+		return stack;
+	}
+	
 	public static final class Advanced extends EnergyCrystalItem
 	{
 		public Advanced(Properties properties)
@@ -106,6 +114,13 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
+		}
+		
+		public static ItemStack energySetup(long energy)
+		{
+			ItemStack stack = new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
+			stack.set(DataComponentInit.ENERGY, energy);
+			return stack;
 		}
 	}
 	

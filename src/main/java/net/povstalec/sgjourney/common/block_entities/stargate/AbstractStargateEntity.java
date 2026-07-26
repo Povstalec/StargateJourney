@@ -1674,8 +1674,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				stargate.increaseDisconnectTicks();
 			}
 		}
-		else
-			stargate.updateClient();
 
 		//stargate.blockCover.canSinkGate = true; //TODO Implement a check for whether or not the Stargate can sink into the ground
     }
@@ -1687,7 +1685,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Override
 	public void setGenerationStep(Step step)
 	{
-		System.out.println("Set Generation step: " + generationStep);
 		this.generationStep = step;
 	}
 	

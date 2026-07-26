@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 
 public class IrisFunctions
 {
@@ -11,7 +11,7 @@ public class IrisFunctions
 	//**************************************Basic Interface***************************************
 	//============================================================================================
 	
-	public static String getIris(IrisStargateEntity stargate)
+	public static String getIris(IrisStargateEntity<?> stargate)
 	{
 		if(stargate.irisInfo().getIris().isEmpty())
 			return null;
@@ -19,37 +19,37 @@ public class IrisFunctions
 		return BuiltInRegistries.ITEM.getKey(stargate.irisInfo().getIris().getItem()).toString();
 	}
 	
-	public static boolean closeIris(AbstractInterfaceEntity interfaceEntity)
+	public static boolean closeIris(AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate)
 	{
-		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.CLOSING_COMPUTER);
+		return interfaceEntity.setIrisMotion(stargate, IrisInfo.IrisMotion.CLOSING_COMPUTER);
 	}
 	
-	public static boolean openIris(AbstractInterfaceEntity interfaceEntity)
+	public static boolean openIris(AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate)
 	{
-		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.OPENING_COMPUTER);
+		return interfaceEntity.setIrisMotion(stargate, IrisInfo.IrisMotion.OPENING_COMPUTER);
 	}
 	
-	public static boolean stopIris(AbstractInterfaceEntity interfaceEntity)
+	public static boolean stopIris(AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate)
 	{
-		return interfaceEntity.setIrisMotion(StargateInfo.IrisMotion.IDLE);
+		return interfaceEntity.setIrisMotion(stargate, IrisInfo.IrisMotion.IDLE);
 	}
 	
-	public static short getIrisProgress(IrisStargateEntity stargate)
+	public static short getIrisProgress(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().getIrisProgress();
 	}
 	
-	public static float getIrisProgressPercentage(IrisStargateEntity stargate)
+	public static float getIrisProgressPercentage(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().checkIrisState();
 	}
 	
-	public static int getIrisDurability(IrisStargateEntity stargate)
+	public static int getIrisDurability(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().getIrisDurability();
 	}
 	
-	public static int getIrisMaxDurability(IrisStargateEntity stargate)
+	public static int getIrisMaxDurability(IrisStargateEntity<?> stargate)
 	{
 		return stargate.irisInfo().getIrisMaxDurability();
 	}

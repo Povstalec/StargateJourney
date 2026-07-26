@@ -11,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.packets.ServerboundLiquidizerUpdatePacket;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<?>> extends EnergyBlockMenu<T>
+public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> extends EnergyBlockMenu<T>
 {
     protected FluidStack fluidStack1;
     protected FluidStack fluidStack2;

@@ -56,10 +56,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class GoauldRingPanelEntity extends TransporterControllerEntity
+public class GoauldRingPanelEntity extends TransporterControllerEntity implements CrystalCache.Interface<GoauldRingPanelEntity>
 {
-	//TODO Interdimensional transport (Materialization Crystals)
-	
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
@@ -175,6 +173,12 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 	{
 		AABB localBox = new AABB(getBlockPos()).inflate(distance);
 		level.getEntitiesOfClass(Player.class, localBox).forEach((player) -> player.displayClientMessage(message, true));
+	}
+	
+	@Override
+	public CrystalCache<GoauldRingPanelEntity> getCrystalCache()
+	{
+		return crystalCache;
 	}
 	
 	protected CrystalCache<GoauldRingPanelEntity> createCrystalCache()
@@ -725,8 +729,8 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 		if(transporterCache.isPresent())
 		{
 			Iterator<Transporter> transporterIterator = LocatorHelper.findNearestTransportersInDimension(serverLevel, transporterCache.get().getBlockPos(), maxDiscoveryDistance(), transporter ->
-					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Tranporter the Ring Panel is connected to
-							// !transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
+					!transporterCache.get().getID().equals(transporter.getID()) && // Don't show the Transporter the Ring Panel is connected to
+							!transporter.isNetworkRestricted(getTransporterNetworks()) && // Don't show restricted Transporters
 							!transporterCache.get().isNetworkRestricted(transporter.getNetworks()) // Don't show Transporters in other networks if this one is restricted
 			).iterator();
 			for(int i = 0; i < 6; i++)
@@ -751,8 +755,15 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity
 			updateButtons();
 	}
 	
-	public void tryUpdateButtons()
+	public void tryUpdate()
 	{
+		transporterCache.ifPresent(transporter ->
+		{
+			// Recalculates the crystals whenever the Ring Panel GUI is opened, because sometimes the game has trouble syncing info due to the weird loading order
+			if(transporter instanceof CrystalCache.Interface<?> crystalCacheEntity)
+				crystalCacheEntity.getCrystalCache().recalculateCrystals();
+		});
+		
 		tryUpdateButtons(-1);
 	}
 	

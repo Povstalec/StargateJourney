@@ -101,7 +101,13 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<I
 	
 	public void resetProgress()
 	{
-		this.progress = 0;
+		if(this.progress != 0)
+		{
+			this.progress = 0;
+			updateClient();
+			setChanged();
+		}
+		
 	}
 	
 	/**
@@ -121,6 +127,8 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<I
 				{
 					energyStorage.depleteEnergy(energyPerProgressTick(), false);
 					progress++;
+					
+					updateClient();
 					setChanged();
 				}
 			}
@@ -131,7 +139,6 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<I
 					depleteIngredients(recipe.value());
 					createOutput(recipe.value());
 					resetProgress();
-					setChanged();
 				}
 			}
 		}, this::resetProgress); // Doesn't have base ingredients, stop progress

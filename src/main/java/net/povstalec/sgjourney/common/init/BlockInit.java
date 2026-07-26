@@ -144,11 +144,11 @@ public class BlockInit
 	
 	// Ores
 	public static final DeferredBlock<NaquadriaOreBlock> NAQUADRIA_ORE = registerBlock("naquadria_ore",
-			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), 16.0F));
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), 8.0F));
 	public static final DeferredBlock<NaquadriaOreBlock> NETHER_NAQUADRIA_ORE = registerBlock("nether_naquadria_ore",
-			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), 16.0F));
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), 8.0F));
 	public static final DeferredBlock<NaquadriaOreBlock> DEEPSLATE_NAQUADRIA_ORE = registerBlock("deepslate_naquadria_ore",
-			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 16.0F));
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops(), 8.0F));
 	public static final DeferredBlock<NaquadahOreBlock> NAQUADAH_ORE = registerBlock("naquadah_ore",
 			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F).requiresCorrectToolForDrops(), NAQUADRIA_ORE::get, 4.0F));
 	public static final DeferredBlock<NaquadahOreBlock> NETHER_NAQUADAH_ORE = registerBlock("nether_naquadah_ore",
@@ -163,11 +163,11 @@ public class BlockInit
 			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).requiresCorrectToolForDrops()));
 	// Raw Blocks
 	public static final DeferredBlock<NaquadriaOreBlock> RAW_NAQUADRIA_BLOCK = registerBlock("raw_naquadria_block",
-			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 40.0F));
+			() -> new NaquadriaOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 16.0F));
 	public static final DeferredBlock<NaquadahOreBlock> RAW_NAQUADAH_BLOCK = registerBlock("raw_naquadah_block",
-			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), RAW_NAQUADRIA_BLOCK::get, 10.0F));
+			() -> new NaquadahOreBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), RAW_NAQUADRIA_BLOCK::get, 8.0F));
 	public static final DeferredBlock<ExplosiveBlock> PURE_NAQUADAH_BLOCK = registerBlock("pure_naquadah_block",
-			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 20.0F), Rarity.UNCOMMON, 64);
+			() -> new ExplosiveBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops(), 16.0F), Rarity.UNCOMMON, 64);
 	public static final DeferredBlock<Block> RAW_TRINIUM_BLOCK = registerBlock("raw_trinium_block",
 			() -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops()));
 	// Liquids

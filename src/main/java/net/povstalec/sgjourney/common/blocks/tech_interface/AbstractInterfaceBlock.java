@@ -167,6 +167,18 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		}
 	}
 	
+	@Override
+	public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	{
+		if(oldState.getBlock() != newState.getBlock())
+		{
+			if(level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity)
+				interfaceEntity.disconnectFromBlockEntity();
+		}
+		
+		super.onRemove(oldState, level, pos, newState, isMoving);
+	}
+	
 	private int getRingSegmentOutput(EnergyBlockEntity blockEntity)
 	{
 		if(blockEntity instanceof AbstractStargateEntity<?> stargate)

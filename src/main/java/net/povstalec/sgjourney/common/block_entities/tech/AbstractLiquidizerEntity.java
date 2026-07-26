@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, LiquidizingRecipeInput>
+public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, LiquidizingRecipeInput>
 {
 	private static final String INPUT_INVENTORY = "input_inventory";
 	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
@@ -44,7 +44,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 	protected final FluidTank outputFluidTank = createFluidTank2();
 	protected Lazy<IFluidHandler> outputFluidHandler = Lazy.of(() -> outputFluidTank);
 	
-	public AbstractNaquadahLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
+	public AbstractLiquidizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state, new LiquidizingRecipeInput());
 	}
@@ -107,6 +107,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 			protected void onContentsChanged()
 			{
 				updateSimpleContainer();
+				updateClient();
 				setChanged();
 			}
 			
@@ -125,6 +126,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 			@Override
 			protected void onContentsChanged()
 			{
+				updateClient();
 				setChanged();
 			}
 			
@@ -360,7 +362,7 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		}
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractNaquadahLiquidizerEntity<?> liquidizer)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractLiquidizerEntity<?> liquidizer)
 	{
 		if(!level.isClientSide())
 		{
@@ -379,7 +381,5 @@ public abstract class AbstractNaquadahLiquidizerEntity<R extends LiquidizingReci
 		liquidizer.dumpFullFluidContainers();
 		
 		liquidizer.outputLiquid();
-		
-		liquidizer.updateClient();
 	}
 }

@@ -302,18 +302,19 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			}
 			else
 				symbolWork();
+			
+			updateClient();
 		}
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
 	{
-		AbstractStargateEntity.tick(level, pos, state, stargate);
+		IrisStargateEntity.tick(level, pos, state, stargate);
 		
 		if(level.isClientSide())
 			return;
 		
 		stargate.animateSpin();
-		stargate.updateClient();
 	}
 	
 	private boolean spinClockwise()

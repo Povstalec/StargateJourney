@@ -1,37 +1,32 @@
 package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.core.HolderLookup;
-import net.minecraft.server.level.ServerLevel;
-import net.neoforged.fml.ModList;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
-import net.povstalec.sgjourney.common.blocks.tech_interface.BasicInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
-import net.povstalec.sgjourney.common.blockstates.ShieldingState;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 {
@@ -43,7 +38,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	private int currentSymbol = 0;
 	private RotatingStargateEntity.RotationDirection rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
 	
-	private StargateInfo.IrisMotion irisMotion = StargateInfo.IrisMotion.IDLE;
+	private IrisInfo.IrisMotion irisMotion = IrisInfo.IrisMotion.IDLE;
 	
 	private long energyTarget = CommonInterfaceConfig.default_energy_target.get();
 	
@@ -188,6 +183,20 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		return energyBlockEntity;
 	}
 	
+	public void disconnectFromBlockEntity()
+	{
+		if(energyBlockEntity instanceof AbstractStargateEntity<?> stargate)
+		{
+			// Stops iris from moving when disconnected
+			if(irisMotion != IrisInfo.IrisMotion.IDLE && stargate instanceof IrisStargateEntity<?> irisStargate)
+				irisStargate.irisInfo().setIrisMotion(IrisInfo.IrisMotion.IDLE);
+			
+			// Stops stargate from rotating when disconnected
+			if(rotationDirection != RotatingStargateEntity.RotationDirection.NONE && stargate instanceof RotatingStargateEntity<?> rotatingStargate)
+				rotatingStargate.endRotation(true);
+		}
+	}
+	
 	public InterfaceType getInterfaceType()
 	{
 		return this.interfaceType;
@@ -292,12 +301,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
 			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
-			{
 				interfaceEntity.handleShielding(state, stargate);
-				
-				if(stargate instanceof RotatingStargateEntity<?> rotatingStargate)
-					interfaceEntity.rotateStargate(rotatingStargate);
-			}
 
 			if(lastSymbol != interfaceEntity.currentSymbol)
 			{
@@ -312,79 +316,45 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		interfaceEntity.updateClient();
 	}
 	
-	private void rotateStargate(RotatingStargateEntity<?> stargate)
-	{
-		if(this.rotationDirection.isRotating)
-		{
-			if(stargate.isCurrentSymbol(this.desiredSymbol))
-				this.rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
-			else
-				stargate.rotate(rotationDirection);
-		}
-
-		this.currentSymbol = stargate.getCurrentSymbol();
-	}
-	
 	protected void handleShielding(BlockState state, AbstractStargateEntity<?> stargate)
 	{
 		handleRedstone(state, stargate);
-		
-		if(stargate instanceof IrisStargateEntity<?> irisStargate)
-			handleIris(irisStargate);
-	}
-	
-	private boolean belowMaxProgress(IrisStargateEntity<?> stargate)
-	{
-		return stargate.irisInfo().getIrisProgress() < ShieldingState.MAX_PROGRESS;
-	}
-	
-	private boolean aboveMinProgress(IrisStargateEntity<?> stargate)
-	{
-		return stargate.irisInfo().getIrisProgress() > 0;
 	}
 	
 	protected void handleRedstone(BlockState state, AbstractStargateEntity<?> stargate)
 	{
-		InterfaceMode mode = state.getValue(BasicInterfaceBlock.MODE);
+		InterfaceMode mode = state.getValue(AbstractInterfaceBlock.MODE);
 		
-		if(mode != InterfaceMode.IRIS || !irisMotion.isRedstone())
+		if(mode != InterfaceMode.IRIS || irisMotion.irisMotionType == IrisInfo.IrisMotionType.COMPUTER)
 			return;
 		
 		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 		{
-			if(signalStrength == 0 && irisMotion != StargateInfo.IrisMotion.IDLE)
-				setIrisMotion(StargateInfo.IrisMotion.IDLE);
-			else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != StargateInfo.IrisMotion.CLOSING_REDSTONE && belowMaxProgress(irisStargate))
-				setIrisMotion(StargateInfo.IrisMotion.CLOSING_REDSTONE);
-			else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != StargateInfo.IrisMotion.OPENING_REDSTONE && aboveMinProgress(irisStargate))
-				setIrisMotion(StargateInfo.IrisMotion.OPENING_REDSTONE);
+			if(signalStrength == 0 && irisMotion != IrisInfo.IrisMotion.IDLE)
+				setIrisMotion(irisStargate, IrisInfo.IrisMotion.IDLE);
+			else if(signalStrength > 0 && signalStrength <= 7 && irisMotion != IrisInfo.IrisMotion.CLOSING_REDSTONE && irisStargate.irisInfo().belowMaxProgress())
+				setIrisMotion(irisStargate, IrisInfo.IrisMotion.CLOSING_REDSTONE);
+			else if(signalStrength >= 8 && signalStrength <= 15 && irisMotion != IrisInfo.IrisMotion.OPENING_REDSTONE && irisStargate.irisInfo().aboveMinProgress())
+				setIrisMotion(irisStargate, IrisInfo.IrisMotion.OPENING_REDSTONE);
 		}
 	}
 	
-	protected void handleIris(IrisStargateEntity<?> stargate)
+	public boolean setStargateRotationDirection(RotatingStargateEntity.RotationDirection rotationDirection)
 	{
-		if(irisMotion.isClosing())
-		{
-			if(belowMaxProgress(stargate))
-				stargate.irisInfo().increaseIrisProgress();
-			else
-				irisMotion = StargateInfo.IrisMotion.IDLE;
-		}
-		else if(irisMotion.isOpening())
-		{
-			if(aboveMinProgress(stargate))
-				stargate.irisInfo().decreaseIrisProgress();
-			else
-				irisMotion = StargateInfo.IrisMotion.IDLE;
-		}
+		if(this.rotationDirection == rotationDirection)
+			return false;
+		
+		this.rotationDirection = rotationDirection;
+		return true;
 	}
 	
-	public boolean setIrisMotion(StargateInfo.IrisMotion irisMotion)
+	public boolean setIrisMotion(IrisStargateEntity<?> irisStargate, IrisInfo.IrisMotion irisMotion)
 	{
 		if(this.irisMotion == irisMotion)
 			return false;
 		
 		this.irisMotion = irisMotion;
+		irisStargate.irisInfo().setIrisMotion(irisMotion);
 		return true;
 	}
 }

@@ -45,7 +45,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR>
+public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR> implements CrystalCache.Interface<AbstractTransportRingsEntity<?>>
 {
 	public static final String EMPTY_SPACE = "empty_space";
 	public static final String TRANSPORT_HEIGHT = "transport_height";
@@ -208,6 +208,12 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		};
 	}
 	
+	@Override
+	public CrystalCache<AbstractTransportRingsEntity<?>> getCrystalCache()
+	{
+		return crystalCache;
+	}
+	
 	protected CrystalCache<AbstractTransportRingsEntity<?>> createCrystalCache()
 	{
 		return new CrystalCache.Generic9<>(this, CrystalCache.ALL)
@@ -268,6 +274,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				energyReach = TransporterConnection.estimateMaxRange(getTotalEnergyStored(), getTransferEfficiency());
 				
 				controllerCache.markDirtyTwoWays();
+				updateClient();
 				updateTransporter();
 			}
 		};

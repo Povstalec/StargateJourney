@@ -8,7 +8,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 
 public record ServerboundLiquidizerUpdatePacket(BlockPos blockPos, boolean inputTank) implements CustomPacketPayload
 {
@@ -32,7 +32,7 @@ public record ServerboundLiquidizerUpdatePacket(BlockPos blockPos, boolean input
 		ctx.enqueueWork(() ->
 		{
 			final BlockEntity blockEntity = ctx.player().level().getBlockEntity(packet.blockPos);
-			if(blockEntity instanceof AbstractNaquadahLiquidizerEntity<?> liquidizer)
+			if(blockEntity instanceof AbstractLiquidizerEntity<?> liquidizer)
 			{
 				if(packet.inputTank)
 					liquidizer.dumpInputFluidTank();

@@ -33,6 +33,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
+import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
@@ -77,7 +78,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
 			
         	if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
         	{
-				ringPanel.tryUpdateButtons();
+				ringPanel.tryUpdate();
 				
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -176,7 +177,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
 		CompoundTag blockEntityTag = new CompoundTag();
 		
 		blockEntityTag.putString("id", "sgjourney:goauld_ring_panel");
-		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonTransporterConfig.ring_panel_energy_capacity.get());
 		
 		CompoundTag energyInventory = new CompoundTag();
 		energyInventory.putInt("Size", 1);

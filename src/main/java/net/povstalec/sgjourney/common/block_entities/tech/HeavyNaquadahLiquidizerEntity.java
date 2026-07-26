@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HeavyNaquadahLiquidizerEntity extends AbstractNaquadahLiquidizerEntity<LiquidizingRecipe.HeavyNaquadahLiquidizer>
+public class HeavyNaquadahLiquidizerEntity extends AbstractLiquidizerEntity<LiquidizingRecipe.HeavyNaquadahLiquidizer>
 {
 	public static final Map<Fluid, Boolean> VALID_FLUIDS_CACHE = new HashMap<>(); // Caching fluids the tank can hold
 	

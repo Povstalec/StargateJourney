@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class CrystalDHDEntity extends AbstractDHDEntity
+public abstract class CrystalDHDEntity extends AbstractDHDEntity implements CrystalCache.Interface<CrystalDHDEntity>
 {
 	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
 	
@@ -132,6 +132,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 			return crystalCache.isSupported(crystal.getType());
 		
 		return false;
+	}
+	
+	@Override
+	public CrystalCache<CrystalDHDEntity> getCrystalCache()
+	{
+		return crystalCache;
 	}
 	
 	protected CrystalCache<CrystalDHDEntity> createCrystalCache()
