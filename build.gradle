@@ -129,6 +129,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    mavenCentral()
+    mavenLocal()
     maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
@@ -137,11 +139,18 @@ repositories {
         }
     }
     maven {
-    url "https://squiddev.cc/maven/"
-    content {
-      includeGroup("cc.tweaked")
-      includeModule("org.squiddev", "Cobalt")
-      includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url "https://squiddev.cc/maven/"
+        content {
+            includeGroup("cc.tweaked")
+            includeModule("org.squiddev", "Cobalt")
+            includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        }
     }
     maven {
         name = "Progwml6 maven jei"
@@ -152,13 +161,6 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-  }
 }
 
 dependencies {
@@ -199,6 +201,11 @@ dependencies {
     runtimeOnly fg.deobf("curse.maven:mcjtylib-233105:4501792")
     runtimeOnly fg.deobf("curse.maven:rftools-base-326041:5613271")
     runtimeOnly fg.deobf("curse.maven:rftools-dimensions-240950:4500203")
+
+    // test dependencies
+    testImplementation(platform('org.junit:junit-bom:6.1.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -237,6 +244,13 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
