@@ -246,7 +246,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				protected void onContentsChanged(int slot)
 				{
 					setChanged();
-					tryUpdateButtons(slot);
+					updateButtons();
 					crystalCache.recalculateCrystals();
 				}
 				
@@ -308,7 +308,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		// If energy was 0 but now isn't, update buttons
 		// If energy wasn't 0 but now is, update buttons
 		if(energyStorage.getTrueEnergyStored() - difference == 0 || energyStorage.getTrueEnergyStored() == 0)
-			updateButtons();
+			resetButtons();
 		super.energyChanged(difference, simulate);
 	}
 	
@@ -428,12 +428,12 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		
 		if(list.size() > 5)
 		{
-			buttons.set(4, page == 0 ? TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()) : pageBackButton());
+			buttons.set(4, page == 0 ? TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()) : pageBackButton());
 			buttons.set(5, pageForwardButton(start + 4 < list.size()));
 		}
 		else
 		{
-			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 			buttons.set(5, loadButtonFromMemoryCrystal(server, list, start + 4));
 		}
 		
@@ -533,7 +533,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				buttons.set(i, TransporterControllerButton.networkButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
 		}
 		
-		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 		if(transporterIterator.hasNext())
 			buttons.set(5, nextNetworkButton(serverLevel.getServer(), transporterIterator.next(), 5));
 		else
@@ -588,7 +588,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		
 		if(page <= 0)
 		{
-			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+			buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 			buttons.set(5, pageForwardButton(true));
 		}
 		else
@@ -675,7 +675,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				buttons.set(i, TransporterControllerButton.materializationButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
 		}
 		
-		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.updateButtons()));
+		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 		if(transporterIterator.hasNext())
 			buttons.set(5, nextInterdimensionalButton(transporterIterator.next(), 5));
 		else
@@ -721,8 +721,11 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 			return TransporterControllerButton.defaultButton(this, index, status); // Empty Default Button because of status issues
 	}
 	
-	protected void updateButtons()
+	public void resetButtons()
 	{
+		if(this.getLevel().isClientSide())
+			return;
+		
 		transporterCache.markDirtyTwoWays();
 		
 		panelState = TransporterControllerButton.ButtonState.DEFAULT;
@@ -755,10 +758,27 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		updateClient();
 	}
 	
-	protected void tryUpdateButtons(int updatedSlot)
+	public void updateButtons()
 	{
-		if(!this.getLevel().isClientSide() && page < 0 || updatedSlot == selectedSlot)
-			updateButtons();
+		if(page < 0 || selectedSlot < 0)
+			resetButtons();
+		// Updates buttons based on the page and selected slot
+		else
+		{
+			if(level.isClientSide())
+				return;
+			
+			TransporterControllerButton.ButtonState state = buttonStateAt(selectedSlot);
+			
+			switch(state)
+			{
+				case MEMORY -> setButtonsFromMemoryCrystal(level.getServer(), selectedSlot);
+				case NETWORK -> setBaseCommunicationCrystalPage(selectedSlot, CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(selectedSlot)));
+				case MANUAL -> setButtonsForManualControl();
+				case MATERIALIZATION -> setBaseMaterializationCrystalPage(selectedSlot);
+				default -> resetButtons();
+			}
+		}
 	}
 	
 	public void tryUpdate()
@@ -770,7 +790,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				crystalCacheEntity.getCrystalCache().recalculateCrystals();
 		});
 		
-		tryUpdateButtons(-1);
+		updateButtons();
 	}
 	
 	public TransporterControllerButton<GoauldRingPanelEntity> getButtonAt(int index)
@@ -804,21 +824,21 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 			return true;
 		
 		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), CONTROLLER_INFO_DISTANCE);
-		updateButtons();
+		resetButtons();
 		return false;
 	}
 	
 	public TransporterInfo.FeedbackMessage startCoordTransport(Vec3 coords)
 	{
 		TransporterInfo.FeedbackMessage feedback = super.startCoordTransport(coords);
-		updateButtons();
+		resetButtons();
 		return feedback;
 	}
 	
 	public TransporterInfo.FeedbackMessage startIDTransport(TransporterID transporterID)
 	{
 		TransporterInfo.FeedbackMessage feedback = super.startIDTransport(transporterID);
-		updateButtons();
+		resetButtons();
 		return feedback;
 	}
 	

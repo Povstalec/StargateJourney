@@ -422,12 +422,12 @@ public class BlockEntityList extends SavedData
 	
 	private void tryDeserializeTransporter(String id, CompoundTag transporterTag)
 	{
-		if(TransporterID.canBeTransformedToID(id))
+		try
 		{
+			TransporterID.verifyValidity(TransporterID.idStringToIntArray(id));
 			try
 			{
 				TransporterID.Immutable transporterID = new TransporterID.Immutable(id);
-				
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
 					Transporter transporter = type.constructTransporter(server);
@@ -441,7 +441,7 @@ public class BlockEntityList extends SavedData
 			}
 			catch(IllegalArgumentException e) { StargateJourney.LOGGER.error("Cannot deserialize Transporter {} because it is invalid", id, e); }
 		}
-		else
+		catch(IllegalArgumentException e)
 		{
 			StargateJourney.LOGGER.error("{} cannot be transformed to Transporter ID, generating new one", id);
 			loadTransporterFromBlockEntity(generateTransporterID(), transporterTag, true);
