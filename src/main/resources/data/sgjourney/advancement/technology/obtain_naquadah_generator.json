@@ -29,7 +29,7 @@
 			{
 				"items":
 				[
-					{"tag": "sgjourney:naquadah_generator"}
+					{"items": "#sgjourney:naquadah_generator"}
         		]
 			}
 		}

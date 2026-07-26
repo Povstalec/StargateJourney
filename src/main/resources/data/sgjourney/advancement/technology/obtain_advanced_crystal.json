@@ -29,7 +29,7 @@
 			{
 				"items":
 				[
-          			{"tag": "sgjourney:advanced_crystal"}
+          			{"items": "#sgjourney:advanced_crystal"}
         		]
 			}
 		}

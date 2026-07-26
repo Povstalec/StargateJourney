@@ -293,7 +293,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	
 	public void fillOutputFluidItem()
 	{
-		ItemStack stack = fluidItemOutputHandler.getStackInSlot(0);
+		ItemStack stack = fluidItemInputHandler.getStackInSlot(1);
 		
 		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(cap != null)
