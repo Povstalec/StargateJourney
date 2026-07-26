@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.items.VialItem;
 
 public class ModEvents
 {
-	@EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(modid = StargateJourney.MODID)
 	public static class Common
 	{
 		@SubscribeEvent
@@ -32,13 +32,13 @@ public class ModEvents
 		}
 	}
 	
-	/*@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	/*@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID)
 	public static class Server
 	{
 	
 	}*/
 	
-	@EventBusSubscriber(value = Dist.CLIENT, modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(value = Dist.CLIENT, modid = StargateJourney.MODID)
 	public static class Client
 	{
 		@SubscribeEvent
