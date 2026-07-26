@@ -29,7 +29,7 @@
 			{
 				"items":
 				[
-          			{"items": "#sgjourney:crystal"}
+          			{"tag": "sgjourney:crystal"}
         		]
 			}
 		}

@@ -2,9 +2,9 @@
 	"parent": "sgjourney:adventure/use_stargate",
 	"display": 
 	{
-		"icon": 
+		"id":
 		{
-			"id": "sgjourney:milky_way_stargate"
+			"item": "sgjourney:milky_way_stargate"
 		},
 		"title": 
 		{

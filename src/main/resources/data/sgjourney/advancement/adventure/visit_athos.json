@@ -4,7 +4,7 @@
 	{
 		"icon": 
 		{
-			"item": "minecraft:spruce_sapling"
+			"id": "minecraft:spruce_sapling"
 		},
 		"title": 
 		{
