@@ -27,9 +27,9 @@ import javax.annotation.Nullable;
 
 public abstract class SymbolBlockEntity extends BlockEntity
 {
-	public static final String SYMBOL = "Symbol";
-	public static final String SYMBOLS = "Symbols";
-	public static final String SYMBOL_NUMBER = "SymbolNumber";
+	public static final String SYMBOL = "symbol";
+	public static final String SYMBOLS = "symbols";
+	public static final String SYMBOL_NUMBER = "symbol_number";
 	public static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
 	
 	public int symbolNumber = 0;
@@ -66,12 +66,18 @@ public abstract class SymbolBlockEntity extends BlockEntity
     	
     	if(tag.contains(SYMBOL_NUMBER))
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
+		else if(tag.contains("SymbolNumber")) //TODO For legacy reasons
+			symbolNumber = tag.getInt("SymbolNumber");
     	
     	if(tag.contains(SYMBOL))
     		pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString(SYMBOL));
+		else if(tag.contains("Symbol")) //TODO For legacy reasons
+			pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString("Symbol"));
     	
     	if(tag.contains(SYMBOLS))
     		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
+		else if(tag.contains("Symbols")) //TODO For legacy reasons
+			symbols = Conversion.stringToSymbols(tag.getString("Symbols"));
 	}
 	
 	@Override
