@@ -102,8 +102,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final String SYMBOLS = "symbols";
 	
 	public static final String COVER_BLOCKS = "cover_blocks";
-	public static final String IRIS_INVENTORY = "iris_inventory";
-	public static final String SHIELD_INVENTORY = "shield_inventory";
 	
 	public static final String ENGAGED_CHEVRONS = "engaged_chevrons";
 	

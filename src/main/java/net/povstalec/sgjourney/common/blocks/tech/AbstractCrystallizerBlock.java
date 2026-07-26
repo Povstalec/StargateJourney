@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -9,10 +7,10 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
@@ -24,10 +22,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class AbstractCrystallizerBlock extends HorizontalDirectionalBlock implements EntityBlock
@@ -83,7 +81,7 @@ public abstract class AbstractCrystallizerBlock extends HorizontalDirectionalBlo
 	public abstract long getEnergyCapacity();
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		

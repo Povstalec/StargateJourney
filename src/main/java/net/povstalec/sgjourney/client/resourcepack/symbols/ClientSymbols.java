@@ -57,7 +57,7 @@ public class ClientSymbols
 		ResourceLocation[] extendedTextures = new ResourceLocation[textures.size()];
 		for(int i = 0; i < extendedTextures.length; i++)
 		{
-			extendedTextures[i] = new ResourceLocation(textures.get(i).getNamespace(), "textures/" + textures.get(i).getPath() + ".png");
+			extendedTextures[i] = ResourceLocation.fromNamespaceAndPath(textures.get(i).getNamespace(), "textures/" + textures.get(i).getPath() + ".png");
 		}
 		this.extendedTextures = Arrays.asList(extendedTextures);
 	}

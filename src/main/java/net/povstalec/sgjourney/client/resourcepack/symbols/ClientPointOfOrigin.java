@@ -38,7 +38,7 @@ public class ClientPointOfOrigin
 	{
 		this.name = name;
 		this.spriteTexture = texture;
-		this.extendedTexture = new ResourceLocation(texture.getNamespace(), "textures/" + texture.getPath() + ".png");
+		this.extendedTexture = ResourceLocation.fromNamespaceAndPath(texture.getNamespace(), "textures/" + texture.getPath() + ".png");
 	}
 	
 	public String name()
