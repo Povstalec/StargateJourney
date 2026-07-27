@@ -103,13 +103,13 @@ public class WormholeTravelCriterion extends SimpleCriterionTrigger<WormholeTrav
 		@Nullable
 		private final ResourceLocation destinationDimension;
 		@Nullable
-		ResourceLocation initialAddressRegion;
+		private final ResourceLocation initialAddressRegion;
 		@Nullable
-		ResourceLocation destinationAddressRegion;
+		private final ResourceLocation destinationAddressRegion;
 		@Nullable
-		ResourceLocation initialGalaxy;
+		private final ResourceLocation initialGalaxy;
 		@Nullable
-		ResourceLocation destinationGalaxy;
+		private final ResourceLocation destinationGalaxy;
 		@Nullable
 		private final Long distanceTraveled;
 

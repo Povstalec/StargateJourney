@@ -9,7 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -98,19 +97,19 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		TextureAtlasSprite sprite = ClientPointOfOrigin.getSprite(pointOfOrigin);
-		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, sprite.atlas().location());
+		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
+		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
+		RenderSystem.setShaderTexture(0, pointOfOrigin.getExtendedTexture());
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(sprite.getU(0F), sprite.getV(0F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(sprite.getU(0F), sprite.getV(16F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(sprite.getU(16F), sprite.getV(16F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(sprite.getU(16F), sprite.getV(0F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
 		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
@@ -121,19 +120,19 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		TextureAtlasSprite sprite = ClientSymbols.getSprite(symbols, symbol);
-		
 		RenderSystem.enableBlend();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		RenderSystem.setShaderTexture(0, sprite.atlas().location());
+		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
+		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
+		RenderSystem.setShaderTexture(0, symbols.getExtendedSymbolTexture(symbol));
 		
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(sprite.getU(0F), sprite.getV(0F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(sprite.getU(0F), sprite.getV(16F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(sprite.getU(16F), sprite.getV(16F)).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(sprite.getU(16F), sprite.getV(0F)).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
 		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	

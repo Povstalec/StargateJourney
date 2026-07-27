@@ -1,17 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import javax.annotation.Nonnull;
-
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.items.crystals.*;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,9 +12,19 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
+import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class CrystalDHDEntity extends AbstractDHDEntity
+import javax.annotation.Nonnull;
+
+public abstract class CrystalDHDEntity extends AbstractDHDEntity implements CrystalCache.Interface<CrystalDHDEntity>
 {
 	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
@@ -134,6 +132,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 		return false;
 	}
 	
+	@Override
+	public CrystalCache<CrystalDHDEntity> getCrystalCache()
+	{
+		return crystalCache;
+	}
+	
 	protected CrystalCache<CrystalDHDEntity> createCrystalCache()
 	{
 		return new CrystalCache.Generic9<>(this, CrystalCache.Type.CONTROL, CrystalCache.Type.MEMORY, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION)
@@ -180,8 +184,8 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity
 					crystalCache.energyCrystals().forEach(slot -> energyTarget += slot.crystal.energyTargetIncrease());
 				
 				// If there are 4 regular crystals or 3 advanced crystals
-				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
-					energyTarget = -1;
+				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.transferCrystals().count(true) >= 3)
+					maxEnergyTransfer = -1;
 				else
 					crystalCache.transferCrystals().forEach(slot -> maxEnergyTransfer += slot.crystal.getMaxTransfer());
 				

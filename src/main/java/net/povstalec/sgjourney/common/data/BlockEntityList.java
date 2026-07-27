@@ -127,10 +127,30 @@ public class BlockEntityList extends SavedData
 		return stargateMap.containsKey(address);
 	}
 	
+	/**
+	 * @param address 9-Chevron Address of the Stargate being searched for
+	 * @return Stargate with the specified 9-Chevron Address or null if none is found
+	 */
 	@Nullable
 	public Stargate getStargate(Address address)
 	{
 		return stargateMap.get(address);
+	}
+	
+	/**
+	 * @param clazz Class of the Stargate being searched for
+	 * @param address 9-Chevron Address of the Stargate being searched for
+	 * @return Stargate with the specified 9-Chevron Address or null if none is found
+	 * @throws ClassCastException if the found Stargate is not an instance of the provided class.
+	 */
+	@Nullable
+	public <SG extends Stargate> SG getStargate(Class<SG> clazz, Address address)
+	{
+		Stargate stargate = getStargate(address);
+		if(clazz.isInstance(stargate))
+			return clazz.cast(stargate);
+		
+		throw new ClassCastException("Stargate " + address + " is not an instance of class " + clazz + "!");
 	}
 	
 	public Address.Immutable generate9ChevronAddress(RandomSource randomSource)
@@ -224,10 +244,30 @@ public class BlockEntityList extends SavedData
 		return transporterMap.containsKey(transporterID);
 	}
 	
+	/**
+	 * @param transporterID Transporter ID of the Transporter being searched for
+	 * @return Transporter with the specified Transporter ID or null if none is found
+	 */
 	@Nullable
 	public Transporter getTransporter(TransporterID transporterID)
 	{
 		return transporterMap.get(transporterID);
+	}
+	
+	/**
+	 * @param clazz Class of the Transporter being searched for
+	 * @param transporterID Transporter ID of the Transporter being searched for
+	 * @return Transporter with the specified Transporter ID or null if none is found
+	 * @throws ClassCastException if the found Transporter is not an instance of the provided class.
+	 */
+	@Nullable
+	public <T extends Transporter> T getTransporter(Class<T> clazz, TransporterID transporterID)
+	{
+		Transporter transporter = getTransporter(transporterID);
+		if(clazz.isInstance(transporter))
+			return clazz.cast(transporter);
+		
+		throw new ClassCastException("Transporter " + transporterID + " is not an instance of class " + clazz + "!");
 	}
 	
 	public TransporterID.Immutable generateTransporterID()
@@ -382,12 +422,16 @@ public class BlockEntityList extends SavedData
 	
 	private void tryDeserializeTransporter(String id, CompoundTag transporterTag)
 	{
-		if(TransporterID.canBeTransformedToID(id))
+		try
 		{
+			if(TransporterID.canBeTransformedToID(id))
+				TransporterID.verifyValidity(TransporterID.idStringToIntArray(id));
+			else
+				throw new IllegalArgumentException(id + "cannot be transformed to Transporter ID");
+			
 			try
 			{
 				TransporterID.Immutable transporterID = new TransporterID.Immutable(id);
-				
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
 					Transporter transporter = type.constructTransporter(server);
@@ -401,7 +445,7 @@ public class BlockEntityList extends SavedData
 			}
 			catch(IllegalArgumentException e) { StargateJourney.LOGGER.error("Cannot deserialize Transporter {} because it is invalid", id, e); }
 		}
-		else
+		catch(IllegalArgumentException e)
 		{
 			StargateJourney.LOGGER.error("{} cannot be transformed to Transporter ID, generating new one", id);
 			loadTransporterFromBlockEntity(generateTransporterID(), transporterTag, true);

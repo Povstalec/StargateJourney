@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.transporter;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.annotation.Nullable;
 
@@ -106,38 +107,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		}
 		else
 		{
-			//=====Setting up cache logic=====
-			controllerCache.setRevalidate(() ->
-			{
-				if(controllerRelativePos == null)
-					return false;
-				
-				BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
-				if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity controller)
-					return controllerCache.getCached() == controller && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= controller.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
-				
-				return false;
-			});
-			controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
-					controller -> !controller.transporterCache.isCached()));
-			
-			controllerCache.setOnChanged((oldController, newController) ->
-			{
-				if(newController != null)
-				{
-					controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newController.getBlockPos());
-					controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newController.getBlockPos(), getBlockPos())));
-					// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
-					if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
-						controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
-				}
-				else
-					controllerRelativePos = null;
-				
-				updateTransporter();
-				updateClient();
-			});
-			//==========
+			setupServerAutoCache();
 			
 			checkTransporter();
 			
@@ -159,7 +129,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(tag.contains(TRANSPORTER_ID, Tag.TAG_INT_ARRAY))
 			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
     	
-    	if(tag.contains(CUSTOM_NAME, 8))
+    	if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
 	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
@@ -227,6 +197,40 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public AutoCache.Controller<TransporterControllerEntity, AbstractTransporterEntity<?>> controllerCache()
 	{
 		return controllerCache;
+	}
+	
+	public void setupServerAutoCache()
+	{
+		controllerCache.setRevalidate(() ->
+		{
+			if(controllerRelativePos == null)
+				return false;
+			
+			BlockPos controllerPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), controllerRelativePos);
+			if(controllerPos != null && level.getBlockEntity(controllerPos) instanceof TransporterControllerEntity controller)
+				return controllerCache.getCached() == controller && CoordinateHelper.Relative.distanceSqr(controllerPos, getBlockPos()) <= controller.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+			
+			return false;
+		});
+		controllerCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(TransporterControllerEntity.class, level, worldPosition, controllerSearchDistance,
+				controller -> !controller.transporterCache.isCached()));
+		
+		controllerCache.setOnChanged((oldController, newController) ->
+		{
+			if(newController != null)
+			{
+				controllerRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newController.getBlockPos());
+				controllerSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newController.getBlockPos(), getBlockPos())));
+				// Transporter will search at a distance equal to the distance of the last Controller it was connected to (or 64 if there was no Controller connected to it previously)
+				if(controllerSearchDistance < MIN_CONTROLLER_SEARCH_DISTANCE)
+					controllerSearchDistance = MIN_CONTROLLER_SEARCH_DISTANCE; // Make sure the distance is at least 64
+			}
+			else
+				controllerRelativePos = null;
+			
+			updateTransporter();
+			updateClient();
+		});
 	}
 	
 	public final TransporterType<T> getTransporterType()
@@ -330,7 +334,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	public Set<Integer> getCachedNetworks()
 	{
 		Set<Integer> networks = new TreeSet<>(this.networks);
-		controllerCache.ifPresent(controller -> networks.addAll(controller.getNetworks()));
+		controllerCache.ifCached(controller -> networks.addAll(controller.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -403,11 +407,17 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	public abstract boolean allowInterdimensionalTransport();
 	
+	private static TransporterInfo.Feedback noTransporter()
+	{
+		StargateJourney.LOGGER.error("AbstractTransporterEntity.noTransporter: This Transporter could not be found in Transporter Network");
+		return TransporterInfo.Feedback.UNKNOWN_ERROR;
+	}
+	
 	public TransporterInfo.FeedbackMessage dialTransporter(TransporterID otherID)
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
+			setRecentFeedback(transporterSupply(transporter -> transporter.dialTransporter(otherID), () -> noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, otherID);
 		}
 		return this.recentFeedback;
@@ -417,7 +427,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), TransporterInfo.Feedback.UNKNOWN_ERROR.withInfo()));
+			setRecentFeedback(transporterSupply(transporter -> transporter.dialTransporter(coords), () -> noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, coords);
 		}
 		return this.recentFeedback;
@@ -681,6 +691,16 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			return consumer.apply(transporter);
 		
 		return defaultValue;
+	}
+	
+	private <R> R transporterSupply(Function<Transporter, R> consumer, Supplier<R> defaultSupplier)
+	{
+		Transporter transporter = getTransporter();
+		
+		if(transporter != null)
+			return consumer.apply(transporter);
+		
+		return defaultSupplier.get();
 	}
 	
 	@Override

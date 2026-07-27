@@ -1,12 +1,15 @@
 package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerEditBox;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
@@ -54,13 +57,24 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 				button -> saveToMemoryCrystalAndClose(new CoordinateEntry(editBox.getValue(), this.minecraft.level.getGameTime(), clickedPos))));
 		addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
 		
-		if(this.minecraft.level.getBlockEntity(clickedPos) instanceof AbstractTransporterEntity<?> transporter) // Choice between saving position and Transporter ID
+		if(minecraft.level.getBlockEntity(clickedPos) instanceof AbstractTransporterEntity<?> transporter) // Choice between saving position and Transporter ID
 		{
 			// Button to save Transporter ID
 			saveButtons.add(CrystalComputerButton.largeButton(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET, false,
 					Component.translatable("screen.sgjourney.crystal_computer.save_transporter_id"), transporter.getID().toComponent(false),
-					button -> saveToMemoryCrystalAndClose(new TransporterIDEntry(editBox.getValue(), this.minecraft.level.getGameTime(), transporter.getID()))));
+					button -> saveToMemoryCrystalAndClose(new TransporterIDEntry(editBox.getValue(), minecraft.level.getGameTime(), transporter.getID()))));
 			addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
+		}
+		else if(minecraft.level.getBlockState(clickedPos).getBlock() instanceof AbstractStargateBlock stargateBlock)
+		{
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(minecraft.level, clickedPos, minecraft.level.getBlockState(clickedPos));
+			if(stargate != null)
+			{
+				addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET, false,
+						Component.translatable("screen.sgjourney.crystal_computer.save_address"),
+						Component.translatable("screen.sgjourney.crystal_computer.cant_read_9_chevron_address").withStyle(ChatFormatting.DARK_RED),
+						button -> {}));
+			}
 		}
 	}
 	

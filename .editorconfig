@@ -1,0 +1,32 @@
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+
+[*.java]
+# Use tabs for indents
+indent_style = tab
+
+# No spaces before parentheses
+ij_java_space_before_method_parentheses = false
+ij_java_space_before_method_call_parentheses = false
+ij_java_space_before_if_parentheses = false
+ij_java_space_before_for_parentheses = false
+ij_java_space_before_while_parentheses = false
+ij_java_space_before_switch_parentheses = false
+ij_java_space_before_try_parentheses = false
+ij_java_space_before_catch_parentheses = false
+ij_java_space_before_synchronized_parentheses = false
+
+# Move braces to new line for control statements/blocks (if, for, while, etc.)
+ij_java_block_brace_style = next_line
+
+# Move braces to new line for classes and methods
+ij_java_class_brace_style = next_line
+ij_java_method_brace_style = next_line
+
+# Keep control keywords like 'else', 'catch', 'finally' on a new line as well
+ij_java_else_on_new_line = true
+ij_java_catch_on_new_line = true
+ij_java_finally_on_new_line = true

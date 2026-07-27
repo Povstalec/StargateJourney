@@ -6,14 +6,14 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record SymbolSet(String name, List<ResourceLocation> textures)
+public class SymbolSet
 {
 	public static final ResourceLocation SYMBOL_SET_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol_set");
 	public static final ResourceKey<Registry<SymbolSet>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_SET_LOCATION);
@@ -21,14 +21,45 @@ public record SymbolSet(String name, List<ResourceLocation> textures)
 	
 	public static final Codec<SymbolSet> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(symbols -> symbols.name),
-			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(symbols -> symbols.textures)
+			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(symbols -> symbols.spriteTextures)
 	).apply(instance, SymbolSet::new));
 	
 	private static final Map<ResourceKey<SymbolSet>, SymbolSet> SYMBOL_SETS = new HashMap<>();
 	
+	private final String name;
+	private final List<ResourceLocation> spriteTextures; // Names used for looking up the textures in a TextureAtlas
+	private final List<ResourceLocation> extendedTextures; // Full texture paths inside assets folder
+	
+	public SymbolSet(String name, List<ResourceLocation> textures)
+	{
+		this.name = name;
+		this.spriteTextures = textures;
+		ResourceLocation[] extendedTextures = new ResourceLocation[textures.size()];
+		for(int i = 0; i < extendedTextures.length; i++)
+		{
+			extendedTextures[i] = new ResourceLocation(textures.get(i).getNamespace(), "textures/" + textures.get(i).getPath() + ".png");
+		}
+		this.extendedTextures = Arrays.asList(extendedTextures);
+	}
+	
+	public String name()
+	{
+		return this.name;
+	}
+	
+	public List<ResourceLocation> spriteTextures()
+	{
+		return this.spriteTextures;
+	}
+	
+	public List<ResourceLocation> extendedTextures()
+	{
+		return this.extendedTextures;
+	}
+	
 	public int size()
 	{
-		return this.textures.size();
+		return this.spriteTextures.size();
 	}
 	
 	public boolean containsSymbol(int symbol)
@@ -36,14 +67,24 @@ public record SymbolSet(String name, List<ResourceLocation> textures)
 		return symbol >= 1 && symbol <= size();
 	}
 	
-	public ResourceLocation getSymbolTexture(int symbol)
+	public ResourceLocation getSpriteSymbolTexture(int symbol)
 	{
 		if(symbol > size())
-			return ClientSymbols.getDefaultSymbolTexture(symbol);
+			return ClientSymbols.getDefaultSpriteSymbolTexture(symbol);
 		else if(symbol <= 0)
 			return ClientSymbols.ERROR_LOCATION;
 		
-		return textures.get(symbol - 1);
+		return spriteTextures.get(symbol - 1);
+	}
+	
+	public ResourceLocation getExtendedSymbolTexture(int symbol)
+	{
+		if(symbol > size())
+			return ClientSymbols.getDefaultExtendedSymbolTexture(symbol);
+		else if(symbol <= 0)
+			return ClientSymbols.ERROR_LOCATION;
+		
+		return extendedTextures.get(symbol - 1);
 	}
 	
 	@Nullable

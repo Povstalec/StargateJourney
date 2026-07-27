@@ -19,16 +19,17 @@ import javax.annotation.Nullable;
 public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialEffects
 {
 	// Milky Way
-	public static final ResourceLocation ABYDOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "abydos");
-	public static final ResourceLocation CHULAK_EFFECTS = new ResourceLocation(StargateJourney.MODID, "chulak");
-	public static final ResourceLocation UNITAS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "unitas");
-	public static final ResourceLocation RIMA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "rima");
-	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = new ResourceLocation(StargateJourney.MODID, "cavum_tenebrae");
+	public static final ResourceLocation ABYDOS_EFFECTS = StargateJourney.sgjourneyLocation("abydos");
+	public static final ResourceLocation CHULAK_EFFECTS = StargateJourney.sgjourneyLocation("chulak");
+	public static final ResourceLocation UNITAS_EFFECTS = StargateJourney.sgjourneyLocation("unitas");
+	public static final ResourceLocation RIMA_EFFECTS = StargateJourney.sgjourneyLocation("rima");
+	public static final ResourceLocation TOLLAN_EFFECTS = StargateJourney.sgjourneyLocation("tollan");
+	public static final ResourceLocation CAVUM_TENEBRAE_EFFECTS = StargateJourney.sgjourneyLocation("cavum_tenebrae");
 	// Pegasus
-	public static final ResourceLocation LANTEA_EFFECTS = new ResourceLocation(StargateJourney.MODID, "lantea");
-	public static final ResourceLocation ATHOS_EFFECTS = new ResourceLocation(StargateJourney.MODID, "athos");
+	public static final ResourceLocation LANTEA_EFFECTS = StargateJourney.sgjourneyLocation("lantea");
+	public static final ResourceLocation ATHOS_EFFECTS = StargateJourney.sgjourneyLocation("athos");
 	
-	public static final ResourceLocation DESTINY_EFFECTS = new ResourceLocation(StargateJourney.MODID, "destiny");
+	public static final ResourceLocation DESTINY_EFFECTS = StargateJourney.sgjourneyLocation("destiny");
 	
 	@Nullable
 	protected SGJourneySkyRenderer skyRenderer;
@@ -165,13 +166,28 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		public Rima()
 		{
 			super(Float.NaN, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
-			skyRenderer = new PlanetSkyRenderers.RimaSkyRenderer();
+			skyRenderer = new PlanetSkyRenderers.TollanSkyRenderer();
 		}
 		
 		@Override
 		public boolean customSky()
 		{
 			return ClientSkyConfig.custom_rima_sky.get();
+		}
+	}
+	
+	public static class Tollan extends SGJourneyDimensionSpecialEffects
+	{
+		public Tollan()
+		{
+			super(Float.NaN, true, DimensionSpecialEffects.SkyType.NORMAL, false, false);
+			skyRenderer = new PlanetSkyRenderers.TollanSkyRenderer();
+		}
+		
+		@Override
+		public boolean customSky()
+		{
+			return ClientSkyConfig.custom_tollan_sky.get();
 		}
 	}
 	
@@ -244,6 +260,7 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
     	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
 		event.register(SGJourneyDimensionSpecialEffects.UNITAS_EFFECTS, new SGJourneyDimensionSpecialEffects.Unitas());
 		event.register(SGJourneyDimensionSpecialEffects.RIMA_EFFECTS, new SGJourneyDimensionSpecialEffects.Rima());
+		event.register(SGJourneyDimensionSpecialEffects.TOLLAN_EFFECTS, new SGJourneyDimensionSpecialEffects.Tollan());
     	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
 		// Pegasus
     	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());

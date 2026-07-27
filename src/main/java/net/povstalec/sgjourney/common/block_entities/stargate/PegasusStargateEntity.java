@@ -9,8 +9,8 @@ import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.PegasusStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -274,6 +274,10 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	private void animateSpin()
 	{
+		// Delay the opening of the gate to the tick after all symbols are encoded
+		if(canEngage && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
+			engageStargate();
+		
 		if(isSymbolSpinning())
 		{
 			int symbol = addressBuffer.symbolAt(symbolBuffer);
@@ -282,7 +286,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, canEngage);
+					directEngageSymbol(symbol, false);
 				}
 				else
 					symbolWork();
@@ -297,23 +301,24 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, canEngage);
+					directEngageSymbol(symbol, false);
 				}
 			}
 			else
 				symbolWork();
+			
+			updateClient();
 		}
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
 	{
-		AbstractStargateEntity.tick(level, pos, state, stargate);
+		IrisStargateEntity.tick(level, pos, state, stargate);
 		
 		if(level.isClientSide())
 			return;
 		
 		stargate.animateSpin();
-		stargate.updateClient();
 	}
 	
 	private boolean spinClockwise()

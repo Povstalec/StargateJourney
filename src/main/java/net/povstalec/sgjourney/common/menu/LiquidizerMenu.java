@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.SlotItemHandler;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundLiquidizerUpdatePacket;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class LiquidizerMenu<T extends AbstractNaquadahLiquidizerEntity<?>> extends EnergyBlockMenu<T>
+public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> extends EnergyBlockMenu<T>
 {
     protected FluidStack fluidStack1;
     protected FluidStack fluidStack2;

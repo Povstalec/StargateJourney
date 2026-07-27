@@ -124,6 +124,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    mavenCentral()
+    mavenLocal()
     maven {
     // location of the maven that hosts JEI files since January 2023
     name = "Jared's maven"
@@ -139,7 +141,9 @@ repositories {
     maven {
     url 'https://squiddev.cc/maven/'
     content {
-      includeGroup 'org.squiddev'
+        includeGroup("cc.tweaked")
+        includeModule("org.squiddev", "Cobalt")
+        includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
     }
   }
 }
@@ -181,6 +185,11 @@ dependencies {
     // For more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
+
+    // test dependencies
+    testImplementation(platform('org.junit:junit-bom:6.1.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -219,6 +228,13 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

@@ -421,7 +421,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	{
 		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
-		).apply(instance, Address.Immutable::new));
+		).apply(instance, Address.Immutable::fromCodecList));
 		
 		public Immutable() {}
 		
@@ -466,6 +466,13 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static Immutable randomAddress(int prefix, int size, int limit, long seed)
 		{
 			return new Immutable(randomAddressArray(prefix, size, limit, seed));
+		}
+		
+		public static Address.Immutable fromCodecList(List<Integer> addressList)
+		{
+			int[] addressArray = ArrayHelper.integerListToArray(addressList);
+			verifyValidity(addressArray);
+			return new Address.Immutable(addressArray);
 		}
 		
 		public static Immutable read(StringReader reader)
@@ -514,7 +521,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	{
 		public static final Codec<Mutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
-		).apply(instance, Mutable::new));
+		).apply(instance, Mutable::fromCodecList));
 		
 		public Mutable() {}
 		
@@ -629,6 +636,13 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static Mutable randomAddress(int prefix, int size, int limit, long seed)
 		{
 			return new Mutable(randomAddressArray(prefix, size, limit, seed));
+		}
+		
+		public static Address.Mutable fromCodecList(List<Integer> addressList)
+		{
+			int[] addressArray = ArrayHelper.integerListToArray(addressList);
+			verifyValidity(addressArray);
+			return new Address.Mutable(addressArray);
 		}
 		
 		public static Mutable read(StringReader reader)

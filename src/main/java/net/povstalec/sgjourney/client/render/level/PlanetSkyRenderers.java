@@ -17,7 +17,7 @@ public class PlanetSkyRenderers
 	
 	public static class AbydosSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation NUT_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/nut.png");
+		public static final ResourceLocation NUT_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/nut.png");
 		
 		public AbydosSkyRenderer()
 		{
@@ -36,8 +36,8 @@ public class PlanetSkyRenderers
 	
 	public static class ChulakSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation DENNAL_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/dennal.png");
-		public static final ResourceLocation CHAAPORIS_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/chaaporis.png");
+		public static final ResourceLocation DENNAL_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/dennal.png");
+		public static final ResourceLocation CHAAPORIS_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/chaaporis.png");
 		
 		public ChulakSkyRenderer()
 		{
@@ -68,7 +68,7 @@ public class PlanetSkyRenderers
 	
 	public static class UnitasSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation UNITAS_STAR_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/unitas_star.png");
+		public static final ResourceLocation UNITAS_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/unitas_star.png");
 		
 		public UnitasSkyRenderer()
 		{
@@ -83,7 +83,7 @@ public class PlanetSkyRenderers
 	
 	public static class RimaSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation RIMA_STAR_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/rima_star.png");
+		public static final ResourceLocation RIMA_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/rima_star.png");
 		
 		public RimaSkyRenderer()
 		{
@@ -99,13 +99,28 @@ public class PlanetSkyRenderers
 		}
 	}
 	
+	public static class TollanSkyRenderer extends SGJourneySkyRenderer
+	{
+		public static final ResourceLocation TOLLAN_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/tollan_star.png");
+		
+		public TollanSkyRenderer()
+		{
+			super(34181L, 1800);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		{
+			this.renderSun(bufferbuilder, lastMatrix, TOLLAN_STAR_TEXTURE, 30.0F);
+		}
+	}
+	
 	//============================================================================================
 	//******************************************Pegasus*******************************************
 	//============================================================================================
 	
 	public static class LanteaSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation LANTEA_STAR_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/lantea_star.png");
+		public static final ResourceLocation LANTEA_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/lantea_star.png");
 		public LanteaSkyRenderer()
 		{
 			super(17892L, 2250);
@@ -121,7 +136,7 @@ public class PlanetSkyRenderers
 	
 	public static class AthosSkyRenderer extends SGJourneySkyRenderer
 	{
-		public static final ResourceLocation ATHOS_STAR_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/environment/star/athos_star.png");
+		public static final ResourceLocation ATHOS_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/athos_star.png");
 		
 		public AthosSkyRenderer()
 		{

@@ -17,8 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.config.*;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.*;
@@ -66,8 +65,6 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -116,6 +113,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final String DHD_POS = "dhd_pos";
 	
 	public static final boolean FORCE_LOAD_CHUNK = CommonStargateConfig.stargate_loads_chunk_when_connected.get();
+	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	public static final int SEGMENTS = 3;
 
@@ -234,38 +232,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		else
 		{
-			//=====Setting up cache logic=====
-			dhdCache.setRevalidate(() ->
-			{
-				if(dhdRelativePos == null)
-					return false;
-				
-				BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
-				if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
-					return dhdCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(dhdPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
-				
-				return false;
-			});
-			dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, dhdSearchDistance,
-					dhd -> !dhd.stargateCache.isCached()));
-			
-			dhdCache.setOnChanged((oldDHD, newDHD) ->
-			{
-				if(newDHD != null)
-				{
-					dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
-					dhdSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
-					// Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
-					if(dhdSearchDistance < MIN_DHD_SEARCH_DISTANCE)
-						dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE; // Make sure the distance is at least 64
-				}
-				else
-					dhdRelativePos = null;
-				
-				updateStargate();
-				updateClient();
-			});
-			//==========
+			setupServerAutoCache();
 			
 			checkStargate();
 			
@@ -917,6 +884,40 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return dhdCache;
 	}
 	
+	public void setupServerAutoCache()
+	{
+		dhdCache.setRevalidate(() ->
+		{
+			if(dhdRelativePos == null)
+				return false;
+			
+			BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
+			if(dhdPos != null && level.getBlockEntity(dhdPos) instanceof AbstractDHDEntity dhd)
+				return dhdCache.getCached() == dhd && CoordinateHelper.Relative.distanceSqr(dhdPos, getBlockPos()) <= dhd.getMaxConnectionDistanceSqr(); // Check if the DHD at the saved pos is the same DHD
+			
+			return false;
+		});
+		dhdCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractDHDEntity.class, level, worldPosition, dhdSearchDistance,
+				dhd -> !dhd.stargateCache.isCached()));
+		
+		dhdCache.setOnChanged((oldDHD, newDHD) ->
+		{
+			if(newDHD != null)
+			{
+				dhdRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newDHD.getBlockPos());
+				dhdSearchDistance = Math.round(Math.sqrt(CoordinateHelper.Relative.distanceSqr(newDHD.getBlockPos(), getBlockPos())));
+				// Stargate will search at a distance equal to the distance of the last DHD it was connected to (or 64 if there was no DHD connected to it previously)
+				if(dhdSearchDistance < MIN_DHD_SEARCH_DISTANCE)
+					dhdSearchDistance = MIN_DHD_SEARCH_DISTANCE; // Make sure the distance is at least 64
+			}
+			else
+				dhdRelativePos = null;
+			
+			updateStargate();
+			updateClient();
+		});
+	}
+	
 	@Override
 	public SymbolInfo symbolInfo()
 	{
@@ -967,7 +968,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public Set<Integer> getCachedNetworks()
 	{
 		Set<Integer> networks = new TreeSet<>(this.networks);
-		dhdCache.ifPresent(dhd -> networks.addAll(dhd.getNetworks()));
+		dhdCache.ifCached(dhd -> networks.addAll(dhd.getNetworks()));
 		
 		if(!networks.isEmpty())
 			return networks;
@@ -1094,7 +1095,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean isWormholeUnstable()
 	{
-		return !energyStorage.hasEnergy(200 * CommonStargateConfig.interstellar_connection_energy_draw.get()); // Stargate does not have enough energy to maintain a stable wormhole
+		return REQUIRE_ENERGY && !energyStorage.hasEnergy(200 * CommonStargateConfig.interstellar_connection_energy_draw.get()); // Stargate does not have enough energy to maintain a stable wormhole
 	}
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)
@@ -1704,8 +1705,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				stargate.increaseDisconnectTicks();
 			}
 		}
-		else
-			stargate.updateClient();
 
 		//stargate.blockCover.canSinkGate = true; //TODO Implement a check for whether or not the Stargate can sink into the ground
     }
@@ -1717,7 +1716,6 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Override
 	public void setGenerationStep(Step step)
 	{
-		System.out.println("Set Generation step: " + generationStep);
 		this.generationStep = step;
 	}
 	
