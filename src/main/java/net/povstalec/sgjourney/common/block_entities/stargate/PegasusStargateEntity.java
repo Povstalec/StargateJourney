@@ -274,6 +274,10 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	private void animateSpin()
 	{
+		// Delay the opening of the gate to the tick after all symbols are encoded
+		if(canEngage && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
+			engageStargate();
+		
 		if(isSymbolSpinning())
 		{
 			int symbol = addressBuffer.symbolAt(symbolBuffer);
@@ -282,7 +286,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, canEngage);
+					directEngageSymbol(symbol, false);
 				}
 				else
 					symbolWork();
@@ -297,7 +301,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, canEngage);
+					directEngageSymbol(symbol, false);
 				}
 			}
 			else
