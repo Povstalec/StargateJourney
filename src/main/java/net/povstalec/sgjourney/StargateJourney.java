@@ -193,6 +193,7 @@ public class StargateJourney
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new RingRemoteItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.GOAULD_RING_REMOTE);
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new StaffWeaponItem.FluidItemHandler(stack, DataComponents.CONTAINER), ItemInit.MATOK);
 		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new PowerCellItem.FluidItemHandler(stack, DataComponents.CONTAINER), ItemInit.NAQUADAH_POWER_CELL);
+		event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> new CrystalComputerItem.ItemHandler(stack, DataComponents.CONTAINER), ItemInit.POCKET_CRYSTAL_COMPUTER);
 		
 		// Fluids
 		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new StaffWeaponItem.FluidItemHandler(stack, DataComponents.CONTAINER), ItemInit.MATOK);
