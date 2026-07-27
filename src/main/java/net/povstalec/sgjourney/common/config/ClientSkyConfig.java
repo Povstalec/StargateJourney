@@ -8,6 +8,7 @@ public class ClientSkyConfig
 	public static SGJourneyConfigValue.BooleanValue custom_chulak_sky;
 	public static SGJourneyConfigValue.BooleanValue custom_unitas_sky;
 	public static SGJourneyConfigValue.BooleanValue custom_rima_sky;
+	public static SGJourneyConfigValue.BooleanValue custom_tollan_sky;
 	public static SGJourneyConfigValue.BooleanValue custom_cavum_tenebrae_sky;
 
 	public static SGJourneyConfigValue.BooleanValue custom_lantea_sky;
@@ -32,6 +33,10 @@ public class ClientSkyConfig
 		custom_rima_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_rima_sky",
 				true,
 				"If true you will render a custom Rima sky");
+		
+		custom_tollan_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_tollan_sky",
+			true,
+			"If true you will render a custom Tollan sky");
 		
 		custom_cavum_tenebrae_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_cavum_tenebrae_sky", 
 				true, 
