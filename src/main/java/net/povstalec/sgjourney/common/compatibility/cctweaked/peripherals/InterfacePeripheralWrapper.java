@@ -63,6 +63,6 @@ public class InterfacePeripheralWrapper
 			peripheral = LazyOptional.of(() -> interfacePeripheral);
 		}
 		
-		return peripheral.cast();
+		return peripheral;
 	}
 }
