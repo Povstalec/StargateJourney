@@ -1,14 +1,7 @@
 package net.povstalec.sgjourney.common.compatibility.jei;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.annotation.Nonnull;
-
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -18,21 +11,23 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
-import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
-import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @JeiPlugin
 public class SGJourneyJEIPlugin implements IModPlugin
 {
 	private static final ResourceLocation PLUGIN_LOCATION = StargateJourney.sgjourneyLocation("jei_plugin");
 	private static final int PLAYER_INVENTORY_SLOT_COUNT = 36;
-
-	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	@Override
-	public ResourceLocation getPluginUid()
+	public @NotNull ResourceLocation getPluginUid()
 	{
 		return PLUGIN_LOCATION;
 	}
@@ -40,45 +35,81 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
-		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new LiquidizingRecipeCategory.NaquadahLiquidizer(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new LiquidizingRecipeCategory.HeavyNaquadahLiquidizer(registration.getJeiHelpers().getGuiHelper()));
+		
+		registration.addRecipeCategories(new CrystallizingRecipeCategory.Crystallizer(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CrystallizingRecipeCategory.AdvancedCrystallizer(registration.getJeiHelpers().getGuiHelper()));
+	}
+	
+	@Override
+	public void registerRecipes(@NotNull IRecipeRegistration registration)
+	{
+		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
+		
+		// Naquadah Liquidizer
+		
+		List<RecipeHolder<LiquidizingRecipe.NaquadahLiquidizer>> naquadahLiquidizerHolders = recipeManager.getAllRecipesFor(LiquidizingRecipe.NaquadahLiquidizer.TYPE);
+		ArrayList<LiquidizingRecipe.NaquadahLiquidizer> naquadahLiquidizingRecipes = new ArrayList<>();
+		for(RecipeHolder<LiquidizingRecipe.NaquadahLiquidizer> holder : naquadahLiquidizerHolders)
+		{
+			naquadahLiquidizingRecipes.add(holder.value());
+		}
+		registration.addRecipes(LiquidizingRecipeCategory.NaquadahLiquidizer.TYPE, naquadahLiquidizingRecipes);
+		
+		// Heavy Naquadah Liquidizer
+		
+		List<RecipeHolder<LiquidizingRecipe.HeavyNaquadahLiquidizer>> heavyNaquadahLiquidizerHolders = recipeManager.getAllRecipesFor(LiquidizingRecipe.HeavyNaquadahLiquidizer.TYPE);
+		ArrayList<LiquidizingRecipe.HeavyNaquadahLiquidizer> heavyNaquadahLiquidizingRecipes = new ArrayList<>();
+		for(RecipeHolder<LiquidizingRecipe.HeavyNaquadahLiquidizer> holder : heavyNaquadahLiquidizerHolders)
+		{
+			heavyNaquadahLiquidizingRecipes.add(holder.value());
+		}
+		registration.addRecipes(LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.TYPE, heavyNaquadahLiquidizingRecipes);
+		
+		// Crystallizer
+		
+		List<RecipeHolder<CrystallizingRecipe.Crystallizer>> crystallizerHolders = recipeManager.getAllRecipesFor(CrystallizingRecipe.Crystallizer.TYPE);
+		ArrayList<CrystallizingRecipe.Crystallizer> crystallizerRecipes = new ArrayList<>();
+		for(RecipeHolder<CrystallizingRecipe.Crystallizer> holder : crystallizerHolders)
+		{
+			crystallizerRecipes.add(holder.value());
+		}
+		registration.addRecipes(CrystallizingRecipeCategory.Crystallizer.TYPE, crystallizerRecipes);
+		
+		// Advanced Crystallizer
+
+		List<RecipeHolder<CrystallizingRecipe.AdvancedCrystallizer>> advancedCrystallizerHolders = recipeManager.getAllRecipesFor(CrystallizingRecipe.AdvancedCrystallizer.TYPE);
+		ArrayList<CrystallizingRecipe.AdvancedCrystallizer> advancedCrystallizerRecipes = new ArrayList<>();
+		for(RecipeHolder<CrystallizingRecipe.AdvancedCrystallizer> holder : advancedCrystallizerHolders)
+		{
+			advancedCrystallizerRecipes.add(holder.value());
+		}
+		registration.addRecipes(CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE, advancedCrystallizerRecipes);
 	}
 	
 	@Override
 	public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration)
 	{
 		// Crystallizers
-		var item1 = BlockInit.CRYSTALLIZER.asItem();
-		if(item1 != null)
-			registration.addRecipeCatalyst(new ItemStack(item1), CrystallizerRecipeCategory.CRYSTALLIZING_TYPE);
 		
-		var item2 = BlockInit.ADVANCED_CRYSTALLIZER.asItem();
-		if(item2 != null)
-			registration.addRecipeCatalyst(new ItemStack(item2), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE);
-	}
-	
-	@Override
-	public void registerRecipes(IRecipeRegistration registration)
-	{
-		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
+		var naquadahLiquidizerItem = BlockInit.NAQUADAH_LIQUIDIZER.asItem();
+		if(naquadahLiquidizerItem != null)
+			registration.addRecipeCatalyst(new ItemStack(naquadahLiquidizerItem), LiquidizingRecipeCategory.NaquadahLiquidizer.TYPE);
 		
-		List<RecipeHolder<CrystallizerRecipe>> crystallizerHolders = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.CRYSTALLIZING);
-		ArrayList<CrystallizerRecipe> crystallizerRecipes = new ArrayList<>();
-		for(RecipeHolder<CrystallizerRecipe> holder : crystallizerHolders)
-		{
-			crystallizerRecipes.add(holder.value());
-		}
+		var heavyNaquadahLiquidizerItem = BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.asItem();
+		if(heavyNaquadahLiquidizerItem != null)
+			registration.addRecipeCatalyst(new ItemStack(heavyNaquadahLiquidizerItem), LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.TYPE);
 		
-		registration.addRecipes(CrystallizerRecipeCategory.CRYSTALLIZING_TYPE, crystallizerRecipes);
-
-		List<RecipeHolder<AdvancedCrystallizerRecipe>> advancedCrystallizerHolders = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.ADVANCED_CRYSTALLIZING);
-		ArrayList<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = new ArrayList<>();
-		for(RecipeHolder<AdvancedCrystallizerRecipe> holder : advancedCrystallizerHolders)
-		{
-			advancedCrystallizerRecipes.add(holder.value());
-		}
+		// Crystallizers
 		
-		registration.addRecipes(AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE, advancedCrystallizerRecipes);
+		var crystallizerItem = BlockInit.CRYSTALLIZER.asItem();
+		if(crystallizerItem != null)
+			registration.addRecipeCatalyst(new ItemStack(crystallizerItem), CrystallizingRecipeCategory.Crystallizer.TYPE);
+		
+		var advancedCrystallizerItem = BlockInit.ADVANCED_CRYSTALLIZER.asItem();
+		if(advancedCrystallizerItem != null)
+			registration.addRecipeCatalyst(new ItemStack(advancedCrystallizerItem), CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE);
 	}
 	
 	@Override
@@ -87,7 +118,8 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
 		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
 	}
-
+	
+	//TODO custom recipe transfer handlers
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
 		/*
@@ -95,7 +127,10 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		https://github.com/mezz/JustEnoughItems/issues/3146
 		Can be solved with own custom RecipeTransferHandler implementation
 		 */
-		registration.addRecipeTransferHandler(CrystallizerMenu.class, MenuInit.CRYSTALLIZER.get(), CrystallizerRecipeCategory.CRYSTALLIZING_TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
-		registration.addRecipeTransferHandler(CrystallizerMenu.class, MenuInit.CRYSTALLIZER.get(), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		/*registration.addRecipeTransferHandler(LiquidizerMenu.LiquidNaquadah.class, MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizingRecipeCategory.NaquadahLiquidizer.TYPE, 36, 1, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		registration.addRecipeTransferHandler(LiquidizerMenu.HeavyLiquidNaquadah.class, MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.TYPE, 36, 1, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		
+		registration.addRecipeTransferHandler(CrystallizerMenu.Crystallizer.class, MenuInit.CRYSTALLIZER.get(), CrystallizingRecipeCategory.Crystallizer.TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		registration.addRecipeTransferHandler(CrystallizerMenu.AdvancedCrystallizer.class, MenuInit.ADVANCED_CRYSTALLIZER.get(), CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);*/
 	}
 }

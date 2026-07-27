@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/slab_top",
+	"textures":
+	{
+		"bottom": "sgjourney:block/oxidized_cut_naquadah_copper_block",
+		"side": "sgjourney:block/oxidized_cut_naquadah_copper_block",
+		"top": "sgjourney:block/oxidized_cut_naquadah_copper_block"
+	}
+}

@@ -30,12 +30,17 @@ import net.povstalec.sgjourney.common.entities.goals.NearestHostGoal;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.GoauldItem;
+import net.povstalec.sgjourney.common.sgjourney.factions.AbstractFaction;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public class Goauld extends AgeableMob
+public class Goauld extends AgeableMob implements FactionMember
 {
 	public static final float MAX_HEALTH = 6.0F;
+	
+	@Nullable
+	protected AbstractFaction faction;
 	
 	public Goauld(EntityType<? extends AgeableMob> type, Level level)
 	{
@@ -77,13 +82,13 @@ public class Goauld extends AgeableMob
 		float damage = (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
 		boolean damaged = entity.hurt(this.damageSources().mobAttack(this), damage);
 		
-		if(damaged && entity instanceof Mob mob)
+		if(damaged && entity instanceof LivingEntity livingEntity)
 		{
-			if(entity.getClass() == Human.class)
+			if(entity.getClass() == Human.class || livingEntity instanceof Player)
 			{
-				GoauldHost cap = mob.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+				GoauldHost cap = livingEntity.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
 				if(cap != null)
-					cap.takeOverHost(this, mob);
+					cap.takeOverHost(this, livingEntity);
 			}
 		}
 		
@@ -248,5 +253,31 @@ public class Goauld extends AgeableMob
 			
 			return goauldStack;
 		}
+	}
+	
+	//============================================================================================
+	//****************************************Faction Stuff***************************************
+	//============================================================================================
+	
+	@Override
+	public void setFaction(AbstractFaction faction)
+	{
+		this.faction = faction;
+	}
+	
+	@Override
+	@Nullable
+	public AbstractFaction getFaction()
+	{
+		return this.faction;
+	}
+	
+	@Override
+	public void die(@NotNull DamageSource damageSource)
+	{
+		if(faction != null)
+			faction.notifyDeath(this, damageSource);
+		
+		super.die(damageSource);
 	}
 }

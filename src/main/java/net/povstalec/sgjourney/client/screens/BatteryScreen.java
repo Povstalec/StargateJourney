@@ -48,13 +48,6 @@ public class BatteryScreen extends SGJourneyContainerScreen<BatteryMenu>
 		this.energyTooltip(graphics, 44, 18, mouseX, mouseY);
 	}
 	
-	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
-	{
-		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
-		graphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
-	}
-	
 	protected void renderEnergy(GuiGraphics graphics, int x, int y)
 	{
 		float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();

@@ -51,26 +51,26 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
 		this.font.draw(matrixStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
 	    this.font.draw(matrixStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
     }*/
-	
-	protected void renderProgress(GuiGraphics graphics, int x, int y)
-	{
-		
-		float percentage = (float) this.menu.getReactionProgress() / this.menu.getReactionTime();
-		int actual = Math.round(52 * percentage);
+    
+    protected void renderProgress(GuiGraphics graphics, int x, int y)
+    {
+
+    	float percentage = (float) this.menu.getReactionProgress() / this.menu.getReactionTime();
+    	int actual = Math.round(52 * percentage);
 		
 		graphics.blit(TEXTURE, x, y, 0, 174, actual, 16);
-	}
-	
-	protected void renderEnergy(GuiGraphics graphics, int x, int y)
-	{
-		float percentage = (float) this.menu.getEnergy() / this.menu.getMaxEnergy();
-		int actual = Math.round(160 * percentage);
+    }
+    
+    protected void renderEnergy(GuiGraphics graphics, int x, int y)
+    {
+    	float percentage = (float) this.menu.getEnergy() / this.menu.getEnergyCapacity();
+    	int actual = Math.round(160 * percentage);
 		graphics.blit(TEXTURE, x, y, 0, 168, actual, 6);
-	}
-	
-	protected void energyTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
-	{
-		if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-			graphics.renderTooltip(this.font, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
-	}
+    }
+    
+    protected void energyTooltip(GuiGraphics graphics, int x, int y, int mouseX, int mouseY)
+    {
+    	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
+			graphics.renderTooltip(this.font, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getEnergyCapacity()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+    }
 }

@@ -7,9 +7,10 @@ import java.util.Set;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.network.PacketDistributor;
 
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
@@ -23,7 +24,6 @@ import net.povstalec.sgjourney.common.blocks.tech.TransceiverBlock;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransceiverPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.packets.ClientboundTransceiverUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
 
 public class TransceiverEntity extends BlockEntity implements ITransmissionReceiver
@@ -76,6 +76,18 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		tag.putBoolean(EDIT_FREQUENCY, editingFrequency);
 		tag.putInt(FREQUENCY, frequency);
 		tag.putString(IDC, idc);
+	}
+	
+	@Override
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
+	{
+		return ClientboundBlockEntityDataPacket.create(this);
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	{
+		return this.saveWithoutMetadata(registries);
 	}
 	
 	public float transmissionRadius()
@@ -187,7 +199,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				
 				positions.stream().forEach(pos ->
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && distance2(getBlockPos(), stargate.getBlockPos()) <= transmissionRadius2())
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargate.getBlockPos()) <= transmissionRadius2())
 					{
 						stargates.add(stargate);
 					}
@@ -199,8 +211,8 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 			return -1; // No Stargates nearby
 		
 		stargates.sort((stargateA, stargateB) ->
-				Double.valueOf(distance2(getBlockPos(), stargateA.getBlockPos()))
-						.compareTo(Double.valueOf(distance2(getBlockPos(), stargateB.getBlockPos()))));
+				Double.valueOf(CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargateA.getBlockPos()))
+						.compareTo(Double.valueOf(CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargateB.getBlockPos()))));
 		
 		AbstractStargateEntity stargate = stargates.get(0);
 		
@@ -253,19 +265,8 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	
 	public void updateClient()
 	{
-		if(level.isClientSide())
-			return;
-		
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientboundTransceiverUpdatePacket(this.worldPosition, this.editingFrequency, this.idc, this.frequency));
-	}
-	
-	private static double distance2(BlockPos pos, BlockPos targetPos)
-	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		return x*x + y*y + z*z;
+		if(!level.isClientSide())
+			((ServerLevel) level).getChunkSource().blockChanged(worldPosition);
 	}
 	
 	//============================================================================================

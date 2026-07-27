@@ -1,61 +1,67 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.*;
-
-import javax.annotation.Nullable;
-import java.util.HashMap;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicSpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusSpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanSpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseSpawnerStargate;
 
 public class StargateInit
 {
-	private static final HashMap<ResourceLocation, StargateConstructor> STARGATES = new HashMap<ResourceLocation, StargateConstructor>();
-	private static final HashMap<Class<? extends Stargate>, ResourceLocation> LOCATIONS = new HashMap<Class<? extends Stargate>, ResourceLocation>();
+	public static final ResourceKey<Registry<StargateType<?>>> STARGATE_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(StargateType.STARGATE_TYPE_LOCATION);
+	public static final Registry<StargateType<?>> STARGATE_TYPE_REGISTRY = new net.neoforged.neoforge.registries.RegistryBuilder<>(STARGATE_TYPE_REGISTRY_KEY).sync(true).create();
+	public static final net.neoforged.neoforge.registries.DeferredRegister<StargateType<?>> STARGATE_TYPES = net.neoforged.neoforge.registries.DeferredRegister.create(StargateType.STARGATE_TYPE_LOCATION, StargateJourney.MODID);
 	
-	public static <T extends Stargate> void register(ResourceLocation resourceLocation, Class<T> objectClass, StargateConstructor<T> constructor)
+	
+	
+	// Block Entity Stargates
+	public static final DeferredHolder<StargateType<?>, StargateType<UniverseBlockEntityStargate>> UNIVERSE = STARGATE_TYPES.register("universe", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_1, UniverseBlockEntityStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<MilkyWayBlockEntityStargate>> MILKY_WAY = STARGATE_TYPES.register("milky_way", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, MilkyWayBlockEntityStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<PegasusBlockEntityStargate>> PEGASUS = STARGATE_TYPES.register("pegasus", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_3, PegasusBlockEntityStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<TollanBlockEntityStargate>> TOLLAN = STARGATE_TYPES.register("tollan", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, TollanBlockEntityStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<ClassicBlockEntityStargate>> CLASSIC = STARGATE_TYPES.register("classic", () ->
+			new StargateType<>(StargateInfo.Gen.NONE, ClassicBlockEntityStargate::new));
+	
+	// Spawner Stargates
+	public static final DeferredHolder<StargateType<?>, StargateType<UniverseSpawnerStargate>> UNIVERSE_SPAWNER = STARGATE_TYPES.register("universe_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_1, UniverseSpawnerStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<MilkyWaySpawnerStargate>> MILKY_WAY_SPAWNER = STARGATE_TYPES.register("milky_way_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, MilkyWaySpawnerStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<PegasusSpawnerStargate>> PEGASUS_SPAWNER = STARGATE_TYPES.register("pegasus_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_3, PegasusSpawnerStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<TollanSpawnerStargate>> TOLLAN_SPAWNER = STARGATE_TYPES.register("tollan_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.GEN_2, TollanSpawnerStargate::new));
+	public static final DeferredHolder<StargateType<?>, StargateType<ClassicSpawnerStargate>> CLASSIC_SPAWNER = STARGATE_TYPES.register("classic_spawner", () ->
+			new StargateType<>(StargateInfo.Gen.NONE, ClassicSpawnerStargate::new));
+	
+	
+	
+	public static void register(IEventBus eventBus)
 	{
-		if(STARGATES.containsKey(resourceLocation))
-			throw new IllegalStateException("Duplicate registration for " + resourceLocation.toString());
-		if(LOCATIONS.containsKey(objectClass))
-			throw new IllegalStateException("Duplicate registration for " + objectClass.getName());
-		
-		STARGATES.put(resourceLocation, constructor);
-		LOCATIONS.put(objectClass, resourceLocation);
+		STARGATE_TYPES.register(eventBus);
 	}
 	
-	@Nullable
-	public static Stargate constructStargate(ResourceLocation resourceLocation)
+	@SubscribeEvent
+	public static void registerRegistries(NewRegistryEvent event)
 	{
-		if(STARGATES.containsKey(resourceLocation))
-			return STARGATES.get(resourceLocation).create();
-		
-		return null;
-	}
-	
-	@Nullable
-	public static ResourceLocation getResourceLocation(Stargate stargate)
-	{
-		if(stargate != null && LOCATIONS.containsKey(stargate.getClass()))
-			return LOCATIONS.get(stargate.getClass());
-		
-		return null;
-	}
-	
-	
-	
-	public static void register()
-	{
-		register(StargateJourney.sgjourneyLocation("universe_stargate"), UniverseStargate.class, UniverseStargate::new);
-		register(StargateJourney.sgjourneyLocation("milky_way_stargate"), MilkyWayStargate.class, MilkyWayStargate::new);
-		register(StargateJourney.sgjourneyLocation("pegasus_stargate"), PegasusStargate.class, PegasusStargate::new);
-		register(StargateJourney.sgjourneyLocation("tollan_stargate"), TollanStargate.class, TollanStargate::new);
-		register(StargateJourney.sgjourneyLocation("classic_stargate"), ClassicStargate.class, ClassicStargate::new);
-	}
-	
-	
-	
-	public interface StargateConstructor<T extends Stargate>
-	{
-		T create();
+		event.register(STARGATE_TYPE_REGISTRY);
 	}
 }

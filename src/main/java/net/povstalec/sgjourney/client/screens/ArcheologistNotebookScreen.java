@@ -8,8 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.UUID;
-
 public class ArcheologistNotebookScreen extends Screen
 {
 	public static final ResourceLocation BOOK_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "textures/gui/book.png");
@@ -17,7 +15,7 @@ public class ArcheologistNotebookScreen extends Screen
 	private static final int IMAGE_WIDTH = 192;
 	private static final int IMAGE_HEIGHT = 192;
 	
-	public ArcheologistNotebookScreen(UUID playerId, boolean mainHand, CompoundTag tag)
+	public ArcheologistNotebookScreen(boolean mainHand, CompoundTag tag)
 	{
 		super(Component.empty());
 	}

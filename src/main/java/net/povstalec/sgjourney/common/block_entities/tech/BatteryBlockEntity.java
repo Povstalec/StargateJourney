@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -13,10 +13,8 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.packets.ClientboundBatteryBlockUpdatePacket;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -119,8 +117,7 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		battery.extractItemEnergy(battery.itemHandler.getStackInSlot(0));
 		battery.fillItemEnergy(battery.itemHandler.getStackInSlot(1));
 		
-		PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(battery.getBlockPos()).getPos(),
-				new ClientboundBatteryBlockUpdatePacket(battery.getBlockPos(), battery.getEnergyStored()));
+		battery.updateClient();
 	}
 	
 	
@@ -133,19 +130,19 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		protected long capacity()
+		protected long getCapacity()
 		{
 			return CommonTechConfig.large_naquadah_battery_capacity.get();
 		}
 		
 		@Override
-		protected long maxReceive()
+		protected long getMaxReceive()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}
 		
 		@Override
-		protected long maxExtract()
+		protected long getMaxExtract()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}

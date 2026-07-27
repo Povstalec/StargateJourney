@@ -2,7 +2,7 @@
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"ingredient": {"item": "sgjourney:stargate_variant_crystal"}, "amount": 1},
 	"primary_ingredient": {"ingredient": {"item": "sgjourney:naquadah"}, "amount": 1, "deplete": true},
-	"secondary_ingredient": {"ingredient": {"item": "sgjourney:naquadah_alloy"}, "amount": 1, "deplete": true},
+	"secondary_ingredient": {"ingredient": {"item": "sgjourney:naquadah_iron_alloy"}, "amount": 1, "deplete": true},
 	"output":
 	{
 		"id": "sgjourney:stargate_variant_crystal",
@@ -10,5 +10,7 @@
 		{
 			"sgjourney:stargate_variant": "sgjourney:milky_way_movie"
 		}
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

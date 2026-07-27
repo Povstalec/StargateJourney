@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_nugget",
+		{"id": "#forge:nuggets/naquadah", "required": false}
+	]
+}

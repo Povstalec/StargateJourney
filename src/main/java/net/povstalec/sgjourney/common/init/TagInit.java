@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class TagInit
 {
-	public class Items
+	public static class Items
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
@@ -29,13 +29,16 @@ public class TagInit
         }*/
 	}
 	
-	public class Blocks
+	public static class Blocks
 	{
 		public static final TagKey<Block> IRIS_RESISTANT = tag("iris_resistant");
 		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
+		public static final TagKey<Block> TRINIUM_ARROW_CAN_BREAK = tag("trinium_arrow_can_break");
+		
 		public static final TagKey<Block> INCORRECT_FOR_NAQUADAH_TOOL = tag("incorrect_for_naquadah_tool");
+		public static final TagKey<Block> INCORRECT_FOR_TRINIUM_TOOL = tag("incorrect_for_trinium_tool");
 		
 		private static TagKey<Block> tag(String name)
 		{
@@ -48,11 +51,13 @@ public class TagInit
         }*/
 	}
 	
-	public class Entities
+	public static class Entities
 	{
 		public static final TagKey<EntityType<?>> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<EntityType<?>> WORMHOLE_IGNORES = tag("wormhole_ignores");
+		public static final TagKey<EntityType<?>> REVERSE_WORMHOLE_IGNORES = tag("reverse_wormhole_ignores");
 		public static final TagKey<EntityType<?>> WORMHOLE_CANNOT_TELEPORT = tag("wormhole_cannot_teleport");
+		public static final TagKey<EntityType<?>> NO_IRIS_DAMAGE = tag("no_iris_damage");
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
@@ -65,7 +70,7 @@ public class TagInit
         }*/
 	}
 	
-	public class Structures
+	public static class Structures
 	{
 		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
 		public static final TagKey<Structure> NETWORK_STARGATE = tag("network_stargate");

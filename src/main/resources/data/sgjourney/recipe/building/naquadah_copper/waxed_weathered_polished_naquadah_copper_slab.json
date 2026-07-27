@@ -1,0 +1,18 @@
+
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_weathered_polished_naquadah_copper_slab",
+	"pattern":
+	[
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:waxed_weathered_polished_naquadah_copper_block"
+		}
+	},
+	"result": { "id": "sgjourney:waxed_weathered_polished_naquadah_copper_slab", "count": 6 }
+}

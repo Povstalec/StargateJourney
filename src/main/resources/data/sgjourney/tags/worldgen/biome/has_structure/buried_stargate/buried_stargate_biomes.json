@@ -4,6 +4,8 @@
 	"_comment": " This biome tag can specify the biome directly. Or specify another biome tag by starting with # ",
 	"values":
 	[
+		"#minecraft:is_overworld",
+		
 		"#minecraft:is_beach",
 		"#minecraft:is_deep_ocean",
 		"#minecraft:is_forest",
@@ -27,6 +29,25 @@
 		"minecraft:lush_caves",
 		"minecraft:deep_dark",
 		
-		{id: "ars_nouveau:archwood_forest", required: false}
+		"#c:is_cave",
+		"#c:is_cold/overworld",
+		"#c:is_dense_vegetation/overworld",
+		"#c:is_dry/overworld",
+		"#c:is_hot/overworld",
+		"#c:is_lush",
+		"#c:is_mountain",
+		"#c:is_mushroom",
+		"#c:is_plains",
+		"#c:is_plateau",
+		"#c:is_sandy",
+		"#c:is_snowy",
+		"#c:is_sparse_vegetation/overworld",
+		"#c:is_spooky",
+		"#c:is_swamp",
+		"#c:is_underground",
+		"#c:is_wasteland",
+		"#c:is_wet/overworld",
+		
+		{"id": "ars_nouveau:archwood_forest", "required": false}
 	]
 }

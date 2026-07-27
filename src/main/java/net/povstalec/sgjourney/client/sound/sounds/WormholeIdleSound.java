@@ -5,12 +5,12 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 
-public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
+public class WormholeIdleSound extends StargateSound<AbstractStargateEntity<?>>
 {
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 1.0F;
 	
-	public WormholeIdleSound(AbstractStargateEntity stargate, SoundEvent soundEvent)
+	public WormholeIdleSound(AbstractStargateEntity<?> stargate, SoundEvent soundEvent)
 	{
 		super(stargate, soundEvent);
 		this.volume = VOLUME_MIN;
@@ -20,7 +20,7 @@ public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
 	@Override
 	public void tick()
 	{
-		if(stargate.isConnected() && stargate.getKawooshTickCount() >= StargateConnection.KAWOOSH_TICKS)
+		if(stargate.isConnected() && stargate.getKawooshTickCount() >= StargateConnection.KAWOOSH_DURATION)
 			fadeIn();
 		else
 			fadeOut();
@@ -29,12 +29,6 @@ public class WormholeIdleSound extends StargateSound<AbstractStargateEntity>
 			this.stopSound();
 		
 		super.tick();
-	}
-	
-	@Override
-	public boolean canStartSilent()
-	{
-		return true;
 	}
 	
 	private void fadeIn()

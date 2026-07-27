@@ -6,11 +6,11 @@
     },
     {
       "structure": "sgjourney:stargate/milky_way/buried/buried_stargate_desert",
-      "weight": 1
+      "weight": 10000
     },
     {
       "structure": "sgjourney:stargate/milky_way/buried/buried_stargate_badlands",
-      "weight": 1
+      "weight": 10000
     }
   ],
   "placement": {

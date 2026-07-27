@@ -21,19 +21,81 @@ import java.util.Optional;
 
 public class IrisInfo
 {
-	protected AbstractStargateEntity stargate;
+	public enum IrisMotionType
+	{
+		NONE,
+		REDSTONE,
+		COMPUTER
+	}
+	
+	public enum IrisMotion
+	{
+		IDLE(IrisMotionType.NONE, false, (byte) 0),
+		OPENING_REDSTONE(IrisMotionType.REDSTONE, true, (byte) -1),
+		CLOSING_REDSTONE(IrisMotionType.REDSTONE, true, (byte) 1),
+		OPENING_COMPUTER(IrisMotionType.COMPUTER, true, (byte) -1),
+		CLOSING_COMPUTER(IrisMotionType.COMPUTER, true, (byte) 1);
+		
+		public final IrisMotionType irisMotionType;
+		
+		public final boolean isMoving;
+		public final byte value;
+		
+		IrisMotion(IrisMotionType irisMotionType, boolean isMoving, byte value)
+		{
+			this.irisMotionType = irisMotionType;
+			this.isMoving = isMoving;
+			this.value = value;
+		}
+		
+		public boolean isOpening()
+		{
+			return this.value < 0;
+		}
+		
+		public boolean isClosing()
+		{
+			return this.value > 0;
+		}
+		
+		public static IrisMotion fromByte(byte value)
+		{
+			IrisMotion[] values = IrisMotion.values();
+			
+			if(value < 0 || value >= values.length)
+				return IDLE;
+			
+			return values[value];
+		}
+	}
+	
+	protected AbstractStargateEntity<?> stargate;
 	
 	protected short irisProgress;
 	protected short oldIrisProgress;
+	protected IrisMotion irisMotion;
+	
 	protected final ItemStackHandler irisItemHandler;
 	
-	public IrisInfo(AbstractStargateEntity stargate)
+	public IrisInfo(AbstractStargateEntity<?> stargate)
 	{
 		this.stargate = stargate;
 		
 		this.irisProgress = 0;
 		this.oldIrisProgress = 0;
+		this.irisMotion = IrisMotion.IDLE;
+		
 		this.irisItemHandler = createIrisHandler();
+	}
+	
+	public void setIrisMotion(IrisMotion irisMotion)
+	{
+		this.irisMotion = irisMotion;
+	}
+	
+	public IrisMotion getIrisMotion()
+	{
+		return irisMotion;
 	}
 	
 	public void decreaseIrisDurability()
@@ -78,50 +140,50 @@ public class IrisInfo
 		if(irisProgress == ShieldingState.CLOSED.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_4);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_4);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.CLOSED);
+				this.stargate.setStargateState(true, ShieldingState.CLOSED);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_4.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_3);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_3);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_4);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_4);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_3.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_2);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_2);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_3);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_3);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_2.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_1);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_1);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_2);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_2);
 			return;
 		}
 		
 		if(irisProgress == ShieldingState.MOVING_1.getProgress())
 		{
 			if(oldIrisProgress > irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.OPEN);
+				this.stargate.setStargateState(true, ShieldingState.OPEN);
 			else if(oldIrisProgress < irisProgress)
-				this.stargate.setStargateState(true, true, ShieldingState.MOVING_1);
+				this.stargate.setStargateState(true, ShieldingState.MOVING_1);
 			return;
 		}
 		
 		if(irisProgress == 0 && oldIrisProgress > irisProgress)
-			this.stargate.setStargateState(true, true, ShieldingState.OPEN);
+			this.stargate.setStargateState(true, ShieldingState.OPEN);
 	}
 	
 	public boolean addIris(ItemStack stack)
@@ -131,7 +193,7 @@ public class IrisInfo
 			irisProgress = ShieldingState.MAX_PROGRESS;
 			oldIrisProgress = ShieldingState.MAX_PROGRESS;
 			
-			this.stargate.setStargateState(true, true, ShieldingState.CLOSED);
+			stargate.setStargateState(true, ShieldingState.CLOSED);
 			
 			return true;
 		}
@@ -148,36 +210,47 @@ public class IrisInfo
 			irisProgress = shieldingState.getProgress();
 			oldIrisProgress = shieldingState.getProgress();
 			
-			this.stargate.setStargateState(true, true, ShieldingState.OPEN);
+			stargate.setStargateState(true, ShieldingState.OPEN);
 		}
 	}
 	
-	public short increaseIrisProgress()
+	public boolean aboveMinProgress()
 	{
-		oldIrisProgress = irisProgress;
-		
-		if(hasIris() && irisProgress < ShieldingState.MAX_PROGRESS)
-		{
-			irisProgress++;
-			
-			setIrisState();
-		}
-		
-		return irisProgress;
+		return irisProgress > 0;
 	}
 	
-	public short decreaseIrisProgress()
+	public boolean belowMaxProgress()
+	{
+		return irisProgress < ShieldingState.MAX_PROGRESS;
+	}
+	
+	public boolean moveIris(IrisMotion irisMotion)
 	{
 		oldIrisProgress = irisProgress;
 		
-		if(hasIris() && irisProgress > 0)
+		if(hasIris())
 		{
-			irisProgress--;
-			
-			setIrisState();
+			irisProgress += irisMotion.value;
+			if(irisProgress >= 0 && irisProgress <= ShieldingState.MAX_PROGRESS)
+			{
+				stargate.updateClient();
+				setIrisState();
+				return true; // Iris can move further in this direction
+			}
+			else
+				irisProgress = oldIrisProgress;
 		}
 		
-		return irisProgress;
+		return false; // Iris can't move further in this direction
+	}
+	
+	protected void syncIrisProgress()
+	{
+		if(this.oldIrisProgress != this.irisProgress)
+		{
+			this.oldIrisProgress = this.irisProgress;
+			stargate.updateClient();
+		}
 	}
 	
 	public float checkIrisState()
@@ -192,6 +265,7 @@ public class IrisInfo
 			@Override
 			protected void onContentsChanged(int slot)
 			{
+				stargate.updateClient();
 				stargate.setChanged();
 			}
 			
@@ -251,6 +325,11 @@ public class IrisInfo
 		return hasIris() ? this.irisProgress : 0;
 	}
 	
+	public short getOldIrisProgress()
+	{
+		return hasIris() ? this.oldIrisProgress : 0;
+	}
+	
 	public float getIrisProgress(float partialTick)
 	{
 		return StargateJourneyConfig.disable_smooth_animations.get() ?
@@ -297,6 +376,17 @@ public class IrisInfo
 		return false;
 	}
 	
+	public void tickIris()
+	{
+		if(irisMotion.isMoving)
+		{
+			if(!moveIris(irisMotion))
+				setIrisMotion(IrisInfo.IrisMotion.IDLE); // Iris couldn't move further in this direction, so we set the motion to idle
+		}
+		else
+			syncIrisProgress();
+	}
+	
 	public CompoundTag serializeIrisInventory(HolderLookup.Provider registries)
 	{
 		return irisItemHandler.serializeNBT(registries);
@@ -312,7 +402,9 @@ public class IrisInfo
 	public interface Interface
 	{
 		String IRIS_PROGRESS = "iris_progress";
+		String OLD_IRIS_PROGRESS = "old_iris_progress";
 		String IRIS_INVENTORY = "iris_inventory";
+		String IRIS_MOTION = "iris_motion";
 		
 		IrisInfo irisInfo();
 	}

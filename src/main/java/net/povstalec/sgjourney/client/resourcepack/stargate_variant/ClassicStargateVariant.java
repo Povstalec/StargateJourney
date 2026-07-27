@@ -14,11 +14,23 @@ import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class ClassicStargateVariant extends RotatingStargateVariant
 {
-	public static final ResourceLocation STARGATE_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_stargate.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_stargate_engaged.png");
-
-	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_event_horizon.png");
-	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/stargate/classic/classic_event_horizon_shiny.png");
+	// Variant: Normal RGB - Shiny RGB
+	// Classic: 39 113 255 - 29 92 212
+	
+	public static final String STARGATE_TYPE = "milky_way";
+	
+	public static final ResourceLocation STARGATE_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate_engaged");
+	
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon");
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION_UNSTABLE = simpleTexturePath(STARGATE_TYPE, "event_horizon_unstable");
+	public static final ResourceLocation STARGATE_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex");
+	
+	public static final ResourceLocation STARGATE_DISCONNECT_LOCATION = simpleTexturePath(STARGATE_TYPE, "disconnect");
+	
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny");
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
+	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = StargateJourney.sgjourneyLocation("classic_chevron_engage");
 	
@@ -32,10 +44,8 @@ public class ClassicStargateVariant extends RotatingStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = StargateJourney.sgjourneyLocation("classic_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_TRANSLUCENT_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_TRANSLUCENT_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(0, 109, 121, 255));
 	

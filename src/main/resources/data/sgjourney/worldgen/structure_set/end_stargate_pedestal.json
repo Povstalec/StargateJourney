@@ -1,0 +1,16 @@
+{
+  "structures": [
+    {
+      "structure": "sgjourney:stargate/universe/pedestal/universe_stargate_pedestal_island_end",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "salt": 148317432,
+    "type": "sgjourney:unique_placement",
+    "x_bound_min": 8,
+    "z_bound_min": 8,
+    "x_bound_max": 12,
+    "z_bound_max": 12
+  }
+}

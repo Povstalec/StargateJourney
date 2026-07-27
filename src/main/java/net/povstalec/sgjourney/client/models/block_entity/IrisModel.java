@@ -76,7 +76,7 @@ public class IrisModel
 			PoseStack.Pose pose = stack.last();
 			
 			float uAddition = 13 * (j % 10) / IRIS_TEXTURE_WIDTH;
-			float vAddition = 40 * (j / 10) / IRIS_TEXTURE_WIDTH;
+			float vAddition = 40 * (j / 10) / IRIS_TEXTURE_HEIGHT;
 			
 			// Front
 			SGJourneyModel.createTriangle(consumer, matrix4, pose, combinedLight,

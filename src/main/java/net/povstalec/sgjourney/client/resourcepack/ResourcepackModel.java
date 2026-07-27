@@ -10,6 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
@@ -18,6 +19,12 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ResourcepackModel
 {
+	public enum WormholeSide
+	{
+		FRONT,
+		BACK
+	}
+	
 	public static class WormholeTexture
 	{
 		public static final String TEXTURE = "texture";
@@ -142,64 +149,95 @@ public class ResourcepackModel
 		}
 	}
 	
+	public static class DisconnectTicks
+	{
+		public static final String WAIT_TICKS = "wait_ticks";
+		public static final String FADE_IN_TICKS = "fade_in_ticks";
+		public static final String STABLE_TICKS = "stable_ticks";
+		public static final String FADE_OUT_TICKS = "fade_out_ticks";
+		
+		public static final DisconnectTicks DEFAULT = new DisconnectTicks(16, 10, 0, 20);
+		
+		public static final Codec<DisconnectTicks> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(WAIT_TICKS).forGetter(disconnectTicks -> disconnectTicks.waitTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(FADE_IN_TICKS).forGetter(disconnectTicks -> disconnectTicks.fadeInTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(STABLE_TICKS).forGetter(disconnectTicks -> disconnectTicks.stableTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(FADE_OUT_TICKS).forGetter(disconnectTicks -> disconnectTicks.fadeOutTicks)
+				
+		).apply(instance, DisconnectTicks::new));
+		
+		public final int waitTicks; // Wait this many ticks before you start the animation (does not affect the wormhole wiggling that's there as an indicator that you can't go through the gate anymore)
+		public final int fadeInTicks; // How many ticks it takes for the texture to fully fade in after
+		public final int stableTicks; // How many ticks the texture remains fully visible
+		public final int fadeOutTicks; // How many ticks it takes for the texture to fade out, after which the animation is considered finished
+		
+		public final int eventHorizonStopTicks;
+		public final int disconnectEndTicks;
+		
+		public DisconnectTicks(int waitTicks, int fadeInTicks, int stableTicks, int fadeOutTicks)
+		{
+			this.waitTicks = waitTicks;
+			this.fadeInTicks = fadeInTicks;
+			this.stableTicks = stableTicks;
+			this.fadeOutTicks = fadeOutTicks;
+			
+			this.eventHorizonStopTicks = waitTicks + fadeInTicks;
+			this.disconnectEndTicks = waitTicks + fadeInTicks + stableTicks + fadeOutTicks;
+		}
+	}
+	
 	public static class Wormhole
 	{
-		
 		public static final String DISTORTION = "distortion";
 		public static final String HAS_STRUDEL = "has_strudel";
+		public static final String DISCONNECT_TICKS = "disconnect_ticks";
+		
 		public static final String EVENT_HORIZON = "event_horizon";
 		public static final String KAWOOSH = "kawoosh";
 		public static final String STRUDEL = "strudel";
+		public static final String UNSTABLE = "event_horizon_unstable";
+		public static final String DISCONNECT = "disconnect";
 		
 		@Nullable
 		private final Integer distortion;
 		@Nullable
 		private final Boolean hasStrudel;
+		private final DisconnectTicks disconnectTicks;
+		
 		private final Either<FrontBack, WormholeTexture> eventHorizon;
+		@Nullable
+		private final Either<FrontBack, WormholeTexture> unstableEventHorizon;
 		@Nullable
 		private final Either<FrontBack, WormholeTexture> kawoosh;
 		@Nullable
 		private final Either<FrontBack, WormholeTexture> strudel;
 		
+		private final Either<FrontBack, WormholeTexture> disconnect;
+		
 		public static final Codec<Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.ofNullable(wormhole.distortion)),
 				Codec.BOOL.optionalFieldOf(HAS_STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.hasStrudel)),
+				DisconnectTicks.CODEC.optionalFieldOf(DISCONNECT_TICKS, new DisconnectTicks(0, 0, 0, 0)).forGetter(wormhole -> wormhole.disconnectTicks),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(UNSTABLE).forGetter(wormhole -> Optional.ofNullable(wormhole.unstableEventHorizon)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(KAWOOSH).forGetter(wormhole -> Optional.ofNullable(wormhole.kawoosh)),
-				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel))
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel)),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(DISCONNECT).forGetter(wormhole -> Optional.ofNullable(wormhole.disconnect))
 				).apply(instance, Wormhole::new));
 		
-		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel,
-				Either<FrontBack, WormholeTexture> eventHorizon,
-				Optional<Either<FrontBack, WormholeTexture>> kawoosh,
-				Optional<Either<FrontBack, WormholeTexture>> strudel)
+		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel, DisconnectTicks disconnectTicks,
+						Either<FrontBack, WormholeTexture> eventHorizon, Optional<Either<FrontBack, WormholeTexture>> unstableEventHorizon, Optional<Either<FrontBack, WormholeTexture>> kawoosh,
+				Optional<Either<FrontBack, WormholeTexture>> strudel, Optional<Either<FrontBack, WormholeTexture>> disconnect)
 		{
-			if(distortion.isPresent())
-				this.distortion = distortion.get();
-			else
-				this.distortion = null;
-			
-			if(hasStrudel.isPresent())
-				this.hasStrudel = hasStrudel.get();
-			else
-				this.hasStrudel = null;
+			this.distortion = distortion.orElse(null);
+			this.hasStrudel = hasStrudel.orElse(null);
+			this.disconnectTicks = disconnectTicks;
 			
 			this.eventHorizon = eventHorizon;
-
-			if(kawoosh.isPresent())
-				this.kawoosh = kawoosh.get();
-			else
-				this.kawoosh = null;
-
-			if(strudel.isPresent())
-				this.strudel = strudel.get();
-			else
-				this.strudel = null;
-		}
-		
-		public Wormhole(Either<FrontBack, WormholeTexture> eventHorizon)
-		{
-			this(Optional.empty(), Optional.empty(), eventHorizon, Optional.empty(), Optional.empty());
+			this.unstableEventHorizon = unstableEventHorizon.orElse(null);
+			this.kawoosh = kawoosh.orElse(null);
+			this.strudel = strudel.orElse(null);
+			this.disconnect = disconnect.orElse(null);
 		}
 		
 		public int distortion()
@@ -218,9 +256,19 @@ public class ResourcepackModel
 			return ClientStargateConfig.enable_vortex.get();
 		}
 		
+		public DisconnectTicks disconnectTicks()
+		{
+			return disconnectTicks;
+		}
+		
 		public Either<FrontBack, WormholeTexture> eventHorizon()
 		{
 			return eventHorizon;
+		}
+		
+		public Either<FrontBack, WormholeTexture> unstableEventHorizon()
+		{
+			return unstableEventHorizon != null ? unstableEventHorizon : eventHorizon;
 		}
 		
 		public Either<FrontBack, WormholeTexture> kawoosh()
@@ -233,27 +281,62 @@ public class ResourcepackModel
 			return strudel != null ? strudel : eventHorizon;
 		}
 		
-		private static WormholeTexture getWormholeTexture(Either<FrontBack, WormholeTexture> eventHorizon, boolean front)
+		@Nullable
+		public Either<FrontBack, WormholeTexture> disconnect()
+		{
+			return disconnect;
+		}
+		
+		private static WormholeTexture getWormholeTexture(Either<FrontBack, WormholeTexture> eventHorizon, WormholeSide side)
 		{
 			if(eventHorizon.left().isPresent())
-				return front ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
+				return side == WormholeSide.FRONT ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
 			
 			return eventHorizon.right().get();
 		}
 		
-		public WormholeTexture eventHorizonTexture(boolean front)
+		public WormholeTexture eventHorizonTexture(WormholeSide side)
 		{
-			return getWormholeTexture(eventHorizon(), front);
+			return getWormholeTexture(eventHorizon(), side);
 		}
 		
-		public WormholeTexture kawooshTexture(boolean front)
+		public WormholeTexture unstableEventHorizonTexture(WormholeSide side)
 		{
-			return getWormholeTexture(kawoosh(), front);
+			return getWormholeTexture(unstableEventHorizon(), side);
 		}
 		
-		public WormholeTexture strudelTexture(boolean front)
+		public WormholeTexture kawooshTexture(WormholeSide side)
 		{
-			return getWormholeTexture(strudel(), front);
+			return getWormholeTexture(kawoosh(), side);
+		}
+		
+		public WormholeTexture strudelTexture(WormholeSide side)
+		{
+			return getWormholeTexture(strudel(), side);
+		}
+		
+		public WormholeTexture disconnectTexture(WormholeSide side)
+		{
+			return getWormholeTexture(disconnect(), side);
+		}
+		
+		public static Either<FrontBack, WormholeTexture> simpleWormholeEither(ResourceLocation texture, int rows, int columns, int frames, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, frontRGBA),
+					new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, backRGBA)));
+		}
+		
+		public static Wormhole simpleWormhole(ResourceLocation eventHorizonTexture, ResourceLocation unstableEventHorizonTexture, ResourceLocation vortexTexture, ResourceLocation disconnectTexture, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return new Wormhole(
+					Optional.empty(),
+					Optional.empty(),
+					DisconnectTicks.DEFAULT,
+					simpleWormholeEither(eventHorizonTexture, 32, 1, 32, frontRGBA, backRGBA),
+					Optional.of(simpleWormholeEither(unstableEventHorizonTexture, 32, 1, 32, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)),
+					Optional.empty(),
+					Optional.of(simpleWormholeEither(vortexTexture, 32, 5, 160, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)),
+					Optional.of(simpleWormholeEither(disconnectTexture, 20, 1, 20, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)));
 		}
 	}
 	

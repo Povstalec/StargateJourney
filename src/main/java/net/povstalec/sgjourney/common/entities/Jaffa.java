@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.entities;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -13,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.JaffaPouch;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -25,8 +25,6 @@ public class Jaffa extends Human
 	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/entity/player/wide/efe.png");
 	
 	private static final ResourceLocation ABYDOS = StargateJourney.sgjourneyLocation("abydos");
-	
-	//protected Goauld.Info goauldLarva;
 	
 	public Jaffa(EntityType<? extends Jaffa> type, Level level)
 	{
@@ -90,6 +88,13 @@ public class Jaffa extends Human
 			else
 				setupHelmet();
 			setupArmor();
+		}
+		
+		JaffaPouch jaffaPouch = this.getCapability(JaffaPouch.JAFFA_POUCH_CAPABILITY);
+		if(jaffaPouch != null)
+		{
+			jaffaPouch.setPouch(true);
+			jaffaPouch.setGoauldInfo(new Goauld.Info(null, Goauld.MAX_HEALTH, -20000));
 		}
 		
 		return spawnGroupData;

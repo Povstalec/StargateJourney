@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:block",
+	"pools": 
+	[
+		{
+			"rolls": 1,
+			"entries":
+			[
+				{
+					"type": "minecraft:item",
+					"name": "sgjourney:waxed_exposed_smooth_naquadah_copper_stairs"
+				}		
+			]
+		}
+	]
+}

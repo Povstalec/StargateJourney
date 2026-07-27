@@ -1,5 +1,6 @@
 {
 	"name": "galaxy.sgjourney.kaliem",
 	"type": "sgjourney:medium_galaxy",
-	"default_symbols": "sgjourney:galaxy_kaliem"
+	"default_symbols": "sgjourney:galaxy_kaliem",
+	"symbol_prefix": 26
 }

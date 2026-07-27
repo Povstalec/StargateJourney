@@ -35,9 +35,6 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 {
 	public static final String INVENTORY = "inventory";
 	
-	private static final long maxTransfer = CommonZPMConfig.zpm_hub_max_transfer.get();
-	private static final long maxEnergyDisplayed = CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	
 	private final ItemStackHandler itemHandler = createHandler();
 	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
 	
@@ -161,27 +158,22 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		return side == Direction.DOWN;
 	}
 	
-	protected boolean receivesEnergy()
-	{
-		return false;
-	}
-	
 	@Override
-	public long capacity()
+	public long getCapacity()
 	{
-		return maxEnergyDisplayed;
+		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	}
 
 	@Override
-	public long maxReceive()
+	public long getMaxReceive()
 	{
 		return 0;
 	}
 
 	@Override
-	public long maxExtract()
+	public long getMaxExtract()
 	{
-		return maxTransfer;
+		return CommonZPMConfig.zpm_hub_max_transfer.get();
 	}
 	
 	@Override
@@ -206,14 +198,14 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 					{
 						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
-							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.maxExtract(), true);
+							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.getMaxDeplete(), true);
 							long simulatedReceiveAmount = sgjourneyEnergy.receiveZeroPointEnergy(simulatedOutputAmount, true);
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
 							sgjourneyEnergy.receiveZeroPointEnergy(simulatedReceiveAmount, false);
 						}
 						else if(CommonZPMConfig.other_mods_use_zero_point_energy.get())
 						{
-							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.maxExtract()), true);
+							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.getMaxDeplete()), true);
 							int simulatedReceiveAmount = otherEnergy.receiveEnergy(simulatedOutputAmount, true);
 							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);

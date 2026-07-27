@@ -135,4 +135,17 @@ public class PlanetSkyRenderers
 	        this.renderMoon(tesselator, modelViewMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(40), (float) Math.toRadians(180));
 		}
 	}
+	
+	public static class DestinySkyRenderer extends SGJourneySkyRenderer
+	{
+		public DestinySkyRenderer()
+		{
+			super(83173L, 600);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Runnable setupFog, Tesselator tesselator, float rain)
+		{
+		
+		}
+	}
 }

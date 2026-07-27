@@ -8,9 +8,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtension
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.entities.Goauld;
-import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
+import net.povstalec.sgjourney.common.entities.*;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
@@ -18,25 +16,29 @@ import net.povstalec.sgjourney.common.items.VialItem;
 
 public class ModEvents
 {
-	@EventBusSubscriber(modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(modid = StargateJourney.MODID)
 	public static class Common
 	{
 		@SubscribeEvent
 		public static void entityAttributeEvent(EntityAttributeCreationEvent event)
 		{
+			// Animals
+			event.put(EntityInit.MASTADGE.get(), Mastadge.createAttributes().build());
+			event.put(EntityInit.ABYDOS_LIZARD.get(), AbydosLizard.createAttributes().build());
+			// Humanoids
 			event.put(EntityInit.GOAULD.get(), Goauld.createAttributes().build());
 			event.put(EntityInit.HUMAN.get(), Human.createAttributes().build());
 			event.put(EntityInit.JAFFA.get(), Jaffa.createAttributes().build());
 		}
 	}
 	
-	/*@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	/*@EventBusSubscriber(value = Dist.DEDICATED_SERVER, modid = StargateJourney.MODID)
 	public static class Server
 	{
 	
 	}*/
 	
-	@EventBusSubscriber(value = Dist.CLIENT, modid = StargateJourney.MODID, bus = EventBusSubscriber.Bus.MOD)
+	@EventBusSubscriber(value = Dist.CLIENT, modid = StargateJourney.MODID)
 	public static class Client
 	{
 		@SubscribeEvent

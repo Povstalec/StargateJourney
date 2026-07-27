@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,9 +20,18 @@ import java.util.List;
 
 public abstract class EnergyBlockItem extends BlockItem
 {
-	public EnergyBlockItem(Block block, Properties properties)
+	public final String energyName;
+	
+	public EnergyBlockItem(Block block, Properties properties, String energyName)
 	{
 		super(block, properties);
+		
+		this.energyName = energyName;
+	}
+	
+	public EnergyBlockItem(Block block, Properties properties)
+	{
+		this(block, properties, "tooltip.sgjourney.energy");
 	}
 	
 	public long getEnergy(ItemStack stack)
@@ -57,14 +67,21 @@ public abstract class EnergyBlockItem extends BlockItem
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(ComponentHelper.energy(this.energyName, getEnergy(stack), getCapacity()));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	public static class Getter extends EnergyBlockItem
 	{
-		private CapacityGetter capacityGetter;
+		private final CapacityGetter capacityGetter;
+		
+		public Getter(Block block, Properties properties, CapacityGetter capacityGetter, String energyName)
+		{
+			super(block, properties, energyName);
+			
+			this.capacityGetter = capacityGetter;
+		}
 		
 		public Getter(Block block, Properties properties, CapacityGetter capacityGetter)
 		{

@@ -2,9 +2,11 @@
 	"values":
 	[
 		"#sgjourney:is_abydos",
-		"#sgjourney:is_chulak",
+		"#sgjourney:is_athos",
 		"#sgjourney:is_cavum_tenebrae",
-		
-		"#sgjourney:is_lantea"
+		"#sgjourney:is_chulak",
+		"#sgjourney:is_lantea",
+		"#sgjourney:is_rima",
+		"#sgjourney:is_unitas"
 	]
 }

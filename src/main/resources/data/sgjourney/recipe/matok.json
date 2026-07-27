@@ -11,7 +11,7 @@
 	{
 		"H": {"item": "sgjourney:jaffa_staff_head"},
 		"R": {"tag": "sgjourney:naquadah_rod"},
-		"N": {"tag": "sgjourney:naquadah_alloy"},
+		"N": {"tag": "sgjourney:naquadah_ingot"},
 		"A": {"item": "minecraft:amethyst_shard"}
 	},
 	"result":

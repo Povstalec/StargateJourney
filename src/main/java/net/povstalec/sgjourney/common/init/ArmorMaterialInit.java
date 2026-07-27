@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.povstalec.sgjourney.StargateJourney;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -29,7 +30,16 @@ public class ArmorMaterialInit
 		map.put(ArmorItem.Type.HELMET, 3);
 		map.put(ArmorItem.Type.BODY, 11);
 	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 3.0F, 0.2F, () -> Ingredient.of(ItemInit.NAQUADAH.get()));
-
+	
+	public static final Holder<ArmorMaterial> TRINIUM = register("trinium", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
+	{
+		map.put(ArmorItem.Type.BOOTS, 3);
+		map.put(ArmorItem.Type.LEGGINGS, 6);
+		map.put(ArmorItem.Type.CHESTPLATE, 8);
+		map.put(ArmorItem.Type.HELMET, 3);
+		map.put(ArmorItem.Type.BODY, 11);
+	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 0.0F, 0.0F, () -> Ingredient.of(ItemInit.TRINIUM_INGOT.get()));
+	
 	public static final Holder<ArmorMaterial> JAFFA = register("jaffa", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
 	{
 		map.put(ArmorItem.Type.BOOTS, 3);
@@ -37,7 +47,7 @@ public class ArmorMaterialInit
 		map.put(ArmorItem.Type.CHESTPLATE, 7);
 		map.put(ArmorItem.Type.HELMET, 3);
 		map.put(ArmorItem.Type.BODY, 11);
-	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 0.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_ALLOY.get()));
+	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 0.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_IRON_ALLOY.get()));
 	
 	public static final Holder<ArmorMaterial> SYSTEM_LORD = register("system_lord", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
 	{
@@ -46,7 +56,7 @@ public class ArmorMaterialInit
 		map.put(ArmorItem.Type.CHESTPLATE, 8);
 		map.put(ArmorItem.Type.HELMET, 3);
 		map.put(ArmorItem.Type.BODY, 11);
-	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 2.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_ALLOY.get()));
+	}), 10, SoundInit.EQUIP_NAQUADAH_ARMOR, 2.0F, 0.0F, () -> Ingredient.of(ItemInit.NAQUADAH_IRON_ALLOY.get()));
 
 	public static final Holder<ArmorMaterial> PERSONAL_SHIELD = register("personal_shield", Util.make(new EnumMap<>(ArmorItem.Type.class), map ->
 	{

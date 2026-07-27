@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.Map;
-import java.util.function.Supplier;
-
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -21,6 +18,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+
+import java.util.Map;
 
 public record ClientboundStargateParticleSpawnPacket(BlockPos blockPos, Map<StargatePart, BlockState> blockStates) implements CustomPacketPayload
 {

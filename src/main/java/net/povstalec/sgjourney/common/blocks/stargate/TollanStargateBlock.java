@@ -43,9 +43,7 @@ public class TollanStargateBlock extends AbstractStargateBaseBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		TollanStargateEntity stargate = new TollanStargateEntity(pos, state);
-		
-		return stargate;
+		return new TollanStargateEntity(pos, state);
 	}
 
 	@Override

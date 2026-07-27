@@ -26,8 +26,9 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStarga
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
+public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
 {
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
@@ -56,13 +57,12 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	 */
 	protected abstract Variant getClientVariant(StargateEntity stargate);
 	
-	protected void renderWormhole(AbstractStargateEntity stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	protected void renderWormhole(AbstractStargateEntity<?> stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		if(stargate.isConnected())
-	    	this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), combinedLight, combinedOverlay);
+		this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), combinedLight, combinedOverlay);
 	}
 	
-	protected void renderCover(AbstractStargateEntity stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	protected void renderCover(AbstractStargateEntity<?> stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 	    for(Map.Entry<StargatePart, BlockState> entry : stargate.blockCover.blockStates.entrySet())
 	    {
@@ -70,7 +70,7 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	    }
 	}
 	
-	protected void renderCoverBlock(AbstractStargateEntity stargate, BlockState state, StargatePart part, PoseStack stack, MultiBufferSource source, int combinedOverlay)
+	protected void renderCoverBlock(AbstractStargateEntity<?> stargate, BlockState state, StargatePart part, PoseStack stack, MultiBufferSource source, int combinedOverlay)
 	{
 		Level level = stargate.getLevel();
 		Direction direction = stargate.getDirection();
@@ -98,14 +98,15 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 		}
 	}
 	
-	protected boolean canSink(AbstractStargateEntity stargate)
+	protected boolean canSink(AbstractStargateEntity<?> stargate)
 	{
 	    return stargate.blockCover.canSinkGate;
 	}
 	
 	@Override
-	public AABB getRenderBoundingBox(AbstractStargateEntity stargate)
+	public @NotNull AABB getRenderBoundingBox(StargateEntity stargate)
 	{
-		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3, stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
+		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3,
+				stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
 	}
 }

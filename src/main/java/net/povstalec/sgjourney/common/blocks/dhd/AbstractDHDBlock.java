@@ -8,11 +8,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
-import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -32,13 +30,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.misc.NetworkUtils;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 import java.util.List;
 
@@ -85,8 +85,8 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractDHDEntity dhd)
-        		dhd.unsetStargate();
+			if(blockEntity instanceof AbstractDHDEntity dhd)
+				dhd.stargateCache.clearTwoWays();
 		}
 		
 		super.onRemove(oldState, level, pos, newState, isMoving);
@@ -143,16 +143,33 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 	@Override
 	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
-		{
-			CompoundTag blockEntityTag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
-			if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-		}
-		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.dhd.description"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.dialing_menu"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.dhd.crystal_menu"));
+		
+		String pointOfOriginString = "";
+		String symbolsString = "";
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		long energy = 0;
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(AbstractDHDEntity.POINT_OF_ORIGIN))
+				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "Error");
+			if(blockEntityTag.contains(AbstractDHDEntity.SYMBOLS))
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "Error");
+			
+			if(blockEntityTag.contains(AbstractDHDEntity.ENERGY))
+				energy = blockEntityTag.getLong(AbstractDHDEntity.ENERGY);
+		}
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOriginString)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
+		
+		if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}

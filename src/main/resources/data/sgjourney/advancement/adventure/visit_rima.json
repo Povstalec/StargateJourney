@@ -4,7 +4,7 @@
 	{
 		"icon": 
 		{
-			"item": "minecraft:coarse_dirt"
+			"id": "minecraft:coarse_dirt"
 		},
 		"title": 
 		{

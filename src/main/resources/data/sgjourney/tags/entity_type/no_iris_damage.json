@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values":
+	[
+		"minecraft:item",
+		"minecraft:snowball",
+		"minecraft:egg",
+		"minecraft:ender_pearl"
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"template_info":
+	{
+		"prefix": "rftoolsdim:",
+		"generate_address_region": false,
+		"galaxies": []
+	},
+	"point_of_origin": "sgjourney:universal",
+	"symbols": "sgjourney:universal"
+}

@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "sgjourney:block/smooth_naquadah_copper_slab"
+    },
+    "type=double": {
+      "model": "sgjourney:block/smooth_naquadah_copper_block"
+    },
+    "type=top": {
+      "model": "sgjourney:block/smooth_naquadah_copper_slab_top"
+    }
+  }
+}
