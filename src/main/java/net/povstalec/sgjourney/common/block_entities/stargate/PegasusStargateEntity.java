@@ -293,7 +293,8 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, false);
+					if(!directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 				else
 					symbolWork();
@@ -308,7 +309,8 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, false);
+					if(!directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 			}
 			else
