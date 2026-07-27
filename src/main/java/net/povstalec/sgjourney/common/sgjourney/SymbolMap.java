@@ -117,6 +117,9 @@ public class SymbolMap
 	
 	public boolean remapSymbol(int originalSymbol, int newSymbol)
 	{
+		if(originalSymbol == 0 || newSymbol == 0)
+			return false; // Shouldn't remap Point of Origin
+		
 		if(isSymbolOutOfBounds(originalSymbol))
 			return false;
 		
