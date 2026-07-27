@@ -41,6 +41,8 @@ public class InterfacePeripheral implements IDynamicPeripheral
 		}*/
 	}
 	
+	public void markInvalid() {}
+	
 	@Override
 	public String getType()
 	{
