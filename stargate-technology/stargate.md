@@ -343,15 +343,12 @@ Universe stargates are not much durable and are created from common materials co
 {: .max-width-512 }
 
 The gate has only 35 physical symbols (+ point of origin).
-Can't dial symbols above 35.
+Can't dial symbols above 35, unless [Symbol remapping](#symbol-remapping) is used.
 The gate has always the Universal symbols, unless changed by a gate variant.
-
-The gate is able to dial symbols above 35 when advanced protocol are active in DHD and hence symbol remapping can be used.
-Alternatively symbol remapping is also available for computers using crystal interface.
 
 The whole gate rotates during dialing, always encoding the symbol at the top.
 It can be dialed by rotating the ring with a redstone or any interface.
-Additionally, can also be dialed by directly engaging the symbols a (advanced) crystal interface.
+Additionally, can also be dialed by directly engaging the symbols with a (advanced) crystal interface.
 
 <table class="text-center">
     <thead>
@@ -539,11 +536,83 @@ ___
 
 ## Network restrictions
 
+Each stargate can be in one or more **networks**.
+Each such network is identified by a number (integer).
+Initially stargate is in a network matching the **generation** of the stargate and network restrictions are **disabled**,
+meaning the gate can connect to any other gate.
+
+Networks of the gate can be changed either using **Communication Crystals** placed in the DHD 
+or using [computers]({{ '/computercraft/stargate-interface/#getNetworks' | absolute_url }}).
+
+<div class="mcui">
+    <span 
+        class="invslot invslot-item invslot-item-image" 
+        data-minetip-title="&eCommunication Crystal" 
+        data-minetip-text="&7Frequency: 123/&rCommunication Range Increase: 0 blocks/&8Can be tuned to a specific frequency or increase communication range/&7Frequency can be changed with a Crystal Computer">
+            <a href="{{ '/stargate-technology/crystals/dhd-crystals/' | absolute_url }}">
+                <img src="{{ '/assets/img/items/crafting/sgjourney/dynamic/communication_crystal.png' | absolute_url }}">
+            </a>
+    </span>
+</div>
+<div class="mcui">
+    <span 
+        class="invslot invslot-item invslot-item-image" 
+        data-minetip-title="&eControl Crystal" 
+        data-minetip-text="&7When placed in DHD, activates &bnetwork restrictions&7 of the stargate">
+            <a href="{{ '/stargate-technology/crystals/dhd-crystals/' | absolute_url }}">
+                <img src="{{ '/assets/img/items/crafting/sgjourney/dynamic/control_crystal.png' | absolute_url }}">
+            </a>
+    </span>
+</div>
+
+[//]: # (FIXME: Add link to DHD crystal configurations using communication crystal)
+
+Network restrictions can be enabled by placing a **Control Crystal** into the DHD or using [computers]({{ '/computercraft/stargate-interface/#getNetworks' | absolute_url }}).  
+When **network restrictions** are activated, the gate can connect only to stargates that are **at least in one matching network**.
+The restrictions apply to both incoming and outgoing connection.
+
+
+
+<table class="text-center" style="min-width: auto">
+  <tr>
+    <th>Stargate</th>
+    <th>Default<br/>Network</th>
+  </tr>
+  <tr>
+    <td><a href="#classic-stargate">Classic</a></td>
+    <td>0</td>
+  </tr>
+  <tr>
+    <td><a href="#universe-stargate">Universe</a></td>
+    <td>1</td>
+  </tr>
+  <tr>
+    <td><a href="#milky-way-stargate">Milky Way</a></td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td><a href="#tollan-stargate">Tollan</a></td>
+    <td>2</td>
+  </tr>
+  <tr>
+    <td><a href="#pegasus-stargate">Pegasus</a></td>
+    <td>3</td>
+  </tr>
+</table>
+
+
 ___
 
 ## Symbol remapping
 
-[//]: # (TODO: symbol remapping)
+Certain stargate types have a limited range of symbols it can encode.
+Classic and Milky Way stargates are limited to 38 symbols.
+And mainly the Universe stargate is limited only to 35 symbols.
+
+Symbol remapping allows the gate to represent any symbol using any other available symbol.
+The only exception is the Point of Origin (symbol `0`) which must not be remapped.
+
+[//]: # (TODO: finish symbol remapping)
 
 ___
 
