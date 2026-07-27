@@ -37,10 +37,15 @@ public class ConfigScreenClientSky extends Screen
 				this.height - OPTIONS_LIST_TOP_HEIGHT - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_TOP_HEIGHT, OPTIONS_LIST_ITEM_HEIGHT);
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_abydos_sky"), this.width, ClientSkyConfig.custom_abydos_sky));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_chulak_sky"), this.width, ClientSkyConfig.custom_chulak_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_unitas_sky"), this.width, ClientSkyConfig.custom_unitas_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_rima_sky"), this.width, ClientSkyConfig.custom_rima_sky));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_tollan_sky"), this.width, ClientSkyConfig.custom_tollan_sky));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_cavum_tenebrae_sky"), this.width, ClientSkyConfig.custom_cavum_tenebrae_sky));
 		
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_lantea_sky"), this.width, ClientSkyConfig.custom_lantea_sky));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_athos_sky"), this.width, ClientSkyConfig.custom_athos_sky));
+		
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.custom_destiny_sky"), this.width, ClientSkyConfig.custom_destiny_sky));
 		
 		this.addRenderableWidget(configList);
 
