@@ -430,7 +430,11 @@ public class BlockEntityList extends SavedData
 	{
 		try
 		{
-			TransporterID.verifyValidity(TransporterID.idStringToIntArray(id));
+			if(TransporterID.canBeTransformedToID(id))
+				TransporterID.verifyValidity(TransporterID.idStringToIntArray(id));
+			else
+				throw new IllegalArgumentException(id + "cannot be transformed to Transporter ID");
+			
 			try
 			{
 				TransporterID.Immutable transporterID = new TransporterID.Immutable(id);
