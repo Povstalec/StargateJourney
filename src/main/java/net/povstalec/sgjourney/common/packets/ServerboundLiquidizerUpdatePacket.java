@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 
 import java.util.function.Supplier;
 
@@ -35,7 +35,7 @@ public class ServerboundLiquidizerUpdatePacket
     	ctx.get().enqueueWork(() ->
 		{
     		final BlockEntity blockEntity = ctx.get().getSender().level.getBlockEntity(blockPos);
-    		if(blockEntity instanceof AbstractNaquadahLiquidizerEntity<?> liquidizer)
+    		if(blockEntity instanceof AbstractLiquidizerEntity<?> liquidizer)
 			{
 				if(inputTank)
 					liquidizer.dumpInputFluidTank();

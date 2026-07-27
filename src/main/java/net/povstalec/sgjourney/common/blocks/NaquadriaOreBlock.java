@@ -7,6 +7,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -25,21 +26,23 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 	public NaquadriaOreBlock(Properties properties, float radius)
 	{
 		super(properties, radius);
-		this.registerDefaultState(this.stateDefinition.any().setValue(EXCITEMENT, MIN_EXCITEMENT));
+		this.registerDefaultState(this.stateDefinition.any().setValue(EXCITEMENT, MIN_EXCITEMENT).setValue(UNSTABLE, false));
 	}
 	
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
 	{
-		builder.add(EXCITEMENT);
+		builder.add(EXCITEMENT).add(UNSTABLE);
 	}
 	
-	public void excite(BlockState state, ServerLevel level, BlockPos pos)
+	public void excite(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
 	{
-		if(state.getValue(EXCITEMENT) < MAX_EXCITEMENT)
-			level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) + 1), 3);
+		int newExcitement = randomSource.nextInt(1, excitement) + state.getValue(EXCITEMENT);
+		
+		if(newExcitement < MAX_EXCITEMENT)
+			level.setBlock(pos, state.setValue(EXCITEMENT, newExcitement), Block.UPDATE_ALL);
 		else
-			level.explode(null, pos.getX(), pos.getY(), pos.getZ(), radius, Level.ExplosionInteraction.BLOCK);
+			setUnstable(state, level, pos);
 	}
 	
 	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
@@ -51,9 +54,9 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 			{
 				BlockState otherState = level.getBlockState(otherPos);
 				if(otherState.getBlock() instanceof NaquadriaOreBlock naquadriaOre)
-					naquadriaOre.excite(otherState, level, pos);
+					naquadriaOre.excite(otherState, level, otherPos, randomSource, excitement);
 				else if(otherState.getBlock() instanceof NaquadahOreBlock naquadahOre)
-					naquadahOre.transform(level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
+					naquadahOre.transform(otherState, level, otherPos, randomSource.nextInt(3 * excitement / 4, excitement));
 			}
 		});
 	}
@@ -64,22 +67,18 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		
 		exciteNearbyBlocks(level, pos, randomSource, state.getValue(EXCITEMENT) + 1);
 		
-		level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) - 1), 3);
+		level.setBlock(pos, state.setValue(EXCITEMENT, state.getValue(EXCITEMENT) - 1), Block.UPDATE_ALL);
 	}
 	
 	@Override
-	public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
-	{
-		return false;
-	}
-	
-	@Override
-	public void wasExploded(Level level, BlockPos pos, Explosion explosion)
+	public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion)
 	{
 		if(level.isClientSide())
 			return;
 		
 		exciteNearbyBlocks((ServerLevel) level, pos, level.getRandom(), 16);
+		
+		level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
 	}
 	
 	@Override

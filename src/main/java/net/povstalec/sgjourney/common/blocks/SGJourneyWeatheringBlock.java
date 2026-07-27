@@ -274,7 +274,7 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return -1;
 	}
 	
-	default Optional<BlockState> changeOverTime(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	default Optional<BlockState> getNextState(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
 	{
 		int age = this.getAge().ordinal();
 		int sameAge = 0;

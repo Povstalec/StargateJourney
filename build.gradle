@@ -128,6 +128,8 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    mavenCentral()
+    mavenLocal()
     maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
@@ -136,11 +138,18 @@ repositories {
         }
     }
     maven {
-    url "https://squiddev.cc/maven/"
-    content {
-      includeGroup("cc.tweaked")
-      includeModule("org.squiddev", "Cobalt")
-      includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        url "https://squiddev.cc/maven/"
+        content {
+            includeGroup("cc.tweaked")
+            includeModule("org.squiddev", "Cobalt")
+            includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        }
     }
     maven {
         // location of the maven that hosts JEI files since January 2023
@@ -148,21 +157,10 @@ repositories {
         url = "https://maven.blamejared.com/"
     }
     maven {
-        name "tterrag maven"
-        url "https://maven.tterrag.com/"
-    }
-    maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.dev"
     }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
-  }
 }
 
 dependencies {
@@ -192,6 +190,11 @@ dependencies {
 	compileOnly("cc.tweaked:cc-tweaked-${mc_version}-core-api:${cct_version}")
 	compileOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge-api:${cct_version}"))
     runtimeOnly(fg.deobf("cc.tweaked:cc-tweaked-${mc_version}-forge:${cct_version}"))
+
+    // test dependencies
+    testImplementation(platform('org.junit:junit-bom:6.1.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
 // Example for how to get properties into the manifest for reading at runtime.

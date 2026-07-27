@@ -76,15 +76,19 @@ public class SymbolMap
 		return symbol < totalSymbols ? reverseSymbolMap[symbol] != symbol : reverseSymbolMap[symbol] != -1;
 	}
 	
+	/**
+	 * @param symbol Symbol to check
+	 * @return True if this symbol exists in the symbol map (for instance, if it can be dialed by a Stargate using this symbol map
+	 */
 	public boolean isSymbolMapped(int symbol)
 	{
-		if(!isRemapped())
+		if(!isRemapped()) // If there is no remapping, just check if the symbol is out of bounds for this map to see if it exists here
 			return !isSymbolOutOfBounds(symbol);
 		
 		if(!isSymbolOutOfBounds(symbol) && symbolMap[symbol] == symbol) // Checks if the symbol is in its rightful place
 			return true;
 		
-		return reverseSymbolMap[symbol] > 0 && reverseSymbolMap[symbol] < totalSymbols;
+		return reverseSymbolMap[symbol] > 0 && reverseSymbolMap[symbol] < totalSymbols; // Check if this symbol was remapped to somewhere
 	}
 	
 	private void fillDefaultSymbolMap()
@@ -126,6 +130,7 @@ public class SymbolMap
 		}
 		
 		symbolMap[originalSymbol] = newSymbol;
+		reverseSymbolMap[originalSymbol] = reverseSymbolMap[newSymbol];
 		reverseSymbolMap[newSymbol] = originalSymbol;
 		
 		return true;

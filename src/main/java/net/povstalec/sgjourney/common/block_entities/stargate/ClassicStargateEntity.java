@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
@@ -17,8 +16,8 @@ import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.ClassicStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicStargate;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;

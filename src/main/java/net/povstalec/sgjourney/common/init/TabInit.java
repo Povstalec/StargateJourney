@@ -17,6 +17,9 @@ import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
+import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
@@ -251,9 +254,9 @@ public class TabInit
 			{
 				items.accept(BlockInit.UNIVERSE_STARGATE_CHEVRON.get());
 				
-				items.accept(BlockInit.ANCIENT_TRANSPORT_RINGS.get());
-				items.accept(BlockInit.GOAULD_TRANSPORT_RINGS.get());
-				items.accept(BlockInit.GOAULD_RING_PANEL.get());
+				items.accept(AncientTransportRingsBlock.transportRingsItemSetup());
+				items.accept(GoauldTransportRingsBlock.transportRingsItemSetup());
+				items.accept(GoauldRingPanelBlock.ringPanelItemSetup());
 				
 				items.accept(BlockInit.ARCHEOLOGY_TABLE.get());
 				items.accept(BlockInit.GOLDEN_IDOL.get());
@@ -522,6 +525,7 @@ public class TabInit
 			event.accept(ClassicDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			
+			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_RING_PANEL.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 		}

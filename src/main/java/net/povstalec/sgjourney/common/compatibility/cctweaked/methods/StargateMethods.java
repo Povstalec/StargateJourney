@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.IllegalLuaArgumentException;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Trinary;
@@ -130,19 +131,13 @@ public class StargateMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
-			boolean engageDirectly = false;
-			boolean canEngageStargate = true;
+			boolean engageDirectly = arguments.optBoolean(1, false);
+			boolean canEngageStargate = arguments.optBoolean(2, true);
 			
-			try
-			{
-				engageDirectly = arguments.getBoolean(1);
-				canEngageStargate = arguments.getBoolean(2);
-			}
-			catch(LuaException ignored) {}
+			//if(engageDirectly && !interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods())
+			//	throw new IllegalLuaArgumentException("Crystal Interface does not support directly engaging symbols");
 			
-			boolean finalEngageDirectly = engageDirectly;
-			boolean finalCanEngageStargate = canEngageStargate;
-			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, finalEngageDirectly, finalCanEngageStargate)));
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, canEngageStargate, engageDirectly)));
 		}
 	}
 	
