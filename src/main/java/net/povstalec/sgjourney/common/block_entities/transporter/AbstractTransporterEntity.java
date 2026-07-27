@@ -41,6 +41,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
 		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
@@ -411,7 +412,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(otherID), noTransporter().withInfo()));
+			setRecentFeedback(transporterSupply(transporter -> transporter.dialTransporter(otherID), () -> noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, otherID);
 		}
 		return this.recentFeedback;
@@ -421,7 +422,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		if(!level.isClientSide())
 		{
-			setRecentFeedback(transporterReturn(transporter -> transporter.dialTransporter(coords), noTransporter().withInfo()));
+			setRecentFeedback(transporterSupply(transporter -> transporter.dialTransporter(coords), () -> noTransporter().withInfo()));
 			onDialAttempt(this.recentFeedback, coords);
 		}
 		return this.recentFeedback;
@@ -684,6 +685,16 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			return consumer.apply(transporter);
 		
 		return defaultValue;
+	}
+	
+	private <R> R transporterSupply(Function<Transporter, R> consumer, Supplier<R> defaultSupplier)
+	{
+		Transporter transporter = getTransporter();
+		
+		if(transporter != null)
+			return consumer.apply(transporter);
+		
+		return defaultSupplier.get();
 	}
 	
 	@Override
