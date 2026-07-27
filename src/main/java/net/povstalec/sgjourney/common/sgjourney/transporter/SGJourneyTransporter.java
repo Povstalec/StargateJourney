@@ -191,7 +191,10 @@ public abstract class SGJourneyTransporter implements Transporter
 	{
 		this.transporterID = transporterID;
 		
-		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		if(tag.contains(DIMENSION, Tag.TAG_STRING))
+			this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		else if(tag.contains("Dimension", Tag.TAG_STRING))
+			this.dimension = Conversion.stringToDimension(tag.getString("Dimension"));
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
