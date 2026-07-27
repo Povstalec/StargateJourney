@@ -101,7 +101,7 @@ public class StargateConnection
 			@Override
 			public <T> DataResult<Type> read(final DynamicOps<T> ops, final T input)
 			{
-				String string = ops.getStringValue(input).toString();
+				String string = ops.getStringValue(input).getOrThrow();
 				
 				Type type = Type.fromString(string);
 				

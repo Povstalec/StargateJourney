@@ -111,7 +111,7 @@ public class TransporterConnection
 			@Override
 			public <T> DataResult<TransporterConnection.Type> read(final DynamicOps<T> ops, final T input)
 			{
-				String string = ops.getStringValue(input).toString();
+				String string = ops.getStringValue(input).getOrThrow();
 				
 				TransporterConnection.Type type = TransporterConnection.Type.fromString(string);
 				
