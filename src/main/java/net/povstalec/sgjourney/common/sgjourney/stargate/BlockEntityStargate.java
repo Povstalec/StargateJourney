@@ -30,6 +30,11 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	
 	BlockPos getBlockPos();
 	
+	default BlockPos getBlockPosition()
+	{
+		return getBlockPos();
+	}
+	
 	@Nullable StargateEntity getStargateEntity(MinecraftServer server);
 	
 	default void stargateRun(MinecraftServer server, Consumer<StargateEntity> consumer)
@@ -317,9 +322,9 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 					// TODO Tie this to Advanced Protocols
 					Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ? new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 					
-					Vec3 destinationPosition = fromStargateCoords(relativePosition, true, true).add(stargate.getCenter());
-					Vec3 destinationMomentum = fromStargateCoords(tempMomentum, false, true);
-					Vec3 destinationLookAngle = fromStargateCoords(relativeLookAngle, false, true);
+					Vec3 destinationPosition = fromStargateCoords(relativePosition, true, true, traveler.level()).add(stargate.getCenter());
+					Vec3 destinationMomentum = fromStargateCoords(tempMomentum, false, true, traveler.level());
+					Vec3 destinationLookAngle = fromStargateCoords(relativeLookAngle, false, true, traveler.level());
 					
 					if(stargate instanceof IrisStargateEntity<?> irisStargate && !getWormhole().checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 					{

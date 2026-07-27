@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -29,7 +30,7 @@ public interface SpawnerStargate extends Stargate
 	}
 	
 	@Override
-	public @Nullable BlockPos getBlockPosition()
+	default @Nullable BlockPos getBlockPosition()
 	{
 		return null;
 	}
@@ -43,7 +44,7 @@ public interface SpawnerStargate extends Stargate
 	@Override
 	default @Nullable Vec3 getRight()
 	{
-		return Wormhole.INNER_RADIUS;
+		return null;
 	}
 	
 	@Override
