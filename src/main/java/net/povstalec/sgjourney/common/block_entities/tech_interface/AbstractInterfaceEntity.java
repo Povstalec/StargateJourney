@@ -195,6 +195,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 			if(rotationDirection != RotatingStargateEntity.RotationDirection.NONE && stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 				rotatingStargate.endRotation(true);
 		}
+		
+		energyBlockEntity = null;
 	}
 	
 	public InterfaceType getInterfaceType()
