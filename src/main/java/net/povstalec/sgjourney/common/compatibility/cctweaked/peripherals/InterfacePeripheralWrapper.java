@@ -35,6 +35,9 @@ public class InterfacePeripheralWrapper
 	
 	public boolean resetInterface()
 	{
+		if(interfacePeripheral != null)
+			interfacePeripheral.markInvalid();
+		
 		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
 		if(interfacePeripheral != null && interfacePeripheral.equals(newPeripheral))
 			return false; // Peripheral is same as before, no changes needed.
