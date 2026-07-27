@@ -10,6 +10,8 @@ public class AutoCache<T>
 {
 	protected boolean dirty = true;
 	protected T object = null;
+	//TODO Track when the AutoCache is changing, instead of relying too much on isCached() stuff
+	// protected boolean isChanging = false;
 	
 	protected Supplier<T> fetch = () -> null;
 	protected BooleanSupplier revalidate = () -> false;
