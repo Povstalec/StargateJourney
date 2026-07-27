@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.monster.RangedAttackMob;
@@ -19,10 +20,13 @@ import net.povstalec.sgjourney.common.entities.goals.StaffWeaponAttackGoal;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.factions.AbstractFaction;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
+public abstract class Anthropoid extends AgeableMob implements RangedAttackMob, FactionMember
 {
 	private final StaffWeaponAttackGoal staffWeaponGoal = new StaffWeaponAttackGoal(this, 1.0D, 8.0F, 12.0F);
 	private final RangedBowAttackGoal<Anthropoid> bowGoal = new RangedBowAttackGoal<>(this, 1.0D, 20, 15.0F);
@@ -40,6 +44,9 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 			Anthropoid.this.setAggressive(true);
 		}
 	};
+	
+	@Nullable
+	protected AbstractFaction faction;
 	
 	public Anthropoid(EntityType<? extends Anthropoid> type, Level level)
 	{
@@ -75,7 +82,7 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		this.goalSelector.removeGoal(this.bowGoal);
 		this.goalSelector.removeGoal(this.staffWeaponGoal);
 		
-		ItemStack itemstack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> isWeapon(item)));
+		ItemStack itemstack = this.getItemInHand(ProjectileUtil.getWeaponHoldingHand(this, item -> InventoryUtil.isWeapon(item)));
 		
 		if(itemstack.getItem() instanceof StaffWeaponItem)
 			this.goalSelector.addGoal(2, staffWeaponGoal);
@@ -172,20 +179,29 @@ public abstract class Anthropoid extends AgeableMob implements RangedAttackMob
 		}
 	}
 	
-	public static boolean isWeapon(Item item)
+	//============================================================================================
+	//****************************************Faction Stuff***************************************
+	//============================================================================================
+	
+	@Override
+	public void setFaction(AbstractFaction faction)
 	{
-		if(item instanceof SwordItem)
-			return true;
+		this.faction = faction;
+	}
+	
+	@Override
+	@Nullable
+	public AbstractFaction getFaction()
+	{
+		return this.faction;
+	}
+	
+	@Override
+	public void die(@NotNull DamageSource damageSource)
+	{
+		if(faction != null)
+			faction.notifyDeath(this, damageSource);
 		
-		if(item instanceof StaffWeaponItem)
-			return true;
-		
-		if(item instanceof BowItem)
-			return true;
-		
-		if(item instanceof CrossbowItem)
-			return true;
-		
-		return false;
+		super.die(damageSource);
 	}
 }

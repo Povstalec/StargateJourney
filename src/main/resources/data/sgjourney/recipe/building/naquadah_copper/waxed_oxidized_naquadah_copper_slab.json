@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_oxidized_naquadah_copper_slab",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:waxed_oxidized_naquadah_copper_block"}
+	},
+	"result": { "id": "sgjourney:waxed_oxidized_naquadah_copper_slab", "count": 6 }
+}

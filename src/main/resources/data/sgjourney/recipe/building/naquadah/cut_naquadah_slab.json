@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:cut_naquadah_block"
+		}
+	},
+	"result": { "id": "sgjourney:cut_naquadah_slab", "count": 6 }
+}

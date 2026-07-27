@@ -11,9 +11,6 @@ import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 public abstract class StargateShieldItem extends Item
 {
-	// Vanilla Materials
-	public static final ResourceLocation COPPER_IRIS = StargateJourney.location("textures/block/copper_block.png");
-
 	public static final String TEXTURE = "texture";
 	
 	private ResourceLocation shieldTexture;

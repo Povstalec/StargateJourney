@@ -21,85 +21,100 @@ public final class PacketHandlerInit
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
+		// Player
+		registrar.playToClient(
+				ClientboundUpdatePlayerGravityPacket.TYPE,
+				ClientboundUpdatePlayerGravityPacket.STREAM_CODEC,
+				ClientboundUpdatePlayerGravityPacket::handle);
+		
 		// Screen opening
 		registrar.playToClient(
 				ClientboundDialerOpenScreenPacket.TYPE,
 				ClientboundDialerOpenScreenPacket.STREAM_CODEC,
-				(packet, context) -> ClientboundDialerOpenScreenPacket.handle(packet, context));
+				ClientboundDialerOpenScreenPacket::handle);
 		
 		registrar.playToClient(
 				ClientboundGDOOpenScreenPacket.TYPE,
 				ClientboundGDOOpenScreenPacket.STREAM_CODEC,
-				(packet, context) -> ClientboundGDOOpenScreenPacket.handle(packet, context));
+				ClientboundGDOOpenScreenPacket::handle);
+		
+		registrar.playToClient(
+				ClientboundCrystalComputerOpenMainScreenPacket.TYPE,
+				ClientboundCrystalComputerOpenMainScreenPacket.STREAM_CODEC,
+				ClientboundCrystalComputerOpenMainScreenPacket::handle);
+		
+		registrar.playToClient(
+				ClientboundCrystalComputerOpenSaveScreenPacket.TYPE,
+				ClientboundCrystalComputerOpenSaveScreenPacket.STREAM_CODEC,
+				ClientboundCrystalComputerOpenSaveScreenPacket::handle);
 		
 		registrar.playToClient(
 				ClientboundArcheologistNotebookOpenScreenPacket.TYPE,
 				ClientboundArcheologistNotebookOpenScreenPacket.STREAM_CODEC,
-				(packet, context) -> ClientboundArcheologistNotebookOpenScreenPacket.handle(packet, context));
+				ClientboundArcheologistNotebookOpenScreenPacket::handle);
 		
-		// Tech
-		registrar.playToClient(
-				ClientboundRingPanelUpdatePacket.TYPE,
-				ClientboundRingPanelUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ClientboundRingPanelUpdatePacket.handle(packet, context));
+		// Alien Tech
 		
-		//Stargate Info
+		// Stargates
 		registrar.playToClient(
 				ClientboundStargateParticleSpawnPacket.TYPE,
 				ClientboundStargateParticleSpawnPacket.STREAM_CODEC,
-				(packet, context) -> ClientboundStargateParticleSpawnPacket.handle(packet, context));
+				ClientboundStargateParticleSpawnPacket::handle);
 		
 		
-		// Sounds
+		//============================================================================================
+		//*******************************************Sounds*******************************************
+		//============================================================================================
+		
 		registrar.playToClient(
 				ClientBoundSoundPackets.OpenWormhole.TYPE,
 				ClientBoundSoundPackets.OpenWormhole.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.OpenWormhole.handle(packet, context));
+				ClientBoundSoundPackets.OpenWormhole::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.IdleWormhole.TYPE,
 				ClientBoundSoundPackets.IdleWormhole.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.IdleWormhole.handle(packet, context));
+				ClientBoundSoundPackets.IdleWormhole::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.CloseWormhole.TYPE,
 				ClientBoundSoundPackets.CloseWormhole.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.CloseWormhole.handle(packet, context));
+				ClientBoundSoundPackets.CloseWormhole::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.IrisThud.TYPE,
 				ClientBoundSoundPackets.IrisThud.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.IrisThud.handle(packet, context));
+				ClientBoundSoundPackets.IrisThud::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.Chevron.TYPE,
 				ClientBoundSoundPackets.Chevron.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.Chevron.handle(packet, context));
+				ClientBoundSoundPackets.Chevron::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.Fail.TYPE,
 				ClientBoundSoundPackets.Fail.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.Fail.handle(packet, context));
+				ClientBoundSoundPackets.Fail::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.StargateRotation.TYPE,
 				ClientBoundSoundPackets.StargateRotation.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.StargateRotation.handle(packet, context));
+				ClientBoundSoundPackets.StargateRotation::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.UniverseStart.TYPE,
 				ClientBoundSoundPackets.UniverseStart.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.UniverseStart.handle(packet, context));
+				ClientBoundSoundPackets.UniverseStart::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.RotationStartup.TYPE,
 				ClientBoundSoundPackets.RotationStartup.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.RotationStartup.handle(packet, context));
+				ClientBoundSoundPackets.RotationStartup::handle);
 		
 		registrar.playToClient(
 				ClientBoundSoundPackets.RotationStop.TYPE,
 				ClientBoundSoundPackets.RotationStop.STREAM_CODEC,
-				(packet, context) -> ClientBoundSoundPackets.RotationStop.handle(packet, context));
+				ClientBoundSoundPackets.RotationStop::handle);
 		
 		//============================================================================================
 		//****************************************Server-bound****************************************
@@ -108,26 +123,41 @@ public final class PacketHandlerInit
 		registrar.playToServer(
 				ServerboundDHDUpdatePacket.TYPE,
 				ServerboundDHDUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ServerboundDHDUpdatePacket.handle(packet, context));
+				ServerboundDHDUpdatePacket::handle);
 		
 		registrar.playToServer(
 				ServerboundRingPanelUpdatePacket.TYPE,
 				ServerboundRingPanelUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ServerboundRingPanelUpdatePacket.handle(packet, context));
+				ServerboundRingPanelUpdatePacket::handle);
 		
 		registrar.playToServer(
 				ServerboundInterfaceUpdatePacket.TYPE,
 				ServerboundInterfaceUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ServerboundInterfaceUpdatePacket.handle(packet, context));
+				ServerboundInterfaceUpdatePacket::handle);
 		
 		registrar.playToServer(
 				ServerboundGDOUpdatePacket.TYPE,
 				ServerboundGDOUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ServerboundGDOUpdatePacket.handle(packet, context));
+				ServerboundGDOUpdatePacket::handle);
+		
+		registrar.playToServer(
+				ServerboundCrystalComputerUpdatePacket.TYPE,
+				ServerboundCrystalComputerUpdatePacket.STREAM_CODEC,
+				ServerboundCrystalComputerUpdatePacket::handle);
 		
 		registrar.playToServer(
 				ServerboundTransceiverUpdatePacket.TYPE,
 				ServerboundTransceiverUpdatePacket.STREAM_CODEC,
-				(packet, context) -> ServerboundTransceiverUpdatePacket.handle(packet, context));
+				ServerboundTransceiverUpdatePacket::handle);
+		
+		registrar.playToServer(
+				ServerboundLiquidizerUpdatePacket.TYPE,
+				ServerboundLiquidizerUpdatePacket.STREAM_CODEC,
+				ServerboundLiquidizerUpdatePacket::handle);
+		
+		registrar.playToServer(
+				ServerboundCrystallizerUpdatePacket.TYPE,
+				ServerboundCrystallizerUpdatePacket.STREAM_CODEC,
+				ServerboundCrystallizerUpdatePacket::handle);
 	}
 }

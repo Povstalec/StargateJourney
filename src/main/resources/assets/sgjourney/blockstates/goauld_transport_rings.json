@@ -1,0 +1,12 @@
+{
+    "variants":
+    {
+		"facing=up,activated=false": {"model": "sgjourney:block/goauld_transport_rings"},
+		
+		"facing=up,activated=true": {"model": "sgjourney:block/goauld_transport_rings_active"},
+		
+		"facing=down,activated=false": {"model": "sgjourney:block/goauld_transport_rings","x": 180},
+		
+		"facing=down,activated=true": {"model": "sgjourney:block/goauld_transport_rings_active","x": 180}
+    }
+}

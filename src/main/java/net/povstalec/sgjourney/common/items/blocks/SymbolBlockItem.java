@@ -1,22 +1,18 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
 
@@ -25,31 +21,6 @@ public class SymbolBlockItem extends BlockItem
 	public SymbolBlockItem(Block block, Properties properties)
 	{
 		super(block, properties);
-	}
-	
-	@Override
-	protected boolean canPlace(BlockPlaceContext context, BlockState state)
-	{
-		BlockPos blockpos = context.getClickedPos();
-		Level level = context.getLevel();
-		
-		Player player = context.getPlayer();
-		CollisionContext collisioncontext = player == null ? CollisionContext.empty() : CollisionContext.of(player);
-		
-		Orientation orientation = Orientation.getOrientationFromXRot(context.getPlayer());
-		Direction direction = context.getHorizontalDirection().getOpposite();
-		int maxBuildHeight = level.getMaxBuildHeight();
-		
-		if(orientation != Orientation.REGULAR)
-			maxBuildHeight -= 1;
-		
-		if(blockpos.getY() > maxBuildHeight || !level.getBlockState(blockpos.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))).canBeReplaced(context))
-		{
-			player.displayClientMessage(Component.translatable("block.sgjourney.cartouche.not_enough_space"), true);
-			return false;
-		}
-		
-		return (!this.mustSurvive() || state.canSurvive(context.getLevel(), context.getClickedPos())) && context.getLevel().isUnobstructed(state, context.getClickedPos(), collisioncontext);
 	}
 	
 	@Override
@@ -87,16 +58,28 @@ public class SymbolBlockItem extends BlockItem
             	}
             }
 		}
+		else
+			return setupBlockEntity(level, level.getBlockEntity(pos), new CompoundTag());
 		
 		return false;
 	}
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof SymbolBlockEntity cartouche)
+		if(baseEntity instanceof SymbolBlockEntity symbolBlockEntity)
 		{
-			cartouche.setNew();
-			return true;
+			if(info.contains(SymbolBlockEntity.SYMBOL_NUMBER, CompoundTag.TAG_INT))
+				symbolBlockEntity.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
+			
+			if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
+				symbolBlockEntity.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
+			else
+				symbolBlockEntity.setPointOfOriginFromLevel(level);
+			
+			if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
+				symbolBlockEntity.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
+			else
+				symbolBlockEntity.setSymbolsFromLevel(level);
 		}
 		
 		return false;

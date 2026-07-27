@@ -1,0 +1,17 @@
+{
+	"view_center": "sgjourney:planet/destiny",
+	
+	"axis_rotation": { "x_axis": 0, "y_axis": 0, "z_axis": 0 },
+	"rotation_period": 0,
+	
+	"day_blending": { "max_brightness": 1, "min_visible_size": 10, "max_visible_size": 30 },
+	"sun_day_blending": { "max_brightness": 1, "min_visible_size": 10, "max_visible_size": 20 },
+	
+	"create_horizon": false,
+	"create_void": false,
+	
+	"stars":
+	{
+		"during_day": true
+	}
+}

@@ -21,7 +21,7 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.Interface
 public class InterfacePeripheral implements IDynamicPeripheral
 {
 	protected AbstractInterfaceEntity interfaceEntity;
-	protected HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<String,InterfaceMethod<BlockEntity>>();
+	protected HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<>();
 	
 	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity)
 	{
@@ -87,6 +87,28 @@ public class InterfacePeripheral implements IDynamicPeripheral
 	public <ConnectedBlockEntity extends BlockEntity> void registerMethod(InterfaceMethod<ConnectedBlockEntity> function)
 	{
 		methods.put(function.getName(), (InterfaceMethod<BlockEntity>) function);
+	}
+	
+	//============================================================================================
+	//*************************************CC: Tweaked Events*************************************
+	//============================================================================================
+	
+	public void queueEvent(String eventName, Object... objects)
+	{
+		for(IComputerAccess computer : interfaceEntity.getPeripheralWrapper().computerList)
+		{
+			int length = objects.length + 1;
+			Object[] attachmentObjects = new Object[length];
+			
+			attachmentObjects[0] = computer.getAttachmentName();
+			
+			for(int i = 1; i < length; i++)
+			{
+				attachmentObjects[i] = objects[i - 1];
+			}
+			
+			computer.queueEvent(eventName, attachmentObjects);
+		}
 	}
 	
 	//============================================================================================

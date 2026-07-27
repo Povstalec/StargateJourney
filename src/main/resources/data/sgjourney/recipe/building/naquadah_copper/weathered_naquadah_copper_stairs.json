@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"I  ",
+		"II ",
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:weathered_naquadah_copper_block"}
+	},
+	"result": { "id": "sgjourney:weathered_naquadah_copper_stairs", "count": 4 }
+}

@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:raw_trinium",
+		{"id": "#forge:raw_materials/trinium", "required": false}
+	]
+}

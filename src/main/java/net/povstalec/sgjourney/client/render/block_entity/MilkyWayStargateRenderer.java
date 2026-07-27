@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -36,14 +34,14 @@ public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayS
 	@Override
 	protected MilkyWayStargateVariant getClientVariant(MilkyWayStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
+		if(stargateVariant != null)
 		{
-			if(stargateVariant.get().isFound())
-				return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.get().clientVariant());
-			else if(!stargateVariant.get().isMissing())
-				stargateVariant.get().handleLocation(ClientStargateVariants.hasMilkyWayStargateVariant(stargateVariant.get().clientVariant()));
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasMilkyWayStargateVariant(stargateVariant.clientVariant()));
 		}
 		
 		return ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant());

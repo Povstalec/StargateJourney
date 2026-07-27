@@ -19,14 +19,14 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
-public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
+public class NaquadahLiquidizerBlock extends AbstractLiquidizerBlock
 {
 	public static final MapCodec<NaquadahLiquidizerBlock> CODEC = simpleCodec(NaquadahLiquidizerBlock::new);
 
@@ -54,7 +54,7 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-        	if(blockEntity instanceof AbstractNaquadahLiquidizerEntity crystallizer) 
+        	if(blockEntity instanceof NaquadahLiquidizerEntity liquidizer)
         	{
         		MenuProvider containerProvider = new MenuProvider() 
         		{
@@ -67,7 +67,7 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
         			@Override
         			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
         			{
-        				return new LiquidizerMenu.LiquidNaquadah(windowId, playerInventory, blockEntity);
+        				return new LiquidizerMenu.LiquidNaquadah(windowId, playerInventory, liquidizer);
         			}
         		};
 				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
@@ -91,5 +91,11 @@ public class NaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
 	public Block getDroppedBlock()
 	{
 		return BlockInit.NAQUADAH_LIQUIDIZER.get();
+	}
+	
+	@Override
+	public long getEnergyCapacity()
+	{
+		return CommonTechConfig.naquadah_liquidizer_energy_capacity.get();
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -21,8 +22,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 public class CartoucheBlockItem extends BlockItem
 {
@@ -103,21 +105,30 @@ public class CartoucheBlockItem extends BlockItem
 		{
 			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(AbstractTransporterEntity.GENERATION_STEP, CompoundTag.TAG_BYTE))
-				generationStep = StructureGenEntity.Step.fromByte(info.getByte(AbstractTransporterEntity.GENERATION_STEP));
+			if(info.contains(CartoucheEntity.GENERATION_STEP, Tag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(CartoucheEntity.GENERATION_STEP));
 			else
 				generationStep = StructureGenEntity.Step.GENERATED;
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
-				if(info.contains(CartoucheEntity.DIMENSION, CompoundTag.TAG_STRING))
-					cartouche.setDimension(ResourceLocation.tryParse(info.getString(CartoucheEntity.DIMENSION)));
+				if(info.contains(CartoucheEntity.DIMENSION, Tag.TAG_STRING)) //TODO For legacy reasons
+					cartouche.setAddress(Address.Dimension.loadFromCompoundTag(info, CartoucheEntity.ADDRESS, CartoucheEntity.DIMENSION, CartoucheEntity.GALAXY));
+				else if(info.contains(CartoucheEntity.ADDRESS, Tag.TAG_COMPOUND))
+					cartouche.setAddress(Address.Dimension.loadFromCompoundTag(info, CartoucheEntity.ADDRESS));
 				else if(!info.contains(CartoucheEntity.ADDRESS))
 					cartouche.setDimensionFromLevel(level);
+				
+				if(info.contains(CartoucheEntity.ADDRESS_TABLE, Tag.TAG_STRING))
+				{
+					cartouche.setAddressTable(ResourceLocation.tryParse(info.getString(CartoucheEntity.ADDRESS_TABLE)));
+					cartouche.generate();
+				}
+				
 				cartouche.tryGenerateAddress();
 				
-				if(info.contains(CartoucheEntity.SYMBOLS, CompoundTag.TAG_STRING))
-					cartouche.setSymbols(ResourceLocation.tryParse(info.getString(CartoucheEntity.SYMBOLS)));
+				if(info.contains(CartoucheEntity.SYMBOLS, Tag.TAG_STRING))
+					cartouche.setSymbols(Conversion.stringToSymbols(info.getString(CartoucheEntity.SYMBOLS)));
 				else
 					cartouche.setSymbolsFromLevel(level);
 			}

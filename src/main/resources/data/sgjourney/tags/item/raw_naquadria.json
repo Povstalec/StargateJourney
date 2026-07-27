@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:raw_naquadria",
+		{"id": "#forge:raw_materials/naquadria", "required": false}
+	]
+}

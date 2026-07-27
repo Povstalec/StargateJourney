@@ -8,32 +8,34 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class IrisStargateEntity extends AbstractStargateEntity implements IrisInfo.Interface
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> extends AbstractStargateEntity<SG> implements IrisInfo.Interface
 {
 	protected IrisInfo irisInfo;
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
+	public IrisStargateEntity(BlockEntityType<?> blockEntityType, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, int defaultNetwork, float verticalCenterHeight, float horizontalCenterHeight)
 	{
-		super(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
+		super(blockEntityType, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, verticalCenterHeight, horizontalCenterHeight);
 		
 		this.irisInfo = new IrisInfo(this);
 	}
 	
-	public IrisStargateEntity(BlockEntityType<?> blockEntity, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
-							  int totalSymbols, StargateInfo.Gen gen, int defaultNetwork)
+	public IrisStargateEntity(BlockEntityType<?> blockEntityType, StargateType<SG> stargateType, ResourceLocation defaultVariant, BlockPos pos, BlockState state,
+							  int totalSymbols, int defaultNetwork)
 	{
-		this(blockEntity, defaultVariant, pos, state, totalSymbols, gen, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
+		this(blockEntityType, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
 	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
@@ -60,8 +62,10 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	{
 		CompoundTag tag = super.getUpdateTag(registries);
 		
-		tag.putShort(IrisInfo.Interface.IRIS_PROGRESS, irisInfo().getIrisProgress());
-		tag.put(IrisInfo.Interface.IRIS_INVENTORY, irisInfo().serializeIrisInventory(registries));
+		tag.putShort(IRIS_PROGRESS, irisInfo().getIrisProgress());
+		tag.putShort(OLD_IRIS_PROGRESS, irisInfo().getIrisProgress());
+		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory(registries));
+		tag.putByte(IRIS_MOTION, (byte) irisInfo().getIrisMotion().ordinal());
 		
 		return tag;
 	}
@@ -71,9 +75,17 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	{
 		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
-		
-		irisInfo().setIrisProgress(tag.getShort(IrisInfo.Interface.IRIS_PROGRESS));
-		irisInfo().deserializeIrisInventory(registries, tag.getCompound(IrisInfo.Interface.IRIS_INVENTORY));
+		if(tag != null)
+		{
+			short progress = tag.getShort(IRIS_PROGRESS);
+			short oldProgress = tag.getShort(OLD_IRIS_PROGRESS);
+			
+			if(progress == oldProgress && progress != irisInfo().getIrisProgress())
+				irisInfo().setIrisProgress(progress, oldProgress);
+			
+			irisInfo().deserializeIrisInventory(registries, tag.getCompound(IRIS_INVENTORY));
+			irisInfo().setIrisMotion(IrisInfo.IrisMotion.fromByte(tag.getByte(IRIS_MOTION)));
+		}
 	}
 	
 	//============================================================================================
@@ -98,23 +110,30 @@ public abstract class IrisStargateEntity extends AbstractStargateEntity implemen
 	}
 	
 	@Override
-	public void setStargateState(boolean updateInterfaces)
+	public void setStargateState()
 	{
-		setStargateState(updateInterfaces, false, irisInfo().getShieldingState());
+		setStargateState(false, irisInfo().getShieldingState());
 		updateClient();
 	}
 	
 	@Override
-	public void getStatus(Player player)
+	public List<Component> getStatus()
 	{
-		if(level.isClientSide())
-			return;
+		List<Component> status = new ArrayList<>();
 		
-		player.sendSystemMessage(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!irisInfo().getIris().isEmpty() ? irisInfo().getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
-		player.sendSystemMessage(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!irisInfo().getIris().isEmpty() ? StargateIrisItem.getDurability(irisInfo().getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
+		status.add(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!irisInfo().getIris().isEmpty() ? irisInfo().getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
+		status.add(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!irisInfo().getIris().isEmpty() ? StargateIrisItem.getDurability(irisInfo().getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
 		if(!irisInfo().getIris().isEmpty() && StargateIrisItem.hasCustomTexture(irisInfo().getIris()))
-			player.sendSystemMessage(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(irisInfo().getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
+			status.add(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(irisInfo().getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
 		
-		super.getStatus(player);
+		status.addAll(super.getStatus());
+		return status;
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, IrisStargateEntity<?> stargate)
+	{
+		stargate.irisInfo().tickIris();
+		
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}
 }

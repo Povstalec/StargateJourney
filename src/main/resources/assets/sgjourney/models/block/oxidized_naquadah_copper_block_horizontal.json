@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column_horizontal",
+  "textures": {
+    "end": "sgjourney:block/oxidized_naquadah_copper_block_top",
+    "side": "sgjourney:block/oxidized_naquadah_copper_block"
+  }
+}

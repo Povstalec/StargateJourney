@@ -85,7 +85,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
 		return this.saveWithoutMetadata(registries);
 	}

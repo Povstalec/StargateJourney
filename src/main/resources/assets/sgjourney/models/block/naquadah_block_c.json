@@ -1,7 +1,0 @@
-{
-	"parent": "minecraft:block/cube_all",
-	"textures":
-	{
-		"all": "sgjourney:block/naquadah_block_c"
-	}
-}

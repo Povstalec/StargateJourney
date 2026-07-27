@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"TTT",
+		"TIT",
+		"TTT"
+	],
+	"key":
+	{
+		"I": { "item": "sgjourney:naquadah_copper_alloy" },
+		"T": { "tag": "sgjourney:naquadah_copper_alloy" }
+	},
+	"result": { "id": "sgjourney:naquadah_copper_block" }
+}

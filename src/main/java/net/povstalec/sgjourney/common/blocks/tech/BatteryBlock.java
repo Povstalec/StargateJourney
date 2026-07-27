@@ -77,7 +77,7 @@ public abstract class BatteryBlock extends BaseEntityBlock
 		if(!level.isClientSide())
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
-			if(blockEntity instanceof BatteryBlockEntity)
+			if(blockEntity instanceof BatteryBlockEntity batteryBlockEntity)
 			{
 				MenuProvider containerProvider = new MenuProvider()
 				{
@@ -90,7 +90,7 @@ public abstract class BatteryBlock extends BaseEntityBlock
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
 					{
-						return new BatteryMenu(windowId, playerInventory, blockEntity);
+						return new BatteryMenu(windowId, playerInventory, batteryBlockEntity);
 					}
 				};
 				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());

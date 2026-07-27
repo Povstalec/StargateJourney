@@ -2,21 +2,18 @@ package net.povstalec.sgjourney.common.init;
 
 import com.google.common.base.Suppliers;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.CommonHooks;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 import java.util.function.Supplier;
 
 public enum ToolMaterialInit implements Tier
 {
-	NAQUADAH(TagInit.Blocks.INCORRECT_FOR_NAQUADAH_TOOL, 3200, 9.0F, 4.0F, 12, () -> {return Ingredient.of(new ItemLike[]{ItemInit.NAQUADAH.get()});});
+	NAQUADAH(TagInit.Blocks.INCORRECT_FOR_NAQUADAH_TOOL, 3200, 9.0F, 4.0F, 12, () -> Ingredient.of(ItemInit.NAQUADAH.get())),
+	TRINIUM(TagInit.Blocks.INCORRECT_FOR_TRINIUM_TOOL, 512, 12.0F, 3.0F, 10, () -> Ingredient.of(ItemInit.TRINIUM_INGOT.get()));
 
 	private final TagKey<Block> incorrectBlocksForDrops;
 	private final int uses;
@@ -25,7 +22,7 @@ public enum ToolMaterialInit implements Tier
 	private final int enchantmentValue;
 	private final Supplier<Ingredient> repairIngredient;
 	
-	private ToolMaterialInit(TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, Supplier<Ingredient> repairIngredient)
+	ToolMaterialInit(TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, Supplier<Ingredient> repairIngredient)
 	{
 		this.incorrectBlocksForDrops = incorrectBlockForDrops;
 		this.uses = uses;
@@ -67,8 +64,8 @@ public enum ToolMaterialInit implements Tier
 	}
 
 	@Override
-	public Ingredient getRepairIngredient()
+	public @NotNull Ingredient getRepairIngredient()
 	{
-		return (Ingredient)this.repairIngredient.get();
+		return this.repairIngredient.get();
 	}
 }

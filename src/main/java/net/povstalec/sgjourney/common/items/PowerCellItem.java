@@ -35,20 +35,9 @@ public class PowerCellItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public ItemStack getHeldItem(ItemStack holderStack)
-	{
-		IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
-		
-		if(itemHandler == null)
-			return ItemStack.EMPTY;
-		
-		return itemHandler.getStackInSlot(0);
-	}
-	
-	@Override
 	public boolean isValidItem(ItemStack heldStack)
 	{
-		return heldStack.getItem() instanceof VialItem;
+		return heldStack.isEmpty() || heldStack.getItem() instanceof VialItem;
 	}
 	
 	public long getBufferEnergy(ItemStack stack)
@@ -89,6 +78,17 @@ public class PowerCellItem extends FluidItem.Holder
 		return stack;
 	}
 	
+	public static ItemStack randomLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
+		
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
+			itemHandler.insertItem(0, VialItem.randomLiquidNaquadahSetup(minCapacity, maxCapacity), false);
+		
+		return stack;
+	}
+	
 	public static ItemStack heavyLiquidNaquadahSetup()
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
@@ -96,6 +96,17 @@ public class PowerCellItem extends FluidItem.Holder
 		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
 		if(itemHandler != null)
 			itemHandler.insertItem(0, VialItem.heavyLiquidNaquadahSetup(), false);
+		
+		return stack;
+	}
+	
+	public static ItemStack randomHeavyLiquidNaquadahSetup(int minCapacity, int maxCapacity)
+	{
+		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
+		
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
+			itemHandler.insertItem(0, VialItem.randomHeavyLiquidNaquadahSetup(minCapacity, maxCapacity), false);
 		
 		return stack;
 	}
@@ -148,15 +159,15 @@ public class PowerCellItem extends FluidItem.Holder
 		}
 		
 		@Override
-		public long extractLongEnergy(long maxExtract, boolean simulate)
+		public long depleteEnergy(long maxExtract, boolean simulate)
 		{
-			long currentEnergy = getTrueEnergyStored();
-			if(currentEnergy >= maxExtract)
-				return super.extractLongEnergy(maxExtract, simulate);
-			
+			long currentEnergy = super.getTrueEnergyStored();
+			if(currentEnergy >= maxExtract) // If there is energy stored in the buffer, use that
+				return super.depleteEnergy(maxExtract, simulate);
+			// Try converting liquid naquadah to energy
 			long convertedEnergy = convertLiquidNaquadahToEnergy(maxExtract, simulate);
-			if(convertedEnergy <= 0)
-				return super.extractLongEnergy(maxExtract, simulate);
+			if(convertedEnergy <= 0) // If no energy was converted, extract everything that's left in the buffer
+				return super.depleteEnergy(maxExtract, simulate);
 			currentEnergy += convertedEnergy;
 			
 			long extractedEnergy = Math.min(maxExtract, currentEnergy);
@@ -218,7 +229,7 @@ public class PowerCellItem extends FluidItem.Holder
 		@Override
 		public boolean isItemValid(int slot, ItemStack stack)
 		{
-			return stack.is(ItemInit.VIAL.get());
+			return stack.isEmpty() || stack.is(ItemInit.VIAL.get());
 		}
 	}
 }

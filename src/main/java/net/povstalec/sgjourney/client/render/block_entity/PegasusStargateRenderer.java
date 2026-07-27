@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import java.util.Optional;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
@@ -36,14 +34,14 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
 	@Override
 	protected PegasusStargateVariant getClientVariant(PegasusStargateEntity stargate)
 	{
-		Optional<StargateVariant> stargateVariant = ClientStargateVariants.getVariant(stargate);
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
 		
-		if(stargateVariant.isPresent())
+		if(stargateVariant != null)
 		{
-			if(stargateVariant.get().isFound())
-				return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.get().clientVariant());
-			else if(!stargateVariant.get().isMissing())
-				stargateVariant.get().handleLocation(ClientStargateVariants.hasPegasusStargateVariant(stargateVariant.get().clientVariant()));
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasPegasusStargateVariant(stargateVariant.clientVariant()));
 		}
 		
 		return ClientStargateVariants.getPegasusStargateVariant(stargate.defaultVariant());
@@ -73,7 +71,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
         
 		//stack.translate(0, -0.15, 0);
         
-        this.stargateModel.setCurrentSymbol(stargate.currentSymbol);
+        this.stargateModel.setCurrentSymbol(stargate.getCurrentSymbol());
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));

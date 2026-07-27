@@ -1,5 +1,3 @@
 {
-	"name": "symbol_set.sgjourney.universal",
-	"texture": "sgjourney:universal/universal.png",
-	"size": 35
+	"client_symbols": "sgjourney:universal"
 }

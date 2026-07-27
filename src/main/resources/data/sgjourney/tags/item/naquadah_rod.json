@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:naquadah_rod",
-		{"id": "#c:rods/naquadah_alloy", "required": false}
+		{"id": "#forge:rods/naquadah", "required": false}
 	]
 }

@@ -1,20 +1,16 @@
 package net.povstalec.sgjourney.common.init;
 
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.SyringeItem;
-import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 import java.util.function.UnaryOperator;
 
@@ -41,12 +37,12 @@ public class DataComponentInit
     
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<String>> IDC = register("idc", builder -> builder.persistent(Codec.STRING));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FREQUENCY = register("frequency", builder -> builder.persistent(Codec.INT));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<MaterializationCrystalItem.CrystalMode>> MATERIALIZATION_CRYSTAL_MODE = register("materialization_crystal_mode", builder -> builder.persistent(MaterializationCrystalItem.CRYSTAL_MODE_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CRYSTAL_MEMORY = register("crystal_memory", builder -> builder.persistent(CompoundTag.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> NAQUADAH_FUEL = register("naquadah_fuel", builder -> builder.persistent(Codec.INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> FUSION_FUEL = register("fusion_fuel", builder -> builder.persistent(Codec.INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> REACTION_PROGRESS = register("reaction_progress", builder -> builder.persistent(Codec.LONG));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SyringeItem.Contents>> SYRINGE_CONTENTS = register("syringe_contents", builder -> builder.persistent(SyringeItem.CONTENTS_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> INDEX = register("index", builder -> builder.persistent(Codec.INT));
     
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> GOAULD_INFO = register("goauld_info", builder -> builder.persistent(CompoundTag.CODEC));
 

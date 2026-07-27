@@ -99,6 +99,21 @@ public class PlanetSkyRenderers
 		}
 	}
 	
+	public static class TollanSkyRenderer extends SGJourneySkyRenderer
+	{
+		public static final ResourceLocation TOLLAN_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/tollan_star.png");
+		
+		public TollanSkyRenderer()
+		{
+			super(34181L, 1800);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Runnable setupFog, Tesselator tesselator, float rain)
+		{
+			this.renderSun(tesselator, modelViewMatrix, TOLLAN_STAR_TEXTURE, 30.0F);
+		}
+	}
+	
 	//============================================================================================
 	//******************************************Pegasus*******************************************
 	//============================================================================================
@@ -133,6 +148,19 @@ public class PlanetSkyRenderers
 			this.renderSun(tesselator, modelViewMatrix, ATHOS_STAR_TEXTURE, 30.0F);
 	        
 	        this.renderMoon(tesselator, modelViewMatrix, 20.0F, level.getMoonPhase(), (float) Math.toRadians(40), (float) Math.toRadians(180));
+		}
+	}
+	
+	public static class DestinySkyRenderer extends SGJourneySkyRenderer
+	{
+		public DestinySkyRenderer()
+		{
+			super(83173L, 600);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, Matrix4f modelViewMatrix, Matrix4f projectionMatrix, Runnable setupFog, Tesselator tesselator, float rain)
+		{
+		
 		}
 	}
 }

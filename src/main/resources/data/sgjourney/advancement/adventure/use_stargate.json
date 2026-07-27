@@ -2,7 +2,7 @@
 	"parent": "sgjourney:adventure/archeology_table",
 	"display": 
 	{
-		"icon": 
+		"icon":
 		{
 			"id": "sgjourney:milky_way_stargate"
 		},

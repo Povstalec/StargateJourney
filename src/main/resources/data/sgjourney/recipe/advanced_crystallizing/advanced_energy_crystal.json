@@ -6,5 +6,7 @@
 	"output":
 	{
 		"id": "sgjourney:advanced_energy_crystal"
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:heavy_liquid_naquadah", "amount": 100 }
 }

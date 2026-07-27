@@ -7,9 +7,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.sgjourney.factions.AbstractFaction;
 import net.povstalec.sgjourney.common.sgjourney.factions.GoauldFaction;
+import net.povstalec.sgjourney.common.sgjourney.factions.JaffaBurgers;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class Factions extends SavedData
 {
@@ -19,14 +23,18 @@ public final class Factions extends SavedData
 	
 	private MinecraftServer server;
 	
-	// TODO Goa'uld factions
-	private static GoauldFaction  goauldFaction = new GoauldFaction();
+	private List<AbstractFaction> factions = new ArrayList<>();
 	
 	
 	
 	public void tickFactions(int ticks)
 	{
-		//goauldFaction.tickFaction(server, ticks);
+		for(AbstractFaction faction : factions)
+		{
+			faction.tickFaction(server, ticks);
+		}
+		
+		JaffaBurgers.handleJaffaBurgers(server, ticks);
 	}
 	
 	//============================================================================================
@@ -36,25 +44,29 @@ public final class Factions extends SavedData
 	private CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
+		
+		JaffaBurgers.trySerialize(tag);
 		tag.put(GOAULD, serializeGoauldFactions());
+		
 		return tag;
 	}
 	
 	private CompoundTag serializeGoauldFactions()
 	{
-		CompoundTag connectionsTag = new CompoundTag();
+		CompoundTag factionsTag = new CompoundTag();
 		
 		//TODO
 		
-		return connectionsTag;
+		return factionsTag;
 	}
 	
 	private void deserialize(CompoundTag tag)
 	{
-		deserializeConnections(tag.getCompound(GOAULD));
+		JaffaBurgers.tryDeserialize(server, tag);
+		deserializeGoauldFactions(tag.getCompound(GOAULD));
 	}
 	
-	private void deserializeConnections(CompoundTag tag)
+	private void deserializeGoauldFactions(CompoundTag tag)
 	{
 		//TODO
 	}
@@ -66,6 +78,8 @@ public final class Factions extends SavedData
 	public Factions(MinecraftServer server)
 	{
 		this.server = server;
+		
+		//this.factions.add(new GoauldFaction()); //TODO Add factions through datapacks
 	}
 	
 	public static Factions create(MinecraftServer server)

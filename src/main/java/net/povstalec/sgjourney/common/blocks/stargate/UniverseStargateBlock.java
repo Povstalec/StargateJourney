@@ -24,9 +24,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state) 
 	{
-		UniverseStargateEntity stargate = new UniverseStargateEntity(pos, state);
-		
-		return stargate;
+		return new UniverseStargateEntity(pos, state);
 	}
 
 	@Override

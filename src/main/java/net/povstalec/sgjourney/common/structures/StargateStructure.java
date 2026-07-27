@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.structures;
 
 import java.util.Optional;
-import java.util.Random;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -9,8 +8,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -19,95 +18,46 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class StargateStructure extends SGJourneyStructure
 {
-    private static Optional<Long> currentSeed = Optional.empty();
-    private static Optional<Integer> x = Optional.empty();
-    private static Optional<Integer> z = Optional.empty();
+	@Nullable
+	protected final Holder<StructureTemplatePool> obstructedStartPool;
 	
 	@Nullable
 	protected StargateModifiers stargateModifiers;
 	@Nullable
 	protected DHDModifiers dhdModifiers;
-    
-    public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
-							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter,
+	
+	public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
+							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
 							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
-    {
-    	super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, commonStargates);
+	{
+		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates);
+		
+		this.obstructedStartPool = obstructedStartPool.orElse(null);
 		
 		this.stargateModifiers = stargateModifiers.orElse(null);
 		this.dhdModifiers = dhdModifiers.orElse(null);
-    }
-    
-    /*private static final void checkSeed(long seed)
-    {
-    	if(currentSeed.isEmpty() || currentSeed.get() != seed)
-    	{
-    		currentSeed = Optional.of(seed);
-            x = Optional.empty();
-            z = Optional.empty();
-    	}
-    }
-    
-    public static int getX(long seed)
-    {
-    	checkSeed(seed);
-    	if(x.isEmpty())
-    	{
-            Random random = new Random(seed + 2);
-            int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
-            int xBound = CommonGenerationConfig.stargate_generation_x_bound.get();
-            
-
-            int chunkX = xBound <= 0 ? xOffset : xOffset + random.nextInt(-xBound, xBound + 1);
-            
-            x = Optional.of(chunkX);
-    	}
-
-    	return x.get();
-    }
-    
-    public static int getZ(long seed)
-    {
-    	checkSeed(seed);
-    	if(z.isEmpty())
-    	{
-            Random random = new Random(seed + 3);
-            int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
-            int zBound = CommonGenerationConfig.stargate_generation_z_bound.get();
-            
-
-            int chunkZ = zBound <= 0 ? zOffset : zOffset + random.nextInt(-zBound, zBound + 1);
-            
-            z = Optional.of(chunkZ);
-    	}
-
-    	return z.get();
-    }*/
-    
-	/*@Override
-	protected boolean extraSpawningChecks(Structure.GenerationContext context)
+	}
+	
+	@Override
+	public Holder<StructureTemplatePool> getStartPool()
 	{
-		// Grabs the chunk position we are at
-		ChunkPos chunkpos = context.chunkPos();
-		long seed = context.seed();
-		
-		if(chunkpos.x == getX(seed) && chunkpos.z == getZ(seed))
-			return true;
-		else
-			return false;
-	}*/
+		return obstructedStartPool != null && CommonGenerationConfig.generate_obstructed_stargates.get() ? obstructedStartPool : startPool;
+	}
 	
 	@Override
 	protected void generateBlockEntity(WorldGenLevel level, BlockPos startPos, RandomSource randomSource, StructureGenEntity generatedEntity)
 	{
 		super.generateBlockEntity(level, startPos, randomSource, generatedEntity);
 		
-		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity stargate)
-			stargateModifiers.modifyStargate(stargate);
+		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity<?> stargate)
+			stargateModifiers.modifyStargate(level, randomSource, stargate);
 		else if(dhdModifiers != null && generatedEntity instanceof AbstractDHDEntity dhd)
 			dhdModifiers.modifyDHD(dhd);
 	}
@@ -116,26 +66,32 @@ public abstract class StargateStructure extends SGJourneyStructure
 	
 	public static class StargateModifiers
 	{
-		private boolean displayID;
-		private boolean upgraded;
-		private boolean localPointOfOrigin;
+		@Nullable
+		private final Address.Randomizable<Address.Immutable> address;
+		private final boolean displayID;
+		private final boolean upgraded;
+		private final boolean localPointOfOrigin;
 		
-		private boolean primary;
-		private boolean isProtected;
+		private final boolean primary;
+		private final boolean isProtected;
 		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.ofNullable(modifiers.displayID)),
-				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.ofNullable(modifiers.upgraded)),
+				Address.Randomizable.codec(Address.Immutable.CODEC).optionalFieldOf("address").forGetter(modifiers -> Optional.ofNullable(modifiers.address)),
 				
-				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.ofNullable(modifiers.localPointOfOrigin)),
+				Codec.BOOL.optionalFieldOf("display_id").forGetter(modifiers -> Optional.of(modifiers.displayID)),
+				Codec.BOOL.optionalFieldOf("upgraded").forGetter(modifiers -> Optional.of(modifiers.upgraded)),
 				
-				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.ofNullable(modifiers.primary)),
-				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))
+				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.of(modifiers.localPointOfOrigin)),
+				
+				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.of(modifiers.primary)),
+				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
 		).apply(instance, StargateModifiers::new));
 		
-		public StargateModifiers(Optional<Boolean> displayID, Optional<Boolean> upgraded, Optional<Boolean> localPointOfOrigin,
-								 Optional<Boolean> primary, Optional<Boolean> isProtected)
+		public StargateModifiers(Optional<Address.Randomizable<Address.Immutable>> address, Optional<Boolean> displayID, Optional<Boolean> upgraded,
+								 Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary, Optional<Boolean> isProtected)
 		{
+			this.address = address.orElse(null);
+			
 			this.displayID = displayID.orElse(false);
 			this.upgraded = upgraded.orElse(false);
 			
@@ -145,8 +101,16 @@ public abstract class StargateStructure extends SGJourneyStructure
 			this.isProtected = isProtected.orElse(false);
 		}
 		
-		public void modifyStargate(AbstractStargateEntity stargate)
+		public void modifyStargate(WorldGenLevel level, RandomSource randomSource, AbstractStargateEntity<?> stargate)
 		{
+			if(address != null)
+			{
+				if(address.isRandomizable() && StargateNetworkSettings.get(level.getLevel()).randomizeAddresses())
+					stargate.set9ChevronAddress(BlockEntityList.get(level.getLevel()).generate9ChevronAddress(randomSource));
+				else
+					stargate.set9ChevronAddress(address.address());
+			}
+			
 			if(displayID)
 				stargate.displayID();
 			
@@ -168,7 +132,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 	
 	public static class DHDModifiers
 	{
-		private boolean isProtected;
+		private final boolean isProtected;
 		
 		public static final Codec<DHDModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))

@@ -25,12 +25,12 @@ public class MilkyWayStargateFunctions
 	
 	public static StargateInfo.Feedback openChevron(MilkyWayStargateEntity stargate)
 	{
-		return stargate.openChevron();
+		return stargate.openChevron().feedback();
 	}
 	
 	public static StargateInfo.Feedback closeChevron(MilkyWayStargateEntity stargate)
 	{
-		return stargate.closeChevron();
+		return stargate.closeChevron().feedback();
 	}
 	
 	public static boolean isChevronOpen(MilkyWayStargateEntity stargate)

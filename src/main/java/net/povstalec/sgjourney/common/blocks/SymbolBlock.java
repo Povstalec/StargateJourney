@@ -2,21 +2,13 @@ package net.povstalec.sgjourney.common.blocks;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -26,7 +18,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -35,16 +26,16 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
@@ -99,12 +90,12 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					
 					if(symbolNumber == 0)
 					{
-						MutableComponent pointOfOrigin = Component.literal(symbolBlock.getPointOfOrigin().toString());
+						MutableComponent pointOfOrigin = PointOfOrigin.makeComponent(symbolBlock.getPointOfOrigin());
 						text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
 					}
 					else
 					{
-						MutableComponent symbols = Component.literal(symbolBlock.getSymbols().toString());
+						MutableComponent symbols = Symbols.makeComponent(symbolBlock.getSymbols());
 						text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
 					}
 					
@@ -152,13 +143,9 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-    	Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-
     	int symbolNumber = 0;
-		String symbol = "";
-    	String symbols = "";
+		String symbolString = "";
+    	String symbolsString = "";
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
 		if(blockEntityTag != null)
@@ -167,47 +154,18 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 
         	if(symbolNumber == 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOL))
-        	{
-            	String pointOfOrigin = blockEntityTag.getString(SymbolBlockEntity.SYMBOL);
-        		ResourceLocation location = ResourceLocation.tryParse(pointOfOrigin);
-            	
-            	if(location == null)
-            		symbol = "Invalid Path"; //TODO make translatable
-            	else
-            	{
-            		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-            		
-            		if(pointOfOriginRegistry.get(ResourceLocation.parse(pointOfOrigin)) != null)
-                		symbol = pointOfOriginRegistry.get(ResourceLocation.parse(pointOfOrigin)).getName();
-                	else
-                		symbol = "Error";
-            	}
-        	}
+				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "Error");
 
         	if(symbolNumber != 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
-        	{
-        		ResourceLocation location = ResourceLocation.tryParse(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS));
-            	
-            	if(location == null)
-            		symbols = "Invalid Path";
-            	else
-            	{
-            		Registry<Symbols> symbolsRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-            		
-            		if(symbolsRegistry.get(ResourceLocation.parse(symbols)) != null)
-            			symbols = symbolsRegistry.get(ResourceLocation.parse(symbols)).getName();
-                	else
-                		symbols = "Error";
-            	}
-        	}
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "Error");
     	}
 		
 		if(symbolNumber == 0)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbol))).withStyle(ChatFormatting.DARK_PURPLE));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
 		else
 		{
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbols))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);

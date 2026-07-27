@@ -59,14 +59,28 @@ public class TransporterBlockItem extends BlockItem
 			}
 		}
 		else
-			return setupBlockEntity(level, level.getBlockEntity(pos), new CompoundTag(), stack);
+		{
+			BlockEntity baseEntity = level.getBlockEntity(pos);
+			
+			if(baseEntity instanceof AbstractTransporterEntity<?> transporter)
+			{
+				transporter.setupServerAutoCache();
+				transporter.addTransporterToNetwork();
+				transporter.generateAdditional(StructureGenEntity.Step.READY);
+				
+				if(stack.has(DataComponents.CUSTOM_NAME))
+					transporter.setCustomName(stack.getHoverName());
+				
+				return true;
+			}
+		}
 		
 		return false;
 	}
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info, ItemStack stack)
 	{
-		if(baseEntity instanceof AbstractTransporterEntity transporter)
+		if(baseEntity instanceof AbstractTransporterEntity<?> transporter)
 		{
 			StructureGenEntity.Step generationStep;
 			
@@ -80,9 +94,12 @@ public class TransporterBlockItem extends BlockItem
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
+				transporter.setupServerAutoCache();
 				// Registers it as one of the Block Entities in the list
 				transporter.addTransporterToNetwork();
 			}
+			
+			return true;
 		}
 		
 		return false;

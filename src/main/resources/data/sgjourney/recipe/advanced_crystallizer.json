@@ -4,15 +4,16 @@
 	"pattern":
 	[
 		"NON",
-		"MCM",
-		"AAA"
+		"BCB",
+		"MAM"
 	],
 	
 	"key": 
 	{
 		"O": { "item": "sgjourney:control_crystal" },
 		"N": { "tag": "sgjourney:naquadah" },
-		"A": { "tag": "sgjourney:naquadah_alloy" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"B": { "item": "sgjourney:heavy_liquid_naquadah_bucket" },
 		"C": { "item": "sgjourney:naquadah_power_cell" },
 		"M": { "item": "sgjourney:materialization_crystal" }
 		

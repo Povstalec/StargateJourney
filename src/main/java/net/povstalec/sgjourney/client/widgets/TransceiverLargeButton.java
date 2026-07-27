@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.widgets;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 
 public class TransceiverLargeButton extends SGJourneyButton

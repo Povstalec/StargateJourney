@@ -1,7 +1,7 @@
 {
 	"type": "sgjourney:crystallizing",
 	"crystal_base": {"ingredient": {"item": "sgjourney:crystal_base"}, "amount": 1},
-	"primary_ingredient": {"ingredient": {"item": "sgjourney:naquadah_alloy"}, "amount": 16, "deplete": true},
+	"primary_ingredient": {"ingredient": {"item": "sgjourney:naquadah_copper_alloy"}, "amount": 16, "deplete": true},
 	"secondary_ingredient": {"ingredient": {"item": "minecraft:quartz"}, "amount": 9, "deplete": true},
 	"output":
 	{
@@ -10,5 +10,7 @@
 		{
 			"sgjourney:stargate_upgrade": "sgjourney:universe_stargate"
 		}
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

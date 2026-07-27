@@ -33,6 +33,6 @@ public class CommonZPMConfig
 		
 		other_mods_use_zero_point_energy = server
 				.comment("If true, it will be possible to power technology and cables from other mods with energy from ZPMs")
-				.define("server.other_mods_use_zero_point_energy", false);
+				.define("server.other_mods_use_zero_point_energy", true);
 	}
 }

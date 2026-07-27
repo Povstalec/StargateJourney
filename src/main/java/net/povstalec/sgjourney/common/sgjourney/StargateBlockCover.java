@@ -12,6 +12,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,14 +22,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
 public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
 	private ArrayList<StargatePart> parts;
-	
-	private boolean isDirty = true; // Used to tell if there is a need to sync (like when a block is added or removed)
 	
 	public boolean canSinkGate = false;
 	public HashMap<StargatePart, BlockState> blockStates = new HashMap<StargatePart, BlockState>();
@@ -37,16 +38,6 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		this.parts = parts;
 	}
 	
-	public boolean isDirty()
-	{
-		return isDirty;
-	}
-	
-	public void setDirty(boolean isDirty)
-	{
-		this.isDirty = isDirty;
-	}
-	
 	public boolean setBlockAt(StargatePart part, BlockState state)
 	{
 		if(blockStates.containsKey(part))
@@ -54,7 +45,6 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		
 		blockStates.put(part, state);
 		
-		setDirty(true);
 		return true;
 	}
 	
@@ -72,7 +62,6 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		
 		blockStates.remove(part);
 		
-		setDirty(true);
 		return Optional.ofNullable(oldState);
 	}
 	
@@ -88,7 +77,6 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				if(!player.isCreative() && player.hasCorrectToolForDrops(removed.get()))
 					Block.dropResources(state, level, pos);
 				
-				setDirty(true);
 				level.levelEvent((Player) null, 2001, pos, Block.getId(state)); // Spawns breaking particles and makes a breaking sound
 			}
 			
@@ -109,6 +97,63 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		}
 		
 		return ItemStack.EMPTY;
+	}
+	
+	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, RandomSource randomSource)
+	{
+		getBlockAt(part).ifPresent(coverBlockState ->
+		{
+			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
+				weatheringBlock.getNextState(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+		});
+	}
+	
+	public boolean undoWeatheringAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> previousState = SGJourneyWeatheringBlock.getPrevious(state.get());
+			if(previousState.isPresent())
+			{
+				blockStates.put(part, previousState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean applyWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state.get());
+			if(waxedState.isPresent())
+			{
+				blockStates.put(part, waxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean removeWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> unwaxedState = SGJourneyWeatheringBlock.getUnwaxed(state.get());
+			if(unwaxedState.isPresent())
+			{
+				blockStates.put(part, unwaxedState.get());
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	@Override
@@ -141,6 +186,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				
 				if(result.isPresent())
 					blockStates.put(part, result.get());
+			} else {
+				removeBlockAt(part);
 			}
 		}
 	}

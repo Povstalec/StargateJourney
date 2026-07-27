@@ -1,0 +1,9 @@
+{
+	"variants": 
+	{
+	"facing=north": { "model": "sgjourney:block/goauld_ring_panel" },
+	"facing=south": { "model": "sgjourney:block/goauld_ring_panel", "y": 180 },
+	"facing=west": { "model": "sgjourney:block/goauld_ring_panel", "y": 270 },
+	"facing=east": { "model": "sgjourney:block/goauld_ring_panel", "y": 90 }
+	}
+}
