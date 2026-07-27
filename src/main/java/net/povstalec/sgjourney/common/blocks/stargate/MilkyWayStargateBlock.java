@@ -70,20 +70,21 @@ public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
     {
     	CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
+		String pointOfOrigin = "";
+		String symbols = "";
+		
 		if(blockEntityTag != null)
 		{
-			String pointOfOrigin = "";
 			if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
 				pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "Error");
 			
-			String symbols = "";
 			if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
 				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
-			
-	        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-	        tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }
