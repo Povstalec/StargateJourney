@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.items.crystals;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -33,7 +34,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	
 	public static boolean containsFrequency(@NotNull CompoundTag tag)
 	{
-		return tag.contains(FREQUENCY);
+		return tag.contains(FREQUENCY, Tag.TAG_INT);
 	}
 	
 	public static boolean hasFrequency(ItemStack stack)
