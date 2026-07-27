@@ -403,7 +403,7 @@ public class BlockEntityList extends SavedData
 		
 		BlockPos blockPos = transporterTag.contains(BlockEntityTransporter.COORDINATES, Tag.TAG_INT_ARRAY) ?
 			Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES)) :
-			Conversion.intArrayToBlockPos(transporterTag.getIntArray("Coordinates"));//TODO For legacy reasons
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray("Coordinates")); //TODO For legacy reasons
 		
 		ServerLevel level = server.getLevel(dimension);
 		
