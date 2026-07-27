@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -396,8 +397,14 @@ public class BlockEntityList extends SavedData
 	
 	private void loadTransporterFromBlockEntity(TransporterID.Immutable transporterID, CompoundTag transporterTag, boolean setEntityID)
 	{
-		ResourceKey<Level> dimension = Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION));
-		BlockPos blockPos = Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES));
+		ResourceKey<Level> dimension = transporterTag.contains(Transporter.DIMENSION, Tag.TAG_STRING) ?
+			Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION)) :
+			Conversion.stringToDimension(transporterTag.getString("Dimension")); //TODO For legacy reasons
+		
+		BlockPos blockPos = transporterTag.contains(BlockEntityTransporter.COORDINATES, Tag.TAG_INT_ARRAY) ?
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES)) :
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray("Coordinates"));//TODO For legacy reasons
+		
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)

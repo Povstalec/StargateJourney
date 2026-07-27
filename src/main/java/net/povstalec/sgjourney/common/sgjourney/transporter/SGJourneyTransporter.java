@@ -193,11 +193,13 @@ public abstract class SGJourneyTransporter implements Transporter
 		
 		if(tag.contains(DIMENSION, Tag.TAG_STRING))
 			this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
-		else if(tag.contains("Dimension", Tag.TAG_STRING))
+		else if(tag.contains("Dimension", Tag.TAG_STRING)) //TODO Keeping this here for the time being for legacy reasons
 			this.dimension = Conversion.stringToDimension(tag.getString("Dimension"));
 		
 		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
+		else if(tag.contains("CustomName", CompoundTag.OBJECT_HEADER)) //TODO Keeping this here for the time being for legacy reasons
+			this.name = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
 		
 		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
 		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
