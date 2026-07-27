@@ -119,8 +119,6 @@ public abstract class CrystalCache<T extends BlockEntity>
 		reset();
 		fetchCrystals();
 		updateFromCrystals();
-		
-		//TODO Handle everything here
 	}
 	
 	public boolean hasCrystal(int index)
@@ -434,5 +432,10 @@ public abstract class CrystalCache<T extends BlockEntity>
 				default -> NEIGHBORS[6];
 			};
 		}
+	}
+	
+	public interface Interface<T extends BlockEntity>
+	{
+		CrystalCache<T> getCrystalCache();
 	}
 }

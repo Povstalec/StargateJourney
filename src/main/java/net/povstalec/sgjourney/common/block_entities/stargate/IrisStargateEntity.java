@@ -7,12 +7,10 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
@@ -64,7 +62,9 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 		CompoundTag tag = super.getUpdateTag();
 		
 		tag.putShort(IRIS_PROGRESS, irisInfo().getIrisProgress());
+		tag.putShort(OLD_IRIS_PROGRESS, irisInfo().getIrisProgress());
 		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory());
+		tag.putByte(IRIS_MOTION, (byte) irisInfo().getIrisMotion().ordinal());
 		
 		return tag;
 	}
@@ -76,8 +76,14 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
-			irisInfo().setIrisProgress(tag.getShort(IRIS_PROGRESS));
+			short progress = tag.getShort(IRIS_PROGRESS);
+			short oldProgress = tag.getShort(OLD_IRIS_PROGRESS);
+			
+			if(progress == oldProgress && progress != irisInfo().getIrisProgress())
+				irisInfo().setIrisProgress(progress, oldProgress);
+			
 			irisInfo().deserializeIrisInventory(tag.getCompound(IRIS_INVENTORY));
+			irisInfo().setIrisMotion(IrisInfo.IrisMotion.fromByte(tag.getByte(IRIS_MOTION)));
 		}
 	}
 	
@@ -121,5 +127,12 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 		
 		status.addAll(super.getStatus());
 		return status;
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, IrisStargateEntity<?> stargate)
+	{
+		stargate.irisInfo().tickIris();
+		
+		AbstractStargateEntity.tick(level, pos, state, stargate);
 	}
 }

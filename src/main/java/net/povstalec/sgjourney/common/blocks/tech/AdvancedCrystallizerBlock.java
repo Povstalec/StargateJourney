@@ -21,6 +21,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
@@ -82,5 +83,11 @@ public class AdvancedCrystallizerBlock extends AbstractCrystallizerBlock
 	public Block getDroppedBlock()
 	{
 		return BlockInit.ADVANCED_CRYSTALLIZER.get();
+	}
+	
+	@Override
+	public long getEnergyCapacity()
+	{
+		return CommonTechConfig.advanced_crystallizer_energy_capacity.get();
 	}
 }

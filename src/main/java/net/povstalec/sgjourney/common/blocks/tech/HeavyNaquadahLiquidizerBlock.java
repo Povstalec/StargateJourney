@@ -19,13 +19,13 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.tech.AbstractNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 
-public class HeavyNaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBlock
+public class HeavyNaquadahLiquidizerBlock extends AbstractLiquidizerBlock
 {
 	public HeavyNaquadahLiquidizerBlock(Properties properties)
 	{
@@ -82,5 +82,11 @@ public class HeavyNaquadahLiquidizerBlock extends AbstractNaquadahLiquidizerBloc
 	public Block getDroppedBlock()
 	{
 		return BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get();
+	}
+	
+	@Override
+	public long getEnergyCapacity()
+	{
+		return CommonTechConfig.heavy_naquadah_liquidizer_energy_capacity.get();
 	}
 }

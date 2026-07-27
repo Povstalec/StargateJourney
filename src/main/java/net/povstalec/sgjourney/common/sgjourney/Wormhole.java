@@ -177,7 +177,7 @@ public class Wormhole
 		return traveler;
 	}
 	
-	private static void triggerDestinationGalaxyAdvancement(ServerPlayer player, StargateConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, ResourceKey<AddressRegion> initialRegion, ResourceKey<Galaxy>  initialGalaxy, long distanceTraveled)
+	private static void triggerDestinationGalaxyAdvancement(ServerPlayer player, StargateConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, ResourceKey<AddressRegion> initialRegion, ResourceKey<Galaxy> initialGalaxy, long distanceTraveled)
 	{
 		SpaceLocation destinationLocation = SpaceLocation.fromDimension(destinationLevel.getServer(), destinationLevel.dimension());
 		AddressRegion destinationRegion = destinationLocation.getAddressRegion();
@@ -190,10 +190,10 @@ public class Wormhole
 						initialRegion, destinationRegion.getResourceKey(), initialGalaxy, null, distanceTraveled);
 			else // Destination Region with Galaxies
 			{
-				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : destinationGalaxyMap.entrySet())
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyEntry : destinationGalaxyMap.entrySet())
 				{
 					WormholeTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
-							initialRegion, destinationRegion.getResourceKey(), initialGalaxy, entry.getKey(), distanceTraveled);
+							initialRegion, destinationRegion.getResourceKey(), initialGalaxy, destinationGalaxyEntry.getKey(), distanceTraveled);
 				}
 			}
 		}
@@ -206,19 +206,19 @@ public class Wormhole
 	
 	public static void triggerAdvancement(ServerPlayer player, StargateConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, long distanceTraveled)
 	{
-		SpaceLocation destinationLocation = SpaceLocation.fromDimension(destinationLevel.getServer(), destinationLevel.dimension());
-		AddressRegion destinationRegion = destinationLocation.getAddressRegion();
+		SpaceLocation initialLocation = SpaceLocation.fromDimension(initialLevel.getServer(), initialLevel.dimension());
+		AddressRegion initialRegion = initialLocation.getAddressRegion();
 		
-		if(destinationRegion != null)
+		if(initialRegion != null)
 		{
-			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = destinationRegion.getGalacticAddresses();
+			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = initialRegion.getGalacticAddresses();
 			if(destinationGalaxyMap == null || destinationGalaxyMap.isEmpty()) // Initial Region but no Galaxies
-				triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, destinationRegion.getResourceKey(), null, distanceTraveled);
+				triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, initialRegion.getResourceKey(), null, distanceTraveled);
 			else // Initial Region with Galaxies
 			{
-				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : destinationGalaxyMap.entrySet())
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> initialGalaxyEntry : destinationGalaxyMap.entrySet())
 				{
-					triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, destinationRegion.getResourceKey(), entry.getKey(), distanceTraveled);
+					triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, initialRegion.getResourceKey(), initialGalaxyEntry.getKey(), distanceTraveled);
 				}
 			}
 		}

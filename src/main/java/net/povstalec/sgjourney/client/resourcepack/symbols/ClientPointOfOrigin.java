@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public record ClientPointOfOrigin(String name, ResourceLocation texture)
+public class ClientPointOfOrigin
 {
 	public static final ResourceLocation UNIVERSAL_LOCATION = new ResourceLocation(StargateJourney.MODID, "universal");
 	
@@ -24,18 +24,44 @@ public record ClientPointOfOrigin(String name, ResourceLocation texture)
 	public static final Codec<ResourceKey<ClientPointOfOrigin>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	public static final Codec<ClientPointOfOrigin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("name").forGetter(ClientPointOfOrigin::name),
-			ResourceLocation.CODEC.fieldOf("texture").forGetter(ClientPointOfOrigin::texture)
+			Codec.STRING.fieldOf("name").forGetter(pointOfOrigin -> pointOfOrigin.name),
+			ResourceLocation.CODEC.fieldOf("texture").forGetter(pointOfOrigin -> pointOfOrigin.spriteTexture)
 	).apply(instance, ClientPointOfOrigin::new));
 	
 	private static final Map<ResourceKey<PointOfOrigin>, ClientPointOfOrigin> POINTS_OF_ORIGIN = new HashMap<>();
+	
+	private final String name;
+	private final ResourceLocation spriteTexture; // Name used for looking up the texture in a TextureAtlas
+	private final ResourceLocation extendedTexture; // Full texture path inside assets folder
+	
+	public ClientPointOfOrigin(String name, ResourceLocation texture)
+	{
+		this.name = name;
+		this.spriteTexture = texture;
+		this.extendedTexture = new ResourceLocation(texture.getNamespace(), "textures/" + texture.getPath() + ".png");
+	}
+	
+	public String name()
+	{
+		return this.name;
+	}
+	
+	public ResourceLocation getSpriteTexture()
+	{
+		return spriteTexture;
+	}
 	
 	public static TextureAtlasSprite getSprite(@Nullable ClientPointOfOrigin pointOfOrigin)
 	{
 		if(pointOfOrigin == null)
 			return ClientUtil.getTexture(MissingTextureAtlasSprite.getLocation());
 		
-		return ClientUtil.getTexture(pointOfOrigin.texture());
+		return ClientUtil.getTexture(pointOfOrigin.spriteTexture);
+	}
+	
+	public ResourceLocation getExtendedTexture()
+	{
+		return extendedTexture;
 	}
 	
 	
@@ -54,7 +80,7 @@ public record ClientPointOfOrigin(String name, ResourceLocation texture)
 	public static String translationName(@Nullable ClientPointOfOrigin pointOfOrigin, String alternative)
 	{
 		if(pointOfOrigin != null)
-			return pointOfOrigin.name();
+			return pointOfOrigin.name;
 		
 		return alternative;
 	}

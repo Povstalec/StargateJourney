@@ -4,6 +4,7 @@
 	[
 		{ "address": { "dimension": "sgjourney:chulak", "galaxy": "sgjourney:milky_way" }, "weight": 4 },
 		{ "address": { "dimension": "sgjourney:unitas", "galaxy": "sgjourney:milky_way" }, "weight": 3 },
+		{ "address": { "dimension": "sgjourney:tollan", "galaxy": "sgjourney:milky_way" }, "weight": 2 },
 		{ "address": { "dimension": "sgjourney:cavum_tenebrae", "galaxy": "sgjourney:milky_way" }, "weight": 1 }
 	]
 }

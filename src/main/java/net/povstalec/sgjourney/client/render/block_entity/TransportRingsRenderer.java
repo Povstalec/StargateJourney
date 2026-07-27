@@ -105,7 +105,7 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 	{
 		public Ancient(BlockEntityRendererProvider.Context context)
 		{
-			super(new ResourceLocation(StargateJourney.MODID, "textures/entity/transport_rings/ancient_transport_rings.png"), context);
+			super(StargateJourney.sgjourneyLocation("textures/entity/transport_rings/ancient_transport_rings.png"), context);
 		}
 	}
 	
@@ -113,7 +113,7 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 	{
 		public Goauld(BlockEntityRendererProvider.Context context)
 		{
-			super(new ResourceLocation(StargateJourney.MODID, "textures/entity/transport_rings/goauld_transport_rings.png"), context);
+			super(StargateJourney.sgjourneyLocation("textures/entity/transport_rings/goauld_transport_rings.png"), context);
 		}
 	}
 }

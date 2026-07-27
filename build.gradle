@@ -75,6 +75,15 @@ minecraft {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
+    // Put repositories for dependencies here
+    // ForgeGradle automatically adds the Forge maven and Maven Central for you
+
+    // If you have mod jar dependencies in ./libs, you can declare them as a repository like so:
+    // flatDir {
+    //     dir 'libs'
+    // }
+    mavenCentral()
+    mavenLocal()
     maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
@@ -130,8 +139,10 @@ dependencies {
     implementation fg.deobf("maven.modrinth:mekanism:uxe1WQp4")
     runtimeOnly fg.deobf("maven.modrinth:mekanism-generators:Th4Czz4N")
 
-    //compileOnly fg.deobf("dev.tauri:jsg:${jsg_version}")
-    //runtimeOnly fg.deobf("dev.tauri:jsg:${jsg_version}")
+    // test dependencies
+    testImplementation(platform('org.junit:junit-bom:6.1.2'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
 tasks.named('processResources', ProcessResources).configure {

@@ -55,11 +55,11 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
-	public static CompoundTag tagSetup(int energy)
+	public static CompoundTag tagSetup(long energy)
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		tag.putInt(ENERGY, energy);
+		tag.putLong(ENERGY, energy);
 		
 		return tag;
 	}

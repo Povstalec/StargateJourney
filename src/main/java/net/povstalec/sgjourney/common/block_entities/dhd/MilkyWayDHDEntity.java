@@ -5,8 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -29,7 +27,6 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	public void load(CompoundTag tag)
 	{
 		super.load(tag);
-		addTransferCrystals(crystalHandler);
 		
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}
@@ -75,26 +72,6 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	protected SoundEvent getPressSound()
 	{
 		return SoundInit.MILKY_WAY_DHD_PRESS.get();
-	}
-
-	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
-	public static void addTransferCrystals(ItemStackHandler itemHandler)
-	{
-		int slots = itemHandler.getSlots();
-		
-		for(int i = 0; i < slots; i++)
-		{
-			ItemStack stack = itemHandler.getStackInSlot(i);
-			
-			if(stack.is(ItemInit.ENERGY_CRYSTAL.get()) && stack.hasTag())
-			{
-				if(stack.getTag().getString(CRYSTAL_MODE).equals(ENERGY_TRANSFER))
-				{
-					itemHandler.setStackInSlot(i, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
-					StargateJourney.LOGGER.info("Replaced Transfer Crystal");
-				}
-			}
-		}
 	}
 	
 	//============================================================================================

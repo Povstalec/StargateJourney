@@ -497,7 +497,7 @@ public class ForgeEvents
 		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.BONE, 4), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
 		
 		List<VillagerTrades.ItemListing> level5Trades = trades.get(5);
-		level5Trades.add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80));
+		level5Trades.add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80)); // The X on the map may rarely not appear due to (what seems to be) a vanilla bug: https://bugs.mojang.com/browse/MC/issues/MC-218156
 	}
 	
 	@SubscribeEvent
