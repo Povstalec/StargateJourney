@@ -110,7 +110,8 @@ public class JaffaBurgers extends AbstractFaction
 	@Override
 	public void tickFaction(MinecraftServer server, int ticks)
 	{
-		int intervalTicks = ticks % UPDATE_INTERVAL;
+		//TODO Temporarily commented out
+		/*int intervalTicks = ticks % UPDATE_INTERVAL;
 		
 		if(intervalTicks == 0)
 			prepareNextVisit(server, intervalTicks);
@@ -120,7 +121,7 @@ public class JaffaBurgers extends AbstractFaction
 				prepareNextVisit(server, intervalTicks);
 			else
 				finalizeVisit();
-		}
+		}*/
 	}
 	
 	@Override
