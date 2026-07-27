@@ -124,7 +124,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
 		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.newPeripheral().cast();
+			return peripheralWrapper.getPeripheral().cast();
 			
 		return super.getCapability(cap, side);
 	}
