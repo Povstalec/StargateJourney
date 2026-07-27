@@ -537,6 +537,16 @@ This is how it looks like when placed in the Milky Way galaxy.
 
 ___
 
+## Network restrictions
+
+___
+
+## Symbol remapping
+
+[//]: # (TODO: symbol remapping)
+
+___
+
 [//]: # (TODO: rename all occurences of Stargate interface to just interface, they can now be used with transporters)
 
 [//]: # (TODO: update stargate feedbacks)
@@ -561,47 +571,141 @@ The codes are formatted as
 FEEDBACK_NAME ( feedback_code_number, feedback_type, feedback_name )
 ```
 
-Below, you can find a list explaining some of the feedback errors.
+Below, you can find a list explaining some of the feedback **errors**.
 
-- `unknown` - The unknown error is a result of a faulty and unexpected behavior of the stargate network. 
-Please report any occurrence and include description of actions that caused it.
-- `symbol_in_address` - This error indicates that the symbol is already encoded in the current address.
+- `unknown` - _"Unknown Error"_ - The unknown error is a result of a faulty and unexpected behavior of the stargate network. 
+Please report any occurrence, include description of actions that caused it and the log from the session (or server).
+[GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }})
+
+- `symbol_in_address` - _"Symbol X is already encoded"_ - This error indicates that the symbol is already encoded in the current address.
 A single symbol cannot be present in the address twice.
-This feedback can often be observed while using 3-way chevron encoding where both actions `encode chevron` and `close chevron`
-attempts to encode the current symbol, resulting in two encodings of the same symbol.
-- `symbol_out_of_bonds` - The stargate cannot encode the symbol. 
-Happens, for example, when trying to encode a symbol above 35 on [Universe stargate](#universe).
-- `invalid_address` - The address is not valid. 
+This feedback can often be observed while using 3-way chevron encoding using a computercraft where both actions `encode chevron` and `close chevron`
+attempts to encode the current symbol, resulting in two encodings of the same symbol. 
+In such case this feedback can be ignored when returned from the `close chevron` action.
+
+- `symbol_out_of_bonds` - _"Symbol X is out of bounds"_ - The stargate cannot encode the symbol. 
+Happens, for example, when trying to encode a symbol above 35 on [Universe stargate](#universe-stargate) 
+and the [symbol remapping](#symbol-remapping) is not available.
+
+- `encode_when_connected` - _"Cannot encode Symbols when connected"_ - An attempt to encode a symbol failed because the gate already has an active connection.
+
+- `incomplete_address` - _"Incomplete Address"_ - The encoded address had less than 7 symbols or was missing the Point of Origin.
+The PoO is not a standalone symbol on the DHD, see the [FaQ]({{ '/faq/#i-dialed-an-address-but-dhd-says-incomplete-address' | absolute_url }}).
+
+- `invalid_address` - _"Invalid Address"_ - The address is not valid. 
 Happens when the 7-chevron address does not exist in the current galaxy (it may exist in a different galaxy),
 or the 8-chevron (or 9-chevron) address does not exist at all.
 If you are sure that the address is correct, but you did not obtain it in-game, 
 it is possible that your game is configured to generate addresses randomly.
-- `self_obstructed` - The local stargate is obstructed by blocks. 
+If you are using 7 chervon address, verify that it is an address for your current galaxy, 
+otherwise you need to use 8 or 9 chevron address.
+
+- `not_enough_power` - _"Not enough power (X required)"_ - The stargate does not have enough power to establish a connection to the destination.
+You can check the amount of power inside the stargate in the DHD inventory, by hovering the cursor over the red rectangle; 
+using PDA on the stargate or using computercraft.  
+Dialing stargates in a different galaxy using 8 or 9 chevron addresses requires a lot of power (`100 000 000 000` FE by default).
+In some situations when a new dimension is created in an existing world (e.g. using [RFTools Dimensions](https://modrinth.com/mod/rftools-dimensions))
+the dimension may be registered outside of any galaxy and lack 7 and 8 chevron address.
+In such case, the dimension is "floating" somewhere between galaxies and connections to it are considered intergalactic as well.
+
+- `self_obstructed` - _"Local Stargate is obstructed"_ - The local stargate is obstructed by blocks. 
 Remove blocks from the inside of the gate and try dialing the address again. 
-- `target_obstructed` - The destination stargate is obstructed by blocks.
+
+- `target_obstructed` - _"Target Stargate is obstructed"_ - The destination stargate is obstructed by blocks.
 You will need to find the gate first and break the blocks.
-- `no_galaxy` - The gate is not located in a galaxy. 
+
+- `same_system_dial` - _"Cannot dial the same Region"_ - The stargate cannot dial the same Solar System (Address Region) it is currently in.
+To dial a stargate in the same region, use 9 chevron address (can be restricted by the mod config, allowed by default).
+
+- `already_connected` - _"Target Stargate is already connected"_ - The target (destination) stargate has an already active connection.
+You need to wait until the connection is closed and the target stargate becomes available.
+
+- `no_galaxy` - _"Stargate is not located inside any Galaxy"_ - **This code should not happen in SGJ 0.6.45 or later.**  
+The gate is not located in a galaxy.
 This could indicate a solar system misconfiguration from datapacks.
-Or possibly the current dimension was dynamically added, you can try executing the 
+Or possibly the current dimension was dynamically added, you can try executing the
 [stellar update]({{ '/commands/#sgjourney-stargatenetwork-forcestellarupdate' | absolute_url }}).
-- `no_dimensions` - The dialed solar system exists but has no dimensions.
-This indicates a solar system misconfiguration from datapacks.
-- `no_stargates` - The dialed solar system has no stargates.
+
+- `no_dimensions` - _"Dialed Region has no Dimensions"_ - The dialed Solar System (Address Region) has no dimensions.
+This indicates an address region misconfiguration from datapacks or other mods.
+
+- `no_stargates` - _"Dialed Region has no Stargates"_ - The dialed Solar System (Address Region) has no stargates.
 Note that not every dimension automatically generates a stargate.
+You need to reach the dimension by other means and place a stargate there yourself.  
 See [datapacks]({{ '/datapacks' | absolute_url }}) section
 for options to add a stargate generation to a new dimension.
-- `target_restricted` - The destination stargate does not accept connections from a different networks.
-- `invalid_system_wide_connection` - The common config does not allow establishing a system-wide connection.
-- `whitelisted_target` - The dialed address is not whitelisted by the local stargate.
-The local stargate needs to add the dialed address to the whitelist.
-- `whitelisted_self` - The local address is not whitelisted by the destination stargate.
-The destination stargate needs to add the local address to the whitelist.
-- `blacklisted_target` - The dialed address is blacklisted by the local stargate.
-The local stargate needs to remove the dialed address from the blacklist.
-- `blacklisted_self` - The destination stargate has the local address blacklisted.
-The destination stargate needs to remove the local address from the blacklist.
-- `wrong_disconnect_side` - The connection cannot be closed from this side.
-The other side needs to end the connection.
-- `could_not_reach_target_stargate` - The stargate network was not able to find the destination gate.
-This means an unexpected error occurred, and you should report it.
-Before you do that, ensure you do not have any [incompatible mod]({{ '/#known-incompatibilities' | absolute_url }}) installed.
+
+- `self_restricted` - _"Local Stargate is restricted"_ - The local stargate is in a restricted network and cannot connect to other gates outside the same network(s).
+If the local stargate is in netowrks `1` and `23`, and is restricted, it can only connect to stargates that are either in network `1` or `23`.  
+See [Network restriction](#network-restrictions) for more information.
+
+- `target_restricted` - _"Dialed Stargate is restricted"_ - The target (destination) stargate is in a restricted network and cannot connect to other gates outside the same network(s).
+If the target stargate is in netowrks `1` and `23`, and is restricted, it can only connect to stargates that are either in network `1` or `23`.  
+See [Network restriction](#network-restrictions) for more information.
+
+- `invalid_8_chevron_address` - _"8-chevron address can't dial within the same Galaxy"_ - 8 chevron address cannot be used to dial a solar system in the same galaxy.
+You need to use the 7 chevron address.
+This behavior can be changed in the mod config file.
+
+- `invalid_system_wide_connection` - _"Cannot connect within the same Region"_ - Stargate cannot dial other stargate in the same Solar System (Address Region).
+This behavior can be changed in the mod config file (system-wide connections are allowed by default).
+
+- `target_not_whitelisted` - _"Target Stargate is not whitelisted"_ - The local (dialing) stargate has active address filter 
+and the dialed address is not whitelisted.  
+See [computercraft compatibility]({{ '/computercraft/stargate-interface/#addToWhitelist' | absolute_url }}) 
+on how an address can be added to the whitelist.
+
+- `not_whitelisted_by_target` - _"Stargate is not on Target Stargate's whitelist"_ - The target (destination) stargate has active address filter
+and the address of the local (dialing) stargate is not whitelisted.  
+See [computercraft compatibility]({{ '/computercraft/stargate-interface/#addToWhitelist' | absolute_url }})
+on how an address can be added to the whitelist, the address has to be added on the target stargate.
+
+- `target_blacklisted` - _"Target Stargate is blacklisted"_ - The local (dialing) stargate has active address filter
+and the dialed address is blacklisted.  
+See [computercraft compatibility]({{ '/computercraft/stargate-interface/#removeFromBlacklist' | absolute_url }})
+on how an address can be removed from the blacklist.
+
+- `blacklisted_by_target` - _"Stargate is on Target Stargate's blacklist"_ - The target (destination) stargate has active address filter
+and the address of the local (dialing) stargate is blacklisted.  
+See [computercraft compatibility]({{ '/computercraft/stargate-interface/#removeFromBlacklist' | absolute_url }})
+on how an address can be removed from the blacklist, the address has to be removed on the target stargate.
+
+- `exceeded_connection_time` - _"Stargate has exceeded its max connection time"_ - Stargate connection was closed
+because the maximum connection time run out. (`228` seconds by default, `3.8` minutes)
+
+- `ran_out_of_power` - _"Ran out of power"_ - The connection was closed because the gate run out of power to maintain it. 
+
+- `wrong_disconnect_side` - _"Stargate cannot be disconnected from this side"_ - The connection can only be disconnected from the dialing (source) side.
+This behavior can be changed in the mod config.
+
+- `connection_forming` - _"Cannot disconnect Stargate while a Connection is forming"_
+
+[//]: # (Does this even need an explanation?)
+
+- `stargate_destroyed` - _"Stargate was destroyed"_ - The target (destination) stargate was destroyed.
+
+- `could_not_reach_target_stargate` - _"Could not reach target Stargate"_ - The connection was closed because the target (destination) stargate become unreachable.
+
+- `interrupted_by_incoming_connection` - _"Stargate was interrupted by incoming connection"_
+
+- `rotation_blocked` - _"Rotation is blocked by open chevron"_ - Close the chevron to allow the gate to rotate.
+
+- `not_rotating` - _"Failed to stop rotation, not rotation"_ - The rotation cannot be stopped because the stargate is not rotating.
+
+- `chevron_already_opened` - _"Chevron is already opened"_ - Cannot open the chevron, it is already opened
+
+- `chevron_already_closed` - _"Chevron is already closed"_ - Cannot close the chevron, it is already closed
+
+- `chevron_not_open` - _"Chevron not open"_ - Attempt to encode the current symbol failed because the chevron is not opened.
+Open the chevron first.
+
+- `target_not_loaded` - _"Target Stargate is not loaded"_ - Target stargate was not being loaded by any players or chunk loaders
+and the mod failed to load it, or gate loading is disabled in the mod config.
+
+- `self_outside_stargate_network` - _"Stargate is outside the Stargate Network"_ - The local (dialing) stargate is not registered in the Stargate Network.
+Try to break the gate and place it again. If the gate will not be registered in the network, please 
+report the bug on [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
+
+- `target_outside_stargate_network` - _"Target Stargate is outside the Stargate Network"_ - The target (destination) stargate is not registered in the Stargate Network.
+Try to break the target (destination) gate and place it again. If the gate will not be registered in the network, please
+report the bug on [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).

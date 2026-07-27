@@ -16,6 +16,8 @@ Check out Troubleshooting for common problems.
 ___
 
 ## I dialed an address but DHD says "Incomplete address"
+You tried to dial an address that has less than 7 symbols or is missing the Point of Origin.
+
 The Stargate Journey update 0.6.45 introduced the Point of Origin button on the DHD as a standalone symbol.  
 Look for the symbol `0` (Zero) in the left of the DHD screen and encode it before pressing the big button in the middle.
 
