@@ -76,8 +76,8 @@
       "minecraft:disk_sand",
       "minecraft:disk_clay",
       "minecraft:disk_gravel",
-      
-      "sgjourney:ore_naquadah"
+		
+	  "sgjourney:ore_trinium"
     ],
     [
       "minecraft:basalt_blobs",

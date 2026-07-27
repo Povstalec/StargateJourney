@@ -99,6 +99,21 @@ public class PlanetSkyRenderers
 		}
 	}
 	
+	public static class TollanSkyRenderer extends SGJourneySkyRenderer
+	{
+		public static final ResourceLocation TOLLAN_STAR_TEXTURE = StargateJourney.sgjourneyLocation("textures/environment/star/tollan_star.png");
+		
+		public TollanSkyRenderer()
+		{
+			super(34181L, 1800);
+		}
+		
+		protected void renderCelestials(ClientLevel level, float partialTicks, PoseStack stack, Matrix4f lastMatrix, Runnable setupFog, BufferBuilder bufferbuilder, float rain)
+		{
+			this.renderSun(bufferbuilder, lastMatrix, TOLLAN_STAR_TEXTURE, 30.0F);
+		}
+	}
+	
 	//============================================================================================
 	//******************************************Pegasus*******************************************
 	//============================================================================================

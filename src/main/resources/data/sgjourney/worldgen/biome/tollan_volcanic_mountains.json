@@ -32,7 +32,8 @@
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
+      "minecraft:lake_lava_underground",
+      "sgjourney:blackstone_lake_lava_surface"
     ],
     [
       "minecraft:amethyst_geode"
@@ -72,8 +73,8 @@
       "minecraft:disk_sand",
       "minecraft:disk_clay",
       "minecraft:disk_gravel",
-      
-      "sgjourney:ore_naquadah"
+		
+		"sgjourney:ore_trinium"
     ],
     [
       "minecraft:spring_open"

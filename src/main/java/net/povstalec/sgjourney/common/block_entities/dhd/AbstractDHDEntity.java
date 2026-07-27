@@ -598,6 +598,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void engageStargate()
 	{
+		stargateCache.markDirtyTwoWays();
 		stargateCache.ifPresentOrElse(stargate ->
 				{
 					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
@@ -619,6 +620,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void encodeSymbol(int symbol)
 	{
+		stargateCache.markDirtyTwoWays();
 		stargateCache.ifPresentOrElse(stargate ->
 				{
 					if(stargate.isConnected())
