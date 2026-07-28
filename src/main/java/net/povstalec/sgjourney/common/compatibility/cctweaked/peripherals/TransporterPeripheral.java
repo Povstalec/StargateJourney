@@ -18,7 +18,7 @@ public class TransporterPeripheral extends InterfacePeripheral
 	
 	public TransporterPeripheral(AbstractInterfaceEntity interfaceEntity, AbstractTransporterEntity<?> transporter)
 	{
-		super(interfaceEntity);
+		super(interfaceEntity, transporter);
 		this.transporter = transporter;
 		
 		transporter.registerInterfaceMethods(new SGJourneyPeripheralWrapper<>(this, interfaceEntity.getInterfaceType()));
