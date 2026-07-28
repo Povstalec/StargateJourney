@@ -40,11 +40,18 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	
 	public static final int TOTAL_SYMBOLS = 48;
 	
+	public enum CanEngage
+	{
+		NO,
+		READY,
+		YES
+	}
+	
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("pegasus_back_chevron");
 	
 	protected int currentSymbol = 0;
 	public Address.Mutable addressBuffer = new Address.Mutable();
-	protected boolean canEngage = false;
+	protected CanEngage canEngage = CanEngage.NO;
 	public int symbolBuffer = 0;
 	protected boolean passedOver = false;
 	
@@ -98,7 +105,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	{
 		super.loadAdditional(tag, registries);
 		
-		canEngage = tag.getBoolean(CAN_ENGAGE);
+		canEngage = CanEngage.values()[tag.getByte(CAN_ENGAGE)];
 		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
         currentSymbol = tag.getInt(CURRENT_SYMBOL);
@@ -109,7 +116,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	{
 		super.saveAdditional(tag, registries);
 		
-		tag.putBoolean(CAN_ENGAGE, canEngage);
+		tag.putByte(CAN_ENGAGE, (byte) canEngage.ordinal());
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putInt(CURRENT_SYMBOL, currentSymbol);
@@ -121,7 +128,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		CompoundTag tag = super.getUpdateTag(registries);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
-		tag.putBoolean(CAN_ENGAGE, canEngage);
+		tag.putByte(CAN_ENGAGE, (byte) canEngage.ordinal());
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putInt(CURRENT_SYMBOL, currentSymbol);
@@ -137,7 +144,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		if(tag != null)
 		{
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
-			canEngage = tag.getBoolean(CAN_ENGAGE);
+			canEngage = CanEngage.values()[tag.getByte(CAN_ENGAGE)];
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
 			symbolBuffer = tag.getInt(SYMBOL_BUFFER);
 			currentSymbol = tag.getInt(CURRENT_SYMBOL);
@@ -151,7 +158,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	@Override
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
+		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
 	}
 	
 	@Override
@@ -177,7 +184,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
 		
-		canEngage = canEngageStargate;
+		canEngage = canEngageStargate ? CanEngage.READY : CanEngage.NO;
 		
 		if(isSymbolOutOfBounds(symbol))
 			return StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol);
@@ -242,11 +249,11 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
 		if(address.getLength() < addressBuffer.getLength())
 		{
-			if(canEngage) // Interrupt Stargate rotation
+			if(canEngage != CanEngage.NO) // Interrupt Stargate rotation
 				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 			else
 			{
-				canEngage = true;
+				canEngage = CanEngage.READY;
 				return StargateInfo.Feedback.NONE.withInfo();
 			}
 		}
@@ -275,7 +282,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	private void animateSpin()
 	{
 		// Delay the opening of the gate to the tick after all symbols are encoded
-		if(canEngage && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
+		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
 			engageStargate();
 		
 		if(isSymbolSpinning())
@@ -286,7 +293,8 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, false);
+					if(!directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 				else
 					symbolWork();
@@ -301,7 +309,8 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					directEngageSymbol(symbol, false);
+					if(!directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 			}
 			else
@@ -365,7 +374,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		currentSymbol = 0;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		canEngage = false;
+		canEngage = CanEngage.NO;
 		super.resetAddress();
 	}
 

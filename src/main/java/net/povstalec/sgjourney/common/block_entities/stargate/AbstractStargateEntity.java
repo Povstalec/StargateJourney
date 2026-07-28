@@ -1108,6 +1108,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void setVariant(ResourceLocation variant)
 	{
 		this.variant = variant;
+		updateClient();
+		setChanged();
 	}
 	
 	public ResourceLocation getVariant()
@@ -1123,7 +1125,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void setAddress(Address address)
 	{
 		this.address = new Address.Mutable(address);
-		this.setChanged();
+		setChanged();
 	}
 	
 	public Address.Mutable getAddress()

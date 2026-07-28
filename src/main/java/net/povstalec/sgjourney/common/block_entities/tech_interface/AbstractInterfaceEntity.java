@@ -12,6 +12,7 @@ import net.neoforged.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
@@ -34,8 +35,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 
 	public int signalStrength = 0;
 	
-	private int desiredSymbol = 0;
-	private int currentSymbol = 0;
+	private int lastSymbol = 0;
 	private RotatingStargateEntity.RotationDirection rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
 	
 	private IrisInfo.IrisMotion irisMotion = IrisInfo.IrisMotion.IDLE;
@@ -53,7 +53,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		CRYSTAL("crystal_interface"),
 		ADVANCED_CRYSTAL("advanced_crystal_interface");
 		
-		private String typeName;
+		private final String typeName;
 		
 		InterfaceType(String typeName)
 		{
@@ -195,6 +195,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 			if(rotationDirection != RotatingStargateEntity.RotationDirection.NONE && stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 				rotatingStargate.endRotation(true);
 		}
+		
+		energyBlockEntity = null;
 	}
 	
 	public InterfaceType getInterfaceType()
@@ -297,13 +299,18 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		
 		if(interfaceEntity.getEnergyBlockEntity() != null)
 		{
-			int lastSymbol = interfaceEntity.currentSymbol;
+			int currentSymbol = 0;
+			if(interfaceEntity.energyBlockEntity instanceof RotatingStargateEntity<?> stargate)
+				currentSymbol = stargate.getCurrentSymbol();
+			else if(interfaceEntity.energyBlockEntity instanceof PegasusStargateEntity stargate)
+				currentSymbol = stargate.getCurrentSymbol();
+			
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
 			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
 				interfaceEntity.handleShielding(state, stargate);
 
-			if(lastSymbol != interfaceEntity.currentSymbol)
+			if(currentSymbol != interfaceEntity.lastSymbol)
 			{
 				if(!level.isClientSide())
 				{
@@ -311,6 +318,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 					level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(AbstractInterfaceBlock.FACING));
 				}
 			}
+			
+			interfaceEntity.lastSymbol = currentSymbol;
 		}
 		
 		interfaceEntity.updateClient();
