@@ -128,7 +128,7 @@ However, the fusion core cannot be refueled; once it runs out, it must be replac
 See the [Dial Home Device (DHD)]({{ '/stargate-technology/dhd' | absolute_url }}) page for DHD crystal configuration
 and fusion core replacement options.
 
-In addition to DHD, the gate can be powered directly using a cable or with an [interface]({{ '/stargate-technology/interface/' | absolute_url }})
+In addition to DHD, the gate can be powered directly using a cable (**only on 1.21.1**) or with an [interface]({{ '/stargate-technology/interface/' | absolute_url }})
 and any source of **Forge energy (FE)**.
 Note that the stargate itself has a large amount of energy capacity (1 TFE), if you connect a cable directly to the gate, 
 it wont stop draining the power until its capacity is full.
@@ -139,7 +139,7 @@ to limit the amount of power to which the gate should be charged using the [Ener
 ![Stargate interface powering the gate]({{ '/assets/img/survival/stargate_interface_power.png' | absolute_url }})
 {: .max-width-512 }
 
-[//]: # (TODO: 0.6.45 introduced direct connection of cables to the gate - update the schema)
+[//]: # (TODO: 0.6.45 introduced direct connection of cables to the gate - only on 1.21.1 - update the schema)
 
 The stargate interface must face the gate (the black side facing away from the gate).
 And there must be a power supply connected to the interface from any side.
@@ -605,20 +605,37 @@ ___
 
 ## Symbol remapping
 
-Certain stargate types have a limited range of symbols it can encode.
-Classic and Milky Way stargates are limited to 38 symbols.
-And mainly the Universe stargate is limited only to 35 symbols.
+Certain stargate types have a limited range of symbols they can encode.
+Classic and Milky Way stargates are limited to 38 symbols.  
+And mainly the **Universe stargate** is limited only to **35 symbols**.
 
-Symbol remapping allows the gate to represent any symbol using any other available symbol.
+Symbol remapping allows the gate to represent **any symbol** using any **other available symbol**.
 The only exception is the Point of Origin (symbol `0`) which must not be remapped.
 
-[//]: # (TODO: finish symbol remapping)
+**DHD** is capable of automatic symbol remapping when **advanced protocols** are active.
+To activate advanced protocols, insert **Large Control Crystal** into the center of the DHD's crystal inventory.
+
+Alternatively, symbol remapping is also available to **computers using a crystal interface**.
+
+The image below shows Milky Way DHD connected to a Universe Stargate.
+The DHD needed to encode the symbol `38` which is not physically present on the stargate.
+The DHD activated symbol remapping and **remapped symbol `4` to symbol `38`**.
+**Physically** on the gate, the symbol `4` was encoded, 
+however, thanks to the remapping, symbol `38` was **added to the address** that is being dialed.
+
+If the DHD attempted to encode symbol `4` now, it would be again remapped to a different available symbol, 
+because `4` was already used to encode a different symbol.
+
+
+![Universe Stargate with Symbol 4 encoded]({{ '/assets/img/stargate-technology/stargate/universe_encoded_symbol_4.png' | absolute_url }})
+{: .max-width-512 }
+
+![DHD with remapped symbol 4 to symbol 38]({{ '/assets/img/stargate-technology/stargate/dhd_remapped_symbol.png' | absolute_url }})
+{: .max-width-512 }
 
 ___
 
 [//]: # (TODO: rename all occurences of Stargate interface to just interface, they can now be used with transporters)
-
-[//]: # (TODO: update stargate feedbacks)
 
 ## Stargate Feedback
 
