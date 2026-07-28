@@ -6,9 +6,11 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
@@ -17,6 +19,14 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
+
+import dev.ryanhcode.sable.Sable;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.ticket.SubLevelLoadingTicketType;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.SubLevel;
+
 import java.lang.ref.WeakReference;
 
 public class ClassicBlockEntityStargate extends ClassicStargate implements BlockEntityStargate<ClassicStargateEntity>
@@ -55,9 +65,18 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements Block
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof ClassicStargateEntity stargate)
-			return cacheStargateEntity(stargate);
-		
+		if (level != null) {
+			
+			final SubLevel subLevel = Sable.HELPER.getContaining(level, blockPos);
+			if (subLevel instanceof final ServerSubLevel serverSubLevel) {
+				final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
+				container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
+			}
+
+			if(level.getBlockEntity(blockPos) instanceof ClassicStargateEntity stargate)
+				return cacheStargateEntity(stargate);
+		}
+
 		return null;
 	}
 	

@@ -18,7 +18,7 @@ public class ClassicDHDSymbolButton extends GenericDHDSymbolButton
 								   float xCenter, float yCenter, int textureX, int textureY, int symbol, int canonSymbol, Position position)
 	{
 		super(x, y, width, height, menu, symbol, screenWidth, screenHeight, CLASSIC_BUTTONS, CLASSIC_BUTTONS_OVERLAY, xCenter, yCenter, textureX, textureY, position,
-				new ColorUtil.RGBA(255, 255, 255), new ColorUtil.RGBA(65, 65, 65), new ColorUtil.RGBA(255, 136, 0));
+				new ColorUtil.RGBA(255, 255, 255), new ColorUtil.RGBA(106, 105, 107), new ColorUtil.RGBA(255, 186, 20));
 		
 		this.canonSymbol = canonSymbol;
 		

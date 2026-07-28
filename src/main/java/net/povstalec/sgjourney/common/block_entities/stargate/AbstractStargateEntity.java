@@ -13,18 +13,23 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.level.WorldGenLevel;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+// import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.util.Unit;
+
+import dev.ryanhcode.sable.Sable;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.ticket.SubLevelLoadingTicketType;
 import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -1264,11 +1269,23 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		if(FORCE_LOAD_CHUNK)
 		{
-			if(connectionState != StargateConnection.State.IDLE)
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), true);
-			else
-				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), false);
+			if(connectionState != StargateConnection.State.IDLE) {
+				setLoaded(true);
+				// final SubLevel subLevel = Sable.HELPER.getContaining(this);
+				// if (subLevel instanceof final ServerSubLevel serverSubLevel) {
+				// 	final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
+				// 	container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
+				// }
+			} else {
+				setLoaded(false);
+			}
 		}
+	}
+
+	public void setLoaded(boolean loadState)
+	{
+		level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), loadState);
+		level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), loadState);
 	}
 	
 	public void setStargateState()
