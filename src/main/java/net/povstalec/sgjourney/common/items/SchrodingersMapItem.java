@@ -46,7 +46,7 @@ import java.util.Set;
  */
 public class SchrodingersMapItem extends Item
 {
-	public static final String TARGET = "target";
+	public static final String TARGET_STRUCTURE = "target_structure";
 	public static final String DECORATION_TYPE = "decoration_type";
 	public static final String DIMENSION = "dimension";
 	public static final String SKIP_LOADED_CHUNKS = "skip_loaded_chunks";
@@ -59,8 +59,8 @@ public class SchrodingersMapItem extends Item
 	@Nullable
 	public static TagKey<Structure> getTargetStructure(ItemStack stack)
 	{
-		if(stack.hasTag() && stack.getTag().contains(TARGET, Tag.TAG_STRING))
-			return TagInit.Structures.createTag(stack.getTag().getString(TARGET));
+		if(stack.hasTag() && stack.getTag().contains(TARGET_STRUCTURE, Tag.TAG_STRING))
+			return TagInit.Structures.createTag(stack.getTag().getString(TARGET_STRUCTURE));
 		
 		return null;
 	}
@@ -249,10 +249,11 @@ public class SchrodingersMapItem extends Item
 		return null;
 	}
 	
-	public static ItemStack withDestination(@NotNull TagKey<Structure> target, @Nullable MapDecoration.Type mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
+	public static ItemStack withDestination(Component name, @NotNull TagKey<Structure> target, @Nullable MapDecoration.Type mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
 	{
 		ItemStack stack = new ItemStack(ItemInit.SCHRODINGERS_MAP.get());
-		stack.getOrCreateTag().putString(TARGET, target.location().toString());
+		stack.setHoverName(name);
+		stack.getOrCreateTag().putString(TARGET_STRUCTURE, target.location().toString());
 		if(mapDecorationType != null)
 			stack.getOrCreateTag().putByte(DECORATION_TYPE, mapDecorationType.getIcon());
 		if(dimension != null)
