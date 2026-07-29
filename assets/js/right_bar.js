@@ -6,7 +6,6 @@ const rightBar = document.getElementById("right-nav");
 
 toggleBtn.addEventListener("click", function(e) {
     e.preventDefault();
-    console.log(toggleBtn, toggleBtn.parentElement)
     if(toggleBtn.classList.toggle('nav-open')) {
         rightBar.classList.add('nav-open');
         toggleBtn.parentElement.classList.add('nav-open');

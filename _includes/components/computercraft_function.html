@@ -7,14 +7,11 @@
         - source: string (optional), link to the source code
         - headerLevel: integer (optional), level of the header (h1, h2, h3, etc.) (default: 3)
 {%- endcomment -%}
-{% assign arguments = include.arguments | default: "" %}
-{% assign headerLevel = include.headerLevel | default: 3 %}
+{%- assign arguments = include.arguments | default: "" -%}
+{%- assign headerLevel = include.headerLevel | default: 3 -%}
 <div class="h-function">
-    <code>
-        <h{{headerLevel}} id="{{ include.name }}">
-            <pre><code>{{ include.name }}</code></pre>
-        </h{{headerLevel}}>
-        <pre>({{ include.arguments }})</pre>
-    </code>
+    <h{{headerLevel}} id="{{ include.name }}" toc-label="<pre>{{ include.name }}</pre>">
+        <code>{{ include.name }}({{ include.arguments }})</code>
+    </h{{headerLevel}}>
     <a class="source" target="_blank" href="{{ include.source }}">source</a>
 </div>

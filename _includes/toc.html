@@ -5,6 +5,7 @@
         and are available under the same license (MIT) as the original code, see below.
         Modifications:
         - Added list expander button to the generated TOC
+        - Added support for custom `toc-label` header attribute
     {% endcomment %}
     {% comment %}
         Copyright (c) 2017 Vladimir "allejo" Jimenez
@@ -121,6 +122,33 @@
             {% continue %}
         {% endif %}
 
+        {% comment %}
+            Extract toc-label attribute if defined (supports double or single quotes)
+        {% endcomment %}
+        {% assign tocLabel = nil %}
+        {% if _workspace[0] contains 'toc-label="' %}
+            {% assign _labelWorkspace = _workspace[0] | split: 'toc-label="' %}
+            {% assign _labelWorkspace = _labelWorkspace[1] | split: '"' %}
+            {% assign tocLabel = _labelWorkspace[0] %}
+        {% elsif _workspace[0] contains "toc-label='" %}
+            {% assign _labelWorkspace = _workspace[0] | split: "toc-label='" %}
+            {% assign _labelWorkspace = _labelWorkspace[1] | split: "'" %}
+            {% assign tocLabel = _labelWorkspace[0] %}
+        {% endif %}
+
+        {% comment %}
+            Decode HTML entities encoded by Kramdown/Markdown parser
+        {% endcomment %}
+        {% if tocLabel %}
+            {% assign tocLabel = tocLabel
+                    | replace: '&lt;', '<'
+                    | replace: '&gt;', '>'
+                    | replace: '&quot;', '"'
+                    | replace: '&#39;', "'"
+                    | replace: '&apos;', "'"
+                    | replace: '&amp;', '&' %}
+        {% endif %}
+
         {% if firstHeader %}
             {% assign minHeader = currLevel %}
         {% endif %}
@@ -137,7 +165,14 @@
             {% capture subMenuClass %} class="{{ include.submenu_class | replace: '%level%', subMenuLevel | split: '.' | join: ' ' }}"{% endcapture %}
         {% endif %}
 
-        {% capture anchorBody %}{% if include.sanitize %}{{ header | strip_html }}{% else %}{{ header }}{% endif %}{% endcapture %}
+        {% comment %}
+            Fallback to standard header body if toc-label attribute is missing or empty
+        {% endcomment %}
+        {% if tocLabel and tocLabel != blank %}
+            {% capture anchorBody %}{{ tocLabel }}{% endcapture %}
+        {% else %}
+            {% capture anchorBody %}{% if include.sanitize %}{{ header | strip_html }}{% else %}{{ header }}{% endif %}{% endcapture %}
+        {% endif %}
 
         {% if htmlID %}
             {% capture anchorAttributes %} href="{% if baseURL %}{{ baseURL }}{% endif %}#{{ htmlID }}"{% endcapture %}

@@ -11,34 +11,26 @@ custom_css: "/assets/css/computercraft.css"
 1. Table of Contents
 {:toc}
 
-Technology from Stargate Journey (mainly Stargates) can be controlled with computers from [ComputerCraft](https://tweaked.cc/).
+Technology from Stargate Journey (mainly Stargates) can be controlled with computers from [ComputerCraft: Tweaked](https://tweaked.cc/).
 This is achieved through the use of Interfaces,
 which, as the name suggests,
 interface with alien technology and enable you to control it.
 
 They can read information from a Stargate and provide a [redstone signal with a comparator]({{ '/stargate-technology/stargate-interface/' | absolute_url }}).
-And they can also act as computercraft peripherals.
+And they can also act as **computercraft peripherals**.
 
-There are three available Stargate Interfaces -
-[Basic Interface]({{ site.baseurl }}/blocks/technological_blocks/#basic-interface),
-[Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#crystal-interface),
-[Advanced Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#advanced-crystal-interface).
+There are three available Interfaces -
+Basic Interface,
+Crystal Interface,
+and Advanced Crystal Interface.
 
-<blockquote class="warning"> 
-<p>
-    Unless there is a label with interface name at the function, it can be used by any interface.<br> 
-    If there is a label, the function is only available for the specified interface.
-</p> 
-<p>
-    A similar applies to return values. 
-    Some return values might only be available for crystal or advanced crystal interface.
-</p>
-<span class="label label-green">Crystal Interface</span>
-<span class="label label-purple">Advanced Crystal Interface</span>
-</blockquote>
+<div class="flex-row flex-wrap" markdown="block">
 
-# Connecting the interface
-{: .no_toc }
+![Basic Interface]({{ '/assets/img/items/crafting/sgjourney/static/basic_interface.png' | absolute_url }})
+![Crystal Interface]({{ '/assets/img/items/crafting/sgjourney/static/crystal_interface.png' | absolute_url }})
+![Advanced Crystal Interface]({{ '/assets/img/items/crafting/sgjourney/static/advanced_crystal_interface.png' | absolute_url }})
+
+</div>
 
 <blockquote class="warning"> 
 <p>
@@ -49,12 +41,16 @@ There are three available Stargate Interfaces -
     A similar applies to return values. 
     Some return values might only be available for crystal or advanced crystal interface.
 </p>
-<span class="label label-green">Crystal Interface</span>
-<span class="label label-purple">Advanced Crystal Interface</span>
+
+<!-- %- include components/interface_label.html type="basic" -% -->
+
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" -%}
+
 </blockquote>
 
-# Connecting the interface
-{: .no_toc }
+
+## Connecting the interface
 
 [//]: # (TODO: update the general description of interface to also include other technology e.g. rings)
 
@@ -90,9 +86,9 @@ These are the functions every Interface has available at all times.
 ___
 
 {% include components/computercraft_function.html
-name="addressToString"
-arguments="address"
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
+    name="addressToString"
+    arguments="address"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
 %}
 
 Converts the array specified by address to a form used elsewhere in the mod (`-1-2-3-4-5-6-`).
@@ -131,9 +127,9 @@ end
 ___
 
 {% include components/computercraft_function.html
-name="getEnergy"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96"
+    name="getEnergy"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96"
 %}
 
 Returns the current amount of energy [FE (Forge Energy)] stored in the interface.
@@ -160,9 +156,9 @@ print("There is "..energy.." FE in the interface")
 ___
 
 {% include components/computercraft_function.html
-name="getEnergyCapacity"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102"
+    name="getEnergyCapacity"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102"
 %}
 
 Returns the maximal amount of energy [FE] that can be stored in the interface.
@@ -186,9 +182,9 @@ print("The interface can store up to "..capacity.." FE")
 ___
 
 {% include components/computercraft_function.html
-name="getEnergyTarget"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108"
+    name="getEnergyTarget"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108"
 %}
 
 Returns the current energy target that is set for the interface.
@@ -217,9 +213,9 @@ ___
 
 
 {% include components/computercraft_function.html
-name="setEnergyTarget"
-arguments="energyTarget"
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17"
+    name="setEnergyTarget"
+    arguments="energyTarget"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L17"
 %}
 
 

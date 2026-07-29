@@ -14,25 +14,8 @@ function functionHeadingLink(h) {
     }
 }
 
-/**
- * Moves labels that are right after the function heading into the heading element
- */
-function headingLabels(h) {
-    const wrapper = document.createElement("span");
-    const funcName = h.querySelector("code");
-    funcName.remove();
-    wrapper.appendChild(funcName);
-    while (h.nextElementSibling && h.nextElementSibling.tagName === "P" && h.nextElementSibling.classList.contains("label")) {
-        const label = h.nextElementSibling;
-        label.remove();
-        wrapper.appendChild(label);
-    }
-    h.prepend(wrapper);
-}
-
 document.addEventListener("DOMContentLoaded", ()=>
     document.querySelectorAll(".h-function")?.forEach(h => {
-        headingLabels(h);
         functionHeadingLink(h);
     })
 );

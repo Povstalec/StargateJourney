@@ -36,7 +36,7 @@ stargate requires the chevron to be **open**, otherwise returns `-35` (`chevron_
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -70,7 +70,7 @@ Does nothing if the ring rotates due to a redstone signal.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -253,7 +253,7 @@ The rotation is stopped when the interface is destroyed.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **Throws**
 - When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
@@ -302,7 +302,7 @@ The rotation is stopped when the interface is destroyed.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **Throws**
 - When the chevron is open or the symbol is out of range (lower than `-1` or higher than `38`).
@@ -351,7 +351,7 @@ If the symbol is already encoded, returns `-2` (`symbol_in_address`).
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -422,7 +422,7 @@ Opens the top chevron in preparation for encoding the current symbol.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -603,7 +603,7 @@ ___
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -718,8 +718,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/b5d8f1b0c5817ba96f363f1bf926c580f740b299/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L207"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Returns a table with publicly visible addresses on the blacklist.
 Only addresses that were added to blacklist as public will be listed.
@@ -766,8 +765,7 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateFilterMethods.java, class GetWhitelist (~line 127) -->
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 <!-- TODO: description -->
 
@@ -810,7 +808,7 @@ For Advanced Crystal interface also returns a second string value with a status 
 
 **Returns**
 1. `number` The most recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - Because the wiki can quickly become outdated,   
@@ -1199,10 +1197,8 @@ ___
     arguments="symbol, engageDirectly"
     source="https://github.com/Povstalec/StargateJourney/blob/77e5a6efd596a5b3e7df99fda6c58ea6f3093bee/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L115"
 %}
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 Directly encodes the symbol.
 This method can encode symbols on any Stargate.
@@ -1218,7 +1214,7 @@ For example, the Milky Way Stargate does not need to spin the ring; it just enco
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
-2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **See also**
 - [getRecentFeedback()](#getRecentFeedback)
@@ -1249,10 +1245,8 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L118"
 %}
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 Returns the address dialed by the gate.  
 If the currently active connection is incoming or there is no active connection, the address will be empty.
@@ -1285,10 +1279,8 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class GetMappedSymbol (~line 209) -->
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 <!-- TODO: description -->
 
@@ -1324,10 +1316,8 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class HasDHD (~line 225) -->
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 <!-- TODO: description -->
 
@@ -1356,10 +1346,8 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class RemapSymbol (~line 192) -->
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 <!-- TODO: description -->
 
@@ -1395,10 +1383,8 @@ ___
     arguments="configuration"
     source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141"
 %}
-Crystal Interface
-{: .label .label-green }
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="crystal" -%}
+{%- include components/interface_label.html type="advanced_crystal" %}
 
 Causes the chevrons to encode in the order specified by configuration.
 This configuration resets every time a Stargate is reset.
@@ -1453,8 +1439,7 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class AddNetwork (~line 255) -->
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 <!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
 
 <!-- TODO: description -->
@@ -1490,8 +1475,7 @@ ___
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L160"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Adds the address to the blacklist.
 When the [filter is set](#setFilterType) to the blacklist type,
@@ -1557,8 +1541,7 @@ ___
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L56"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Adds the address to the whitelist.
 When the [filter is set](#setFilterType) to the whitelist type,
@@ -1609,8 +1592,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L240"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Removes all addresses from the blacklist.
 
@@ -1643,8 +1625,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L136"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Removes all addresses from the whitelist.
 
@@ -1675,8 +1656,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L268"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Returns the address to which the Stargate is connected (the address on the other side of the connection).
 
@@ -1719,8 +1699,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L17"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Returns the numeric identifier of the filter type.  
 > 0 None  
@@ -1760,8 +1739,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L289"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Returns the 9-chevron address of this stargate.
 
@@ -1793,8 +1771,7 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class GetNetworks (~line 240) -->
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 <!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
 
 <!-- TODO: description -->
@@ -1830,8 +1807,7 @@ ___
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L366"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Checks for the network restriction of the Stargate.
 
@@ -1868,8 +1844,7 @@ ___
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L200"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Removes the specified address from the blacklist.
 
@@ -1907,8 +1882,7 @@ ___
     arguments="address"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateFilterMethods.java#L96"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Removes the specified address from the whitelist.
 
@@ -1946,8 +1920,7 @@ ___
     source=""
 %}
 <!-- TODO: add source link - see StargateMethods.java, class RemoveNetwork (~line 271) -->
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 <!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
 
 <!-- TODO: description -->
@@ -1983,8 +1956,7 @@ ___
     arguments="enable"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348"
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Sets the Stargate to enable or disable declining connections from foreign networks.
 
@@ -2018,8 +1990,7 @@ ___
     arguments="type"
     source=""
 %}
-Advanced Crystal Interface
-{: .label .label-purple }
+{%- include components/interface_label.html type="advanced_crystal" -%}
 
 Sets the filter type for the Stargate.
 
