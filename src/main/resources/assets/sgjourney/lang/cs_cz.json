@@ -404,6 +404,8 @@
 	
 	"item.sgjourney.syringe": "Injekce",
 	
+	"item.sgjourney.schrodingers_map": "Schrödingerova mapa",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologův zápisník",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahová helma",
@@ -1054,6 +1056,15 @@
 	"tooltip.sgjourney.naquadah_generator_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
+	
+	
+	"message.sgjourney.open_wiki_link": "Otevřít wiki link",
+	
+	"message.sgjourney.schrodingers_map.error.dimension": "Mapu nejde použít v této dimenzi, očekávána dimenze: %s",
+	"message.sgjourney.schrodingers_map.error.structure": "Struktura nenalezena",
+	"message.sgjourney.schrodingers_map.error.unique_structure": "Unikátní struktura nenalezena",
+	"message.sgjourney.schrodingers_map.error.unique_structure_not_found": "Uinkátní struktura očekávána na pozici %s ale nenalezena",
+	"message.sgjourney.schrodingers_map.error.troubleshoot": "Podívat se na wiki jak řešit tento problém",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",
