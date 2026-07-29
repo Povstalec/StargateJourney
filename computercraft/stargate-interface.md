@@ -163,6 +163,40 @@ end
 ___
 
 {% include components/computercraft_function.html
+    name="getRotationDegrees"
+    arguments=""
+    source=""
+%}
+<!-- TODO: add source link - see RotationMethods.java, class GetRotationDegrees (~line 75) -->
+
+<!-- TODO: description -->
+
+**Returns**
+1. `number` <!-- TODO: description; confirm exact range/meaning -->
+
+**See also**
+- [getRotation()](#getRotation)
+- [endRotation()](#endRotation)
+- [rotateAntiClockwise()](#rotateAntiClockwise)
+- [rotateClockwise()](#rotateClockwise)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+-- TODO: example usage
+local rotationDegrees = interface.getRotationDegrees()
+print(rotationDegrees)
+```
+
+___
+
+{% include components/computercraft_function.html
     name="isCurrentSymbol"
     arguments="symbol"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
@@ -559,6 +593,39 @@ end
 ___
 
 {% include components/computercraft_function.html
+    name="engageStargate"
+    arguments=""
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class EngageStargate (~line 106) -->
+
+<!-- TODO: description -->
+
+**Returns**
+1. `number` The recent Stargate Feedback `[int]`
+2. `string`<span class="label label-green">Crystal Interface</span><span class="label label-purple ml-0">Advanced Crystal Interface</span>A description of the feedback
+
+**See also**
+- [getRecentFeedback()](#getRecentFeedback)
+<!-- TODO: add further related links -->
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find any interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+-- TODO: example usage
+local feedback = interface.engageStargate()
+print(feedback)
+```
+
+___
+
+{% include components/computercraft_function.html
     name="getChevronsEngaged"
     arguments=""
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89"
@@ -686,6 +753,45 @@ end
 local publicBlacklist = interface.getPublicBlacklist()
 -- Print each address
 for _,address in pairs(publicBlacklist) do
+    local text = interface.addressToString(address)
+    print(text)
+end
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="getPublicWhitelist"
+    arguments=""
+    source=""
+%}
+<!-- TODO: add source link - see StargateFilterMethods.java, class GetWhitelist (~line 127) -->
+Advanced Crystal Interface
+{: .label .label-purple }
+
+<!-- TODO: description -->
+
+**Returns**
+1. `number[][]` <!-- TODO: description --> The table (array) of whitelisted addresses, each address is a table (array) of numbers (symbols).
+
+**See also**
+- [addToWhitelist(address)](#addToWhitelist)
+- [clearWhitelist()](#clearWhitelist)
+- [removeFromWhitelist(address)](#removeFromWhitelist)
+- [setFilterType(type)](#setFilterType)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+-- TODO: example usage
+local publicWhitelist = interface.getPublicWhitelist()
+for _,address in pairs(publicWhitelist) do
     local text = interface.addressToString(address)
     print(text)
 end
@@ -1174,6 +1280,117 @@ print("The dialed address: " .. interface.addressToString(address))
 ___
 
 {% include components/computercraft_function.html
+    name="getMappedSymbol"
+    arguments="symbol"
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class GetMappedSymbol (~line 209) -->
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
+
+<!-- TODO: description -->
+
+**Parameters**
+1. `symbol`: `number` <!-- TODO: description -->
+
+**Returns**
+<!-- TODO: return value - see GenericStargateFunctions.getMappedSymbol() (not in provided source) -->
+
+**See also**
+- [remapSymbol(originalSymbol, newSymbol)](#remapSymbol)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+-- TODO: example usage
+local symbol = 0
+local mappedSymbol = interface.getMappedSymbol(symbol)
+print(mappedSymbol)
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="hasDHD"
+    arguments=""
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class HasDHD (~line 225) -->
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
+
+<!-- TODO: description -->
+
+**Returns**
+<!-- TODO: return value - see GenericStargateFunctions.hasDHD() (not in provided source); likely `boolean` based on naming convention, please confirm -->
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+-- TODO: example usage
+local hasDHD = interface.hasDHD()
+print(hasDHD)
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="remapSymbol"
+    arguments="originalSymbol, newSymbol"
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class RemapSymbol (~line 192) -->
+Crystal Interface
+{: .label .label-green }
+Advanced Crystal Interface
+{: .label .label-purple }
+
+<!-- TODO: description -->
+
+**Parameters**
+1. `originalSymbol`: `number` <!-- TODO: description -->
+2. `newSymbol`: `number` <!-- TODO: description -->
+
+**Returns**
+<!-- TODO: return value - see GenericStargateFunctions.remapSymbol() (not in provided source) -->
+
+**See also**
+- [getMappedSymbol(symbol)](#getMappedSymbol)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find crystal or advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local originalSymbol = 0
+local newSymbol = 0
+-- TODO: example usage
+interface.remapSymbol(originalSymbol, newSymbol)
+```
+
+___
+
+{% include components/computercraft_function.html
     name="setChevronConfiguration"
     arguments="configuration"
     source="https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L141"
@@ -1207,7 +1424,7 @@ The configuration must be an array of exact length 8 with numbers from 1 to 8 wi
 - [disconnectStargate()](#disconnectStargate) Resets the Stargate
 
 **Usage**
- - Set the default chevron order
+- Set the default chevron order
 ```lua
 -- find crystal or advanced crystal interface connected to the computer
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
@@ -1217,7 +1434,7 @@ end
 -- use the interface:
 interface.setChevronConfiguration({1, 2, 3, 6, 7, 8, 4, 5})
 ```
- - Set clockwise chevron order (e.g. when encoding 9-chevron address).
+- Set clockwise chevron order (e.g. when encoding 9-chevron address).
 ```lua
 -- find crystal or advanced crystal interface connected to the computer
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
@@ -1226,6 +1443,44 @@ if interface == nil then
 end
 -- use the interface:
 interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
+```
+
+___
+
+{% include components/computercraft_function.html
+    name="addNetwork"
+    arguments="network"
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class AddNetwork (~line 255) -->
+Advanced Crystal Interface
+{: .label .label-purple }
+<!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
+
+<!-- TODO: description -->
+
+**Parameters**
+1. `network`: `number` <!-- TODO: description -->
+
+**Returns**
+<!-- TODO: return value - see GenericStargateFunctions.addNetwork() (not in provided source) -->
+
+**See also**
+- [getNetworks()](#getNetworks)
+- [removeNetwork(network)](#removeNetwork)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local network = 415252 -- could be any number
+-- TODO: example usage
+interface.addNetwork(network)
 ```
 
 ___
@@ -1533,34 +1788,28 @@ print(interface.addressToString(localAddress))
 ___
 
 {% include components/computercraft_function.html
-    name="getNetwork"
+    name="getNetworks"
     arguments=""
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L310"
+    source=""
 %}
+<!-- TODO: add source link - see StargateMethods.java, class GetNetworks (~line 240) -->
 Advanced Crystal Interface
 {: .label .label-purple }
+<!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
 
-Returns the numeric identifier of the Stargate network of which the Stargate is a part.
-<!-- TODO a link to the stargate network explanation -->
+<!-- TODO: description -->
 
 **Returns**
-1. `number`: The network ID
-
-<details markdown="block">
-<summary>Default network IDs</summary>
-0 Classic Stargate  
-1 Universe Stargate  
-2 Milky Way Stargate and Tollan Stargate  
-3 Pegasus Stargate  
-</details>
+1. `number[]` <!-- TODO: confirm element type against GenericStargateFunctions.getNetworks() (not in provided source) --> The Stargate's networks
 
 **See also**
+- [addNetwork(network)](#addNetwork)
+- [removeNetwork(network)](#removeNetwork)
 - [isNetworkRestricted()](#isNetworkRestricted)
-- [setNetwork(network)](#setNetwork)
-- [restrictNetwork(network)](#restrictNetwork)
+- [restrictNetwork(restrict)](#restrictNetwork)
 
 **Usage**
-- Print the network ID
+- <!-- TODO: usage description -->
 ```lua
 -- find an advanced crystal interface connected to the computer
 local interface = peripheral.find("advanced_crystal_interface")
@@ -1568,8 +1817,11 @@ if interface == nil then
     error("The interface is not connected")
 end
 -- use the interface:
-local network = interface.getNetwork()
-print("The network ID is: "..network)
+-- TODO: example usage
+local networks = interface.getNetworks()
+for _,network in pairs(networks) do
+    print(network)
+end
 ```
 ___
 
@@ -1589,8 +1841,7 @@ Checks for the network restriction of the Stargate.
 <!-- TODO: add see also links to other relevant methods -->
 
 **See also**
-- [getNetwork()](#getNetwork)
-- [setNetwork(network)](#setNetwork)
+- [getNetworks()](#getNetworks)
 - [restrictNetwork(network)](#restrictNetwork)
 
 **Usage**
@@ -1690,6 +1941,44 @@ interface.removeFromWhitelist(address)
 ___
 
 {% include components/computercraft_function.html
+    name="removeNetwork"
+    arguments="network"
+    source=""
+%}
+<!-- TODO: add source link - see StargateMethods.java, class RemoveNetwork (~line 271) -->
+Advanced Crystal Interface
+{: .label .label-purple }
+<!-- TODO: confirm interface availability - registered in the same `type.hasCrystalMethods()` block as engageSymbol/getDialedAddress (labeled Crystal + Advanced Crystal above), but grouped here with restrictNetwork/isNetworkRestricted (labeled Advanced Crystal only); please verify which is correct -->
+
+<!-- TODO: description -->
+
+**Parameters**
+1. `network`: `number` <!-- TODO: description -->
+
+**Returns**
+<!-- TODO: return value - see GenericStargateFunctions.removeNetwork() (not in provided source) -->
+
+**See also**
+- [getNetworks()](#getNetworks)
+- [addNetwork(network)](#addNetwork)
+
+**Usage**
+- <!-- TODO: usage description -->
+```lua
+-- find an advanced crystal interface connected to the computer
+local interface = peripheral.find("advanced_crystal_interface")
+if interface == nil then
+    error("The interface is not connected")
+end
+-- use the interface:
+local network = 415252 -- could be any number
+-- TODO: example usage
+interface.removeNetwork(network)
+```
+
+___
+
+{% include components/computercraft_function.html
     name="restrictNetwork"
     arguments="enable"
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L348"
@@ -1708,8 +1997,7 @@ Outgoing connections are not affected.
 
 **See also**
 - [isNetworkRestricted()](#isNetworkRestricted)
-- [setNetwork(network)](#setNetwork)
-- [getNetwork()](#getNetwork)
+- [getNetworks()](#getNetworks)
 
 **Usage**
 - Enable network restriction
@@ -1767,39 +2055,6 @@ local FilterType = {
     Blacklist = -1
 }
 interface.setFilterType(FilterType.Blacklist)
-```
-
-___
-
-{% include components/computercraft_function.html
-    name="setNetwork"
-    arguments="network"
-    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L330"
-%}
-Advanced Crystal Interface
-{: .label .label-purple }
-
-Sets the network identifier for the Stargate.
-
-**Parameters**
-1. `network`: `number` The identifier of the Stargate network (any number)
-
-**See also**
-- [isNetworkRestricted()](#isNetworkRestricted)
-- [restrictNetwork(network)](#restrictNetwork)
-- [getNetwork()](#getNetwork)
-
-**Usage**
-- Set the network of the Stargate
-```lua
--- find an advanced crystal interface connected to the computer
-local interface = peripheral.find("advanced_crystal_interface")
-if interface == nil then
-    error("The interface is not connected")
-end
--- use the interface:
-local network = 415252 -- could be any number
-interface.setNetwork(network) 
 ```
 
 ___
@@ -2102,11 +2357,3 @@ local durability = interface.getIrisDurability()
 local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
 ```
-
-[//]: # (// TODO:)
-
-[//]: # ("getPublicWhitelist", )
-
-[//]: # ("getRotationDegrees", )
-
-[//]: # ("hasDHD" )
