@@ -27,7 +27,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -51,8 +50,6 @@ import java.util.Set;
  */
 public class SchrodingersMapItem extends Item
 {
-	public static final String DIMENSION = "dimension";
-	
 	public SchrodingersMapItem(Properties properties)
 	{
 		super(properties);
@@ -248,9 +245,10 @@ public class SchrodingersMapItem extends Item
 		return null;
 	}
 	
-	public static ItemStack withDestination(@NotNull TagKey<Structure> target, @Nullable Holder<MapDecorationType> mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
+	public static ItemStack withDestination(Component name, @NotNull TagKey<Structure> target, @Nullable Holder<MapDecorationType> mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
 	{
 		ItemStack stack = new ItemStack(ItemInit.SCHRODINGERS_MAP.get());
+		stack.set(DataComponents.ITEM_NAME, name);
 		stack.set(DataComponentInit.TARGET_STRUCTURE, target);
 		if(mapDecorationType != null)
 			stack.set(DataComponentInit.DECORATION_TYPE, mapDecorationType);

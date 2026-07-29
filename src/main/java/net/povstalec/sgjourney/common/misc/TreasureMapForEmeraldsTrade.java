@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
@@ -42,8 +41,7 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 	@Nullable
 	public MerchantOffer getOffer(Entity entity, RandomSource source)
 	{
-		ItemStack mapStack = SchrodingersMapItem.withDestination(this.destination, this.destinationType, entity.level().dimension(), true);
-		mapStack.set(DataComponents.ITEM_NAME, Component.translatable(this.displayName));
+		ItemStack mapStack = SchrodingersMapItem.withDestination(Component.translatable(this.displayName), this.destination, this.destinationType, entity.level().dimension(), true);
 		
 		return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCost), Optional.of(new ItemCost(Items.COMPASS)), mapStack, this.maxUses, this.villagerXp, 0.2F);
 	}
@@ -58,8 +56,7 @@ public class TreasureMapForEmeraldsTrade implements VillagerTrades.ItemListing
 		@Nullable
 		public MerchantOffer getOffer(Entity entity, RandomSource source)
 		{
-			ItemStack mapStack = SchrodingersMapItem.withDestination(this.destination, this.destinationType, entity.level().dimension(), false);
-			mapStack.set(DataComponents.ITEM_NAME, Component.translatable(this.displayName));
+			ItemStack mapStack = SchrodingersMapItem.withDestination(Component.translatable(this.displayName), this.destination, this.destinationType, entity.level().dimension(), false);
 			
 			return new MerchantOffer(new ItemCost(Items.EMERALD, this.emeraldCost), Optional.of(new ItemCost(Items.COMPASS)), mapStack, this.maxUses, this.villagerXp, 0.2F);
 		}
