@@ -133,7 +133,7 @@ and any source of **Forge energy (FE)**.
 Note that the stargate itself has a large amount of energy capacity (1 TFE), if you connect a cable directly to the gate, 
 it wont stop draining the power until its capacity is full.
 You can use the [interface]({{ '/stargate-technology/interface/' | absolute_url }}) 
-to limit the amount of power to which the gate should be charged using the [Energy Target]({{ '/stargate-technology/interface/#energy-target' | absolute_url }}).
+to limit the amount of power to which the gate should be charged using the [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }}).
 
 
 ![Stargate interface powering the gate]({{ '/assets/img/survival/stargate_interface_power.png' | absolute_url }})

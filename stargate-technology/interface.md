@@ -14,9 +14,14 @@ nav_order: 30
 
 _[Basic Interface]({{ site.baseurl }}/blocks/technological_blocks/#basic-interface) / [Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#crystal-interface) / [Advanced Crystal Interface]({{ site.baseurl }}/blocks/technological_blocks/#advanced-crystal-interface)_
 
-The interface allows controlling some alien technology with [computers](#computercraft), supplying it with [power](#energy-target)
+The interface allows controlling some alien technology with [computers](#computercraft), supplying it with power
 or getting feedback with [redstone signals](#redstone).
 At first, your control over the alien technology will be fairly limited. However, you will also gain more control as you upgrade to better Interfaces.
+
+The supply of power is limited using [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }}),
+which can protect your energy supply from getting drained due to energy requirements of alien technology.
+
+[//]: # (TODO: describe using interface to supply tech with power)
 
 ___
 
@@ -187,20 +192,3 @@ For details, check
 and the [Computercraft section]({{ site.baseurl }}/computercraft).
 
 ___
-
-## Energy Target
-
-{: .note }
-In order for the Stargate to require power, the power requirements needs to be enabled in the mod configuration file.  
-`disable_energy_requirements = false` <!-- TODO: link to mod configuration page -->
-
-Due to some alien technology's incredibly high energy capacity, the interfaces will, by default,
-only push energy into it until a **targeted energy level** is reached **within the technology**.
-
-For example, The Stargate can hold several **billion** FE units.
-By default, the interface will **stop** pushing energy once it reaches `200 000` FE to prevent early energy drain,
-even though the Stargate is not near full capacity.
-
-The amount of energy the alien technology is charged with is called the **Energy Target**.
-It can be set with **Computercraft** using the
-[`setEnergyTarget`]({{ site.baseurl }}/computercraft/stargate_interface/#setEnergyTarget) method

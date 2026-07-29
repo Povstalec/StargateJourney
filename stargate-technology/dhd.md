@@ -59,8 +59,8 @@ The inventory holds crystals modifying DHD capabilities, Stargate behavior and a
 
 To operate, the DHD itself needs power.
 When the internal buffer has enough power, it can be transferred to the stargate.
-Similar to [stargate interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}),
-the DHD has an **energy target** defining an energy amount up to which the DHD will charge the gate.
+Similar to [Interface]({{ '/stargate-technology/stargate-interface/' | absolute_url }}),
+the DHD has an **[Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }})** defining an energy amount up to which the DHD will charge the gate.
 
 The DHD can be powered externally with Forge Energy (FE), e.g. by connecting a cable to it.
 Or with an internal power source placed in the DHD inventory.
