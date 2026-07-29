@@ -24,9 +24,9 @@ Functions available for an interface connected to a stargate can be rotated --
 stargates.
 
 {% include components/computercraft_function.html
-name="encodeChevron"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
+    name="encodeChevron"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L159"
 %}
 
 Encodes the current symbol under the top chevron.
@@ -60,9 +60,9 @@ print(feedback)
 ___
 
 {% include components/computercraft_function.html
-name="endRotation"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
+    name="endRotation"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L117"
 %}
 
 Stops the inner ring rotation if it was started by a computer.  
@@ -94,9 +94,9 @@ print(feedback)
 ___
 
 {% include components/computercraft_function.html
-name="getCurrentSymbol"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
+    name="getCurrentSymbol"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L14"
 %}
 
 Returns the current symbol under the top chevron.
@@ -121,9 +121,9 @@ print(symbol)
 ___
 
 {% include components/computercraft_function.html
-name="getRotation"
-arguments=""
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
+    name="getRotation"
+    arguments=""
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L46"
 %}
 
 Returns the current gate rotation.
@@ -163,9 +163,9 @@ end
 ___
 
 {% include components/computercraft_function.html
-name="isCurrentSymbol"
-arguments="symbol"
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
+    name="isCurrentSymbol"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L29"
 %}
 
 Returns `true` when the current symbol is **centered** under the top chevron,
@@ -205,9 +205,9 @@ ___
 
 
 {% include components/computercraft_function.html
-name="rotateAntiClockwise"
-arguments="symbol"
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
+    name="rotateAntiClockwise"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
 %}
 
 Rotates the inner ring anticlockwise, positioning the specified symbol centered under the top chevron.  
@@ -254,9 +254,9 @@ ___
 
 
 {% include components/computercraft_function.html
-name="rotateClockwise"
-arguments="symbol"
-source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
+    name="rotateClockwise"
+    arguments="symbol"
+    source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
 %}
 
 Rotates the inner ring clockwise, positioning the specified symbol centered under the top chevron.  
@@ -416,9 +416,9 @@ ___
 Functions exclusive for an interface connected to a Pegasus stargate.
 
 {% include components/computercraft_function.html
-name="dynamicSymbols"
-arguments="enabled"
-source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L24"
+    name="dynamicSymbols"
+    arguments="enabled"
+    source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L24"
 %}
 
 Controls the gate ability to dynamically switch symbols based on its location.
@@ -446,9 +446,9 @@ interface.dynamicSymbols(false)
 ___
 
 {% include components/computercraft_function.html
-name="overrideSymbols"
-arguments="symbols"
-source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L47"
+    name="overrideSymbols"
+    arguments="symbols"
+    source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L47"
 %}
 
 Overrides the symbols used by the gate.
@@ -487,9 +487,9 @@ interface.overrideSymbols("sgjourney:galaxy_milky_way")
 ___
 
 {% include components/computercraft_function.html
-name="overridePointOfOrigin"
-arguments="pointOfOrigin"
-source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L69"
+    name="overridePointOfOrigin"
+    arguments="pointOfOrigin"
+    source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L69"
 %}
 
 Overrides the Point Of Origin used by the gate.
