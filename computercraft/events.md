@@ -1,9 +1,13 @@
 ---
 title: Events
-nav_order: 50
+nav_order: 40
 parent: Computercraft
 custom_css: "/assets/css/computercraft.css"
 ---
+
+[//]: # (TODO: Keep event list on a standalone page (here)
+[//]: # (Split events by connected peripherals)
+[//]: # (TODO: update the list of events - gate, transporter, transceiver)
 
 # Events
 {: .no_toc }

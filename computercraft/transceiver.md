@@ -1,6 +1,6 @@
 ---
 title: Transceiver
-nav_order: 5
+nav_order: 30
 parent: Computercraft
 custom_css: "/assets/css/computercraft.css"
 ---
