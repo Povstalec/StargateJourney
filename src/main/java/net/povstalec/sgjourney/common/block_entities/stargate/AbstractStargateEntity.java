@@ -1153,6 +1153,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.address;
 	}
 	
+	public Address getEncodedSymbols()
+	{
+		return this.encodedSymbols;
+	}
+	
 	public boolean isSymbolInAddress(int symbol)
 	{
 		return encodedSymbols.containsRegularSymbol(symbol, 0, address.getLength()); // Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)

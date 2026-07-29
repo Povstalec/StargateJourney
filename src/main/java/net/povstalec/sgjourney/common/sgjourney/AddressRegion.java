@@ -90,7 +90,7 @@ public class AddressRegion
 			if(galacticAddress.getValue().address().getType() != Address.Type.ADDRESS_7_CHEVRON)
 				throw new IllegalArgumentException("Invalid Galactic Address " + galacticAddress.getValue().address() + " (should be 6 symbols long)");
 		}
-		this.galacticAddresses = new HashMap<>(galacticAddresses);
+		this.galacticAddresses = new LinkedHashMap<>(galacticAddresses);
 	}
 	
 	public AddressRegion(ResourceKey<AddressRegion> addressRegionKey, String name, @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, int symbolPrefix, Address.Immutable extragalacticAddress)
@@ -217,7 +217,12 @@ public class AddressRegion
 		for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> entry : this.galacticAddresses.entrySet())
 		{
 			if(universe.hasGalaxy(entry.getKey()))
-				return universe.getGalaxy(entry.getKey()).getAddressRegion(address);
+			{
+				AddressRegion addressRegion = universe.getGalaxy(entry.getKey()).getAddressRegion(address);
+				
+				if(addressRegion != null)
+					return addressRegion;
+			}
 		}
 		
 		return null;
