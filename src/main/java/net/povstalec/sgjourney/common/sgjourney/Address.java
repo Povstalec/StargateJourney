@@ -183,15 +183,30 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
-	public boolean containsRegularSymbol(int symbol)
+	public boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
 	{
-		for(int i = 0; i < regularSymbolCount(); i++)
+		toExclusive = Math.min(toExclusive, regularSymbolCount());
+		
+		for(int i = fromInclusive; i < toExclusive; i++)
 		{
 			if(symbolAt(i) == symbol)
 				return true;
 		}
 		
 		return false;
+	}
+	
+	public boolean containsRegularSymbol(int symbol)
+	{
+		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
+	}
+	
+	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
+	{
+		if(symbol == 0)
+			return hasPointOfOrigin();
+		
+		return containsRegularSymbol(symbol, fromInclusive, toExclusive);
 	}
 	
 	public boolean containsSymbol(int symbol)

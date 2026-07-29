@@ -124,6 +124,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate)
 	{
+		if(level.isClientSide())
+			return StargateInfo.Feedback.NONE.withInfo();
+		
 		canEngage = canEngageStargate;
 		
 		if(isSymbolOutOfBounds(symbol))
@@ -142,14 +145,16 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
 			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
 		
-		if(addressBuffer.containsSymbol(symbol))
-			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
+		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
+		
+		if(addressBuffer.containsSymbol(mappedSymbol))
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(mappedSymbol));
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
-		addressBuffer.addSymbol(symbol);
-		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
+		addressBuffer.addSymbol(mappedSymbol);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(mappedSymbol));
 	}
 	
 	@Override
@@ -216,11 +221,11 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
 			if(!isRotating())
-				startRotation(addressBuffer.symbolAt(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(addressBuffer.symbolAt(symbolBuffer)) : alternatingDirection(address.getLength()));
+				startRotation(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)), CommonStargateConfig.universe_best_direction.get() ?
+						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirection(address.getLength()));
 			
 			if(rotation == desiredRotation)
-				directEngageSymbol(getCurrentSymbol(), canEngage);
+				super.directEngageSymbol(getCurrentSymbol(), canEngage);
 		}
 	}
 	

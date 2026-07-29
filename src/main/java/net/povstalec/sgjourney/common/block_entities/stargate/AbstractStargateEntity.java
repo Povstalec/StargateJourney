@@ -91,6 +91,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final String ADDRESS = "Address";
 	public static final String ENERGY = "Energy";
 	
+	public static final String ENCODED_SYMBOLS = "encoded_symbols";
+	
 	// Connections
 	public static final String CONNECTION_STATE = "connection_state";
 	public static final String CONNECTION_ID = "ConnectionID";
@@ -162,7 +164,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	private final ResourceLocation defaultVariant;
 	
 	// Dialing and memory
-	protected Address.Mutable address = new Address.Mutable();
+	protected Address.Mutable address = new Address.Mutable(); // Address used for dialing
+	public Address.Mutable encodedSymbols = new Address.Mutable(); // Symbols that were actually physically encoded on the Stargate, mainly used for rendering
 	@Nullable
 	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
@@ -272,6 +275,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		timesOpened = tag.getInt(TIMES_OPENED);
 		address.fromArray(tag.getIntArray(ADDRESS));
+		encodedSymbols.fromArray(tag.getIntArray(ENCODED_SYMBOLS));
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
 		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
@@ -336,6 +340,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		tag.putInt(TIMES_OPENED, timesOpened);
 		tag.putIntArray(ADDRESS, address.getArray());
+		tag.putIntArray(ENCODED_SYMBOLS, encodedSymbols.getArray());
 		
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		if(!networks.isEmpty())
@@ -380,6 +385,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		tag.putLong(ENERGY, this.energyStorage.getTrueEnergyStored());
 		
 		tag.putIntArray(ADDRESS, address.getArray());
+		tag.putIntArray(ENCODED_SYMBOLS, encodedSymbols.getArray());
 		tag.putIntArray(ENGAGED_CHEVRONS, engagedChevrons);
 		
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
@@ -408,6 +414,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			energyStorage.setEnergy(tag.getLong(ENERGY));
 			
 			address.fromArray(tag.getIntArray(ADDRESS));
+			encodedSymbols.fromArray(tag.getIntArray(ENCODED_SYMBOLS));
 			engagedChevrons = tag.getIntArray(ENGAGED_CHEVRONS);
 			
 			restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
@@ -542,7 +549,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(isSymbolOutOfBounds(symbol))
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol));
 		
-		return encodeSymbol(symbolMap.getMappedSymbol(symbol), canEngageStargate);
+		StargateInfo.FeedbackMessage result = encodeSymbol(symbolMap.getMappedSymbol(symbol), canEngageStargate);
+		
+		if(result.feedback() == StargateInfo.Feedback.SYMBOL_ENCODED)
+			encodedSymbols.addSymbol(symbol); // Keep track of what symbols have physically been encoded on the gate, ignoring any remapping
+		return result;
 	}
 	
 	/**
@@ -863,6 +874,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected void resetAddress()
 	{
 		this.address.reset();
+		this.encodedSymbols.reset();
 		this.engagedChevrons = Dialing.DEFAULT_CHEVRON_CONFIGURATION;
 		this.symbolMap.reset();
 		setConnectionState(StargateConnection.State.IDLE);
@@ -1143,7 +1155,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean isSymbolInAddress(int symbol)
 	{
-		return getAddress().containsRegularSymbol(this.symbolMap.getMappedSymbol(symbol));
+		return encodedSymbols.containsRegularSymbol(symbol, 0, address.getLength()); // Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)
 	}
 	
 	public int getChevronsEngaged()
