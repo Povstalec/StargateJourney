@@ -11,6 +11,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 // import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -66,17 +67,8 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements Block
 	{
 		ServerLevel level = server.getLevel(dimension);
 
-		if (level != null) {
-			
-			final SubLevel subLevel = Sable.HELPER.getContaining(level, blockPos);
-			if (subLevel instanceof final ServerSubLevel serverSubLevel) {
-				final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
-				container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
-			}
-
-			if(level.getBlockEntity(blockPos) instanceof PegasusStargateEntity stargate)
-				return cacheStargateEntity(stargate);
-		}
+		if(level != null && level.getBlockEntity(blockPos) instanceof PegasusStargateEntity stargate)
+			return cacheStargateEntity(stargate);
 
 		return null;
 	}

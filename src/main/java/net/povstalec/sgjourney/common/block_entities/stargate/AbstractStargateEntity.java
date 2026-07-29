@@ -599,6 +599,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public StargateInfo.FeedbackMessage engageStargate()
 	{
+		StargateJourney.LOGGER.debug("Stargate connection: "+isConnected());
 		if(!getAddress().canBeDialed()) // Address is too short or does not contain a Point of Origin
 			return resetStargate(makeDialAttempt(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo()));
 		else if(!isConnected())
@@ -1269,23 +1270,18 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		if(FORCE_LOAD_CHUNK)
 		{
-			if(connectionState != StargateConnection.State.IDLE) {
-				setLoaded(true);
-				// final SubLevel subLevel = Sable.HELPER.getContaining(this);
-				// if (subLevel instanceof final ServerSubLevel serverSubLevel) {
-				// 	final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
-				// 	container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
-				// }
-			} else {
-				setLoaded(false);
-			}
+			if(connectionState != StargateConnection.State.IDLE)
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), true);
+				
+				final SubLevel subLevel = Sable.HELPER.getContaining(this);
+				if (subLevel instanceof final ServerSubLevel serverSubLevel) {
+					final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
+					container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
+				}
+				
+			else
+				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), false);
 		}
-	}
-
-	public void setLoaded(boolean loadState)
-	{
-		level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getCenter().x), SectionPos.blockToSectionCoord(this.getCenter().z), loadState);
-		level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), loadState);
 	}
 	
 	public void setStargateState()

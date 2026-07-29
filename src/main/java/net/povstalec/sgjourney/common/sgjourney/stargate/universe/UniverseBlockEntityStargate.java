@@ -10,6 +10,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -65,17 +66,8 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if (level != null) {
-			
-			final SubLevel subLevel = Sable.HELPER.getContaining(level, blockPos);
-			if (subLevel instanceof final ServerSubLevel serverSubLevel) {
-				final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
-				container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
-			}
-
-			if(level.getBlockEntity(blockPos) instanceof UniverseStargateEntity stargate)
-				return cacheStargateEntity(stargate);
-		}
+		if(level != null && level.getBlockEntity(blockPos) instanceof UniverseStargateEntity stargate)
+			return cacheStargateEntity(stargate);
 		
 		return null;
 	}

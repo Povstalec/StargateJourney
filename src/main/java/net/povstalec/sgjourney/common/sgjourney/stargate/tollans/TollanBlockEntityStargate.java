@@ -65,17 +65,8 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if (level != null) {
-			
-			final SubLevel subLevel = Sable.HELPER.getContaining(level, blockPos);
-			if (subLevel instanceof final ServerSubLevel serverSubLevel) {
-				final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
-				container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
-			}
-
-			if(level.getBlockEntity(blockPos) instanceof TollanStargateEntity stargate)
-				return cacheStargateEntity(stargate);
-		}
+		if(level != null && level.getBlockEntity(blockPos) instanceof TollanStargateEntity stargate)
+			return cacheStargateEntity(stargate);
 		
 		return null;
 	}
