@@ -405,6 +405,8 @@
 	
 	"item.sgjourney.syringe": "Syringe",
 	
+	"item.sgjourney.schrodingers_map": "Schrödinger's Map",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologist Notebook",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
@@ -1055,6 +1057,15 @@
 	"tooltip.sgjourney.naquadah_generator_core.description": "Provides energy to the DHD",
 	"tooltip.sgjourney.fusion_core.fuel": "Fusion Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
+	
+	
+	"message.sgjourney.open_wiki_link": "Open wiki link",
+	
+	"message.sgjourney.schrodingers_map.error.dimension": "Can't use map in this Dimension, expected Dimension: %s",
+	"message.sgjourney.schrodingers_map.error.structure": "Could not find Structure",
+	"message.sgjourney.schrodingers_map.error.unique_structure": "Could not find Unique Structure",
+	"message.sgjourney.schrodingers_map.error.unique_structure_not_found": "Expected Unique Structure at %s but found none",
+	"message.sgjourney.schrodingers_map.error.troubleshoot": "Check how to troubleshoot this problem on the wiki",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transport Rings Busy",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "No Transport Rings Nearby",
