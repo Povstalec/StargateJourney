@@ -27,6 +27,9 @@ ___
 
 ## Redstone
 
+{: .future }
+Currently, the interface reacts only to Stargates, redstone integration for ring transporters is planned
+
 The interface does not provide a redstone signal directly but **through a [redstone comparator](https://minecraft.fandom.com/wiki/Redstone_Comparator)** (like a hopper or lectern).
 The provided redstone signal differs based on selected interface mode.
 

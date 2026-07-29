@@ -16,13 +16,16 @@ This is achieved through the use of Interfaces,
 which, as the name suggests,
 interface with alien technology and enable you to control it.
 
-They can read information from a Stargate and provide a [redstone signal with a comparator]({{ '/stargate-technology/stargate-interface/' | absolute_url }}).
-And they can also act as **computercraft peripherals**.
+They can read information from a Stargate and provide a [redstone signal with a comparator]({{ '/stargate-technology/interface' | absolute_url }}).
+And they can also act as **computercraft peripherals**.  
+This page will only cover the integration of interfaces with [CC: Tweaked](https://tweaked.cc/).
 
 There are three available Interfaces -
 Basic Interface,
 Crystal Interface,
-and Advanced Crystal Interface.
+and Advanced Crystal Interface.  
+[See the interface page for general description and redstone interaction.]({{ '/stargate-technology/interface' | absolute_url }})
+
 
 <div class="flex-row flex-wrap" markdown="block">
 
@@ -32,33 +35,32 @@ and Advanced Crystal Interface.
 
 </div>
 
-<blockquote class="warning"> 
-<p>
-    Unless there is a label with interface name at the function, it can be used by any interface.<br> 
-    If there is a label, the function is only available for the specified interface.
-</p> 
-<p>
-    A similar applies to return values. 
-    Some return values might only be available for crystal or advanced crystal interface.
-</p>
+___
 
-<!-- %- include components/interface_label.html type="basic" -% -->
+## Available functions
 
-{%- include components/interface_label.html type="crystal" -%}
-{%- include components/interface_label.html type="advanced_crystal" -%}
+**Functions available** on the interface depends on the technology to which the **interface is connected**.
+- [Interface connected to a Stargate]({{ '/computercraft/stargate-interface/' | absolute_url }})
+- [Interface connected to a Ring Transporter]({{ '/computercraft/ring-transporter-interface/' | absolute_url }})
 
-</blockquote>
-
+___
 
 ## Connecting the interface
 
-[//]: # (TODO: update the general description of interface to also include other technology e.g. rings)
+The interface **needs to face** the technology it should connect to.  
+The correct orientation can be seen on the image below where the basic interface is **facing the glass block**.
 
-The interface needs to face the stargate (the blank black side must face **away from the gate**).
+![Basic Interface facing a glass block]({{ '/assets/img/computercraft/interface_orientation.png' | absolute_url }})
+{: .max-width-256 }
 
-The computer needs to be either placed right next to the interface, the side does not matter.
-Or you need to connect the interface using a cable modem.
-Note that the cable modems on both sides need to be activated by right-clicking, lighting them red.
+In the same style, the interface can be oriented up or down as well.
+It will connect to any supported block **right in front of it**.
+There must be no other block between the interface and the block, they must be **directly touching** each other.
+
+To connect a **computer** to the interface, it needs to either be placed **right next to the interface**, 
+or connected with a **cable modem**.
+The wireless modem can **not** be used.
+Note that the cable modems on both sides need to be **activated by right-clicking**, lighting them red.
 
 ![Connecting the interface to the computer]({{ site.baseurl }}/assets/img/computercraft/connecting_interface_to_computer.png)
 
@@ -71,7 +73,7 @@ if interface == nil then
 end
 ```
 You can also instruct the program to use any available interface type,
-but keep in mind that not all features are available for all interface types.
+but keep in mind that **not all features** are available for **every interface type**.
 ```lua
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
 if interface == nil then
@@ -79,11 +81,15 @@ if interface == nil then
 end
 ```
 
-
-## Common functions
-These are the functions every Interface has available at all times.
+**See also about CC:Tweaked peripherals**  
+- [peripheral](https://tweaked.cc/module/peripheral.html)
+- [peripheral.find](https://tweaked.cc/module/peripheral.html#v:find)
 
 ___
+
+## Common Interface Functions
+The following functions are available to **any interface** at all times.
+Even when the interface is not connected ty any other technology.
 
 {% include components/computercraft_function.html
     name="addressToString"
@@ -91,7 +97,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
 %}
 
-Converts the array specified by address to a form used elsewhere in the mod (`-1-2-3-4-5-6-`).
+Converts the array specified by address to a form used elsewhere in the mod: `-1-2-3-4-5-6-7-8-`.
 
 **Parameters**
 1. `address`: `number[]` The array of numbers representing an address.
@@ -114,6 +120,7 @@ print(stringAddress) -- prints -26-6-14-31-11-29-
 
 <details markdown="block">
 <summary>Lua equivalent</summary>
+A function having the same effect implemented in Lua without the need of an interface.
 ```lua
 function addressToString(address)
     if #address == 0 or #address > 8 then
@@ -132,7 +139,8 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L96"
 %}
 
-Returns the current amount of energy [FE (Forge Energy)] stored in the interface.
+Returns the current amount of energy stored in the interface.
+Uses FE (Forge Energy).
 
 **Returns**
 1. `number` The energy [FE] stored within the interface
@@ -193,7 +201,7 @@ Returns the current energy target that is set for the interface.
 1. `number` The current energy target [FE]
 
 **See also**
-- [Energy Target](/stargate-network/interface/#energy-target)
+- [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }})
 - [setEnergyTarget(energyTarget)](#setEnergyTarget)
 
 **Usage**
@@ -225,7 +233,7 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 1. `energyTarget`: `number` The new energy target
 
 **See also**
-- [Energy Target](/stargate-network/interface/#energy-target)
+- [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }})
 - [getEnergyTarget()](#getEnergyTarget)
 
 **Usage**
