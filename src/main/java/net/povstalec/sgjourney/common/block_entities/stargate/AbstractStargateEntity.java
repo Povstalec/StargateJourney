@@ -165,7 +165,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	// Dialing and memory
 	protected Address.Mutable address = new Address.Mutable(); // Address used for dialing
-	public Address.Mutable encodedSymbols = new Address.Mutable(); // Symbols that were actually physically encoded on the Stargate, mainly used for rendering
+	protected Address.Mutable encodedSymbols = new Address.Mutable(); // Symbols that were actually physically encoded on the Stargate, mainly used for rendering
 	@Nullable
 	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
