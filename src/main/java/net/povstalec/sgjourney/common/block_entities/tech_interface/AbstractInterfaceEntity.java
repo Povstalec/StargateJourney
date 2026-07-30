@@ -125,13 +125,6 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		this.peripheralWrapper.getPeripheral().invalidate();
 	}
 
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
-		this.peripheralWrapper.getPeripheral().invalidate();
-	}
-
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
 		requiresUpdate = true;
