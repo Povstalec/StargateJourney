@@ -20,12 +20,17 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.Interface
 
 public class InterfacePeripheral implements IDynamicPeripheral
 {
-	protected AbstractInterfaceEntity interfaceEntity;
-	protected HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<>();
+	protected final AbstractInterfaceEntity interfaceEntity;
+	/**
+	 * The entity for which the peripheral was initialized
+	 */
+	protected final BlockEntity targetEntity;
+	protected final HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<>();
 	
-	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity)
+	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity, BlockEntity targetEntity)
 	{
 		this.interfaceEntity = interfaceEntity;
+		this.targetEntity = targetEntity;
 		
 		this.registerMethod(new InterfaceMethods.SetEnergyTarget());
 		this.registerMethod(new InterfaceMethods.AddressToString());
