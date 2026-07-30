@@ -519,7 +519,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		
 		StargateInfo.FeedbackMessage result = encodeSymbol(symbolMap.getMappedSymbol(symbol), canEngageStargate);
 		
-		if(result.feedback() == StargateInfo.Feedback.SYMBOL_ENCODED)
+		if(result.feedback() == StargateInfo.Feedback.SYMBOL_ENCODED && !encodedSymbols.containsSymbol(symbol))
 			encodedSymbols.addSymbol(symbol); // Keep track of what symbols have physically been encoded on the gate, ignoring any remapping
 		return result;
 	}

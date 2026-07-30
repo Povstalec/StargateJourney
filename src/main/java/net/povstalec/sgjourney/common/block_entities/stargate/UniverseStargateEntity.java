@@ -160,8 +160,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
-		if(!addressBuffer.containsSymbol(symbol))
-			addressBuffer.addSymbol(symbol);
+		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
+		if(!addressBuffer.containsSymbol(mappedSymbol))
+			addressBuffer.addSymbol(mappedSymbol);
 		
 		return super.directEngageSymbol(symbol, canEngageStargate);
 	}

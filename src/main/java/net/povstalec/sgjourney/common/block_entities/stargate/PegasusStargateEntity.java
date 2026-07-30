@@ -5,6 +5,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
@@ -167,10 +168,37 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		return ClientStargateConfig.pegasus_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
 	}
 	
-	public void dynamicSymbols(boolean dynamicSymbols)
+	public boolean overridePointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
+		if(!PointOfOrigin.isValid(level.getServer(), pointOfOrigin))
+			return false;
+		
+		symbolInfo().setPointOfOrigin(pointOfOrigin);
+		updateClient();
+		setChanged();
+		return true;
+	}
+	
+	public boolean overrideSymbols(ResourceKey<Symbols> symbols)
+	{
+		if(!Symbols.isValid(level.getServer(), symbols))
+			return false;
+		
+		symbolInfo().setSymbols(symbols);
+		updateClient();
+		setChanged();
+		return true;
+	}
+	
+	public boolean dynamicSymbols(boolean dynamicSymbols)
+	{
+		if(this.dynamicSymbols == dynamicSymbols)
+			return false;
+		
 		this.dynamicSymbols = dynamicSymbols;
-		this.setChanged();
+		updateClient();
+		setChanged();
+		return true;
 	}
 	
 	public boolean useDynamicSymbols()
@@ -207,6 +235,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			if(!this.level.isClientSide())
 				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
+		encodedSymbols.addSymbol(symbol); // Keep track of what symbols have physically been encoded on the gate, ignoring any remapping
 		addressBuffer.addSymbol(mappedSymbol);
 		
 		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, spinClockwise());
@@ -217,8 +246,9 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	@Override
 	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
 	{
-		if(!addressBuffer.containsSymbol(symbol))
-			addressBuffer.addSymbol(symbol);
+		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
+		if(!addressBuffer.containsSymbol(mappedSymbol))
+			addressBuffer.addSymbol(mappedSymbol);
 		
 		return super.directEngageSymbol(symbol, canEngageStargate);
 	}

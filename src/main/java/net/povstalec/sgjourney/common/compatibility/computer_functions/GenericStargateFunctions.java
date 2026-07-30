@@ -140,7 +140,9 @@ public class GenericStargateFunctions
 		if(stargate.getAddress().containsSymbol(newSymbol))
 			return false; // Don't remap to a symbol that's contained in the encoded address
 		
-		return stargate.symbolMap.remapSymbol(originalSymbol, newSymbol);
+		boolean result = stargate.symbolMap.remapSymbol(originalSymbol, newSymbol);
+		stargate.updateClient();
+		return result;
 	}
 	
 	public static int getMappedSymbol(AbstractStargateEntity<?> stargate, int symbol)
