@@ -86,6 +86,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public static final String ENCODED_SYMBOLS = "encoded_symbols";
 	
+	public static final String ENCODED_SYMBOLS = "encoded_symbols";
+	
 	// Connections
 	public static final String CONNECTION_STATE = "connection_state";
 	public static final String CONNECTION_ID = "connection_id";

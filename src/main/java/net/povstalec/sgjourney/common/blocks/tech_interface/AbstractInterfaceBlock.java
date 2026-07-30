@@ -152,7 +152,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		Direction direction = state.getValue(FACING);
 		BlockPos targetPos = pos.relative(direction);
 		
-		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity && interfaceEntity.updateInterface(level, targetPos, block, state))
+		if(targetPos.equals(pos2) && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity && interfaceEntity.updateInterface(level, pos, block, state))
 			level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(FACING));
 		
 		boolean hasSignal = level.hasNeighborSignal(pos) || level.hasNeighborSignal(pos.above());
