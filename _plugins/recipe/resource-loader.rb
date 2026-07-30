@@ -1,0 +1,134 @@
+require 'open-uri'
+require 'json'
+
+module Recipe
+  TAG_CACHE = {}
+  class ResourceLoader
+
+    # @param context [Liquid::Context] The template context
+    def initialize(context)
+      @context = context
+      @namespace_handlers = {
+        "sgjourney" => ResourceLoaderHandler.new(method(:load_sgj_item), method(:load_sgj_tag)),
+        "minecraft" => ResourceLoaderHandler.new(method(:load_minecraft_item), method(:load_minecraft_tag)),
+        "neoforge" => ResourceLoaderHandler.new(method(:load_neoforge_item), method(:load_neoforge_tag)),
+        "c" => ResourceLoaderHandler.new(method(:load_neoforge_item), method(:load_neoforge_tag)),
+      }.freeze
+    end
+
+    # Loads image for the resource allowing to render it afterward.
+    # Note that loaded images are saved to the #RELATIVE_JEKYLL_CRAFTING_ASSETS directory
+    # @param resource [McResource]
+    def load(resource)
+      if resource.has_asset_url
+        return
+      end
+
+      static_entry = Recipe.static_item_entry(resource)
+      if static_entry && static_entry["texture"]
+        resource.asset_url = static_entry["texture"]
+        return
+      end
+
+      unless @namespace_handlers.has_key?(resource.namespace)
+        Jekyll.logger.error("Unable to load resource, unknown namespace: #{resource.namespace} for #{resource}")
+        return
+      end
+
+      @namespace_handlers[resource.namespace].load(resource)
+    end
+
+    private # methods below are private
+
+    # @param resource [McResource]
+    def load_minecraft_item(resource)
+      capital_name = resource.name.split('_').map(&:capitalize).join('_')
+      resource.asset_url = "https://minecraft.wiki/images/Invicon_" + capital_name + ".png"
+    end
+
+    # @param resource [McResource]
+    def load_minecraft_tag(resource)
+      url = "https://assets.mcasset.cloud/#{RECIPE_GAME_VERSION}/data/minecraft/tags/item/#{resource.name}.json"
+      tag_data = JSON.parse(URI.open(url, open_timeout: 5, read_timeout: 10).read)
+      tag = McResource.from(tag_data.fetch("values")[0])
+      process_tag(tag, resource)
+    end
+
+    # @param resource [McResource]
+    def load_sgj_item(resource)
+      source_file = File.join(IMPLEMENTATION_BRANCH, 'src/main/resources/assets/sgjourney/textures/item/', "#{resource.name}.png")
+      exported_source_file = File.join(PROJECT_DIRECTORY, "exported/sgjourney", "#{resource.name}.png")
+      destination_file = resource.resource_file(false) # dynamic asset
+      if File.exist?(resource.resource_file(true)) # check if static asset exists
+        resource.asset_url = resource.asset_file(true)
+      elsif File.exist?(destination_file)
+        resource.asset_url = resource.asset_file(false) # dynamic asset already exists
+      elsif File.exist?(source_file)
+        Jekyll.logger.debug("Copying #{source_file} to #{destination_file}")
+        FileUtils.mkdir_p(File.dirname(destination_file))
+        FileUtils.cp(source_file, destination_file)
+        resource.asset_url = resource.asset_file(false) # dynamic asset
+      elsif File.exist?(exported_source_file)
+        Jekyll.logger.info("Copying exported asset to static assets: #{resource.name}.png")
+        FileUtils.mkdir_p(File.dirname(resource.resource_file(true))) # static asset directory
+        FileUtils.cp(exported_source_file, resource.resource_file(true))
+        resource.asset_url = resource.asset_file(true) # static asset
+      else
+        raise "Missing source file #{source_file} for resource #{resource}"
+      end
+    end
+
+    # @param resource [McResource]
+    def load_sgj_tag(resource)
+      tag_file = File.join(IMPLEMENTATION_BRANCH, "src/main/resources/data/#{resource.namespace}/tags/item/", "#{resource.name}.json")
+      if File.exist?(tag_file)
+        tag = McResource.from(JSON.parse(File.read(tag_file))['values'][0])
+        process_tag(tag, resource)
+      else
+        raise "Missing tag file #{tag_file} for resource #{resource}"
+      end
+    end
+
+    def load_neoforge_item(resource)
+      resource.asset_url = File.join("assets", "img", "mcui", "questionmark.png")
+    end
+
+    def load_neoforge_tag(resource)
+      resource.asset_url = File.join("assets", "img", "mcui", "hash_tag.png")
+    end
+
+    def process_tag(tag, resource)
+      load(tag)
+
+      if tag.nil? or tag.is_tag
+        Jekyll.logger.error("Failed to resolve tag to an item: resource=#{resource.inspect} tag=#{tag.inspect}")
+        raise "Failed to resolve tag to an item"
+      end
+
+      TAG_CACHE[resource] = tag
+      resource.asset_url = tag.asset_url
+      Jekyll.logger.debug("#{resource} resolved to #{tag}")
+    end
+  end
+  class ResourceLoaderHandler
+    # @param load_item [Method]
+    # @param load_tag [Method]
+    def initialize(load_item, load_tag)
+      @load_item = load_item
+      @load_tag = load_tag
+    end
+
+    # @param resource [McResource]
+    def load(resource)
+      if resource.is_tag
+        if TAG_CACHE.has_key?(resource)
+          resource.asset_url = TAG_CACHE[resource].asset_url
+          return
+        end
+        @load_tag.call(resource)
+      else
+        @load_item.call(resource)
+      end
+    end
+  end
+end

@@ -1,7 +1,6 @@
 ---
 title: Chulak
-nav_order: 10
-has_children: false
+nav_order: 30
 parent: Dimensions
 ---
 

@@ -1,0 +1,54 @@
+---
+# required to trigger the compilation
+---
+
+.h-function {
+  display: flex;
+  justify-content: space-between;
+
+  code {
+    display: inline;
+    margin: 0;
+    line-height: 1.25;
+    font-size: 1.125rem !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  a.source{
+    font-size: 1rem;
+    &:before {
+      display: inline;
+      content: '[';
+    }
+    &:after {
+      content: ']';
+    }
+  }
+}
+
+span.label.interface {
+
+  display: inline-flex;
+  flex-direction: row;
+  padding: 0.25em !important;
+  margin: 0;
+  margin-right: 0.5em;
+
+  img {
+    width:3em;
+  }
+
+  &.basic {
+    background-color: #b9b9b9;
+  }
+  &.crystal {
+    background-color: #766a5c;
+  }
+  &.advanced_crystal {
+    background-color: #09797b;
+  }
+}

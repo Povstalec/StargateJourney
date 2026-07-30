@@ -2,9 +2,16 @@
 nav_exclude: true
 ---
 
-![Stargate Journey logo]({{ site.baseurl }}/assets/img/logo.png)
+{: .warning }
+> This is development version of the documentation.  
+> The production version can be found at [https://povstalec.github.io/StargateJourney/](https://povstalec.github.io/StargateJourney/)
+
+<div class="text-center" markdown="block">
+
+![Stargate Journey logo]({{ '/assets/img/logo.png' | absolute_url }})
 
 # Stargate Journey
+{: .no_toc }
 
 <div style="display: none">
     <p>// Lets call this an easter egg</p>
@@ -24,45 +31,55 @@ nav_exclude: true
 
 Stargate Journey is a mod for Minecraft with many additions, such as several dimensions, items, and obviously - Stargates.
 
+</div>
 
 {: .note }
-This project is in early development, and a lot of stuff still needs to be implemented.
-Things may be buggy, unfinished, or unobtainable in survival.
+This project is still in development, and a lot of stuff still needs to be implemented.
+Things may be buggy, unfinished, or unobtainable in survival.  
 If you find a bug, it will be appreciated if you report it to 
 [GitHub issues](https://github.com/Povstalec/StargateJourney/issues) or [Discord]({{ site.discord_invite_link }}).
 
-If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what_is_stargate).
+If you are __new to the topic__ and want to know what that thing is...
+Stargate, they call it - check [What's that Stargate anyway?]({{ '/what-is-stargate' | absolute_url }}).
 
 {: .highlight }
-If you are playing All the Mods 9 modpack, check the [ATM 9]({{ site.baseurl }}/atm9) section.
+If you are playing All the Mods 9 modpack, check the [Modpacks / All the Mods 9]({{ '/modpacks/atm9' | absolute_url }}) section.
 
 The documentation is divided into a few main parts:
-* [Survival Guide]({{ site.baseurl }}/survival): A ~~recommended~~ possible way to progress through the mod in survival.
-* [Dimensions]({{ site.baseurl }}/additions/dimensions), [Items]({{ site.baseurl }}/additions/items), and [Blocks]({{ site.baseurl }}/additions/blocks): Detailed explanations on how they work and how to use them.
-* [Stargate network]({{ site.baseurl }}/stargate_network): Descriptions of the Stargate network.
-* [All the mods 9]({{ site.baseurl }}/atm9): Information on modifications and changes made by the modpack.
-* [Computercraft]({{ site.baseurl }}/computercraft): Integration with the [computercraft](https://tweaked.cc/) mod.
-* [Datapacks and Resourcepacks]({{ site.baseurl }}/datapacks): Features available for customization.
+* [Configuration]({{ '/configuration' | absolute_url }}): Explanation of configuration options and their impacts.
+* [Survival Guide]({{ '/survival' | absolute_url }}): A ~~recommended~~ possible way to progress through the mod in survival.
+* [Stargate Technology]({{ '/stargate-technology' | absolute_url }}): A look at Stargate mechanics and related technology, including DHDs, crystals and the iris.
+* [Stargate Network]({{ '/stargate-technology/stargate-network' | absolute_url }}): How are Stargates addressed and how they connect to each other.
+* [Blocks]({{ '/blocks' | absolute_url }}): Details about special blocks, machines, ores, their generation and machines.
+* [Items]({{ '/items' | absolute_url }}): Crafting resources, their processing, weapons and tools. Although, for crafting recipes it is strongly recommended to use the [JEI](https://www.curseforge.com/minecraft/mc-mods/jei) mod.
+* [Dimensions]({{ '/dimensions' | absolute_url }}): A list of new planets, how to get there and what to expect.
+* [Commands]({{ '/commands' | absolute_url }}): List of commands and their usage available for operators.
+* [Computercraft]({{ '/computercraft' | absolute_url }}): API documentation for compatibility integration with [ComputerCraft Tweaked](https://tweaked.cc/) mod.
+* [Datapacks and Resourcepacks]({{ '/datapacks' | absolute_url }}): Explanation of resourcepack and datapack features available for customization.
 
 {: .highlight }
 > Feel free to ask on the [Discord server]({{ site.discord_invite_link }}) if you have a question.
 > 
 > Before asking a question or reporting a bug,
-> please check the [F&Q]({{ site.baseurl }}/faq) section and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).  
+> please check the [F&Q]({{ '/faq' | absolute_url }}) and [Troubleshooting]({{ '/troubleshooting' | absolute_url }}) sections and try to use the search function on GitHub [issues](https://github.com/Povstalec/StargateJourney/issues) and [discussions](https://github.com/Povstalec/StargateJourney/discussions) or [Discord]({{ site.discord_invite_link }}).
 > Someone else may have already asked about that.
 
 ## Compatibility with other mods
 Stargate Journey is compatible with multiple other mods:
- - [CC:Tweaked](https://tweaked.cc/), which allows the control of Stargates with interfaces
- - [Stellar View](https://www.curseforge.com/minecraft/mc-mods/stellarview) can be used to enhance your experience of different planetary night skies
- - [Ad Astra](https://ad-astra.terrarium.wiki/ad-astra)'s two default Solar Systems are also considered Solar Systems within Stargate Journey
+ - [Stellar View](https://modrinth.com/mod/stellarview) can be used to enhance your experience of different planetary night skies
+ - [CC:Tweaked](https://modrinth.com/mod/cc-tweaked), which allows the control of Stargates with interfaces
+ - [Ad Astra](https://modrinth.com/mod/ad-astra) and [Stellaris](https://modrinth.com/mod/stellaris)two default Solar Systems are also considered Solar Systems within Stargate Journey
 
 ## Known incompatibilities
-Some mods have been found to break stargates or their generation: 
+Mods that have been found to break stargates or their generation: 
 
 - [Dimensional Threading](https://www.curseforge.com/minecraft/mc-mods/dimensional-threads) and similar mods, 
 when installed, Stargates won't be able to dial.
+
+
+<details markdown="block">
+<summary>Some mods caused stargate world generation issues, but the incompatibility was already fixed.</summary>
+
 - [Sparse Structures](https://modrinth.com/mod/sparsestructures) and similar mods that modifies the structures spacing/position, 
 Stargates might not generate, 
 you might not be able to find a Stargate and to reach other dimensions (Stargate will be missing there).
@@ -72,9 +89,14 @@ it is possible to disable spreading for specific structures with config ([exampl
 Stargates might not generate, you might not be able to find a Stargate and to reach other dimension (Stargate will be missing there).
 ([Possible fix with config example]({{ site.baseurl }}/others/structure_essentials))
 
+</details>
+
 ___
 
 ## Community Creations
+Some cool people found the mod interesting enough to create new content for it.  
+These are some of them:
+
 ### New Stargate Variants:
    - [More Gates](https://www.curseforge.com/minecraft/mc-mods/more-gates-mod-ver)
    - [Dimension Gates](https://discord.com/channels/1011344665678708818/1200953359650263100) (discord thread link)

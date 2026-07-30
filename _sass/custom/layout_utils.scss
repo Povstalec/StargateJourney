@@ -1,0 +1,56 @@
+/*
+
+  Layout class utilities
+
+*/
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.width-fit-content {
+  width: fit-content;
+  max-width: 100%;
+}
+
+@include mq(lg) {
+  .width-lg-50 {
+    width: 50%;
+  }
+
+  .child-md-max-width-50 > * {
+    max-width: 50%;
+  }
+}
+
+@include mq(xl) {
+  .max-width-xl-75 {
+    max-width: 75%;
+  }
+}
+
+// adds m-X-auto classes for each media query
+@each $media-query in map-keys($media-queries) {
+  @include mq($media-query) {
+    .m-#{$media-query}-auto {
+      margin: auto;
+    }
+  }
+}
+
+.m-auto {
+    margin: auto;
+}
+
+.vertical-text-top {
+  vertical-align: text-top;
+}
+
+.vertical-text-bottom {
+  vertical-align: text-bottom;
+}
+
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}

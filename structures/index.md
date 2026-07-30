@@ -1,6 +1,6 @@
 ---
 title: Structures
-nav_order: 60
-has_children: true
+nav_order: 100
 ---
 
+[//]: # (TODO: move structures to their respective dimensions)

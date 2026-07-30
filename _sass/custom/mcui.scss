@@ -1,0 +1,430 @@
+@CHARSET "UTF-8";
+
+/*-------------------------------------------------------
+          Minecraft User Interface CSS
+             Created by: Sven Pöche
+         https://github.com/Valgard/mcui/
+          Licensed under the MIT License
+Modifications have been made for the purpose of this wiki
+-------------------------------------------------------*/
+
+@font-face {
+  font-family: Minecraft;
+  src: url("../fonts/minecraft.eot?#iefix"),
+       url("../fonts/minecraft.woff") format('woff'),
+       url("../fonts/minecraft.ttf") format('truetype');
+}
+
+.mcui, .mcui * {
+  box-sizing: unset;
+}
+.minetip-tooltip, .minetip-tooltip * {
+  box-sizing: unset;
+}
+
+
+.invslot {
+  position: relative;
+  display: inline-block;
+  background: #8B8B8B no-repeat center center / 32px 32px;
+  border: 2px solid;
+  border-color: #373737 #FFF #FFF #373737;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  line-height: 1;
+  text-align: left;
+  vertical-align: bottom
+}
+
+.invslot:hover {
+  filter: brightness(1.15);
+}
+
+.invslot:before, .invslot:after {
+  content: "";
+  position: absolute;
+  background-color: #8B8B8B;
+  height: 2px;
+  width: 2px;
+  pointer-events: none
+}
+
+.invslot:before {
+  bottom: -2px;
+  left: -2px
+}
+
+.invslot:after {
+  top: -2px;
+  right: -2px
+}
+
+.invslot-large {
+  padding: 8px
+}
+
+.invslot-item, .invslot-item img {
+  position: relative;
+  display: block;
+  margin: -2px;
+  padding: 2px
+}
+
+.invslot-item-image {
+  image-rendering: pixelated;
+
+  & img {
+    width: 32px;
+    height: 32px;
+    text-indent: -9999px;
+    overflow: hidden
+  }
+}
+
+.invslot-stacksize {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  font-family: Minecraft, sans-serif !important;
+  font-weight: normal !important;
+  color: #FFF !important;
+  text-shadow: 2px 2px 0 #3F3F3F;
+  filter: dropshadow(color=#3F3F3F, offx=2, offy=2);
+  z-index: 2
+}
+
+.invslot-plain {
+  background-color: transparent;
+  border: 0
+}
+
+.invslot-plain:before, .invslot-plain:after {
+  content: none
+}
+
+.invslot-plain > .invslot-item, .invslot-plain > .invslot-item img {
+  margin: 0;
+  padding: 0
+}
+
+.mcui {
+  display: inline-block;
+  position: relative;
+  background-color: #C6C6C6;
+  border: 2px solid;
+  border-color: #DBDBDB #5B5B5B #5B5B5B #DBDBDB;
+  padding: 6px;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: bottom
+}
+
+.mcui-Crafting_Table > *, .mcui-Furnace > * {
+  display: inline-block;
+  vertical-align: top
+}
+
+.mcui-Crafting_Table .mcui-row {
+  display: block
+}
+
+.mcui-Crafting_Table > .mcui-arrow {
+  background: url("../img/mcui/arrow_small.png") no-repeat;
+  width: 32px;
+  height: 26px;
+  margin: 40px 4px 0
+}
+
+.mcui-Crafting_Table > .mcui-output {
+  margin-top: 28px
+}
+
+.mcui-Crafting_Table > .mcui-icons {
+  position: absolute;
+  top: 6px;
+  right: 6px
+}
+
+.mcui-Crafting_Table .mcui-shapeless, .mcui-Crafting_Table .mcui-fixed {
+  display: inline-block;
+  background-repeat: no-repeat;
+  width: 19px;
+  height: 15px;
+  cursor: help
+}
+
+.mcui-Crafting_Table .mcui-shapeless {
+  background-image: url("../img/mcui/shapeless.png")
+}
+
+.mcui-Crafting_Table .mcui-fixed {
+  background-image: url("../img/mcui/fixed.png")
+}
+
+.mcui-Furnace .mcui-fuel {
+  display: block;
+  background: url("../img/mcui/fire.png") no-repeat;
+  width: 36px;
+  height: 36px
+}
+
+.mcui-Furnace .mcui-fuel.mcui-inactive {
+  background-image: url("../img/mcui/fire_inactive.png")
+}
+
+.mcui-Furnace > .mcui-arrow {
+  background: url("../img/mcui/arrow_progress.png") no-repeat;
+  width: 44px;
+  height: 32px;
+  margin: 36px 18px 0 14px
+}
+
+.mcui-Furnace > .mcui-arrow.mcui-inactive {
+  background-image: url("../img/mcui/arrow_progress_inactive.png")
+}
+
+.mcui-Furnace > .mcui-output {
+  margin-top: 28px
+}
+
+.mcui-Brewing_Stand > * {
+  display: block
+}
+
+.mcui-Brewing_Stand .invslot {
+  vertical-align: top
+}
+
+.mcui-Brewing_Stand > .mcui-input {
+  text-align: center
+}
+
+.mcui-Brewing_Stand > .mcui-input > .invslot {
+  margin-top: 3px
+}
+
+.mcui-Brewing_Stand .mcui-bubbling, .mcui-Brewing_Stand .mcui-arrow {
+  display: inline-block;
+  background-repeat: no-repeat;
+  width: 24px;
+  height: 57px
+}
+
+.mcui-Brewing_Stand .mcui-bubbling {
+  background-image: url("../img/mcui/brewing_bubbles.gif")
+}
+
+.mcui-Brewing_Stand > .mcui-input.mcui-inactive > .mcui-bubbling {
+  background-image: url("../img/mcui/brewing_bubbles_inactive.png")
+}
+
+.mcui-Brewing_Stand .mcui-arrow {
+  background-image: url("../img/mcui/brewing_arrow.png")
+}
+
+.mcui-Brewing_Stand > .mcui-input.mcui-inactive > .mcui-arrow {
+  background-image: url("../img/mcui/brewing_arrow_inactive.png")
+}
+
+.mcui-Brewing_Stand > .mcui-paths {
+  position: relative;
+  background: url("../img/mcui/brewing_paths.png") no-repeat;
+  width: 60px;
+  height: 40px;
+  margin: -20px auto -16px;
+  z-index: 1
+}
+
+.mcui-Brewing_Stand .mcui-output .invslot {
+  background-image: url("../img/mcui/brewing_empty.png")
+}
+
+.mcui-Brewing_Stand .mcui-output2 {
+  margin: 14px 10px 0
+}
+
+.mcui-Hotbar {
+  display: inline-block;
+  position: relative;
+  border: 0;
+  padding: 0;
+  background-color: transparent
+}
+
+.mcui-Hotbar > .mcui-selector {
+  position: absolute;
+  top: -2px;
+  margin-left: -2px
+}
+
+.mcui-Hotbar > .mcui-slots {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 2px
+}
+
+.mcui-Hotbar .invslot {
+  margin: 4px
+}
+
+.sprite {
+  display: inline-block;
+  vertical-align: text-top;
+  height: 16px;
+  width: 16px;
+  background-repeat: no-repeat
+}
+
+.sprite + .sprite-text {
+  padding-left: 0.312em
+}
+
+.inv-sprite {
+  width: 32px;
+  height: 32px;
+  vertical-align: middle
+}
+
+
+#minetip-tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #100010;
+  background-color: rgba(16, 0, 16, 0.94);
+  color: #FFF;
+  padding: 0.375em;
+  font-family: Minecraft, sans-serif;
+  font-size: 16px;
+  word-spacing: 4px;
+  white-space: nowrap;
+  line-height: 1.25em;
+  text-shadow: 0.125em 0.125em 0 #3F3F3F;
+  margin: 0.125em 0.25em;
+  pointer-events: none;
+  z-index: 99
+}
+
+#minetip-tooltip:before {
+  content: "";
+  position: absolute;
+  top: 0.125em;
+  right: -0.125em;
+  bottom: 0.125em;
+  left: -0.125em;
+  border: 0.125em solid #100010;
+  border-style: none solid;
+  border-color: rgba(16, 0, 16, 0.94)
+}
+
+#minetip-tooltip:after {
+  content: "";
+  position: absolute;
+  top: 0.125em;
+  right: 0;
+  bottom: 0.125em;
+  left: 0;
+  border: 0.125em solid #2D0A63;
+  border-image: -webkit-linear-gradient(rgba(80, 0, 255, 0.31), rgba(40, 0, 127, 0.31)) 1;
+  border-image: linear-gradient(rgba(80, 0, 255, 0.31), rgba(40, 0, 127, 0.31)) 1
+}
+
+#minetip-tooltip > .description, #minetip-tooltip > .minetip-description {
+  display: block;
+  margin-top: 0.25em
+}
+
+.minetip-format-0 {
+  color: #000;
+  text-shadow: 0.125em 0.125em 0 #000
+}
+
+.minetip-format-1 {
+  color: #00A;
+  text-shadow: 0.125em 0.125em 0 #00002A
+}
+
+.minetip-format-2 {
+  color: #0A0;
+  text-shadow: 0.125em 0.125em 0 #002A00
+}
+
+.minetip-format-3 {
+  color: #0AA;
+  text-shadow: 0.125em 0.125em 0 #002A2A
+}
+
+.minetip-format-4 {
+  color: #A00;
+  text-shadow: 0.125em 0.125em 0 #2A0000
+}
+
+.minetip-format-5 {
+  color: #A0A;
+  text-shadow: 0.125em 0.125em 0 #2A002A
+}
+
+.minetip-format-6 {
+  color: #FA0;
+  text-shadow: 0.125em 0.125em 0 #2A2A00
+}
+
+.minetip-format-7 {
+  color: #AAA;
+  text-shadow: 0.125em 0.125em 0 #2A2A2A
+}
+
+.minetip-format-8 {
+  color: #555;
+  text-shadow: 0.125em 0.125em 0 #151515
+}
+
+.minetip-format-9 {
+  color: #55F;
+  text-shadow: 0.125em 0.125em 0 #15153F
+}
+
+.minetip-format-a {
+  color: #5F5;
+  text-shadow: 0.125em 0.125em 0 #153F15
+}
+
+.minetip-format-b {
+  color: #5FF;
+  text-shadow: 0.125em 0.125em 0 #153F3F
+}
+
+.minetip-format-c {
+  color: #F55;
+  text-shadow: 0.125em 0.125em 0 #3F1515
+}
+
+.minetip-format-d {
+  color: #F5F;
+  text-shadow: 0.125em 0.125em 0 #3F153F
+}
+
+.minetip-format-e {
+  color: #FF5;
+  text-shadow: 0.125em 0.125em 0 #3F3F15
+}
+
+.minetip-format-l {
+  font-weight: bold;
+  letter-spacing: 0.125em
+}
+
+.minetip-format-m {
+  text-decoration: line-through
+}
+
+.minetip-format-n {
+  text-decoration: underline
+}
+
+.minetip-format-o {
+  font-style: italic
+}
+

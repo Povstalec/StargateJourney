@@ -1,7 +1,6 @@
 ---
 title: Solar System
 nav_order: 20
-has_children: false
 parent: Datapacks and Resourcepacks
 ---
 

@@ -1,0 +1,24 @@
+{%- comment -%}
+    Include as: {%- include computercraft/interface_label.html type="basic"-%}
+    Include as: {%- include computercraft/interface_label.html type="crystal"-%}
+    Include as: {%- include computercraft/interface_label.html type="advanced_crystal"-%}
+    Results in: HTML of computercraft interface label containing the image and name in tooltip
+    Arguments:
+    - type: type of the interface: basic, crystal, or advanced crystal
+{%- endcomment -%}
+{%- assign type_clean = include.type | downcase | strip -%}
+{%- case type_clean -%}
+{%- when 'basic' -%}
+    {%- assign img_filename = 'basic_interface.png' -%}
+    {%- assign interface_title = 'Basic Interface' -%}
+    {%- assign title_color = '&r' -%}
+{%- when 'crystal' -%}
+    {%- assign img_filename = 'crystal_interface.png' -%}
+    {%- assign interface_title = 'Crystal Interface' -%}
+    {%- assign title_color = '&e' -%}
+{%- when 'advanced_crystal' -%}
+    {%- assign img_filename = 'advanced_crystal_interface.png' -%}
+    {%- assign interface_title = 'Advanced Crystal Interface' -%}
+    {%- assign title_color = '&b' -%}
+{%- endcase -%}
+<span class="label interface {{ type_clean }}" data-minetip-title="{{ title_color }}{{ interface_title }}"><img src="{{ '/assets/img/items/crafting/sgjourney/static/' | append: img_filename | absolute_url }}" alt="{{ interface_title }}" /></span>

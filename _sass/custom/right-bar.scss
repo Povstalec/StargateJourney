@@ -1,0 +1,144 @@
+
+.right-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 100; // otherwise it behind codeblocks for example
+  $right-bar-background: darken($body-background-color, 5%);
+  background-color: $right-bar-background;
+  max-width: calc(100vw - 60px) !important; // prevents overflowing of the toggle button out of the screen when the sidebar is too wide
+  border-left: $border $border-color;
+  height: 100vh;
+  overflow-y: auto;
+
+  @include mq(md) {
+    width: $nav-width-md;
+    min-width: $nav-width-md;
+    background-color: unset;
+    padding-right: $sp-1;
+
+    .menu-button {
+      display: none;
+    }
+  }
+
+  @include mq(lg) {
+    width: $nav-width;
+    min-width: $nav-width;
+  }
+
+  .site-nav {
+    display: none;
+    width: 100%;
+    padding: 1rem;
+
+    @include mq(md) {
+      display: block;
+      // add top/bottom padding to right bar (header height + top padding of left side bar)
+      padding-top: calc(#{$header-height} + #{$sp-8});
+      padding-bottom: calc(#{$header-height} + #{$sp-8});
+    }
+
+    &.nav-open {
+      display: block;
+    }
+  }
+
+  .nav-list-item::before {
+    @media (max-width: map-get($media-queries, "md")) {
+      top: 0.75em;
+    }
+    @media (max-width: map-get($media-queries, "sm")) {
+      top: 1em;
+    }
+  }
+
+  ol a.nav-list-link {
+    padding-left: 0 !important;
+  }
+
+  .active-hash {
+    //background-image: linear-gradient(-90deg, #201f23 0%, rgba(32, 31, 35, 0.8) 80%, rgba(32, 31, 35, 0) 100%);
+    background-color: #201f23;
+  }
+
+  // if there is a second level ol
+  // the first level will have lower latin (a, b, c, ...)
+  // while the second level will have decimal (1, 2, 3, ...)
+  ol:has(li > ol) {
+    li::before {
+      content: counter(step-counter, lower-latin) '.';
+    }
+    ol > li {
+      &::before {
+        content: counter(sub-counter, decimal) '.';
+      }
+      ol > li::before {
+        content: counter(sub-counter, lower-roman) '.';
+      }
+    }
+  }
+
+  // lets see how this will work,
+  // otherwise here is a fallback for • in second level
+  //@supports #{'not selector(:has(a, b))'} {
+  //  ol ol > li::before {
+  //      content: '•' !important;//counter(sub-counter, lower-roman);
+  //  }
+  //}
+  pre {
+    margin: 0;
+  }
+
+  code {
+    color: $grey-lt-000;
+    line-height: unset;
+    font-size: unset;
+
+    // make code blocks stripped (prevent line breaking)
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  // nav expander buttons are printed in toc after the link
+  .nav-list-expander {
+    top: 0;
+  }
+
+  // fixed button for sidebar toggle
+  $sidebar-toggle-button-color: $right-bar-background;
+  .menu-button {
+    position: fixed;
+    bottom: 2rem;
+    transform-box: view-box;
+    transform: translateX(-95%);
+    z-index: 99; // lower than the right bar
+
+    svg {
+      color: $body-text-color;
+    }
+
+    button {
+      border-radius: 1rem 0 0 1rem; // rounding on the left side
+      background-color: $sidebar-toggle-button-color;
+    }
+
+    button:hover {
+      $sidebar-toggle-button-hover-color: lighten($right-bar-background, 3%);
+      background-image: linear-gradient(
+                      -90deg,
+                      rgba($sidebar-toggle-button-hover-color, 1) 100%,
+                      rgba($sidebar-toggle-button-hover-color, 0.8) 20%,
+                      rgba($sidebar-toggle-button-hover-color, 0) 0%
+      );
+    }
+  }
+}
+
+.right-bar:not(:has(li)) {
+  .menu-button, .site-nav {
+    // if there is no content in the table of contents, hide the right bar contents
+    display: none;
+  }
+}

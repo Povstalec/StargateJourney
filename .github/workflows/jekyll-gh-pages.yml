@@ -28,6 +28,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: 'Povstalec/StargateJourney'
+          path: implementation_branch
+          # Git revision with branch containing mod implementation
+          # this is used e.g. by the recipe render plugin to read recipes definitions
+          ref: main
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
@@ -40,6 +49,12 @@ jobs:
       - name: Build with Jekyll
         # Outputs to the './_site' directory by default
         run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+        # it is required to execute the build twice - the recipe plugin needs to download files
+        # and the second run will include them
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}" --incremental
         env:
           JEKYLL_ENV: production
       - name: Upload artifact

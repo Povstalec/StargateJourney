@@ -1,4 +1,10 @@
+@import "./layout";
+@import "./layout_utils";
+@import "./right-bar";
+@import "./mcui";
+
 .site-title {
+  // lower the padding to give more space for the logo
   padding-left: 0.75rem;
   padding-right: 0.75rem;
 }
@@ -8,16 +14,28 @@
   flex-grow: 1;
 }
 
+.width-100 {
+  width: 100%;
+}
+
+.max-width-768 {
+  width: 768px;
+  max-width: 100%;
+}
+
 .max-width-512 {
-  max-width: 512px;
+  width: 512px;
+  max-width: 100%;
 }
 
 .max-width-256 {
-  max-width: 256px;
+  width: 256px;
+  max-width: 100%;
 }
 
 .max-width-128 {
-  max-width: 128px;
+  width: 128px;
+  max-width: 100%;
 }
 
 details {
@@ -31,6 +49,19 @@ details {
 
 .flex-align-items-center {
   align-items: center;
+}
+
+code {
+  text-wrap: nowrap;
+}
+
+img.inline-item {
+  max-height: 16px;
+  vertical-align: text-bottom;
+}
+
+.pixel-image {
+  image-rendering: pixelated;
 }
 
 // located in /assets/css

@@ -1,11 +1,13 @@
 ---
 title: Naquadah
 nav_order: 30
-has_children: false
 parent: Survival Guide
+description: "Guide to naquadah processing in the survival with the Stargate Journey Minecraft mod."
 ---
 
 # Naquadah
+{: .no_toc }
+
 > Naquadah is a rare, super-heavy, super-dense chemical element.  
 > Due to its unique properties, Naquadah forms the basis for many advanced technologies; 
 > the Stargates themselves are composed almost entirely of Naquadah.
@@ -15,17 +17,19 @@ parent: Survival Guide
 > Alternate forms of Naquadah include Liquid Naquadah, used to power Goa'uld Staff weapons.  
 > Source: [stargate.fandom.com](https://stargate.fandom.com/wiki/Naquadah)
 
-In Stargate Journey, Naquadah is the **primary resource** for further progression.  
-Naquadah can be found in two forms - **Raw** and **Pure Naquadah**.
+In Stargate Journey, Naquadah is the **primary resource** for further progression.
 
 ## Obtaining Naquadah
 
-[Naquadah ore]({{ site.baseurl }}/blocks/functional_blocks/#naquadah-ore) can generate in the Nether, but mainly on Abydos.
-The ore is generated underground (as a standard ore) in the Abydos desert biome
-or more concentrated amounts in the Abydos spires.
+[Naquadah ore]({{ '/blocks/ores/#naquadah-ore' | absolute_url }}) can generate on 
+[Abydos]({{ '/dimensions/abydos' | absolute_url }}) 
+and [Rima]({{ '/dimensions/rima' | absolute_url }}).
+On [Abydos]({{ '/dimensions/abydos' | absolute_url }}), it can be found underground or in the **Abydos spires biome**.
 
-It drops **raw Naquadah** and rarely **pure Naquadah**.
-This chance can be increased with **Fortune** enchantment.
+Mining the ore drops **raw Naquadah** and rarely **pure Naquadah**.
+The chance can be increased with [Fortune](https://minecraft.wiki/w/Fortune) enchantment.
+
+[//]: # (Add naquadah links)
 
 <details markdown="block">
 <summary><b>[Spoiler]</b> Abydos spires biome</summary>
@@ -38,10 +42,13 @@ Abydos spires biome contains stone pillars (spires) with a decent amount of Naqu
 
 ## Processing Naquadah
 
-**Raw Naquadah** can be processed into **Naquadah Alloy**,
-**Pure Naquadah**, **Weapons grade Naquadah**, **Liquid Naquadah**, and **Heavy liquid Naquadah**.
+**Raw Naquadah** can be mixed with either copper or iron to create an alloy.
 
-Processed Naquadah can then be used to craft crystals and your own Stargate.
+**Raw Naquadah** can be Liquidized in the **Naquadah liquidizer** into **Liquid Naquadah**, and then using **Pure Naquadah** into **Heavy liquid Naquadah**.
 
-## [Next page: End game]({{ site.baseurl }}/survival/end_game/)
+The **Pure Naquadah** can be processed into **Weapons grade Naquadah** in the blast furnace.
+
+Naquadah can then be used to craft crystals, tools, weapons, and even your own Stargate.
+
+## [Next page: End game]({{ site.baseurl }}/survival/end-game/)
 {: .no_toc }

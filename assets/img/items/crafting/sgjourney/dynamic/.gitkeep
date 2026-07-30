@@ -1,0 +1,2 @@
+# This directory is populated by the render recipe plugin
+# if you want to override a dynamic file with a statice one, place it in the static directory

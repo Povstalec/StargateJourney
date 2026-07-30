@@ -14,12 +14,18 @@ nav_external_links:
     url: https://github.com/Povstalec/StargateJourney
   - title: Discord
     url: https://discord.gg/VDSqzdBqRd
+  - title: Wiki dev GitHub
+    url: https://github.com/lukaskabc/StargateJourney/tree/documentation
 
 theme: just-the-docs
 # see https://just-the-docs.com/docs/configuration/
 permalink: pretty
 
 color_scheme: night
+
+safe: false
+plugins:
+  - jekyll-toc
 
 # Enable or disable the site search
 # Supports true (default) or false
@@ -82,6 +88,9 @@ callouts:
   future:
     title: Planned feature
     color: grey-lt
+  lore:
+    title: Lore
+    color: purple
 
 
 
@@ -118,3 +127,6 @@ exclude:
   - .gradle/
   - .bundle/
   - build/
+  - implementation_branch/
+  - scripts/
+  - section_includes/
