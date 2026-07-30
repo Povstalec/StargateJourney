@@ -74,8 +74,7 @@ Remember that there are [Nitwits](https://minecraft.wiki/w/Villager#Nitwit) who 
 You can find available trades in the archeology table description at [Blocks / Archeology table]({{ '/blocks/archeology-table/#archeologist-villager' | absolute_url }}).
 
 To unlock the **Map to Chappa'ai** trade, you must level up the villager to **Master**.
-If the villager refuses to give you the map at the Master level, he failed to locate the structure in the current dimension.
-Check [Troubleshooting / Stargate isn't generating]({{ '/troubleshooting/#i-created-a-new-world-but-the-stargate-isnt-generating' | absolute_url }}).
+The map sold by the villager can be opened using a **right-click**.
 
 ![Villager map trade]({{ '/assets/img/survival/stargate_map_trade.png' | absolute_url }})
 
