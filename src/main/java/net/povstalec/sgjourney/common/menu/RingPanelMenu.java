@@ -65,7 +65,7 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 		return this.blockEntity.transporterCache.returnCachedOrDefault(AbstractTransporterEntity::allowInterdimensionalTransport, false);
 	}
 	
-	public long maxEnergyDeplete()
+	public long maxEnergyTransfer()
 	{
 		return this.blockEntity.maxEnergyTransfer();
 	}

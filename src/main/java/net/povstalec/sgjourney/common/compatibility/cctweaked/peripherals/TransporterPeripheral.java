@@ -3,21 +3,38 @@ package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 import dan200.computercraft.api.lua.*;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericTransporterFunctions;
 
+import javax.annotation.Nullable;
+
 public class TransporterPeripheral extends InterfacePeripheral
 {
+	@Nullable
 	protected AbstractTransporterEntity<?> transporter;
 	
 	public TransporterPeripheral(AbstractInterfaceEntity interfaceEntity, AbstractTransporterEntity<?> transporter)
 	{
-		super(interfaceEntity);
+		super(interfaceEntity, transporter);
 		this.transporter = transporter;
 		
 		transporter.registerInterfaceMethods(new SGJourneyPeripheralWrapper<>(this, interfaceEntity.getInterfaceType()));
+	}
+	
+	public void markInvalid()
+	{
+		this.transporter = null;
+	}
+	
+	protected AbstractTransporterEntity<?> getTransporterOrThrow() throws LuaException
+	{
+		if(transporter == null)
+			throw new LuaException("Transporter Peripheral is no longer valid!");
+		
+		return transporter;
 	}
 
 	@Override
@@ -26,7 +43,7 @@ public class TransporterPeripheral extends InterfacePeripheral
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.transporter, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, getTransporterOrThrow(), arguments);
 	}
 	
 	@Override
@@ -43,20 +60,20 @@ public class TransporterPeripheral extends InterfacePeripheral
 	//============================================================================================
 	
 	@LuaFunction
-	public final String getTransporterType()
+	public final String getTransporterType() throws LuaException
 	{
-		return GenericTransporterFunctions.getTransporterType(transporter);
+		return GenericTransporterFunctions.getTransporterType(getTransporterOrThrow());
 	}
 	
 	@LuaFunction
-	public final boolean isTransporterConnected()
+	public final boolean isTransporterConnected() throws LuaException
 	{
-		return GenericTransporterFunctions.isTransporterConnected(transporter);
+		return GenericTransporterFunctions.isTransporterConnected(getTransporterOrThrow());
 	}
 	
 	@LuaFunction
-	public final long getTransporterEnergy()
+	public final long getTransporterEnergy() throws LuaException
 	{
-		return GenericTransporterFunctions.getTransporterEnergy(transporter);
+		return GenericTransporterFunctions.getTransporterEnergy(getTransporterOrThrow());
 	}
 }

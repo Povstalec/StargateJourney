@@ -281,6 +281,37 @@ public abstract class ClientBoundSoundPackets
             return true;
         }
     }
+	
+	
+	
+	public static class TransportRingsTransport extends ClientBoundSoundPackets
+	{
+		public final boolean firstHalf;
+		
+		public TransportRingsTransport(BlockPos pos, boolean firstHalf)
+		{
+			super(pos, false);
+			
+			this.firstHalf = firstHalf;
+		}
+		public TransportRingsTransport(FriendlyByteBuf buffer)
+		{
+			this(buffer.readBlockPos(), buffer.readBoolean());
+		}
+		
+		public void encode(FriendlyByteBuf buffer)
+		{
+			buffer.writeBlockPos(pos);
+			buffer.writeBoolean(firstHalf);
+		}
+		
+		@Override
+		public boolean handle(Supplier<NetworkEvent.Context> ctx)
+		{
+			ctx.get().enqueueWork(() -> SoundAccess.playTransportRingsTransportSound(pos, firstHalf));
+			return true;
+		}
+	}
 }
 
 

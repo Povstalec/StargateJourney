@@ -1,20 +1,23 @@
 {
-  "structures": [
-    {
-      "structure": "sgjourney:stargate/milky_way/buried/buried_stargate",
-      "weight": 1
-    },
-    {
-      "structure": "sgjourney:stargate/milky_way/buried/buried_stargate_desert",
-      "weight": 10000
-    },
-    {
-      "structure": "sgjourney:stargate/milky_way/buried/buried_stargate_badlands",
-      "weight": 10000
-    }
-  ],
-  "placement": {
-     "salt": 14324351,
-    "type": "sgjourney:buried_stargate_placement"
-  }
+	"structures":
+	[
+		{
+			"structure": "sgjourney:stargate/milky_way/buried/buried_stargate",
+			"weight": 1
+		},
+		{
+			"structure": "sgjourney:stargate/milky_way/buried/buried_stargate_desert",
+			"weight": 10000
+		},
+		{
+			"structure": "sgjourney:stargate/milky_way/buried/buried_stargate_badlands",
+			"weight": 10000
+		}
+	],
+	"placement":
+	{
+		"salt": 14324351,
+		"type": "sgjourney:buried_stargate_placement",
+		"locate_offset": [6, 0, 6]
+	}
 }

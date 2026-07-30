@@ -23,14 +23,7 @@ public class PegasusStargateMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			boolean dynamicSymbols = arguments.getBoolean(0);
-			
-			context.executeMainThreadTask(() ->
-			{
-				PegasusStargateFunctions.dynamicSymbols(stargate, dynamicSymbols);
-				return null;
-			});
-			
-			return MethodResult.of();
+			return context.executeMainThreadTask(() -> new Object[] {PegasusStargateFunctions.dynamicSymbols(stargate, dynamicSymbols)});
 		}
 	}
 	
@@ -46,13 +39,7 @@ public class PegasusStargateMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			String symbols = arguments.getString(0);
-			context.executeMainThreadTask(() ->
-			{
-				PegasusStargateFunctions.overrideSymbols(stargate, symbols);
-				return null;
-			});
-			
-			return MethodResult.of();
+			return context.executeMainThreadTask(() -> new Object[] {PegasusStargateFunctions.overrideSymbols(stargate, symbols)});
 		}
 	}
 	
@@ -68,13 +55,7 @@ public class PegasusStargateMethods
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, PegasusStargateEntity stargate, IArguments arguments) throws LuaException
 		{
 			String pointOfOrigin = arguments.getString(0);
-			context.executeMainThreadTask(() ->
-			{
-				PegasusStargateFunctions.overridePointOfOrigin(stargate, pointOfOrigin);
-				return null;
-			});
-			
-			return MethodResult.of();
+			return context.executeMainThreadTask(() -> new Object[] {PegasusStargateFunctions.overridePointOfOrigin(stargate, pointOfOrigin)});
 		}
 	}
 }

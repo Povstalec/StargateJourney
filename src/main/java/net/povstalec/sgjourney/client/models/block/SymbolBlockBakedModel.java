@@ -13,7 +13,6 @@ import net.minecraftforge.client.RenderTypeGroup;
 import net.minecraftforge.client.model.ForgeFaceData;
 import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
@@ -107,15 +106,26 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		return null;
 	}
 	
+	public static int rotationFromDirection(Direction direction, boolean reversed)
+	{
+		return switch(direction)
+		{
+			case EAST -> reversed ? 90 : 270;
+			case NORTH -> 180;
+			case WEST -> reversed ? 270 : 90;
+			default -> 0;
+		};
+	}
+	
 	public static BakedQuad makeSymbolQuad(Direction direction, Orientation orientation, TextureAtlasSprite symbolSprite, int symbolTint)
 	{
 		return switch(orientation)
 		{
-			case UPWARD -> FACE_BAKERY.bakeQuad(SYMBOL_TOP_START, SYMBOL_TOP_END, new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction), true, ID);
+			case UPWARD -> FACE_BAKERY.bakeQuad(SYMBOL_TOP_START, SYMBOL_TOP_END, new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, false)),
+				new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.UP, new ModelState(){}, new BlockElementRotation(CENTER, Direction.Axis.Y, 0, false), true, ID);
 			
-			case DOWNWARD -> FACE_BAKERY.bakeQuad(SYMBOL_BOTTOM_START, SYMBOL_BOTTOM_END, new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true, ID);
+			case DOWNWARD -> FACE_BAKERY.bakeQuad(SYMBOL_BOTTOM_START, SYMBOL_BOTTOM_END, new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, true)),
+					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.DOWN, new ModelState(){}, new BlockElementRotation(CENTER, Direction.Axis.Y, 0, false), true, ID);
 			
 			default -> FACE_BAKERY.bakeQuad(SYMBOL_FRONT_START, SYMBOL_FRONT_END, new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
 					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
