@@ -135,6 +135,12 @@ public final class PacketHandlerInit
 				.consumerMainThread(ClientBoundSoundPackets.RotationStop::handle)
 				.add();
 		
+		INSTANCE.messageBuilder(ClientBoundSoundPackets.TransportRingsTransport.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+			.encoder(ClientBoundSoundPackets.TransportRingsTransport::encode)
+			.decoder(ClientBoundSoundPackets.TransportRingsTransport::new)
+			.consumerMainThread(ClientBoundSoundPackets.TransportRingsTransport::handle)
+			.add();
+		
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================
