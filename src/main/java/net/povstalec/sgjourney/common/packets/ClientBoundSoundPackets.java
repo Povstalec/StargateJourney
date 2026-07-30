@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.packets;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -245,32 +246,26 @@ public abstract class ClientBoundSoundPackets
 	
 	
 	
-	public static class TransportRingsTransport extends ClientBoundSoundPackets
+	public record TransportRingsTransport(BlockPos blockPos, boolean firstHalf) implements CustomPacketPayload
 	{
-		public final boolean firstHalf;
+		public static final CustomPacketPayload.Type<TransportRingsTransport> TYPE =
+			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_transport_rings_transport_sound"));
 		
-		public TransportRingsTransport(BlockPos pos, boolean firstHalf)
-		{
-			super(pos, false);
-			
-			this.firstHalf = firstHalf;
-		}
-		public TransportRingsTransport(FriendlyByteBuf buffer)
-		{
-			this(buffer.readBlockPos(), buffer.readBoolean());
-		}
-		
-		public void encode(FriendlyByteBuf buffer)
-		{
-			buffer.writeBlockPos(pos);
-			buffer.writeBoolean(firstHalf);
-		}
+		public static final StreamCodec<RegistryFriendlyByteBuf, TransportRingsTransport> STREAM_CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, TransportRingsTransport::blockPos,
+			ByteBufCodecs.BOOL, TransportRingsTransport::firstHalf,
+			TransportRingsTransport::new
+		);
 		
 		@Override
-		public boolean handle(Supplier<NetworkEvent.Context> ctx)
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
 		{
-			ctx.get().enqueueWork(() -> SoundAccess.playTransportRingsTransportSound(pos, firstHalf));
-			return true;
+			return TYPE;
+		}
+		
+		public static void handle(TransportRingsTransport packet, IPayloadContext ctx)
+		{
+			ctx.enqueueWork(() -> SoundAccess.playTransportRingsTransportSound(packet.blockPos, packet.firstHalf));
 		}
 	}
 }

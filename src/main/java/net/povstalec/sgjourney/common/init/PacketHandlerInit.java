@@ -116,11 +116,10 @@ public final class PacketHandlerInit
 				ClientBoundSoundPackets.RotationStop.STREAM_CODEC,
 				ClientBoundSoundPackets.RotationStop::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.TransportRingsTransport.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-			.encoder(ClientBoundSoundPackets.TransportRingsTransport::encode)
-			.decoder(ClientBoundSoundPackets.TransportRingsTransport::new)
-			.consumerMainThread(ClientBoundSoundPackets.TransportRingsTransport::handle)
-			.add();
+		registrar.playToClient(
+			ClientBoundSoundPackets.TransportRingsTransport.TYPE,
+			ClientBoundSoundPackets.TransportRingsTransport.STREAM_CODEC,
+			ClientBoundSoundPackets.TransportRingsTransport::handle);
 		
 		//============================================================================================
 		//****************************************Server-bound****************************************
