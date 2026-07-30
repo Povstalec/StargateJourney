@@ -14,7 +14,6 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.RingPanelMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanelMenu>
@@ -88,7 +87,7 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_target.usage"),
 				ComponentHelper.energy("tooltip.sgjourney.ring_panel.transporter_energy", menu.getTransporterEnergy()));
 		this.crystalEffectTooltip(poseStack, 136, 75, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
+						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.GOLD),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_transfer.description"),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_transfer.usage"));
 		this.crystalEffectTooltip(poseStack, 136, 87, mouseX, mouseY, Component.translatable("tooltip.sgjourney.ring_panel.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),

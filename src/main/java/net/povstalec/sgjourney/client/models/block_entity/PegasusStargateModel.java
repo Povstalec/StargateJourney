@@ -76,7 +76,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected void renderSymbols(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		int currentSymbol = stargate.addressBuffer.symbolAt(stargate.symbolBuffer);
+		int currentSymbol = stargate.getEncodedSymbols().symbolAt(stargate.symbolBuffer);
 		
 		ClientPointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
@@ -108,7 +108,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
 				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber,
-						ClientSymbols.getSprite(symbols, stargate.getAddress().getArray()[i]), rotation, getSymbolColor(stargate, stargateVariant, true));
+						ClientSymbols.getSprite(symbols, stargate.getEncodedSymbols().symbolAt(i)), rotation, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else
