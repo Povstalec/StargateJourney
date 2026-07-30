@@ -37,13 +37,19 @@ and Advanced Crystal Interface.
 
 ___
 
+<section id="available-functions" markdown="block">
+
 ## Available functions
 
 **Functions available** on the interface depends on the technology to which the **interface is connected**.
 - [Interface connected to a Stargate]({{ '/computercraft/stargate-interface/' | absolute_url }})
 - [Interface connected to a Ring Transporter]({{ '/computercraft/ring-transporter-interface/' | absolute_url }})
 
+</section>
+
 ___
+
+<section id="connecting-the-interface" markdown="block">
 
 ## Connecting the interface
 
@@ -85,11 +91,15 @@ end
 - [peripheral](https://tweaked.cc/module/peripheral.html)
 - [peripheral.find](https://tweaked.cc/module/peripheral.html#v:find)
 
+</section>
+
 ___
 
 ## Common Interface Functions
 The following functions are available to **any interface** at all times.
 Even when the interface is not connected ty any other technology.
+
+<section id="addressToString" markdown="block">
 
 {% include components/computercraft_function.html
     name="addressToString"
@@ -131,7 +141,11 @@ end
 ```
 </details>
 
+</section>
+
 ___
+
+<section id="getEnergy" markdown="block">
 
 {% include components/computercraft_function.html
     name="getEnergy"
@@ -146,7 +160,7 @@ Uses FE (Forge Energy).
 1. `number` The energy [FE] stored within the interface
 
 **See also**
-- [getStargateEnergy()](#getStargateEnergy)
+- [getStargateEnergy](#getStargateEnergy)
 
 **Usage**
 - Print the current amount of energy in the interface
@@ -161,7 +175,11 @@ local energy = interface.getEnergy()
 print("There is "..energy.." FE in the interface")
 ```
 
+</section>
+
 ___
+
+<section id="getEnergyCapacity" markdown="block">
 
 {% include components/computercraft_function.html
     name="getEnergyCapacity"
@@ -187,7 +205,11 @@ local capacity = interface.getEnergyCapacity()
 print("The interface can store up to "..capacity.." FE")
 ```
 
+</section>
+
 ___
+
+<section id="getEnergyTarget" markdown="block">
 
 {% include components/computercraft_function.html
     name="getEnergyTarget"
@@ -202,7 +224,7 @@ Returns the current energy target that is set for the interface.
 
 **See also**
 - [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }})
-- [setEnergyTarget(energyTarget)](#setEnergyTarget)
+- [setEnergyTarget](#setEnergyTarget)
 
 **Usage**
 - Print the current energy target
@@ -217,8 +239,11 @@ local energyTarget = interface.getEnergyTarget()
 print("The current energy target: "..energyTarget.." FE")
 ```
 
+</section>
+
 ___
 
+<section id="setEnergyTarget" markdown="block">
 
 {% include components/computercraft_function.html
     name="setEnergyTarget"
@@ -234,7 +259,7 @@ Sets the energy target to the amount specified by `energyTarget` parameter.
 
 **See also**
 - [Energy Target]({{ '/stargate-technology/energy-target/' | absolute_url }})
-- [getEnergyTarget()](#getEnergyTarget)
+- [getEnergyTarget](#getEnergyTarget)
 
 **Usage**
 - Set a new energy target
@@ -249,5 +274,7 @@ end
 local energyTarget = 100000000000 
 interface.setEnergyTarget(energyTarget)
 ```
+
+</section>
 
 ___

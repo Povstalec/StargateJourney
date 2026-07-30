@@ -53,6 +53,7 @@ stargates.
 </div>
 
 
+<section id="encodeChevron" markdown="block">
 {% include components/computercraft_function.html
     name="encodeChevron"
     arguments=""
@@ -87,8 +88,11 @@ local feedbackCode, message = interface.encodeChevron()
 print(feedbackCode, message)
 ```
 
+</section>
+
 ___
 
+<section id="endRotation" markdown="block">
 {% include components/computercraft_function.html
     name="endRotation"
     arguments=""
@@ -120,8 +124,11 @@ local feedbackCode, message = interface.endRotation()
 print(feedbackCode, message) 
 ```
 
+</section>
+
 ___
 
+<section id="getCurrentSymbol" markdown="block">
 {% include components/computercraft_function.html
     name="getCurrentSymbol"
     arguments=""
@@ -153,8 +160,11 @@ local symbol = interface.getCurrentSymbol()
 print(symbol) 
 ```
 
+</section>
+
 ___
 
+<section id="getRotation" markdown="block">
 {% include components/computercraft_function.html
     name="getRotation"
     arguments=""
@@ -193,8 +203,11 @@ while true do
 end
 ```
 
+</section>
+
 ___
 
+<section id="getRotationDegrees" markdown="block">
 {% include components/computercraft_function.html
     name="getRotationDegrees"
     arguments=""
@@ -224,8 +237,11 @@ while true do
 end
 ```
 
+</section>
+
 ___
 
+<section id="isCurrentSymbol" markdown="block">
 {% include components/computercraft_function.html
     name="isCurrentSymbol"
     arguments="symbol"
@@ -266,9 +282,12 @@ end
 print("The current symbol is "..symbol)
 ```
 
+</section>
+
 ___
 
 
+<section id="rotateAntiClockwise" markdown="block">
 {% include components/computercraft_function.html
     name="rotateAntiClockwise"
     arguments="symbol"
@@ -313,9 +332,12 @@ end
 print("The current symbol is "..symbol)
 ```
 
+</section>
+
 ___
 
 
+<section id="rotateClockwise" markdown="block">
 {% include components/computercraft_function.html
     name="rotateClockwise"
     arguments="symbol"
@@ -360,6 +382,8 @@ end
 print("The current symbol is "..symbol)
 ```
 
+</section>
+
 ___
 
 ## Milky Way Stargate functions
@@ -371,6 +395,7 @@ stargate.
 {: .max-width-128 data-minetip-title="&eMilky Way Stargate" }
 
 
+<section id="closeChevron" markdown="block">
 {% include components/computercraft_function.html
     name="closeChevron"
     arguments=""
@@ -403,9 +428,12 @@ local feedbackCode, message = interface.closeChevron()
 print(feedbackCode, message) 
 ```
 
+</section>
+
 ___
 
 
+<section id="isChevronOpen" markdown="block">
 {% include components/computercraft_function.html
     name="isChevronOpen"
     arguments=""
@@ -439,9 +467,12 @@ else
 end 
 ```
 
+</section>
+
 ___
 
 
+<section id="openChevron" markdown="block">
 {% include components/computercraft_function.html
     name="openChevron"
     arguments=""
@@ -473,6 +504,8 @@ local feedbackCode, message = interface.openChevron()
 print(feedbackCode, message)
 ```
 
+</section>
+
 ___
 
 ## Pegasus Stargate functions
@@ -483,6 +516,7 @@ Functions exclusive for an interface connected to a
 {: .max-width-128 data-minetip-title="&bPegasus Stargate" }
 
 
+<section id="dynamicSymbols" markdown="block">
 {% include components/computercraft_function.html
     name="dynamicSymbols"
     arguments="enabled"
@@ -513,8 +547,11 @@ end
 interface.dynamicSymbols(false)
 ```
 
+</section>
+
 ___
 
+<section id="overrideSymbols" markdown="block">
 {% include components/computercraft_function.html
     name="overrideSymbols"
     arguments="symbols"
@@ -556,8 +593,11 @@ end
 interface.overrideSymbols("sgjourney:galaxy_milky_way")
 ```
 
+</section>
+
 ___
 
+<section id="overridePointOfOrigin" markdown="block">
 {% include components/computercraft_function.html
     name="overridePointOfOrigin"
     arguments="pointOfOrigin"
@@ -592,6 +632,8 @@ end
 interface.overridePointOfOrigin("sgjourney:universal")
 ```
 
+</section>
+
 ___
 
 ## Stargate functions
@@ -613,6 +655,7 @@ Functions available for an interface connected to **any** Stargate.
 </div>
 
 
+<section id="disconnectStargate" markdown="block">
 {% include components/computercraft_function.html
     name="disconnectStargate"
     arguments=""
@@ -649,8 +692,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="engageStargate" markdown="block">
 {% include components/computercraft_function.html
     name="engageStargate"
     arguments=""
@@ -700,8 +746,11 @@ print(feedbackCode, message)
 
 ```
 
+</section>
+
 ___
 
+<section id="getChevronsEngaged" markdown="block">
 {% include components/computercraft_function.html
     name="getChevronsEngaged"
     arguments=""
@@ -726,8 +775,11 @@ local engaged = interface.getChevronsEngaged()
 print("Stargate has "..engaged.."/9 chevrons engaged")
 ```
 
+</section>
+
 ___
 
+<section id="getOpenTime" markdown="block">
 {% include components/computercraft_function.html
     name="getOpenTime"
     arguments=""
@@ -757,8 +809,11 @@ local openTimeInSeconds = math.floor(openTimeInTicks / 20)
 print("Stargate has been open for "..openTimeInSeconds.." seconds")
 ```
 
+</section>
+
 ___
 
+<section id="getPointOfOrigin" markdown="block">
 {% include components/computercraft_function.html
     name="getPointOfOrigin"
     arguments=""
@@ -788,8 +843,11 @@ local PoO = interface.getPointOfOrigin()
 print("Stargate has Point of Origin: "..PoO)
 ```
 
+</section>
+
 ___
 
+<section id="getPublicBlacklist" markdown="block">
 {% include components/computercraft_function.html
     name="getPublicBlacklist"
     arguments=""
@@ -834,8 +892,11 @@ for _,address in pairs(publicBlacklist) do
 end
 ```
 
+</section>
+
 ___
 
+<section id="getPublicWhitelist" markdown="block">
 {% include components/computercraft_function.html
     name="getPublicWhitelist"
     arguments=""
@@ -880,8 +941,11 @@ for _,address in pairs(publicWhitelist) do
 end
 ```
 
+</section>
+
 ___
 
+<section id="getRecentFeedback" markdown="block">
 {% include components/computercraft_function.html
     name="getRecentFeedback"
     arguments=""
@@ -917,8 +981,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="getStargateEnergy" markdown="block">
 {% include components/computercraft_function.html
     name="getStargateEnergy"
     arguments=""
@@ -948,8 +1015,11 @@ local energy = interface.getStargateEnergy()
 print("There is "..energy.." FE in the Stargate")
 ```
 
+</section>
+
 ___
 
+<section id="getStargateGeneration" markdown="block">
 {% include components/computercraft_function.html
     name="getStargateGeneration"
     arguments=""
@@ -983,8 +1053,11 @@ local generation = interface.getStargateGeneration()
 print("The Stargate is "..generation..". generation")
 ```
 
+</section>
+
 ___
 
+<section id="getStargateType" markdown="block">
 {% include components/computercraft_function.html
     name="getStargateType"
     arguments=""
@@ -1021,8 +1094,11 @@ local type = interface.getStargateType()
 print("The stargate identifier: "..type)
 ```
 
+</section>
+
 ___
 
+<section id="getStargateVariant" markdown="block">
 {% include components/computercraft_function.html
     name="getStargateVariant"
     arguments=""
@@ -1054,8 +1130,11 @@ local variant = interface.getStargateVariant()
 print("The stargate variant: "..variant)
 ```
 
+</section>
+
 ___
 
+<section id="getSymbols" markdown="block">
 {% include components/computercraft_function.html
     name="getSymbols"
     arguments=""
@@ -1085,8 +1164,11 @@ local symbols = interface.getSymbols()
 print("Stargate has Symbols: "..symbols)
 ```
 
+</section>
+
 ___
 
+<section id="isStargateConnected" markdown="block">
 {% include components/computercraft_function.html
     name="isStargateConnected"
     arguments=""
@@ -1124,8 +1206,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="isStargateDialingOut" markdown="block">
 {% include components/computercraft_function.html
     name="isStargateDialingOut"
     arguments=""
@@ -1158,8 +1243,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="isWormholeOpen" markdown="block">
 {% include components/computercraft_function.html
     name="isWormholeOpen"
     arguments=""
@@ -1218,8 +1306,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="sendStargateMessage" markdown="block">
 {% include components/computercraft_function.html
     name="sendStargateMessage"
     arguments="message"
@@ -1274,8 +1365,11 @@ print("Received a message from the Stargate:")
 print(message)
 ```
 
+</section>
+
 ___
 
+<section id="engageSymbol" markdown="block">
 {% include components/computercraft_function.html
     name="engageSymbol"
     arguments="symbol, engageDirectly, canEngageStargate"
@@ -1321,8 +1415,11 @@ for _, symbol in pairs(address) do
 end
 ```
 
+</section>
+
 ___
 
+<section id="getDialedAddress" markdown="block">
 {% include components/computercraft_function.html
     name="getDialedAddress"
     arguments=""
@@ -1354,8 +1451,11 @@ local address = interface.getDialedAddress()
 print("The dialed address: " .. interface.addressToString(address))
 ```
 
+</section>
+
 ___
 
+<section id="getMappedSymbol" markdown="block">
 {% include components/computercraft_function.html
     name="getMappedSymbol"
     arguments="symbol"
@@ -1394,8 +1494,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="hasDHD" markdown="block">
 {% include components/computercraft_function.html
     name="hasDHD"
     arguments=""
@@ -1422,8 +1525,11 @@ local hasDHD = interface.hasDHD()
 print(hasDHD)
 ```
 
+</section>
+
 ___
 
+<section id="remapSymbol" markdown="block">
 {% include components/computercraft_function.html
     name="remapSymbol"
     arguments="originalSymbol, newSymbol"
@@ -1450,7 +1556,7 @@ Must not be `0` or symbol already in the dialed address.
 1. `boolean`: `true` if the symbol was remapped successfully, `false` otherwise.
 
 **See also**
-- [Symbol Remapping]({{ '/stargate-technology/stargate/#symbol-remapping' | absolute_url '}})
+- [Symbol Remapping]({{ '/stargate-technology/stargate/#symbol-remapping' | absolute_url }})
 - [getMappedSymbol](#getMappedSymbol)
 - [getDialedAddress](#getDialedAddress)
 
@@ -1472,8 +1578,11 @@ print(interface.addressToString(address))
 -- newSymbol was appended to the address
 ```
 
+</section>
+
 ___
 
+<section id="setChevronConfiguration" markdown="block">
 {% include components/computercraft_function.html
     name="setChevronConfiguration"
     arguments="configuration"
@@ -1528,8 +1637,11 @@ end
 interface.setChevronConfiguration({1, 2, 3, 4, 5, 6, 7, 8})
 ```
 
+</section>
+
 ___
 
+<section id="addNetwork" markdown="block">
 {% include components/computercraft_function.html
     name="addNetwork"
     arguments="network"
@@ -1569,8 +1681,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="addToBlacklist" markdown="block">
 {% include components/computercraft_function.html
     name="addToBlacklist"
     arguments="address, isPublic"
@@ -1633,8 +1748,11 @@ interface.addToBlacklist(address)
 -- or accept a 9-chevron connection from the other gate.
 ```
 
+</section>
+
 ___
 
+<section id="addToWhitelist" markdown="block">
 {% include components/computercraft_function.html
     name="addToWhitelist"
     arguments="address, isPublic"
@@ -1697,8 +1815,11 @@ interface.addToWhitelist(address)
 -- only 7-chevron connection from/to Abydos is possible
 ```
 
+</section>
+
 ___
 
+<section id="clearBlacklist" markdown="block">
 {% include components/computercraft_function.html
     name="clearBlacklist"
     arguments=""
@@ -1731,8 +1852,11 @@ interface.clearBlacklist()
 -- blacklist is now empty
 ```
 
+</section>
+
 ___
 
+<section id="clearWhitelist" markdown="block">
 {% include components/computercraft_function.html
     name="clearWhitelist"
     arguments=""
@@ -1764,8 +1888,11 @@ end
 interface.clearWhitelist()
 -- whitelist is now empty
 ```
+</section>
+
 ___
 
+<section id="getConnectedAddress" markdown="block">
 {% include components/computercraft_function.html
     name="getConnectedAddress"
     arguments=""
@@ -1807,8 +1934,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="getFilterType" markdown="block">
 {% include components/computercraft_function.html
     name="getFilterType"
     arguments=""
@@ -1847,8 +1977,11 @@ elseif type == -1 then
 end 
 ```
 
+</section>
+
 ___
 
+<section id="getLocalAddress" markdown="block">
 {% include components/computercraft_function.html
     name="getLocalAddress"
     arguments=""
@@ -1878,8 +2011,11 @@ local localAddress = interface.getLocalAddress()
 print(interface.addressToString(localAddress))
 ```
 
+</section>
+
 ___
 
+<section id="getNetworks" markdown="block">
 {% include components/computercraft_function.html
     name="getNetworks"
     arguments=""
@@ -1915,8 +2051,11 @@ for _,network in pairs(networks) do
 end
 ```
 
+</section>
+
 ___
 
+<section id="isNetworkRestricted" markdown="block">
 {% include components/computercraft_function.html
     name="isNetworkRestricted"
     arguments=""
@@ -1952,8 +2091,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="removeFromBlacklist" markdown="block">
 {% include components/computercraft_function.html
     name="removeFromBlacklist"
     arguments="address"
@@ -1989,8 +2131,11 @@ local address = { 16, 25, 4, 21, 6, 19, 33, 22 }
 interface.removeFromBlacklist(address)
 ```
 
+</section>
+
 ___
 
+<section id="removeFromWhitelist" markdown="block">
 {% include components/computercraft_function.html
     name="removeFromWhitelist"
     arguments="address"
@@ -2025,8 +2170,11 @@ local address = { 26, 6, 14, 31, 11, 29 }
 interface.removeFromWhitelist(address)
 ```
 
+</section>
+
 ___
 
+<section id="removeNetwork" markdown="block">
 {% include components/computercraft_function.html
     name="removeNetwork"
     arguments="network"
@@ -2063,8 +2211,11 @@ local network = 415252 -- could be any number
 interface.removeNetwork(network)
 ```
 
+</section>
+
 ___
 
+<section id="restrictNetwork" markdown="block">
 {% include components/computercraft_function.html
     name="restrictNetwork"
     arguments="restrict"
@@ -2097,8 +2248,11 @@ end
 interface.restrictNetwork(1)
 ```
 
+</section>
+
 ___
 
+<section id="setFilterType" markdown="block">
 {% include components/computercraft_function.html
     name="setFilterType"
     arguments="type"
@@ -2141,6 +2295,8 @@ local FilterType = {
 interface.setFilterType(FilterType.Blacklist)
 ```
 
+</section>
+
 ___
 
 ## Iris control
@@ -2151,6 +2307,7 @@ However, they are not available for the Tollan Stargate which can't have an iris
 {: .max-width-128 data-minetip-title="&eMilky Way Stargate with &rNaquadah Iris" }
 
 
+<section id="getIris" markdown="block">
 {% include components/computercraft_function.html
     name="getIris"
     arguments=""
@@ -2180,8 +2337,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="closeIris" markdown="block">
 {% include components/computercraft_function.html
     name="closeIris"
     arguments=""
@@ -2217,8 +2377,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="openIris" markdown="block">
 {% include components/computercraft_function.html
     name="openIris"
     arguments=""
@@ -2254,8 +2417,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="stopIris" markdown="block">
 {% include components/computercraft_function.html
     name="stopIris"
     arguments=""
@@ -2291,8 +2457,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="getIrisProgress" markdown="block">
 {% include components/computercraft_function.html
     name="getIrisProgress"
     arguments=""
@@ -2312,8 +2481,11 @@ This progress is internally used for [blocking the gate by the iris](https://git
 - [`closeIris`](#closeIris)
 - [`openIris`](#openIris)
 
+</section>
+
 ___
 
+<section id="getIrisProgressPercentage" markdown="block">
 {% include components/computercraft_function.html
     name="getIrisProgressPercentage"
     arguments=""
@@ -2351,8 +2523,11 @@ else
 end
 ```
 
+</section>
+
 ___
 
+<section id="getIrisDurability" markdown="block">
 {% include components/computercraft_function.html
     name="getIrisDurability"
     arguments=""
@@ -2381,8 +2556,11 @@ local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
 ```
 
+</section>
+
 ___
 
+<section id="getIrisMaxDurability" markdown="block">
 {% include components/computercraft_function.html
     name="getIrisMaxDurability"
     arguments=""
@@ -2410,5 +2588,7 @@ local durability = interface.getIrisDurability()
 local maxDurability = interface.getIrisMaxDurability()
 print("The iris durability: "..durability.."/"..maxDurability.." "..math.floor(durability/maxDurability*100).."%")
 ```
+
+</section>
 
 ___

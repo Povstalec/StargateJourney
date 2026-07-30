@@ -130,3 +130,7 @@ https://github.com/allejo/jekyll-toc
 (c) 2017 Vladimir "allejo" Jimenez  
 Uses modified version of [toc.html](https://github.com/allejo/jekyll-toc/blob/master/_includes/toc.html) at `_includes/toc.html`
 The file is licensed under the MIT License
+
+Uses Scrollama by Russell Samora
+https://github.com/russellsamora/scrollama
+The file is licensed under the MIT License
