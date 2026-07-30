@@ -615,7 +615,7 @@ The only exception is the Point of Origin (symbol `0`) which must not be remappe
 **DHD** is capable of automatic symbol remapping when **advanced protocols** are active.
 To activate advanced protocols, insert **Large Control Crystal** into the center of the DHD's crystal inventory.
 
-Alternatively, symbol remapping is also available to **computers using a crystal interface**.
+Alternatively, symbol remapping is also available to [**computers using a crystal interface**]({{ '/computercraft/stargate-interface/#remapSymbol' | absolute_url }}).
 
 The image below shows Milky Way DHD connected to a Universe Stargate.
 The DHD needed to encode the symbol `38` which is not physically present on the stargate.
