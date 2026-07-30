@@ -6,7 +6,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
@@ -21,7 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
@@ -201,21 +201,21 @@ public class SchrodingersMapItem extends Item
 	
 	public static BlockPos findOriginalSpawnPosition(ServerLevel level, TagKey<Structure> target)
 	{
-		if(!level.getServer().getWorldData().worldGenOptions().generateStructures())
+		if(!level.getServer().getWorldData().worldGenSettings().generateStructures())
 			StargateJourney.LOGGER.error("Structure generation is disabled for this world");
 		else
 		{
-			Optional<HolderSet.Named<Structure>> structuresHolder = level.registryAccess().registryOrThrow(Registries.STRUCTURE).getTag(target);
+			Optional<HolderSet.Named<Structure>> structuresHolder = level.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).getTag(target);
 			if(structuresHolder.isEmpty())
 				StargateJourney.LOGGER.error("Structure tag {} did not provide any valid Structures", target);
 			else
 			{
-				ChunkGeneratorStructureState chunkgeneratorstructurestate = level.getChunkSource().getGeneratorState();
+				ChunkGenerator chunkGenerator = level.getChunkSource().getGenerator();
 				Map<StructurePlacement, Set<Holder<Structure>>> placementStructureMap = new Object2ObjectArrayMap<>();
 				
 				for(Holder<Structure> holder : structuresHolder.get())
 				{
-					for(StructurePlacement structureplacement : chunkgeneratorstructurestate.getPlacementsForStructure(holder))
+					for(StructurePlacement structureplacement : chunkGenerator.getPlacementsForStructure(holder, level.getChunkSource().randomState()))
 					{
 						placementStructureMap.computeIfAbsent(structureplacement, (placement) -> new ObjectArraySet<>()).add(holder);
 					}
@@ -225,14 +225,14 @@ public class SchrodingersMapItem extends Item
 					StargateJourney.LOGGER.error("No placements found for Structures in {}", target);
 				else
 				{
-					long levelSeed = chunkgeneratorstructurestate.getLevelSeed();
+					long levelSeed = level.getSeed();
 					
 					for(Map.Entry<StructurePlacement, Set<Holder<Structure>>> placementEntry : placementStructureMap.entrySet())
 					{
 						if(placementEntry.getKey() instanceof UniqueStructurePlacement uniqueStructurePlacement)
 						{
-							int chunkX = uniqueStructurePlacement.getChunkX(chunkgeneratorstructurestate.getLevelSeed());
-							int chunkZ = uniqueStructurePlacement.getChunkZ(chunkgeneratorstructurestate.getLevelSeed());
+							int chunkX = uniqueStructurePlacement.getChunkX(levelSeed);
+							int chunkZ = uniqueStructurePlacement.getChunkZ(levelSeed);
 							
 							StargateJourney.LOGGER.error("Structure was meant to generate at X={}, Z={} in Dimension {} on seed {}",
 								chunkX * 16, chunkZ * 16, level.dimension().location(), levelSeed);

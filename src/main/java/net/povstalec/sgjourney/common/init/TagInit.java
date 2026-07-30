@@ -73,7 +73,7 @@ public class TagInit
 		
 		public static TagKey<EntityType<?>> createTag(String name)
 		{
-			return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.tryParse(name));
+			return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, ResourceLocation.tryParse(name));
 		}
 
         /*private static TagKey<EntityType<?>> forgeTag(String name)
@@ -104,7 +104,7 @@ public class TagInit
 		
 		public static TagKey<Structure> createTag(String name)
 		{
-			return TagKey.create(Registries.STRUCTURE, ResourceLocation.tryParse(name));
+			return TagKey.create(Registry.STRUCTURE_REGISTRY, ResourceLocation.tryParse(name));
 		}
 	}
 }
