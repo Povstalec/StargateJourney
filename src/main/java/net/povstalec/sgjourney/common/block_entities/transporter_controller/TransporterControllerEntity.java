@@ -28,7 +28,9 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -267,14 +269,15 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	{
 		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
 	}
+	
 	public long maxEnergyTransfer()
 	{
-		return this.maxEnergyTransfer;
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.classic_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
 	
 	public long getEnergyTarget()
 	{
-		return this.energyTarget;
+		return this.energyTarget < 0 ? CommonStargateConfig.stargate_energy_capacity.get() : this.energyTarget;
 	}
 	
 	private ItemStackHandler createEnergyItemHandler()
