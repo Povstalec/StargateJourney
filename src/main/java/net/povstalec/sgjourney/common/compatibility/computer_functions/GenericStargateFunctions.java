@@ -106,7 +106,9 @@ public class GenericStargateFunctions
 	
 	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean canEngageStargate, boolean engageDirectly)
 	{
-		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngageStargate).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngageStargate).feedback();
+		boolean canEngage = canEngageStargate && stargate.getAddress().canBeDialed(); // Only try engaging the Stargate if the address can be dialed (This makes sure the DHD center button doesn't light up when used on Universe and Pegasus gates)
+		
+		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngage).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngage).feedback();
 	}
 	
 	public static Address.Mutable getDialedAddress(AbstractStargateEntity<?> stargate)
@@ -140,7 +142,9 @@ public class GenericStargateFunctions
 		if(stargate.getAddress().containsSymbol(newSymbol))
 			return false; // Don't remap to a symbol that's contained in the encoded address
 		
-		return stargate.symbolMap.remapSymbol(originalSymbol, newSymbol);
+		boolean result = stargate.symbolMap.remapSymbol(originalSymbol, newSymbol);
+		stargate.updateClient();
+		return result;
 	}
 	
 	public static int getMappedSymbol(AbstractStargateEntity<?> stargate, int symbol)
