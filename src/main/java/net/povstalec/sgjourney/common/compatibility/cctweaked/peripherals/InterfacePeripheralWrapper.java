@@ -38,7 +38,7 @@ public class InterfacePeripheralWrapper
 		InterfacePeripheral newPeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
 		if(interfacePeripheral != null && interfacePeripheral.equals(newPeripheral))
 			return false; // Peripheral is same as before, no changes needed.
-
+		
 		// Peripheral has changed, invalidate the capability and trigger a block update.
 		interfacePeripheral = newPeripheral;
 		if(peripheral != null)
@@ -49,22 +49,20 @@ public class InterfacePeripheralWrapper
 		return true;
 	}
 	
-	public LazyOptional<IPeripheral> newPeripheral()
-	{
-		interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
-		peripheral = LazyOptional.of(() -> interfacePeripheral);
-		
-		return peripheral;
-	}
-	
 	public void queueEvent(String eventName, Object... objects)
 	{
 		if(interfacePeripheral != null)
 			interfacePeripheral.queueEvent(eventName, objects);
 	}
 	
-	public InterfacePeripheral getPeripheral()
+	public LazyOptional<IPeripheral> getPeripheral()
 	{
-		return this.interfacePeripheral;
+		if(peripheral == null)
+		{
+			interfacePeripheral = createPeripheral(interfaceEntity, interfaceEntity.findEnergyBlockEntity());
+			peripheral = LazyOptional.of(() -> interfacePeripheral);
+		}
+		
+		return peripheral;
 	}
 }
