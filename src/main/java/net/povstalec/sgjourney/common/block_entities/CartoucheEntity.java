@@ -71,6 +71,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			}
 			else
 				updateFromLowerHalf();
+			updateClient();
 		}
 		
 		super.onLoad();
@@ -176,6 +177,12 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		return builder.build();
 	}
 	
+	public void updateClient()
+	{
+		if(level != null && !level.isClientSide())
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================
@@ -237,6 +244,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			updateUpperHalf();
 		
 		super.setChanged();
+		updateClient();
 	}
 	
 	public void updateUpperHalf()
@@ -263,6 +271,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		{
 			setAddress(lowerCartouche.address);
 			setSymbols(lowerCartouche.symbols);
+			updateClient();
 		}
 	}
 	

@@ -13,6 +13,7 @@ import net.minecraftforge.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
@@ -20,7 +21,6 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
-import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
@@ -37,8 +37,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 
 	public int signalStrength = 0;
 	
-	private int desiredSymbol = 0;
-	private int currentSymbol = 0;
+	private int lastSymbol = 0;
 	private RotatingStargateEntity.RotationDirection rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
 	
 	private IrisInfo.IrisMotion irisMotion = IrisInfo.IrisMotion.IDLE;
@@ -56,7 +55,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		CRYSTAL("crystal_interface"),
 		ADVANCED_CRYSTAL("advanced_crystal_interface");
 		
-		private String typeName;
+		private final String typeName;
 		
 		InterfaceType(String typeName)
 		{
@@ -125,11 +124,18 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
 		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.newPeripheral().cast();
+			return peripheralWrapper.getPeripheral().cast();
 			
 		return super.getCapability(cap, side);
 	}
-	
+
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		this.peripheralWrapper.getPeripheral().invalidate();
+	}
+
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
 		requiresUpdate = true;
@@ -310,13 +316,18 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		
 		if(interfaceEntity.getEnergyBlockEntity() != null)
 		{
-			int lastSymbol = interfaceEntity.currentSymbol;
+			int currentSymbol = 0;
+			if(interfaceEntity.energyBlockEntity instanceof RotatingStargateEntity<?> stargate)
+				currentSymbol = stargate.getCurrentSymbol();
+			else if(interfaceEntity.energyBlockEntity instanceof PegasusStargateEntity stargate)
+				currentSymbol = stargate.getCurrentSymbol();
+			
 			interfaceEntity.outputEnergy(interfaceEntity.getDirection());
 			
 			if(interfaceEntity.getEnergyBlockEntity() instanceof AbstractStargateEntity<?> stargate)
 				interfaceEntity.handleShielding(state, stargate);
 
-			if(lastSymbol != interfaceEntity.currentSymbol)
+			if(currentSymbol != interfaceEntity.lastSymbol)
 			{
 				if(!level.isClientSide())
 				{
@@ -324,6 +335,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 					level.updateNeighborsAtExceptFromFacing(pos, state.getBlock(), state.getValue(AbstractInterfaceBlock.FACING));
 				}
 			}
+			
+			interfaceEntity.lastSymbol = currentSymbol;
 		}
 		
 		interfaceEntity.updateClient();

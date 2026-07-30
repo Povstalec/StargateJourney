@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.world;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Vec3i;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkGenerator;
@@ -12,6 +13,7 @@ import net.povstalec.sgjourney.common.init.StructurePlacementInit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
@@ -22,15 +24,16 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	
 	public static final Codec<UniqueStructurePlacement> CODEC = RecordCodecBuilder.<UniqueStructurePlacement>mapCodec(instance ->
 			instance.group(
-					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt()),
-					Codec.intRange(Integer.MIN_VALUE, Integer.MAX_VALUE).optionalFieldOf("x").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkX)),
-					Codec.intRange(Integer.MIN_VALUE, Integer.MAX_VALUE).optionalFieldOf("z").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkZ)),
-					Codec.intRange(-MAX_CHUNKS, MAX_CHUNKS).optionalFieldOf("x_chunk_offset").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkOffsetX)),
-					Codec.intRange(-MAX_CHUNKS, MAX_CHUNKS).optionalFieldOf("z_chunk_offset").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkOffsetZ)),
-					Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_min").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMinX)),
-					Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_min").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMinZ)),
-					Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxX)),
-					Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxZ))
+				Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
+				ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt()),
+				Codec.intRange(Integer.MIN_VALUE, Integer.MAX_VALUE).optionalFieldOf("x").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkX)),
+				Codec.intRange(Integer.MIN_VALUE, Integer.MAX_VALUE).optionalFieldOf("z").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkZ)),
+				Codec.intRange(-MAX_CHUNKS, MAX_CHUNKS).optionalFieldOf("x_chunk_offset").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkOffsetX)),
+				Codec.intRange(-MAX_CHUNKS, MAX_CHUNKS).optionalFieldOf("z_chunk_offset").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkOffsetZ)),
+				Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_min").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMinX)),
+				Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_min").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMinZ)),
+				Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxX)),
+				Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxZ))
 			).apply(instance, UniqueStructurePlacement::new)).codec();
 	
 	@Nullable
@@ -52,10 +55,10 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	@Nullable
 	protected Integer chunkZ;
 	
-	protected UniqueStructurePlacement(int salt, Optional<Integer> chunkX, Optional<Integer> chunkZ, Optional<Integer> chunkOffsetX, Optional<Integer> chunkOffsetZ,
+	protected UniqueStructurePlacement(Vec3i locateOffset, int salt, Optional<Integer> chunkX, Optional<Integer> chunkZ, Optional<Integer> chunkOffsetX, Optional<Integer> chunkOffsetZ,
 									   Optional<Integer> chunkBoundMinX, Optional<Integer> chunkBoundMinZ, Optional<Integer> chunkBoundMaxX, Optional<Integer> chunkBoundMaxZ)
 	{
-		super(1, 0, RandomSpreadType.LINEAR, salt);
+		super(locateOffset, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1.0F, salt, Optional.empty(), 1, 0, RandomSpreadType.LINEAR);
 		
 		this.chunkX = chunkX.orElse(null);
 		this.chunkZ = chunkZ.orElse(null);
@@ -113,7 +116,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 			if(xBoundMax == 0)
 				return xOffset;
 			
-			Random random = new Random(levelSeed + 2 + salt());
+			Random random = new Random(Objects.hash(levelSeed, 2, salt()));
 			int xBoundMin = getChunkBoundMinX();
 			int xBound = random.nextBoolean() ? random.nextInt(-xBoundMax, -xBoundMin + 1) : random.nextInt(xBoundMin, xBoundMax + 1);
 			
@@ -133,7 +136,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 			if(zBoundMax == 0)
 				return zOffset;
 			
-			Random random = new Random(levelSeed + 3 + salt());
+			Random random = new Random(Objects.hash(levelSeed, 3, salt()));
 			int zBoundMin = getChunkBoundMinZ();
 			int zBound = random.nextBoolean() ? random.nextInt(-zBoundMax, -zBoundMin + 1) : random.nextInt(zBoundMin, zBoundMax + 1);
 			
@@ -167,12 +170,13 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	{
 		public static final Codec<UniqueStructurePlacement.Stargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.Stargate>mapCodec(instance ->
 				instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
+					Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
 				).apply(instance, UniqueStructurePlacement.Stargate::new)).codec();
 		
-		protected Stargate(int salt)
+		protected Stargate(Vec3i locateOffset, int salt)
 		{
-			super(salt, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
+			super(locateOffset, salt, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		}
 		
 		@Override
@@ -224,12 +228,13 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	{
 		public static final Codec<UniqueStructurePlacement.BuriedStargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.BuriedStargate>mapCodec(instance ->
 				instance.group(
-						ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
+					Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
+					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
 				).apply(instance, UniqueStructurePlacement.BuriedStargate::new)).codec();
 		
-		protected BuriedStargate(int salt)
+		protected BuriedStargate(Vec3i locateOffset, int salt)
 		{
-			super(salt);
+			super(locateOffset, salt);
 		}
 		
 		@Override

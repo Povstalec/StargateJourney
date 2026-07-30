@@ -252,11 +252,11 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	
 	public void addTransporterToNetwork()
 	{
-		if(!this.transporterID.isValid())
+		if(!transporterID.isValid() || BlockEntityList.get(level).containsTransporter(transporterID))
 			setID(BlockEntityList.get(level).generateTransporterID());
 		
 		TransporterNetwork.get(level).addTransporterEntity(this);
-		this.setChanged();
+		setChanged();
 	}
 	
 	public void removeTransporterFromNetwork()
