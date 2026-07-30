@@ -284,7 +284,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			else
 				stargateRelativePos = null;
 			
-			newStargate.updateDHD(this);
+			if(newStargate != null)
+				newStargate.updateDHD(this);
 			updateClient();
 		});
 	}
