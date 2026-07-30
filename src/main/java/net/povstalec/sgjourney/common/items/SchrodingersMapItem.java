@@ -231,8 +231,8 @@ public class SchrodingersMapItem extends Item
 					{
 						if(placementEntry.getKey() instanceof UniqueStructurePlacement uniqueStructurePlacement)
 						{
-							int chunkX = uniqueStructurePlacement.getChunkX(chunkgeneratorstructurestate.getLevelSeed());
-							int chunkZ = uniqueStructurePlacement.getChunkZ(chunkgeneratorstructurestate.getLevelSeed());
+							int chunkX = uniqueStructurePlacement.getChunkX(levelSeed);
+							int chunkZ = uniqueStructurePlacement.getChunkZ(levelSeed);
 							
 							StargateJourney.LOGGER.error("Structure was meant to generate at X={}, Z={} in Dimension {} on seed {}",
 								chunkX * 16, chunkZ * 16, level.dimension().location(), levelSeed);
