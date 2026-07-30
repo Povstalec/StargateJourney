@@ -5,7 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
@@ -19,6 +19,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
@@ -29,9 +30,11 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transp
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
+import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -559,6 +562,44 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		return 6 * ringNumber + getRingHoverHeight(transportHeight, ringNumber);
 	}
 	
+	// Ring height ignoring direction
+	public static float getAbsoluteRingHeight(int hoverDuration, int transportHeight, float progress, int ringNumber)
+	{
+		if(progress < 6 * ringNumber) // Idle height
+			return 0;
+		
+		// While hovering, each ring's center should be located half a meter above the previous one
+		int hoverHeight = getRingHoverHeight(transportHeight, ringNumber);
+		int hoverStartTicks = getRingHoverStartTicks(transportHeight, ringNumber); // Progress at which the ring will start hovering
+		
+		if(progress < hoverStartTicks) // Height while Rings are rising into position
+			return progress - 6 * ringNumber;
+		
+		int hoverEndTicks = hoverStartTicks + hoverDuration + 6 * (4 - ringNumber);
+		
+		if(progress < hoverEndTicks) // Height while Rings are hovering in place
+			return hoverHeight;
+		
+		int totalTicks = hoverEndTicks + hoverHeight;
+		
+		if(progress < totalTicks) // Height while Rings are descending back to idle position
+			return totalTicks - progress;
+		
+		return 0;
+	}
+	
+	public float getRingHeight(float partialTick, int ringNumber)
+	{
+		float progress = getProgress(partialTick);
+		int transportHeight = getTransportHeight();
+		int hoverDuration = AbstractTransportRingsEntity.HOVER_TICKS;
+		
+		if(emptySpace >= 0)
+			return 4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
+		else
+			return -4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
+	}
+	
 	@Override
 	public int getTimeUntilTransport()
 	{
@@ -589,9 +630,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		updateClient();
 		
 		if(transportTicks - getTransportSoundLead() == connectionTime)
-			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT_PRE.get(), SoundSource.BLOCKS, 0.5F, 1F);
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, true));
 		else if(transportTicks == connectionTime)
-			level.playSound(null, transportPos(), SoundInit.TRANSPORT_RINGS_TRANSPORT_POST.get(), SoundSource.BLOCKS, 0.5F, 1F);
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, false));
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity<?> rings)

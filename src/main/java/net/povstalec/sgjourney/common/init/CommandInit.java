@@ -220,7 +220,7 @@ public class CommandInit
 		//Dev commands
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal("debugInfo").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
-						.executes(CommandInit::printStargateNetworkInfo)));
+						.executes(CommandInit::printDebugInfo)));
 	}
 	
 	private static Component dimensionComponent(ResourceKey<Level> dimension)
@@ -563,8 +563,8 @@ public class CommandInit
 		return Command.SINGLE_SUCCESS;
 	}
 	
-	//Only used for console checks
-	private static int printStargateNetworkInfo(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	// Only used for console checks
+	private static int printDebugInfo(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
 	{
 		MinecraftServer server = context.getSource().getServer();
 
@@ -576,6 +576,7 @@ public class CommandInit
 		System.out.println("===============Stargate Network===============");
 		BlockEntityList.get(server).printStargates();
 		StargateNetwork.get(server).printRegionStargates();
+		StargateNetwork.get(server).printDimensionStargates();
 		StargateNetwork.get(server).printConnections();
 
 		System.out.println("===============Transporter Network===============");
