@@ -85,7 +85,7 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_target.usage"),
 				ComponentHelper.energy("tooltip.sgjourney.ring_panel.transporter_energy", menu.getTransporterEnergy()));
 		this.crystalEffectTooltip(graphics, 136, 75, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
+						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.GOLD),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_transfer.description"),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_transfer.usage"));
 		this.crystalEffectTooltip(graphics, 136, 87, mouseX, mouseY, Component.translatable("tooltip.sgjourney.ring_panel.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
