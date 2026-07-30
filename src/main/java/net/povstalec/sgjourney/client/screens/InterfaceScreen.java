@@ -107,7 +107,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		this.itemHint(graphics, texture, x + 165, y + 18, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
 		
-		this.renderEnergyVertical(graphics, texture, x + 162, y + 17, 6, 138, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+		this.renderEnergyVertical(graphics, texture, x + 185, y + 18, 6, 106, 199, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
 	}
 	
 	protected void modeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, Component name, Component... components)
@@ -130,11 +130,11 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		renderTooltip(graphics, mouseX, mouseY);
 		
-		this.tooltip(graphics, mouseX, mouseY, 33, 16, 126, 20, ComponentHelper.energy("tooltip.sgjourney.energy_target", this.menu.getEnergyTarget()),
+		this.tooltip(graphics, mouseX, mouseY, 30, 21, 126, 20, ComponentHelper.energy("tooltip.sgjourney.energy_target", this.menu.getEnergyTarget()),
 				ComponentHelper.description("tooltip.sgjourney.interface.energy_target.description"));
-		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 138, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
+		this.energyTooltip(graphics, mouseX, mouseY, 185, 18, 6, 106, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
 		
-		this.modeTooltip(graphics, mouseX, mouseY, 9, 19, 16, 16,
+		this.modeTooltip(graphics, mouseX, mouseY, 4, 23, 16, 16,
 				Component.translatable("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
 				this.menu.getMode().getUsage());
 	}
@@ -144,11 +144,11 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	{
 		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 		
-		graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 20, 56, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 20, 66, 0xffffff, false);
-		graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 20, 76, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 20, 86, 0xffffff, false);
-		graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 20, 96, 0xffffff, false);
+		graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 34, 57, 0xffffff, false);
+		graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff, false);
+		graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 34, 77, 0xffffff, false);
+		graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff, false);
+		graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff, false);
 	}
 	
 	@Override
