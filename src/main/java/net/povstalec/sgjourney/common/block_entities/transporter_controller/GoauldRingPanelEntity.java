@@ -217,7 +217,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				
 				// If there are 4 regular crystals or 3 advanced crystals
 				if(crystalCache.transferCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
-					energyTarget = -1;
+					maxEnergyTransfer = -1;
 				else
 					crystalCache.transferCrystals().forEach(slot -> maxEnergyTransfer += slot.crystal.getMaxTransfer());
 				
