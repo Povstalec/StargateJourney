@@ -130,12 +130,15 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		requiresUpdate = true;
 		
 		if(peripheralWrapper != null)
-			return peripheralWrapper.resetInterface();
+		{
+			boolean result = peripheralWrapper.resetInterface();
+			level.invalidateCapabilities(pos);
+			return result;
+		}
 		
 		if(level.getBlockState(pos).getBlock() instanceof AbstractInterfaceBlock ccInterface)
 			ccInterface.updateInterface(state, level, pos);
 		
-		level.invalidateCapabilities(pos);
 		return true;
 	}
 	
