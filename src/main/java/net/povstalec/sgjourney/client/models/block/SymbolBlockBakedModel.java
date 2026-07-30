@@ -123,10 +123,10 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		return switch(orientation)
 		{
 			case UPWARD -> FACE_BAKERY.bakeQuad(SYMBOL_TOP_START, SYMBOL_TOP_END, new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, false)),
-					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction), true);
+					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.UP, new ModelState(){}, new BlockElementRotation(CENTER, Direction.Axis.Y, 0, false), true);
 			
 			case DOWNWARD -> FACE_BAKERY.bakeQuad(SYMBOL_BOTTOM_START, SYMBOL_BOTTOM_END, new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, true)),
-					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true);
+					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.DOWN, new ModelState(){}, new BlockElementRotation(CENTER, Direction.Axis.Y, 0, false), true);
 			
 			default -> FACE_BAKERY.bakeQuad(SYMBOL_FRONT_START, SYMBOL_FRONT_END, new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
 					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true);
