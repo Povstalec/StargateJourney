@@ -315,13 +315,13 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	protected long getCapacity()
 	{
-		return CommonTransporterConfig.ring_panel_energy_capacity.get();
+		return CommonTransporterConfig.goauld_ring_panel_energy_capacity.get();
 	}
 	
 	@Override
 	protected long getMaxReceive()
 	{
-		return CommonTransporterConfig.ring_panel_max_energy_receive.get();
+		return CommonTransporterConfig.goauld_ring_panel_max_energy_receive.get();
 	}
 	
 	@Override
@@ -333,12 +333,12 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	protected long getMaxDeplete()
 	{
-		return CommonTransporterConfig.ring_panel_max_energy_extract.get();
+		return CommonTransporterConfig.goauld_ring_panel_max_energy_extract.get();
 	}
 	
 	protected long buttonPressEnergyCost()
 	{
-		return CommonTransporterConfig.ring_panel_button_press_energy_cost.get();
+		return CommonTransporterConfig.goauld_ring_panel_button_press_energy_cost.get();
 	}
 	
 	//============================================================================================
