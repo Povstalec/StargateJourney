@@ -177,7 +177,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
 		CompoundTag blockEntityTag = new CompoundTag();
 		
 		blockEntityTag.putString("id", "sgjourney:goauld_ring_panel");
-		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonTransporterConfig.ring_panel_energy_capacity.get());
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonTransporterConfig.goauld_ring_panel_energy_capacity.get());
 		
 		CompoundTag energyInventory = new CompoundTag();
 		energyInventory.putInt("Size", 1);
