@@ -107,14 +107,25 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		return null;
 	}
 	
+	public static int rotationFromDirection(Direction direction, boolean reversed)
+	{
+		return switch(direction)
+		{
+			case EAST -> reversed ? 90 : 270;
+			case NORTH -> 180;
+			case WEST -> reversed ? 270 : 90;
+			default -> 0;
+		};
+	}
+	
 	public static BakedQuad makeSymbolQuad(Direction direction, Orientation orientation, TextureAtlasSprite symbolSprite, int symbolTint)
 	{
 		return switch(orientation)
 		{
-			case UPWARD -> FACE_BAKERY.bakeQuad(SYMBOL_TOP_START, SYMBOL_TOP_END, new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
+			case UPWARD -> FACE_BAKERY.bakeQuad(SYMBOL_TOP_START, SYMBOL_TOP_END, new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, false)),
 					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction), true);
 			
-			case DOWNWARD -> FACE_BAKERY.bakeQuad(SYMBOL_BOTTOM_START, SYMBOL_BOTTOM_END, new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),
+			case DOWNWARD -> FACE_BAKERY.bakeQuad(SYMBOL_BOTTOM_START, SYMBOL_BOTTOM_END, new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, rotationFromDirection(direction, true)),
 					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true);
 			
 			default -> FACE_BAKERY.bakeQuad(SYMBOL_FRONT_START, SYMBOL_FRONT_END, new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0),

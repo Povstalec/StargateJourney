@@ -134,6 +134,12 @@ public class GenericStargateFunctions
 	
 	public static boolean remapSymbol(AbstractStargateEntity<?> stargate, int originalSymbol, int newSymbol)
 	{
+		if(stargate.getEncodedSymbols().containsSymbol(originalSymbol))
+			return false; // Don't remap a symbol that's already physically active on the gate
+		
+		if(stargate.getAddress().containsSymbol(newSymbol))
+			return false; // Don't remap to a symbol that's contained in the encoded address
+		
 		return stargate.symbolMap.remapSymbol(originalSymbol, newSymbol);
 	}
 	

@@ -118,6 +118,13 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
+	@Override
+	public void invalidateCapabilities()
+	{
+		super.invalidateCapabilities();
+		this.peripheralWrapper.getPeripheral().invalidate();
+	}
+	
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
 	{
 		requiresUpdate = true;
@@ -128,6 +135,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		if(level.getBlockState(pos).getBlock() instanceof AbstractInterfaceBlock ccInterface)
 			ccInterface.updateInterface(state, level, pos);
 		
+		level.invalidateCapabilities(pos);
 		return true;
 	}
 	
