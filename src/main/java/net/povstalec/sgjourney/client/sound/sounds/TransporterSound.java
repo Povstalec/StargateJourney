@@ -15,7 +15,6 @@ public abstract class TransporterSound<T extends AbstractTransporterEntity<?>> e
 {
 	protected T transporter;
 	protected BlockPos transporterPos;
-	protected Minecraft minecraft = Minecraft.getInstance();
 	
 	/**
 	 *
@@ -31,7 +30,8 @@ public abstract class TransporterSound<T extends AbstractTransporterEntity<?>> e
 		this.x = transporter.getBlockPos().getX();
 		this.y = transporter.getBlockPos().getY();
 		this.z = transporter.getBlockPos().getZ();
-		this.relative = true;
+		this.relative = false;
+		this.attenuation = SoundInstance.Attenuation.NONE;
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public abstract class TransporterSound<T extends AbstractTransporterEntity<?>> e
 	
 	public double getDistanceFromSource()
 	{
-		LocalPlayer player = minecraft.player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		Vec3 playerPos = player.position();
 		return getPosition().distanceTo(playerPos);
 	}

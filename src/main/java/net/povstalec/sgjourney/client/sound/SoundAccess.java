@@ -6,7 +6,9 @@ import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.sound.sounds.GenericStargateSound;
+import net.povstalec.sgjourney.client.sound.sounds.TransportRingsTransportSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
@@ -263,4 +265,22 @@ public class SoundAccess
     	
     	return new SoundEvent(ClientStargateVariants.getClientStargateVariant(stargate.defaultVariant(), stargate).wormholeSounds().getCloseSound(incoming));
     }
+	
+	
+	
+	public static void playTransportRingsTransportSound(BlockPos pos, boolean firstHalf)
+	{
+		if(minecraft.level.getBlockEntity(pos) instanceof AbstractTransportRingsEntity<?> transportRings)
+		{
+			TransportRingsTransportSound sound = new TransportRingsTransportSound(transportRings, getTransportRingsTransportSound(transportRings, firstHalf), 0.5F);
+			minecraft.getSoundManager().play(sound);
+		}
+	}
+	
+	
+	
+	private static SoundEvent getTransportRingsTransportSound(AbstractTransportRingsEntity<?> transportRings, boolean firstHalf)
+	{
+		return firstHalf ? SoundInit.TRANSPORT_RINGS_TRANSPORT_PRE.get() : SoundInit.TRANSPORT_RINGS_TRANSPORT_POST.get();
+	}
 }
