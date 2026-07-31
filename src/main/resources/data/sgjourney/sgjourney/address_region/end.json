@@ -1,7 +1,7 @@
 {
 	"name": "solar_system.sgjourney.end",
-	"point_of_origin": "sgjourney:pontem",
-	"symbols": "sgjourney:end",
+	"point_of_origin": "sgjourney:terra",
+	"symbols": "sgjourney:terra",
 	"symbol_prefix": 1,
 	"extragalactic_address": {"symbols": [18, 24, 8, 16, 7, 35, 30], "randomizable": true},
 	"galactic_addresses":

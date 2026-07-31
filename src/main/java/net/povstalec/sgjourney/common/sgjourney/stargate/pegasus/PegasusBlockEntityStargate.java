@@ -3,11 +3,15 @@ package net.povstalec.sgjourney.common.sgjourney.stargate.pegasus;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+// import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Unit;
 import net.minecraft.world.phys.Vec3;
+// import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -17,6 +21,14 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
+
+import dev.ryanhcode.sable.Sable;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.ticket.SubLevelLoadingTicketType;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.SubLevel;
+
 import java.lang.ref.WeakReference;
 
 public class PegasusBlockEntityStargate extends PegasusStargate implements BlockEntityStargate<PegasusStargateEntity>
@@ -54,10 +66,10 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements Block
 	private @Nullable PegasusStargateEntity tryCacheStargateEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
-		
+
 		if(level != null && level.getBlockEntity(blockPos) instanceof PegasusStargateEntity stargate)
 			return cacheStargateEntity(stargate);
-		
+
 		return null;
 	}
 	

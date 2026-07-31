@@ -1,5 +1,35 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import java.util.*;
+
+import javax.annotation.Nullable;
+
+import net.minecraft.core.*;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.WorldGenLevel;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.init.DamageSourceInit;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+// import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import org.jetbrains.annotations.NotNull;
+
+import net.minecraft.util.Unit;
+
+import dev.ryanhcode.sable.Sable;
+import dev.ryanhcode.sable.api.sublevel.ServerSubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.SubLevelContainer;
+import dev.ryanhcode.sable.api.sublevel.ticket.SubLevelLoadingTicketType;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.sublevel.ServerSubLevel;
+import dev.ryanhcode.sable.sublevel.SubLevel;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.*;
 import net.minecraft.nbt.CompoundTag;
@@ -581,6 +611,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public StargateInfo.FeedbackMessage engageStargate()
 	{
+		StargateJourney.LOGGER.debug("Stargate connection: "+isConnected());
 		if(!getAddress().canBeDialed()) // Address is too short or does not contain a Point of Origin
 			return resetStargate(makeDialAttempt(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo()));
 		else if(!isConnected())
@@ -1186,11 +1217,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
     	
     	if(orientation != null && orientation != Orientation.REGULAR)
     		y = getHorizontalCenterHeight();
-    	
-    	return new Vec3(
+
+		Vec3 adaptedPos = new Vec3(
     			centerPos.getX() + 0.5, 
     			centerPos.getY() + y, 
     			centerPos.getZ() + 0.5);
+
+		// projects a position out of a sub-level (if it is one)
+		adaptedPos = SableCompanion.INSTANCE.projectOutOfSubLevel(getLevel(), (Position) adaptedPos);
+
+    	return adaptedPos;
     }
     
     public Vec3 getRelativeCenter()
@@ -1254,6 +1290,13 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		{
 			if(connectionState != StargateConnection.State.IDLE)
 				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), true);
+				
+				final SubLevel subLevel = Sable.HELPER.getContaining(this);
+				if (subLevel instanceof final ServerSubLevel serverSubLevel) {
+					final ServerSubLevelContainer container = (ServerSubLevelContainer) SubLevelContainer.getContainer(level);
+					container.addForceLoadTicket(serverSubLevel, SubLevelLoadingTicketType.COMMAND_FORCED, Unit.INSTANCE);
+				}
+				
 			else
 				level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), false);
 		}
