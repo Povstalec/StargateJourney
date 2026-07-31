@@ -43,11 +43,9 @@ repositories {
     }
     maven {
         name = "CC:Tweaked maven"
-        url "https://squiddev.cc/maven/"
+        url "https://maven.squiddev.cc"
         content {
             includeGroup("cc.tweaked")
-            includeModule("org.squiddev", "Cobalt")
-            includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
         }
     }
     maven {
@@ -59,17 +57,8 @@ repositories {
             includeGroup("mezz.jei") // limit only for JEI
         }
     }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.dev"
-    }
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
+    // !!! If adding new maven: !!!
+    // if adding new maven because of some mod, limit that maven only to the group of desired mod!
 }
 
 base {
