@@ -35,7 +35,15 @@ repositories {
         }
     }
     maven {
-        url "https://maven.squiddev.cc/"
+        name = "CurseMaven (CurseForge maven proxy)"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    maven {
+        name = "CC:Tweaked maven"
+        url "https://squiddev.cc/maven/"
         content {
             includeGroup("cc.tweaked")
             includeModule("org.squiddev", "Cobalt")
@@ -43,8 +51,13 @@ repositories {
         }
     }
     maven {
+        // location of the maven that hosts JEI files since January 2023
+        // https://github.com/mezz/JustEnoughItems/wiki/Getting-Started-%5BMinecraft-1.18.2-to-1.20.1%5D
         name = "Jared's maven"
         url = "https://maven.blamejared.com/"
+        content {
+            includeGroup("mezz.jei") // limit only for JEI
+        }
     }
     maven {
         // location of a maven mirror for JEI files, as a fallback
