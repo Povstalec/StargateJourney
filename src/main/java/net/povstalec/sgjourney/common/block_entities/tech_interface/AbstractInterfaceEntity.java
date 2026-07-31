@@ -47,7 +47,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	protected boolean requiresUpdate = true;
 	@Nullable
 	protected EnergyBlockEntity energyBlockEntity = null;
-	protected InterfacePeripheralWrapper peripheralWrapper;
+	@Nullable
+	protected InterfacePeripheralWrapper peripheralWrapper = null;
 	
 	public enum InterfaceType
 	{
@@ -133,7 +134,8 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	public void invalidateCaps()
 	{
 		super.invalidateCaps();
-		this.peripheralWrapper.getPeripheral().invalidate();
+		if(this.peripheralWrapper != null)
+			this.peripheralWrapper.getPeripheral().invalidate();
 	}
 
 	public boolean updateInterface(Level level, BlockPos pos, Block block, BlockState state)
