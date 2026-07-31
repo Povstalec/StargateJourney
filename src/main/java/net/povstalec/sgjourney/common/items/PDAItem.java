@@ -134,10 +134,13 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	{
 		user.sendSystemMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW));
 		
-		if(canUseGoauldTech(target))
-			user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN));
-		
-		if(canUseAncientTech(target))
-			user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA));
+		if(target instanceof LivingEntity livingEntity)
+		{
+			if(canUseGoauldTech(livingEntity))
+				user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN));
+			
+			if(canUseAncientTech(livingEntity))
+				user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA));
+		}
 	}
 }
