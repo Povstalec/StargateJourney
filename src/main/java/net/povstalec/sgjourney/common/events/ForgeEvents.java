@@ -451,7 +451,7 @@ public class ForgeEvents
 		Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 		
 		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
-		level2Trades.add(new TreasureMapForEmeraldsTrade(13, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 12, 80));
+		level2Trades.add(new TreasureMapForEmeraldsTrade(13, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 3, 80));
 	}
 	
 	private static void addArcheologistTrades(VillagerTradesEvent event)
@@ -461,7 +461,7 @@ public class ForgeEvents
 		List<VillagerTrades.ItemListing> level1Trades = trades.get(1);
 		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.PAPER, 20), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
 		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(BlockInit.GOLDEN_IDOL.get(), 1), new ItemStack(Items.EMERALD, 5), 4, 12, 0.09F));
-		level1Trades.add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 12, 80));
+		level1Trades.add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 2, 80));
 		
 		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
 		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(Items.COMPASS, 1), 4, 12, 0.09F));

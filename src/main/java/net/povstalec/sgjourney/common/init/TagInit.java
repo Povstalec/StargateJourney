@@ -22,6 +22,11 @@ public class TagInit
 		{
             return ItemTags.create(StargateJourney.sgjourneyLocation(name));
         }
+		
+		public static TagKey<Item> createTag(String name)
+		{
+			return ItemTags.create(ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<Item> forgeTag(String name)
         {
@@ -44,6 +49,11 @@ public class TagInit
 		{
             return BlockTags.create(StargateJourney.sgjourneyLocation(name));
         }
+		
+		public static TagKey<Block> createTag(String name)
+		{
+			return BlockTags.create(ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<Block> forgeTag(String name)
         {
@@ -63,6 +73,11 @@ public class TagInit
 		{
             return TagKey.create(Registries.ENTITY_TYPE, StargateJourney.sgjourneyLocation(name));
         }
+		
+		public static TagKey<EntityType<?>> createTag(String name)
+		{
+			return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<EntityType<?>> forgeTag(String name)
         {
@@ -88,6 +103,11 @@ public class TagInit
 		private static TagKey<Structure> tag(String name)
 		{
 			return TagKey.create(Registries.STRUCTURE, StargateJourney.sgjourneyLocation(name));
+		}
+		
+		public static TagKey<Structure> createTag(String name)
+		{
+			return TagKey.create(Registries.STRUCTURE, ResourceLocation.tryParse(name));
 		}
 	}
 }

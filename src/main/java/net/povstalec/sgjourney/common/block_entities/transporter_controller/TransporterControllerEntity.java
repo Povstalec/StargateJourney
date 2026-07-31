@@ -30,6 +30,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
+import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -37,7 +38,10 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, PDAStatus,
 		AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
@@ -268,14 +272,15 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	{
 		return energyStorage.getTrueMaxEnergyStored() * 2 / 3;
 	}
+	
 	public long maxEnergyTransfer()
 	{
-		return this.maxEnergyTransfer;
+		return this.maxEnergyTransfer < 0 ? CommonTransporterConfig.goauld_ring_panel_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
 	
 	public long getEnergyTarget()
 	{
-		return this.energyTarget;
+		return this.energyTarget < 0 ? CommonTransporterConfig.goauld_transport_rings_energy_capacity.get() : this.energyTarget; //TODO It would probably be better to get max capacity from the specific rings it's connected to
 	}
 	
 	private ItemStackHandler createEnergyItemHandler()

@@ -319,7 +319,7 @@ public class StargateJourney
 		return isStellarViewLoaded;
 	}
 	
-	// BECAUSE OCULUS MESSES WITH RENDERING TOO MUCH
+	// BECAUSE IRIS MESSES WITH RENDERING TOO MUCH
 	public static boolean isIrisLoaded()
 	{
 		if(isIrisLoaded == null)

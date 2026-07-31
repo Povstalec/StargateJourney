@@ -286,6 +286,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			else
 				stargateRelativePos = null;
 			
+			if(newStargate != null)
+				newStargate.updateDHD(this);
 			updateClient();
 		});
 	}
@@ -391,9 +393,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public void updateDHD(Address.Mutable address, boolean isCenterButtonEngaged)
 	{
-		stargateCache.ifPresentOrElse(stargate -> setAddress(stargate.symbolMap.remapAddress(address)), () -> setAddress(address));
-		this.setCenterButtonEngaged(isCenterButtonEngaged);
+		setAddress(address);
+		setCenterButtonEngaged(isCenterButtonEngaged);
 		updateClient();
+		setChanged();
 	}
 	
 	public void setAddress(Address.Mutable address)

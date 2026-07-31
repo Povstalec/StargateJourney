@@ -94,6 +94,9 @@ public class ItemInit
 			() -> new Item(new Item.Properties().food(FoodInit.JAFFA_CAKE)));
 	
 	// Useful Items
+	public static final DeferredItem<Item> SCHRODINGERS_MAP = ITEMS.register("schrodingers_map",
+		() -> new SchrodingersMapItem(new Item.Properties().stacksTo(1)));
+	
 	public static final DeferredItem<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket",
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
 	public static final DeferredItem<Item> HEAVY_LIQUID_NAQUADAH_BUCKET = ITEMS.register("heavy_liquid_naquadah_bucket",

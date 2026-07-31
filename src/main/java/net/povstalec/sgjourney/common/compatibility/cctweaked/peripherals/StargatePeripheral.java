@@ -22,7 +22,7 @@ public class StargatePeripheral extends InterfacePeripheral
 	
 	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate)
 	{
-		super(interfaceEntity);
+		super(interfaceEntity, stargate);
 		this.stargate = stargate;
 		
 		stargate.registerInterfaceMethods(new SGJourneyPeripheralWrapper<>(this, interfaceEntity.getInterfaceType()));

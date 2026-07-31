@@ -650,6 +650,16 @@ public final class StargateNetwork extends SavedData
 		});
 	}
 	
+	public void printDimensionStargates()
+	{
+		System.out.println("[Stargates in Dimensions]");
+		this.dimensionStargates.forEach((dimension, dimensionStargates) ->
+		{
+			System.out.println("Dimension: " + dimension.location());
+			dimensionStargates.forEach(stargate -> System.out.println("--- " + stargate.getPosition() + " " + stargate.toString()));
+		});
+	}
+	
 	public void printConnections()
 	{
 		System.out.println("[Connections]");

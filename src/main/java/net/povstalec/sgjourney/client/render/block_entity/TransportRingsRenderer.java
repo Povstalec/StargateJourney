@@ -35,44 +35,6 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 		}
 	}
 	
-	// Ring height ignoring direction
-	protected float getAbsoluteRingHeight(int hoverDuration, int transportHeight, float progress, int ringNumber)
-	{
-		if(progress < 6 * ringNumber) // Idle height
-			return 0;
-		
-		// While hovering, each ring's center should be located half a meter above the previous one
-		int hoverHeight = AbstractTransportRingsEntity.getRingHoverHeight(transportHeight, ringNumber);
-		int hoverStartTicks = AbstractTransportRingsEntity.getRingHoverStartTicks(transportHeight, ringNumber); // Progress at which the ring will start hovering
-		
-		if(progress < hoverStartTicks) // Height while Rings are rising into position
-			return progress - 6 * ringNumber;
-		
-		int hoverEndTicks = hoverStartTicks + hoverDuration + 6 * (4 - ringNumber);
-		
-		if(progress < hoverEndTicks) // Height while Rings are hovering in place
-			return hoverHeight;
-		
-		int totalTicks = hoverEndTicks + hoverHeight;
-		
-		if(progress < totalTicks) // Height while Rings are descending back to idle position
-			return totalTicks - progress;
-		
-		return 0;
-	}
-	
-	protected float getRingHeight(AbstractTransportRingsEntity<?> rings, float partialTick, int ringNumber)
-	{
-		float progress = rings.getProgress(partialTick);
-		int transportHeight = rings.getTransportHeight();
-		int hoverDuration = AbstractTransportRingsEntity.HOVER_TICKS;
-		
-		if(rings.emptySpace >= 0)
-			return 4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
-		else
-			return -4 * getAbsoluteRingHeight(hoverDuration, transportHeight, progress, ringNumber);
-	}
-	
 	@Override
 	public void render(@NotNull T transportRings, float partialTick, PoseStack stack,
 					   @NotNull MultiBufferSource source, int combinedLight, int combinedOverlay)
@@ -82,7 +44,7 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 		
 		for(int i = 0; i < this.transportRings.size(); i++)
 		{
-			float ringHeight = getRingHeight(transportRings, partialTick, i) / 16F;
+			float ringHeight = transportRings.getRingHeight(partialTick, i) / 16F;
 			if(ringHeight == 0 && i != 4) // Don't render overlapping rings when Transport Rings are idle
 				continue;
 			

@@ -105,7 +105,7 @@ public class BlockEntityList extends SavedData
 	public void printStargates()
 	{
 		System.out.println("[Stargates]");
-		this.stargateMap.entrySet().stream().forEach(stargateEntry ->
+		this.stargateMap.entrySet().forEach(stargateEntry ->
 		{
 			System.out.println("- " + stargateEntry.getValue().toString());
 		});

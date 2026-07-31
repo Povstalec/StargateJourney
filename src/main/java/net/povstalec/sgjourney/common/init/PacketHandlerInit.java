@@ -116,6 +116,11 @@ public final class PacketHandlerInit
 				ClientBoundSoundPackets.RotationStop.STREAM_CODEC,
 				ClientBoundSoundPackets.RotationStop::handle);
 		
+		registrar.playToClient(
+			ClientBoundSoundPackets.TransportRingsTransport.TYPE,
+			ClientBoundSoundPackets.TransportRingsTransport.STREAM_CODEC,
+			ClientBoundSoundPackets.TransportRingsTransport::handle);
+		
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================

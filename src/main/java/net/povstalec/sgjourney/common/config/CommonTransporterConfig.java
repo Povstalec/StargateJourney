@@ -4,10 +4,10 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonTransporterConfig
 {
-	public static ModConfigSpec.LongValue ring_panel_energy_capacity;
-	public static ModConfigSpec.LongValue ring_panel_max_energy_receive;
-	public static ModConfigSpec.LongValue ring_panel_max_energy_extract;
-	public static ModConfigSpec.LongValue ring_panel_button_press_energy_cost;
+	public static ModConfigSpec.LongValue goauld_ring_panel_energy_capacity;
+	public static ModConfigSpec.LongValue goauld_ring_panel_max_energy_receive;
+	public static ModConfigSpec.LongValue goauld_ring_panel_max_energy_extract;
+	public static ModConfigSpec.LongValue goauld_ring_panel_button_press_energy_cost;
 	
 	public static ModConfigSpec.LongValue ancient_transport_rings_energy_capacity;
 	public static ModConfigSpec.LongValue ancient_transport_rings_max_energy_receive;
@@ -21,21 +21,21 @@ public class CommonTransporterConfig
 	
 	public static void init(ModConfigSpec.Builder server)
 	{
-		ring_panel_energy_capacity = server
+		goauld_ring_panel_energy_capacity = server
 				.comment("Energy capacity of the Ring Panel")
-				.defineInRange("server.ring_panel_energy_capacity", 200000, 0L, Long.MAX_VALUE);
+				.defineInRange("server.goauld_ring_panel_energy_capacity", 200000, 0L, Long.MAX_VALUE);
 		
-		ring_panel_max_energy_receive = server
+		goauld_ring_panel_max_energy_receive = server
 				.comment("Maximum amount of energy that can be transferred to the Ring Panel in one tick")
-				.defineInRange("server.ring_panel_max_energy_receive", 100000, 0L, Long.MAX_VALUE);
+				.defineInRange("server.goauld_ring_panel_max_energy_receive", 100000, 0L, Long.MAX_VALUE);
 		
-		ring_panel_max_energy_extract = server
+		goauld_ring_panel_max_energy_extract = server
 				.comment("Maximum amount of energy that can be extracted from the Ring Panel in one tick")
-				.defineInRange("server.ring_panel_max_energy_extract", 50000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.goauld_ring_panel_max_energy_extract", 50000L, 0L, Long.MAX_VALUE);
 		
-		ring_panel_button_press_energy_cost = server
+		goauld_ring_panel_button_press_energy_cost = server
 				.comment("Energy depleted by pressing a button on the Ring Panel")
-				.defineInRange("server.ring_panel_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.goauld_ring_panel_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
 		
 		
 		

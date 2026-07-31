@@ -25,6 +25,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class TabInit
 {
@@ -229,11 +230,14 @@ public class TabInit
 					if(CommonStargateConfig.enable_stargate_variants.get())
 					{
 						items.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
-						items.accept(StargateVariantItem.stargateVariant(StargateJourney.sgjourneyLocation("milky_way_movie")));
-						items.accept(StargateVariantItem.stargateVariant(StargateJourney.sgjourneyLocation("milky_way_promo")));
-						items.accept(StargateVariantItem.stargateVariant(StargateJourney.sgjourneyLocation("milky_way_sg")));
-						items.accept(StargateVariantItem.stargateVariant(StargateJourney.sgjourneyLocation("pegasus_atlantis")));
-						items.accept(StargateVariantItem.stargateVariant(StargateJourney.sgjourneyLocation("classic_milky_way")));
+						parameters.holders()
+							.lookup(StargateVariant.REGISTRY_KEY)
+							.ifPresent(regLookup ->
+								regLookup.listElementIds()
+									.forEach(variantId ->
+										items.accept(StargateVariantItem.stargateVariant(variantId.location()))
+									)
+							);
 					}
 				}).build());
 

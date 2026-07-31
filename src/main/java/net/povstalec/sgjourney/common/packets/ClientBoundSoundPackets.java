@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.packets;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -242,6 +243,31 @@ public abstract class ClientBoundSoundPackets
             ctx.enqueueWork(() -> SoundAccess.playRotationStopSound(packet.blockPos));
         }
     }
+	
+	
+	
+	public record TransportRingsTransport(BlockPos blockPos, boolean firstHalf) implements CustomPacketPayload
+	{
+		public static final CustomPacketPayload.Type<TransportRingsTransport> TYPE =
+			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_transport_rings_transport_sound"));
+		
+		public static final StreamCodec<RegistryFriendlyByteBuf, TransportRingsTransport> STREAM_CODEC = StreamCodec.composite(
+			BlockPos.STREAM_CODEC, TransportRingsTransport::blockPos,
+			ByteBufCodecs.BOOL, TransportRingsTransport::firstHalf,
+			TransportRingsTransport::new
+		);
+		
+		@Override
+		public CustomPacketPayload.@NotNull Type<? extends CustomPacketPayload> type()
+		{
+			return TYPE;
+		}
+		
+		public static void handle(TransportRingsTransport packet, IPayloadContext ctx)
+		{
+			ctx.enqueueWork(() -> SoundAccess.playTransportRingsTransportSound(packet.blockPos, packet.firstHalf));
+		}
+	}
 }
 
 

@@ -13,22 +13,26 @@ public class PegasusStargateFunctions
 	//*********************************Advanced Crystal Interface*********************************
 	//============================================================================================
 	
-	public static void dynamicSymbols(PegasusStargateEntity stargate, boolean dynamicSymbols)
+	public static boolean dynamicSymbols(PegasusStargateEntity stargate, boolean dynamicSymbols)
 	{
-		stargate.dynamicSymbols(dynamicSymbols);
+		return stargate.dynamicSymbols(dynamicSymbols);
 	}
 	
-	public static void overrideSymbols(PegasusStargateEntity stargate, String symbolString)
+	public static boolean overrideSymbols(PegasusStargateEntity stargate, String symbolString)
 	{
 		ResourceKey<Symbols> symbols = Conversion.stringToSymbols(symbolString);
 		if(symbols != null)
-			stargate.symbolInfo().setSymbols(symbols);
+			return stargate.overrideSymbols(symbols);
+		
+		return false;
 	}
 	
-	public static void overridePointOfOrigin(PegasusStargateEntity stargate, String pointOfOriginString)
+	public static boolean overridePointOfOrigin(PegasusStargateEntity stargate, String pointOfOriginString)
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(pointOfOriginString);
 		if(pointOfOrigin != null)
-			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
+			return stargate.overridePointOfOrigin(pointOfOrigin);
+		
+		return false;
 	}
 }

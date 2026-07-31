@@ -37,7 +37,7 @@ import java.util.Set;
 
 public interface Stargate extends Comparable<Stargate>
 {
-	String STARGATE = "stargate"; //TODO Change this to "dimension"
+	String STARGATE = "stargate";
 	
 	BlockCapability<Stargate, Direction> STARGATE_CAPABILITY_BLOCK = BlockCapability.create(
 			StargateJourney.sgjourneyLocation(STARGATE), Stargate.class, Direction.class);

@@ -1,15 +1,22 @@
 package net.povstalec.sgjourney.common.init;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.saveddata.maps.MapDecorationType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 
 import java.util.function.UnaryOperator;
@@ -26,7 +33,7 @@ public class DataComponentInit
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> FLUID = register("fluid", builder -> builder.persistent(SimpleFluidContent.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENTROPY = register("entropy", builder -> builder.persistent(Codec.INT));
     
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> TERROR_MODE = register("terror_mode", builder -> builder.persistent(Codec.BOOL));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<KaraKeshItem.Mode>> KARA_KESH_MODE = register("kara_kesh_mode", builder -> builder.persistent(KaraKeshItem.Mode.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_OPEN = register("is_open", builder -> builder.persistent(Codec.BOOL));
     
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> SHIELD_TEXTURE = register("shield_texture", builder -> builder.persistent(ResourceLocation.CODEC));
@@ -45,6 +52,11 @@ public class DataComponentInit
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> INDEX = register("index", builder -> builder.persistent(Codec.INT));
     
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> GOAULD_INFO = register("goauld_info", builder -> builder.persistent(CompoundTag.CODEC));
+	
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<Level>>> DIMENSION = register("dimension", builder -> builder.persistent(Level.RESOURCE_KEY_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKIP_LOADED_CHUNKS = register("skip_loaded_chunks", builder -> builder.persistent(Codec.BOOL));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagKey<Structure>>> TARGET_STRUCTURE = register("target_structure", builder -> builder.persistent(TagKey.codec(Registries.STRUCTURE)));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<MapDecorationType>>> DECORATION_TYPE = register("decoration_type", builder -> builder.persistent(MapDecorationType.CODEC));
 
 
 

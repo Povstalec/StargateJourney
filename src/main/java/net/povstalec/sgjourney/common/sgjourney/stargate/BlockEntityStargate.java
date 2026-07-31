@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 public interface BlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends Stargate
 {
-	String COORDINATES = "Coordinates";
+	String COORDINATES = "Coordinates"; //TODO Change to snake_case
 	
 	BlockPos getBlockPos();
 	

@@ -32,7 +32,9 @@
   "features": [
     [],
     [
-      "minecraft:lake_lava_underground"
+      "minecraft:lake_lava_underground",
+		
+	  "sgjourney:tollan_lake_lava_surface_sparse"
     ],
     [
       "minecraft:amethyst_geode"
