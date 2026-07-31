@@ -32,7 +32,8 @@
     [],
     [
       "minecraft:lake_lava_underground",
-      "sgjourney:blackstone_lake_lava_surface"
+		
+      "sgjourney:tollan_lake_lava_surface"
     ],
     [
       "minecraft:amethyst_geode"
@@ -81,7 +82,9 @@
     [],
     [
       "minecraft:spring_lava",
-      "minecraft:glow_lichen"
-    ]
+      "minecraft:glow_lichen",
+		
+	  "sgjourney:spring_lava_tollan"
+	]
   ]
 }
