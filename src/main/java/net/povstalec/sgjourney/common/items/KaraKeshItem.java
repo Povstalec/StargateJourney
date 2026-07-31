@@ -97,7 +97,7 @@ public class KaraKeshItem extends Item implements GoauldTech
 				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 255));
 				player.getCooldowns().addCooldown(this, 200);
 			}
-			target.playSound(SoundEvents.BLAZE_SHOOT, 0.5F, player.level.random.nextFloat() * 0.4F + 0.8F);
+			target.playSound(SoundEvents.BLAZE_SHOOT, 0.5F, player.level().random.nextFloat() * 0.4F + 0.8F);
 			return InteractionResult.PASS;
 		}
 		return InteractionResult.FAIL;
