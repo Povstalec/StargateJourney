@@ -9,8 +9,6 @@
   "modrinth_project_id": "qlc8dxM6",
   "default_release_type": "Beta",
   "discord_webhook": {
-    "username": "Monolith architect",
-    "avatar_url": "https://cdn.discordapp.com/avatars/1053761029517082694/2ee4f7995d3a4ea68cabd90daf1af2e8.png?size=512",
     "release_content": "<@&1104024513689178112>",
     "release_embed": {
       "description": "# Stargate Journey v{version} released!\n{changelog}",
