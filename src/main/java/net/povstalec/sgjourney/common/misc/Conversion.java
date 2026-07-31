@@ -28,12 +28,11 @@ public class Conversion
 	@Nullable
 	public static ResourceKey<Level> stringToDimension(String dimensionString)
 	{
+		if(dimensionString.isEmpty())
+			return null;
+		
 		ResourceLocation location = ResourceLocation.tryParse(dimensionString);
-		
-		if(location != null)
-			return locationToDimension(location);
-		
-		return null;
+		return locationToDimension(location);
 	}
 	
 	@Nullable
@@ -48,6 +47,9 @@ public class Conversion
 	@Nullable
 	public static ResourceKey<PointOfOrigin> stringToPointOfOrigin(String pointOfOriginString)
 	{
+		if(pointOfOriginString.isEmpty())
+			return null;
+		
 		ResourceLocation location = ResourceLocation.tryParse(pointOfOriginString);
 		return locationToPointOfOrigin(location);
 	}
@@ -64,6 +66,9 @@ public class Conversion
 	@Nullable
 	public static ResourceKey<Symbols> stringToSymbols(String symbolsString)
 	{
+		if(symbolsString.isEmpty())
+			return null;
+		
 		ResourceLocation location = ResourceLocation.tryParse(symbolsString);
 		return locationToSymbols(location);
 	}
@@ -80,6 +85,9 @@ public class Conversion
 	@Nullable
 	public static ResourceKey<Galaxy> stringToGalaxyKey(String galaxyString)
 	{
+		if(galaxyString.isEmpty())
+			return null;
+		
 		ResourceLocation location = ResourceLocation.tryParse(galaxyString);
 		return locationToGalaxyKey(location);
 	}
@@ -96,6 +104,9 @@ public class Conversion
 	@Nullable
 	public static ResourceKey<AddressRegion> stringToAddressRegionKey(String addressRegionString)
 	{
+		if(addressRegionString.isEmpty())
+			return null;
+		
 		ResourceLocation location = ResourceLocation.tryParse(addressRegionString);
 		return locationToAddressRegionKey(location);
 	}
