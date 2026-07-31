@@ -139,11 +139,30 @@ repositories {
         }
     }
     maven {
-    url 'https://squiddev.cc/maven/'
-    content {
-        includeGroup 'org.squiddev'
+        name = "CurseMaven (CurseForge maven proxy)"
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
-  }
+    maven {
+        name = "CC:Tweaked maven"
+        url 'https://squiddev.cc/maven/'
+        content {
+            includeGroup 'org.squiddev'
+        }
+    }
+    maven {
+        // location of the maven that hosts JEI files since January 2023
+        // https://github.com/mezz/JustEnoughItems/wiki/Getting-Started-%5BMinecraft-1.18.2-to-1.20.1%5D
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+        content {
+            includeGroup("mezz.jei") // limit only for JEI
+        }
+    }
+    // !!! If adding new maven: !!!
+    // if adding new maven because of some mod, limit that maven only to the group of desired mod!
 }
 
 dependencies {
