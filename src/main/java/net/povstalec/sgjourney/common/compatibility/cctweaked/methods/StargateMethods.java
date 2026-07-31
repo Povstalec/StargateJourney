@@ -130,14 +130,17 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
-			int desiredSymbol = arguments.getInt(0);
-			boolean engageDirectly = arguments.optBoolean(1, false);
-			boolean canEngageStargate = arguments.optBoolean(2, true);
-			
 			//if(engageDirectly && !interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods())
 			//	throw new IllegalLuaArgumentException("Crystal Interface does not support directly engaging symbols");
 			
-			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, canEngageStargate, engageDirectly)));
+			return context.executeMainThreadTask(() ->
+			{
+				int desiredSymbol = arguments.getInt(0);
+				boolean engageDirectly = arguments.optBoolean(1, false);
+				boolean canEngageStargate = arguments.optBoolean(2, true);
+				
+				return returnedFeedback(interfaceEntity, GenericStargateFunctions.engageSymbol(interfaceEntity, stargate, desiredSymbol, canEngageStargate, engageDirectly));
+			});
 		}
 	}
 	
