@@ -4,7 +4,7 @@
     "barrier": {
       "type": "minecraft:simple_state_provider",
       "state": {
-        "Name": "minecraft:blackstone"
+        "Name": "minecraft:magma_block"
       }
     },
     "fluid": {
