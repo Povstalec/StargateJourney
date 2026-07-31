@@ -106,7 +106,7 @@ public class GenericStargateFunctions
 	
 	public static StargateInfo.Feedback engageSymbol(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, int desiredSymbol, boolean canEngageStargate, boolean engageDirectly)
 	{
-		boolean canEngage = canEngageStargate && stargate.getAddress().canBeDialed(); // Only try engaging the Stargate if the address can be dialed (This makes sure the DHD center button doesn't light up when used on Universe and Pegasus gates)
+		boolean canEngage = canEngageStargate && (desiredSymbol == 0 || stargate.getAddress().getLength() == 8); // Only try engaging the Stargate if the address can be dialed (This makes sure the DHD center button doesn't light up when used on Universe and Pegasus gates)
 		
 		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngage).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngage).feedback();
 	}
