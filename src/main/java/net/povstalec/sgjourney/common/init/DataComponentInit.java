@@ -16,6 +16,7 @@ import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
 
 import java.util.function.UnaryOperator;
@@ -32,7 +33,7 @@ public class DataComponentInit
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> FLUID = register("fluid", builder -> builder.persistent(SimpleFluidContent.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENTROPY = register("entropy", builder -> builder.persistent(Codec.INT));
     
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> TERROR_MODE = register("terror_mode", builder -> builder.persistent(Codec.BOOL));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<KaraKeshItem.Mode>> KARA_KESH_MODE = register("kara_kesh_mode", builder -> builder.persistent(KaraKeshItem.Mode.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_OPEN = register("is_open", builder -> builder.persistent(Codec.BOOL));
     
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> SHIELD_TEXTURE = register("shield_texture", builder -> builder.persistent(ResourceLocation.CODEC));
