@@ -1,11 +1,15 @@
 package net.povstalec.sgjourney.common.tech;
 
-import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
 
 public interface GoauldTech
 {
-	default boolean canUseGoauldTech(Entity user)
+	/**
+	 * @param user LivingEntity attempting to use this technology
+	 * @return True of the user can use this technology, otherwise false
+	 */
+	default boolean canUseGoauldTech(LivingEntity user)
 	{
 		GoauldHost cap = user.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
 		
@@ -13,16 +17,5 @@ public interface GoauldTech
 			return cap.hasNaquadahInBloodstream();
 		
 		return false;
-	}
-	
-	/**
-	 * 
-	 * @param requirementsDisabled Whether or not the requirements for having Naquadah in the bloodstream to use this have been disabled
-	 * @param user
-	 * @return
-	 */
-	default boolean canUseGoauldTech(boolean requirementsDisabled, Entity user)
-	{
-		return requirementsDisabled ? true : canUseGoauldTech(user);
 	}
 }

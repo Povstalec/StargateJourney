@@ -1,15 +1,14 @@
 package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.core.component.DataComponents;
+import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -24,40 +23,68 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.tech.GoauldTech;
 
 public class KaraKeshItem extends Item implements GoauldTech
 {
-	private boolean terrorModeOn = false;
-	private CompoundTag itemTag = new CompoundTag();
-	private Random random = new Random();
+	public enum Mode implements StringRepresentable
+	{
+		KNOCKBACK("knockback"),
+		TERROR("terror");
+		
+		public static final Codec<Mode> CODEC = StringRepresentable.fromValues(Mode::values);
+		
+		private final String name;
+		
+		Mode(String name)
+		{
+			this.name = name;
+		}
+		
+		@Override
+		public @NotNull String getSerializedName()
+		{
+			return name;
+		}
+	}
 	
 	public KaraKeshItem(Properties properties)
 	{
 		super(properties);
 	}
 	
+	public Mode getMode(ItemStack stack)
+	{
+		return stack.getOrDefault(DataComponentInit.KARA_KESH_MODE, Mode.KNOCKBACK);
+	}
+	
+	public void setMode(ItemStack stack, Mode mode)
+	{
+		stack.set(DataComponentInit.KARA_KESH_MODE, mode);
+	}
+	
+	public boolean canUse(LivingEntity user)
+	{
+		return true/*CommonTechConfig.disable_kara_kesh_requirements.get() || canUseGoauldTech(user)*/;
+	}
+	
 	@Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand)
+    public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player, @NotNull InteractionHand usedHand)
 	{
 		if(level.isClientSide())
 			return super.use(level, player, usedHand);
 		
-		if(canUseGoauldTech(CommonTechConfig.disable_kara_kesh_requirements.get(), player) && player.isShiftKeyDown())
+		if(canUse(player) && player.isShiftKeyDown())
 		{
 			ItemStack stack = player.getItemInHand(usedHand);
-
-			if(stack.getOrDefault(DataComponentInit.TERROR_MODE, false))
-			{
-				stack.set(DataComponentInit.TERROR_MODE, true);
+			
+			Mode oldMode = getMode(stack);
+			setMode(stack, oldMode == Mode.KNOCKBACK ? Mode.TERROR : Mode.KNOCKBACK);
+			
+			if(oldMode == Mode.KNOCKBACK)
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
-			}
 			else
-			{
-				stack.set(DataComponentInit.TERROR_MODE, false);
 				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
-			}
 			
 			return InteractionResultHolder.success(player.getItemInHand(usedHand));
 		}
@@ -65,11 +92,11 @@ public class KaraKeshItem extends Item implements GoauldTech
         	return super.use(level, player, usedHand);
     }
 	
-	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
+	public @NotNull InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity target, @NotNull InteractionHand hand)
 	{
-		if(!player.getCooldowns().isOnCooldown(this) && !player.isShiftKeyDown())
+		if(canUse(player) && !player.getCooldowns().isOnCooldown(this) && !player.isShiftKeyDown())
 		{
-			if(stack.get(DataComponentInit.TERROR_MODE) != null || !stack.get(DataComponentInit.TERROR_MODE))
+			if(getMode(stack) == Mode.KNOCKBACK)
 			{
 				target.knockback(2.0F, player.getX() - target.getX(), player.getZ() - target.getZ());
 				player.getCooldowns().addCooldown(this, 50);
@@ -81,26 +108,26 @@ public class KaraKeshItem extends Item implements GoauldTech
 				target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 200, 255));
 				player.getCooldowns().addCooldown(this, 200);
 			}
-			target.playSound(SoundEvents.BLAZE_SHOOT, 0.5F, random.nextFloat() * 0.4F + 0.8F);
+			target.playSound(SoundEvents.BLAZE_SHOOT, 0.5F, player.level().random.nextFloat() * 0.4F + 0.8F);
 			return InteractionResult.PASS;
 		}
 		return InteractionResult.FAIL;
 	}
 	
 	@Override
-	public boolean canAttackBlock(BlockState state, Level world, BlockPos position, Player player)
+	public boolean canAttackBlock(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos position, Player player)
 	{
 		return !player.isCreative();
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		if(stack.get(DataComponentInit.TERROR_MODE) != null && stack.get(DataComponentInit.TERROR_MODE))
+		if(getMode(stack) == Mode.TERROR)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
 		else
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
-    	
+   
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror_knockback").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.use").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 

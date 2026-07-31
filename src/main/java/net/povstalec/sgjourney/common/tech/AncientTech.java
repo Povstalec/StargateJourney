@@ -1,30 +1,22 @@
 package net.povstalec.sgjourney.common.tech;
 
-import java.util.Optional;
-
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 
 public interface AncientTech
 {
-	default boolean canUseAncientTech(Entity user)
+	/**
+	 * @param user LivingEntity attempting to use this technology
+	 * @return True of the user can use this technology, otherwise false
+	 */
+	default boolean canUseAncientTech(LivingEntity user)
 	{
 		AncientGene cap = user.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
 		if(cap != null)
 			return cap.canUseAncientTechnology();
 		
 		return false;
-	}
-	
-	/**
-	 * 
-	 * @param requirementsDisabled Whether or not the requirements for having Ancient Gene to use this have been disabled
-	 * @param user
-	 * @return
-	 */
-	default boolean canUseAncientTech(boolean requirementsDisabled, Entity user)
-	{
-		return requirementsDisabled ? true : canUseAncientTech(user);
 	}
 	
 	default AncientGene.ATAGene getGeneType(Entity user)
