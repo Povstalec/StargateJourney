@@ -122,17 +122,42 @@ public class TransporterEvent extends Event
 	
 	
 	/**
+	 * Fired when the Transporter starts transporting everything inside its area of influence (cancelable)
+	 * @author Povstalec
+	 *
+	 */
+	@Cancelable
+	public static class TransporterTransport extends TransporterEvent
+	{
+		private final Transporter destinationTransporter;
+		
+		public TransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter)
+		{
+			super(server, transporter);
+			
+			this.destinationTransporter = destinationTransporter;
+		}
+		
+		public Transporter getDestinationTransporter()
+		{
+			return this.destinationTransporter;
+		}
+	}
+	
+	
+	
+	/**
 	 * Fired when an Entity gets transported by the Transporter (cancelable)
 	 * @author Povstalec
 	 *
 	 */
 	@Cancelable
-	public static class Transport extends TransporterEvent
+	public static class TravellerTransport extends TransporterEvent
 	{
 		private final Transporter destinationTransporter;
 		private final Entity traveler;
 
-		public Transport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+		public TravellerTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
 		{
 			super(server, transporter);
 			

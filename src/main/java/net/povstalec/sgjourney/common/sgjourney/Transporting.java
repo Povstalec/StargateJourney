@@ -44,7 +44,7 @@ public class Transporting
 		
 		if(shouldTransport(traveler, relativePosition, initialTransporter.getInnerRadius()))
 		{
-			if(!SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+			if(!SGJourneyEvents.onTransporterTravellerTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 			{
 				deconstructEvent(initialTransporter, traveler, false);
 				return true;
@@ -56,6 +56,9 @@ public class Transporting
 	
 	public static boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, List<Entity> travelers)
 	{
+		if(SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter))
+			return false;
+			
 		boolean used = false;
 		
 		for(Entity traveler : travelers)
