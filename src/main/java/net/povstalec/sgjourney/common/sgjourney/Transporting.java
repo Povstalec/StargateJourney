@@ -13,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.advancements.TransporterTravelCriterion;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
@@ -27,15 +28,23 @@ public class Transporting
 	//***************************************Transport out****************************************
 	//============================================================================================
 	
+	public static boolean shouldTransport(Entity traveler, Vec3 relativePosition, double innerRadius)
+	{
+		if(traveler.isPassenger() || traveler.getType().is(TagInit.Entities.TRANSPORTER_CANNOT_TELEPORT))
+			return false;
+		
+		return relativePosition.x() * relativePosition.z() <= innerRadius * innerRadius;
+	}
+	
 	public static boolean transportTraveler(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, Entity traveler)
 	{
 		Vec3 relativePosition = initialTransporter.toTransporterCoords(traveler.position().subtract(initialTransporter.transportPos()), true);
 		Vec3 relativeMomentum = initialTransporter.toTransporterCoords(traveler.getDeltaMovement(), false);
 		Vec3 relativeLookAngle = initialTransporter.toTransporterCoords(traveler.getLookAngle(), false);
 		
-		if(relativePosition.lengthSqr() <= initialTransporter.getInnerRadius() * initialTransporter.getInnerRadius())
+		if(shouldTransport(traveler, relativePosition, initialTransporter.getInnerRadius()))
 		{
-			if(!SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+			if(!SGJourneyEvents.onTransporterTravellerTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 			{
 				deconstructEvent(initialTransporter, traveler, false);
 				return true;
@@ -47,6 +56,9 @@ public class Transporting
 	
 	public static boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, List<Entity> travelers)
 	{
+		if(SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter))
+			return false;
+			
 		boolean used = false;
 		
 		for(Entity traveler : travelers)
