@@ -62,6 +62,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 			
 			dropStargateItem(level, pos, oldState, null);
 			destroyStargate(level, baseBlockPos, getParts(false), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
+			level.invalidateCapabilities(pos);
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}

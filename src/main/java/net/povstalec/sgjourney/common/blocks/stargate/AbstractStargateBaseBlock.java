@@ -180,12 +180,14 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
-				level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
+				BlockPos ringPos = part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION));
+				level.setBlock(ringPos,
 						ringState()
 						.setValue(AbstractStargateRingBlock.PART, part)
 						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
 						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+				level.invalidateCapabilities(ringPos);
 			}
 		}
 		
