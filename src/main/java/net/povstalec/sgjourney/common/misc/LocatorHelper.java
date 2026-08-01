@@ -144,16 +144,19 @@ public class LocatorHelper
 				for(BlockPos pos : chunk.getBlockEntitiesPos())
 				{
 					BlockEntity blockEntity = level.getBlockEntity(pos);
-					double distanceSqr = CoordinateHelper.Relative.distanceSqr(centerPos, blockEntity.getBlockPos());
-					if(distanceSqr < bestDistance && clazz.isInstance(blockEntity))
+					if(blockEntity != null)
 					{
-						T t = (T) blockEntity;
-						//System.out.println("Found " + t.getBlockPos() + " dist " + distanceSqr);
-						if(filter.test(t))
+						double distanceSqr = CoordinateHelper.Relative.distanceSqr(centerPos, blockEntity.getBlockPos());
+						if(distanceSqr < bestDistance && clazz.isInstance(blockEntity))
 						{
-							//System.out.println("new best");
-							bestDistance = distanceSqr;
-							closest = t;
+							T t = (T) blockEntity;
+							//System.out.println("Found " + t.getBlockPos() + " dist " + distanceSqr);
+							if(filter.test(t))
+							{
+								//System.out.println("new best");
+								bestDistance = distanceSqr;
+								closest = t;
+							}
 						}
 					}
 				}
