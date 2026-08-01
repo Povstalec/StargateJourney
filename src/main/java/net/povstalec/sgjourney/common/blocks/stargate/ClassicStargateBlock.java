@@ -122,6 +122,9 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				}
 			}
 			
+			if(oldEntity instanceof AbstractStargateEntity<?> stargate)
+				stargate.markItemAsDropped(); // Prevents Stargate duplication
+			
 			if(level.getBlockState(pos).getBlock() instanceof AbstractStargateBaseBlock oldBaseBlock)
 			{
 				for(StargatePart part : oldBaseBlock.getParts())
