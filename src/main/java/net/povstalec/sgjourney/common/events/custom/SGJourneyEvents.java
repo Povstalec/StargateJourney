@@ -58,9 +58,14 @@ public class SGJourneyEvents
 		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.Connect(server, transporter, connectedTransporter, connectionType));
 	}
 	
-	public static boolean onTransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+	public static boolean onTransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter)
 	{
-		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.Transport(server, transporter, destinationTransporter, traveler));
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.TransporterTransport(server, transporter, destinationTransporter));
+	}
+	
+	public static boolean onTransporterTravellerTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.TravellerTransport(server, transporter, destinationTransporter, traveler));
 	}
 	
 	// Transporter Connection
