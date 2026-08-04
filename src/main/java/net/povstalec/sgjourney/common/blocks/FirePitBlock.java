@@ -6,7 +6,6 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +22,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.Random;
 
 public class FirePitBlock extends Block
 {
@@ -101,7 +102,7 @@ public class FirePitBlock extends Block
 	}
 
 	@Override
-	public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
+	public void animateTick(BlockState state, Level level, BlockPos pos, Random rand)
 	{
 		double d0 = (double)pos.getX() + 0.5D;
 		double d1 = (double)pos.getY() + 0.3D;

@@ -1,15 +1,13 @@
 package net.povstalec.sgjourney.common.blocks;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -20,11 +18,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DirectionalBlock;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -39,6 +33,9 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock
 {
@@ -87,20 +84,20 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					int symbolNumber = symbolBlock.getSymbolNumber();
 					MutableComponent text;
 					
-					player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+					player.displayClientMessage(new TranslatableComponent("info.sgjourney.symbol_number").append(new TextComponent(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW), true);
 					
 					if(symbolNumber == 0)
 					{
 						MutableComponent pointOfOrigin = PointOfOrigin.makeComponent(symbolBlock.getPointOfOrigin());
-						text = Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
+						text = new TranslatableComponent("info.sgjourney.point_of_origin").append(new TextComponent(": ")).append(pointOfOrigin).withStyle(ChatFormatting.DARK_PURPLE);
 					}
 					else
 					{
 						MutableComponent symbols = Symbols.makeComponent(symbolBlock.getSymbols());
-						text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
+						text = new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
 					}
 					
-					player.sendSystemMessage(text);
+					player.displayClientMessage(text, true);
 				}
 			}
 			return InteractionResult.SUCCESS;
@@ -150,11 +147,11 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	}
 		
 		if(symbolNumber == 0)
-			tooltipComponents.add(Component.translatable("info.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
+			tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbol").append(new TextComponent(": ").append(new TranslatableComponent(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
 		else
 		{
-			tooltipComponents.add(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbol_number").append(new TextComponent(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": ").append(new TranslatableComponent(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);

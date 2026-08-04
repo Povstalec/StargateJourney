@@ -5,9 +5,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -21,7 +20,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 
 import javax.annotation.Nullable;
@@ -102,6 +100,6 @@ public class NaquadahReactorBlock extends NaquadahGeneratorBlock
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-    	tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_reactor.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+    	tooltipComponents.add(new TranslatableComponent("block.sgjourney.naquadah_reactor.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

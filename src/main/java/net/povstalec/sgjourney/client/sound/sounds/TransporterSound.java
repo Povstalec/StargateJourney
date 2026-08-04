@@ -23,7 +23,7 @@ public abstract class TransporterSound<T extends AbstractTransporterEntity<?>> e
 	 */
 	protected TransporterSound(T transporter, SoundEvent soundEvent)
 	{
-		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+		super(soundEvent, SoundSource.BLOCKS);
 		
 		this.transporter = transporter;
 		this.transporterPos = transporter.getBlockPos();

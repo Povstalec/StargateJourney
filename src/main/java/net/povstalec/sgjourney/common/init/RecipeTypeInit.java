@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.init;
 
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -7,11 +8,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.recipe.*;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 
 public class RecipeTypeInit
 {
-	public static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, StargateJourney.MODID);
+	public static final DeferredRegister<RecipeType<?>> TYPES = DeferredRegister.create(Registry.RECIPE_TYPE_REGISTRY, StargateJourney.MODID);
 	public static final DeferredRegister<RecipeSerializer<?>> SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, StargateJourney.MODID);
 	
 	

@@ -1,28 +1,26 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
-public record PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin, List<ResourceKey<Galaxy>> generatedGalaxies)
+public class PointOfOrigin extends ForgeRegistryEntry<PointOfOrigin>
 {
 	public static final ResourceLocation UNIVERSAL_LOCATION = new ResourceLocation(StargateJourney.MODID, "universal");
 	
@@ -34,6 +32,25 @@ public record PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin
 			ClientPointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("client_point_of_origin").forGetter(pointOfOrigin -> pointOfOrigin.clientPointOfOrigin),
 			Galaxy.RESOURCE_KEY_CODEC.listOf().optionalFieldOf("generated_galaxies", List.of()).forGetter(pointOfOrigin -> pointOfOrigin.generatedGalaxies)
 	).apply(instance, PointOfOrigin::new));
+	
+	private final ResourceKey<ClientPointOfOrigin> clientPointOfOrigin;
+	private final List<ResourceKey<Galaxy>> generatedGalaxies;
+	
+	public PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin, List<ResourceKey<Galaxy>> generatedGalaxies)
+	{
+		this.clientPointOfOrigin = clientPointOfOrigin;
+		this.generatedGalaxies = generatedGalaxies;
+	}
+	
+	public ResourceKey<ClientPointOfOrigin> clientPointOfOrigin()
+	{
+		return clientPointOfOrigin;
+	}
+	
+	public List<ResourceKey<Galaxy>> generatedGalaxies()
+	{
+		return generatedGalaxies;
+	}
 	
 	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
 	{
@@ -63,6 +80,6 @@ public record PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin
 	
 	public static MutableComponent makeComponent(@Nullable ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
-		return Component.literal(pointOfOrigin != null ? pointOfOrigin.location().toString() : "-");
+		return new TextComponent(pointOfOrigin != null ? pointOfOrigin.location().toString() : "-");
 	}
 }

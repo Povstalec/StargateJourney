@@ -1,17 +1,10 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.HashMap;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -25,9 +18,13 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * This class is designed to save all Block Entities along with their coordinates and dimensions. 
@@ -153,7 +150,7 @@ public class BlockEntityList extends SavedData
 		throw new ClassCastException("Stargate " + address + " is not an instance of class " + clazz + "!");
 	}
 	
-	public Address.Immutable generate9ChevronAddress(RandomSource randomSource)
+	public Address.Immutable generate9ChevronAddress(Random randomSource)
 	{
 		Address.Immutable address;
 		do
@@ -165,7 +162,7 @@ public class BlockEntityList extends SavedData
 	}
 	
 	@Nullable
-	public Stargate getRandomStargate(RandomSource randomSource)
+	public Stargate getRandomStargate(Random randomSource)
 	{
 		int size = this.stargateMap.size();
 		

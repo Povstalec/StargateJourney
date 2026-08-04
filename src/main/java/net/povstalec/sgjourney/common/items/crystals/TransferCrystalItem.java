@@ -1,20 +1,20 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.Optional;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import java.util.List;
 
 public class TransferCrystalItem extends AbstractCrystalItem
 {
@@ -79,8 +79,8 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	{
 		long maxEnergyTransfer = getMaxTransfer(stack);
 		
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(maxEnergyTransfer) + "/t")).withStyle(ChatFormatting.RED));
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier").append(Component.literal(": " + getEfficiencyMultiplier())).withStyle(ChatFormatting.GOLD));
+    	tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_transfer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(maxEnergyTransfer) + "/t")).withStyle(ChatFormatting.RED));
+    	tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier").append(new TextComponent(": " + getEfficiencyMultiplier())).withStyle(ChatFormatting.GOLD));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.transfer_crystal.description"));
     }

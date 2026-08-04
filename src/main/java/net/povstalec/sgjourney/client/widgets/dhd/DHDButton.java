@@ -1,11 +1,8 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
 
@@ -13,7 +10,7 @@ public class DHDButton extends SGJourneyButton
 {
 	public DHDButton(ResourceLocation texture, int x, int y, int width, int height, Component component, OnPress onPress)
 	{
-		super(texture, x, y, width, height, component, Component.empty(), onPress);
+		super(texture, x, y, width, height, component, TextComponent.EMPTY, onPress);
 	}
 	
 	@Override

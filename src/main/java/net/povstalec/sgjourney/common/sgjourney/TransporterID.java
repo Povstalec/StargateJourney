@@ -4,9 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -95,11 +93,11 @@ public abstract class TransporterID implements Cloneable, Comparable<Transporter
 		Style style = Style.EMPTY;
 		if(copyToClipboard)
 		{
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.transporter_id")));
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.sgjourney.click_to_copy.transporter_id")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(chatFormatting));
+		return new TextComponent(idIntArrayToString(this.idArray)).setStyle(style.applyFormat(chatFormatting));
 	}
 	
 	public MutableComponent toComponent(boolean copyToClipboard)

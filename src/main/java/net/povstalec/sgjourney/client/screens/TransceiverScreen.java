@@ -3,10 +3,11 @@ package net.povstalec.sgjourney.client.screens;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -33,24 +34,24 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new TransceiverButton(x + 43, y + 21, Component.literal("7"), (button) -> addToCode(7)));
-		this.addRenderableWidget(new TransceiverButton(x + 61, y + 21, Component.literal("8"), (button) -> addToCode(8)));
-		this.addRenderableWidget(new TransceiverButton(x + 79, y + 21, Component.literal("9"), (button) -> addToCode(9)));
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 21, new TextComponent("7"), (button) -> addToCode(7)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 21, new TextComponent("8"), (button) -> addToCode(8)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 21, new TextComponent("9"), (button) -> addToCode(9)));
 
-		this.addRenderableWidget(new TransceiverButton(x + 43, y + 33, Component.literal("4"), (button) -> addToCode(4)));
-		this.addRenderableWidget(new TransceiverButton(x + 61, y + 33, Component.literal("5"), (button) -> addToCode(5)));
-		this.addRenderableWidget(new TransceiverButton(x + 79, y + 33, Component.literal("6"), (button) -> addToCode(6)));
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 33, new TextComponent("4"), (button) -> addToCode(4)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 33, new TextComponent("5"), (button) -> addToCode(5)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 33, new TextComponent("6"), (button) -> addToCode(6)));
 
-		this.addRenderableWidget(new TransceiverButton(x + 43, y + 45, Component.literal("1"), (button) -> addToCode(1)));
-		this.addRenderableWidget(new TransceiverButton(x + 61, y + 45, Component.literal("2"), (button) -> addToCode(2)));
-		this.addRenderableWidget(new TransceiverButton(x + 79, y + 45, Component.literal("3"), (button) -> addToCode(3)));
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 45, new TextComponent("1"), (button) -> addToCode(1)));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 45, new TextComponent("2"), (button) -> addToCode(2)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 45, new TextComponent("3"), (button) -> addToCode(3)));
 		
-		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.delete"), Component.translatable("screen.sgjourney.transceiver.delete"), (button) -> removeFromCode()));
-		this.addRenderableWidget(new TransceiverButton(x + 61, y + 57, Component.literal("0"), (button) -> addToCode(0)));
-		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, Component.translatable("screen.sgjourney.transceiver.symbol.toggle_frequency"), Component.translatable("screen.sgjourney.transceiver.toggle_frequency"),
+		this.addRenderableWidget(new TransceiverButton(x + 43, y + 57, new TranslatableComponent("screen.sgjourney.transceiver.symbol.delete"), new TranslatableComponent("screen.sgjourney.transceiver.delete"), (button) -> removeFromCode()));
+		this.addRenderableWidget(new TransceiverButton(x + 61, y + 57, new TextComponent("0"), (button) -> addToCode(0)));
+		this.addRenderableWidget(new TransceiverButton(x + 79, y + 57, new TranslatableComponent("screen.sgjourney.transceiver.symbol.toggle_frequency"), new TranslatableComponent("screen.sgjourney.transceiver.toggle_frequency"),
 				(button) -> toggleFrequency()));
 
-		TransceiverLargeButton transceiverLargeButton = new TransceiverLargeButton(x + 14, y + 34, Component.empty(), Component.translatable("screen.sgjourney.transceiver.send_transmission"), (button) -> sendTransmission());
+		TransceiverLargeButton transceiverLargeButton = new TransceiverLargeButton(x + 14, y + 34, TextComponent.EMPTY, new TranslatableComponent("screen.sgjourney.transceiver.send_transmission"), (button) -> sendTransmission());
 		this.addRenderableWidget(transceiverLargeButton);
 	}
 
@@ -92,9 +93,9 @@ public class TransceiverScreen extends AbstractContainerScreen<TransceiverMenu>
     
     protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
 	{
-    	this.font.draw(stack, Component.literal(menu.getCurrentCode()), x + 218F, y + 70F, 0x009393);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.gdo.frequency").append(Component.literal(editingFrequency() ? ": #" : ":")), x + 218F, y + 86F, 0x009393);
-		this.font.draw(stack, Component.literal(String.valueOf(menu.getFrequency())), x + 218F, y + 98F, 0x009393);
+    	this.font.draw(stack, new TextComponent(menu.getCurrentCode()), x + 218F, y + 70F, 0x009393);
+		this.font.draw(stack, new TranslatableComponent("screen.sgjourney.gdo.frequency").append(new TextComponent(editingFrequency() ? ": #" : ":")), x + 218F, y + 86F, 0x009393);
+		this.font.draw(stack, new TextComponent(String.valueOf(menu.getFrequency())), x + 218F, y + 98F, 0x009393);
     }
     
     @Override

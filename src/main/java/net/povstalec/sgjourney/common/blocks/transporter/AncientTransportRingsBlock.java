@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -19,8 +20,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -69,7 +70,7 @@ public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 					@Override
 					public @NotNull Component getDisplayName()
 					{
-						return transportRings.hasCustomName() ? transportRings.getCustomName() : Component.translatable("screen.sgjourney.ancient_transport_rings");
+						return transportRings.hasCustomName() ? transportRings.getCustomName() : new TranslatableComponent("screen.sgjourney.ancient_transport_rings");
 					}
 					
 					@Override
@@ -78,7 +79,7 @@ public class AncientTransportRingsBlock extends AbstractTransportRingsBlock
 						return new TransportRingsMenu.Ancient(windowId, playerInventory, transportRings);
 					}
 				};
-				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 		}
 		else

@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -15,6 +14,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Random;
 import java.util.UUID;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -32,8 +32,8 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	
 	protected SpawnerTimer spawnerTimer = new SpawnerTimer();
 	
-	protected Function<RandomSource, EntityType<?>> entityTypeRandomizer;
-	protected BiConsumer<Entity, RandomSource> onEntitySpawn;
+	protected Function<Random, EntityType<?>> entityTypeRandomizer;
+	protected BiConsumer<Entity, Random> onEntitySpawn;
 	
 	public SGJourneySpawnerStargate(StargateType<?> type, MinecraftServer server)
 	{
@@ -168,14 +168,14 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	//**************************************Entity Spawning***************************************
 	//============================================================================================
 	
-	public SGJourneySpawnerStargate setEntityTypeRandomizer(Function<RandomSource, EntityType<?>> entityTypeRandomizer)
+	public SGJourneySpawnerStargate setEntityTypeRandomizer(Function<Random, EntityType<?>> entityTypeRandomizer)
 	{
 		this.entityTypeRandomizer = entityTypeRandomizer;
 		
 		return this;
 	}
 	
-	public SGJourneySpawnerStargate setOnEntitySpawn(BiConsumer<Entity, RandomSource> onEntitySpawn)
+	public SGJourneySpawnerStargate setOnEntitySpawn(BiConsumer<Entity, Random> onEntitySpawn)
 	{
 		this.onEntitySpawn = onEntitySpawn;
 		

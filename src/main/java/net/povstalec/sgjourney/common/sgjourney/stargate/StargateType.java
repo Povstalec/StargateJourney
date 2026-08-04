@@ -7,13 +7,14 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import java.util.Optional;
 
-public class StargateType<S extends Stargate>
+public class StargateType<S extends Stargate> extends ForgeRegistryEntry<StargateType<?>>
 {
 	public static final String STARGATE_TYPE = "stargate_type";
 	public static final ResourceLocation STARGATE_TYPE_LOCATION = new ResourceLocation(StargateJourney.MODID, STARGATE_TYPE);

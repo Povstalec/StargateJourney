@@ -1,12 +1,9 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.*;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
@@ -16,9 +13,10 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.PacketDistributor;
@@ -33,11 +31,12 @@ import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
@@ -46,6 +45,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.*;
 
 public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR> implements CrystalCache.Interface<AbstractTransportRingsEntity<?>>
 {
@@ -297,7 +297,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return lazyEnergyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -322,7 +322,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		long energyStored = energyStorage.getTrueEnergyStored();
 		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
+			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(CapabilityEnergy.ENERGY).resolve();
 			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyStored += sgjourneyEnergy.getTrueEnergyStored();
 		}
@@ -339,7 +339,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		long energyCapacity = energyStorage.getTrueMaxEnergyStored();
 		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
+			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(CapabilityEnergy.ENERGY).resolve();
 			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyCapacity += sgjourneyEnergy.getTrueMaxEnergyStored();
 		}
@@ -362,7 +362,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				{
 					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
+						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(CapabilityEnergy.ENERGY).resolve();
 						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							energyReceived += sgjourneyEnergy.receiveLongEnergy(maxReceive - energyReceived, simulate);
@@ -397,7 +397,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				{
 					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
+						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(CapabilityEnergy.ENERGY).resolve();
 						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							// depleteEnergy() gets around the issue of Energy Crystals having their maximum extract rate set to 100k by default

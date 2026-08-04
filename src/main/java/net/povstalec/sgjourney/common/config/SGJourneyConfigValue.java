@@ -6,10 +6,12 @@ public abstract class SGJourneyConfigValue
 {
 	public static class BooleanValue
 	{
+		private final boolean defaultValue;
 		public ForgeConfigSpec.BooleanValue boolean_value;
 		
 		public BooleanValue(ForgeConfigSpec.Builder builder, String path, boolean defaultValue, String comment)
 		{
+			this.defaultValue = defaultValue;
 			this.boolean_value = builder
 					.comment(comment)
 					.define(path, defaultValue);
@@ -28,19 +30,21 @@ public abstract class SGJourneyConfigValue
 		
 		public boolean getDefault()
 		{
-			return boolean_value.getDefault();
+			return defaultValue;
 		}
 		
 	}
 	
 	public static class IntValue
 	{
+		private final int defaultValue;
 		public ForgeConfigSpec.IntValue int_value;
 		protected int min;
 		protected int max;
 		
 		public IntValue(ForgeConfigSpec.Builder builder, String path, int defaultValue, int min, int max, String comment)
 		{
+			this.defaultValue = defaultValue;
 			this.int_value = builder
 					.comment(comment)
 					.defineInRange(path, defaultValue, min, max);
@@ -61,7 +65,7 @@ public abstract class SGJourneyConfigValue
 		
 		public int getDefault()
 		{
-			return int_value.getDefault();
+			return defaultValue;
 		}
 		
 		public int getMin()
@@ -77,10 +81,12 @@ public abstract class SGJourneyConfigValue
 	
 	public static class LongValue
 	{
+		private final long defaultValue;
 		public ForgeConfigSpec.LongValue long_value;
 		
 		public LongValue(ForgeConfigSpec.Builder builder, String path, long defaultValue, long min, long max, String comment)
 		{
+			this.defaultValue = defaultValue;
 			this.long_value = builder
 					.comment(comment)
 					.defineInRange(path, defaultValue, min, max);
@@ -99,12 +105,13 @@ public abstract class SGJourneyConfigValue
 		
 		public long getDefault()
 		{
-			return long_value.getDefault();
+			return defaultValue;
 		}
 	}
 	
 	public static class RGBAValue
 	{
+		public int defaultRed, defaultBlue, defaultGreen, defaultAlpha;
 		public ForgeConfigSpec.IntValue red_value;
 		public ForgeConfigSpec.IntValue green_value;
 		public ForgeConfigSpec.IntValue blue_value;
@@ -113,12 +120,16 @@ public abstract class SGJourneyConfigValue
 		public RGBAValue(ForgeConfigSpec.Builder builder, String path, int red, int blue, int green, int alpha, String comment)
 		{
 			builder.comment(comment);
+			this.defaultRed = red;
 			this.red_value = builder
 					.defineInRange(path + ".red", red, 0, 255);
+			this.defaultBlue = blue;
 			this.green_value = builder
 					.defineInRange(path + ".green", blue, 0, 255);
+			this.defaultGreen = green;
 			this.blue_value = builder
 					.defineInRange(path + ".blue", green, 0, 255);
+			this.defaultAlpha = alpha;
 			this.alpha_value = builder
 					.defineInRange(path + ".alpha", alpha, 0, 255);
 		}
@@ -169,31 +180,33 @@ public abstract class SGJourneyConfigValue
 		
 		public int getRedDefault()
 		{
-			return red_value.getDefault();
+			return defaultRed;
 		}
 		
 		public int getGreenDefault()
 		{
-			return green_value.getDefault();
+			return defaultBlue;
 		}
 		
 		public int getBlueDefault()
 		{
-			return blue_value.getDefault();
+			return defaultGreen;
 		}
 		
 		public int getAlphaDefault()
 		{
-			return alpha_value.getDefault();
+			return defaultAlpha;
 		}
 	}
 	
 	public static class EnumValue<T extends Enum<T>>
 	{
+		private final T defaultValue;
 		public ForgeConfigSpec.EnumValue<T> enum_value;
 		
 		public EnumValue(ForgeConfigSpec.Builder builder, String path, T defaultValue, String comment)
 		{
+			this.defaultValue = defaultValue;
 			this.enum_value = builder
 					.comment(comment)
 					.defineEnum(path, defaultValue);
@@ -212,7 +225,7 @@ public abstract class SGJourneyConfigValue
 		
 		public T getDefault()
 		{
-			return enum_value.getDefault();
+			return defaultValue;
 		}
 	}
 }

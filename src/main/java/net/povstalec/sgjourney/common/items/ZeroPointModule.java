@@ -1,27 +1,26 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ZPMEnergyProvider;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ZeroPointModule extends Item
 {
@@ -112,8 +111,8 @@ public class ZeroPointModule extends Item
 		
 		float currentEntropy = (float) entropy * 100 / ZeroPointEnergy.MAX_ENTROPY;
 		
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
-    	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));
+    	tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.zpm.entropy").append(new TextComponent(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
+    	tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy").append(new TextComponent(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.zpm.description"));
     	

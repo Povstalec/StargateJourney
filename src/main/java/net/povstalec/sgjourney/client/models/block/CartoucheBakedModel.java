@@ -8,13 +8,11 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.IModelData;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
@@ -22,10 +20,10 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class CartoucheBakedModel extends SymbolBakedModel
 {
@@ -37,9 +35,9 @@ public class CartoucheBakedModel extends SymbolBakedModel
 	protected static final float MAX_HEIGHT = 26F;
 	
 	public CartoucheBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-							   TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint)
+							   TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, int symbolTint)
 	{
-		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes, symbolTint);
+		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, symbolTint);
 	}
 	
 	protected BakedQuad makeSymbolQuad(Direction direction, Orientation orientation, TextureAtlasSprite symbolSprite, float yPos, float symbolSize, boolean divideSymbol, DoubleBlockHalf half)
@@ -62,14 +60,14 @@ public class CartoucheBakedModel extends SymbolBakedModel
 			default -> FACE_BAKERY.bakeQuad(new Vector3f(minX, minY, 16 + SYMBOL_OFFSET), new Vector3f(maxX, maxY, 16 + SYMBOL_OFFSET), new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(uvs, 0)/*,
 					new ForgeFaceData(symbolTint, 0, 0, true)*/), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
 		};
-		applyColorToQuad(symbolTint).processInPlace(quad);
+		applyColorToQuad(symbolTint, quad);
 		return quad;
 	}
 	
-	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)
+	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData)
 	{
-		Address address = extraData.get(ModelProperties.ADDRESS_PROPERTY);
-		ResourceKey<Symbols> symbolKey = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
+		Address address = extraData.getData(ModelProperties.ADDRESS_PROPERTY);
+		ResourceKey<Symbols> symbolKey = extraData.getData(ModelProperties.SYMBOLS_PROPERTY);
 		if(address == null || symbolKey == null)
 			return;
 		
@@ -81,6 +79,7 @@ public class CartoucheBakedModel extends SymbolBakedModel
 		Direction direction = state.getValue(CartoucheBlock.FACING);
 		Orientation orientation = state.getValue(CartoucheBlock.ORIENTATION);
 		
+		RenderType layer = MinecraftForgeClient.getRenderType();
 		if(side == Orientation.getForwardDirection(direction, orientation) && (layer == null || RenderType.translucent().equals(layer)))
 		{
 			DoubleBlockHalf half = state.getValue(CartoucheBlock.HALF);
@@ -123,12 +122,12 @@ public class CartoucheBakedModel extends SymbolBakedModel
 			super(hasAmbientOcclusion, usesBlockLight, isGui3d, transforms, overrides, symbolTint);
 		}
 		
-		public CartoucheBakedModel build(RenderTypeGroup renderTypes)
+		public CartoucheBakedModel build()
 		{
 			if(this.particleIcon == null)
 				throw new RuntimeException("Missing particle!");
 			else
-				return new CartoucheBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, renderTypes, this.symbolTint);
+				return new CartoucheBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, this.symbolTint);
 		}
 	}
 }

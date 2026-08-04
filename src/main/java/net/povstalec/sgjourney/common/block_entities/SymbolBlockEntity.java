@@ -1,24 +1,24 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelDataMap;
 import net.povstalec.sgjourney.client.ModelProperties;
+import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 import javax.annotation.Nullable;
 
@@ -117,15 +117,15 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	
 	@Override
 	@NotNull
-	public ModelData getModelData()
+	public IModelData getModelData()
 	{
-		ModelData.Builder builder = ModelData.builder()
-				.with(ModelProperties.SYMBOL_INDEX_PROPERTY, symbolNumber);
+		ModelDataMap.Builder builder = new ModelDataMap.Builder();
+		builder.withInitial(ModelProperties.SYMBOL_INDEX_PROPERTY, symbolNumber);
 		
 		if(symbolNumber == 0 && pointOfOrigin != null)
-			builder.with(ModelProperties.POINT_OF_ORIGIN_PROPERTY, pointOfOrigin);
+			builder.withInitial(ModelProperties.POINT_OF_ORIGIN_PROPERTY, pointOfOrigin);
 		else if(symbols != null)
-			builder.with(ModelProperties.SYMBOLS_PROPERTY, symbols);
+			builder.withInitial(ModelProperties.SYMBOLS_PROPERTY, symbols);
 		
 		return builder.build();
 	}

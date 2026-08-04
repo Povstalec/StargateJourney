@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.blocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -12,6 +11,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
+
+import java.util.Random;
 
 public class BuddingUnityBlock extends Block
 {
@@ -24,7 +25,7 @@ public class BuddingUnityBlock extends Block
 	}
 	
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		if(!SpaceLocation.fromDimension(level.getServer(), level.dimension()).unityCrystalsGrow())
 			return;

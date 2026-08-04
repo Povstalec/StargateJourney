@@ -4,6 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -24,12 +26,11 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -178,7 +179,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		
 		BlockEntity blockEntity = getter.getBlockEntity(otherPos);
 		if(blockEntity != null)
-			return blockEntity.getCapability(ForgeCapabilities.ENERGY, otherDirection).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
+			return blockEntity.getCapability(CapabilityEnergy.ENERGY, otherDirection).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
 		
 		if(state.getBlock() instanceof LightningRodBlock && state.getValue(LightningRodBlock.FACING) == direction)
 			return ConnectorType.BLOCK;
@@ -335,8 +336,8 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		if(transfersZeroPointEnergy())
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.cable.zpm_transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.cable.zpm_transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_transfer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(energyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -26,6 +23,9 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class PegasusStargateBlock extends AbstractStargateBaseBlock
 {
@@ -72,11 +72,11 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
     	CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
 		if(!stack.hasTag())
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
 		else if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(PegasusStargateEntity.DYNAMC_SYMBOLS) && blockEntityTag.getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
 			else
 			{
 				String pointOfOrigin = "";
@@ -87,8 +87,8 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 				if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
 					symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
 				
-		        tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(": ").append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		        tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(": ").append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		        tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(": ").append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+		        tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(": ").append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 			}
 		}
 		

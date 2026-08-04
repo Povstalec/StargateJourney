@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -73,13 +73,13 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 				String name = stack.getHoverName().getString();
 				if(address.fromString(name).getType() != Address.Type.ADDRESS_9_CHEVRON)
 				{
-					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_address"), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.invalid_address"), true);
 					return InteractionResult.FAIL;
 				}
 				
 				if(BlockEntityList.get(level).containsStargate(address))
 				{
-					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.address_exists"), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.address_exists"), true);
 					return InteractionResult.FAIL;
 				}
 			}
@@ -89,7 +89,7 @@ public class ClassicStargateBaseBlock extends HorizontalDirectionalBlock
 			
 			if(orientation == null)
 			{
-				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.incorrect_setup"), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.incorrect_setup"), true);
 				return InteractionResult.FAIL;
 			}
 			

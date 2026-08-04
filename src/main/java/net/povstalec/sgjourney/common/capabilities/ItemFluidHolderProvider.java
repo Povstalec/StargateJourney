@@ -4,12 +4,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -37,9 +38,9 @@ public abstract class ItemFluidHolderProvider implements IFluidHandlerItem, ICap
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap == ForgeCapabilities.ITEM_HANDLER)
+		if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return lazyItemHandler.cast();
-		else if(cap == ForgeCapabilities.FLUID_HANDLER_ITEM)
+		else if(cap == CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY)
 			return lazyFluidHandler.cast();
 		
 		return LazyOptional.empty();
@@ -155,7 +156,7 @@ public abstract class ItemFluidHolderProvider implements IFluidHandlerItem, ICap
 			return 0;
 		
 		ItemStack heldStack = getHeldItemStack();
-		IFluidHandlerItem fluidHandler = heldStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = heldStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		if(fluidHandler != null)
 		{
 			int amount = fluidHandler.fill(resource, action);
@@ -175,7 +176,7 @@ public abstract class ItemFluidHolderProvider implements IFluidHandlerItem, ICap
 			return FluidStack.EMPTY;
 		
 		ItemStack heldStack = getHeldItemStack();
-		IFluidHandlerItem fluidHandler = heldStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = heldStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		if(fluidHandler != null)
 		{
 			FluidStack fluidStack = fluidHandler.drain(maxDrain, action);

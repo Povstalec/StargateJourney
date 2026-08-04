@@ -1,15 +1,12 @@
 package net.povstalec.sgjourney.client.screens.config;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.AbstractButton;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
 import net.povstalec.sgjourney.common.config.SGJourneyConfigValue;
 
@@ -39,7 +36,7 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 	public static abstract class ConfigEntry extends ObjectSelectionList.Entry<ConfigList.ConfigEntry>
 	{
 	    protected final AbstractWidget resetToDefault;
-	    protected final Component reset = Component.literal("Reset");
+	    protected final Component reset = new TextComponent("Reset");
 	    
 	    public ConfigEntry()
 	    {
@@ -95,8 +92,8 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 		public BooleanConfigEntry(Component component, int screenWidth, SGJourneyConfigValue.BooleanValue value)
 		{
 			this(component, screenWidth, value,
-					Component.translatable("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
-					Component.translatable("gui.sgjourney.false").withStyle(ChatFormatting.RED));
+					new TranslatableComponent("gui.sgjourney.true").withStyle(ChatFormatting.GREEN),
+					new TranslatableComponent("gui.sgjourney.false").withStyle(ChatFormatting.RED));
 		}
 		
 		@SuppressWarnings("unchecked")
@@ -221,7 +218,7 @@ public class ConfigList extends ObjectSelectionList<ConfigList.ConfigEntry>
 		
 		private Component getComponent(T enumValue)
 		{
-			return Component.translatable("");
+			return new TranslatableComponent("");
 		}
 		
 		protected void reset()

@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,7 +14,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -86,7 +85,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
+		if(capability == CapabilityEnergy.ENERGY && isCorrectEnergySide(side))
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -234,17 +233,17 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			if(blockentity == null)
 				return;
 			
-			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(this::fillEnergyStorage);
+			blockentity.getCapability(CapabilityEnergy.ENERGY, outputDirection.getOpposite()).ifPresent(this::fillEnergyStorage);
 		}
 	}
 	
 	public void extractItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::drainEnergyStorage);
+		stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(this::drainEnergyStorage);
 	}
 	
 	public void fillItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::fillEnergyStorage);
+		stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(this::fillEnergyStorage);
 	}
 }

@@ -4,6 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
@@ -236,9 +238,9 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 	{
 		switch(status)
 		{
-			case NO_POWER -> setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
-			case NO_TRANSPORTER -> setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter").withStyle(ChatFormatting.DARK_RED));
-			case NO_REACHABLE_TRANSPORTER -> setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_range").withStyle(ChatFormatting.DARK_RED));
+			case NO_POWER -> setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.not_enough_energy").withStyle(ChatFormatting.DARK_RED));
+			case NO_TRANSPORTER -> setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter").withStyle(ChatFormatting.DARK_RED));
+			case NO_REACHABLE_TRANSPORTER -> setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter_in_range").withStyle(ChatFormatting.DARK_RED));
 		}
 		
 		return this;
@@ -272,28 +274,28 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 	public static <T extends TransporterControllerEntity> TransporterControllerButton<T> returnButton(T parent, int index)
 	{
 		return new TransporterControllerButton<>(parent, index, ButtonState.RETURN, ButtonStatus.ENABLED)
-				.setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.return").withStyle(ChatFormatting.RED));
+				.setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.return").withStyle(ChatFormatting.RED));
 	}
 	
 	public static <T extends TransporterControllerEntity> TransporterControllerButton<T> pageForwardButton(T parent, int index, int nextPage, boolean enabled)
 	{
 		return new TransporterControllerButton<>(parent, index, ButtonState.PAGE_FORWARD, enabled ? ButtonStatus.ENABLED : ButtonStatus.DISABLED)
-				.setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.page_forward").append(Component.literal(" (" + nextPage + ')')).withStyle(ChatFormatting.LIGHT_PURPLE));
+				.setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.page_forward").append(new TextComponent(" (" + nextPage + ')')).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 	
 	public static <T extends TransporterControllerEntity> TransporterControllerButton<T> pageBackButton(T parent, int index, int prevPage)
 	{
-		return new TransporterControllerButton<>(parent, index, ButtonState.PAGE_BACK, ButtonStatus.ENABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.page_back").append(Component.literal(" (" + prevPage + ')')).withStyle(ChatFormatting.LIGHT_PURPLE));
+		return new TransporterControllerButton<>(parent, index, ButtonState.PAGE_BACK, ButtonStatus.ENABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.page_back").append(new TextComponent(" (" + prevPage + ')')).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 	
 	public static <T extends TransporterControllerEntity> TransporterControllerButton<T> emptyEnterButton(T parent, int index)
 	{
-		return new TransporterControllerButton<>(parent, index, ButtonState.ENTER, ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport"));
+		return new TransporterControllerButton<>(parent, index, ButtonState.ENTER, ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.start_transport"));
 	}
 		
 	public static <T extends TransporterControllerEntity> TransporterControllerButton<T> enterButton(T parent, int index, TransporterID encodedID)
 	{
-		return new TransporterControllerButton<>(parent, index, ButtonState.ENTER, ButtonStatus.ENABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.start_transport")
-						.append(Component.literal(": ").append(encodedID.toComponent(false))).withStyle(ChatFormatting.DARK_AQUA)).setCloseScreen(true);
+		return new TransporterControllerButton<>(parent, index, ButtonState.ENTER, ButtonStatus.ENABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.start_transport")
+						.append(new TextComponent(": ").append(encodedID.toComponent(false))).withStyle(ChatFormatting.DARK_AQUA)).setCloseScreen(true);
 	}
 }

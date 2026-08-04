@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.entities.*;
 
 public class EntityInit 
 {
-	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, StargateJourney.MODID);
+	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, StargateJourney.MODID);
 	
 	// Projectiles
 	public static final RegistryObject<EntityType<PlasmaProjectile>> JAFFA_PLASMA = ENTITIES.register("jaffa_plasma",

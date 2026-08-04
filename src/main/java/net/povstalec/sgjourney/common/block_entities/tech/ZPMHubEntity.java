@@ -1,35 +1,35 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
@@ -83,7 +83,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return lazyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -182,7 +182,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
-			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
+			stack.getCapability(CapabilityEnergy.ENERGY).ifPresent(itemEnergy ->
 			{
 				if(itemEnergy instanceof ZeroPointEnergy zpmEnergy)
 				{
@@ -191,7 +191,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 					if(blockEntity == null)
 						return;
 					
-					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
+					blockEntity.getCapability(CapabilityEnergy.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
 					{
 						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
@@ -232,7 +232,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_zpm_hub_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

@@ -6,8 +6,8 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.structure.placement.*;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
+import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.init.StructurePlacementInit;
 import org.jetbrains.annotations.NotNull;
@@ -17,7 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 
-public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
+public class UniqueStructurePlacement implements StructurePlacement
 {
 	public static final int MAX_CHUNKS = 1874999;
 	public static final int MAX_BOUND = 64;
@@ -35,6 +35,9 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 				Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxX)),
 				Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxZ))
 			).apply(instance, UniqueStructurePlacement::new)).codec();
+	
+	protected Vec3i locateOffset;
+	protected int salt;
 	
 	@Nullable
 	protected Integer chunkOffsetX;
@@ -58,7 +61,8 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	protected UniqueStructurePlacement(Vec3i locateOffset, int salt, Optional<Integer> chunkX, Optional<Integer> chunkZ, Optional<Integer> chunkOffsetX, Optional<Integer> chunkOffsetZ,
 									   Optional<Integer> chunkBoundMinX, Optional<Integer> chunkBoundMinZ, Optional<Integer> chunkBoundMaxX, Optional<Integer> chunkBoundMaxZ)
 	{
-		super(locateOffset, StructurePlacement.FrequencyReductionMethod.DEFAULT, 1.0F, salt, Optional.empty(), 1, 0, RandomSpreadType.LINEAR);
+		this.locateOffset = locateOffset;
+		this.salt = salt;
 		
 		this.chunkX = chunkX.orElse(null);
 		this.chunkZ = chunkZ.orElse(null);
@@ -74,6 +78,16 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 		
 		if(this.chunkBoundMinZ != null && this.chunkBoundMaxZ != null && this.chunkBoundMinZ > this.chunkBoundMaxZ)
 			throw new IllegalArgumentException("z_bound_min must be less than z_bound_max");
+	}
+	
+	public Vec3i locateOffset()
+	{
+		return locateOffset;
+	}
+	
+	public int salt()
+	{
+		return salt;
 	}
 	
 	public int getChunkOffsetX()
@@ -146,14 +160,13 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 		return this.chunkZ;
 	}
 	
-	@Override
-	public @NotNull ChunkPos getPotentialStructureChunk(long levelSeed, int chunkX, int chunkZ)
+	public @NotNull ChunkPos getPotentialFeatureChunk(long levelSeed, int chunkX, int chunkZ)
 	{
 		return new ChunkPos(getChunkX(levelSeed), getChunkZ(levelSeed));
 	}
 	
 	@Override
-	protected boolean isPlacementChunk(ChunkGenerator chunkGenerator, RandomState randomState, long levelSeed, int chunkX, int chunkZ)
+	public boolean isFeatureChunk(ChunkGenerator chunkGenerator, long levelSeed, int chunkX, int chunkZ)
 	{
 		return chunkX == getChunkX(levelSeed) && chunkZ == getChunkZ(levelSeed);
 	}

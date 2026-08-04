@@ -1,16 +1,11 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -27,6 +22,12 @@ import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
 import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
+
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 
 public class GDOItem extends Item
 {
@@ -84,7 +85,7 @@ public class GDOItem extends Item
 		
 		if(stargates.isEmpty())
 		{
-			player.displayClientMessage(Component.translatable("message.sgjourney.gdo.error.no_nearby_stargate").withStyle(ChatFormatting.RED), true);
+			player.displayClientMessage(new TranslatableComponent("message.sgjourney.gdo.error.no_nearby_stargate").withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		
@@ -94,7 +95,7 @@ public class GDOItem extends Item
 		
 		if(!stargate.isConnected())
 		{
-			player.displayClientMessage(Component.translatable("message.sgjourney.gdo.error.stargate_not_connected").withStyle(ChatFormatting.RED), true);
+			player.displayClientMessage(new TranslatableComponent("message.sgjourney.gdo.error.stargate_not_connected").withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		
@@ -115,7 +116,7 @@ public class GDOItem extends Item
 		else
 			formatting = ChatFormatting.DARK_RED;
 		
-		player.displayClientMessage(Component.translatable("message.sgjourney.gdo.shielded").append(Component.literal(": " + shieldingProgress + "%")).withStyle(formatting), true);
+		player.displayClientMessage(new TranslatableComponent("message.sgjourney.gdo.shielded").append(new TextComponent(": " + shieldingProgress + "%")).withStyle(formatting), true);
 	}
 	
 	@Override
@@ -154,11 +155,11 @@ public class GDOItem extends Item
 			idc = getTransmissionMessage(stack);
 		}
 
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.frequency").append(Component.literal(": " + frequency)).withStyle(ChatFormatting.YELLOW));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.idc").append(Component.literal(": " + idc)).withStyle(ChatFormatting.AQUA));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.gdo.frequency").append(new TextComponent(": " + frequency)).withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.gdo.idc").append(new TextComponent(": " + idc)).withStyle(ChatFormatting.AQUA));
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.check").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.gui").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.gdo.description.check").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.gdo.description.gui").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

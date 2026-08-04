@@ -4,9 +4,9 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.EitherCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class StargateInfo
@@ -256,12 +256,12 @@ public class StargateInfo
 	
 	private static Component createInfo(String feedback, Object... additionalInfo)
 	{
-		return Component.translatable("message.sgjourney.stargate.info." + feedback, additionalInfo);
+		return new TranslatableComponent("message.sgjourney.stargate.info." + feedback, additionalInfo);
 	}
 	
 	private static Component createError(String feedback, boolean majorError, Object... additionalInfo)
 	{
-		return Component.translatable("message.sgjourney.stargate.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
+		return new TranslatableComponent("message.sgjourney.stargate.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
 	}
 	
 	public static class IncomingOutgoing<Thing>

@@ -5,12 +5,13 @@ import java.util.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -325,7 +326,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
 				
 				return true;
 			}
@@ -464,9 +465,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			if(generatedEnergy > 0)
 				energyStorage.receiveLongEnergy(generatedEnergy, false);
 		}
-		else if(energyStack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+		else if(energyStack.getCapability(CapabilityEnergy.ENERGY).isPresent())
 		{
-			energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+			energyStack.getCapability(CapabilityEnergy.ENERGY).ifPresent(energy ->
 			{
 				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
@@ -493,7 +494,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			// Uses energy from an Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
-				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+				IEnergyStorage energyStorage = energyStack.getCapability(CapabilityEnergy.ENERGY).resolve().get();
 				
 				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
@@ -599,7 +600,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 				{
 					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 					{
-						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+						sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
 						return;
 					}
 					
@@ -611,7 +612,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					if(REQUIRE_ENERGY)
 						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
 				},
-				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+				() -> sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
 	}
 	
 	public void encodeSymbol(int symbol)
@@ -627,7 +628,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					
 					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
 					{
-						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+						sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
 						return;
 					}
 					
@@ -643,7 +644,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					if(REQUIRE_ENERGY)
 						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
 				},
-				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+				() -> sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
 	}
 	
 	public boolean isSymbolEncoded(int symbol)
@@ -675,14 +676,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		List<Component> status = new ArrayList<>();
 		
 		if(symbolInfo().pointOfOrigin() != null)
-			status.add(Component.translatable("info.sgjourney.point_of_origin").append(Component.literal(": " + symbolInfo().pointOfOrigin().location())).withStyle(ChatFormatting.DARK_PURPLE));
+			status.add(new TranslatableComponent("info.sgjourney.point_of_origin").append(new TextComponent(": " + symbolInfo().pointOfOrigin().location())).withStyle(ChatFormatting.DARK_PURPLE));
 		if(symbolInfo().symbols() != null)
-			status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
+			status.add(new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": " + symbolInfo().symbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		if(stargateCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(stargateCache.get().getBlockPos()))).withStyle(ChatFormatting.AQUA));
+			status.add(new TranslatableComponent("info.sgjourney.stargate_connected").append(new TextComponent(": ").append(ComponentHelper.coordinate(stargateCache.get().getBlockPos()))).withStyle(ChatFormatting.AQUA));
 		else
-			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA));
+			status.add(new TranslatableComponent("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA));
 		
 		return status;
 	}
@@ -732,7 +733,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	@Override
-	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	public void generateInStructure(WorldGenLevel level, Random randomSource)
 	{
 		if(generationStep == Step.SETUP)
 			generationStep = Step.READY; // Marks the DHD as ready for generation
@@ -773,7 +774,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_dhd_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

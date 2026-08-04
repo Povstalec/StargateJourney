@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.tech;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -83,7 +84,7 @@ public abstract class BatteryBlock extends BaseEntityBlock
 					@Override
 					public Component getDisplayName()
 					{
-						return Component.translatable("screen.sgjourney.naquadah_battery");
+						return new TranslatableComponent("screen.sgjourney.naquadah_battery");
 					}
 					
 					@Override
@@ -92,7 +93,7 @@ public abstract class BatteryBlock extends BaseEntityBlock
 						return new BatteryMenu(windowId, playerInventory, batteryBlockEntity);
 					}
 				};
-				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 			else
 			{

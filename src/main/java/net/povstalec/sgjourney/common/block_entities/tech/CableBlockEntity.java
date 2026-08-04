@@ -7,8 +7,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -19,7 +19,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class CableBlockEntity extends BlockEntity
 {
@@ -148,7 +149,7 @@ public abstract class CableBlockEntity extends BlockEntity
 			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
 			if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
 			{
-				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
+				IEnergyStorage energy = blockEntity.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).resolve().orElse(null);
 				if(energy != null)
 				{
 					if(energy.canReceive())
@@ -184,7 +185,7 @@ public abstract class CableBlockEntity extends BlockEntity
 			BlockEntity blockEntity = level.getBlockEntity(outputPos);
 			if(blockEntity != null)
 			{
-				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
+				IEnergyStorage energy = blockEntity.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).resolve().orElse(null);
 				
 				if(energy != null && energy.canReceive() && energy.receiveEnergy(Integer.MAX_VALUE, true) > 0)
 					outputs++;
@@ -199,7 +200,7 @@ public abstract class CableBlockEntity extends BlockEntity
 		if(blockEntity == null)
 			return 0;
 		
-		IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
+		IEnergyStorage energy = blockEntity.getCapability(CapabilityEnergy.ENERGY, direction.getOpposite()).resolve().orElse(null);
 		if(energy == null || !energy.canReceive())
 			return 0;
 		
@@ -238,7 +239,7 @@ public abstract class CableBlockEntity extends BlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && side != null)
+		if(capability == CapabilityEnergy.ENERGY && side != null)
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);

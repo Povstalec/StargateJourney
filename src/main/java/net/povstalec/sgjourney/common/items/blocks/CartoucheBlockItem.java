@@ -1,12 +1,10 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +21,8 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+
+import javax.annotation.Nullable;
 
 public class CartoucheBlockItem extends BlockItem
 {
@@ -49,7 +49,7 @@ public class CartoucheBlockItem extends BlockItem
 		
 		if(blockpos.getY() > maxBuildHeight || !level.getBlockState(blockpos.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))).canBeReplaced(context))
 		{
-			player.displayClientMessage(Component.translatable("block.sgjourney.cartouche.not_enough_space"), true);
+			player.displayClientMessage(new TranslatableComponent("block.sgjourney.cartouche.not_enough_space"), true);
 			return false;
 		}
 		

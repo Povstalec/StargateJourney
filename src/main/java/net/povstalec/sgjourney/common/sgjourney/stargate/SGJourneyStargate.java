@@ -4,9 +4,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -169,7 +167,7 @@ public abstract class SGJourneyStargate implements Stargate
 			return List.of(this);
 		
 		// Chooses a random Stargate to connect to
-		RandomSource randomSource = new SingleThreadedRandomSource(server.getTickCount());
+		Random randomSource = new Random(server.getTickCount());
 		
 		AddressRegion addressRegion = this.getAddressRegion();
 		if(addressRegion == null)

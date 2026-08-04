@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.MapItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGenerator;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -57,7 +57,7 @@ public class SchrodingersMapItem extends Item
 	}
 	
 	@Nullable
-	public static TagKey<Structure> getTargetStructure(ItemStack stack)
+	public static TagKey<ConfiguredStructureFeature<?, ?>> getTargetStructure(ItemStack stack)
 	{
 		if(stack.hasTag() && stack.getTag().contains(TARGET_STRUCTURE, Tag.TAG_STRING))
 			return TagInit.Structures.createTag(stack.getTag().getString(TARGET_STRUCTURE));
@@ -87,7 +87,7 @@ public class SchrodingersMapItem extends Item
 		return stack.hasTag() && stack.getTag().getBoolean(SKIP_LOADED_CHUNKS);
 	}
 	
-	public static BlockPos getSearchStartPos(TagKey<Structure> target, BlockPos defaultSearchStartPos)
+	public static BlockPos getSearchStartPos(TagKey<ConfiguredStructureFeature<?, ?>> target, BlockPos defaultSearchStartPos)
 	{
 		if(TagInit.Structures.STARGATE_MAP.equals(target))
 		{
@@ -103,13 +103,13 @@ public class SchrodingersMapItem extends Item
 	@Nullable
 	public static ItemStack tryCreateMapItem(ServerLevel level, @Nullable Player player, ItemStack schrodingersMapStack, BlockPos defaultSearchStartPos, MapDecoration.Type mapDecorationType, boolean skipLoadedChunks)
 	{
-		TagKey<Structure> target = getTargetStructure(schrodingersMapStack);
+		TagKey<ConfiguredStructureFeature<?, ?>> target = getTargetStructure(schrodingersMapStack);
 		if(target == null) // No target structure found, create a normal map
 			return MapItem.create(level, defaultSearchStartPos.getX(), defaultSearchStartPos.getZ(), (byte) 0, true, false);
 		
 		BlockPos searchStartPos = getSearchStartPos(target, defaultSearchStartPos);
 		
-		BlockPos blockpos = level.findNearestMapStructure(target, searchStartPos, 150, skipLoadedChunks);
+		BlockPos blockpos = level.findNearestMapFeature(target, searchStartPos, 150, skipLoadedChunks);
 		if(blockpos == null)
 		{
 			StargateJourney.LOGGER.error("Couldn't locate {}", target);
@@ -118,23 +118,23 @@ public class SchrodingersMapItem extends Item
 			if(player != null)
 			{
 				if(expectedPos == null) // Could not find Structure, presumably has nothing to do with UniqueStructurePlacement issues, so it gets a generic message
-					player.displayClientMessage(Component.translatable("message.sgjourney.schrodingers_map.error.structure").withStyle(ChatFormatting.DARK_RED), true);
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.schrodingers_map.error.structure").withStyle(ChatFormatting.DARK_RED), true);
 				else
 				{
-					player.displayClientMessage(Component.translatable("message.sgjourney.schrodingers_map.error.unique_structure").withStyle(ChatFormatting.DARK_RED), true);
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.schrodingers_map.error.unique_structure").withStyle(ChatFormatting.DARK_RED), true);
 					
-					Component component = ComponentUtils.wrapInSquareBrackets(Component.translatable("message.sgjourney.schrodingers_map.error.troubleshoot")).withStyle((style) ->
+					Component component = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("message.sgjourney.schrodingers_map.error.troubleshoot")).withStyle((style) ->
 						style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://povstalec.github.io/StargateJourney/troubleshooting/"))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.open_wiki_link")))
+							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.sgjourney.open_wiki_link")))
 							.applyFormat(ChatFormatting.WHITE));
 					
-					Component coordComponent = ComponentUtils.wrapInSquareBrackets(Component.translatable("chat.coordinates", expectedPos.getX(), "~", expectedPos.getZ())).withStyle((style) ->
+					Component coordComponent = ComponentUtils.wrapInSquareBrackets(new TranslatableComponent("chat.coordinates", expectedPos.getX(), "~", expectedPos.getZ())).withStyle((style) ->
 						style.withColor(ChatFormatting.GREEN).withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/tp @s " + expectedPos.getX() + "  ~  " + expectedPos.getZ()))
-							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("chat.coordinates.tooltip"))));
+							.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("chat.coordinates.tooltip"))));
 					
-					player.sendSystemMessage(Component.translatable("message.sgjourney.schrodingers_map.error.unique_structure_not_found", coordComponent)
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.schrodingers_map.error.unique_structure_not_found", coordComponent)
 						.withStyle(ChatFormatting.DARK_RED)
-						.append(" ").append(component));
+						.append(" ").append(component), true);
 				}
 			}
 			
@@ -164,7 +164,7 @@ public class SchrodingersMapItem extends Item
 			// Check if it's being created in the correct dimension
 			if(expectedDimension != null && !level.dimension().equals(expectedDimension))
 			{
-				player.displayClientMessage(Component.translatable("message.sgjourney.schrodingers_map.error.dimension", expectedDimension.location()).withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("message.sgjourney.schrodingers_map.error.dimension", expectedDimension.location()).withStyle(ChatFormatting.DARK_RED), true);
 				return InteractionResultHolder.pass(itemStack);
 			}
 			
@@ -199,23 +199,23 @@ public class SchrodingersMapItem extends Item
 		}
 	}
 	
-	public static BlockPos findOriginalSpawnPosition(ServerLevel level, TagKey<Structure> target)
+	public static BlockPos findOriginalSpawnPosition(ServerLevel level, TagKey<ConfiguredStructureFeature<?, ?>> target)
 	{
-		if(!level.getServer().getWorldData().worldGenSettings().generateStructures())
+		if(!level.getServer().getWorldData().worldGenSettings().generateFeatures())
 			StargateJourney.LOGGER.error("Structure generation is disabled for this world");
 		else
 		{
-			Optional<HolderSet.Named<Structure>> structuresHolder = level.registryAccess().registryOrThrow(Registry.STRUCTURE_REGISTRY).getTag(target);
+			Optional<HolderSet.Named<ConfiguredStructureFeature<?, ?>>> structuresHolder = level.registryAccess().registryOrThrow(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).getTag(target);
 			if(structuresHolder.isEmpty())
 				StargateJourney.LOGGER.error("Structure tag {} did not provide any valid Structures", target);
 			else
 			{
 				ChunkGenerator chunkGenerator = level.getChunkSource().getGenerator();
-				Map<StructurePlacement, Set<Holder<Structure>>> placementStructureMap = new Object2ObjectArrayMap<>();
+				Map<StructurePlacement, Set<Holder<ConfiguredStructureFeature<?, ?>>>> placementStructureMap = new Object2ObjectArrayMap<>();
 				
-				for(Holder<Structure> holder : structuresHolder.get())
+				for(Holder<ConfiguredStructureFeature<?, ?>> holder : structuresHolder.get())
 				{
-					for(StructurePlacement structureplacement : chunkGenerator.getPlacementsForStructure(holder, level.getChunkSource().randomState()))
+					for(StructurePlacement structureplacement : chunkGenerator.getPlacementsForFeature(holder))
 					{
 						placementStructureMap.computeIfAbsent(structureplacement, (placement) -> new ObjectArraySet<>()).add(holder);
 					}
@@ -227,7 +227,7 @@ public class SchrodingersMapItem extends Item
 				{
 					long levelSeed = level.getSeed();
 					
-					for(Map.Entry<StructurePlacement, Set<Holder<Structure>>> placementEntry : placementStructureMap.entrySet())
+					for(Map.Entry<StructurePlacement, Set<Holder<ConfiguredStructureFeature<?, ?>>>> placementEntry : placementStructureMap.entrySet())
 					{
 						if(placementEntry.getKey() instanceof UniqueStructurePlacement uniqueStructurePlacement)
 						{
@@ -249,7 +249,7 @@ public class SchrodingersMapItem extends Item
 		return null;
 	}
 	
-	public static ItemStack withDestination(Component name, @NotNull TagKey<Structure> target, @Nullable MapDecoration.Type mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
+	public static ItemStack withDestination(Component name, @NotNull TagKey<ConfiguredStructureFeature<?, ?>> target, @Nullable MapDecoration.Type mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
 	{
 		ItemStack stack = new ItemStack(ItemInit.SCHRODINGERS_MAP.get());
 		stack.setHoverName(name);

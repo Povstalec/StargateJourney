@@ -2,11 +2,12 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -71,6 +72,6 @@ public class NaquadahGeneratorScreen extends AbstractContainerScreen<NaquadahGen
     protected void energyTooltip(PoseStack matrixStack, int x, int y, int mouseX, int mouseY)
     {
     	if(this.isHovering(x, y, 160, 6, (double) mouseX, (double) mouseY))
-	    	renderTooltip(matrixStack, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getEnergyCapacity()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
+	    	renderTooltip(matrixStack, new TranslatableComponent("tooltip.sgjourney.energy").append(new TextComponent(": " + SGJourneyEnergy.energyToString(this.menu.getEnergy(), this.menu.getEnergyCapacity()))).withStyle(ChatFormatting.DARK_RED), mouseX, mouseY);
     }
 }

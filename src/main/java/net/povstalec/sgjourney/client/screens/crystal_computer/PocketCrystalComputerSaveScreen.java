@@ -3,7 +3,8 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerEditBox;
@@ -46,14 +47,14 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		
-		editBox = addRenderableWidget(new CrystalComputerEditBox(font, x + 22, y + 38, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.empty()));
+		editBox = addRenderableWidget(new CrystalComputerEditBox(font, x + 22, y + 38, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, TextComponent.EMPTY));
 		editBox.setMaxLength(18);
 		
 		// Choose what information to save
 		
 		// Button to save coordinates
 		saveButtons.add(CrystalComputerButton.largeButton(x + 22, y + 10 + 3 * BUTTON_Y_OFFSET, false,
-				Component.translatable("screen.sgjourney.crystal_computer.save_coordinates"), ComponentHelper.coordinate(clickedPos),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.save_coordinates"), ComponentHelper.coordinate(clickedPos),
 				button -> saveToMemoryCrystalAndClose(new CoordinateEntry(editBox.getValue(), this.minecraft.level.getGameTime(), clickedPos))));
 		addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
 		
@@ -61,7 +62,7 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 		{
 			// Button to save Transporter ID
 			saveButtons.add(CrystalComputerButton.largeButton(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET, false,
-					Component.translatable("screen.sgjourney.crystal_computer.save_transporter_id"), transporter.getID().toComponent(false),
+					new TranslatableComponent("screen.sgjourney.crystal_computer.save_transporter_id"), transporter.getID().toComponent(false),
 					button -> saveToMemoryCrystalAndClose(new TransporterIDEntry(editBox.getValue(), minecraft.level.getGameTime(), transporter.getID()))));
 			addRenderableWidget(saveButtons.get(saveButtons.size() - 1));
 		}
@@ -71,8 +72,8 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 			if(stargate != null)
 			{
 				addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 4 * BUTTON_Y_OFFSET, false,
-						Component.translatable("screen.sgjourney.crystal_computer.save_address"),
-						Component.translatable("screen.sgjourney.crystal_computer.cant_read_9_chevron_address").withStyle(ChatFormatting.DARK_RED),
+						new TranslatableComponent("screen.sgjourney.crystal_computer.save_address"),
+						new TranslatableComponent("screen.sgjourney.crystal_computer.cant_read_9_chevron_address").withStyle(ChatFormatting.DARK_RED),
 						button -> {}));
 			}
 		}
@@ -81,15 +82,15 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 	@Override
 	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
-		drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.save_to_selected_crystal"), x + 101, y + 14, 0xffffff);
-		font.draw(stack, Component.translatable("screen.sgjourney.crystal_computer.entry_name"), x + 20, y + 28, 0xffffff);
+		drawCenteredString(stack, font, new TranslatableComponent("screen.sgjourney.crystal_computer.save_to_selected_crystal"), x + 101, y + 14, 0xffffff);
+		font.draw(stack, new TranslatableComponent("screen.sgjourney.crystal_computer.entry_name"), x + 20, y + 28, 0xffffff);
 		
 		if(selectedCrystal != SelectedCrystal.NONE)
 		{
 			if(selectedCrystalType(selectedCrystal) == CrystalCache.Type.MEMORY && !memoryCrystalHasFreeSpace(selectedCrystal))
-				drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.memory_crystal_full"), x + 101, y + 64, DARK_RED_COLOR);
+				drawCenteredString(stack, font, new TranslatableComponent("screen.sgjourney.crystal_computer.memory_crystal_full"), x + 101, y + 64, DARK_RED_COLOR);
 			else if(selectedCrystalType(selectedCrystal) != CrystalCache.Type.MEMORY)
-				drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.not_memory_crystal"), x + 101, y + 64, DARK_RED_COLOR);
+				drawCenteredString(stack, font, new TranslatableComponent("screen.sgjourney.crystal_computer.not_memory_crystal"), x + 101, y + 64, DARK_RED_COLOR);
 		}
 	}
 	

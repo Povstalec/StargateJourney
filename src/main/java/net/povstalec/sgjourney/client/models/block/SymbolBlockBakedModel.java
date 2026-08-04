@@ -8,10 +8,9 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.IModelData;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
@@ -22,10 +21,10 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class SymbolBlockBakedModel extends SymbolBakedModel
 {
@@ -44,17 +43,17 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 	protected ResourceLocation symbol;
 	
 	public SymbolBlockBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint)
+								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, int symbolTint)
 	{
-		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes, symbolTint);
+		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, symbolTint);
 		
 		this.symbolNumber = -1;
 	}
 	
 	public SymbolBlockBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint, int symbolNumber, ResourceLocation symbol)
+								 TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, int symbolTint, int symbolNumber, ResourceLocation symbol)
 	{
-		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes, symbolTint);
+		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, symbolTint);
 		
 		this.symbolNumber = symbolNumber;
 		this.symbol = symbol;
@@ -78,14 +77,14 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		return null;
 	}
 	
-	public TextureAtlasSprite getSymbolSprite(@NotNull ModelData extraData)
+	public TextureAtlasSprite getSymbolSprite(@NotNull IModelData extraData)
 	{
-		Integer symbolNumber = extraData.get(ModelProperties.SYMBOL_INDEX_PROPERTY);
+		Integer symbolNumber = extraData.getData(ModelProperties.SYMBOL_INDEX_PROPERTY);
 		if(symbolNumber == null) // No symbol number somehow
 			return null;
 		
 		// Show Point of Origin
-		ResourceKey<PointOfOrigin> pointOfOriginKey = extraData.get(ModelProperties.POINT_OF_ORIGIN_PROPERTY);
+		ResourceKey<PointOfOrigin> pointOfOriginKey = extraData.getData(ModelProperties.POINT_OF_ORIGIN_PROPERTY);
 		if(symbolNumber == 0 && pointOfOriginKey != null)
 		{
 			ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.getPointOfOrigin(pointOfOriginKey);
@@ -94,7 +93,7 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		}
 		
 		// Show symbols
-		ResourceKey<Symbols> symbolLocation = extraData.get(ModelProperties.SYMBOLS_PROPERTY);
+		ResourceKey<Symbols> symbolLocation = extraData.getData(ModelProperties.SYMBOLS_PROPERTY);
 		if(symbolLocation != null)
 		{
 			ClientSymbols symbols = ClientSymbols.getSymbols(symbolLocation);
@@ -129,11 +128,11 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 			default -> FACE_BAKERY.bakeQuad(SYMBOL_FRONT_START, SYMBOL_FRONT_END, new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(new float[]{0, 0, 16, 16}, 0)/*,
 					new ForgeFaceData(symbolTint, 0, 0, true)*/), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
 		};
-		applyColorToQuad(symbolTint).processInPlace(quad);
+		applyColorToQuad(symbolTint, quad);
 		return quad;
 	}
 	
-	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)
+	public void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData)
 	{
 		TextureAtlasSprite symbolSprite = symbolNumber >= 0 ? getSymbolSprite(symbolNumber, symbol) : getSymbolSprite(extraData);
 		
@@ -141,6 +140,7 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 		Direction direction = state.getValue(SymbolBlock.FACING);
 		Orientation orientation = state.getValue(SymbolBlock.ORIENTATION);
 		
+		RenderType layer = MinecraftForgeClient.getRenderType();
 		if(symbolSprite != null && side == Orientation.getForwardDirection(direction, orientation) && (layer == null || RenderType.translucent().equals(layer)))
 			quads.add(makeSymbolQuad(direction, orientation, symbolSprite, symbolTint));
 	}
@@ -167,14 +167,14 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 			this.symbol = symbol;
 		}
 		
-		public SymbolBlockBakedModel build(RenderTypeGroup renderTypes)
+		public SymbolBlockBakedModel build()
 		{
 			if(this.particleIcon == null)
 				throw new RuntimeException("Missing particle!");
 			else if(this.symbolNumber >= 0)
-				return new SymbolBlockBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, renderTypes, this.symbolTint, this.symbolNumber, this.symbol);
+				return new SymbolBlockBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, this.symbolTint, this.symbolNumber, this.symbol);
 			else
-				return new SymbolBlockBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, renderTypes, this.symbolTint);
+				return new SymbolBlockBakedModel(this.unculledFaces, this.culledFaces, this.hasAmbientOcclusion, this.usesBlockLight, this.isGui3d, this.particleIcon, this.transforms, this.overrides, this.symbolTint);
 		}
 	}
 }

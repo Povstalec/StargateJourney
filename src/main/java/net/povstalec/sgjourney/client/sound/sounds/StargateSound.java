@@ -23,7 +23,7 @@ public abstract class StargateSound<T extends AbstractStargateEntity<?>> extends
 	 */
 	protected StargateSound(T stargate, SoundEvent soundEvent)
 	{
-		super(soundEvent, SoundSource.BLOCKS, SoundInstance.createUnseededRandom());
+		super(soundEvent, SoundSource.BLOCKS);
 		
 		this.stargate = stargate;
 		this.stargatePos = stargate.getBlockPos();

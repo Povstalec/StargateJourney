@@ -1,12 +1,9 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-import java.util.function.IntSupplier;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
@@ -14,7 +11,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonIrisConfig;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.function.IntSupplier;
 
 public class StargateIrisItem extends Item
 {
@@ -158,7 +158,7 @@ public class StargateIrisItem extends Item
 		{
 			int durability = getDurability(stack);
 			
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.iris.durability").append(Component.literal(": " + durability + " / " + getMaxDurability())));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.iris.durability").append(new TextComponent(": " + durability + " / " + getMaxDurability())));
 		}
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);

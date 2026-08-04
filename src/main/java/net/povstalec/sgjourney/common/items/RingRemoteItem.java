@@ -5,7 +5,10 @@ import java.util.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
@@ -30,7 +33,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
@@ -142,21 +144,21 @@ public class RingRemoteItem extends HolderItem
 		{
 			TransporterIDEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.TRANSPORTER_ID, index);
 			if(entry.name().isEmpty())
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entryString()).withStyle(ChatFormatting.AQUA)), true);
+				player.displayClientMessage(new TextComponent("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(new TextComponent(entry.entryString()).withStyle(ChatFormatting.AQUA)), true);
 			else
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.name()).withStyle(ChatFormatting.GREEN)), true);
+				player.displayClientMessage(new TextComponent("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(new TextComponent(entry.name()).withStyle(ChatFormatting.GREEN)), true);
 		}
 		else if(type == MemoryEntry.Type.COORDINATES)
 		{
 			CoordinateEntry entry = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			
 			if(entry.name().isEmpty())
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.entryString()).withStyle(ChatFormatting.YELLOW)), true);
+				player.displayClientMessage(new TextComponent("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(new TextComponent(entry.entryString()).withStyle(ChatFormatting.YELLOW)), true);
 			else
-				player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.literal(entry.name()).withStyle(ChatFormatting.GREEN)), true);
+				player.displayClientMessage(new TextComponent("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(new TextComponent(entry.name()).withStyle(ChatFormatting.GREEN)), true);
 		}
 		else
-			player.displayClientMessage(Component.literal("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(Component.translatable("message.sgjourney.ring_remote.error.invalid_entry")).withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TextComponent("[" + index + "] ").withStyle(ChatFormatting.BLUE).append(new TranslatableComponent("message.sgjourney.ring_remote.error.invalid_entry")).withStyle(ChatFormatting.DARK_RED), true);
 	}
 	
 	// Memory Crystal
@@ -187,7 +189,7 @@ public class RingRemoteItem extends HolderItem
 			}
 		}
 		
-		player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.invalid_entry").withStyle(ChatFormatting.DARK_RED), true);
+		player.displayClientMessage(new TranslatableComponent("message.sgjourney.ring_remote.error.invalid_entry").withStyle(ChatFormatting.DARK_RED), true);
 	}
 	
 	private void idTransport(Player player, TransporterID transporterID, AbstractTransporterEntity<?> connectedTransporter)
@@ -211,7 +213,7 @@ public class RingRemoteItem extends HolderItem
 	{
 		if(!CommunicationCrystalItem.hasFrequency(crystalStack))
 		{
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_frequency_set").withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TranslatableComponent()("message.sgjourney.ring_remote.error.no_frequency_set").withStyle(ChatFormatting.DARK_RED), true);
 			return;
 		}
 		
@@ -227,7 +229,7 @@ public class RingRemoteItem extends HolderItem
 				player.displayClientMessage(feedback.getMessageComponent(), true);
 		}
 		else
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TranslatableComponent()("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
 	}*/
 	
 	// Materialization Crystal
@@ -257,18 +259,18 @@ public class RingRemoteItem extends HolderItem
 		AbstractTransporterEntity<?> transporter = LocatorHelper.getNearestTransporter(level, player.blockPosition(), 16);
 		if(transporter == null) // No Transporter found
 		{
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TranslatableComponent("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
 			return;
 		}
 		else if(!transporter.canTransport()) // Transporter is busy
 		{
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TranslatableComponent("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), true);
 			return;
 		}
 		
 		// Connected Transporter is ready, proceed further and check for any Crystals
 		ItemStack ringRemoteStack = player.getItemInHand(hand);
-		ringRemoteStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		ringRemoteStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			ItemStack crystalStack = itemHandler.getStackInSlot(0);
 			CrystalCache.Type type = getCrystalType(crystalStack);
@@ -303,7 +305,7 @@ public class RingRemoteItem extends HolderItem
 				player.displayClientMessage(feedback.getMessageComponent(), true);
 		}
 		else
-			player.displayClientMessage(Component.translatable("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
+			player.displayClientMessage(new TranslatableComponent("message.sgjourney.ring_remote.error.no_transport_rings_nearby").withStyle(ChatFormatting.DARK_RED), true);
 	}
 	
 	@Override
@@ -337,7 +339,7 @@ public class RingRemoteItem extends HolderItem
 		if(memoryEntry.entryType() == MemoryEntry.Type.TRANSPORTER_ID || memoryEntry.entryType() == MemoryEntry.Type.COORDINATES)
 			return memoryEntry.toComponent();
 		
-		return Component.translatable("tooltip.sgjourney.invalid_entry").withStyle(ChatFormatting.DARK_RED);
+		return new TranslatableComponent("tooltip.sgjourney.invalid_entry").withStyle(ChatFormatting.DARK_RED);
 	}
 	
 	public void displayMemoryCrystalEntries(List<Component> tooltipComponents, ItemStack heldItem, int indexAt)
@@ -347,7 +349,7 @@ public class RingRemoteItem extends HolderItem
 			ListTag list = MemoryCrystalItem.getMemoryList(heldItem);
 			for(int i = 0; i < list.size(); i++)
 			{
-				tooltipComponents.add(Component.literal(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, i)));
+				tooltipComponents.add(new TextComponent(indexPrefix(i, i == indexAt)).withStyle(ChatFormatting.BLUE).append(memoryComponentAt(list, i)));
 			}
 		}
 	}
@@ -357,9 +359,9 @@ public class RingRemoteItem extends HolderItem
 		if(!heldItem.isEmpty())
 		{
 			if(CommunicationCrystalItem.hasFrequency(heldItem))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": " + CommunicationCrystalItem.getFrequency(heldItem)).withStyle(ChatFormatting.GRAY));
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.communication_crystal.frequency").append(": " + CommunicationCrystalItem.getFrequency(heldItem)).withStyle(ChatFormatting.GRAY));
 			else
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
 		}
 	}
 	
@@ -369,7 +371,7 @@ public class RingRemoteItem extends HolderItem
 		ItemStack heldItem = getHeldItem(stack);
 		int indexAt = getIndex(stack);
 		
-		MutableComponent itemComponent = Component.translatable("tooltip.sgjourney.holding").append(Component.literal(": "));
+		MutableComponent itemComponent = new TranslatableComponent("tooltip.sgjourney.holding").append(new TextComponent(": "));
 		if(heldItem.isEmpty())
 			itemComponent.append("[-]");
 		else

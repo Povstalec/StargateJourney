@@ -2,21 +2,16 @@ package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
 
 import javax.annotation.Nullable;
+import java.util.Random;
 
 public class WaxedPillarLampBlock extends WaxedRotatedPillarBlock
 {
@@ -59,7 +54,7 @@ public class WaxedPillarLampBlock extends WaxedRotatedPillarBlock
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		if(state.getValue(LIT) && !level.hasNeighborSignal(pos))
 			level.setBlock(pos, state.cycle(LIT), 2);

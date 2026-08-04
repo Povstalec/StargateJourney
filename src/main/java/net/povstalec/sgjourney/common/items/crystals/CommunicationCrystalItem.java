@@ -1,19 +1,17 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.Optional;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import java.util.List;
 
 public class CommunicationCrystalItem extends AbstractCrystalItem
 {
@@ -87,11 +85,11 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
     	boolean hasFrequency = hasFrequency(stack);
 		
         if(!hasFrequency)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
         else
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": " + getFrequency(stack)).withStyle(ChatFormatting.GRAY));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.communication_crystal.frequency").append(": " + getFrequency(stack)).withStyle(ChatFormatting.GRAY));
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.communication_range_increase", !hasFrequency ? getRangeIncrease() : 0));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.communication_crystal.communication_range_increase", !hasFrequency ? getRangeIncrease() : 0));
 		
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.communication_crystal.description"));

@@ -2,45 +2,34 @@ package net.povstalec.sgjourney.client.models.block;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.ChunkRenderTypeSet;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.IQuadTransformer;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.IModelData;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public abstract class SymbolBakedModel extends SimpleBakedModel
 {
 	protected final int symbolTint;
-	
-	protected final ChunkRenderTypeSet chunkRenderTypeSet;
 	
 	protected static final float SYMBOL_OFFSET = 0.01F;
 	
 	public static final Vector3f CENTER = new Vector3f(0.5F, 0.5F, 0.5F);
 	
 	public SymbolBakedModel(List<BakedQuad> unculledFaces, Map<Direction, List<BakedQuad>> culledFaces, boolean hasAmbientOcclusion, boolean isGui3d, boolean usesBlockLight,
-							TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, RenderTypeGroup renderTypes, int symbolTint)
+							TextureAtlasSprite particleIcon, ItemTransforms transforms, ItemOverrides overrides, int symbolTint)
 	{
-		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides, renderTypes);
+		super(unculledFaces, culledFaces, hasAmbientOcclusion, isGui3d, usesBlockLight, particleIcon, transforms, overrides);
 		this.symbolTint = symbolTint;
-		
-		ArrayList<RenderType> list = new ArrayList<>(blockRenderTypes.asList());
-		if(!list.contains(RenderType.translucent()))
-			list.add(RenderType.translucent()); // Adding translucent render type in order to render the symbol overlay
-		this.chunkRenderTypeSet = ChunkRenderTypeSet.of(list);
 	}
 	
 	public static int toABGR(int argb)
@@ -48,35 +37,31 @@ public abstract class SymbolBakedModel extends SimpleBakedModel
 		return (argb & 0xFF00FF00) | ((argb >> 16) & 0x000000FF) | ((argb << 16) & 0x00FF0000);
 	}
 	
-	public static IQuadTransformer applyColorToQuad(int color)
+	public static void applyColorToQuad(int color, BakedQuad quad)
 	{
 		final int fixedColor = toABGR(color);
-		return quad ->
+		int[] vertices = quad.getVertices();
+		
+		int stride = DefaultVertexFormat.BLOCK.getIntegerSize();
+		int colorIndex = DefaultVertexFormat.BLOCK.getElements().indexOf(DefaultVertexFormat.ELEMENT_COLOR);
+		int elementColor = colorIndex < 0 ? -1 : DefaultVertexFormat.BLOCK.getOffset(colorIndex) / 4;
+		
+		for(int i = 0; i < 4; i++)
 		{
-			int[] vertices = quad.getVertices();
-			for(int i = 0; i < 4; i++)
-			{
-				vertices[i * IQuadTransformer.STRIDE + IQuadTransformer.COLOR] = fixedColor;
-			}
-		};
-	}
-	
-	@Override
-	public @NotNull ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
-	{
-		return chunkRenderTypeSet;
+			vertices[i * stride + elementColor] = fixedColor;
+		}
 	}
 	
 	@NotNull
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)
+	public List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData)
 	{
-		List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, side, randomSource, extraData, layer));
-		addSymbolQuads(quads, state, side, randomSource, extraData, layer);
+		List<BakedQuad> quads = new ArrayList<>(super.getQuads(state, side, randomSource, extraData));
+		addSymbolQuads(quads, state, side, randomSource, extraData);
 		return quads;
 	}
 	
-	public abstract void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer);
+	public abstract void addSymbolQuads(List<BakedQuad> quads, BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData);
 	
 	public static BlockElementRotation getRotation(Direction direction)
 	{
@@ -149,6 +134,6 @@ public abstract class SymbolBakedModel extends SimpleBakedModel
 			return this;
 		}
 		
-		public abstract T build(RenderTypeGroup renderTypes);
+		public abstract T build();
 	}
 }

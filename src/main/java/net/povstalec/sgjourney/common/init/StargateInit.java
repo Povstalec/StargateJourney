@@ -24,9 +24,7 @@ import java.util.function.Supplier;
 public class StargateInit
 {
 	public static final DeferredRegister<StargateType<?>> STARGATE_TYPES = DeferredRegister.create(StargateType.STARGATE_TYPE_LOCATION, StargateJourney.MODID);
-	public static final Supplier<IForgeRegistry<StargateType<?>>> STARGATE_TYPE = STARGATE_TYPES.makeRegistry(RegistryBuilder::new);
-	
-	
+	public static final Supplier<IForgeRegistry<StargateType<?>>> STARGATE_TYPE = STARGATE_TYPES.makeRegistry((Class) StargateType.class, () -> new RegistryBuilder<StargateType<?>>());
 	
 	// Block Entity Stargates
 	public static final RegistryObject<StargateType<UniverseBlockEntityStargate>> UNIVERSE = STARGATE_TYPES.register("universe", () ->

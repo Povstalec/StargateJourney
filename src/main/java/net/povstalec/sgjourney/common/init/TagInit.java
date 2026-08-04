@@ -8,7 +8,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.povstalec.sgjourney.StargateJourney;
 
 public class TagInit
@@ -86,27 +87,27 @@ public class TagInit
 	
 	public static class Structures
 	{
-		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
-		public static final TagKey<Structure> NETWORK_STARGATE = tag("network_stargate");
-		public static final TagKey<Structure> HAS_STARGATE = tag("has_stargate");
-		public static final TagKey<Structure> BURIED_STARGATE = tag("buried_stargate");
-		public static final TagKey<Structure> STARGATE_PEDESTAL = tag("stargate_pedestal");
-		public static final TagKey<Structure> STARGATE_TEMPLE = tag("stargate_temple");
-		public static final TagKey<Structure> STARGATE_OUTPOST = tag("stargate_outpost");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> STARGATE_MAP = tag("stargate_map");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> NETWORK_STARGATE = tag("network_stargate");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> HAS_STARGATE = tag("has_stargate");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> BURIED_STARGATE = tag("buried_stargate");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> STARGATE_PEDESTAL = tag("stargate_pedestal");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> STARGATE_TEMPLE = tag("stargate_temple");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> STARGATE_OUTPOST = tag("stargate_outpost");
 
-		public static final TagKey<Structure> ON_ARCHEOLOGIST_MAPS = tag("on_archeologist_maps");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> ON_ARCHEOLOGIST_MAPS = tag("on_archeologist_maps");
 		
-		public static final TagKey<Structure> GOAULD_TEMPLE = tag("goauld_temple");
-		public static final TagKey<Structure> CITY = tag("city");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> GOAULD_TEMPLE = tag("goauld_temple");
+		public static final TagKey<ConfiguredStructureFeature<?, ?>> CITY = tag("city");
 		
-		private static TagKey<Structure> tag(String name)
+		private static TagKey<ConfiguredStructureFeature<?, ?>> tag(String name)
 		{
-			return TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
+			return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
 		}
 		
-		public static TagKey<Structure> createTag(String name)
+		public static TagKey<ConfiguredStructureFeature<?, ?>> createTag(String name)
 		{
-			return TagKey.create(Registry.STRUCTURE_REGISTRY, ResourceLocation.tryParse(name));
+			return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ResourceLocation.tryParse(name));
 		}
 	}
 }

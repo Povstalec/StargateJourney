@@ -5,7 +5,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoneycombItem;
@@ -14,11 +13,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChangeOverTimeBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
 
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Supplier;
 
 public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyWeatheringBlock.WeatherState>
@@ -244,7 +243,6 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 				if(!player.isCreative())
 					stack.shrink(1);
 				level.setBlock(pos, waxedState.get(), 11);
-				level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player, waxedState.get()));
 				level.levelEvent(player, 3003, pos, 0);
 				return true;
 			}
@@ -274,7 +272,7 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return -1;
 	}
 	
-	default Optional<BlockState> getNextState(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	default Optional<BlockState> getNextState(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		int age = this.getAge().ordinal();
 		int sameAge = 0;
@@ -306,13 +304,13 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 		return Optional.empty();
 	}
 	
-	default boolean passesProbability(RandomSource randomSource)
+	default boolean passesProbability(Random randomSource)
 	{
 		return randomSource.nextFloat() < PROBABILITY;
 	}
 	
 	@Override
-	default void applyChangeOverTime(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	default void applyChangeOverTime(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		int age = this.getAge().ordinal();
 		int sameAge = 0;

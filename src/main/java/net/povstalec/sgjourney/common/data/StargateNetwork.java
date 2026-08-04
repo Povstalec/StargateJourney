@@ -1,22 +1,11 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -29,10 +18,19 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.ShuffleHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 public final class StargateNetwork extends SavedData
 {
@@ -336,7 +334,7 @@ public final class StargateNetwork extends SavedData
 	}
 	
 	@Nullable
-	public Stargate getRandomStargate(RandomSource randomSource)
+	public Stargate getRandomStargate(Random randomSource)
 	{
 		return BlockEntityList.get(server).getRandomStargate(randomSource);
 	}
@@ -409,9 +407,9 @@ public final class StargateNetwork extends SavedData
 		return regionReturn(addressRegionKey, regionStargates -> regionStargates.stargates.stream().filter(predicate).toList(), List.of());
 	}
 	
-	public List<Stargate> getShuffledStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey, RandomSource randomSource)
+	public List<Stargate> getShuffledStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey, Random randomSource)
 	{
-		return regionReturn(addressRegionKey, regionStargates -> Util.toShuffledList(regionStargates.stargates.stream(), randomSource), List.of());
+		return regionReturn(addressRegionKey, regionStargates -> ShuffleHelper.toShuffledList(regionStargates.stargates.stream(), randomSource), List.of());
 	}
 	
 	public void sortStargatesInRegion(ResourceKey<AddressRegion> addressRegionKey)
@@ -755,7 +753,7 @@ public final class StargateNetwork extends SavedData
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
 		int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
 		// Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = level.findNearestMapStructure(CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE,
+		BlockPos blockpos = level.findNearestMapFeature(CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE,
 				new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)
 		{

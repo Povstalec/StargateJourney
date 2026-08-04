@@ -3,12 +3,13 @@ package net.povstalec.sgjourney.common.world.features;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.povstalec.sgjourney.common.world.features.configuration.CrystalPatchConfiguration;
+
+import java.util.Random;
 
 public class CrystalPatchFeature extends Feature<CrystalPatchConfiguration>
 {
@@ -23,7 +24,7 @@ public class CrystalPatchFeature extends Feature<CrystalPatchConfiguration>
 	public boolean place(FeaturePlaceContext<CrystalPatchConfiguration> context)
 	{
 		CrystalPatchConfiguration configuration = context.config();
-		RandomSource randomSource = context.random();
+		Random randomSource = context.random();
 		BlockPos pos = context.origin();
 		WorldGenLevel level = context.level();
 		
@@ -49,7 +50,7 @@ public class CrystalPatchFeature extends Feature<CrystalPatchConfiguration>
 		return placed > 0;
 	}
 	
-	private Holder<PlacedFeature> randomFeature(CrystalPatchConfiguration configuration, RandomSource randomSource)
+	private Holder<PlacedFeature> randomFeature(CrystalPatchConfiguration configuration, Random randomSource)
 	{
 		return switch(Math.abs(randomSource.nextInt(4)))
 		{

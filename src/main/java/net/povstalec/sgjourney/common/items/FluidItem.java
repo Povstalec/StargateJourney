@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -15,11 +17,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -69,7 +72,7 @@ public abstract class FluidItem extends Item
 	
 	public FluidStack getFluidStack(ItemStack stack)
 	{
-		IFluidHandler fluidHandler = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandler fluidHandler = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		
 		if(fluidHandler == null)
 			return FluidStack.EMPTY;
@@ -84,7 +87,7 @@ public abstract class FluidItem extends Item
 	
 	public void drainFluid(ItemStack stack, int amount)
 	{
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+		stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidHandler ->
 		{
 			fluidHandler.drain(amount, IFluidHandler.FluidAction.EXECUTE);
 		});
@@ -108,7 +111,7 @@ public abstract class FluidItem extends Item
 	{
 		FluidStack fluidStack = getFluidStack(stack);
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.fluid").append(Component.literal(": ")).append(ComponentHelper.fluidAmountComponent(fluidStack.getTranslationKey(), fluidStack.getAmount(), ComponentHelper.fluidComponentColor(fluidStack.getFluid()))));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.fluid").append(new TextComponent(": ")).append(ComponentHelper.fluidAmountComponent(fluidStack.getTranslationKey(), fluidStack.getAmount(), ComponentHelper.fluidComponentColor(fluidStack.getFluid()))));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
@@ -206,7 +209,7 @@ public abstract class FluidItem extends Item
 		
 		public boolean swapItemInHand(Player player, ItemStack holderStack, ItemStack insertedStack)
 		{
-			IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+			IItemHandler itemHandler = holderStack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElse(null);
 			if(itemHandler != null)
 			{
 				// Swap held item with item in player hand
@@ -241,7 +244,7 @@ public abstract class FluidItem extends Item
 		{
 			ItemStack heldItem = getHeldItem(stack);
 			
-			MutableComponent itemComponent = Component.translatable("tooltip.sgjourney.holding").append(Component.literal(": "));
+			MutableComponent itemComponent = new TranslatableComponent("tooltip.sgjourney.holding").append(new TextComponent(": "));
 			if(heldItem.isEmpty())
 				itemComponent.append("[-]");
 			else
@@ -256,7 +259,7 @@ public abstract class FluidItem extends Item
 	{
 		ItemStack stack = new ItemStack(item);
 		
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+		stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidHandler ->
 		{
 			fluidHandler.fill(new FluidStack(fluid, amount), IFluidHandler.FluidAction.EXECUTE);
 		});

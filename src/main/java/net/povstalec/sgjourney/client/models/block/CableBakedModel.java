@@ -7,30 +7,32 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.ChunkRenderTypeSet;
-import net.minecraftforge.client.model.IDynamicBakedModel;
-import net.minecraftforge.client.model.data.ModelData;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.MinecraftForgeClient;
+import net.minecraftforge.client.model.data.IDynamicBakedModel;
+import net.minecraftforge.client.model.data.IModelData;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class CableBakedModel implements IDynamicBakedModel
 {
 	private static final byte DEFAULT_OFFSET = 15;
 	private static final byte CONNECTED_OFFSET = 16;
 	
-	private final IGeometryBakingContext context;
+	private final ModelState modelState;
+	private final ItemOverrides overrides;
+	private final ItemTransforms itemTransforms;
+	
 	private final double thickness; // Thickness of the cable
 	private final double sideSpace; // Free space between block and cable
 	private final ResourceLocation texture;
@@ -41,9 +43,13 @@ public class CableBakedModel implements IDynamicBakedModel
 	private final Vec3 x0y0z0, x1y0z0, x1y0z1, x0y0z1, x0y1z0, x1y1z0, x1y1z1, x0y1z1; // Vectors defining the edges of the center cube that makes up the cable
 	private final Vec3 xSpace, ySpace, zSpace; // Vectors defining the space between the center cube and the side of the block
 	
-	public CableBakedModel(IGeometryBakingContext context, ResourceLocation texture, ResourceLocation particleTexture, double thickness)
+	public CableBakedModel(ModelState modelState, ItemOverrides overrides, ItemTransforms itemTransforms,
+						   ResourceLocation texture, ResourceLocation particleTexture, double thickness)
 	{
-		this.context = context;
+		this.modelState = modelState;
+		this.overrides = overrides;
+		this.itemTransforms = itemTransforms;
+		
 		this.texture = texture;
 		this.particleTexture = particleTexture;
 		this.thickness = thickness;
@@ -95,12 +101,13 @@ public class CableBakedModel implements IDynamicBakedModel
 	
 	@NotNull
 	@Override
-	public List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull RandomSource randomSource, @NotNull ModelData extraData, @Nullable RenderType layer)
+	public List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData)
 	{
 		initTexture();
 		List<BakedQuad> quads = new ArrayList<>();
 		byte offset;
 		
+		RenderType layer = MinecraftForgeClient.getRenderType();
 		if(side == null && (layer == null || RenderType.solid().equals(layer)))
 		{
 			CableBlock.ConnectorType north, south, west, east, up, down;
@@ -236,12 +243,6 @@ public class CableBakedModel implements IDynamicBakedModel
 	}
 	
 	@Override
-	public ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
-	{
-		return ChunkRenderTypeSet.all();
-	}
-	
-	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
 		return particleSprite == null ? Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation()) : particleSprite;
@@ -250,12 +251,12 @@ public class CableBakedModel implements IDynamicBakedModel
 	@Override
 	public ItemTransforms getTransforms()
 	{
-		return context.getTransforms();
+		return itemTransforms;
 	}
 	
 	@Override
 	public ItemOverrides getOverrides()
 	{
-		return ItemOverrides.EMPTY;
+		return overrides;
 	}
 }

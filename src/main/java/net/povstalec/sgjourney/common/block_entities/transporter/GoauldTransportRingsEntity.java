@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.transporter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -30,6 +31,6 @@ public class GoauldTransportRingsEntity extends AbstractTransportRingsEntity<Goa
 	@Override
 	protected Component getDefaultName()
 	{
-		return Component.translatable("block.sgjourney.goauld_transport_rings");
+		return new TranslatableComponent("block.sgjourney.goauld_transport_rings");
 	}
 }

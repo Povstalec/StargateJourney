@@ -1,46 +1,25 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.*;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
-import net.povstalec.sgjourney.common.config.*;
-import net.povstalec.sgjourney.common.init.DamageSourceInit;
-import net.povstalec.sgjourney.common.misc.*;
-import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -49,10 +28,15 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
@@ -65,14 +49,29 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.config.*;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.*;
 
 public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
 		SymbolInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<AbstractDHDEntity, AbstractStargateEntity<?>>
@@ -747,13 +746,16 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		Vec3 centerVector = this.getCenter();
 		
-		Vec3 backVector = centerVector.relative(axisDirection, -2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
+		Vec3 backVector = CoordinateHelper.relative(centerVector, axisDirection, -2.25);
+		backVector = CoordinateHelper.relative(backVector, Orientation.getCenterDirection(getDirection(), getOrientation()), -2.25);
 		
 		frontMultiplier = frontMultiplier > 7 ? 7 : frontMultiplier;
 		Vec3 facingVector = Orientation.getForwardVector(direction, getOrientation());
 		facingVector = facingVector.multiply(frontMultiplier, frontMultiplier, frontMultiplier);
 		facingVector = facingVector.add(centerVector);
-		facingVector = facingVector.relative(axisDirection, 2.25).relative(Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
+		facingVector = CoordinateHelper.relative(facingVector, axisDirection, 2.25);
+		facingVector = CoordinateHelper.relative(facingVector, Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
+		facingVector = CoordinateHelper.relative(facingVector, Orientation.getCenterDirection(getDirection(), getOrientation()), 2.25);
 		
 		AABB kawooshHitbox = new AABB(backVector.x(), backVector.y(), backVector.z(),
 				facingVector.x(), facingVector.y(), facingVector.z());
@@ -1493,28 +1495,28 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		List<Component> status = new ArrayList<>();
 		
 		if(symbolInfo().pointOfOrigin() != null)
-			status.add(Component.translatable("info.sgjourney.point_of_origin").append(": " + symbolInfo().pointOfOrigin().location()).withStyle(ChatFormatting.DARK_PURPLE));
+			status.add(new TranslatableComponent("info.sgjourney.point_of_origin").append(": " + symbolInfo().pointOfOrigin().location()).withStyle(ChatFormatting.DARK_PURPLE));
 		if(symbolInfo().symbols() != null)
-			status.add(Component.translatable("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
+			status.add(new TranslatableComponent("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		status.add(Component.translatable("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
+		status.add(new TranslatableComponent("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
 		if(dhdCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.dhd_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(dhdCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
+			status.add(new TranslatableComponent("info.sgjourney.dhd_connected").append(new TextComponent(": ").append(ComponentHelper.coordinate(dhdCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
 		else
-			status.add(Component.translatable("info.sgjourney.no_dhd_connected").withStyle(ChatFormatting.GOLD));
-		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + Conversion.ticksToString(dhdCache.returnOrDefault(AbstractDHDEntity::autocloseTicks, 0))).withStyle(ChatFormatting.RED));
-		status.add(Component.translatable("info.sgjourney.last_traveler_time").append(": " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
-		status.add(Component.translatable("info.sgjourney.encoded_address").append(": ").append(address.toComponent(true)).withStyle(ChatFormatting.GREEN));
-		status.add(Component.translatable("info.sgjourney.recent_feedback").append(Component.literal(": ").append(getRecentFeedback().getMessageComponent())).withStyle(ChatFormatting.WHITE));
+			status.add(new TranslatableComponent("info.sgjourney.no_dhd_connected").withStyle(ChatFormatting.GOLD));
+		status.add(new TranslatableComponent("info.sgjourney.autoclose").append(": " + Conversion.ticksToString(dhdCache.returnOrDefault(AbstractDHDEntity::autocloseTicks, 0))).withStyle(ChatFormatting.RED));
+		status.add(new TranslatableComponent("info.sgjourney.last_traveler_time").append(": " + getTimeSinceLastTraveler()).withStyle(ChatFormatting.DARK_PURPLE));
+		status.add(new TranslatableComponent("info.sgjourney.encoded_address").append(": ").append(address.toComponent(true)).withStyle(ChatFormatting.GREEN));
+		status.add(new TranslatableComponent("info.sgjourney.recent_feedback").append(new TextComponent(": ").append(getRecentFeedback().getMessageComponent())).withStyle(ChatFormatting.WHITE));
 		
-		status.add(Component.translatable("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
-		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
+		status.add(new TranslatableComponent("info.sgjourney.9_chevron_address").append(": ").withStyle(ChatFormatting.AQUA).append(id9ChevronAddress.toComponent(true)));
+		status.add(new TranslatableComponent("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
 		if(isPrimary())
-			status.add(Component.translatable("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
+			status.add(new TranslatableComponent("info.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		status.add(ComponentHelper.tickTimer("info.sgjourney.open_time", getOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA));
 		status.add(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getTrueEnergyStored()));
-		status.add(Component.translatable("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
-		status.add(Component.translatable("info.sgjourney.networks").append(": " + getNetworks()));
+		status.add(new TranslatableComponent("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
+		status.add(new TranslatableComponent("info.sgjourney.networks").append(": " + getNetworks()));
 		
 		return status;
 	}
@@ -1745,7 +1747,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	public void generateInStructure(WorldGenLevel level, Random randomSource)
 	{
 		if(generationStep == Step.SETUP)
 			generationStep = Step.READY; // Marks the Stargate as ready for generation
@@ -1818,7 +1820,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_stargate_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

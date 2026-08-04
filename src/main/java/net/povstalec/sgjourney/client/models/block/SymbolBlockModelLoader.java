@@ -1,27 +1,24 @@
 package net.povstalec.sgjourney.client.models.block;
 
 import com.google.common.collect.Sets;
-import com.google.gson.*;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.BlockElementFace;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.*;
-import net.minecraft.core.Direction;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.model.CompositeModel;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.StandaloneGeometryBakingContext;
-import net.povstalec.sgjourney.client.models.item.SymbolBlockItemOverrides;
-import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.povstalec.sgjourney.StargateJourney;
 
 import java.util.Collection;
 import java.util.List;
@@ -38,11 +35,16 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 		return new SymbolBlockModelGeometry(elements, symbolTint);
 	}
 	
-	public static void register(ModelEvent.RegisterGeometryLoaders event)
+	public static void register(ModelRegistryEvent event)
 	{
-		event.register(SYMBOL_BLOCK_LOADER, new SymbolBlockModelLoader());
+		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(SYMBOL_BLOCK_LOADER), new CableModelLoader());
 	}
 	
+	@Override
+	public void onResourceManagerReload(ResourceManager resourceManager)
+	{
+	
+	}
 	
 	
 	public static class SymbolBlockModelGeometry extends SymbolModelGeometry<SymbolBlockModelGeometry>
@@ -98,16 +100,16 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 		}*/
 		
 		@Override
-		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<Material> getTextures(IModelConfiguration context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
 			Set<Material> textures = Sets.newHashSet();
-			if(context.hasMaterial("particle"))
-				textures.add(context.getMaterial("particle"));
+			if(context.isTexturePresent("particle"))
+				textures.add(context.resolveTexture("particle"));
 			for(BlockElement part : elements)
 			{
 				for(BlockElementFace face : part.faces.values())
 				{
-					Material texture = context.getMaterial(face.texture);
+					Material texture = context.resolveTexture(face.texture);
 					if(texture.texture().equals(MissingTextureAtlasSprite.getLocation()))
 						missingTextureErrors.add(Pair.of(face.texture, context.getModelName()));
 					textures.add(texture);
@@ -120,12 +122,12 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 		@Override
 		protected IModelBuilder<?> getBuilder(boolean useAmbientOcclusion, boolean canUseBlockLight, boolean isGui3d,
 											  ItemTransforms transforms, ItemOverrides overrides, TextureAtlasSprite particle,
-											  RenderTypeGroup renderTypes, int symbolTint)
+											  int symbolTint)
 		{
 			if(symbolNumber >= 0)
-				return SGJourneyModelBuilder.ofSymbol(useAmbientOcclusion, canUseBlockLight, isGui3d, transforms, overrides, particle, renderTypes, symbolTint, symbolNumber, symbol);
+				return SGJourneyModelBuilder.ofSymbol(useAmbientOcclusion, canUseBlockLight, isGui3d, transforms, overrides, particle, symbolTint, symbolNumber, symbol);
 			else
-				return SGJourneyModelBuilder.ofSymbol(useAmbientOcclusion, canUseBlockLight, isGui3d, transforms, overrides, particle, renderTypes, symbolTint);
+				return SGJourneyModelBuilder.ofSymbol(useAmbientOcclusion, canUseBlockLight, isGui3d, transforms, overrides, particle, symbolTint);
 		}
 	}
 }

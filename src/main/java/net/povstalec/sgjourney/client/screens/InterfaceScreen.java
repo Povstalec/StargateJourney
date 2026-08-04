@@ -2,11 +2,12 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -64,7 +65,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	@Override
 	protected void init()
 	{
-		this.editBox = new EditBox(this.font, this.width / 2 - 69, this.height / 2 - 89, 124, 20, Component.translatable("tooltip.sgjourney.energy_target"));
+		this.editBox = new EditBox(this.font, this.width / 2 - 69, this.height / 2 - 89, 124, 20, new TranslatableComponent("tooltip.sgjourney.energy_target"));
 		this.editBox.setFilter(text ->
 		{
 			if(text.isEmpty())
@@ -83,7 +84,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
-		this.addRenderableWidget(new InterfaceModeButton(x + 4, y + 23, Component.empty(), Component.empty(), button ->
+		this.addRenderableWidget(new InterfaceModeButton(x + 4, y + 23, TextComponent.EMPTY, TextComponent.EMPTY, button ->
 		{
 			if(isShiftDown())
 				menu.setEnergyTargetAndMode(parsePositiveOrZero(this.editBox.getValue()), menu.getMode().previous(this.menu.getInterfaceType().hasAdvancedCrystalMethods()));
@@ -135,7 +136,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		this.energyTooltip(poseStack, mouseX, mouseY, 185, 18, 6, 106, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
 		
 		this.modeTooltip(poseStack, mouseX, mouseY, 4, 23, 16, 16,
-				Component.translatable("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
+				new TranslatableComponent("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
 				this.menu.getMode().getUsage());
 	}
 	
@@ -146,10 +147,10 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		this.font.draw(poseStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
 		
 		this.font.draw(poseStack, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 34, 57, 0xffffff);
-		this.font.draw(poseStack, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff);
+		this.font.draw(poseStack, new TranslatableComponent("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff);
 		this.font.draw(poseStack, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 34, 77, 0xffffff);
-		this.font.draw(poseStack, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff);
-		this.font.draw(poseStack, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff);
+		this.font.draw(poseStack, new TranslatableComponent("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff);
+		this.font.draw(poseStack, new TextComponent(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff);
 	}
 	
 	@Override

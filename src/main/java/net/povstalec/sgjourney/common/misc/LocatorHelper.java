@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -14,7 +15,9 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class LocatorHelper
@@ -29,7 +32,7 @@ public class LocatorHelper
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
-		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		int chunkDistance = SectionPos.blockToSectionCoord(Mth.floor(maxDistance));
 		
 		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
 		{
@@ -134,7 +137,7 @@ public class LocatorHelper
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
-		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		int chunkDistance = SectionPos.blockToSectionCoord(Mth.floor(maxDistance));
 		
 		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
 		{
@@ -205,7 +208,7 @@ public class LocatorHelper
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
-		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		int chunkDistance = SectionPos.blockToSectionCoord(Mth.floor(maxDistance));
 		
 		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
 		{
@@ -241,7 +244,7 @@ public class LocatorHelper
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
-		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		int chunkDistance = SectionPos.blockToSectionCoord(Mth.floor(maxDistance));
 		
 		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
 		{

@@ -13,6 +13,12 @@ public class CoordinateHelper
 {
 	public static final String X = "x", Y = "y", Z = "z";
 	
+	public static Vec3 relative(Vec3 vector, Direction direction, double distance)
+	{
+		Vec3i vec3i = direction.getNormal();
+		return new Vec3(vector.x + distance * (double)vec3i.getX(), vector.y + distance * (double)vec3i.getY(), vector.z + distance * (double)vec3i.getZ());
+	}
+	
 	public static double distanceAcrossDimensions(DimensionType dimensionTypeA, Vec3 posA, DimensionType dimensionTypeB, Vec3 posB)
 	{
 		// Take the smallest teleportation scale

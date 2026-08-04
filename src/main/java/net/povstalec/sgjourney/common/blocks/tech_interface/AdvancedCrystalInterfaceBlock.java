@@ -1,11 +1,8 @@
 package net.povstalec.sgjourney.common.blocks.tech_interface;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -29,6 +26,9 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.InterfaceMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 {
@@ -64,7 +64,7 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 				@Override
 				public Component getDisplayName()
 				{
-					return Component.translatable("screen.sgjourney." + interfaceEntity.getInterfaceType().getName());
+					return new TranslatableComponent("screen.sgjourney." + interfaceEntity.getInterfaceType().getName());
 				}
 				
 				@Override
@@ -73,7 +73,7 @@ public class AdvancedCrystalInterfaceBlock extends AbstractInterfaceBlock
 					return new InterfaceMenu.AdvancedCrystal(windowId, playerInventory, interfaceEntity);
 				}
 			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+			NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 		}
 		else
 			throw new IllegalStateException("Our named container provider is missing!");

@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.client.render.block_entity;
 
-import java.util.Map;
-
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -13,11 +10,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.EmptyModelData;
 import net.povstalec.sgjourney.client.models.block_entity.IrisModel;
 import net.povstalec.sgjourney.client.models.block_entity.ShieldModel;
 import net.povstalec.sgjourney.client.models.block_entity.WormholeModel;
@@ -26,13 +22,16 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
+import java.util.Map;
+import java.util.Random;
+
 public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
 {
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
 	protected final IrisModel irisModel;
 	
-	private final RandomSource randomsource = RandomSource.create();
+	private final Random randomsource = new Random();
 	
 	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context,
 			float maxDefaultDistortion, boolean renderWhenOpen, float maxOpenIrisDegrees)
@@ -83,13 +82,13 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 			
 			stack.translate(relativeBlockPos.x(), relativeBlockPos.y(), relativeBlockPos.z());
 			BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();//Minecraft.getInstance().getBlockColors().
-			//dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, ModelData.EMPTY, null);
+			//dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, EmptyModelData.INSTANCE, null);
 			
 			
 			BakedModel model = dispatcher.getBlockModel(state);
-			for(RenderType renderType : model.getRenderTypes(state, randomsource, ModelData.EMPTY))
+			for(RenderType renderType : RenderType.chunkBufferLayers())
 			{
-				dispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, ModelData.EMPTY), null);
+				dispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, EmptyModelData.INSTANCE));
 			}
 			
 			stack.popPose();

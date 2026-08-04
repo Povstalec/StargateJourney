@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 
 public class ConfigScreenCommon extends Screen
@@ -19,7 +20,7 @@ public class ConfigScreenCommon extends Screen
 	
 	protected ConfigScreenCommon(Screen parentScreen)
 	{
-		super(Component.translatable("gui.sgjourney.config_common"));
+		super(new TranslatableComponent("gui.sgjourney.config_common"));
 		this.parentScreen = parentScreen;
 	}
 	
@@ -29,8 +30,8 @@ public class ConfigScreenCommon extends Screen
 		super.init();
 
 		int l = this.height / 4 + 48;
-		this.addRenderableWidget(CycleButton.booleanBuilder(Component.translatable("gui.sgjourney.true"),
-				Component.translatable("gui.sgjourney.false")).withInitialValue(StargateJourneyConfig.disable_energy_use.get()).create(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.disable_energy_use"), (cycleButton, isTrue)->
+		this.addRenderableWidget(CycleButton.booleanBuilder(new TranslatableComponent("gui.sgjourney.true"),
+				new TranslatableComponent("gui.sgjourney.false")).withInitialValue(StargateJourneyConfig.disable_energy_use.get()).create(this.width / 2 - 100, l + 24, 200, 20, new TranslatableComponent("gui.sgjourney.disable_energy_use"), (cycleButton, isTrue)->
 				{
 					StargateJourneyConfig.disable_energy_use.set(isTrue);
 				}));

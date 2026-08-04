@@ -3,10 +3,10 @@ package net.povstalec.sgjourney.client.screens;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.GDOButton;
@@ -29,7 +29,7 @@ public class GDOScreen extends Screen
 	
 	public GDOScreen(boolean mainHand, String idc, int frequency)
 	{
-		super(Component.empty());
+		super(TextComponent.EMPTY);
 		
 		this.mainHand = mainHand;
 		
@@ -44,23 +44,23 @@ public class GDOScreen extends Screen
         int y = (height - imageHeight) / 2;
 		super.init();
 		
-		this.addRenderableWidget(new GDOButton(x + 75, y + 37, Component.literal("7"), (button) -> addToCode(7)));
-		this.addRenderableWidget(new GDOButton(x + 93, y + 37, Component.literal("8"), (button) -> addToCode(8)));
-		this.addRenderableWidget(new GDOButton(x + 111, y + 37, Component.literal("9"), (button) -> addToCode(9)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 37, new TextComponent("7"), (button) -> addToCode(7)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 37, new TextComponent("8"), (button) -> addToCode(8)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 37, new TextComponent("9"), (button) -> addToCode(9)));
 
-		this.addRenderableWidget(new GDOButton(x + 75, y + 49, Component.literal("4"), (button) -> addToCode(4)));
-		this.addRenderableWidget(new GDOButton(x + 93, y + 49, Component.literal("5"), (button) -> addToCode(5)));
-		this.addRenderableWidget(new GDOButton(x + 111, y + 49, Component.literal("6"), (button) -> addToCode(6)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 49, new TextComponent("4"), (button) -> addToCode(4)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 49, new TextComponent("5"), (button) -> addToCode(5)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 49, new TextComponent("6"), (button) -> addToCode(6)));
 
-		this.addRenderableWidget(new GDOButton(x + 75, y + 61, Component.literal("1"), (button) -> addToCode(1)));
-		this.addRenderableWidget(new GDOButton(x + 93, y + 61, Component.literal("2"), (button) -> addToCode(2)));
-		this.addRenderableWidget(new GDOButton(x + 111, y + 61, Component.literal("3"), (button) -> addToCode(3)));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 61, new TextComponent("1"), (button) -> addToCode(1)));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 61, new TextComponent("2"), (button) -> addToCode(2)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 61, new TextComponent("3"), (button) -> addToCode(3)));
 		
-		this.addRenderableWidget(new GDOButton(x + 75, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.delete"), Component.translatable("screen.sgjourney.gdo.delete"), (button) -> removeFromCode()));
-		this.addRenderableWidget(new GDOButton(x + 93, y + 73, Component.literal("0"), (button) -> addToCode(0)));
-		this.addRenderableWidget(new GDOButton(x + 111, y + 73, Component.translatable("screen.sgjourney.gdo.symbol.toggle_frequency"), Component.translatable("screen.sgjourney.gdo.toggle_frequency"), (button) -> toggleFrequency()));
+		this.addRenderableWidget(new GDOButton(x + 75, y + 73, new TranslatableComponent("screen.sgjourney.gdo.symbol.delete"), new TranslatableComponent("screen.sgjourney.gdo.delete"), (button) -> removeFromCode()));
+		this.addRenderableWidget(new GDOButton(x + 93, y + 73, new TextComponent("0"), (button) -> addToCode(0)));
+		this.addRenderableWidget(new GDOButton(x + 111, y + 73, new TranslatableComponent("screen.sgjourney.gdo.symbol.toggle_frequency"), new TranslatableComponent("screen.sgjourney.gdo.toggle_frequency"), (button) -> toggleFrequency()));
 		
-		this.addRenderableWidget(new GDOLargeButton(x + 32, y + 46, Component.empty(), Component.translatable("screen.sgjourney.gdo.send_transmission"), (button) -> sendTransmission()));
+		this.addRenderableWidget(new GDOLargeButton(x + 32, y + 46, TextComponent.EMPTY, new TranslatableComponent("screen.sgjourney.gdo.send_transmission"), (button) -> sendTransmission()));
 	}
 	
 	@Override
@@ -94,9 +94,9 @@ public class GDOScreen extends Screen
     
     protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
 	{
-    	this.font.draw(stack, Component.literal(idc), x + 266F, y + 104F, 0x2a2927);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266F, y + 120F, 0x2a2927);
-		this.font.draw(stack, Component.literal(String.valueOf(frequency)), x + 266F, y + 132F, 0x2a2927);
+    	this.font.draw(stack, new TextComponent(idc), x + 266F, y + 104F, 0x2a2927);
+		this.font.draw(stack, new TranslatableComponent("screen.sgjourney.transceiver.frequency").append(new TextComponent(toggledFrequency ? ": #" : ":")), x + 266F, y + 120F, 0x2a2927);
+		this.font.draw(stack, new TextComponent(String.valueOf(frequency)), x + 266F, y + 132F, 0x2a2927);
     }
     
     @Override

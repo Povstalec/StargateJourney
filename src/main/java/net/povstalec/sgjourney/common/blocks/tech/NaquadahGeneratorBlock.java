@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -18,11 +20,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -116,7 +114,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             			@Override
             			public Component getDisplayName() 
             			{
-            				return Component.translatable("screen.sgjourney.naquadah_generator");
+            				return new TranslatableComponent("screen.sgjourney.naquadah_generator");
             			}
             			
             			@Override
@@ -125,7 +123,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             				return new NaquadahGeneratorMenu(windowId, playerInventory, naquadahGenerator);
             			}
             		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+            		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
             	}
             	else
             		throw new IllegalStateException("Our named container provider is missing!");
@@ -160,7 +158,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.literal(SGJourneyEnergy.energyToString(energyPerTick()) + "/Tick").withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(new TextComponent(SGJourneyEnergy.energyToString(energyPerTick()) + "/Tick").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

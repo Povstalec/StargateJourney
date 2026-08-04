@@ -10,11 +10,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -56,7 +58,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	
 	public PocketCrystalComputerScreen(InteractionHand interactionHand, SelectedCrystal selectedCrystal)
 	{
-		super(Component.empty());
+		super(TextComponent.EMPTY);
 		
 		this.interactionHand = interactionHand;
 		
@@ -68,16 +70,16 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	{
 		// Button to take you to the main screen
 		mainScreenButton = CrystalComputerButton.mainScreenButton(this.width / 2 + 83, this.height / 2 - 13,
-				Component.empty(), Component.translatable("screen.sgjourney.crystal_computer.main_screen"),
+				TextComponent.EMPTY, new TranslatableComponent("screen.sgjourney.crystal_computer.main_screen"),
 				button -> this.minecraft.setScreen(new PocketCrystalComputerMainScreen(interactionHand, selectedCrystal)));
 		addRenderableWidget(mainScreenButton);
 		
 		ItemStack crystalInComputer = getCrystalInComputer();
 		// Button to set Crystal in computer as the target
 		crystalInComputerButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 - 40 - 7,
-				Component.empty(), crystalInComputer.isEmpty() ?
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer.none").withStyle(ChatFormatting.DARK_RED) :
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer", crystalInComputer.getDisplayName()),
+				TextComponent.EMPTY, crystalInComputer.isEmpty() ?
+						new TranslatableComponent("screen.sgjourney.crystal_computer.select_crystal_in_computer.none").withStyle(ChatFormatting.DARK_RED) :
+						new TranslatableComponent("screen.sgjourney.crystal_computer.select_crystal_in_computer", crystalInComputer.getDisplayName()),
 				button -> selectCrystal(SelectedCrystal.CRYSTAL_IN_COMPUTER));
 		crystalInComputerButton.active = !getCrystalInComputer().isEmpty();
 		addRenderableWidget(crystalInComputerButton);
@@ -85,9 +87,9 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		ItemStack crystalInHand = getCrystalInHand();
 		// Button to set Crystal in hand as the target
 		crystalInHandButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 + 40 - 7,
-				Component.empty(), crystalInHand.isEmpty() ?
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand.none").withStyle(ChatFormatting.DARK_RED) :
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand", crystalInHand.getDisplayName()),
+				TextComponent.EMPTY, crystalInHand.isEmpty() ?
+						new TranslatableComponent("screen.sgjourney.crystal_computer.select_crystal_in_hand.none").withStyle(ChatFormatting.DARK_RED) :
+						new TranslatableComponent("screen.sgjourney.crystal_computer.select_crystal_in_hand", crystalInHand.getDisplayName()),
 				button -> selectCrystal(SelectedCrystal.CRYSTAL_IN_HAND));
 		crystalInHandButton.active = !getCrystalInHand().isEmpty();
 		addRenderableWidget(crystalInHandButton);
@@ -155,7 +157,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	
 	public ItemStack getCrystalInComputer()
 	{
-		return getItemInHand(interactionHand).getCapability(ForgeCapabilities.ITEM_HANDLER).map(itemHandler ->
+		return getItemInHand(interactionHand).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).map(itemHandler ->
 		{
 			ItemStack stack = itemHandler.getStackInSlot(0);
 			if(stack.getItem() instanceof AbstractCrystalItem crystal && isCorrectCrystalType(crystal.getType()))
@@ -199,7 +201,7 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	{
 		if(selectedCrystal == SelectedCrystal.CRYSTAL_IN_COMPUTER)
 		{
-			getItemInHand(interactionHand).getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+			getItemInHand(interactionHand).getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 			{
 				ItemStack stack = itemHandler.extractItem(0, 1, false); // Extract item to work with it
 				boolean shouldUpdate = function.apply(stack);

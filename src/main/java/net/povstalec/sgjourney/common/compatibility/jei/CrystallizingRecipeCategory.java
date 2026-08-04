@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
@@ -92,7 +93,19 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		@Override
 		public @NotNull Component getTitle()
 		{
-			return Component.translatable("block.sgjourney.crystallizer");
+			return new TranslatableComponent("block.sgjourney.crystallizer");
+		}
+		
+		@Override
+		public ResourceLocation getUid()
+		{
+			return getRecipeType().getUid();
+		}
+		
+		@Override
+		public Class<? extends CrystallizingRecipe.Crystallizer> getRecipeClass()
+		{
+			return getRecipeType().getRecipeClass();
 		}
 	}
 	
@@ -120,7 +133,19 @@ public abstract class CrystallizingRecipeCategory<T extends CrystallizingRecipe>
 		@Override
 		public @NotNull Component getTitle()
 		{
-			return Component.translatable("block.sgjourney.advanced_crystallizer");
+			return new TranslatableComponent("block.sgjourney.advanced_crystallizer");
+		}
+		
+		@Override
+		public ResourceLocation getUid()
+		{
+			return getRecipeType().getUid();
+		}
+		
+		@Override
+		public Class<? extends CrystallizingRecipe.AdvancedCrystallizer> getRecipeClass()
+		{
+			return getRecipeType().getRecipeClass();
 		}
 	}
 }

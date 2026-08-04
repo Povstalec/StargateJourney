@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 public class ConfigScreen extends Screen
 {
@@ -17,7 +18,7 @@ public class ConfigScreen extends Screen
 	
 	public ConfigScreen(Screen parentScreen)
 	{
-		super(Component.translatable("gui.sgjourney.config"));
+		super(new TranslatableComponent("gui.sgjourney.config"));
 		this.parentScreen = parentScreen;
 	}
 	
@@ -27,10 +28,10 @@ public class ConfigScreen extends Screen
 		int l = this.height / 4 + 48;
 		
 		super.init();
-		this.addRenderableWidget(new Button(this.width / 2 - 100, l, 200, 20, Component.translatable("gui.sgjourney.client"), 
+		this.addRenderableWidget(new Button(this.width / 2 - 100, l, 200, 20, new TranslatableComponent("gui.sgjourney.client"),
 				(button) -> this.minecraft.setScreen(new ConfigScreenClient(this))));
 		
-		this.addRenderableWidget(new Button(this.width / 2 - 100, l + 24, 200, 20, Component.translatable("gui.sgjourney.common"),
+		this.addRenderableWidget(new Button(this.width / 2 - 100, l + 24, 200, 20, new TranslatableComponent("gui.sgjourney.common"),
 				(button) -> this.minecraft.setScreen(new ConfigScreenCommon(this)))).active = false;
 
 		this.addRenderableWidget(new Button((this.width - BACK_BUTTON_WIDTH) / 2, this.height - BACK_BUTTON_TOP_OFFSET, BACK_BUTTON_WIDTH, BACK_BUTTON_HEIGHT, CommonComponents.GUI_BACK, 

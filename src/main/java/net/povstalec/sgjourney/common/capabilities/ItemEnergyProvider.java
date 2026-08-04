@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.capabilities;
 
+import net.minecraftforge.energy.CapabilityEnergy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -8,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -66,7 +66,7 @@ public abstract class ItemEnergyProvider implements ICapabilityProvider
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap == ForgeCapabilities.ENERGY)
+		if(cap == CapabilityEnergy.ENERGY)
 			return lazyEnergyHandler.cast();
 		return LazyOptional.empty();
 	}

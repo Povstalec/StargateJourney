@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
@@ -73,7 +73,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		return sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false);
+		return sourceStack.getCapability(CapabilityEnergy.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false);
 	}
 	
 	

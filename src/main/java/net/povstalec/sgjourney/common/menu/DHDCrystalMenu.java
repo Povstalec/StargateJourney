@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
@@ -102,7 +102,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if((sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() || sourceStack.getItem() instanceof IEnergyCore || sourceStack.getItem() instanceof ZeroPointModule) && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if((sourceStack.getCapability(CapabilityEnergy.ENERGY).isPresent() || sourceStack.getItem() instanceof IEnergyCore || sourceStack.getItem() instanceof ZeroPointModule) && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		if(sourceStack.getItem() instanceof NaquadahFuelRodItem && moveItemStackTo(sourceStack, energyFeederSlotIndex, energyFeederSlotIndex + 1, false))

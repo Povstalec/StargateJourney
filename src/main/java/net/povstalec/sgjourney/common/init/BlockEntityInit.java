@@ -6,15 +6,12 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.*;
+import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
@@ -25,7 +22,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter_controller.Goau
 
 public class BlockEntityInit
 {
-	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, StargateJourney.MODID);
+	public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, StargateJourney.MODID);
 	
 	public static final RegistryObject<BlockEntityType<UniverseStargateEntity>> UNIVERSE_STARGATE = BLOCK_ENTITIES.register("universe_stargate",
             () -> BlockEntityType.Builder.of(UniverseStargateEntity::new, BlockInit.UNIVERSE_STARGATE.get()).build(null));

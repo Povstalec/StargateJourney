@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +23,8 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
+
+import javax.annotation.Nullable;
 
 public class HeavyNaquadahLiquidizerBlock extends AbstractLiquidizerBlock
 {
@@ -52,7 +53,7 @@ public class HeavyNaquadahLiquidizerBlock extends AbstractLiquidizerBlock
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.heavy_naquadah_liquidizer");
+        				return new TranslatableComponent("screen.sgjourney.heavy_naquadah_liquidizer");
         			}
         			
         			@Override
@@ -61,7 +62,7 @@ public class HeavyNaquadahLiquidizerBlock extends AbstractLiquidizerBlock
         				return new LiquidizerMenu.HeavyLiquidNaquadah(windowId, playerInventory, liquidizer);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

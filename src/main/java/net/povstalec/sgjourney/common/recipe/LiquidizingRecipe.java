@@ -7,7 +7,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
@@ -154,6 +156,33 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	{
 		public static final NaquadahLiquidizerSerializer INSTANCE = new NaquadahLiquidizerSerializer();
 		
+		private ResourceLocation name;
+		
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name)
+		{
+			this.name = name;
+			return this;
+		}
+		
+		@Override
+		public ResourceLocation getRegistryName()
+		{
+			return name;
+		}
+		
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType()
+		{
+			return NaquadahLiquidizerSerializer.castClass(RecipeSerializer.class);
+		}
+		
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls)
+		{
+			return (Class<G>)cls;
+		}
+		
 		@Override
 		public @NotNull LiquidizingRecipe.NaquadahLiquidizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
 		{
@@ -217,6 +246,33 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 	public static class HeavyNaquadahLiquidizerSerializer implements RecipeSerializer<HeavyNaquadahLiquidizer>
 	{
 		public static final HeavyNaquadahLiquidizerSerializer INSTANCE = new HeavyNaquadahLiquidizerSerializer();
+		
+		private ResourceLocation name;
+		
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name)
+		{
+			this.name = name;
+			return this;
+		}
+		
+		@Override
+		public ResourceLocation getRegistryName()
+		{
+			return name;
+		}
+		
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType()
+		{
+			return HeavyNaquadahLiquidizerSerializer.castClass(RecipeSerializer.class);
+		}
+		
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls)
+		{
+			return (Class<G>)cls;
+		}
 		
 		@Override
 		public @NotNull LiquidizingRecipe.HeavyNaquadahLiquidizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)

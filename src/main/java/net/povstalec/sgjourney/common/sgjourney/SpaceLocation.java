@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -23,7 +24,7 @@ import java.util.*;
 /**
  * Class that is intended to represent a single Minecraft Dimension's attributes that Stargate Journey can work with
  */
-public class SpaceLocation
+public class SpaceLocation extends ForgeRegistryEntry<SpaceLocation>
 {
 	public static final ResourceKey<Registry<SpaceLocation>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("space_location"));
 	public static final Codec<ResourceKey<SpaceLocation>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);

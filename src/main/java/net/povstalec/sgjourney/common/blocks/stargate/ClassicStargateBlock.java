@@ -1,15 +1,12 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +36,10 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 public class ClassicStargateBlock extends RotatingStargateBaseBlock
 {
@@ -76,7 +77,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 	{
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get())
 		{
-			player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.upgrading_disabled"), true);
+			player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.upgrading_disabled"), true);
 			return true;
 		}
 		
@@ -89,7 +90,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 			
 			if(!baseBlock.isPresent())
 			{
-				player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.invalid_upgrade"), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.invalid_upgrade"), true);
 				return true;
 			}
 			
@@ -100,7 +101,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 			{
 				if(stargate.isConnected())
 				{
-					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.classic.connected_during_upgrade"), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.classic.connected_during_upgrade"), true);
 					return true;
 				}
 				
@@ -117,7 +118,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				BlockState partState = level.getBlockState(part.getRingPos(pos, direction, orientation));
 				if(!part.equals(StargatePart.BASE) && (!partState.getMaterial().isReplaceable() && !(partState.getBlock() instanceof AbstractStargateBlock)))
 				{
-					player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.not_enough_space"), true);
 					return true;
 				}
 			}
@@ -201,8 +202,8 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
 		}
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(new TextComponent(": ")).append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(new TextComponent(": ")).append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -108,7 +109,7 @@ public abstract class TransporterControllerBlock extends HorizontalDirectionalBl
 		
 		if(blockEntityTag != null && blockEntityTag.contains(TransporterControllerEntity.GENERATION_STEP, Tag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(TransporterControllerEntity.GENERATION_STEP)))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

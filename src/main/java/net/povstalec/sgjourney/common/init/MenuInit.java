@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.menu.*;
 
 public class MenuInit 
 {
-	public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, StargateJourney.MODID);
+	public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.CONTAINERS, StargateJourney.MODID);
 
 	public static final RegistryObject<MenuType<InterfaceMenu<BasicInterfaceEntity>>> BASIC_INTERFACE =
             registerMenuType(InterfaceMenu.Basic::new, "basic_interface");

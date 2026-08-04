@@ -1,18 +1,15 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.core.Holder.Reference;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,6 +20,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class StargateVariantItem extends Item
 {
@@ -74,22 +75,22 @@ public class StargateVariantItem extends Item
         				
         				if(ForgeRegistries.BLOCKS.containsKey(baseStargate))
         				{
-        					Optional<Reference<Block>> blockReference = ForgeRegistries.BLOCKS.getDelegate(stargateVariantRegistry.get(variantLocation).getBaseStargate());
+        					Optional<Holder<Block>> blockReference = ForgeRegistries.BLOCKS.getHolder(stargateVariantRegistry.get(variantLocation).getBaseStargate());
         					
         					if(blockReference.isPresent())
-            					tooltipComponents.add(Component.translatable("tooltip.sgjourney.requires").append(Component.literal(": ").append(blockReference.get().get().getName())).withStyle(ChatFormatting.LIGHT_PURPLE));
+            					tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.requires").append(new TextComponent(": ").append(blockReference.get().value().getName())).withStyle(ChatFormatting.LIGHT_PURPLE));
         				}
         				
         				if(isAdvanced.isAdvanced())
-        					tooltipComponents.add(Component.translatable("tooltip.sgjourney.requires").append(Component.literal(": " + baseStargate.toString())).withStyle(ChatFormatting.BLUE));
+        					tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.requires").append(new TextComponent(": " + baseStargate.toString())).withStyle(ChatFormatting.BLUE));
         			}
         		}
             	
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.variant").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.variant").append(new TextComponent(": " + variant)).withStyle(ChatFormatting.GREEN));
             }
         }
         
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_variant.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+        tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.stargate_variant.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

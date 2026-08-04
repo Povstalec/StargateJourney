@@ -1,27 +1,25 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.*;
-import java.util.function.Predicate;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.ShuffleHelper;
 
 import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Predicate;
 
-public class Galaxy
+public class Galaxy extends ForgeRegistryEntry<Galaxy>
 {
 	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
 	public static final Codec<ResourceKey<Galaxy>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
@@ -92,7 +90,7 @@ public class Galaxy
 	
 	public MutableComponent toComponent()
 	{
-		return Component.translatable(name).withStyle(ChatFormatting.LIGHT_PURPLE);
+		return new TranslatableComponent(name).withStyle(ChatFormatting.LIGHT_PURPLE);
 	}
 	
 	public ResourceKey<Symbols> getDefaultSymbols()
@@ -144,9 +142,9 @@ public class Galaxy
 		}
 	}
 	
-	public List<AddressRegion> getShuffledAddressRegions(RandomSource randomSource)
+	public List<AddressRegion> getShuffledAddressRegions(Random randomSource)
 	{
-		return Util.toShuffledList(this.addressRegions.values().stream(), randomSource);
+		return ShuffleHelper.toShuffledList(this.addressRegions.values().stream(), randomSource);
 	}
 	
 	@Nullable

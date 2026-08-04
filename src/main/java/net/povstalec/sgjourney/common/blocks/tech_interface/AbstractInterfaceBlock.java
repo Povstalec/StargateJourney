@@ -4,9 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -30,6 +30,8 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInte
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import java.util.Random;
 
 public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 {
@@ -91,7 +93,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 				InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
 				
 				if(nextMode != null)
-					player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.interface.mode").append(new TextComponent(": ").append(nextMode.getName())), true);
 			}
         }
         return InteractionResult.SUCCESS;
@@ -128,7 +130,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random source)
 	{
 		level.setBlock(pos, state.setValue(UPDATE, false), 3);
 	}

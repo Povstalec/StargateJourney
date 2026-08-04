@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
@@ -20,7 +22,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -140,10 +141,10 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.FLUID_HANDLER)
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			return lazyFluidHandler.cast();
 		
-		else if(capability == ForgeCapabilities.ITEM_HANDLER)
+		else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if(side == Direction.UP)
 				return lazyCrystalBaseHandler.cast();
@@ -230,7 +231,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+				return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
 			}
 			
 			@Override
@@ -265,7 +266,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+				return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
 			}
 			
 			@Override
@@ -309,7 +310,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	public void dumpEmptyFluidContainers()
 	{
 		ItemStack container = fluidInputHandler.getStackInSlot(0);
-		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
 		if(fluidHandler.isPresent())
 		{
 			if(fluidHandler.get().getFluidInTank(0).isEmpty()) // Try placing the container in the dump
@@ -321,7 +322,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	
 	public void drainFluidFromInputItem()
 	{
-		fluidInputHandler.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		fluidInputHandler.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(handler ->
 		{
 			int drainAmount = Math.min(inputFluidTank.getSpace(), maxFluidReceive());
 			FluidStack fluidStack = handler.getFluidInTank(0);

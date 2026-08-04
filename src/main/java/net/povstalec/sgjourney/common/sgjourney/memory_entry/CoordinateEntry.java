@@ -3,8 +3,8 @@ package net.povstalec.sgjourney.common.sgjourney.memory_entry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
@@ -54,9 +54,9 @@ public class CoordinateEntry extends MemoryEntry<Vec3i> implements ICoordinateEn
 	@Override
 	public MutableComponent toComponent()
 	{
-		MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+		MutableComponent component = name.isEmpty() ? new TextComponent("") : new TextComponent('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 		
-		return component.append(Component.literal(Conversion.vec3iToString(entry)).withStyle(getChatFormatting()));
+		return component.append(new TextComponent(Conversion.vec3iToString(entry)).withStyle(getChatFormatting()));
 	}
 	
 	@Override

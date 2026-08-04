@@ -1,104 +1,94 @@
 package net.povstalec.sgjourney.common.misc;
 
-import java.util.List;
-import java.util.Optional;
-
-import net.povstalec.sgjourney.StargateJourney;
-
 import com.google.common.collect.Lists;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.*;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
+import net.minecraft.world.level.levelgen.feature.StructureFeature;
+import net.minecraft.world.level.levelgen.feature.configurations.JigsawConfiguration;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.PoolElementStructurePiece;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pools.EmptyPoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.povstalec.sgjourney.common.structures.SGJourneyStructure;
+import org.apache.commons.lang3.mutable.MutableObject;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Pretty much just a copy paste of the vanilla Jigsaw placement, but with the ability to specify rotation
  * @author Povstalec
  *
  */
-public class SGJourneyJigsawPlacement extends JigsawPlacement
+public class SGJourneyJigsawPlacement
 {
-	public static Optional<Structure.GenerationStub> addPieces(Structure.GenerationContext context, Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
-															   int size, BlockPos blockPos, boolean flag, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Rotation rotation)
+	public static <C extends SGJourneyStructure.Configuration> Optional<PieceGenerator<C>> addPieces(PieceGeneratorSupplier.Context<C> p_210285_, JigsawPlacement.PieceFactory p_210286_, BlockPos p_210287_, boolean p_210288_, boolean p_210289_, SGJourneyStructure.Rot rot)
 	{
-	      RegistryAccess registryaccess = context.registryAccess();
-	      ChunkGenerator chunkgenerator = context.chunkGenerator();
-	      StructureTemplateManager structuretemplatemanager = context.structureTemplateManager();
-	      LevelHeightAccessor levelheightaccessor = context.heightAccessor();
-	      WorldgenRandom worldgenrandom = context.random();
-	      Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
-	      StructureTemplatePool structuretemplatepool = startPool.value();
-	      StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
-		  
-	      if(structurepoolelement == EmptyPoolElement.INSTANCE)
-	         return Optional.empty();
-	      else
-		  {
-	         BlockPos blockpos;
-	         if(startJigsawName.isPresent())
-			 {
-	            ResourceLocation resourcelocation = startJigsawName.get();
-	            Optional<BlockPos> optional = getRandomNamedJigsaw(structurepoolelement, resourcelocation, blockPos, rotation, structuretemplatemanager, worldgenrandom);
-	            if(optional.isEmpty())
-				{
-	               StargateJourney.LOGGER.error("No starting jigsaw {} found in start pool {}", resourcelocation, startPool.unwrapKey().get().location());
-	               return Optional.empty();
-	            }
-
-	            blockpos = optional.get();
-	         }
-			 else
-	            blockpos = blockPos;
-
-	         Vec3i vec3i = blockpos.subtract(blockPos);
-	         BlockPos blockpos1 = blockPos.subtract(vec3i);
-	         PoolElementStructurePiece poolelementstructurepiece = new PoolElementStructurePiece(structuretemplatemanager, structurepoolelement, blockpos1, structurepoolelement.getGroundLevelDelta(), rotation, structurepoolelement.getBoundingBox(structuretemplatemanager, blockpos1, rotation));
-	         BoundingBox boundingbox = poolelementstructurepiece.getBoundingBox();
-	         int i = (boundingbox.maxX() + boundingbox.minX()) / 2;
-	         int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
-	         int k;
-			 
-	         if(projectStartToHeightmap.isPresent())
-	            k = blockPos.getY() + chunkgenerator.getFirstFreeHeight(i, j, projectStartToHeightmap.get(), levelheightaccessor, context.randomState());
-	         else
-	            k = blockpos1.getY();
-
-	         int l = boundingbox.minY() + poolelementstructurepiece.getGroundLevelDelta();
-	         poolelementstructurepiece.move(0, k - l, 0);
-	         int i1 = k + vec3i.getY();
-			 
-	         return Optional.of(new Structure.GenerationStub(new BlockPos(i, i1, j), (builder) ->
-			 {
-	            List<PoolElementStructurePiece> list = Lists.newArrayList();
-	            list.add(poolelementstructurepiece);
-	            if(size > 0)
-				{
-	               AABB aabb = new AABB((double)(i - maxDistanceFromCenter), (double)(i1 - maxDistanceFromCenter), (double)(j - maxDistanceFromCenter), (double)(i + maxDistanceFromCenter + 1), (double)(i1 + maxDistanceFromCenter + 1), (double)(j + maxDistanceFromCenter + 1));
-	               VoxelShape voxelshape = Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(boundingbox)), BooleanOp.ONLY_FIRST);
-	               addPieces(context.randomState(), size, flag, chunkgenerator, structuretemplatemanager, levelheightaccessor, worldgenrandom, registry, poolelementstructurepiece, list, voxelshape);
-	               list.forEach(builder::addPiece);
-	            }
-	         }));
-	      }
-	   }
+		WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
+		worldgenrandom.setLargeFeatureSeed(p_210285_.seed(), p_210285_.chunkPos().x, p_210285_.chunkPos().z);
+		RegistryAccess registryaccess = p_210285_.registryAccess();
+		JigsawConfiguration jigsawconfiguration = p_210285_.config();
+		ChunkGenerator chunkgenerator = p_210285_.chunkGenerator();
+		StructureManager structuremanager = p_210285_.structureManager();
+		LevelHeightAccessor levelheightaccessor = p_210285_.heightAccessor();
+		Predicate<Holder<Biome>> predicate = p_210285_.validBiome();
+		StructureFeature.bootstrap();
+		Registry<StructureTemplatePool> registry = registryaccess.registryOrThrow(Registry.TEMPLATE_POOL_REGISTRY);
+		Rotation rotation = rot != null ? rot.rotation : Rotation.getRandom(worldgenrandom);
+		StructureTemplatePool structuretemplatepool = jigsawconfiguration.startPool().value();
+		StructurePoolElement structurepoolelement = structuretemplatepool.getRandomTemplate(worldgenrandom);
+		if (structurepoolelement == EmptyPoolElement.INSTANCE) {
+			return Optional.empty();
+		} else {
+			PoolElementStructurePiece poolelementstructurepiece = p_210286_.create(structuremanager, structurepoolelement, p_210287_, structurepoolelement.getGroundLevelDelta(), rotation, structurepoolelement.getBoundingBox(structuremanager, p_210287_, rotation));
+			BoundingBox boundingbox = poolelementstructurepiece.getBoundingBox();
+			int i = (boundingbox.maxX() + boundingbox.minX()) / 2;
+			int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
+			int k;
+			if (p_210289_) {
+				k = p_210287_.getY() + chunkgenerator.getFirstFreeHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor);
+			} else {
+				k = p_210287_.getY();
+			}
+			
+			if (!predicate.test(chunkgenerator.getNoiseBiome(QuartPos.fromBlock(i), QuartPos.fromBlock(k), QuartPos.fromBlock(j)))) {
+				return Optional.empty();
+			} else {
+				int l = boundingbox.minY() + poolelementstructurepiece.getGroundLevelDelta();
+				poolelementstructurepiece.move(0, k - l, 0);
+				return Optional.of((p_210282_, p_210283_) -> {
+					List<PoolElementStructurePiece> list = Lists.newArrayList();
+					list.add(poolelementstructurepiece);
+					if (jigsawconfiguration.maxDepth() > 0) {
+						int i1 = 80;
+						AABB aabb = new AABB((double)(i - 80), (double)(k - 80), (double)(j - 80), (double)(i + 80 + 1), (double)(k + 80 + 1), (double)(j + 80 + 1));
+						JigsawPlacement.Placer jigsawplacement$placer = new JigsawPlacement.Placer(registry, jigsawconfiguration.maxDepth(), p_210286_, chunkgenerator, structuremanager, list, worldgenrandom);
+						jigsawplacement$placer.placing.addLast(new JigsawPlacement.PieceState(poolelementstructurepiece, new MutableObject<>(Shapes.join(Shapes.create(aabb), Shapes.create(AABB.of(boundingbox)), BooleanOp.ONLY_FIRST)), 0));
+						
+						while(!jigsawplacement$placer.placing.isEmpty()) {
+							JigsawPlacement.PieceState jigsawplacement$piecestate = jigsawplacement$placer.placing.removeFirst();
+							jigsawplacement$placer.tryPlacingChildren(jigsawplacement$piecestate.piece, jigsawplacement$piecestate.free, jigsawplacement$piecestate.depth, p_210288_, levelheightaccessor);
+						}
+						
+						list.forEach(p_210282_::addPiece);
+					}
+				});
+			}
+		}
+	}
 }

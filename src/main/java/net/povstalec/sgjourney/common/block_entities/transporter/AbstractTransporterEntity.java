@@ -1,22 +1,24 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.RandomSource;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.world.ForgeChunkManager;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
@@ -29,6 +31,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -38,15 +41,11 @@ import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
 		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
@@ -269,14 +268,14 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	{
 		List<Component> status = new ArrayList<>();
 		
-		status.add(Component.translatable("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.DARK_AQUA).append(this.transporterID.toComponent(true)));
-		status.add(Component.translatable("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
+		status.add(new TranslatableComponent("info.sgjourney.transporter_id").append(": ").withStyle(ChatFormatting.DARK_AQUA).append(this.transporterID.toComponent(true)));
+		status.add(new TranslatableComponent("info.sgjourney.add_to_network").append(": " + (generationStep == Step.GENERATED)).withStyle(ChatFormatting.YELLOW));
 		if(controllerCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.transporter_controller_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(controllerCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
+			status.add(new TranslatableComponent("info.sgjourney.transporter_controller_connected").append(new TextComponent(": ").append(ComponentHelper.coordinate(controllerCache.get().getBlockPos()))).withStyle(ChatFormatting.GOLD));
 		else
-			status.add(Component.translatable("info.sgjourney.no_transporter_controller_connected").withStyle(ChatFormatting.GOLD));
-		status.add(Component.translatable("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
-		status.add(Component.translatable("info.sgjourney.networks").append(": " + getNetworks()));
+			status.add(new TranslatableComponent("info.sgjourney.no_transporter_controller_connected").withStyle(ChatFormatting.GOLD));
+		status.add(new TranslatableComponent("info.sgjourney.network_restrictions").append(": " + hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA));
+		status.add(new TranslatableComponent("info.sgjourney.networks").append(": " + getNetworks()));
 		
 		return status;
 	}
@@ -644,7 +643,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	@Override
-	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	public void generateInStructure(WorldGenLevel level, Random randomSource)
 	{
 		if(generationStep == Step.SETUP)
 			generationStep = Step.READY; // Marks the Transporter as ready for generation
@@ -721,7 +720,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_transporter_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

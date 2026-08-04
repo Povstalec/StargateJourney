@@ -2,10 +2,11 @@ package net.povstalec.sgjourney.client.screens.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -68,29 +69,29 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		
 		this.energyTooltip(poseStack, mouseX, mouseY, 162, 17, 6, 52, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
-		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.advanced_protocols")
-				.append(Component.literal(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA),
+		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.dhd.advanced_protocols")
+				.append(new TextComponent(": " + menu.enableAdvancedProtocols())).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.dhd.advanced_protocols.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.advanced_protocols.usage"),
 				ComponentHelper.tickTimer("info.sgjourney.open_time", menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA),
 				ComponentHelper.tickTimer("info.sgjourney.last_traveler_time", menu.getStargateTimeSinceLastTraveler(), ControlCrystalItem.AUTOCLOSE_TICKS, ChatFormatting.DARK_PURPLE));
-		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
-				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
+		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.energy_target")
+				.append(new TextComponent(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
 				ComponentHelper.description("tooltip.sgjourney.dhd.energy_target.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.energy_target.usage"),
 				ComponentHelper.energy("tooltip.sgjourney.dhd.stargate_energy", menu.getStargateEnergy()));
-		this.crystalEffectTooltip(poseStack, 14, 46, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-				.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
+		this.crystalEffectTooltip(poseStack, 14, 46, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.dhd.energy_transfer")
+				.append(new TextComponent(": " + SGJourneyEnergy.energyToString(menu.maxEnergyDeplete()) + "/t")).withStyle(ChatFormatting.GOLD),
 				ComponentHelper.description("tooltip.sgjourney.dhd.energy_transfer.description"),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.energy_transfer.usage"));
-		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
+		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.dhd.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
 				ComponentHelper.description("tooltip.sgjourney.dhd.communication_range.description"),
-				Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+				new TranslatableComponent("info.sgjourney.networks").append(": " + menu.getNetworks()),
 				ComponentHelper.description("tooltip.sgjourney.dhd.networks.description"),
-				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.communication_range.usage"),
-				Component.translatable("tooltip.sgjourney.dhd.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
-				Component.translatable("tooltip.sgjourney.dhd.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				new TranslatableComponent("tooltip.sgjourney.dhd.communication_range.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
+				new TranslatableComponent("tooltip.sgjourney.dhd.networks.usage.communication_crystal").withStyle(ChatFormatting.YELLOW),
 				ComponentHelper.usage("tooltip.sgjourney.dhd.networks.usage.control_crystal"));
 		
 		this.itemTooltip(poseStack, mouseX, mouseY, 80, 35, 0, ComponentHelper.description("tooltip.sgjourney.dhd.large_crystal_slot.description"));

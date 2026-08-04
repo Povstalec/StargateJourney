@@ -1,7 +1,8 @@
 package net.povstalec.sgjourney.common.block_entities;
 
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
+
+import java.util.Random;
 
 public interface StructureGenEntity
 {
@@ -11,7 +12,7 @@ public interface StructureGenEntity
 	
 	Step generationStep();
 	
-	void generateInStructure(WorldGenLevel level, RandomSource randomSource);
+	void generateInStructure(WorldGenLevel level, Random randomSource);
 	
 	enum Step
 	{

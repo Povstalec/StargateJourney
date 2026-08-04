@@ -1,14 +1,9 @@
 package net.povstalec.sgjourney.common.events;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -36,20 +31,20 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
+import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.MissingMappingsEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
@@ -60,8 +55,6 @@ import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.*;
-import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.Factions;
@@ -70,22 +63,23 @@ import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
 {
-	@SubscribeEvent
-	public static void onMissingMapping(MissingMappingsEvent event)
-	{
-		RemappingHelper.startRemapping(event);
-	}
-	
 	@SubscribeEvent
 	public static void onDatapackSync(OnDatapackSyncEvent event)
 	{
@@ -118,7 +112,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onTick(TickEvent.ServerTickEvent event)
 	{
-		MinecraftServer server = event.getServer();
+		MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 		if(event.phase.equals(TickEvent.Phase.START) && server != null)
 		{
 			Factions.get(server).tickFactions(server.getTickCount());
@@ -144,9 +138,9 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onEntityJoinLevel(EntityJoinLevelEvent event)
+	public static void onEntityJoinLevel(EntityJoinWorldEvent event)
 	{
-		Level level = event.getLevel();
+		Level level = event.getWorld();
 		Entity entity = event.getEntity();
 		
 		if(level.isClientSide())
@@ -188,7 +182,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onPlayerJoined(PlayerEvent.PlayerLoggedInEvent event)
 	{
-		Player player = event.getEntity();
+		Player player = event.getPlayer();
 		
 		if(CommonGeneticConfig.ancient_players.get().contains(player.getName().getString()) || CommonGeneticConfig.ancient_players.get().contains(player.getStringUUID()))
 			AncientGene.spawnAncientGene(player);
@@ -211,9 +205,9 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onLivingTick(LivingEvent.LivingTickEvent event)
+	public static void onLivingTick(LivingEvent.LivingUpdateEvent event)
 	{
-		LivingEntity entity = event.getEntity();
+		LivingEntity entity = event.getEntityLiving();
 		Level level = entity.getLevel();
 		
 		entity.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch -> jaffaPouch.tick(entity));
@@ -246,7 +240,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event)
 	{
-		LivingEntity entity = event.getEntity();
+		LivingEntity entity = event.getEntityLiving();
 		Entity attacker = event.getSource().getDirectEntity();
 		float damage = event.getAmount();
 		
@@ -256,7 +250,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onLivingHurt(LivingHurtEvent event)
 	{
-		LivingEntity entity = event.getEntity();
+		LivingEntity entity = event.getEntityLiving();
 		Entity attacker = event.getSource().getDirectEntity();
 		float damage = event.getAmount();
 		
@@ -303,7 +297,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onBlockRightClick(PlayerInteractEvent.RightClickBlock event) // Add cover block to Stargate when player is clicking on a face of another block
 	{
-		Level level = event.getLevel();
+		Level level = event.getWorld();
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 		
@@ -312,11 +306,11 @@ public class ForgeEvents
 			pos = event.getPos().relative(event.getFace());
 			state = level.getBlockState(pos);
 			
-			if(state.getBlock() instanceof AbstractStargateBlock stargate && event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlockItem)
+			if(state.getBlock() instanceof AbstractStargateBlock stargate && event.getPlayer().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlockItem)
 			{
-				if(stargate.setCover(state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec()))
+				if(stargate.setCover(state, level, pos, event.getPlayer(), InteractionHand.MAIN_HAND, event.getHitVec()))
 				{
-					event.getEntity().swing(InteractionHand.MAIN_HAND);
+					event.getPlayer().swing(InteractionHand.MAIN_HAND);
 
 					event.setCanceled(true);
 				}
@@ -328,14 +322,14 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onBlockLeftClick(PlayerInteractEvent.LeftClickBlock event) // Prevent player from breaking the Stargate when it has cover blocks
 	{
-		Level level = event.getLevel();
+		Level level = event.getWorld();
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 		
 		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
 		{
 			// Player doesn't have permissions to break the Block
-			if(!protectedBlock.hasPermissions(level, pos, state, event.getEntity(), true))
+			if(!protectedBlock.hasPermissions(level, pos, state, event.getPlayer(), true))
 			{
 				event.setCanceled(true);
 				return;
@@ -354,7 +348,7 @@ public class ForgeEvents
 				{
 					stargate.spawnCoverParticles();
 					
-					event.getEntity().displayClientMessage(Component.translatable("block.sgjourney.stargate.break_cover_blocks"), true);
+					event.getPlayer().displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.break_cover_blocks"), true);
 					event.setCanceled(true);
 				}
 			}
@@ -407,7 +401,7 @@ public class ForgeEvents
 	@SubscribeEvent
 	public static void onDetonate(ExplosionEvent.Detonate event)
 	{
-		Level level = event.getLevel();
+		Level level = event.getWorld();
 		// Prevent Protected Block Entities from being destroyed by explosions
 		event.getAffectedBlocks().removeIf(pos ->
 		{
@@ -439,7 +433,7 @@ public class ForgeEvents
 	public static void onPlayerCloned(PlayerEvent.Clone event)
 	{
 		Player original = event.getOriginal();
-		Player clone = event.getEntity();
+		Player clone = event.getPlayer();
 		original.reviveCaps();
 		
 		original.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(oldCap ->

@@ -22,13 +22,14 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.material.FogType;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+
+import java.util.Random;
 
 public abstract class SGJourneySkyRenderer
 {
@@ -60,7 +61,7 @@ public abstract class SGJourneySkyRenderer
 		if (!(entity instanceof LivingEntity livingentity))
 			return false;
 		else
-			return livingentity.hasEffect(MobEffects.BLINDNESS) || livingentity.hasEffect(MobEffects.DARKNESS);
+			return livingentity.hasEffect(MobEffects.BLINDNESS);
 	}
 	
 	protected boolean isFoggy(Camera camera)
@@ -82,9 +83,9 @@ public abstract class SGJourneySkyRenderer
 			this.darkBuffer.close();
 		
 		this.darkBuffer = new VertexBuffer();
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, -16.0F);
+		buildSkyDisc(bufferbuilder, -16.0F);
 		this.darkBuffer.bind();
-		this.darkBuffer.upload(bufferbuilder$renderedbuffer);
+		this.darkBuffer.upload(bufferbuilder);
 		VertexBuffer.unbind();
 	}
 
@@ -96,13 +97,13 @@ public abstract class SGJourneySkyRenderer
 			this.skyBuffer.close();
 		
 		this.skyBuffer = new VertexBuffer();
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = buildSkyDisc(bufferbuilder, 16.0F);
+		buildSkyDisc(bufferbuilder, 16.0F);
 		this.skyBuffer.bind();
-		this.skyBuffer.upload(bufferbuilder$renderedbuffer);
+		this.skyBuffer.upload(bufferbuilder);
 		VertexBuffer.unbind();
 	}
 
-	protected static BufferBuilder.RenderedBuffer buildSkyDisc(BufferBuilder builder, float scale)
+	protected static void buildSkyDisc(BufferBuilder builder, float scale)
 	{
 		float f = Math.signum(scale) * 512.0F;
 		float f1 = 512.0F;
@@ -114,7 +115,7 @@ public abstract class SGJourneySkyRenderer
 			builder.vertex((double)(f * Mth.cos((float)i * ((float)Math.PI / 180F))), (double)scale, (double)(512.0F * Mth.sin((float)i * ((float)Math.PI / 180F)))).endVertex();
 		}
 		
-		return builder.end();
+		builder.end();
 	}
 	
 	protected void createStars(long seed, int numberOfStars)
@@ -126,15 +127,15 @@ public abstract class SGJourneySkyRenderer
 			this.starBuffer.close();
 
 		this.starBuffer = new VertexBuffer();
-		BufferBuilder.RenderedBuffer bufferbuilder$renderedbuffer = this.drawStars(bufferbuilder, seed, numberOfStars);
+		this.drawStars(bufferbuilder, seed, numberOfStars);
 		this.starBuffer.bind();
-		this.starBuffer.upload(bufferbuilder$renderedbuffer);
+		this.starBuffer.upload(bufferbuilder);
 		VertexBuffer.unbind();
 	}
 	
-	protected BufferBuilder.RenderedBuffer drawStars(BufferBuilder builder, long seed, int numberOfStars)
+	protected void drawStars(BufferBuilder builder, long seed, int numberOfStars)
 	{
-		RandomSource randomsource = RandomSource.create(seed);
+		Random randomsource = new Random(seed);
 		builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
 		
 		for(int i = 0; i < numberOfStars; ++i)
@@ -270,7 +271,7 @@ public abstract class SGJourneySkyRenderer
 				}
 			}
 		}
-		return builder.end();
+		builder.end();
 	}
 	
 	protected void renderStars(ClientLevel level, float partialTicks, float rain, PoseStack stack, Matrix4f projectionMatrix, Runnable setupFog)
@@ -321,7 +322,7 @@ public abstract class SGJourneySkyRenderer
         bufferbuilder.vertex(lastMatrix, u1v0[0], u1v0[1], u1v0[2]).uv(uv[2], uv[1]).endVertex();
         bufferbuilder.vertex(lastMatrix, u1v1[0], u1v1[1], u1v1[2]).uv(uv[2], uv[3]).endVertex();
         bufferbuilder.vertex(lastMatrix, u0v1[0], u0v1[1], u0v1[2]).uv(uv[0], uv[3]).endVertex();
-        BufferUploader.drawWithShader(bufferbuilder.end());
+        BufferUploader.end(bufferbuilder);
 	}
 	
 	protected void renderSun(BufferBuilder bufferbuilder, Matrix4f lastMatrix, ResourceLocation texture, float size)
@@ -404,7 +405,7 @@ public abstract class SGJourneySkyRenderer
 				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
 			}
 			
-			BufferUploader.drawWithShader(bufferbuilder.end());
+			BufferUploader.end(bufferbuilder);
 			stack.popPose();
 		}
 	}

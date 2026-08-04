@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
@@ -39,6 +37,7 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.items.blocks.*;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 //A class for initializing blocks
 public class BlockInit
@@ -172,9 +171,9 @@ public class BlockInit
 			() -> new Block(BlockBehaviour.Properties.of(Material.STONE).strength(5.0F, 6.0F).requiresCorrectToolForDrops()));
 	// Liquids
 	public static final RegistryObject<LiquidBlock> LIQUID_NAQUADAH_BLOCK = BLOCKS.register("liquid_naquadah",
-			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
+			() -> new LiquidBlock(FluidInit.LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()));
 	public static final RegistryObject<LiquidBlock> HEAVY_LIQUID_NAQUADAH_BLOCK = BLOCKS.register("heavy_liquid_naquadah", 
-			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noLootTable()));
+			() -> new LiquidBlock(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE, BlockBehaviour.Properties.of(Material.WATER).noCollission().strength(100.0F).noDrops()));
 	// Naquadah Blocks
 	public static final RegistryObject<Block> NAQUADAH_BLOCK = registerBlock("naquadah_block",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.METAL).strength(4.0F, 6.0F).requiresCorrectToolForDrops()));

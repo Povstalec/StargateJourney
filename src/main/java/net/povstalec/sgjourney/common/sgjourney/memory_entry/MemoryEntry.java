@@ -4,6 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,9 +106,9 @@ public abstract class MemoryEntry<T>
 	
 	public MutableComponent toComponent()
 	{
-		MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+		MutableComponent component = name.isEmpty() ? new TextComponent("") : new TextComponent('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 		
-		return component.append(Component.literal(entry.toString()).withStyle(getChatFormatting()));
+		return component.append(new TextComponent(entry.toString()).withStyle(getChatFormatting()));
 	}
 	
 	//============================================================================================
@@ -156,9 +158,9 @@ public abstract class MemoryEntry<T>
 		@Override
 		public MutableComponent toComponent()
 		{
-			MutableComponent component = name.isEmpty() ? Component.empty() : Component.literal('[' + name + "] ").withStyle(ChatFormatting.GREEN);
+			MutableComponent component = name.isEmpty() ? new TextComponent("") : new TextComponent('[' + name + "] ").withStyle(ChatFormatting.GREEN);
 			
-			return component.append(Component.translatable("tooltip.sgjourney.unknown").withStyle(getChatFormatting()));
+			return component.append(new TranslatableComponent("tooltip.sgjourney.unknown").withStyle(getChatFormatting()));
 		}
 	}
 	
@@ -174,16 +176,16 @@ public abstract class MemoryEntry<T>
 		
 		private static final List<Type<?>> MEMORY_TYPES = new ArrayList<>();
 		
-		public static final Type<Unknown> UNKNOWN = register(Component.translatable("tooltip.sgjourney.unknown").withStyle(ChatFormatting.DARK_RED), Unknown::new);
+		public static final Type<Unknown> UNKNOWN = register(new TranslatableComponent("tooltip.sgjourney.unknown").withStyle(ChatFormatting.DARK_RED), Unknown::new);
 		
-		public static final Type<TextEntry> TEXT = register(Component.translatable("tooltip.sgjourney.text").withStyle(ChatFormatting.GRAY), TextEntry::new);
-		public static final Type<AddressEntry> ADDRESS = register(Component.translatable("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA), AddressEntry::new);
-		public static final Type<TransporterIDEntry> TRANSPORTER_ID = register(Component.translatable("tooltip.sgjourney.transporter_id").withStyle(ChatFormatting.DARK_AQUA), TransporterIDEntry::new);
-		public static final Type<CoordinateEntry> COORDINATES = register(Component.translatable("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.YELLOW), CoordinateEntry::new);
+		public static final Type<TextEntry> TEXT = register(new TranslatableComponent("tooltip.sgjourney.text").withStyle(ChatFormatting.GRAY), TextEntry::new);
+		public static final Type<AddressEntry> ADDRESS = register(new TranslatableComponent("tooltip.sgjourney.address").withStyle(ChatFormatting.AQUA), AddressEntry::new);
+		public static final Type<TransporterIDEntry> TRANSPORTER_ID = register(new TranslatableComponent("tooltip.sgjourney.transporter_id").withStyle(ChatFormatting.DARK_AQUA), TransporterIDEntry::new);
+		public static final Type<CoordinateEntry> COORDINATES = register(new TranslatableComponent("tooltip.sgjourney.coordinates").withStyle(ChatFormatting.YELLOW), CoordinateEntry::new);
 		
-		public static final Type<TransporterConnectionEntry.ID> TRANSPORTER_ID_CONNECTION_RESULT = register(Component.translatable("tooltip.sgjourney.transporter_id_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterConnectionEntry.ID::new);
-		public static final Type<TransporterConnectionEntry.Coordinates> TRANSPORTER_COORDS_CONNECTION_RESULT = register(Component.translatable("tooltip.sgjourney.transporter_coords_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterConnectionEntry.Coordinates::new);
-		public static final Type<StargateConnectionEntry> STARGATE_CONNECTION_RESULT = register(Component.translatable("tooltip.sgjourney.stargate_connection_result").withStyle(ChatFormatting.DARK_BLUE), StargateConnectionEntry::new);
+		public static final Type<TransporterConnectionEntry.ID> TRANSPORTER_ID_CONNECTION_RESULT = register(new TranslatableComponent("tooltip.sgjourney.transporter_id_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterConnectionEntry.ID::new);
+		public static final Type<TransporterConnectionEntry.Coordinates> TRANSPORTER_COORDS_CONNECTION_RESULT = register(new TranslatableComponent("tooltip.sgjourney.transporter_coords_connection_result").withStyle(ChatFormatting.DARK_BLUE), TransporterConnectionEntry.Coordinates::new);
+		public static final Type<StargateConnectionEntry> STARGATE_CONNECTION_RESULT = register(new TranslatableComponent("tooltip.sgjourney.stargate_connection_result").withStyle(ChatFormatting.DARK_BLUE), StargateConnectionEntry::new);
 		
 		private Type(int id, Component component, Function<CompoundTag, T> constructor)
 		{

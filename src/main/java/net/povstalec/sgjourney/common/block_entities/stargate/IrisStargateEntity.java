@@ -5,6 +5,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -120,10 +122,10 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 	{
 		List<Component> status = new ArrayList<>();
 		
-		status.add(Component.translatable("info.sgjourney.iris").append(Component.literal(": ").append((!irisInfo().getIris().isEmpty() ? irisInfo().getIris().getDisplayName() : Component.literal("-")))).withStyle(ChatFormatting.GRAY));
-		status.add(Component.translatable("info.sgjourney.iris_durability").append(Component.literal(": " + (!irisInfo().getIris().isEmpty() ? StargateIrisItem.getDurability(irisInfo().getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
+		status.add(new TranslatableComponent("info.sgjourney.iris").append(new TextComponent(": ").append((!irisInfo().getIris().isEmpty() ? irisInfo().getIris().getDisplayName() : new TextComponent("-")))).withStyle(ChatFormatting.GRAY));
+		status.add(new TranslatableComponent("info.sgjourney.iris_durability").append(new TextComponent(": " + (!irisInfo().getIris().isEmpty() ? StargateIrisItem.getDurability(irisInfo().getIris()) : "-"))).withStyle(ChatFormatting.GRAY));
 		if(!irisInfo().getIris().isEmpty() && StargateIrisItem.hasCustomTexture(irisInfo().getIris()))
-			status.add(Component.translatable("info.sgjourney.iris_texture").append(Component.literal(": " + StargateIrisItem.getIrisTexture(irisInfo().getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
+			status.add(new TranslatableComponent("info.sgjourney.iris_texture").append(new TextComponent(": " + StargateIrisItem.getIrisTexture(irisInfo().getIris()))).withStyle(ChatFormatting.DARK_PURPLE));
 		
 		status.addAll(super.getStatus());
 		return status;

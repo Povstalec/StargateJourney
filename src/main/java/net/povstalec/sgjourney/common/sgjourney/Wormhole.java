@@ -9,6 +9,7 @@ import java.util.function.Function;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -126,7 +127,7 @@ public class Wormhole
 				if(entity.isAlive())
 				{
 					if(entity instanceof ServerPlayer player && (player.isCreative() || player.isSpectator()))
-						player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+						player.displayClientMessage(new TranslatableComponent("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 					else
 					{
 						if(entity instanceof LivingEntity livingEntity)
@@ -144,7 +145,7 @@ public class Wormhole
 			else
 			{
 				if(entity instanceof ServerPlayer player)
-					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.stargate.error.one_way_wormhole").withStyle(ChatFormatting.DARK_RED), true);
 			}
 			
 			deconstructEvent(server, initialStargate, entity, true);
@@ -333,7 +334,7 @@ public class Wormhole
 			if(entity instanceof ServerPlayer player && (player.isCreative() || player.isSpectator()))
 			{
 				if(!CommonIrisConfig.creative_ignores_iris.get())
-					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.stargate.error.iris").withStyle(ChatFormatting.DARK_RED), true);
 			}
 			else
 			{

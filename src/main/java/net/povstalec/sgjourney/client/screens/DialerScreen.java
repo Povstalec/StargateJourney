@@ -2,10 +2,9 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 
@@ -18,7 +17,7 @@ public class DialerScreen extends Screen
 	
 	public DialerScreen()
 	{
-		super(Component.empty());
+		super(TextComponent.EMPTY);
 	}
 	
 	@Override

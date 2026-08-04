@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.*;
-
 import com.mojang.brigadier.StringReader;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -25,6 +23,7 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.*;
 
 public abstract class Address implements Cloneable, Comparable<Address>
 {
@@ -171,11 +170,11 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		Style style = Style.EMPTY;
 		if(copyToClipboard)
 		{
-			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.address")));
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TranslatableComponent("message.sgjourney.click_to_copy.address")));
 			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
 		}
 		
-		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+		return new TextComponent(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
 	}
 	
 	public MutableComponent toComponent(boolean copyToClipboard)

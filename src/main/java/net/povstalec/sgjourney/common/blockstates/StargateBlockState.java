@@ -5,7 +5,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -16,7 +15,6 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.pathfinder.BlockPathTypes;
 import net.minecraft.world.level.pathfinder.PathComputationType;
@@ -35,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 public class StargateBlockState extends BlockState
 {
@@ -228,12 +225,6 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean onTreeGrow(LevelReader level, BiConsumer<BlockPos, BlockState> placeFunction, RandomSource randomSource, BlockPos pos, TreeConfiguration config)
-	{
-		return this.self().getBlock().onTreeGrow(this.self(), level, placeFunction, randomSource, pos, config);
-	}
-	
-	@Override
 	public boolean isFertile(BlockGetter level, BlockPos pos)
 	{
 		return this.self().getBlock().isFertile(this.self(), level, pos);
@@ -252,9 +243,9 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public int getExpDrop(LevelReader level, RandomSource randomSource, BlockPos pos, int fortuneLevel, int silkTouchLevel)
+	public int getExpDrop(LevelReader level, BlockPos pos, int fortuneLevel, int silkTouchLevel)
 	{
-		return this.self().getBlock().getExpDrop(this.self(), level, randomSource, pos, fortuneLevel, silkTouchLevel);
+		return this.self().getBlock().getExpDrop(this.self(), level, pos, fortuneLevel, silkTouchLevel);
 	}
 	
 	@Override
@@ -362,13 +353,7 @@ public class StargateBlockState extends BlockState
 	@Override
 	public @Nullable BlockPathTypes getBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob)
 	{
-		return this.self().getBlock().getBlockPathType(this.self(), level, pos, mob);
-	}
-	
-	@Override
-	public @Nullable BlockPathTypes getAdjacentBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob, BlockPathTypes originalType)
-	{
-		return this.self().getBlock().getAdjacentBlockPathType(this.self(), level, pos, mob, originalType);
+		return this.self().getBlock().getAiPathNodeType(this.self(), level, pos, mob);
 	}
 	
 	@Override
@@ -430,18 +415,6 @@ public class StargateBlockState extends BlockState
 	public void onBlockStateChange(LevelReader level, BlockPos pos, BlockState oldState)
 	{
 		this.self().getBlock().onBlockStateChange(level, pos, oldState, this.self());
-	}
-	
-	@Override
-	public boolean canBeHydrated(BlockGetter getter, BlockPos pos, FluidState fluid, BlockPos fluidPos)
-	{
-		return this.self().getBlock().canBeHydrated(this.self(), getter, pos, fluid, fluidPos);
-	}
-	
-	@Override
-	public BlockState getAppearance(BlockAndTintGetter level, BlockPos pos, Direction side, @Nullable BlockState queryState, @Nullable BlockPos queryPos)
-	{
-		return this.self().getBlock().getAppearance(this.self(), level, pos, side, queryState, queryPos);
 	}
 	
 	@Override

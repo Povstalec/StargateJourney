@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +23,8 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
+
+import javax.annotation.Nullable;
 
 public class CrystallizerBlock extends AbstractCrystallizerBlock
 {
@@ -52,7 +53,7 @@ public class CrystallizerBlock extends AbstractCrystallizerBlock
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.crystallizer");
+        				return new TranslatableComponent("screen.sgjourney.crystallizer");
         			}
         			
         			@Override
@@ -61,7 +62,7 @@ public class CrystallizerBlock extends AbstractCrystallizerBlock
         				return new CrystallizerMenu.Crystallizer(windowId, playerInventory, crystallizer);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

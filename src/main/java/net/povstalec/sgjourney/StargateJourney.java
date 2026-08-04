@@ -13,10 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.ConfigGuiHandler;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
-import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -51,10 +50,8 @@ import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
 import org.apache.commons.lang3.SystemUtils;
 import org.slf4j.Logger;
 
@@ -85,24 +82,22 @@ public class StargateJourney
     public StargateJourney()
     {
     	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-		
-		RemappingHelper.setupRemapping();
     	
     	ItemInit.register(eventBus);
         BlockInit.register(eventBus);
         FluidInit.register(eventBus);
-        FluidTypeInit.register(eventBus);
+        //FluidTypeInit.register(eventBus);
         BlockEntityInit.register(eventBus);
         MenuInit.register(eventBus);
         VillagerInit.register(eventBus);
         FeatureInit.register(eventBus);
         StructureInit.register(eventBus);
-        BiomeModifiers.register(eventBus);
+        //BiomeModifiers.register(eventBus);
         EntityInit.register(eventBus);
         SoundInit.register(eventBus);
         RecipeTypeInit.register(eventBus);
         StatisticsInit.register(eventBus);
-		CommandInit.register(eventBus);
+		//CommandInit.register(eventBus);
 		StructurePlacementInit.register(eventBus);
 
         GalaxyInit.register(eventBus);
@@ -156,8 +151,8 @@ public class StargateJourney
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
 
-		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
-				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
+		ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class,
+				() -> new ConfigGuiHandler.ConfigGuiFactory(new BiFunction<Minecraft, Screen, Screen>()
 				{
 					// Not using lambda to prevent class loading issues on dedicated server
 					@Override
@@ -274,21 +269,17 @@ public class StargateJourney
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
         }
-        
-        @SubscribeEvent
-        public static void registerDimensionEffects(RegisterDimensionSpecialEffectsEvent event)
-        {
-        	SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(event);
-        }
     	
     	@SubscribeEvent
         public static void registerClientReloadListener(RegisterClientReloadListenersEvent event)
         {
     		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
+			
+			SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(); // This shouldn't be here, but I don't have a better place to put it
         }
 		
 		@SubscribeEvent
-		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
+		public static void modelLoaderInit(ModelRegistryEvent event)
 		{
 			CableModelLoader.register(event);
 			SymbolBlockModelLoader.register(event);
@@ -302,10 +293,10 @@ public class StargateJourney
 			if(event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
 			{
 				// Manually add all sprites from the symbols folder
-				for(Map.Entry<ResourceLocation, Resource> entry : Minecraft.getInstance().getResourceManager().listResources("textures/symbol", location -> location.getPath().endsWith(".png")).entrySet())
+				for(ResourceLocation resourceLocation : Minecraft.getInstance().getResourceManager().listResources("textures/symbol", location -> location.endsWith(".png")))
 				{
-					String path = entry.getKey().getPath();
-					event.addSprite(new ResourceLocation(entry.getKey().getNamespace(), path.substring(9, path.length() - 4))); // Remove the "textures/" prefix and ".png" suffix
+					String path = resourceLocation.getPath();
+					event.addSprite(new ResourceLocation(resourceLocation.getNamespace(), path.substring(9, path.length() - 4))); // Remove the "textures/" prefix and ".png" suffix
 				}
 				
 			}

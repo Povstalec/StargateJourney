@@ -7,12 +7,13 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.TransporterInit;
 
 import java.util.Optional;
 
-public class TransporterType<T extends Transporter>
+public class TransporterType<T extends Transporter> extends ForgeRegistryEntry<TransporterType<?>>
 {
 	public static final String TRANSPORTER_TYPE = "transporter_type";
 	public static final ResourceLocation TRANSPORTER_TYPE_LOCATION = new ResourceLocation(StargateJourney.MODID, TRANSPORTER_TYPE);

@@ -1,22 +1,22 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-import java.util.Random;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Random;
 
 public class NaquadahFuelRodItem extends Item
 {
@@ -103,7 +103,7 @@ public class NaquadahFuelRodItem extends Item
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		if(stack.hasTag() && isAdvanced.isAdvanced())
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(new TextComponent(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.naquadah_fuel_rod.description"));
 		

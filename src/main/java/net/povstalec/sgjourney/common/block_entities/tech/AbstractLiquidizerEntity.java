@@ -2,7 +2,9 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import javax.annotation.Nonnull;
 
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
@@ -17,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -123,7 +124,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.FLUID_HANDLER)
+		if(capability == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{
 			if(side == Direction.DOWN)
 				return lazyFluidHandler2.cast();
@@ -131,7 +132,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 				return lazyFluidHandler1.cast();
 		}
 		
-		else if(capability == ForgeCapabilities.ITEM_HANDLER)
+		else if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if(side == Direction.UP)
 				return lazyInputHandler.cast();
@@ -236,7 +237,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
+					return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
 				}
 				
 				@Nonnull
@@ -273,7 +274,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	public void dumpEmptyFluidContainers()
 	{
 		ItemStack container = fluidItemInputHandler.getStackInSlot(0);
-		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
 		if(fluidHandler.isPresent())
 		{
 			if(fluidHandler.get().getFluidInTank(0).isEmpty()) // Try placing the container in the dump
@@ -286,7 +287,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	public void dumpFullFluidContainers()
 	{
 		ItemStack container = fluidItemInputHandler.getStackInSlot(1);
-		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve();
 		if(fluidHandler.isPresent())
 		{
 			if(fluidHandler.get().getFluidInTank(0).getAmount() >= fluidHandler.get().getTankCapacity(0)) // Try placing the container in the dump
@@ -298,7 +299,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	
 	public void drainInputFluidItem()
 	{
-		fluidItemInputHandler.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		fluidItemInputHandler.getStackInSlot(0).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(handler ->
 		{
 			int drainAmount = Math.min(inputFluidTank.getSpace(), maxFluidReceive());
 			FluidStack fluidStack = handler.getFluidInTank(0);
@@ -313,7 +314,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	
 	public void fillOutputFluidItem()
 	{
-		fluidItemInputHandler.getStackInSlot(1).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
+		fluidItemInputHandler.getStackInSlot(1).getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(handler ->
 		{
 			FluidStack simulatedDrained = outputFluidTank.drain(maxFluidExtract(), IFluidHandler.FluidAction.SIMULATE);
 			int simulatedFilledAmount = handler.fill(simulatedDrained, IFluidHandler.FluidAction.SIMULATE);
@@ -369,7 +370,7 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 		if(blockEntity == null)
 			return;
 		
-		blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, Direction.UP).ifPresent(fluidHandler ->
+		blockEntity.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, Direction.UP).ifPresent(fluidHandler ->
 		{
 			FluidStack simulatedOutputAmount = this.outputFluidTank.drain(maxFluidExtract(), IFluidHandler.FluidAction.SIMULATE);
 			int simulatedReceiveAmount = fluidHandler.fill(simulatedOutputAmount, IFluidHandler.FluidAction.SIMULATE);

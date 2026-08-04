@@ -8,9 +8,12 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -21,7 +24,7 @@ import java.util.*;
 /**
  * Class that represents a region of space with one Extragalactic Address, which may consist of multiple Space Locations, intended as a replacement for the SolarSystem class
  */
-public class AddressRegion
+public class AddressRegion extends ForgeRegistryEntry<AddressRegion>
 {
 	public static final ResourceKey<Registry<AddressRegion>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "address_region"));
 	public static final Codec<ResourceKey<AddressRegion>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
@@ -128,9 +131,9 @@ public class AddressRegion
 	public Component getTranslatedName()
 	{
 		if(!this.isGenerated)
-			return Component.translatable(name);
+			return new TranslatableComponent(name);
 		
-		return Component.literal(name);
+		return new TextComponent(name);
 	}
 	
 	public Address.Immutable getExtragalacticAddress()

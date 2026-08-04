@@ -1,14 +1,11 @@
 package net.povstalec.sgjourney.common.blocks.transporter;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +24,9 @@ import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock implements ProtectedBlock
 {
@@ -114,7 +114,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 		
 		if(blockEntityTag != null && blockEntityTag.contains(AbstractTransporterEntity.GENERATION_STEP, Tag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

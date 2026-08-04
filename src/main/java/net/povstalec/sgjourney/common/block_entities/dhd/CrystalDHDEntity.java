@@ -8,8 +8,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -79,7 +79,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return lazyEnergyItemHandler.cast();
 		
 		return super.getCapability(capability, side);

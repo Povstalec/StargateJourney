@@ -2,11 +2,11 @@ package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
@@ -24,11 +24,11 @@ public class DHDBigButton extends DHDButton
 	
     public DHDBigButton(int x, int y, AbstractDHDMenu<?> menu, OnPress press, ResourceLocation widgets)
 	{
-		super(widgets, x, y, DIAMETER, DIAMETER, Component.empty(), press);
+		super(widgets, x, y, DIAMETER, DIAMETER, TextComponent.EMPTY, press);
 		
 		this.menu = menu;
 		
-		setTooltip(Component.translatable("tooltip.sgjourney.engage_stargate"));
+		setTooltip(new TranslatableComponent("tooltip.sgjourney.engage_stargate"));
 	}
 	
 	protected void updateEngaged()
@@ -38,9 +38,9 @@ public class DHDBigButton extends DHDButton
 			isEngaged = this.menu.isCenterButtonEngaged();
 			
 			if(isEngaged)
-				setTooltip(Component.translatable("tooltip.sgjourney.disconnect_stargate"));
+				setTooltip(new TranslatableComponent("tooltip.sgjourney.disconnect_stargate"));
 			else
-				setTooltip(Component.translatable("tooltip.sgjourney.disconnect_stargate"));
+				setTooltip(new TranslatableComponent("tooltip.sgjourney.disconnect_stargate"));
 		}
 	}
     

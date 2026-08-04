@@ -1,17 +1,16 @@
 package net.povstalec.sgjourney.common.items.armor;
 
-import java.util.function.Consumer;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
+
+import javax.annotation.Nullable;
+import java.util.function.Consumer;
 
 public class FalconArmorItem extends ArmorItem
 {
@@ -23,7 +22,7 @@ public class FalconArmorItem extends ArmorItem
 	    }
 	 
 	 @Override
-	 public void initializeClient(Consumer<IClientItemExtensions> consumer) 
+	 public void initializeClient(Consumer<IItemRenderProperties> consumer)
 	 {
 		 consumer.accept(FalconArmorRenderProperties.INSTANCE);
 	 }

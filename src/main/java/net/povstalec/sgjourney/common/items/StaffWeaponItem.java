@@ -1,17 +1,13 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -26,16 +22,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class StaffWeaponItem extends FluidItem.Holder
 {
@@ -161,7 +161,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	 */
 	public boolean tryDepleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
-		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		if(fluidHandler instanceof ItemFluidHolderProvider fluidHolder)
 		{
 			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
@@ -226,12 +226,12 @@ public class StaffWeaponItem extends FluidItem.Holder
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 		
 		MutableComponent isOpen = isOpen(stack) ? 
-				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
-					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
+				new TranslatableComponent("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
+					new TranslatableComponent("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
 		tooltipComponents.add(isOpen);
     	
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	public static ItemStack filledStaffWeapon(boolean heavyLiquidNaquadah, int amount)
@@ -239,7 +239,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 		ItemStack staffWeapon = new ItemStack(ItemInit.MATOK.get());
 		ItemStack vial = heavyLiquidNaquadah ? VialItem.heavyLiquidNaquadahSetup(amount) : VialItem.liquidNaquadahSetup(amount);
 		
-		staffWeapon.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> itemHandler.insertItem(0, vial, false));
+		staffWeapon.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler -> itemHandler.insertItem(0, vial, false));
 		
 		return staffWeapon;
 	}

@@ -1,23 +1,24 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MemoryCrystalItem extends AbstractCrystalItem
 {
@@ -64,14 +65,14 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		ListTag list = getMemoryList(stack);
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.memory_capacity").append(Component.literal(": " + list.size() + '/' + getMemoryCapacity())).withStyle(ChatFormatting.BLUE));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.memory_capacity").append(new TextComponent(": " + list.size() + '/' + getMemoryCapacity())).withStyle(ChatFormatting.BLUE));
 		
 		for(int i = 0; i < list.size() && i < 10; i++)
 		{
-			tooltipComponents.add(Component.literal("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeComponentAt(list, i)));
+			tooltipComponents.add(new TextComponent("[" + i + "] ").withStyle(ChatFormatting.BLUE).append(memoryTypeComponentAt(list, i)));
 		}
 		if(list.size() > 10)
-			tooltipComponents.add(Component.literal("...").withStyle(ChatFormatting.BLUE));
+			tooltipComponents.add(new TextComponent("...").withStyle(ChatFormatting.BLUE));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.memory_crystal.description"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.memory_crystal.crystal_computer"));

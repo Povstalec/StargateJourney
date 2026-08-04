@@ -4,9 +4,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.init.FluidInit;
 
@@ -14,7 +15,7 @@ public class ComponentHelper
 {
 	public static MutableComponent energy(String name, long energy, long maxEnergy)
 	{
-		return Component.translatable(name).append(": " + SGJourneyEnergy.energyToString(energy, maxEnergy)).withStyle(ChatFormatting.DARK_RED);
+		return new TranslatableComponent(name).append(": " + SGJourneyEnergy.energyToString(energy, maxEnergy)).withStyle(ChatFormatting.DARK_RED);
 	}
 	
 	public static MutableComponent energy(long energy, long maxEnergy)
@@ -24,7 +25,7 @@ public class ComponentHelper
 	
 	public static MutableComponent energy(String name, long energy)
 	{
-		return Component.translatable(name).append(": " + SGJourneyEnergy.energyToString(energy)).withStyle(ChatFormatting.DARK_RED);
+		return new TranslatableComponent(name).append(": " + SGJourneyEnergy.energyToString(energy)).withStyle(ChatFormatting.DARK_RED);
 	}
 	
 	public static MutableComponent energy(long energy)
@@ -34,7 +35,7 @@ public class ComponentHelper
 	
 	public static MutableComponent tickTimer(String name, int ticks, ChatFormatting formatting)
 	{
-		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks)).withStyle(formatting);
+		return new TranslatableComponent(name).append(": " + Conversion.ticksToString(ticks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent tickTimer(String name, int ticks, int maxTicks, ChatFormatting formatting)
@@ -42,12 +43,12 @@ public class ComponentHelper
 		if(maxTicks <= 0)
 			return tickTimer(name, ticks, formatting);
 		
-		return Component.translatable(name).append(": " + Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
+		return new TranslatableComponent(name).append(": " + Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent tickTimer(int ticks, ChatFormatting formatting)
 	{
-		return Component.literal(Conversion.ticksToString(ticks)).withStyle(formatting);
+		return new TextComponent(Conversion.ticksToString(ticks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent tickTimer(int ticks, int maxTicks, ChatFormatting formatting)
@@ -55,7 +56,7 @@ public class ComponentHelper
 		if(maxTicks <= 0)
 			return tickTimer(ticks, formatting);
 		
-		return Component.literal(Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
+		return new TextComponent(Conversion.ticksToString(ticks) + "/" + Conversion.ticksToString(maxTicks)).withStyle(formatting);
 	}
 	
 	public static MutableComponent description(MutableComponent component)
@@ -65,7 +66,7 @@ public class ComponentHelper
 	
 	public static MutableComponent description(String name)
 	{
-		return description(Component.translatable(name));
+		return description(new TranslatableComponent(name));
 	}
 	
 	public static MutableComponent usage(MutableComponent component)
@@ -75,7 +76,7 @@ public class ComponentHelper
 	
 	public static MutableComponent usage(String name)
 	{
-		return usage(Component.translatable(name));
+		return usage(new TranslatableComponent(name));
 	}
 	
 	public static ChatFormatting fluidComponentColor(Fluid fluid)
@@ -90,33 +91,33 @@ public class ComponentHelper
 	
 	public static Component unChangingFluidAmountComponent(String name, int amount, ChatFormatting formatting) // Fluid name is always displayed
 	{
-		return Component.translatable(name).append(Component.literal(": " + amount + " mB")).withStyle(formatting);
+		return new TranslatableComponent(name).append(new TextComponent(": " + amount + " mB")).withStyle(formatting);
 	}
 	
 	public static Component fluidAmountComponent(String name, int amount, ChatFormatting formatting)
 	{
 		if(amount == 0)
-			return Component.literal("0 mB").withStyle(formatting);
+			return new TextComponent("0 mB").withStyle(formatting);
 		else
 			return unChangingFluidAmountComponent(name, amount, formatting);
 	}
 	
 	public static Component unchangingFluidAmountComponent(String name, int amount, int tankCapacity, ChatFormatting formatting)
 	{
-		return Component.translatable(name).append(Component.literal(": " + amount + "/" + tankCapacity + " mB")).withStyle(formatting);
+		return new TranslatableComponent(name).append(new TextComponent(": " + amount + "/" + tankCapacity + " mB")).withStyle(formatting);
 	}
 	
 	public static Component fluidAmountComponent(String name, int amount, int tankCapacity, ChatFormatting formatting)
 	{
 		if(amount == 0)
-			return Component.literal("0/" + tankCapacity + " mB").withStyle(formatting);
+			return new TextComponent("0/" + tankCapacity + " mB").withStyle(formatting);
 		else
 			return unchangingFluidAmountComponent(name, amount, tankCapacity, formatting);
 	}
 	
 	public static Component coordinate(double x, double y, double z)
 	{
-		return Component.literal("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
+		return new TextComponent("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
 	}
 	
 	public static Component coordinate(Vec3 vec)
@@ -126,7 +127,7 @@ public class ComponentHelper
 	
 	public static Component coordinate(int x, int y, int z)
 	{
-		return Component.literal("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
+		return new TextComponent("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
 	}
 	
 	public static Component coordinate(Vec3i vec)

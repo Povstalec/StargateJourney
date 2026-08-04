@@ -2,10 +2,11 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -75,26 +76,26 @@ public abstract class RingPanelScreen extends SGJourneyContainerScreen<RingPanel
 		
 		this.energyTooltip(poseStack, mouseX, mouseY, 165, 30, 6, 64, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getMaxEnergy());
 		
-		this.crystalEffectTooltip(poseStack, 136, 51, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transporter.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
+		this.crystalEffectTooltip(poseStack, 136, 51, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.transporter.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transporter.connection_range.description"),
-				Component.translatable("tooltip.sgjourney.transporter.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
+				new TranslatableComponent("tooltip.sgjourney.transporter.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
 				ComponentHelper.description("tooltip.sgjourney.transporter.energy_reach.description"),
-				Component.translatable("tooltip.sgjourney.transporter.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("tooltip.sgjourney.transporter.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transporter.interdimensional_transport.description"));
-		this.crystalEffectTooltip(poseStack, 136, 63, mouseX, mouseY, Component.translatable("tooltip.sgjourney.energy_target")
-						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
+		this.crystalEffectTooltip(poseStack, 136, 63, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.energy_target")
+						.append(new TextComponent(": " + SGJourneyEnergy.energyToString(menu.getEnergyTarget()))).withStyle(ChatFormatting.DARK_RED),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_target.description"),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_target.usage"),
 				ComponentHelper.energy("tooltip.sgjourney.ring_panel.transporter_energy", menu.getTransporterEnergy()));
-		this.crystalEffectTooltip(poseStack, 136, 75, mouseX, mouseY, Component.translatable("tooltip.sgjourney.dhd.energy_transfer")
-						.append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.maxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.GOLD),
+		this.crystalEffectTooltip(poseStack, 136, 75, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.dhd.energy_transfer")
+						.append(new TextComponent(": " + SGJourneyEnergy.energyToString(menu.maxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.GOLD),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.energy_transfer.description"),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.energy_transfer.usage"));
-		this.crystalEffectTooltip(poseStack, 136, 87, mouseX, mouseY, Component.translatable("tooltip.sgjourney.ring_panel.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
+		this.crystalEffectTooltip(poseStack, 136, 87, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.ring_panel.communication_range", menu.getMaxDistance()).withStyle(ChatFormatting.GRAY),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.communication_range.description"),
-				Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+				new TranslatableComponent("info.sgjourney.networks").append(": " + menu.getNetworks()),
 				ComponentHelper.description("tooltip.sgjourney.ring_panel.networks.description"),
-				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.usage("tooltip.sgjourney.ring_panel.networks.usage.communication_crystal"));
     }
     

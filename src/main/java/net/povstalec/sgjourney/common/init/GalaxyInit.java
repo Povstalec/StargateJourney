@@ -17,7 +17,7 @@ import net.povstalec.sgjourney.common.sgjourney.GalaxyType;
 public class GalaxyInit
 {
 	public static final DeferredRegister<GalaxyType> GALAXY_TYPES = DeferredRegister.create(GalaxyType.GALAXY_TYPE_LOCATION, StargateJourney.MODID);
-	public static final Supplier<IForgeRegistry<GalaxyType>> GALAXY_TYPE = GALAXY_TYPES.makeRegistry(RegistryBuilder::new);
+	public static final Supplier<IForgeRegistry<GalaxyType>> GALAXY_TYPE = GALAXY_TYPES.makeRegistry(GalaxyType.class, RegistryBuilder::new);
 
 	public static final RegistryObject<GalaxyType> DWARF_GALAXY = GALAXY_TYPES.register("dwarf_galaxy", () -> new GalaxyType(36)); // Like Pegasus
 	public static final RegistryObject<GalaxyType> MEDIUM_GALAXY = GALAXY_TYPES.register("medium_galaxy", () -> new GalaxyType(39)); // Like Milky Way

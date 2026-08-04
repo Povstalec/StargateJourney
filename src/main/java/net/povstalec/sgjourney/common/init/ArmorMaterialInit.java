@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
@@ -10,11 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 public enum ArmorMaterialInit implements ArmorMaterial
 {
-	NAQUADAH("naquadah", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 3.0F, 0.2F),
-	TRINIUM("trinium", 25, new int[] {3, 6, 8, 3}, 5, ItemInit.TRINIUM_INGOT.get(), SoundInit.EQUIP_TRINIUM_ARMOR.get(), 0.0F, 0.0F),
-	SYSTEM_LORD("system_lord", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_IRON_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 2.0F, 0.0F),
-	JAFFA("jaffa", 42, new int[] {3, 6, 7, 3}, 5, ItemInit.NAQUADAH_IRON_ALLOY.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 0.0F, 0.0F),
-	PERSONAL_SHIELD("personal_shield", 0, new int[] {0, 0, 0, 0}, 0, ItemInit.NAQUADAH.get(), SoundInit.EQUIP_NAQUADAH_ARMOR.get(), 0.0F, 0.0F);
+	NAQUADAH("naquadah", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH.get(), SoundEvents.ARMOR_EQUIP_IRON, 3.0F, 0.2F),
+	TRINIUM("trinium", 25, new int[] {3, 6, 8, 3}, 5, ItemInit.TRINIUM_INGOT.get(), SoundEvents.ARMOR_EQUIP_IRON, 0.0F, 0.0F),
+	SYSTEM_LORD("system_lord", 42, new int[] {3, 6, 8, 3}, 5, ItemInit.NAQUADAH_IRON_ALLOY.get(), SoundEvents.ARMOR_EQUIP_IRON, 2.0F, 0.0F),
+	JAFFA("jaffa", 42, new int[] {3, 6, 7, 3}, 5, ItemInit.NAQUADAH_IRON_ALLOY.get(), SoundEvents.ARMOR_EQUIP_IRON, 0.0F, 0.0F),
+	PERSONAL_SHIELD("personal_shield", 0, new int[] {0, 0, 0, 0}, 0, ItemInit.NAQUADAH.get(), SoundEvents.ARMOR_EQUIP_IRON, 0.0F, 0.0F);
 	
 	private static final int[] MAX_DAMAGE_ARRAY = new int[] {13, 15, 16, 11};
 	

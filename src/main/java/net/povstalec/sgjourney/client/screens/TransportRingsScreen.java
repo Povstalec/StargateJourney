@@ -5,13 +5,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.menu.TransportRingsMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 
 public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJourneyContainerScreen<T>
 {
@@ -73,23 +73,23 @@ public class TransportRingsScreen<T extends TransportRingsMenu<?>> extends SGJou
 		long totalEnergy = menu.getTotalEnergyStored();
 		int transferEfficiency = menu.getTransferEfficiency();
 		
-		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, Component.translatable("tooltip.sgjourney.transport_rings.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
+		this.crystalEffectTooltip(poseStack, 14, 22, mouseX, mouseY, new TranslatableComponent("tooltip.sgjourney.transport_rings.connection_range", menu.getTransportRange()).withStyle(ChatFormatting.DARK_AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.connection_range.description"),
-				Component.translatable("tooltip.sgjourney.transport_rings.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
+				new TranslatableComponent("tooltip.sgjourney.transport_rings.energy_reach", menu.getEnergyReach()).withStyle(ChatFormatting.RED),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.energy_reach.description"),
-				Component.translatable("tooltip.sgjourney.transport_rings.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("tooltip.sgjourney.transport_rings.interdimensional_transport", menu.allowInterdimensionalTransport()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.interdimensional_transport.description"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.interdimensional_transport.usage"));
 		this.crystalEffectTooltip(poseStack, 14, 34, mouseX, mouseY, ComponentHelper.energy("tooltip.sgjourney.transport_rings.total_energy", totalEnergy, menu.getTotalEnergyCapacity()),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.total_energy.description"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.total_energy.usage"));
-		this.crystalEffectTooltip(poseStack, 14, 46, mouseX, mouseY, Component.translatable("info.sgjourney.transfer_efficiency").append(": " + transferEfficiency).withStyle(ChatFormatting.GOLD),
-				Component.translatable("tooltip.sgjourney.transport_rings.transfer_efficiency.fe_block", energyPerBlock(transferEfficiency)).withStyle(ChatFormatting.DARK_RED),
+		this.crystalEffectTooltip(poseStack, 14, 46, mouseX, mouseY, new TranslatableComponent("info.sgjourney.transfer_efficiency").append(": " + transferEfficiency).withStyle(ChatFormatting.GOLD),
+				new TranslatableComponent("tooltip.sgjourney.transport_rings.transfer_efficiency.fe_block", energyPerBlock(transferEfficiency)).withStyle(ChatFormatting.DARK_RED),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.transfer_efficiency.description"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.transfer_efficiency.usage"));
-		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, Component.translatable("info.sgjourney.networks").append(": " + menu.getNetworks()),
+		this.crystalEffectTooltip(poseStack, 14, 58, mouseX, mouseY, new TranslatableComponent("info.sgjourney.networks").append(": " + menu.getNetworks()),
 				ComponentHelper.description("tooltip.sgjourney.transport_rings.networks.description"),
-				Component.translatable("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("info.sgjourney.network_restrictions").append(": " + menu.hasNetworkRestrictions()).withStyle(ChatFormatting.AQUA),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.networks.usage.communication_crystal"),
 				ComponentHelper.usage("tooltip.sgjourney.transport_rings.networks.usage.control_crystal"));
 		

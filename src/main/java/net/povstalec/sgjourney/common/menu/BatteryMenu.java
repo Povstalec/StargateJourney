@@ -4,8 +4,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.BatteryBlockEntity;
@@ -48,7 +47,7 @@ public class BatteryMenu extends InventoryMenu<BatteryBlockEntity>
 		if(slot < 0 || slot > 8)
 			return false;
 		
-		IItemHandler cap = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		IItemHandler cap = blockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).resolve().orElse(null);
 		
 		if(cap != null)
 			return !cap.getStackInSlot(slot).isEmpty();

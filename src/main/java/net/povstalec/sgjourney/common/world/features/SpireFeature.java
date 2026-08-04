@@ -1,14 +1,13 @@
 package net.povstalec.sgjourney.common.world.features;
 
 import com.mojang.serialization.Codec;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.povstalec.sgjourney.common.world.features.configuration.SpireConfiguration;
+
+import java.util.Random;
 
 public class SpireFeature extends Feature<SpireConfiguration>
 {
@@ -23,7 +22,7 @@ public class SpireFeature extends Feature<SpireConfiguration>
 		SpireConfiguration config = context.config();
 		
 		BlockPos blockpos = context.origin();
-		RandomSource randomsource = context.random();
+		Random randomsource = context.random();
 		
 		WorldGenLevel worldgenlevel;
 		for(worldgenlevel = context.level(); !worldgenlevel.getBlockState(blockpos).is(config.fillingProvider.getState(randomsource, blockpos).getBlock()) && blockpos.getY() > worldgenlevel.getMinBuildHeight() + 2; blockpos = blockpos.below())
@@ -35,7 +34,7 @@ public class SpireFeature extends Feature<SpireConfiguration>
 			return false;
 		
 		// Choose a random number of levels that make up the Spire
-		int spireLevels = randomsource.nextIntBetweenInclusive(15, 25);
+		int spireLevels = randomsource.nextInt(15, 26); // 25 + 1
 		int totalHeight = 0;
 		
 		// Each level is 5 blocks tall and had an ellipse like shape when viewed from above
@@ -45,13 +44,13 @@ public class SpireFeature extends Feature<SpireConfiguration>
 		// This happens for each level
 		for(int spireLevel = 0; spireLevel < spireLevels; spireLevel++)
 		{
-			int currentCenterX = randomsource.nextIntBetweenInclusive(-2, 2);
-			int currentCenterZ = randomsource.nextIntBetweenInclusive(-2, 2);
+			int currentCenterX = randomsource.nextInt(-2, 3); // 2 + 1
+			int currentCenterZ = randomsource.nextInt(-2, 3); // 2 + 1
 			
-			int xDeformation = randomsource.nextIntBetweenInclusive(-2, 2);
-			int zDeformation = randomsource.nextIntBetweenInclusive(-2, 2);
+			int xDeformation = randomsource.nextInt(-2, 3); // 2 + 1
+			int zDeformation = randomsource.nextInt(-2, 3); // 2 + 1
 			
-			int ySize = randomsource.nextIntBetweenInclusive(4, 6);
+			int ySize = randomsource.nextInt(4, 7); // 6 + 1
 			
 			
 			int levelRadius = 10 + spireLevels % 5 - (spireLevel / 3);
@@ -72,7 +71,7 @@ public class SpireFeature extends Feature<SpireConfiguration>
 						double zScale = Math.pow((double) (z - currentCenterZ) / zRadius, 2);
 						if(xScale + zScale < 1)
 						{
-							int chance = randomsource.nextIntBetweenInclusive(1, 100);
+							int chance = randomsource.nextInt(1, 101); // 100 + 1
 							// Sometimes the block placed should be the ore
 							if(chance > 5)
 								setOre(worldgenlevel, blockpos, x, y, z, totalHeight, config, randomsource);
@@ -87,12 +86,12 @@ public class SpireFeature extends Feature<SpireConfiguration>
 		return true;
 	}
 	
-	private void setOre(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int totalHeight, SpireConfiguration config, RandomSource randomsource)
+	private void setOre(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int totalHeight, SpireConfiguration config, Random randomsource)
 	{
 		this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingProvider.getState(randomsource, blockpos));
 	}
 	
-	private void setFilling(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int spireLevel, int totalHeight, SpireConfiguration config, RandomSource randomsource)
+	private void setFilling(WorldGenLevel worldgenlevel, BlockPos blockpos, int x, int y, int z, int spireLevel, int totalHeight, SpireConfiguration config, Random randomsource)
 	{
 		this.setBlock(worldgenlevel, blockpos.offset(x, y + totalHeight, z), config.fillingPlacements.getState(randomsource, blockpos));
 	}

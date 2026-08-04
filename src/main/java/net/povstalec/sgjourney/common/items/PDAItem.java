@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -22,8 +19,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -31,6 +28,9 @@ import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.PDAStatus;
 import net.povstalec.sgjourney.common.tech.AncientTech;
 import net.povstalec.sgjourney.common.tech.GoauldTech;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public class PDAItem extends Item implements AncientTech, GoauldTech
 {
@@ -51,7 +51,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		if(level.isClientSide() || player == null)
 			return super.useOn(context);
 		
-		player.sendSystemMessage(Component.translatable(block.getDescriptionId()).withStyle(ChatFormatting.GRAY));
+		player.displayClientMessage(new TranslatableComponent(block.getDescriptionId()).withStyle(ChatFormatting.GRAY), true);
 		
 		BlockEntity blockEntity;
 		if(block instanceof AbstractStargateBlock stargate)
@@ -66,7 +66,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		{
 			for(Component component : pdaStatus.getStatus())
 			{
-				player.sendSystemMessage(component);
+				player.displayClientMessage(component, true);
 			}
 		}
 		
@@ -80,23 +80,23 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		capability.ifPresent(energyStorage ->
 		{
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()));
+				player.displayClientMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()), true);
 			else
-				player.sendSystemMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()));
+				player.displayClientMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()), true);
 		});
 	}
 	
 	private static void tryFindEnergySignature(BlockEntity blockEntity, Player player)
 	{
-		if(blockEntity.getCapability(ForgeCapabilities.ENERGY).isPresent())
-			showEnergySignature(blockEntity.getCapability(ForgeCapabilities.ENERGY), player);
+		if(blockEntity.getCapability(CapabilityEnergy.ENERGY).isPresent())
+			showEnergySignature(blockEntity.getCapability(CapabilityEnergy.ENERGY), player);
 		else
 		{
 			for(Direction direction : Direction.values())
 			{
-				if(blockEntity.getCapability(ForgeCapabilities.ENERGY, direction).isPresent())
+				if(blockEntity.getCapability(CapabilityEnergy.ENERGY, direction).isPresent())
 				{
-					showEnergySignature(blockEntity.getCapability(ForgeCapabilities.ENERGY, direction), player);
+					showEnergySignature(blockEntity.getCapability(CapabilityEnergy.ENERGY, direction), player);
 					return;
 				}
 			}
@@ -127,20 +127,20 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.pda.info").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.pda.info").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
 	
 	private void scanEntity(Player user, Entity target)
 	{
-		user.sendSystemMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW));
+		user.displayClientMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW), true);
 		
 		if(target instanceof LivingEntity livingEntity)
 		{
 			if(canUseGoauldTech(livingEntity))
-				user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN));
+				user.displayClientMessage(new TranslatableComponent("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN), true);
 			
 			if(canUseAncientTech(livingEntity))
-				user.sendSystemMessage(Component.translatable("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA));
+				user.displayClientMessage(new TranslatableComponent("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA), true);
 		}
 	}
 }

@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.povstalec.sgjourney.client.screens.config.ConfigList.BooleanConfigEntry;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 
@@ -24,7 +25,7 @@ public class ConfigScreenClientDHD extends Screen
 	
 	protected ConfigScreenClientDHD(Screen parentScreen)
 	{
-		super(Component.translatable("gui.sgjourney.config_stargate"));
+		super(new TranslatableComponent("gui.sgjourney.config_stargate"));
 		this.parentScreen = parentScreen;
 	}
 
@@ -36,14 +37,14 @@ public class ConfigScreenClientDHD extends Screen
 		
 		ConfigList configList = new ConfigList(minecraft, this.width, this.height,
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
-		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
-				Component.translatable("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
-		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
-				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
-		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_dhd_button_layout"), this.width, ClientDHDConfig.pegasus_dhd_canon_button_layout,
-				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
-		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
-				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
+				new TranslatableComponent("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
+				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.pegasus_dhd_button_layout"), this.width, ClientDHDConfig.pegasus_dhd_canon_button_layout,
+				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
+				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		
 		this.addRenderableWidget(configList);
 

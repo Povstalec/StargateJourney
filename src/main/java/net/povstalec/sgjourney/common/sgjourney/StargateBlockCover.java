@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import com.mojang.serialization.DataResult;
 
@@ -12,7 +9,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -98,7 +94,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		return ItemStack.EMPTY;
 	}
 	
-	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, RandomSource randomSource)
+	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, Random randomSource)
 	{
 		getBlockAt(part).ifPresent(coverBlockState ->
 		{

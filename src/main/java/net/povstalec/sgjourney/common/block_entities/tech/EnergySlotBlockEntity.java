@@ -6,8 +6,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
@@ -76,7 +76,7 @@ public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+				return stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot

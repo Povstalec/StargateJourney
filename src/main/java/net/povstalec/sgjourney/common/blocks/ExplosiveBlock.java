@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
@@ -10,6 +9,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+
+import java.util.Random;
 
 public class ExplosiveBlock extends Block
 {
@@ -49,7 +50,7 @@ public class ExplosiveBlock extends Block
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		if(state.getValue(UNSTABLE))
 		{

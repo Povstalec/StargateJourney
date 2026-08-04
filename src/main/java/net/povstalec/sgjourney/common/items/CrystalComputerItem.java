@@ -4,6 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -13,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
@@ -92,7 +94,7 @@ public class CrystalComputerItem extends HolderItem
 	
 	public void updateFromCompoundTag(ItemStack stack, CompoundTag tag)
 	{
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			ItemStack heldItem = itemHandler.extractItem(0, 1, false);
 			
@@ -144,7 +146,7 @@ public class CrystalComputerItem extends HolderItem
 	{
 		ItemStack heldItem = getHeldItem(stack);
 		
-		MutableComponent itemComponent = Component.translatable("tooltip.sgjourney.holding").append(Component.literal(": "));
+		MutableComponent itemComponent = new TranslatableComponent("tooltip.sgjourney.holding").append(new TextComponent(": "));
 		if(heldItem.isEmpty())
 			itemComponent.append("[-]");
 		else

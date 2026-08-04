@@ -1,15 +1,16 @@
 package net.povstalec.sgjourney.common.block_entities.transporter_controller;
 
-import java.util.*;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -17,9 +18,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
@@ -29,31 +37,26 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
-import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
+import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
 
 public class GoauldRingPanelEntity extends TransporterControllerEntity implements CrystalCache.Interface<GoauldRingPanelEntity>
 {
@@ -292,7 +295,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
 			return lazyEnergyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -391,12 +394,12 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		ItemStack stack = crystalItemHandler.getStackInSlot(index);
 		int entryCount = MemoryCrystalItem.countMemoryEntriesOfType(stack, MemoryEntry.Type.TRANSPORTER_ID, MemoryEntry.Type.COORDINATES);
 		if(entryCount == 0) // Memory Crystal holds no Transporter IDs, make the button not interactable
-			return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries").append(": 0").withStyle(ChatFormatting.BLUE));
+			return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.memory_entries").append(": 0").withStyle(ChatFormatting.BLUE));
 		
 		if(!status.isEnabled)
 			return TransporterControllerButton.memoryButton(this, index, status);
 		
-		MutableComponent tooltip = stack.hasCustomHoverName() ? stack.getHoverName().copy() : Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries");
+		MutableComponent tooltip = stack.hasCustomHoverName() ? stack.getHoverName().copy() : new TranslatableComponent("tooltip.sgjourney.ring_panel.button.memory_entries");
 		
 		return TransporterControllerButton.memoryButton(this, index, status).setTooltip(tooltip.append(": " + entryCount).withStyle(ChatFormatting.BLUE)).setOnPress(button ->
 		{
@@ -453,22 +456,22 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 				if(transporterID.name().isEmpty() && transporter.getName() != null)
 					return memoryTransportButton(index).setTransporter(transporter);
 				else
-					return memoryTransportButton(index).setTransporter(transporter, Component.literal(transporterID.name()).withStyle(ChatFormatting.GREEN));
+					return memoryTransportButton(index).setTransporter(transporter, new TextComponent(transporterID.name()).withStyle(ChatFormatting.GREEN));
 			}
 			else
-				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
+				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.memory_crystal.invalid_id").withStyle(ChatFormatting.DARK_RED));
 			
 		}
 		else if(type == MemoryEntry.Type.COORDINATES)
 		{
 			CoordinateEntry coords = MemoryCrystalItem.loadMemoryEntry(list, MemoryEntry.Type.COORDINATES, index);
 			if(coords != null)
-				return memoryTransportButton(index).setTransporter(null, Component.literal(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
+				return memoryTransportButton(index).setTransporter(null, new TextComponent(coords.name()).withStyle(ChatFormatting.GREEN), coords.asVec3());
 			else
-				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.invalid_location").withStyle(ChatFormatting.DARK_RED));
+				return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.memory_crystal.invalid_location").withStyle(ChatFormatting.DARK_RED));
 		}
 		
-		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.memory_crystal.no_entry").withStyle(ChatFormatting.BLUE));
+		return TransporterControllerButton.memoryButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.memory_crystal.no_entry").withStyle(ChatFormatting.BLUE));
 	}
 	
 	private TransporterControllerButton<GoauldRingPanelEntity> memoryTransportButton(int index)
@@ -495,13 +498,13 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	private TransporterControllerButton<GoauldRingPanelEntity> communicationCrystalButton(int index, TransporterControllerButton.ButtonStatus status)
 	{
 		if(!CommunicationCrystalItem.hasFrequency(crystalItemHandler.getStackInSlot(index)))
-			return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency.none"));
+			return TransporterControllerButton.networkButton(this, index, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.frequency.none"));
 		
 		if(!status.isEnabled)
 			return TransporterControllerButton.networkButton(this, index, status);
 		else
 		{
-			return TransporterControllerButton.networkButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.frequency").append(": " + CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(index))).withStyle(ChatFormatting.GRAY))
+			return TransporterControllerButton.networkButton(this, index, status).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.frequency").append(": " + CommunicationCrystalItem.getFrequency(crystalItemHandler.getStackInSlot(index))).withStyle(ChatFormatting.GRAY))
 					.setOnPress(button -> button.parent.setBaseCommunicationCrystalPage(index, CommunicationCrystalItem.getFrequency(button.parent.crystalItemHandler.getStackInSlot(index))));
 		}
 	}
@@ -530,14 +533,14 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 			if(transporterIterator.hasNext())
 				buttons.set(i, nextNetworkButton(serverLevel.getServer(), transporterIterator.next(), i));
 			else
-				buttons.set(i, TransporterControllerButton.networkButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
+				buttons.set(i, TransporterControllerButton.networkButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
 		}
 		
 		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 		if(transporterIterator.hasNext())
 			buttons.set(5, nextNetworkButton(serverLevel.getServer(), transporterIterator.next(), 5));
 		else
-			buttons.set(5, TransporterControllerButton.networkButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
+			buttons.set(5, TransporterControllerButton.networkButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter_in_network", network)));
 		
 		updateClient();
 	}
@@ -562,7 +565,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		if(!status.isEnabled)
 			return TransporterControllerButton.manualControlButton(this, index, status);
 		
-		return TransporterControllerButton.manualControlButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.manual_control").withStyle(ChatFormatting.AQUA))
+		return TransporterControllerButton.manualControlButton(this, index, status).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.manual_control").withStyle(ChatFormatting.AQUA))
 				.setOnPress(button -> button.parent.setBaseControlCrystalPage(button.index));
 	}
 	
@@ -612,7 +615,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	private TransporterControllerButton<GoauldRingPanelEntity> nextManualButton(int index)
 	{
 		if(encodedID.canGrow())
-			return TransporterControllerButton.manualControlButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTooltip(encodedID.toComponent(false).append(Component.literal(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)))
+			return TransporterControllerButton.manualControlButton(this, index, TransporterControllerButton.ButtonStatus.ENABLED).setTooltip(encodedID.toComponent(false).append(new TextComponent(index + "-").withStyle(ChatFormatting.LIGHT_PURPLE)))
 					.setOnPress(button ->
 					{
 						button.parent.encodedID.addSymbol(button.index);
@@ -629,7 +632,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		if(!status.isEnabled)
 			return TransporterControllerButton.materializationButton(this, index, status);
 		
-		return TransporterControllerButton.materializationButton(this, index, status).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.interdimensional").withStyle(ChatFormatting.DARK_AQUA))
+		return TransporterControllerButton.materializationButton(this, index, status).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.interdimensional").withStyle(ChatFormatting.DARK_AQUA))
 				.setOnPress(button -> button.parent.setBaseMaterializationCrystalPage(button.index));
 	}
 	
@@ -672,14 +675,14 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 			if(transporterIterator.hasNext())
 				buttons.set(i, nextInterdimensionalButton(transporterIterator.next(), i));
 			else
-				buttons.set(i, TransporterControllerButton.materializationButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
+				buttons.set(i, TransporterControllerButton.materializationButton(this, i, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
 		}
 		
 		buttons.set(4, TransporterControllerButton.returnButton(this, 4).setOnPress(button -> button.parent.resetButtons()));
 		if(transporterIterator.hasNext())
 			buttons.set(5, nextInterdimensionalButton(transporterIterator.next(), 5));
 		else
-			buttons.set(5, TransporterControllerButton.materializationButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(Component.translatable("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
+			buttons.set(5, TransporterControllerButton.materializationButton(this, 5, TransporterControllerButton.ButtonStatus.DISABLED).setTooltip(new TranslatableComponent("tooltip.sgjourney.ring_panel.button.no_transporter_interdimensional").withStyle(ChatFormatting.DARK_AQUA)));
 		
 		updateClient();
 	}
@@ -802,7 +805,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	{
 		if(REQUIRE_ENERGY && !energyStorage.hasEnergy(buttonPressEnergyCost()))
 		{
-			sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_panel.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 3);
+			sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.ring_panel.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), 3);
 			return;
 		}
 		
@@ -823,7 +826,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		if(transporterCache.returnOrDefault(transporter -> !transporter.isConnected(), true))
 			return true;
 		
-		sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), CONTROLLER_INFO_DISTANCE);
+		sendMessageToNearbyPlayers(new TranslatableComponent("message.sgjourney.ring_remote.error.transport_rings_busy").withStyle(ChatFormatting.DARK_RED), CONTROLLER_INFO_DISTANCE);
 		resetButtons();
 		return false;
 	}

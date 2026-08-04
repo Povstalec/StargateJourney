@@ -4,12 +4,14 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.povstalec.sgjourney.common.capabilities.ItemPowerCellProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -112,7 +114,7 @@ public class PowerCellItem extends FluidItem.Holder
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(getBufferEnergy(stack), getBufferCapacity(stack)))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_buffer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(getBufferEnergy(stack), getBufferCapacity(stack)))).withStyle(ChatFormatting.DARK_RED));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 		
@@ -125,7 +127,7 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			itemHandler.insertItem(0, VialItem.liquidNaquadahSetup(), false);
 		});
@@ -137,7 +139,7 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			itemHandler.insertItem(0, VialItem.randomLiquidNaquadahSetup(minCapacity, maxCapacity), false);
 		});
@@ -149,7 +151,7 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			itemHandler.insertItem(0, VialItem.heavyLiquidNaquadahSetup(), false);
 		});
@@ -161,7 +163,7 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
+		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(itemHandler ->
 		{
 			itemHandler.insertItem(0, VialItem.randomHeavyLiquidNaquadahSetup(minCapacity, maxCapacity), false);
 		});

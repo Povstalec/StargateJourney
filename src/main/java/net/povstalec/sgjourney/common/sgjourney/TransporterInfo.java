@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.sgjourney;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import org.jetbrains.annotations.NotNull;
 
 public class TransporterInfo
@@ -137,11 +138,11 @@ public class TransporterInfo
 	
 	private static Component createInfo(String feedback, Object... additionalInfo)
 	{
-		return Component.translatable("message.sgjourney.transporter.info." + feedback, additionalInfo);
+		return new TranslatableComponent("message.sgjourney.transporter.info." + feedback, additionalInfo);
 	}
 	
 	private static Component createError(String feedback, boolean majorError, Object... additionalInfo)
 	{
-		return Component.translatable("message.sgjourney.transporter.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
+		return new TranslatableComponent("message.sgjourney.transporter.error." + feedback, additionalInfo).withStyle(majorError ? ChatFormatting.DARK_RED : ChatFormatting.RED);
 	}
 }

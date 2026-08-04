@@ -1,8 +1,7 @@
 package net.povstalec.sgjourney.common.events;
 
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.RegisterColorHandlersEvent;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,9 +41,9 @@ public class ModEvents
 	public static class Client
 	{
 		@SubscribeEvent
-		public static void onRegisterItemColors(RegisterColorHandlersEvent.Item event)
+		public static void onRegisterItemColors(ColorHandlerEvent.Item event)
 		{
-			event.register((stack, layer) -> 
+			event.getItemColors().register((stack, layer) ->
 			{
 				if(layer == 0)
 					return -1;
@@ -52,14 +51,13 @@ public class ModEvents
 				if(stack.getItem() instanceof VialItem vial)
 				{
 					FluidStack fluidStack = vial.getFluidStack(stack);
-					IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-					return renderProperties.getTintColor(fluidStack);
+					return fluidStack.getFluid().getAttributes().getColor(fluidStack);
 				}
 				
 				return -1;
 			}, ItemInit.VIAL.get());
 			
-			event.register((stack, layer) ->
+			event.getItemColors().register((stack, layer) ->
 			{
 				if(layer == 0)
 					return -1;
@@ -67,8 +65,7 @@ public class ModEvents
 				if(stack.getItem() instanceof PowerCellItem powerCell)
 				{
 					FluidStack fluidStack = powerCell.getFluidStack(stack);
-					IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-					return renderProperties.getTintColor(fluidStack);
+					return fluidStack.getFluid().getAttributes().getColor(fluidStack);
 				}
 				
 				return -1;

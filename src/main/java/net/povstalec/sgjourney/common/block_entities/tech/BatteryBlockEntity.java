@@ -3,14 +3,13 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -65,7 +64,7 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
+		if(capability == CapabilityEnergy.ENERGY)
 			return lazyItemHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -88,7 +87,7 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+				return stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot

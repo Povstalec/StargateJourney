@@ -6,7 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
@@ -49,7 +49,7 @@ public abstract class TransportRingsMenu<T extends AbstractTransportRingsEntity<
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if(sourceStack.getCapability(CapabilityEnergy.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);

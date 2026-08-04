@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerEditBox;
@@ -35,17 +37,17 @@ public class PocketCrystalComputerEditScreen extends PocketCrystalComputerScreen
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
 		
-		editBox = addRenderableWidget(new CrystalComputerEditBox(font, x + 22, y + 35, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.empty()));
+		editBox = addRenderableWidget(new CrystalComputerEditBox(font, x + 22, y + 35, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, TextComponent.EMPTY));
 		editBox.setMaxLength(18);
 		editBox.setValue(memoryEntry.name());
 		
 		addRenderableWidget(CrystalComputerButton.smallButton(x + 13 + CrystalComputerButton.PAGE_BUTTON_WIDTH, y + 93, true,
-				Component.translatable("screen.sgjourney.crystal_computer.save_entry"),
-				Component.translatable("screen.sgjourney.crystal_computer.save_entry").append(": ").append(Component.literal(memoryEntry.entryString()).withStyle(memoryEntry.getChatFormatting())),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.save_entry"),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.save_entry").append(": ").append(new TextComponent(memoryEntry.entryString()).withStyle(memoryEntry.getChatFormatting())),
 				button -> editEntry()));
 		addRenderableWidget(CrystalComputerButton.smallButton(x + 13 + CrystalComputerButton.PAGE_BUTTON_WIDTH, y + 111, true,
-				Component.translatable("screen.sgjourney.crystal_computer.cancel_entry_editing"),
-				Component.translatable("screen.sgjourney.crystal_computer.cancel_entry_editing"),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.cancel_entry_editing"),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.cancel_entry_editing"),
 				button -> this.minecraft.setScreen(mainScreen)));
 		
 		crystalInComputerButton.active = false;
@@ -55,12 +57,12 @@ public class PocketCrystalComputerEditScreen extends PocketCrystalComputerScreen
 	@Override
 	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
-		drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.edit_entry"), x + 101, y + 14, 0xffffff);
-		font.draw(stack, Component.translatable("screen.sgjourney.crystal_computer.entry_name").append(":"), x + 20, y + 25, 0xffffff);
+		drawCenteredString(stack, font, new TranslatableComponent("screen.sgjourney.crystal_computer.edit_entry"), x + 101, y + 14, 0xffffff);
+		font.draw(stack, new TranslatableComponent("screen.sgjourney.crystal_computer.entry_name").append(":"), x + 20, y + 25, 0xffffff);
 		
 		Component entryTypeComponent = memoryEntry.entryType().getComponent();
-		font.draw(stack, Component.translatable("info.sgjourney.entry_type").append(": ").append(entryTypeComponent), x + 20, y + 61, entryTypeComponent.getStyle().getColor().getValue());
-		font.draw(stack, Component.translatable("info.sgjourney.timestamp").append(": " + memoryEntry.timeStamp()), x + 20, y + 73, 0xffffff);
+		font.draw(stack, new TranslatableComponent("info.sgjourney.entry_type").append(": ").append(entryTypeComponent), x + 20, y + 61, entryTypeComponent.getStyle().getColor().getValue());
+		font.draw(stack, new TranslatableComponent("info.sgjourney.timestamp").append(": " + memoryEntry.timeStamp()), x + 20, y + 73, 0xffffff);
 	}
 	
 	public void editEntry()

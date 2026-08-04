@@ -8,7 +8,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.init.FluidInit;
@@ -221,6 +224,33 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	{
 		public static final CrystallizerSerializer INSTANCE = new CrystallizerSerializer();
 		
+		private ResourceLocation name;
+		
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name)
+		{
+			this.name = name;
+			return this;
+		}
+		
+		@Override
+		public ResourceLocation getRegistryName()
+		{
+			return name;
+		}
+		
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType()
+		{
+			return CrystallizerSerializer.castClass(RecipeSerializer.class);
+		}
+		
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls)
+		{
+			return (Class<G>)cls;
+		}
+		
 		@Override
 		public @NotNull Crystallizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
 		{
@@ -279,6 +309,33 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	public static class AdvancedCrystallizerSerializer implements RecipeSerializer<AdvancedCrystallizer>
 	{
 		public static final AdvancedCrystallizerSerializer INSTANCE = new AdvancedCrystallizerSerializer();
+		
+		private ResourceLocation name;
+		
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name)
+		{
+			this.name = name;
+			return this;
+		}
+		
+		@Override
+		public ResourceLocation getRegistryName()
+		{
+			return name;
+		}
+		
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType()
+		{
+			return AdvancedCrystallizerSerializer.castClass(RecipeSerializer.class);
+		}
+		
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls)
+		{
+			return (Class<G>)cls;
+		}
 		
 		@Override
 		public @NotNull AdvancedCrystallizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)

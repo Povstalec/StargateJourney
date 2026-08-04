@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.common.sgjourney.factions;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -15,11 +14,13 @@ import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Random;
+import java.util.Set;
 
 public class JaffaBurgers extends AbstractFaction
 {
@@ -54,12 +55,12 @@ public class JaffaBurgers extends AbstractFaction
 				.setSpawnCount(ATTACKER_MIN_COUNT, ATTACKER_MAX_COUNT);
 	}
 	
-	public EntityType<?> entityTypeRandomizer(RandomSource randomSource)
+	public EntityType<?> entityTypeRandomizer(Random randomSource)
 	{
 		return EntityInit.JAFFA.get();
 	}
 	
-	public void onEntitySpawn(Entity entity, RandomSource randomSource)
+	public void onEntitySpawn(Entity entity, Random randomSource)
 	{
 		if(entity instanceof FactionMember factionMember)
 			factionMember.setFaction(this);
@@ -70,7 +71,7 @@ public class JaffaBurgers extends AbstractFaction
 	public static ItemStack makeJaffaBurgerStack()
 	{
 		ItemStack stack = new ItemStack(ItemInit.GOAULD_BURGER.get());
-		stack.setHoverName(Component.translatable("item.sgjourney.jaffa_burger"));
+		stack.setHoverName(new TranslatableComponent("item.sgjourney.jaffa_burger"));
 		return stack;
 	}
 	

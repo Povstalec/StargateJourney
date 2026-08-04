@@ -2,10 +2,10 @@ package net.povstalec.sgjourney.client.screens.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
@@ -16,8 +16,8 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
 {
 	private final ResourceLocation texture;
 	
-	public static final Component SYMBOLS_TO_NUMBERS = Component.translatable("tooltip.sgjourney.dhd.symbols_to_numbers");
-	public static final Component NUMBERS_TO_SYMBOLS = Component.translatable("tooltip.sgjourney.dhd.numbers_to_symbols");
+	public static final Component SYMBOLS_TO_NUMBERS = new TranslatableComponent("tooltip.sgjourney.dhd.symbols_to_numbers");
+	public static final Component NUMBERS_TO_SYMBOLS = new TranslatableComponent("tooltip.sgjourney.dhd.numbers_to_symbols");
 	
 	public AbstractDHDScreen(T menu, Inventory playerInventory, Component title, ResourceLocation texture)
 	{

@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -17,6 +16,8 @@ import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Random;
+
 public class WeatheringSlabBlock extends SlabBlock implements SGJourneyWeatheringBlock
 {
 	private final WeatherState weatherState;
@@ -28,7 +29,7 @@ public class WeatheringSlabBlock extends SlabBlock implements SGJourneyWeatherin
 	}
 	
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		this.onRandomTick(state, level, pos, randomSource);
 	}

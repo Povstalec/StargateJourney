@@ -1,38 +1,22 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.HoneycombItem;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -47,8 +31,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
@@ -61,6 +49,10 @@ import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Random;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
@@ -295,7 +287,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					if(coverState != null && !(coverState.getBlock() instanceof EntityBlock))
 					{
 						if(!hasPermissions(level, pos, state, player, true))
-							player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
+							player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions"), true);
 						else if(blockCover.get().setBlockAt(part, coverState))
 						{
 							level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS, 1F, 1F);
@@ -322,7 +314,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			{
 				if(!hasPermissions(level, pos, state, player, true))
-					player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
+					player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions"), true);
 				else if(irisStargate.irisInfo().addIris(stack))
 				{
 					if(!player.isCreative())
@@ -330,7 +322,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 					return true;
 				}
 				else
-					player.displayClientMessage(Component.translatable("message.sgjourney.stargate.error.already_has_iris"), true);;
+					player.displayClientMessage(new TranslatableComponent("message.sgjourney.stargate.error.already_has_iris"), true);;
 			}
 		}
 		
@@ -405,7 +397,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 	
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		getBlockCover(level, state, pos).ifPresent(blockCover -> blockCover.doWeatheringAt(state.getValue(PART), pos, level, randomSource));
 	}
@@ -426,7 +418,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			{
 				if(!player.isCreative())
 					stack.shrink(1);
-				level.gameEvent(GameEvent.BLOCK_CHANGE, result.getBlockPos(), GameEvent.Context.of(player, state));
 				level.levelEvent(player, 3003, result.getBlockPos(), 0);
 				return true;
 			}

@@ -1,8 +1,8 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -154,7 +154,7 @@ public interface SpawnerStargate extends Stargate
 	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
 		if(traveler instanceof Player player)
-			player.displayClientMessage(Component.translatable("no"), true); // TODO add an actual message
+			player.displayClientMessage(new TranslatableComponent("no"), true); // TODO add an actual message
 		
 		return null;
 	}

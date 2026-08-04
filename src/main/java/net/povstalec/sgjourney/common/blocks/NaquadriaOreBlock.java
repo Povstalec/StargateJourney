@@ -2,8 +2,6 @@ package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -12,6 +10,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.AABB;
+
+import java.util.Random;
 
 public class NaquadriaOreBlock extends ExplosiveBlock
 {
@@ -35,7 +35,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		builder.add(EXCITEMENT).add(UNSTABLE);
 	}
 	
-	public void excite(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
+	public void excite(BlockState state, ServerLevel level, BlockPos pos, Random randomSource, int excitement)
 	{
 		int newExcitement = randomSource.nextInt(1, excitement) + state.getValue(EXCITEMENT);
 		
@@ -45,7 +45,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 			setUnstable(state, level, pos);
 	}
 	
-	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, RandomSource randomSource, int excitement)
+	public void exciteNearbyBlocks(ServerLevel level, BlockPos pos, Random randomSource, int excitement)
 	{
 		AABB aabb = new AABB(pos).inflate(excitement);
 		BlockPos.betweenClosedStream(aabb).forEach(otherPos ->
@@ -61,7 +61,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 		});
 	}
 	
-	public void releaseEnergy(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void releaseEnergy(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		//TODO Blue Ice -> Packed Ice -> Ice -> Water -> Nothing
 		
@@ -82,7 +82,7 @@ public class NaquadriaOreBlock extends ExplosiveBlock
 	}
 	
 	@Override
-	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		if(randomSource.nextFloat() <= RADIATION_CHANCE * (state.getValue(EXCITEMENT) + 1))
 			releaseEnergy(state, level, pos, randomSource);

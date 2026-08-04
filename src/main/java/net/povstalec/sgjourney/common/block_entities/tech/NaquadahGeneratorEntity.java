@@ -1,30 +1,29 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
@@ -154,7 +153,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER)
+		if(capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return lazyItemHandler.cast();
 		
 		return super.getCapability(capability, side);

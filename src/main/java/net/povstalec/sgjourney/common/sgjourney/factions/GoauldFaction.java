@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.sgjourney.factions;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.povstalec.sgjourney.common.entities.FactionMember;
@@ -58,12 +57,12 @@ public class GoauldFaction extends AbstractFaction
 		this.random = new Random(0);
 	}
 	
-	public EntityType<?> entityTypeRandomizer(RandomSource randomSource)
+	public EntityType<?> entityTypeRandomizer(Random randomSource)
 	{
 		return EntityInit.JAFFA.get();
 	}
 	
-	public void onEntitySpawn(Entity entity, RandomSource randomSource)
+	public void onEntitySpawn(Entity entity, Random randomSource)
 	{
 		if(entity instanceof FactionMember factionMember)
 			factionMember.setFaction(this);

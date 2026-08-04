@@ -1,9 +1,8 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,6 +25,8 @@ import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
+
+import javax.annotation.Nullable;
 
 public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 {
@@ -62,7 +63,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.zpm_hub");
+        				return new TranslatableComponent("screen.sgjourney.zpm_hub");
         			}
         			
         			@Override
@@ -71,7 +72,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         				return new ZPMHubMenu(windowId, playerInventory, zpmHub);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         		throw new IllegalStateException("Our named container provider is missing!");

@@ -1,8 +1,17 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.Optional;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
@@ -10,16 +19,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
+import java.util.List;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
@@ -123,8 +123,8 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_crystal.energy_target_increase").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.RED));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy").append(new TextComponent(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_crystal.energy_target_increase").append(new TextComponent(": " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.RED));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.energy_crystal.description"));
 	}

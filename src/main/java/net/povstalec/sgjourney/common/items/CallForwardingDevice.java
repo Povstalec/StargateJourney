@@ -1,19 +1,19 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class CallForwardingDevice extends Item
 {
@@ -32,7 +32,7 @@ public class CallForwardingDevice extends Item
 	{
 		ItemStack stack = player.getItemInHand(usedHand);
 		
-		player.displayClientMessage(Component.literal("Work In Progress").withStyle(ChatFormatting.DARK_RED), true); //TODO Add filter interface GUI
+		player.displayClientMessage(new TextComponent("Work In Progress").withStyle(ChatFormatting.DARK_RED), true); //TODO Add filter interface GUI
 		
 		return InteractionResultHolder.success(stack);
 	}

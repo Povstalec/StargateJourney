@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -27,6 +24,8 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+
+import javax.annotation.Nullable;
 
 public class StargateBlockItem extends BlockItem
 {
@@ -62,7 +61,7 @@ public class StargateBlockItem extends BlockItem
 				if(!part.equals(StargatePart.BASE) && !level.getBlockState(part.getRingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 				{
 					if(player != null)
-						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+						player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.not_enough_space"), true);
 					return false;
 				}
 			}
@@ -86,7 +85,7 @@ public class StargateBlockItem extends BlockItem
 							if(part.canExist(ShieldingState.fromProgress(irisProgress)) && !level.getBlockState(part.getShieldingPos(blockpos, context.getHorizontalDirection().getOpposite(), orientation)).canBeReplaced(context))
 							{
 								if(player != null)
-									player.displayClientMessage(Component.translatable("block.sgjourney.stargate.not_enough_space"), true);
+									player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.not_enough_space"), true);
 								return false;
 							}
 						}

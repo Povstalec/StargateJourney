@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-
 import com.mojang.math.Matrix4f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -10,6 +9,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
@@ -38,7 +38,7 @@ public abstract class DHDSymbolButton extends DHDButton
     public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
 						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
 	{
-		super(widgets, x, y, width, height, Component.empty(), (button) -> {});
+		super(widgets, x, y, width, height, TextComponent.EMPTY, (button) -> {});
 		
 		this.menu = menu;
 		this.overlay = overlay;
@@ -77,12 +77,12 @@ public abstract class DHDSymbolButton extends DHDButton
 	
 	public Component symbolComponent()
 	{
-		return Component.literal(Integer.toString(getSymbol())).withStyle(ChatFormatting.WHITE);
+		return new TextComponent(Integer.toString(getSymbol())).withStyle(ChatFormatting.WHITE);
 	}
 	
 	public Component remappedSymbolComponent()
 	{
-		return Component.literal(menu.getRemappedOriginalSymbol(getSymbol()) + " -> ").withStyle(ChatFormatting.DARK_GRAY).append(symbolComponent());
+		return new TextComponent(menu.getRemappedOriginalSymbol(getSymbol()) + " -> ").withStyle(ChatFormatting.DARK_GRAY).append(symbolComponent());
 	}
 	
 	public boolean isEngaged()
@@ -110,7 +110,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		BufferUploader.end(bufferbuilder);
 	}
 	
 	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
@@ -133,7 +133,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
-		BufferUploader.drawWithShader(bufferbuilder.end());
+		BufferUploader.end(bufferbuilder);
 	}
 	
 	public abstract void renderSymbol(PoseStack poseStack);
@@ -184,7 +184,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	
     private static Component symbolComponent(int index)
     {
-    	return Component.literal(String.valueOf(index));
+    	return new TextComponent(String.valueOf(index));
     }
     
 }

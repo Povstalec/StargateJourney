@@ -12,7 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.IModelConfiguration;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockBakedModel;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
@@ -27,10 +27,10 @@ public class SymbolBlockItemOverrides extends ItemOverrides
 	protected final Map<SymbolModelKey, BakedModel> cache = Maps.newHashMap(); // contains all the baked models since they'll never change
 	protected final ItemOverrides nested;
 	protected final ModelBakery baker;
-	protected final IGeometryBakingContext owner;
+	protected final IModelConfiguration owner;
 	protected final SymbolBlockModelLoader.SymbolBlockModelGeometry parent;
 	
-	public SymbolBlockItemOverrides(ItemOverrides nested, ModelBakery baker, IGeometryBakingContext owner, SymbolBlockModelLoader.SymbolBlockModelGeometry parent)
+	public SymbolBlockItemOverrides(ItemOverrides nested, ModelBakery baker, IModelConfiguration owner, SymbolBlockModelLoader.SymbolBlockModelGeometry parent)
 	{
 		this.nested = nested;
 		this.baker = baker;

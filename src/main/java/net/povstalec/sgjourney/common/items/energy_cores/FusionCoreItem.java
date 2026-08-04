@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.items.energy_cores;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -64,8 +66,8 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		if(showEnergy())
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.fusion_core.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.AQUA));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.fusion_core.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.fusion_core.fuel").append(new TextComponent(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.AQUA));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.fusion_core.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}

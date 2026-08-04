@@ -1,12 +1,11 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,22 +22,23 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import javax.annotation.Nullable;
 
 public class ClassicDHDBlock extends CrystalDHDBlock
 {
@@ -70,7 +70,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 						@Override
 						public Component getDisplayName()
 						{
-							return Component.translatable("screen.sgjourney.dhd");
+							return new TranslatableComponent("screen.sgjourney.dhd");
 						}
 						
 						@Override
@@ -79,7 +79,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 							return new DHDCrystalMenu.Classic(windowId, playerInventory, dhd);
 						}
 					};
-					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+					NetworkHooks.openGui((ServerPlayer) player, containerProvider, dhd.getBlockPos());
 				}
 				else
 				{
@@ -88,7 +88,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 						@Override
 						public Component getDisplayName()
 						{
-							return Component.translatable("screen.sgjourney.dhd");
+							return new TranslatableComponent("screen.sgjourney.dhd");
 						}
 						
 						@Override
@@ -97,7 +97,7 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 							return new ClassicDHDMenu(windowId, playerInventory, dhd);
 						}
 					};
-					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+					NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 				}
         	}
         	else

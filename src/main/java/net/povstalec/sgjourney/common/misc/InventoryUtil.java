@@ -4,10 +4,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.*;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -111,9 +109,9 @@ public class InventoryUtil
 	
 	public static boolean stackHasEnergy(ItemStack stack)
 	{
-		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+		if(stack.getCapability(CapabilityEnergy.ENERGY).isPresent())
 		{
-			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+			IEnergyStorage energyStorage = stack.getCapability(CapabilityEnergy.ENERGY).resolve().get();
 			
 			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
 		}

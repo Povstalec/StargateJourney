@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.blocks;
 
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -89,7 +89,7 @@ public class ATAGeneDetectorBlock extends Block implements AncientTech
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random source)
 	{
 		level.setBlock(pos, state.setValue(MEASURED_GENE, 0), 3);
 	}

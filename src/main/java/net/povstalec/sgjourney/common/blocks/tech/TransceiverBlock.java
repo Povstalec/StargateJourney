@@ -3,10 +3,12 @@ package net.povstalec.sgjourney.common.blocks.tech;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Nullable;
 
 import com.mojang.math.Vector3d;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import net.minecraft.core.BlockPos;
@@ -14,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -134,7 +135,7 @@ public class TransceiverBlock extends Block implements EntityBlock
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.transceiver");
+        				return new TranslatableComponent("screen.sgjourney.transceiver");
         			}
         			
         			@Override
@@ -143,7 +144,7 @@ public class TransceiverBlock extends Block implements EntityBlock
         				return new TransceiverMenu(windowId, playerInventory, transceiver);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{
@@ -161,7 +162,7 @@ public class TransceiverBlock extends Block implements EntityBlock
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource source)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random source)
 	{
 		level.setBlock(pos, state.setValue(RECEIVING, Receiving.FALSE), 3);
 	}

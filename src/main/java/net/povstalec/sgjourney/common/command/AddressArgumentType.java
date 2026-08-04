@@ -5,10 +5,8 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.ResourceLocationException;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.Arrays;
@@ -20,7 +18,7 @@ public class AddressArgumentType implements ArgumentType<Address.Immutable>
 	private static final Collection<String> EXAMPLE_8_CHEVRON = Arrays.asList("-1-2-3-4-5-6-7-");
 	private static final Collection<String> EXAMPLE_7_CHEVRON = Arrays.asList("-1-2-3-4-5-6-");
 	private static final Collection<String> EXAMPLE_INVALID = Arrays.asList("-");
-	public static final SimpleCommandExceptionType ERROR_NOT_COMPLETE = new SimpleCommandExceptionType(Component.translatable("sgjourney.argument.address.incomplete"));
+	public static final SimpleCommandExceptionType ERROR_NOT_COMPLETE = new SimpleCommandExceptionType(new TranslatableComponent("sgjourney.argument.address.incomplete"));
 	
 	private Address.Type addressType;
 	

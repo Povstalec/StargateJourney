@@ -1,25 +1,20 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -35,6 +30,7 @@ import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 
@@ -140,13 +136,13 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 				energy = blockEntityTag.getLong(AbstractDHDEntity.ENERGY);
 		}
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOriginString)).withStyle(ChatFormatting.DARK_PURPLE));
-		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(new TextComponent(": ")).append(new TranslatableComponent(pointOfOriginString)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(new TextComponent(": ")).append(new TranslatableComponent(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		tooltipComponents.add(ComponentHelper.energy("tooltip.sgjourney.energy_buffer", energy));
 		
 		if(blockEntityTag != null && blockEntityTag.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.GENERATED != StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractDHDEntity.GENERATION_STEP)))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}

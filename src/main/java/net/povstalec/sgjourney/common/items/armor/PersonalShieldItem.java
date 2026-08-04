@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,7 +22,6 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -88,14 +90,14 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	
 	public static FluidStack getFluidStack(ItemStack stack)
 	{
-		Optional<FluidStack> fluid = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0));
+		Optional<FluidStack> fluid = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fluidHandler -> fluidHandler.getFluidInTank(0));
 		
 		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
 	}
 	
 	public static void drainNaquadah(ItemStack stack, int amount)
 	{
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler -> 
+		stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidHandler ->
 		{
 			fluidHandler.drain(amount, FluidAction.EXECUTE);
 		});
@@ -107,8 +109,8 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
     	FluidStack fluidStack = getFluidStack(stack);
 		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
 		{
-			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
-			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
+			MutableComponent liquidNaquadah = new TranslatableComponent(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
+			liquidNaquadah.append(new TextComponent(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
 	    	tooltipComponents.add(liquidNaquadah);
 		}
         
@@ -119,7 +121,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	{
 		ItemStack stack = new ItemStack(ItemInit.PERSONAL_SHIELD_EMITTER.get());
         
-        stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
+        stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).ifPresent(fluidHandler ->
         {
         	fluidHandler.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), getMaxCapacity()), FluidAction.EXECUTE);
         });

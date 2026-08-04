@@ -9,6 +9,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
@@ -84,7 +85,19 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 		@Override
 		public @NotNull Component getTitle()
 		{
-			return Component.translatable("block.sgjourney.naquadah_liquidizer");
+			return new TranslatableComponent("block.sgjourney.naquadah_liquidizer");
+		}
+		
+		@Override
+		public ResourceLocation getUid()
+		{
+			return getRecipeType().getUid();
+		}
+		
+		@Override
+		public Class<? extends LiquidizingRecipe.NaquadahLiquidizer> getRecipeClass()
+		{
+			return getRecipeType().getRecipeClass();
 		}
 	}
 	
@@ -112,7 +125,19 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 		@Override
 		public @NotNull Component getTitle()
 		{
-			return Component.translatable("block.sgjourney.heavy_naquadah_liquidizer");
+			return new TranslatableComponent("block.sgjourney.heavy_naquadah_liquidizer");
+		}
+		
+		@Override
+		public ResourceLocation getUid()
+		{
+			return getRecipeType().getUid();
+		}
+		
+		@Override
+		public Class<? extends LiquidizingRecipe.HeavyNaquadahLiquidizer> getRecipeClass()
+		{
+			return getRecipeType().getRecipeClass();
 		}
 	}
 }

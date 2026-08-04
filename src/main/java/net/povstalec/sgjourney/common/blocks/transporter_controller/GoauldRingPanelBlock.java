@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -73,7 +74,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
         			@Override
         			public Component getDisplayName() 
         			{
-        				return Component.translatable("screen.sgjourney.ring_panel");
+        				return new TranslatableComponent("screen.sgjourney.ring_panel");
         			}
         			
         			@Override
@@ -82,7 +83,7 @@ public class GoauldRingPanelBlock extends TransporterControllerBlock
         				return ringPanel.hasPermissions(player, false) ? new RingPanelMenu.Unprotected(windowId, playerInventory, ringPanel) : new RingPanelMenu.Protected(windowId, playerInventory, ringPanel);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+        		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         		throw new IllegalStateException("Our named container provider is missing!");

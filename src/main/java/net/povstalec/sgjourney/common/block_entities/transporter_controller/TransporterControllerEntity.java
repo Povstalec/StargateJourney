@@ -8,8 +8,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -17,8 +18,8 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -37,10 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public abstract class TransporterControllerEntity extends EnergyBlockEntity implements StructureGenEntity, ProtectedBlockEntity, PDAStatus,
 		AutoCache.IController<TransporterControllerEntity, AbstractTransporterEntity<?>>
@@ -295,7 +293,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+				return stack.getCapability(CapabilityEnergy.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot
@@ -326,7 +324,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			// Uses energy from an Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
-				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+				IEnergyStorage energyStorage = energyStack.getCapability(CapabilityEnergy.ENERGY).resolve().get();
 				
 				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{
@@ -388,9 +386,9 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		List<Component> status = new ArrayList<>();
 		
 		if(transporterCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.transporter_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(transporterCache.get().getBlockPos()))).withStyle(ChatFormatting.DARK_AQUA));
+			status.add(new TranslatableComponent("info.sgjourney.transporter_connected").append(new TextComponent(": ").append(ComponentHelper.coordinate(transporterCache.get().getBlockPos()))).withStyle(ChatFormatting.DARK_AQUA));
 		else
-			status.add(Component.translatable("info.sgjourney.no_transporter_connected").withStyle(ChatFormatting.DARK_AQUA));
+			status.add(new TranslatableComponent("info.sgjourney.no_transporter_connected").withStyle(ChatFormatting.DARK_AQUA));
 		
 		return status;
 	}
@@ -420,7 +418,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	public void generateInStructure(WorldGenLevel level, Random randomSource)
 	{
 		if(generationStep == Step.SETUP)
 			generationStep = Step.READY; // Marks the Controller as ready for generation
@@ -456,7 +454,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_transporter_controller_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

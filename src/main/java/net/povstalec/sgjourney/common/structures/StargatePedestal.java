@@ -1,53 +1,17 @@
 package net.povstalec.sgjourney.common.structures;
 
-import java.util.Optional;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.NoiseColumn;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.WorldGenerationContext;
-import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
-import net.minecraft.world.level.levelgen.structure.Structure;
-import net.minecraft.world.level.levelgen.structure.StructureType;
-import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
+import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
-public class StargatePedestal extends StargateStructure
+public class StargatePedestal extends StargateStructure<StargateStructure.Configuration>
 {
-	public static final Codec<StargatePedestal> CODEC = RecordCodecBuilder.<StargatePedestal>mapCodec(instance ->
-			instance.group(StargatePedestal.settingsCodec(instance),
-					StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
-					StructureTemplatePool.CODEC.optionalFieldOf("obstructed_start_pool").forGetter(structure -> Optional.ofNullable(structure.obstructedStartPool)),
-					ResourceLocation.CODEC.optionalFieldOf("start_jigsaw_name").forGetter(structure -> Optional.ofNullable(structure.startJigsawName)),
-					Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
-					HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
-					Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> Optional.ofNullable(structure.projectStartToHeightmap)),
-					Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
-					Rotation.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
-					Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
-					StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
-					DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
-		).apply(instance, StargatePedestal::new)).codec();
-
-	public StargatePedestal(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
-							int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
-							Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
+	public StargatePedestal()
 	{
-		super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates, stargateModifiers, dhdModifiers);
+		super(Configuration.CODEC, config -> findGenerationPoint(config, StargatePedestal::extraSpawningChecks));
 	}
-
-    @Override
-    public StructureType<?> type()
-    {
-        return StructureInit.STARGATE_PEDESTAL.get(); // Helps the game know how to turn this structure back to json to save to chunks
-    }
+	
+	public static boolean extraSpawningChecks(PieceGeneratorSupplier.Context<StargateStructure.Configuration> context)
+	{
+		return true;
+	}
 }

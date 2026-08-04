@@ -1,16 +1,10 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-import java.util.Optional;
-
-import net.minecraft.core.NonNullList;
-import net.minecraft.world.item.CreativeModeTab;
-import net.povstalec.sgjourney.common.misc.RecipeUtil;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,6 +15,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
 
 public class StargateUpgradeItem extends Item
 {
@@ -81,11 +79,11 @@ public class StargateUpgradeItem extends Item
             {
             	String variant = stack.getOrCreateTag().getString(TYPE);
             	
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_type").append(Component.literal(": " + variant)).withStyle(ChatFormatting.GREEN));
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.stargate_type").append(new TextComponent(": " + variant)).withStyle(ChatFormatting.GREEN));
             }
         }
         
-        tooltipComponents.add(Component.translatable("tooltip.sgjourney.stargate_upgrade.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+        tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.stargate_upgrade.description").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

@@ -5,12 +5,14 @@ import com.mojang.math.Matrix4f;
 
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
+import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 
@@ -38,6 +40,10 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			boolean forceBrightLightmap, boolean constantAmbientLight)
 	{
 		super(cloudLevel, hasGround, skyType, forceBrightLightmap, constantAmbientLight);
+		
+		setSkyRenderHandler(this::renderSky);
+		setCloudRenderHandler(this::renderClouds);
+		setWeatherRenderHandler(this::renderSnowAndRain);
 	}
 
 	@Override
@@ -51,18 +57,21 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	{
 		return false;
 	}
-
-	@Override
-	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix)
+	
+	public boolean renderClouds(int ticks, float partialTick, PoseStack poseStack, ClientLevel level, Minecraft minecraft, double camX, double camY, double camZ)
     {
         return false;
     }
 	
-	@Override
-	public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+	public boolean renderSky(int ticks, float partialTick, PoseStack poseStack, ClientLevel level, Minecraft minecraft)
     {
 		if(customSky())
 		{
+			Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+			Matrix4f projectionMatrix = poseStack.last().pose();
+			boolean isFoggy = Minecraft.getInstance().level.effects().isFoggyAt(Mth.floor(camera.getPosition().x), Mth.floor(camera.getPosition().y)) || Minecraft.getInstance().gui.getBossOverlay().shouldCreateWorldFog();
+			Runnable setupFog = () -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, Minecraft.getInstance().gameRenderer.getRenderDistance(), isFoggy, partialTick);
+			
 			if(stellarViewSky())
 				return StellarViewCompatibility.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
 			else if(skyRenderer != null)
@@ -74,18 +83,17 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
         return false;
     }
 	
-	@Override
-	public boolean renderSnowAndRain(ClientLevel level, int ticks, float partialTick, LightTexture lightTexture, double camX, double camY, double camZ)
+	public boolean renderSnowAndRain(int ticks, float partialTick, ClientLevel level, Minecraft minecraft, LightTexture lightTexture, double camX, double camY, double camZ)
     {
         return false;
     }
 	
-	@Override
+	/*@Override
 	public void adjustLightmapColors(ClientLevel level, float partialTicks, float skyDarken, float skyLight, float blockLight, int pixelX, int pixelY, Vector3f colors)
 	{
 		if(stellarViewSky())
 			StellarViewCompatibility.adjustLightmapColors(level, partialTicks, skyDarken, skyLight, blockLight, pixelX, pixelY, colors);
-	}
+	}*/
 	
 	public boolean stellarViewSky()
 	{
@@ -253,19 +261,19 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	
 	
 	
-	public static void registerStargateJourneyEffects(RegisterDimensionSpecialEffectsEvent event)
+	public static void registerStargateJourneyEffects()
 	{
 		// Milky Way
-		event.register(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
-    	event.register(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
-		event.register(SGJourneyDimensionSpecialEffects.UNITAS_EFFECTS, new SGJourneyDimensionSpecialEffects.Unitas());
-		event.register(SGJourneyDimensionSpecialEffects.RIMA_EFFECTS, new SGJourneyDimensionSpecialEffects.Rima());
-		event.register(SGJourneyDimensionSpecialEffects.TOLLAN_EFFECTS, new SGJourneyDimensionSpecialEffects.Tollan());
-    	event.register(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.ABYDOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Abydos());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.CHULAK_EFFECTS, new SGJourneyDimensionSpecialEffects.Chulak());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.UNITAS_EFFECTS, new SGJourneyDimensionSpecialEffects.Unitas());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.RIMA_EFFECTS, new SGJourneyDimensionSpecialEffects.Rima());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.TOLLAN_EFFECTS, new SGJourneyDimensionSpecialEffects.Tollan());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.CAVUM_TENEBRAE_EFFECTS, new SGJourneyDimensionSpecialEffects.CavumTenebrae());
 		// Pegasus
-    	event.register(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
-    	event.register(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.LANTEA_EFFECTS, new SGJourneyDimensionSpecialEffects.Lantea());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.ATHOS_EFFECTS, new SGJourneyDimensionSpecialEffects.Athos());
 		// Destiny
-		event.register(SGJourneyDimensionSpecialEffects.DESTINY_EFFECTS, new SGJourneyDimensionSpecialEffects.Destiny());
+		DimensionSpecialEffects.EFFECTS.put(SGJourneyDimensionSpecialEffects.DESTINY_EFFECTS, new SGJourneyDimensionSpecialEffects.Destiny());
 	}
 }

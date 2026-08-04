@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
@@ -63,7 +65,7 @@ public class BatteryScreen extends SGJourneyContainerScreen<BatteryMenu>
 	
 	protected void energyTooltip(PoseStack poseStack, int x, int y, int mouseX, int mouseY)
 	{
-		this.tooltip(poseStack, mouseX, mouseY, x, y, 88, 52, Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(menu.getEnergy(), menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
+		this.tooltip(poseStack, mouseX, mouseY, x, y, 88, 52, new TranslatableComponent("tooltip.sgjourney.energy").append(new TextComponent(": " + SGJourneyEnergy.energyToString(menu.getEnergy(), menu.getMaxEnergy()))).withStyle(ChatFormatting.DARK_RED));
 	}
 	
 	@Override

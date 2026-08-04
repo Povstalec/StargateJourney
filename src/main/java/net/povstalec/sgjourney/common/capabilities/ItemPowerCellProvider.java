@@ -5,9 +5,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -33,7 +33,7 @@ public abstract class ItemPowerCellProvider extends ItemFluidHolderProvider
 	@Override
 	public <T> @NotNull LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
 	{
-		if(cap == ForgeCapabilities.ENERGY)
+		if(cap == CapabilityEnergy.ENERGY)
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(cap, side);

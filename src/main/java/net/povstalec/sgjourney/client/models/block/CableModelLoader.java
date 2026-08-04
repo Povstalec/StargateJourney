@@ -8,18 +8,21 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
-import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.povstalec.sgjourney.StargateJourney;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableModelGeometry>
+public class CableModelLoader implements IModelLoader<CableModelLoader.CableModelGeometry>
 {
 	public static final String CABLE_LOADER = "cable_loader";
 	
@@ -28,7 +31,7 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 	public static final String THICKNESS = "thickness";
 	
 	@Override
-	public CableModelGeometry read(JsonObject jsonObject, JsonDeserializationContext deserializationContext) throws JsonParseException
+	public CableModelGeometry read(JsonDeserializationContext deserializationContext, JsonObject jsonObject) throws JsonParseException
 	{
 		ResourceLocation texture;
 		if(jsonObject.has(TEXTURE))
@@ -59,14 +62,19 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 		return new CableModelGeometry(texture, particleTexture, thickness);
 	}
 	
-	public static void register(ModelEvent.RegisterGeometryLoaders event)
+	public static void register(ModelRegistryEvent event)
 	{
-		event.register(CABLE_LOADER, new CableModelLoader());
+		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(CABLE_LOADER), new CableModelLoader());
+	}
+	
+	@Override
+	public void onResourceManagerReload(ResourceManager resourceManager)
+	{
+	
 	}
 	
 	
-	
-	public static class CableModelGeometry implements IUnbakedGeometry<CableModelGeometry>
+	public static class CableModelGeometry implements IModelGeometry<CableModelGeometry>
 	{
 		private ResourceLocation texture;
 		private Material material;
@@ -82,13 +90,13 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 		}
 		
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IModelConfiguration context, ModelBakery baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
-			return new CableBakedModel(context, this.texture, this.particleTexture, this.thickness);
+			return new CableBakedModel(modelState, overrides, context.getCameraTransforms(), this.texture, this.particleTexture, this.thickness);
 		}
 		
 		@Override
-		public Collection<Material> getMaterials(IGeometryBakingContext context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<Material> getTextures(IModelConfiguration context, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
 			return List.of(material);
 		}

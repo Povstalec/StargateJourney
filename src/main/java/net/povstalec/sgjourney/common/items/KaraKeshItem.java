@@ -1,13 +1,9 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -21,8 +17,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.tech.GoauldTech;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class KaraKeshItem extends Item implements GoauldTech
 {
@@ -71,9 +70,9 @@ public class KaraKeshItem extends Item implements GoauldTech
 			setMode(stack, oldMode == Mode.KNOCKBACK ? Mode.TERROR : Mode.KNOCKBACK);
 			
 			if(oldMode == Mode.KNOCKBACK)
-				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(new TranslatableComponent("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED), true);
 			else
-				player.displayClientMessage(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
+				player.displayClientMessage(new TranslatableComponent("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD), true);
 			
 			return InteractionResultHolder.success(player.getItemInHand(usedHand));
 		}
@@ -113,12 +112,12 @@ public class KaraKeshItem extends Item implements GoauldTech
     public void appendHoverText(ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
     {
 		if(getMode(stack) == Mode.TERROR)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.kara_kesh.terror").withStyle(ChatFormatting.RED));
 		else
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.kara_kesh.knockback").withStyle(ChatFormatting.GOLD));
     	
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.terror_knockback").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.kara_kesh.use").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.kara_kesh.terror_knockback").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.kara_kesh.use").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }

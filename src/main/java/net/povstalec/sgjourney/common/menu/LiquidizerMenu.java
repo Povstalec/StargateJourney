@@ -6,8 +6,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
@@ -85,7 +86,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
      */
     private boolean hasRequiredLiquid(ItemStack itemStack)
 	{
-		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		if(fluidHandler != null)
 			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
@@ -98,7 +99,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
      */
     private boolean canAcceptResultingLiquid(ItemStack itemStack)
     {
-		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).resolve().orElse(null);
 		if(fluidHandler != null)
 			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluidStack().getFluid());
 		
@@ -114,7 +115,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if(sourceStack.getCapability(CapabilityEnergy.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		// Try moving it to Liquid input slot

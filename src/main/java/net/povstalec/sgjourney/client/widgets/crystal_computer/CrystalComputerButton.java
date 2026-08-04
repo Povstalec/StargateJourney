@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.client.widgets.crystal_computer;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
 
@@ -37,33 +38,33 @@ public class CrystalComputerButton extends SGJourneyButton
 	
 	public static CrystalComputerButton copyButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH, 0, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH, 0, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	public static CrystalComputerButton pasteButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH + 16, 0, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH + 16, 0, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	public static CrystalComputerButton deleteButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH + 32, 0, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, 16, 16, ENTRY_BUTTON_WIDTH + 32, 0, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	public static CrystalComputerButton moveDownButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 16, 8, ENTRY_BUTTON_WIDTH + 48, 0, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, 16, 8, ENTRY_BUTTON_WIDTH + 48, 0, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	public static CrystalComputerButton moveUpButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, 16, 8, ENTRY_BUTTON_WIDTH + 64, 0, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, 16, 8, ENTRY_BUTTON_WIDTH + 64, 0, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	
 	public static CrystalComputerButton pageBackButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, 0, 48, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, 0, 48, active, TextComponent.EMPTY, tooltip, press);
 	}
 	
 	public static CrystalComputerButton smallButton(int x, int y, boolean active, Component component, Component tooltip, OnPress press)
@@ -73,7 +74,7 @@ public class CrystalComputerButton extends SGJourneyButton
 	
 	public static CrystalComputerButton pageForwardButton(int x, int y, boolean active, Component tooltip, OnPress press)
 	{
-		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, PAGE_BUTTON_WIDTH + SMALL_BUTTON_WIDTH, 48, active, Component.empty(), tooltip, press);
+		return new CrystalComputerButton(x, y, PAGE_BUTTON_WIDTH, 16, PAGE_BUTTON_WIDTH + SMALL_BUTTON_WIDTH, 48, active, TextComponent.EMPTY, tooltip, press);
 	}
 
 	

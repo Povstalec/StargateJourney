@@ -6,6 +6,7 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.*;
 
 import java.util.function.Supplier;
@@ -13,7 +14,7 @@ import java.util.function.Supplier;
 public class TransporterInit
 {
 	public static final DeferredRegister<TransporterType<?>> TRANSPORTER_TYPES = DeferredRegister.create(TransporterType.TRANSPORTER_TYPE_LOCATION, StargateJourney.MODID);
-	public static final Supplier<IForgeRegistry<TransporterType<?>>> TRANSPORTER_TYPE = TRANSPORTER_TYPES.makeRegistry(RegistryBuilder::new);
+	public static final Supplier<IForgeRegistry<TransporterType<?>>> TRANSPORTER_TYPE = TRANSPORTER_TYPES.makeRegistry((Class) TransporterType.class, () -> new RegistryBuilder<StargateType<?>>());
 	
 	
 	

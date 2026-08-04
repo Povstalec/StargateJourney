@@ -1,35 +1,29 @@
 package net.povstalec.sgjourney.client.render;
 
-import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.Logger;
-
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.logging.LogUtils;
 import com.mojang.math.Matrix4f;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidType;
+import org.slf4j.Logger;
+
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 //CREDIT: https://github.com/mezz/JustEnoughItems by mezz
 //Under MIT-License: https://github.com/mezz/JustEnoughItems/blob/1.19/LICENSE.txt
@@ -109,8 +103,8 @@ public class FluidTankRenderer
  private TextureAtlasSprite getStillFluidSprite(FluidStack fluidStack)
  {
      Fluid fluid = fluidStack.getFluid();
-     IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-     ResourceLocation fluidStill = renderProperties.getStillTexture(fluidStack);
+	 FluidAttributes attributes = fluid.getAttributes();
+     ResourceLocation fluidStill = attributes.getStillTexture(fluidStack);
 
      Minecraft minecraft = Minecraft.getInstance();
      return minecraft.getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidStill);
@@ -119,8 +113,8 @@ public class FluidTankRenderer
  private int getColorTint(FluidStack ingredient)
  {
      Fluid fluid = ingredient.getFluid();
-     IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluid);
-     return renderProperties.getTintColor(ingredient);
+	 FluidAttributes attributes = fluid.getAttributes();
+     return attributes.getColor(ingredient);
  }
 
  private static void drawTiledSprite(PoseStack poseStack, final int tiledWidth, final int tiledHeight, int color, long scaledAmount, TextureAtlasSprite sprite)
@@ -200,16 +194,16 @@ public class FluidTankRenderer
          tooltip.add(displayName);
 
          long amount = fluidStack.getAmount();
-         long milliBuckets = (amount * 1000) / FluidType.BUCKET_VOLUME;
+         long milliBuckets = (amount * 1000) / FluidAttributes.BUCKET_VOLUME;
 
          if(tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY)
 		 {
-             MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
+             MutableComponent amountString = new TranslatableComponent("tutorialmod.tooltip.liquid.amount.with.capacity", nf.format(milliBuckets), nf.format(capacity));
              tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
          }
 		 else if(tooltipMode == TooltipMode.SHOW_AMOUNT)
 		 {
-             MutableComponent amountString = Component.translatable("tutorialmod.tooltip.liquid.amount", nf.format(milliBuckets));
+             MutableComponent amountString = new TranslatableComponent("tutorialmod.tooltip.liquid.amount", nf.format(milliBuckets));
              tooltip.add(amountString.withStyle(ChatFormatting.GRAY));
          }
      }
