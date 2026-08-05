@@ -313,8 +313,8 @@
 	
 	"block.sgjourney.large_naquadah_battery": "Large Naquadah Battery",
 	
-	"fluid_type.sgjourney.liquid_naquadah": "Liquid Naquadah",
-	"fluid_type.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
+	"fluid.sgjourney.liquid_naquadah": "Liquid Naquadah",
+	"fluid.sgjourney.heavy_liquid_naquadah": "Heavy Liquid Naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Raw Naquadah",
 	"item.sgjourney.raw_naquadria": "Raw Naquadria",

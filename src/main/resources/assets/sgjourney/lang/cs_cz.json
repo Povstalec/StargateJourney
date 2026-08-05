@@ -312,8 +312,8 @@
 	
 	"block.sgjourney.large_naquadah_battery": "Velká naquadahová baterie",
 	
-	"fluid_type.sgjourney.liquid_naquadah": "Tekutý naquadah",
-	"fluid_type.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
+	"fluid.sgjourney.liquid_naquadah": "Tekutý naquadah",
+	"fluid.sgjourney.heavy_liquid_naquadah": "Těžký tekutý naquadah",
 	
 	"item.sgjourney.raw_naquadah": "Vytěžený naquadah",
 	"item.sgjourney.raw_naquadria": "Vytěžená naquadrie",

@@ -21,7 +21,7 @@ public class CommonStargate extends StargateStructure<StargateStructure.Configur
 		int landHeight = context.chunkGenerator().getFirstOccupiedHeight(
 			chunkpos.getMinBlockX(),
 			chunkpos.getMinBlockZ(),
-			Heightmap.Types.WORLD_SURFACE,
+			Heightmap.Types.WORLD_SURFACE_WG,
 			context.heightAccessor());
 		
 		NoiseColumn columnOfBlocks = context.chunkGenerator().getBaseColumn(chunkpos.getMinBlockX(), chunkpos.getMinBlockZ(), context.heightAccessor());

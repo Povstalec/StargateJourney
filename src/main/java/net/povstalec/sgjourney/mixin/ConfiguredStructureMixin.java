@@ -1,8 +1,7 @@
 package net.povstalec.sgjourney.mixin;
 
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelHeightAccessor;
@@ -18,6 +17,7 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.StructurePiecesBuilder;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureManager;
+import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.structures.SGJourneyStructure;
 import net.povstalec.sgjourney.common.structures.SGJourneyStructureStart;
 import org.spongepowered.asm.mixin.Mixin;
@@ -69,5 +69,15 @@ public class ConfiguredStructureMixin
 		}
 		
 	}
-	
+	@Inject(method = "biomes", at = @At("HEAD"), cancellable = true)
+	public void biomes(CallbackInfoReturnable<HolderSet<Biome>> cir)
+	{
+		if(self().config instanceof SGJourneyStructure.Configuration sgjourneyConfig)
+		{
+			if(sgjourneyConfig.commonStargates() == null)
+				cir.setReturnValue(self().biomes);
+			else if(sgjourneyConfig.commonStargates() != CommonGenerationConfig.common_stargate_generation.get())
+				cir.setReturnValue(HolderSet.direct());
+		}
+	}
 }

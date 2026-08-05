@@ -10,7 +10,7 @@ public class JaffaHouse extends SGJourneyStructure<SGJourneyStructure.Configurat
 {
     public JaffaHouse()
     {
-        super(Configuration.CODEC, config -> findGenerationPoint(config, GoauldTemple::extraSpawningChecks));
+        super(Configuration.CODEC, config -> findGenerationPoint(config, JaffaHouse::extraSpawningChecks));
     }
 	
 	public static boolean extraSpawningChecks(PieceGeneratorSupplier.Context<SGJourneyStructure.Configuration> context)
@@ -20,7 +20,7 @@ public class JaffaHouse extends SGJourneyStructure<SGJourneyStructure.Configurat
 		int landHeight = context.chunkGenerator().getFirstOccupiedHeight(
 			chunkpos.getMinBlockX(),
 			chunkpos.getMinBlockZ(),
-			Heightmap.Types.WORLD_SURFACE,
+			Heightmap.Types.WORLD_SURFACE_WG,
 			context.heightAccessor());
 		
 		NoiseColumn columnOfBlocks = context.chunkGenerator().getBaseColumn(chunkpos.getMinBlockX(), chunkpos.getMinBlockZ(), context.heightAccessor());

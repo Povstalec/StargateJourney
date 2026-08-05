@@ -13,7 +13,7 @@
 	"use_expansion_hack": false,
 	
 	"spawn_overrides": {
-		"monster": {
+		"creature": {
 			"bounding_box": "piece",
 			"spawns": [
 				{

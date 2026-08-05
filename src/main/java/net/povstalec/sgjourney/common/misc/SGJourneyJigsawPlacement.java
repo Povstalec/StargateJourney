@@ -61,7 +61,7 @@ public class SGJourneyJigsawPlacement
 			int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
 			int k;
 			if (p_210289_) {
-				k = p_210287_.getY() + chunkgenerator.getFirstFreeHeight(i, j, Heightmap.Types.WORLD_SURFACE_WG, levelheightaccessor);
+				k = p_210287_.getY() + chunkgenerator.getFirstFreeHeight(i, j, Heightmap.Types.OCEAN_FLOOR_WG, levelheightaccessor);
 			} else {
 				k = p_210287_.getY();
 			}

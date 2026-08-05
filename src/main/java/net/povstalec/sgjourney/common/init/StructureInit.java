@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.init;
 
 import net.minecraft.core.Registry;
-import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.level.levelgen.feature.StructureFeature;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
@@ -11,8 +10,6 @@ import net.povstalec.sgjourney.common.structures.*;
 
 public class StructureInit
 {
-	//public static final DeferredRegister<ConfiguredStructureFeature<?, ?>> DEFERRED_REGISTRY_CONFIGURED_STRUCTURE = DeferredRegister.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, StargateJourney.MODID);
-	
 	public static final DeferredRegister<StructureFeature<?>> DEFERRED_REGISTRY_STRUCTURE = DeferredRegister.create(Registry.STRUCTURE_FEATURE_REGISTRY, StargateJourney.MODID);
 	
 	public static final RegistryObject<StructureFeature<?>> COMMON_STARGATE =
@@ -47,8 +44,6 @@ public class StructureInit
 	
 	public static void register(IEventBus eventBus)
 	{
-		//DEFERRED_REGISTRY_CONFIGURED_STRUCTURE.register(eventBus);
-		
 		DEFERRED_REGISTRY_STRUCTURE.register(eventBus);
 	}
 }

@@ -144,6 +144,11 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 			this.commonStargates = commonStargates.orElse(null);
 		}
 		
+		public Boolean commonStargates()
+		{
+			return commonStargates;
+		}
+		
 		public void afterPlace(WorldGenLevel level, StructureFeatureManager structureManager, ChunkGenerator chunkGenerator, Random randomSource,
 							   BoundingBox boundingBox, ChunkPos chunkPos, PiecesContainer piecesContainer)
 		{
