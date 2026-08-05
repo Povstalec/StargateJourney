@@ -110,6 +110,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		bufferbuilder.end();
 		BufferUploader.end(bufferbuilder);
 	}
 	
@@ -133,6 +134,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
 		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		bufferbuilder.end();
 		BufferUploader.end(bufferbuilder);
 	}
 	

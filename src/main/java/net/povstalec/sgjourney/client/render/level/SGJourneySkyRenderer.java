@@ -322,6 +322,7 @@ public abstract class SGJourneySkyRenderer
         bufferbuilder.vertex(lastMatrix, u1v0[0], u1v0[1], u1v0[2]).uv(uv[2], uv[1]).endVertex();
         bufferbuilder.vertex(lastMatrix, u1v1[0], u1v1[1], u1v1[2]).uv(uv[2], uv[3]).endVertex();
         bufferbuilder.vertex(lastMatrix, u0v1[0], u0v1[1], u0v1[2]).uv(uv[0], uv[3]).endVertex();
+		bufferbuilder.end();
         BufferUploader.end(bufferbuilder);
 	}
 	
@@ -405,6 +406,7 @@ public abstract class SGJourneySkyRenderer
 				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
 			}
 			
+			bufferbuilder.end();
 			BufferUploader.end(bufferbuilder);
 			stack.popPose();
 		}

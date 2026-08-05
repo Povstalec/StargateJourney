@@ -2,6 +2,7 @@
   "type": "sgjourney:chulak",
   "generator": {
     "type": "minecraft:noise",
+	"seed": 703553303548037,
     "settings": "sgjourney:milky_way_planet",
     "biome_source": {
       "type": "minecraft:multi_noise",

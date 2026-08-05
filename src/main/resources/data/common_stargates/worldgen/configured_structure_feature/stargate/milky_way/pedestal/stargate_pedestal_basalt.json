@@ -1,0 +1,42 @@
+{
+	"type": "sgjourney:common_stargate",
+	
+	"config":
+	{
+		"start_pool": "sgjourney:stargate/milky_way/pedestal/stargate_pedestal_basalt",
+		"size": 1,
+		"start_height":
+		{
+			"type": "minecraft:uniform",
+			"min_inclusive":
+			{
+				"absolute": 33
+			},
+			"max_inclusive":
+			{
+				"absolute": 70
+			}
+		},
+		
+		"stargate_modifiers":
+		{
+			"display_id": true,
+			"upgraded": true
+		},
+		"common_stargates": true
+	},
+	
+	"biomes": "#common_stargates:has_structure/stargate/milky_way/pedestal/stargate_pedestal_basalt_biomes",
+	
+	"use_expansion_hack": false,
+	
+	"spawn_overrides": {
+		"monster": {
+			"bounding_box": "piece",
+			"spawns": [
+			
+			]
+		}
+	},
+	"adapt_noise": true
+}

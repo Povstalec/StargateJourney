@@ -2,6 +2,7 @@
   "type": "sgjourney:lantea",
   "generator": {
     "type": "minecraft:noise",
+	"seed": 9318135,
     "settings": "sgjourney:lantea",
     "biome_source": {
       "type": "minecraft:fixed",

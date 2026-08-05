@@ -2,6 +2,7 @@
   "type": "sgjourney:rima",
   "generator": {
     "type": "minecraft:noise",
+	"seed": 86351644,
     "settings": "sgjourney:rima",
     "biome_source": {
       "type": "minecraft:multi_noise",

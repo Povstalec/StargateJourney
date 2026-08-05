@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -51,7 +52,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		if(level.isClientSide() || player == null)
 			return super.useOn(context);
 		
-		player.displayClientMessage(new TranslatableComponent(block.getDescriptionId()).withStyle(ChatFormatting.GRAY), true);
+		player.sendMessage(new TranslatableComponent(block.getDescriptionId()).withStyle(ChatFormatting.GRAY), Util.NIL_UUID);
 		
 		BlockEntity blockEntity;
 		if(block instanceof AbstractStargateBlock stargate)
@@ -66,7 +67,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		{
 			for(Component component : pdaStatus.getStatus())
 			{
-				player.displayClientMessage(component, true);
+				player.sendMessage(component, Util.NIL_UUID);
 			}
 		}
 		
@@ -80,9 +81,9 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 		capability.ifPresent(energyStorage ->
 		{
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				player.displayClientMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()), true);
+				player.sendMessage(ComponentHelper.energy("info.sgjourney.energy", sgjourneyEnergy.getTrueEnergyStored()), Util.NIL_UUID);
 			else
-				player.displayClientMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()), true);
+				player.sendMessage(ComponentHelper.energy("info.sgjourney.energy", energyStorage.getEnergyStored()), Util.NIL_UUID);
 		});
 	}
 	
@@ -132,15 +133,15 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	
 	private void scanEntity(Player user, Entity target)
 	{
-		user.displayClientMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW), true);
+		user.sendMessage(target.getName().copy().withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
 		
 		if(target instanceof LivingEntity livingEntity)
 		{
 			if(canUseGoauldTech(livingEntity))
-				user.displayClientMessage(new TranslatableComponent("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN), true);
+				user.sendMessage(new TranslatableComponent("message.sgjourney.pda.has_naquadah_in_bloodstream").withStyle(ChatFormatting.DARK_GREEN), Util.NIL_UUID);
 			
 			if(canUseAncientTech(livingEntity))
-				user.displayClientMessage(new TranslatableComponent("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA), true);
+				user.sendMessage(new TranslatableComponent("message.sgjourney.pda.has_ancient_gene").withStyle(ChatFormatting.AQUA), Util.NIL_UUID);
 		}
 	}
 }

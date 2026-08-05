@@ -2,6 +2,7 @@
   "type": "sgjourney:tollan",
   "generator": {
     "type": "minecraft:noise",
+	"seed": 4711205,
     "settings": "sgjourney:tollan",
     "biome_source": {
       "type": "minecraft:multi_noise",

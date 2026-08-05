@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney;
 
 import com.mojang.logging.LogUtils;
+import dan200.computercraft.api.turtle.TurtleUpgradeSerialiser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -110,30 +111,37 @@ public class StargateJourney
         {
 			RegistryBuilder<Symbols> symbolBuilder = new RegistryBuilder<>();
         	symbolBuilder.setName(new ResourceLocation(MODID, "symbols"));
+			symbolBuilder.setType(Symbols.class);
         	event.create(symbolBuilder);
 
         	RegistryBuilder<Galaxy> galaxyBuilder = new RegistryBuilder<>();
         	galaxyBuilder.setName(new ResourceLocation(MODID, "galaxy"));
+			galaxyBuilder.setType(Galaxy.class);
         	event.create(galaxyBuilder);
 
         	RegistryBuilder<PointOfOrigin> pointOfOriginBuilder = new RegistryBuilder<>();
         	pointOfOriginBuilder.setName(new ResourceLocation(MODID, "point_of_origin"));
+			pointOfOriginBuilder.setType(PointOfOrigin.class);
         	event.create(pointOfOriginBuilder);
 
         	RegistryBuilder<AddressRegion> addressRegionBuilder = new RegistryBuilder<>();
         	addressRegionBuilder.setName(new ResourceLocation(MODID, "address_region"));
+			addressRegionBuilder.setType(AddressRegion.class);
         	event.create(addressRegionBuilder);
 			
 			RegistryBuilder<SpaceLocation> spaceLocationBuilder = new RegistryBuilder<>();
 			spaceLocationBuilder.setName(new ResourceLocation(MODID, "space_location"));
+			spaceLocationBuilder.setType(SpaceLocation.class);
 			event.create(spaceLocationBuilder);
 
         	RegistryBuilder<AddressTable> addressTableBuilder = new RegistryBuilder<>();
         	addressTableBuilder.setName(new ResourceLocation(MODID, "address_table"));
+			addressTableBuilder.setType(AddressTable.class);
         	event.create(addressTableBuilder);
 
         	RegistryBuilder<StargateVariant> stargateVariantBuilder = new RegistryBuilder<>();
         	stargateVariantBuilder.setName(new ResourceLocation(MODID, "stargate_variant"));
+			stargateVariantBuilder.setType(StargateVariant.class);
         	event.create(stargateVariantBuilder);
 
         	symbolBuilder.dataPackRegistry(Symbols.CODEC, Symbols.CODEC);

@@ -3,6 +3,7 @@
 	"generator":
 	{
 		"type": "minecraft:noise",
+		"seed": 7513485618,
 		"settings": "sgjourney:athos",
 		"biome_source":
 		{

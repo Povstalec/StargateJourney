@@ -37,7 +37,7 @@ public class CartoucheModelLoader extends SymbolModelLoader<CartoucheModelLoader
 	
 	public static void register(ModelRegistryEvent event)
 	{
-		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(CARTOUCHE_LOADER), new CableModelLoader());
+		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(CARTOUCHE_LOADER), new CartoucheModelLoader());
 	}
 	
 	@Override

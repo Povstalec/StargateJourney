@@ -1,0 +1,47 @@
+{
+	"type": "sgjourney:stargate_temple",
+	
+	"config":
+	{
+		"start_pool": "sgjourney:stargate/milky_way/temple/stargate_temple_nether",
+		"obstructed_start_pool": "sgjourney:stargate/milky_way/temple/stargate_temple_nether_obstructed",
+		"size": 1,
+		"start_height":
+		{
+			"type": "minecraft:uniform",
+			"min_inclusive":
+			{
+				"absolute": 33
+			},
+			"max_inclusive":
+			{
+				"absolute": 70
+			}
+		},
+		
+		"stargate_modifiers":
+		{
+			"local_point_of_origin": true,
+			"primary": true,
+			"protected": true
+		},
+		"dhd_modifiers":
+		{
+			"protected": true
+		}
+	},
+	
+	"biomes": "#sgjourney:has_structure/stargate_temple/stargate_temple_nether_biomes",
+	
+	"use_expansion_hack": false,
+	
+	"spawn_overrides": {
+		"monster": {
+			"bounding_box": "piece",
+			"spawns": [
+			
+			]
+		}
+	},
+	"adapt_noise": true
+}

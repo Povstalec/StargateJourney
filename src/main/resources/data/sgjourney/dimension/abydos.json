@@ -2,6 +2,7 @@
   "type": "sgjourney:abydos",
   "generator": {
     "type": "minecraft:noise",
+	"seed": 148352486,
     "settings": "sgjourney:abydos",
     "biome_source": {
       "type": "minecraft:multi_noise",

@@ -3,6 +3,7 @@
 	"generator":
 	{
 		"type": "minecraft:noise",
+		"seed": 4851343135,
 		"settings": "sgjourney:unitas",
 		"biome_source":
 		{

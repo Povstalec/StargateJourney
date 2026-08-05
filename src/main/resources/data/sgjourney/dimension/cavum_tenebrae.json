@@ -3,6 +3,7 @@
 	"generator":
 	{
 		"type": "minecraft:noise",
+		"seed": 4684254135,
 		"settings": "sgjourney:cavum_tenebrae",
 		"biome_source":
 		{

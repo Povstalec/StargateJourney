@@ -12,19 +12,19 @@
 		"#minecraft:is_mountain",
 		"#minecraft:is_ocean",
 		"#minecraft:is_river",
-		"#minecraft:is_savanna",
 		"#minecraft:is_taiga",
 		
+		"minecraft:savanna",
+		"minecraft:savanna_plateau",
+		"minecraft:windswept_savanna",
 		"minecraft:mushroom_fields",
 		"minecraft:stony_shore",
 		"minecraft:swamp",
-		"minecraft:mangrove_swamp",
 		"minecraft:snowy_plains",
 		"minecraft:plains",
 		"minecraft:ice_spikes",
 		"minecraft:sunflower_plains",
 		"minecraft:dripstone_caves",
-		"minecraft:lush_caves",
-		"minecraft:deep_dark"
+		"minecraft:lush_caves"
 	]
 }

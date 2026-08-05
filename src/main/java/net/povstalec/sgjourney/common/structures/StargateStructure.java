@@ -136,7 +136,7 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 				Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
 				HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
 				Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> Optional.ofNullable(structure.projectStartToHeightmap)),
-				Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+				//Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
 				Rot.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
 				Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
 				StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
@@ -152,10 +152,10 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 		protected DHDModifiers dhdModifiers;
 		
 		public Configuration(Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
-							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rot> rotation,
+							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, /*int maxDistanceFromCenter, */Optional<Rot> rotation,
 							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
 		{
-			super(startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates);
+			super(startPool, startJigsawName, size, startHeight, projectStartToHeightmap, /*maxDistanceFromCenter, */rotation, commonStargates);
 			
 			this.obstructedStartPool = obstructedStartPool.orElse(null);
 			

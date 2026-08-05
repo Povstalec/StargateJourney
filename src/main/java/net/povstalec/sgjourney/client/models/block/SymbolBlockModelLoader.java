@@ -37,7 +37,7 @@ public class SymbolBlockModelLoader extends SymbolModelLoader<SymbolBlockModelLo
 	
 	public static void register(ModelRegistryEvent event)
 	{
-		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(SYMBOL_BLOCK_LOADER), new CableModelLoader());
+		ModelLoaderRegistry.registerLoader(StargateJourney.sgjourneyLocation(SYMBOL_BLOCK_LOADER), new SymbolBlockModelLoader());
 	}
 	
 	@Override

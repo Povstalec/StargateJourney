@@ -22,8 +22,8 @@ public class VillagerInit
 	
 	
 	
-	public static final RegistryObject<PoiType> ARCHEOLOGIST_POI = POI_TYPES.register("archeologist",
-		() -> new PoiType("archeologist", PoiType.getBlockStates(BlockInit.ARCHEOLOGY_TABLE.get()), 1, 1));
+	public static final RegistryObject<PoiType> ARCHEOLOGIST_POI = POI_TYPES.register("archeologist_poi",
+		() -> new PoiType("archeologist_poi", PoiType.getBlockStates(BlockInit.ARCHEOLOGY_TABLE.get()), 1, 1));
 	
 	public static final RegistryObject<VillagerProfession> ARCHEOLOGIST = VILLAGER_PROFESSIONS.register("archeologist",
 		() -> new VillagerProfession("archeologist", ARCHEOLOGIST_POI.get(), ImmutableSet.of(), ImmutableSet.of(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER));

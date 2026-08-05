@@ -55,7 +55,7 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 				PoolElementStructurePiece::new,
 				blockPos,
 				false,
-				false,
+				true,
 				context.config().rotation);
 	}
 	
@@ -109,7 +109,7 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 				Codec.intRange(0, 30).fieldOf("size").forGetter(structure -> structure.size),
 				HeightProvider.CODEC.fieldOf("start_height").forGetter(structure -> structure.startHeight),
 				Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> Optional.ofNullable(structure.projectStartToHeightmap)),
-				Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
+				//Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
 				Rot.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
 				Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates))
 			).apply(instance, Configuration::new)).codec();
@@ -121,14 +121,14 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 		protected final HeightProvider startHeight;
 		@Nullable
 		protected final Heightmap.Types projectStartToHeightmap;
-		protected final int maxDistanceFromCenter;
+		//protected final int maxDistanceFromCenter;
 		@Nullable
 		protected Rot rotation;
 		@Nullable
 		protected Boolean commonStargates; // Decides whether this Structure should generate while Common Stargate Generation config setting is set to true of false
 		
 		public Configuration(Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
-							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rot> rotation,
+							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, /*int maxDistanceFromCenter, */Optional<Rot> rotation,
 							 Optional<Boolean> commonStargates)
 		{
 			super(startPool, size);
@@ -138,7 +138,7 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 			this.size = size;
 			this.startHeight = startHeight;
 			this.projectStartToHeightmap = projectStartToHeightmap.orElse(null);
-			this.maxDistanceFromCenter = maxDistanceFromCenter;
+			//this.maxDistanceFromCenter = maxDistanceFromCenter;
 			this.rotation = rotation.orElse(null);
 			
 			this.commonStargates = commonStargates.orElse(null);

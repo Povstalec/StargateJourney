@@ -1,0 +1,29 @@
+{
+	"type": "sgjourney:goauld_temple",
+	
+	"config":
+	{
+		"start_pool": "sgjourney:goauld_temple/desert_pyramid/desert_pyramid",
+		"size": 4,
+		"start_height": { "absolute": 0 }
+	},
+	
+	"biomes": "#sgjourney:has_structure/goauld_temple/desert_pyramid_biomes",
+	
+	"use_expansion_hack": false,
+	
+	"spawn_overrides": {
+		"monster": {
+			"bounding_box": "piece",
+			"spawns": [
+				{
+					"type": "sgjourney:jaffa",
+					"maxCount": 7,
+					"minCount": 3,
+					"weight": 1
+				}
+			]
+		}
+	},
+	"adapt_noise": true
+}
