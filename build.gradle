@@ -208,14 +208,14 @@ dependencies {
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 }
 
-//mixin {
-//    // MixinGradle Settings
-//    add sourceSets.main, 'mixins.sgjourney.refmap.json'
-//    config 'mixins.sgjourney.json'
-//
-//    debug.verbose = true
-//    debug.export = true
-//}
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'mixins.sgjourney.refmap.json'
+    config 'mixins.sgjourney.json'
+
+    debug.verbose = true
+    debug.export = true
+}
 
 // Example for how to get properties into the manifest for reading at runtime.
 jar {

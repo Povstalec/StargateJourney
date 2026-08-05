@@ -1,11 +1,22 @@
 package net.povstalec.sgjourney.common.world;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
+import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.StructureFeatureManager;
+import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
+import net.minecraft.world.level.levelgen.structure.StructureCheckResult;
+import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacementType;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
@@ -16,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 public class UniqueStructurePlacement implements StructurePlacement
 {
@@ -267,5 +279,44 @@ public class UniqueStructurePlacement implements StructurePlacement
 		{
 			return StructurePlacementInit.BURIED_STARGATE_PLACEMENT.get();
 		}
+	}
+	
+	
+	
+	public static BlockPos getLocatePos(UniqueStructurePlacement placement, ChunkPos chunkPos)
+	{
+		return (new BlockPos(chunkPos.getMinBlockX(), 0, chunkPos.getMinBlockZ())).offset(placement.locateOffset());
+	}
+	
+	@Nullable
+	public static Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>> getNearestGeneratedStructure(Set<Holder<ConfiguredStructureFeature<?, ?>>> holderSet, LevelReader levelReader, StructureFeatureManager structureFeatureManager, boolean skipLoadedChunks, long seed, UniqueStructurePlacement placement)
+	{
+		ChunkPos chunkpos = placement.getPotentialFeatureChunk(seed, 0, 0);
+		
+		for(Holder<ConfiguredStructureFeature<?, ?>> holder : holderSet)
+		{
+			StructureCheckResult structurecheckresult = structureFeatureManager.checkStructurePresence(chunkpos, holder.value(), skipLoadedChunks);
+			if(structurecheckresult != StructureCheckResult.START_NOT_PRESENT)
+			{
+				if(!skipLoadedChunks && structurecheckresult == StructureCheckResult.START_PRESENT)
+					return Pair.of(getLocatePos(placement, chunkpos), holder);
+				
+				ChunkAccess chunkaccess = levelReader.getChunk(chunkpos.x, chunkpos.z, ChunkStatus.STRUCTURE_STARTS);
+				StructureStart structurestart = structureFeatureManager.getStartForFeature(SectionPos.bottomOf(chunkaccess), holder.value(), chunkaccess);
+				if(structurestart != null && structurestart.isValid())
+				{
+					if(skipLoadedChunks && structurestart.canBeReferenced())
+					{
+						structureFeatureManager.addReference(structurestart);
+						return Pair.of(getLocatePos(placement, structurestart.getChunkPos()), holder);
+					}
+					
+					if(!skipLoadedChunks)
+						return Pair.of(getLocatePos(placement, structurestart.getChunkPos()), holder);
+				}
+			}
+		}
+		
+		return null;
 	}
 }
