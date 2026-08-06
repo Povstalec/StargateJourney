@@ -26,12 +26,6 @@ public class VialItem extends FluidItem
 		return false;
 	}
 	
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
-	}
-	
 	public int getFluidCapacity(ItemStack stack)
 	{
 		return CommonTechConfig.vial_capacity.get();
@@ -81,11 +75,21 @@ public class VialItem extends FluidItem
 			super(componentType, container, CommonTechConfig.vial_capacity.get());
 		}
 		
-		@Override
-		public boolean isFluidValid(int tank, @NotNull FluidStack stack)
+		public boolean isCorrectFluid(FluidStack fluidStack)
 		{
-			return stack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-					stack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+			return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		}
+		
+		@Override
+		public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
+		{
+			return isCorrectFluid(fluidStack);
+		}
+		
+		public boolean canFillFluidType(FluidStack fluidStack)
+		{
+			return isCorrectFluid(fluidStack);
 		}
 	}
 }

@@ -63,8 +63,6 @@ public abstract class FluidItem extends Item
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
-	public abstract boolean isCorrectFluid(FluidStack fluidStack);
-	
 	public abstract int getFluidCapacity(ItemStack stack);
 	
 	public FluidStack getFluidStack(ItemStack stack)
@@ -302,10 +300,9 @@ public abstract class FluidItem extends Item
 			@Override
 			public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
 			{
-				if(stack.getItem() instanceof FluidItem fluidItem)
-					return fluidItem.isCorrectFluid(fluidStack);
+				IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
 				
-				return false;
+				return fluidHandler != null && fluidHandler.isFluidValid(tank, fluidStack);
 			}
 		}
 	}

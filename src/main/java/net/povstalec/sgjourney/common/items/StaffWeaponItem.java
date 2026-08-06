@@ -134,13 +134,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
-	}
-	
-	@Override
 	public boolean isValidItem(ItemStack heldStack)
 	{
 		return heldStack.is(ItemInit.VIAL.get());
