@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.VertexFormatElement;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
@@ -69,6 +70,9 @@ public class ClientUtil
 		Vec3 normal = vec3.subtract(vec2).cross(vec1.subtract(vec2)).normalize();
 		
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
+		
+		builder.setTexture(sprite);
+		builder.setQuadOrientation(Direction.getNearest(normal.x, normal.y, normal.z));
 		
 		addVertex(builder, sprite, vec1, normal, uStart, vEnd);
 		addVertex(builder, sprite, vec2, normal, uEnd, vEnd);

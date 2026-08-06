@@ -226,6 +226,14 @@ public class StargateJourney
             ItemBlockRenderTypes.setRenderLayer(FluidInit.LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
+			
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.SANDSTONE_CARTOUCHE.get(), layer -> RenderType.solid().equals(layer) || RenderType.translucent().equals(layer));
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), layer -> RenderType.solid().equals(layer) || RenderType.translucent().equals(layer));
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.STONE_CARTOUCHE.get(), layer -> RenderType.solid().equals(layer) || RenderType.translucent().equals(layer));
+			
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.SANDSTONE_SYMBOL.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.RED_SANDSTONE_SYMBOL.get(), RenderType.translucent());
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.STONE_SYMBOL.get(), RenderType.translucent());
 
         	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
         	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);

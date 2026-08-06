@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -110,18 +111,18 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					Address address = cartouche.getAddress();
 					
 					if(address instanceof Address.Dimension dimensionAddress)
-						player.displayClientMessage(new TranslatableComponent("info.sgjourney.dimension").append(new TextComponent(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN), true);
+						player.sendMessage(new TranslatableComponent("info.sgjourney.dimension").append(new TextComponent(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN), Util.NIL_UUID);
 					
 					BlockPos underPos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
 					if(level.getBlockEntity(underPos) instanceof SymbolBlockEntity symbolBlockEntity && symbolBlockEntity.symbolNumber == 0)
 						address = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address));
-					player.displayClientMessage(new TranslatableComponent("info.sgjourney.address").append(new TextComponent(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)), true);
+					player.sendMessage(new TranslatableComponent("info.sgjourney.address").append(new TextComponent(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)), Util.NIL_UUID);
 					
 					if(cartouche.getSymbols() != null)
-						player.displayClientMessage(new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": " + cartouche.getSymbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE), true);
+						player.sendMessage(new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": " + cartouche.getSymbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE), Util.NIL_UUID);
 					
 					if(cartouche.getAddressTable() != null)
-						player.displayClientMessage(new TranslatableComponent("info.sgjourney.address_table").append(new TextComponent(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW), true);
+						player.sendMessage(new TranslatableComponent("info.sgjourney.address_table").append(new TextComponent(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
 				}
 			}
 			return InteractionResult.SUCCESS;

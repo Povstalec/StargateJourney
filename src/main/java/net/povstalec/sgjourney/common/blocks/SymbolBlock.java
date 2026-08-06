@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,6 +37,7 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.UUID;
 
 public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock
 {
@@ -84,7 +86,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					int symbolNumber = symbolBlock.getSymbolNumber();
 					MutableComponent text;
 					
-					player.displayClientMessage(new TranslatableComponent("info.sgjourney.symbol_number").append(new TextComponent(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW), true);
+					player.sendMessage(new TranslatableComponent("info.sgjourney.symbol_number").append(new TextComponent(": " + symbolNumber)).withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
 					
 					if(symbolNumber == 0)
 					{
@@ -97,7 +99,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 						text = new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
 					}
 					
-					player.displayClientMessage(text, true);
+					player.sendMessage(text, Util.NIL_UUID);
 				}
 			}
 			return InteractionResult.SUCCESS;
