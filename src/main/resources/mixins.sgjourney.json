@@ -9,5 +9,8 @@
 	"mixins": [
 		"ConfiguredStructureMixin",
 		"UniqueStructureMixin"
+	],
+	"client": [
+		"LevelRendererMixin"
 	]
 }

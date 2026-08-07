@@ -234,6 +234,11 @@ public class StargateJourney
 			ItemBlockRenderTypes.setRenderLayer(BlockInit.SANDSTONE_SYMBOL.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(BlockInit.RED_SANDSTONE_SYMBOL.get(), RenderType.translucent());
 			ItemBlockRenderTypes.setRenderLayer(BlockInit.STONE_SYMBOL.get(), RenderType.translucent());
+			
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.SMALL_UNITY_BUD.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.MEDIUM_UNITY_BUD.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.LARGE_UNITY_BUD.get(), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(BlockInit.UNITY_CLUSTER.get(), RenderType.cutout());
 
         	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
         	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);

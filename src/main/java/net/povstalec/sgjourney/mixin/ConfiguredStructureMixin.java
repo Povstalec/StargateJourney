@@ -69,6 +69,7 @@ public class ConfiguredStructureMixin
 		}
 		
 	}
+	
 	@Inject(method = "biomes", at = @At("HEAD"), cancellable = true)
 	public void biomes(CallbackInfoReturnable<HolderSet<Biome>> cir)
 	{

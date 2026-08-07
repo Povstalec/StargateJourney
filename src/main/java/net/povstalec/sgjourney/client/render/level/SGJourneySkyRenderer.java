@@ -84,9 +84,7 @@ public abstract class SGJourneySkyRenderer
 		
 		this.darkBuffer = new VertexBuffer();
 		buildSkyDisc(bufferbuilder, -16.0F);
-		this.darkBuffer.bind();
 		this.darkBuffer.upload(bufferbuilder);
-		VertexBuffer.unbind();
 	}
 
 	protected void createLightSky()
@@ -98,9 +96,7 @@ public abstract class SGJourneySkyRenderer
 		
 		this.skyBuffer = new VertexBuffer();
 		buildSkyDisc(bufferbuilder, 16.0F);
-		this.skyBuffer.bind();
 		this.skyBuffer.upload(bufferbuilder);
-		VertexBuffer.unbind();
 	}
 
 	protected static void buildSkyDisc(BufferBuilder builder, float scale)
@@ -385,25 +381,23 @@ public abstract class SGJourneySkyRenderer
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			stack.pushPose();
 			stack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-			float sunAngle = Mth.sin(level.getSunAngle(partialTicks)) < 0.0F ? 180.0F : 0.0F;
-			stack.mulPose(Vector3f.ZP.rotationDegrees(sunAngle));
+			float f2 = Mth.sin(level.getSunAngle(partialTicks)) < 0.0F ? 180.0F : 0.0F;
+			stack.mulPose(Vector3f.ZP.rotationDegrees(f2));
 			stack.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
 			float sunriseR = sunriseColor[0];
 			float sunriseG = sunriseColor[1];
 			float sunriseB = sunriseColor[2];
-			float sunriseA = sunriseColor[2];
+			float sunriseA = sunriseColor[3];
 			Matrix4f sunriseMatrix = stack.last().pose();
 			bufferbuilder.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 			bufferbuilder.vertex(sunriseMatrix, 0.0F, 100.0F, 0.0F).color(sunriseR, sunriseG, sunriseB, sunriseA).endVertex();
 			
-			for(int i = 0; i <= 16; ++i)
+			for(int j = 0; j <= 16; ++j)
 			{
-				// Create a circle to act as the slanted portion of the sunrise
-				float rotation = (float)i * ((float)Math.PI * 2F) / 16.0F;
+				float rotation = (float)j * ((float)Math.PI * 2F) / 16.0F;
 				float x = Mth.sin(rotation);
 				float y = Mth.cos(rotation);
-				// The Z coordinate is multiplied by -y to make the circle angle upwards towards the sun
-				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseR, sunriseG, sunriseB, 0.0F).endVertex();
+				bufferbuilder.vertex(sunriseMatrix, x * 120.0F, y * 120.0F, -y * 40.0F * sunriseA).color(sunriseColor[0], sunriseColor[1], sunriseColor[2], 0.0F).endVertex();
 			}
 			
 			bufferbuilder.end();
@@ -435,7 +429,8 @@ public abstract class SGJourneySkyRenderer
 	
 	public void renderSky(ClientLevel level, float partialTicks, PoseStack stack, Camera camera, Matrix4f projectionMatrix, Runnable setupFog)
 	{
-		setupFog.run();
+		// Handled by the method that runs this one
+		// setupFog.run();
 		
 		if(this.isFoggy(camera))
 			return;
@@ -443,16 +438,14 @@ public abstract class SGJourneySkyRenderer
 		RenderSystem.disableTexture();
 		Vec3 skyColor = level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTicks);
 		float skyX = (float)skyColor.x;
-        float skyY = (float)skyColor.y;
-        float skyZ = (float)skyColor.z;
-        FogRenderer.levelFogColor();
+		float skyY = (float)skyColor.y;
+		float skyZ = (float)skyColor.z;
+		FogRenderer.levelFogColor();
 		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
 		RenderSystem.depthMask(false);
 		RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
 		ShaderInstance shaderinstance = RenderSystem.getShader();
-		this.skyBuffer.bind();
 		this.skyBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
-		VertexBuffer.unbind();
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		
@@ -464,8 +457,8 @@ public abstract class SGJourneySkyRenderer
 		float rain = 1.0F - level.getRainLevel(partialTicks);
 		
 		this.renderEcliptic(level, partialTicks, stack, projectionMatrix, setupFog, bufferbuilder, rain);
-        
-        RenderSystem.disableTexture();
+		
+		RenderSystem.disableTexture();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
         
@@ -475,9 +468,7 @@ public abstract class SGJourneySkyRenderer
         {
         	stack.pushPose();
         	stack.translate(0.0F, 12.0F, 0.0F);
-        	this.darkBuffer.bind();
         	this.darkBuffer.drawWithShader(stack.last().pose(), projectionMatrix, shaderinstance);
-        	VertexBuffer.unbind();
         	stack.popPose();
         }
         

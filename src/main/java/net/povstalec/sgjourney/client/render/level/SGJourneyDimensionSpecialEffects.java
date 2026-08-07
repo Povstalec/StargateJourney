@@ -36,14 +36,14 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	@Nullable
 	protected SGJourneySkyRenderer skyRenderer;
 	
+	protected int ticks;
+	
 	public SGJourneyDimensionSpecialEffects(float cloudLevel, boolean hasGround, SkyType skyType, 
 			boolean forceBrightLightmap, boolean constantAmbientLight)
 	{
 		super(cloudLevel, hasGround, skyType, forceBrightLightmap, constantAmbientLight);
 		
-		setSkyRenderHandler(this::renderSky);
-		setCloudRenderHandler(this::renderClouds);
-		setWeatherRenderHandler(this::renderSnowAndRain);
+		setSkyRenderHandler(this::fakeRenderSky);
 	}
 
 	@Override
@@ -58,20 +58,23 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 		return false;
 	}
 	
-	public boolean renderClouds(int ticks, float partialTick, PoseStack poseStack, ClientLevel level, Minecraft minecraft, double camX, double camY, double camZ)
-    {
-        return false;
-    }
+	/**
+	 * Doesn't actually render anything, it's just there so the game recognizes that custom sky should be rendered, all rendering is done through a mixin
+	 * @param ticks
+	 * @param partialTick
+	 * @param poseStack
+	 * @param level
+	 * @param minecraft
+	 */
+	public void fakeRenderSky(int ticks, float partialTick, PoseStack poseStack, ClientLevel level, Minecraft minecraft)
+	{
+		this.ticks = ticks;
+	}
 	
-	public boolean renderSky(int ticks, float partialTick, PoseStack poseStack, ClientLevel level, Minecraft minecraft)
+	public boolean renderSky(ClientLevel level, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
     {
 		if(customSky())
 		{
-			Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-			Matrix4f projectionMatrix = poseStack.last().pose();
-			boolean isFoggy = Minecraft.getInstance().level.effects().isFoggyAt(Mth.floor(camera.getPosition().x), Mth.floor(camera.getPosition().y)) || Minecraft.getInstance().gui.getBossOverlay().shouldCreateWorldFog();
-			Runnable setupFog = () -> FogRenderer.setupFog(camera, FogRenderer.FogMode.FOG_SKY, Minecraft.getInstance().gameRenderer.getRenderDistance(), isFoggy, partialTick);
-			
 			if(stellarViewSky())
 				return StellarViewCompatibility.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
 			else if(skyRenderer != null)
@@ -80,11 +83,6 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 			return true;
 		}
 		
-        return false;
-    }
-	
-	public boolean renderSnowAndRain(int ticks, float partialTick, ClientLevel level, Minecraft minecraft, LightTexture lightTexture, double camX, double camY, double camZ)
-    {
         return false;
     }
 	
