@@ -331,6 +331,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	{
 		if(generationStep == Step.SETUP)
 			generationStep = Step.READY; // Marks the Cartouche as ready for generation
+		setChanged();
 	}
 	
 	public void generate()
@@ -342,6 +343,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			setSymbolsFromLevel(level);
 		
 		generationStep = Step.GENERATED;
+		setChanged();
 	}
 	
 	

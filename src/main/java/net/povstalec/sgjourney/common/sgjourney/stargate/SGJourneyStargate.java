@@ -239,9 +239,7 @@ public abstract class SGJourneyStargate implements Stargate
 		this.timesOpened = tag.getInt(TIMES_OPENED);
 		
 		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
-		if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
-			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
-		else if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
+		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
 			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
 	}
 	

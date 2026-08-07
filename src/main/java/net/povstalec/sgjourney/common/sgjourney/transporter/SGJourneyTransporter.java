@@ -190,14 +190,12 @@ public abstract class SGJourneyTransporter implements Transporter
 		
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		
-		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
+		if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
 		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
 		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
 			this.networks = new HashSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
-		else if(tag.contains("Network", Tag.TAG_INT)) //TODO Keeping this here for the time being for legacy reasons
-			this.networks = new HashSet<>(List.of(tag.getInt("Network")));
 		
 		this.transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
 		

@@ -26,7 +26,7 @@ import java.util.Random;
 
 public class Jaffa extends Human
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/player/wide/efe.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/steve.png");
 	
 	private static final ResourceLocation ABYDOS = new ResourceLocation(StargateJourney.MODID,"abydos");
 	

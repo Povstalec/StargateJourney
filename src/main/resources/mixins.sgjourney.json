@@ -8,9 +8,11 @@
 	},
 	"mixins": [
 		"ConfiguredStructureMixin",
+		"StructureStartMixin",
 		"UniqueStructureMixin"
 	],
 	"client": [
-		"LevelRendererMixin"
+		"LevelRendererMixin",
+		"MinecraftMixin"
 	]
 }

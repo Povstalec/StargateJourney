@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney;
 
 import com.mojang.logging.LogUtils;
-import dan200.computercraft.api.turtle.TurtleUpgradeSerialiser;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -11,7 +10,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigGuiHandler;
@@ -36,7 +34,6 @@ import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.client.render.block_entity.*;
 import net.povstalec.sgjourney.client.render.entity.*;
-import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
@@ -59,7 +56,6 @@ import org.slf4j.Logger;
 import javax.annotation.Nullable;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
 import java.util.function.BiFunction;
 
 @Mod(StargateJourney.MODID)
@@ -295,8 +291,6 @@ public class StargateJourney
         public static void registerClientReloadListener(RegisterClientReloadListenersEvent event)
         {
     		ResourcepackReloadListener.ReloadListener.registerReloadListener(event);
-			
-			SGJourneyDimensionSpecialEffects.registerStargateJourneyEffects(); // This shouldn't be here, but I don't have a better place to put it
         }
 		
 		@SubscribeEvent

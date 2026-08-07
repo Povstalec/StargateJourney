@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LevelRendererMixin
 {
 	@Inject(method = "renderSky", at = @At(
+		remap = false,
 		value = "INVOKE",
 		target = "Lnet/minecraftforge/client/ISkyRenderHandler;render(IFLcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/client/Minecraft;)V",
 		shift = At.Shift.AFTER))

@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 public class Human extends Anthropoid
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/player/wide/makena.png");
+	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/steve.png");
 	
 	public Human(EntityType<? extends Human> type, Level level)
 	{
