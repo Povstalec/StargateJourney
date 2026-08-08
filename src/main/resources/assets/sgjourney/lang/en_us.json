@@ -987,6 +987,7 @@
 	"tooltip.sgjourney.dhd.crystal_slot.description": "Holds Crystals and Advanced Crystals",
 	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Holds Large Crystals",
 	
+	"tooltip.sgjourney.interface.energy_slot.description": "Holds energy providing items",
 	"tooltip.sgjourney.interface.energy_target.description": "If the amount of energy in the Stargate is below the amount specified by the Energy Target, the Interface will attempt to transfer energy to the Stargate until the Energy Target is met",
 	"tooltip.sgjourney.interface.mode.off.usage": "This mode does nothing",
 	"tooltip.sgjourney.interface.mode.ring_segment.usage": "Provides Comparator output based on which third of the Stargate's symbol ring the currently selected symbol is located",
@@ -1013,6 +1014,10 @@
 	"tooltip.sgjourney.interface.mode.iris.usage.input_1": "- Redstone signal input strength 1-7 -> Closes Iris",
 	"tooltip.sgjourney.interface.mode.iris.usage.input_2": "- Redstone signal input strength 8-15 -> Opens Iris",
 	"tooltip.sgjourney.interface.mode.shielding.usage": "Work In Progress",
+	
+	"tooltip.sgjourney.liquidizer.energy_slot.description": "Holds energy providing items",
+	
+	"tooltip.sgjourney.crystallizer.energy_slot.description": "Holds energy providing items",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Right-click on a Classic Stargate to upgrade it",
 	"tooltip.sgjourney.stargate_variant.description": "Right-click on a Stargate to change its variant",

@@ -87,6 +87,8 @@ public abstract class LiquidizerScreen<T extends AbstractLiquidizerEntity<?>> ex
 		this.energyTooltip(stack, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
         this.liquidFluidInputTooltip(stack, mouseX, mouseY);
         this.liquidFluidOutputTooltip(stack, mouseX, mouseY);
+		
+		this.itemTooltip(stack, mouseX, mouseY, 142, 17, 5, ComponentHelper.description("tooltip.sgjourney.liquidizer.energy_slot.description"));
 	}
 	
 	protected void renderProgress(PoseStack stack, int x, int y)
