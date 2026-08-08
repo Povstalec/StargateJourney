@@ -3,8 +3,10 @@ package net.povstalec.sgjourney.common.blocks;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoneycombItem;
@@ -240,6 +242,9 @@ public interface SGJourneyWeatheringBlock extends ChangeOverTimeBlock<SGJourneyW
 			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state);
 			if(waxedState.isPresent())
 			{
+				if(player instanceof ServerPlayer serverPlayer)
+					CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+				
 				if(!player.isCreative())
 					stack.shrink(1);
 				level.setBlock(pos, waxedState.get(), 11);

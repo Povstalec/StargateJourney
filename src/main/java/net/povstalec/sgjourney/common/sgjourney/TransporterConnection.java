@@ -147,21 +147,19 @@ public class TransporterConnection
 	@Nullable
 	public static TransporterConnection.Type getType(MinecraftServer server, Transporter transporterA, Transporter transporterB)
 	{
+		ResourceKey<Level> dimensionA = transporterA.getDimension();
+		ResourceKey<Level> dimensionB = transporterB.getDimension();
+		
+		if(dimensionA != null && dimensionA.equals(dimensionB))
+			return Type.DIMENSIONAL;
+		
 		AddressRegion regionA = transporterA.getAddressRegion();
 		AddressRegion regionB = transporterB.getAddressRegion();
 		
 		if(regionA != null && regionB != null)
 		{
 			if(regionA.equals(regionB))
-			{
-				ResourceKey<Level> dimensionA = transporterA.getDimension();
-				ResourceKey<Level> dimensionB = transporterB.getDimension();
-				
-				if(dimensionA != null && dimensionA.equals(dimensionB))
-					return Type.DIMENSIONAL;
-				else
-					return Type.SYSTEM_WIDE;
-			}
+				return Type.SYSTEM_WIDE;
 			
 			if(regionA.findCommonGalaxy(server, regionB) != null)
 				return isRelayed(server, transporterA, transporterB) ? Type.RELAYED_INTERSTELLAR : null;

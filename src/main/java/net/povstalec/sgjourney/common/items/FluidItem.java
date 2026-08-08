@@ -103,6 +103,12 @@ public abstract class FluidItem extends Item
 			{
 				return isCorrectFluid(fluidStack);
 			}
+			
+			@Override
+			public boolean canFillFluidType(FluidStack fluidStack)
+			{
+				return isCorrectFluid(fluidStack);
+			}
 		};
 	}
 	

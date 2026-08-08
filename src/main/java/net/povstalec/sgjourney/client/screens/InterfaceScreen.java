@@ -138,6 +138,8 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		this.modeTooltip(poseStack, mouseX, mouseY, 4, 23, 16, 16,
 				new TranslatableComponent("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
 				this.menu.getMode().getUsage());
+		
+		this.itemTooltip(poseStack, mouseX, mouseY, 165, 18, 0, ComponentHelper.description("tooltip.sgjourney.interface.energy_slot.description"));
 	}
 	
 	@Override
@@ -156,7 +158,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 	@Override
 	protected boolean hasItem(int slot)
 	{
-		return !menu.blockEntity.energyItemHandler.getStackInSlot(0).isEmpty();
+		return slot == 0 && !menu.blockEntity.energyItemHandler.getStackInSlot(0).isEmpty();
 	}
 	
 	

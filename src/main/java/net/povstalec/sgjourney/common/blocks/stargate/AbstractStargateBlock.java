@@ -1,9 +1,11 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -416,6 +418,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
 			if(blockCover.isPresent() && blockCover.get().applyWaxAt(state.getValue(PART)))
 			{
+				if(player instanceof ServerPlayer serverPlayer)
+					CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+				
 				if(!player.isCreative())
 					stack.shrink(1);
 				level.levelEvent(player, 3003, result.getBlockPos(), 0);
