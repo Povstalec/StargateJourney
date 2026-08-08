@@ -79,6 +79,8 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 		
 		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
         this.liquidNaquadahTooltip(graphics, mouseX, mouseY);
+		
+		this.itemTooltip(graphics, mouseX, mouseY, 142, 17, 5, ComponentHelper.description("tooltip.sgjourney.crystallizer.energy_slot.description"));
 	}
     
     @Override
@@ -115,6 +117,7 @@ public class CrystallizerScreen<T extends AbstractCrystallizerEntity<?>> extends
 			case 2 -> !menu.blockEntity.secondaryIngredientHandler.getStackInSlot(0).isEmpty();
 			case 3 -> !menu.blockEntity.outputHandler.getStackInSlot(0).isEmpty();
 			case 4 -> !menu.blockEntity.fluidInputHandler.getStackInSlot(0).isEmpty();
+			case 5 -> !menu.blockEntity.energyItemHandler.getStackInSlot(0).isEmpty();
 			default -> false;
 		};
 	}

@@ -342,6 +342,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 			setSymbolsFromLevel(level);
 		
 		generationStep = Step.GENERATED;
+		setChanged();
 	}
 	
 	

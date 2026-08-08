@@ -3,7 +3,9 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.context.UseOnContext;
@@ -424,6 +426,9 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
 			if(blockCover.isPresent() && blockCover.get().applyWaxAt(state.getValue(PART)))
 			{
+				if(player instanceof ServerPlayer serverPlayer)
+					CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, stack);
+				
 				if(!player.isCreative())
 					stack.shrink(1);
 				level.gameEvent(GameEvent.BLOCK_CHANGE, result.getBlockPos(), GameEvent.Context.of(player, state));
