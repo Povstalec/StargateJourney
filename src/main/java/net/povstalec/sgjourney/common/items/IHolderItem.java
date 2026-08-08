@@ -34,20 +34,9 @@ public interface IHolderItem
 			return removedStack;
 		}
 		
-		ItemStack heldStack = itemHandler.getStackInSlot(0);
-		
-		if(heldStack.isEmpty())
-		{
-			ItemStack removedStack = itemHandler.insertItem(0, otherStack, false);
-			onSwapped(holderStack, otherStack, removedStack);
-			return removedStack;
-		}
-		
-		heldStack = itemHandler.extractItem(0, 1, false);
-		onSwapped(holderStack, otherStack, heldStack);
-		itemHandler.insertItem(0, otherStack, false);
-		
-		return heldStack;
+		ItemStack removedStack = itemHandler.insertItem(0, otherStack, false);
+		onSwapped(holderStack, otherStack, removedStack);
+		return removedStack;
 	}
 	
 	default boolean stackedOnOther(ItemStack holderStack, Slot slot, ClickAction clickAction, Player player)
@@ -67,7 +56,7 @@ public interface IHolderItem
 			ItemStack swappedStack = swapHeldItem(holderStack, slotStack);
 			if(swappedStack != slotStack)
 			{
-				slot.remove(1);
+				slot.set(ItemStack.EMPTY);
 				slot.safeInsert(swappedStack);
 			}
 		}
