@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -14,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class SGJourneyTransporter implements Transporter
@@ -190,7 +189,7 @@ public abstract class SGJourneyTransporter implements Transporter
 		
 		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
 		
-		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
+		if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
 		
 		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);

@@ -29,6 +29,6 @@
 		"#forge:is_water",
 		"#forge:is_wet/overworld",
 		
-		{id: "ars_nouveau:archwood_forest", required: false}
+		{"id": "ars_nouveau:archwood_forest", "required": false}
 	]
 }
