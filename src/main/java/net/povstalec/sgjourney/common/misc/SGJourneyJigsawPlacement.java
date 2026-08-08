@@ -37,7 +37,7 @@ import java.util.function.Predicate;
  */
 public class SGJourneyJigsawPlacement
 {
-	public static <C extends SGJourneyStructure.Configuration> Optional<PieceGenerator<C>> addPieces(PieceGeneratorSupplier.Context<C> p_210285_, JigsawPlacement.PieceFactory p_210286_, BlockPos p_210287_, boolean p_210288_, boolean p_210289_, SGJourneyStructure.Rot rot)
+	public static <C extends SGJourneyStructure.Configuration> Optional<PieceGenerator<C>> addPieces(PieceGeneratorSupplier.Context<C> p_210285_, JigsawPlacement.PieceFactory p_210286_, BlockPos p_210287_, boolean p_210288_, boolean p_210289_, SGJourneyStructure.Rot rot, Heightmap.Types heightmap)
 	{
 		WorldgenRandom worldgenrandom = new WorldgenRandom(new LegacyRandomSource(0L));
 		worldgenrandom.setLargeFeatureSeed(p_210285_.seed(), p_210285_.chunkPos().x, p_210285_.chunkPos().z);
@@ -61,7 +61,7 @@ public class SGJourneyJigsawPlacement
 			int j = (boundingbox.maxZ() + boundingbox.minZ()) / 2;
 			int k;
 			if (p_210289_) {
-				k = p_210287_.getY() + chunkgenerator.getFirstFreeHeight(i, j, Heightmap.Types.OCEAN_FLOOR_WG, levelheightaccessor);
+				k = p_210287_.getY() + chunkgenerator.getFirstFreeHeight(i, j, heightmap == null ? Heightmap.Types.OCEAN_FLOOR_WG : heightmap, levelheightaccessor);
 			} else {
 				k = p_210287_.getY();
 			}

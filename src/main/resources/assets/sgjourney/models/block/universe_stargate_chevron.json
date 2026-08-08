@@ -5,5 +5,5 @@
 	{
 		"particle": "sgjourney:item/universe_stargate_chevron"
 	},
-	"flip_v": true
+	"flip-v": true
 }

@@ -57,7 +57,8 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 				blockPos,
 				false,
 				true,
-				context.config().rotation);
+				context.config().rotation,
+				context.config().projectStartToHeightmap);
 	}
 	
 	@Override

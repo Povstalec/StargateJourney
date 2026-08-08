@@ -6,6 +6,7 @@
 		"start_pool": "sgjourney:stargate/pegasus/outpost/lantean_outpost_ocean_pool",
 		"size": 3,
 		"start_height": { "absolute": 0 },
+		"project_start_to_heightmap": "WORLD_SURFACE_WG",
 		
 		"stargate_modifiers":
 		{
