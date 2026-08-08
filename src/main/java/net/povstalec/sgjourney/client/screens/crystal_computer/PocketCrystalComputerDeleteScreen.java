@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
@@ -30,10 +30,10 @@ public class PocketCrystalComputerDeleteScreen extends PocketCrystalComputerScre
 		int y = (height - imageHeight) / 2;
 		super.init();
 		
-		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 30, true,new TextComponent("screen.sgjourney.crystal_computer.confirm_delete").withStyle(ChatFormatting.DARK_RED),
-				new TextComponent("screen.sgjourney.crystal_computer.confirm_delete").append(": ").withStyle(ChatFormatting.DARK_RED).append(memoryEntry.toComponent()), button -> deleteEntry()));
-		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 75, true, new TextComponent("screen.sgjourney.crystal_computer.cancel_delete").withStyle(ChatFormatting.AQUA),
-				new TextComponent("screen.sgjourney.crystal_computer.cancel_delete").append(": ").withStyle(ChatFormatting.AQUA).append(memoryEntry.toComponent()), button -> this.minecraft.setScreen(mainScreen)));
+		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 30, true,new TranslatableComponent("screen.sgjourney.crystal_computer.confirm_delete").withStyle(ChatFormatting.DARK_RED),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.confirm_delete").append(": ").withStyle(ChatFormatting.DARK_RED).append(memoryEntry.toComponent()), button -> deleteEntry()));
+		addRenderableWidget(CrystalComputerButton.largeButton(x + 22, y + 10 + 75, true, new TranslatableComponent("screen.sgjourney.crystal_computer.cancel_delete").withStyle(ChatFormatting.AQUA),
+				new TranslatableComponent("screen.sgjourney.crystal_computer.cancel_delete").append(": ").withStyle(ChatFormatting.AQUA).append(memoryEntry.toComponent()), button -> this.minecraft.setScreen(mainScreen)));
 		
 		mainScreenButton.active = false;
 		crystalInComputerButton.active = false;
