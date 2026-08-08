@@ -63,6 +63,17 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		this.selectedCrystal = selectedCrystal;
 	}
 	
+	public static Component crystalFeedback(ItemStack crystalStack, String messageType)
+	{
+		if(crystalStack.isEmpty())
+			return Component.translatable("screen.sgjourney.crystal_computer." + messageType + ".none").withStyle(ChatFormatting.DARK_RED);
+		
+		if(crystalStack.getCount() > 1)
+			return Component.translatable("screen.sgjourney.crystal_computer." + messageType + ".too_many").withStyle(ChatFormatting.DARK_RED);
+		
+		return Component.translatable("screen.sgjourney.crystal_computer." + messageType, crystalStack.getDisplayName());
+	}
+	
 	@Override
 	public void init()
 	{
@@ -75,21 +86,17 @@ public abstract class PocketCrystalComputerScreen extends Screen
 		ItemStack crystalInComputer = getCrystalInComputer();
 		// Button to set Crystal in computer as the target
 		crystalInComputerButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 - 40 - 7,
-				Component.empty(), crystalInComputer.isEmpty() ?
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer.none").withStyle(ChatFormatting.DARK_RED) :
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_computer", crystalInComputer.getDisplayName()),
+				Component.empty(), crystalFeedback(crystalInComputer, "select_crystal_in_computer"),
 				button -> selectCrystal(SelectedCrystal.CRYSTAL_IN_COMPUTER));
-		crystalInComputerButton.active = !getCrystalInComputer().isEmpty();
+		crystalInComputerButton.active = crystalInComputer.getCount() == 1;
 		addRenderableWidget(crystalInComputerButton);
 		
 		ItemStack crystalInHand = getCrystalInHand();
 		// Button to set Crystal in hand as the target
 		crystalInHandButton = CrystalComputerButton.switchTargetButton(this.width / 2 + 83, this.height / 2 + 40 - 7,
-				Component.empty(), crystalInHand.isEmpty() ?
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand.none").withStyle(ChatFormatting.DARK_RED) :
-						Component.translatable("screen.sgjourney.crystal_computer.select_crystal_in_hand", crystalInHand.getDisplayName()),
+				Component.empty(), crystalFeedback(crystalInHand, "select_crystal_in_hand"),
 				button -> selectCrystal(SelectedCrystal.CRYSTAL_IN_HAND));
-		crystalInHandButton.active = !getCrystalInHand().isEmpty();
+		crystalInHandButton.active = crystalInHand.getCount() == 1;
 		addRenderableWidget(crystalInHandButton);
 	}
 	
@@ -137,8 +144,8 @@ public abstract class PocketCrystalComputerScreen extends Screen
 	{
 		this.selectedCrystal = selectedCrystal;
 		
-		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && !getCrystalInComputer().isEmpty();
-		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && !getCrystalInHand().isEmpty();
+		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && getCrystalInComputer().getCount() == 1;
+		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && getCrystalInHand().getCount() == 1;
 	}
 	
 	public static InteractionHand otherHand(InteractionHand hand)

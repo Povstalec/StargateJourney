@@ -390,7 +390,7 @@ public abstract class SGJourneySkyRenderer
 			float sunriseR = sunriseColor[0];
 			float sunriseG = sunriseColor[1];
 			float sunriseB = sunriseColor[2];
-			float sunriseA = sunriseColor[2];
+			float sunriseA = sunriseColor[3];
 			Matrix4f sunriseMatrix = transformedModelView;
 			BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.TRIANGLE_FAN, DefaultVertexFormat.POSITION_COLOR);
 			bufferbuilder.addVertex(sunriseMatrix, 0.0F, 100.0F, 0.0F).setColor(sunriseR, sunriseG, sunriseB, sunriseA);

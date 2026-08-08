@@ -11,8 +11,10 @@ import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
@@ -237,6 +239,12 @@ public class StargateConnection
 	
 	public static StargateConnection.Type getType(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate)
 	{
+		ResourceKey<Level> dialingDimension = dialingStargate.getDimension();
+		ResourceKey<Level> dialedDimension = dialedStargate.getDimension();
+		
+		if(dialingDimension != null && dialingDimension.equals(dialedDimension))
+			return StargateConnection.Type.SYSTEM_WIDE;
+		
 		AddressRegion dialingRegion = dialingStargate.getAddressRegion();
 		AddressRegion dialedRegion = dialedStargate.getAddressRegion();
 		
