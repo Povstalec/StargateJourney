@@ -138,7 +138,7 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 				Component.translatable("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
 				this.menu.getMode().getUsage());
 		
-		this.itemTooltip(poseStack, mouseX, mouseY, 165, 18, 0, ComponentHelper.description("tooltip.sgjourney.interface.energy_slot.description"));
+		this.itemTooltip(graphics, mouseX, mouseY, 165, 18, 0, ComponentHelper.description("tooltip.sgjourney.interface.energy_slot.description"));
 	}
 	
 	@Override
