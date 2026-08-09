@@ -25,7 +25,7 @@ import java.util.Set;
 @Mixin(ChunkGenerator.class)
 public class UniqueStructureMixin
 {
-	@Inject(method = "findNearestMapFeature", at = @At(value = "NEW", target = "(I)Ljava/util/ArrayList;", ordinal = 0))
+	@Inject(method = "findNearestMapFeature", at = @At(value = "INVOKE", target = "Ljava/util/List;isEmpty()Z", ordinal = 0))
 	public void findNearestMapFeature(ServerLevel level, HolderSet<ConfiguredStructureFeature<?, ?>> features, BlockPos pos, int maxDistance, boolean skipLoadedChunks,
 									  CallbackInfoReturnable<Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>>> cir,
 									  @Local(ordinal = 0) LocalRef<Pair<BlockPos, Holder<ConfiguredStructureFeature<?, ?>>>> pair,

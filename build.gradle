@@ -238,10 +238,10 @@ jar {
 }
 
 tasks.named('jar') {
-    archiveClassifier = 'light'
+    archiveClassifier = 'light' // Version without Jar-in-Jar
 }
 tasks.named('jarJar') {
-    archiveClassifier = ''
+    archiveClassifier = '' // Version with Jar-in-Jar
 }
 
 // Example configuration to allow publishing using the maven-publish plugin
