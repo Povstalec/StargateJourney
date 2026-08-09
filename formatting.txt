@@ -1,0 +1,6 @@
+Attempt to remove shorthand or abreviations unless specified:
+- Garage Door Opener (GDO)
+- Stargate instead of just "gate"
+- Always capitalize S in Stargate
+- 7, 8 and 9 chevron address instead of ~~6, 7, 8 symbol address~~
+- 
