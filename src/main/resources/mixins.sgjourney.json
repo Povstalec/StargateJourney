@@ -2,9 +2,12 @@
 	"required": true,
 	"compatibilityLevel": "JAVA_17",
 	"package": "net.povstalec.sgjourney.mixin",
-	"refmap": "sgjourney.mixin-refmap.json",
+	"refmap": "mixins.sgjourney.refmap.json",
 	"injectors": {
 		"defaultRequire": 1
+	},
+	"mixinextras": {
+		"minVersion": "0.5.4"
 	},
 	"mixins": [
 		"ConfiguredStructureMixin",

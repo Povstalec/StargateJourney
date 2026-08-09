@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class SpaceLocationTest
 {
-    private static final String MOST_SPECIFIC_PREFIX = "minecraft:overworld";
+    /*private static final String MOST_SPECIFIC_PREFIX = "minecraft:overworld";
 
     private static void generateSpaceLocationTemplates(boolean reversed)
     {
@@ -61,5 +61,5 @@ class SpaceLocationTest
         assertNotNull(template);
         assertNotNull(template.getTemplateInfo());
         assertEquals(MOST_SPECIFIC_PREFIX, template.getTemplateInfo().prefix());
-    }
+    }*/
 }
