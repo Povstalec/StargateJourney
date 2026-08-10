@@ -2,6 +2,10 @@
 	"replace": false,
 	"values":
 	[
-		"#c:nuggets/naquadah_alloy"
+		"#c:nuggets/naquadah",
+		"#c:nuggets/naquadah_alloy",
+		"#c:nuggets/naquadah_copper_alloy",
+		"#c:nuggets/trinium"
+		
 	]
 }

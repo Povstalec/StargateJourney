@@ -3,6 +3,9 @@
 	"values":
 	[
 		"#c:ingots/naquadah",
-		"#c:ingots/naquadah_alloy"
+		"#c:ingots/naquadah_alloy",
+		"#c:ingots/naquadah_copper_alloy",
+		"#c:ingots/trinium"
+		
 	]
 }
