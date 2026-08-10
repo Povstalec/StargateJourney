@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:raw_naquadah_block",
+		"sgjourney:raw_naquadria_block",
+		"sgjourney:raw_trinium_block"
+	]
+}

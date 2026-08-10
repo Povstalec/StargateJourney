@@ -2,6 +2,14 @@
 	"replace": false,
 	"values":
 	[
+<<<<<<< HEAD:src/main/resources/data/forge/tags/items/refined_ores/naquadah.json
 		"sgjourney:refined_naquadah"
+=======
+		"#c:nuggets/naquadah",
+		"#c:nuggets/naquadah_alloy",
+		"#c:nuggets/naquadah_copper_alloy",
+		"#c:nuggets/trinium"
+		
+>>>>>>> 1481fbbe (Material and ore tags):src/main/resources/data/c/tags/item/nuggets.json
 	]
 }
