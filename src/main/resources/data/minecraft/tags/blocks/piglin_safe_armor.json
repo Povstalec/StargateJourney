@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values": [
+		"sgjourney:system_lord_helmet",
+		"sgjourney:system_lord_chestplate",
+		"sgjourney:system_lord_leggings",
+		"sgjourney:system_lord_boots"
+	]
+}
