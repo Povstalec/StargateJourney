@@ -15,8 +15,8 @@
             "erosion": 0,
             "weirdness": 0,
             "depth": [
-              -2,
-              0.6
+              -1,
+              0.8671875
             ],
             "offset": 0
           }
@@ -30,8 +30,8 @@
             "erosion": 0,
             "weirdness": 0,
             "depth": [
-              0.6,
-              2
+              0.8671875,
+              1
             ],
             "offset": 0
           }

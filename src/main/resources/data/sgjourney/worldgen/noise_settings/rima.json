@@ -38,8 +38,8 @@
     "erosion": "sgjourney:cracked_ridges",
     "depth": {
       "type": "minecraft:y_clamped_gradient",
-      "from_y": -64,
-      "to_y": 320,
+      "from_y": 0,
+      "to_y": 256,
       "from_value": 1.5,
       "to_value": -1.5
     },
