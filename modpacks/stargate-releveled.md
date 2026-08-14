@@ -15,12 +15,21 @@ Mystical Agriculture integration provides easy to craft cruxes that are required
 Endgame materials require Oritech machines (new items, recipes, and circuits are still WIP)
 
 # World Generation
-Many new structures are added and modified from the Stargate Journey mod to better integrate into the pack.
 All Stargate Journey Dimensions have been revamped to lower the bedrock to -64 and raise the height to match vanilla defaults.
 Some Stargate Journey Dimensions have new modded ores included in them to provide more variety.
+Many new structures are added and modified from the Stargate Journey mod to better integrate into the pack.
+<details markdown="block">
+<summary>[Spoiler] Changes:</summary>
+
+- Common Stargates are now Buried (When Enabled in SGJourney Config)
+- Abydos Pyramid Overhaul created by Kranyolsu
+- New Stargate Structures in Modded Dimensions
+- More new structures in progress!
+
+</details>
 
 # Server Files
 Server files are usually available on Curseforge. Servers created with these files have Common Stargates enabled by default, where the single player games will not.
 
 # Issues and Reports
-Please post any issues to the [Github Repository](https://github.com/RedAngel121/Stargate-ReLeveled/tree/1.21.1) or the Monolith Discord under the Stargate Re-Leveled channels at the bottom. Ping `@redangel121` for assistance with the modpack issues or the server files.
+Please post any issues to the [Github Repository](https://github.com/RedAngel121/Stargate-ReLeveled) or the Monolith Discord under the Stargate Re-Leveled channels at the bottom. Ping `@redangel121` for assistance with the modpack issues or the server files.
