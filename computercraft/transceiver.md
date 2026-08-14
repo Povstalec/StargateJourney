@@ -93,7 +93,7 @@ ___
     <a class="source" target="_blank" href="https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/TransceiverMethods.java#L73">source</a>
 </h3>
 
-The transceiver searches for a nearest Stargate and checks the state of the iris on the other side of the Stargate connection.
+The transceiver searches for the nearest Stargate and checks the state of the iris on the other side of the Stargate connection.
 It does not matter if the connection is incoming or outgoing.
 
 **Returns**
