@@ -1125,6 +1125,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.timesOpened;
 	}
 	
+	public boolean canApplyVariant(StargateVariant variant)
+	{
+		return variant.getBaseStargate().equals(BlockEntityType.getKey(getType()));
+	}
+	
 	public void setVariant(ResourceLocation variant)
 	{
 		this.variant = variant;
