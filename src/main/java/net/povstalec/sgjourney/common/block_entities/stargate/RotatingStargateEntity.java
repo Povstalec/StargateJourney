@@ -292,17 +292,17 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		rotate(rotationDirection, rotationStep());
 	}
 	
-	protected StargateInfo.FeedbackMessage rotateTo(int degrees, RotationDirection rotateClockwise)
+	protected StargateInfo.FeedbackMessage rotateTo(int degrees, RotationDirection rotationDirection)
 	{
 		this.desiredRotation = degrees;
-		this.rotationDirection = rotateClockwise;
+		this.rotationDirection = rotationDirection;
 		
 		if(!this.level.isClientSide())
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStartup(worldPosition));
 		
 		updateClient();
 		
-		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotateClockwise);
+		updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STARTED, rotationDirection == RotationDirection.CLOCKWISE); //TODO Replace this boolean value with byte value of 1, 0, -1
 		
 		return setRecentFeedback(StargateInfo.Feedback.ROTATING.withInfo());
 	}
@@ -425,7 +425,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(!level.isClientSide())
 			updateClient();
 		
-		return setRecentFeedback(directEngageSymbol(getCurrentSymbol(), false));
+		return setRecentFeedback(directEngageSymbol(getCurrentSymbol(), true));
 	}
 	
 	public int getDesiredRotation(int desiredSymbol)
