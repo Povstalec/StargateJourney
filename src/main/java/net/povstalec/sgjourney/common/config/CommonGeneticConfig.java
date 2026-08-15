@@ -21,7 +21,7 @@ public class CommonGeneticConfig
 	
 	public static void init(ForgeConfigSpec.Builder server)
 	{
-		ancient_players = server.comment("A list of Player names who will receive the Ancient Gene when they join the world for the first time")
+		ancient_players = server.comment("A list of Player names who will receive the Ancient Gene when they join the world for the first time (By default contains mod creator + Dpeople who helped with the mod)")
 				.defineList("server.ancient_players", StargateJourney::ancientGenePlayers, name -> true);
 		
 		inherited_ancient_gene_players = server.comment("A list of Player names who will inherit the Ancient Gene when they join the world for the first time")

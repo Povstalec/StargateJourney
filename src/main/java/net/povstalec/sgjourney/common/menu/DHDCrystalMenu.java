@@ -75,7 +75,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	
 	public long getMaxEnergy()
 	{
-		return this.blockEntity.energyStorage.getTrueMaxEnergyStored();
+		return this.blockEntity.getEnergyCapacity();
 	}
 	
 	public boolean enableAdvancedProtocols()

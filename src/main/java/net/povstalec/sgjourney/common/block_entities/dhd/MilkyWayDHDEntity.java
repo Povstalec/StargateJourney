@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -45,15 +46,15 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long getCapacity()
+	public long getEnergyCapacity()
 	{
 		return CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
-		return CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
+		return level != null && level.isClientSide() ? SyncedConfig.milkyWayDHDEnergyCapacity : CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
 	}
 	
 	@Override

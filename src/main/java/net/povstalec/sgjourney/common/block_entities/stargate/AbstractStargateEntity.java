@@ -1525,7 +1525,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	protected boolean canReceiveZeroPointEnergy()
+	public boolean canReceiveZeroPointEnergy()
 	{
 		return CommonZPMConfig.stargates_use_zero_point_energy.get();
 	}
@@ -1537,25 +1537,25 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 
 	@Override
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
 		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 
 	@Override
-	public long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonStargateConfig.stargate_energy_max_receive.get();
 	}
 
 	@Override
-	public long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}
 	
 	@Override
-	public long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
 		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	}

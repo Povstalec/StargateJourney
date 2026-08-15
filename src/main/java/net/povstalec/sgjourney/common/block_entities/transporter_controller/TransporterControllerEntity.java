@@ -349,7 +349,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	protected void outputEnergy(Direction outputDirection)
+	public void outputEnergy(Direction outputDirection)
 	{
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
