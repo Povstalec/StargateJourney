@@ -1,6 +1,13 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import com.mojang.serialization.MapCodec;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
+import org.joml.Vector3d;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.FrontAndTop;
@@ -8,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -24,12 +30,6 @@ import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
-import org.joml.Vector3d;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 {
@@ -58,18 +58,10 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 	private static final VoxelShape SHAPE_DOWN_EAST = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_EAST);
 	private static final VoxelShape SHAPE_DOWN_SOUTH = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_SOUTH);
 	private static final VoxelShape SHAPE_DOWN_WEST = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_WEST);
-
-	public static final MapCodec<NaquadahGeneratorMarkIBlock> CODEC = simpleCodec(NaquadahGeneratorMarkIBlock::new);
-
+	
 	public NaquadahGeneratorMarkIBlock(Properties properties)
 	{
 		super(properties);
-	}
-
-	@Override
-	protected MapCodec<NaquadahGeneratorMarkIBlock> codec()
-	{
-		return CODEC;
 	}
 
 	@Override
@@ -116,9 +108,9 @@ public class NaquadahGeneratorMarkIBlock extends NaquadahGeneratorBlock
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     	tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_generator_mark_i.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

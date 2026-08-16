@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/intergalactic_travel",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:universe_stargate"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_destiny.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_destiny.description"
+		},
+		"frame": "challenge",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": true,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"entered_destiny": 
+		{
+			"trigger": "minecraft:changed_dimension",
+			"conditions": 
+			{
+				"to": "sgjourney:destiny"
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"entered_destiny"
+		]
+	]
+}

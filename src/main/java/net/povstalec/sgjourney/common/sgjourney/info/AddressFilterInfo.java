@@ -9,9 +9,9 @@ import java.util.List;
 
 public class AddressFilterInfo
 {
-	public static final String FILTER_TYPE = "filter_type";
-	public static final String WHITELIST = "whitelist";
-	public static final String BLACKLIST = "blacklist";
+	public static final String FILTER_TYPE = "FilterType";
+	public static final String WHITELIST = "Whitelist";
+	public static final String BLACKLIST = "Blacklist";
 	
 	private FilterType filterType;
 	private final ArrayList<HiddenAddress> whitelist;

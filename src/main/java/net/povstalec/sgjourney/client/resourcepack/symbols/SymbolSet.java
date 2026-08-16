@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class SymbolSet
 {
-	public static final ResourceLocation SYMBOL_SET_LOCATION = StargateJourney.sgjourneyLocation("symbol_set");
+	public static final ResourceLocation SYMBOL_SET_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol_set");
 	public static final ResourceKey<Registry<SymbolSet>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_SET_LOCATION);
 	public static final Codec<ResourceKey<SymbolSet>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -37,7 +37,7 @@ public class SymbolSet
 		ResourceLocation[] extendedTextures = new ResourceLocation[textures.size()];
 		for(int i = 0; i < extendedTextures.length; i++)
 		{
-			extendedTextures[i] = ResourceLocation.fromNamespaceAndPath(textures.get(i).getNamespace(), "textures/" + textures.get(i).getPath() + ".png");
+			extendedTextures[i] = new ResourceLocation(textures.get(i).getNamespace(), "textures/" + textures.get(i).getPath() + ".png");
 		}
 		this.extendedTextures = Arrays.asList(extendedTextures);
 	}

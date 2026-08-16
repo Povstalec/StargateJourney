@@ -1,12 +1,13 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.FluidTankRenderer;
 import net.povstalec.sgjourney.client.widgets.DumpTankButton;
@@ -15,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidize
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class LiquidizerScreen<T extends AbstractLiquidizerEntity<?>> extends SGJourneyContainerScreen<LiquidizerMenu<T>>
 {
@@ -53,66 +55,66 @@ public abstract class LiquidizerScreen<T extends AbstractLiquidizerEntity<?>> ex
 	}
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY)
+    protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
+
+        this.blit(stack, x, y, 0, 0, imageWidth, imageHeight);
 		
-		graphics.blit(texture, x, y, 0, 0, imageWidth, imageHeight);
+		this.itemHint(stack, x + 8, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
+		this.itemHint(stack, x + 116, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
+		this.itemHint(stack, x + 142, y + 17, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
+		this.itemHint(stack, x + 62, y + 17, ITEM_INPUT_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
 		
-		this.itemHint(graphics, texture, x + 8, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 1);
-		this.itemHint(graphics, texture, x + 116, y + 17, BUCKET_HINT_OFFSET_X, HINT_OFFSET_Y, 2);
-		this.itemHint(graphics, texture, x + 142, y + 17, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
-		this.itemHint(graphics, texture, x + 62, y + 17, ITEM_INPUT_HINT_OFFSET_X, HINT_OFFSET_Y, 0);
-		
-		this.renderEnergyVertical(graphics, texture, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
-        this.renderProgress(graphics, x + 52, y + 40);
+		this.renderEnergyVertical(stack, x + 162, y + 17, 6, 52, 176, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+        this.renderProgress(stack, x + 52, y + 40);
         
-        inputFluidTankRenderer.render(graphics, x + 34, y + 17, menu.getInputFluidStack());
-		outputFluidTankRenderer.render(graphics, x + 90, y + 17, menu.getOutputFluidStack());
+        inputFluidTankRenderer.render(stack, x + 34, y + 17, menu.getInputFluidStack());
+		outputFluidTankRenderer.render(stack, x + 90, y + 17, menu.getOutputFluidStack());
     }
-	
+
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
-	{
-		renderBackground(graphics, mouseX, mouseY, delta);
-		super.render(graphics, mouseX, mouseY, delta);
-		renderTooltip(graphics, mouseX, mouseY);
+	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+    {
+        renderBackground(stack);
+        super.render(stack, mouseX, mouseY, delta);
+        renderTooltip(stack, mouseX, mouseY);
 		
-		this.energyTooltip(graphics, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
-        this.liquidFluidInputTooltip(graphics, mouseX, mouseY);
-        this.liquidFluidOutputTooltip(graphics, mouseX, mouseY);
+		this.energyTooltip(stack, mouseX, mouseY, 162, 17, 6, 52, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+        this.liquidFluidInputTooltip(stack, mouseX, mouseY);
+        this.liquidFluidOutputTooltip(stack, mouseX, mouseY);
 		
-		this.itemTooltip(graphics, mouseX, mouseY, 142, 17, 5, ComponentHelper.description("tooltip.sgjourney.liquidizer.energy_slot.description"));
+		this.itemTooltip(stack, mouseX, mouseY, 142, 17, 5, ComponentHelper.description("tooltip.sgjourney.liquidizer.energy_slot.description"));
 	}
 	
-	protected void renderProgress(GuiGraphics graphics, int x, int y)
+	protected void renderProgress(PoseStack stack, int x, int y)
     {
     	float percentage = (float) this.menu.getProgress() / this.menu.getMaxProgress();
     	int actual = Math.round(36 * percentage);
-		graphics.blit(texture, x, y, 0, 166, actual, 8);
+    	this.blit(stack, x, y, 0, 166, actual, 8);
     }
     
-    protected void liquidFluidInputTooltip(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void liquidFluidInputTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
     	if(this.isHovering(34, 17, 16, 54, mouseX, mouseY))
 	    {
     		FluidStack fluidStack = this.menu.getInputFluidStack();
-			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getFluidType().getDescriptionId(fluidStack);
-			graphics.renderTooltip(this.font, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.inputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.inputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
     
-    protected void liquidFluidOutputTooltip(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void liquidFluidOutputTooltip(PoseStack matrixStack, int mouseX, int mouseY)
     {
     	if(this.isHovering(90, 17, 16, 54, mouseX, mouseY))
 	    {
     		FluidStack fluidStack = this.menu.getOutputFluidStack();
-			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getFluidType().getDescriptionId(fluidStack);
-			graphics.renderTooltip(this.font, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.outputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
+			String name = fluidStack.isEmpty() ? "tooltip.sgjourney.empty" : fluidStack.getTranslationKey();
+	    	renderTooltip(matrixStack, ComponentHelper.unchangingFluidAmountComponent(name, fluidStack.getAmount(), menu.blockEntity.outputFluidTankCapacity(), ComponentHelper.fluidComponentColor(fluidStack.getFluid())), mouseX, mouseY);
 	    }
     }
 	

@@ -3,13 +3,14 @@ package net.povstalec.sgjourney.common.events.custom;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.bus.api.Event;
-import net.neoforged.bus.api.ICancellableEvent;
+import net.minecraftforge.eventbus.api.Cancelable;
+import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import javax.annotation.Nullable;
 
+@Cancelable
 public class TransporterEvent extends Event
 {
 	private final MinecraftServer server;
@@ -38,7 +39,8 @@ public class TransporterEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class DialID extends TransporterEvent implements ICancellableEvent
+	@Cancelable
+	public static class DialID extends TransporterEvent
 	{
 		private final TransporterID transporterID;
 		
@@ -61,7 +63,8 @@ public class TransporterEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class DialCoords extends TransporterEvent implements ICancellableEvent
+	@Cancelable
+	public static class DialCoords extends TransporterEvent
 	{
 		private final Vec3i coords;
 		
@@ -85,7 +88,8 @@ public class TransporterEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class Connect extends TransporterEvent implements ICancellableEvent
+	@Cancelable
+	public static class Connect extends TransporterEvent
 	{
 		@Nullable
 		private final TransporterConnection.Type connectionType;
@@ -122,7 +126,8 @@ public class TransporterEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class TransporterTransport extends TransporterEvent implements ICancellableEvent
+	@Cancelable
+	public static class TransporterTransport extends TransporterEvent
 	{
 		private final Transporter destinationTransporter;
 		
@@ -146,7 +151,8 @@ public class TransporterEvent extends Event
 	 * @author Povstalec
 	 *
 	 */
-	public static class TravellerTransport extends TransporterEvent implements ICancellableEvent
+	@Cancelable
+	public static class TravellerTransport extends TransporterEvent
 	{
 		private final Transporter destinationTransporter;
 		private final Entity traveler;

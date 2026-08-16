@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -18,6 +17,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
@@ -36,7 +36,7 @@ public final class TransporterNetwork extends SavedData
 	private static final String VERSION = "version";
 	
 	private static final String CONNECTIONS = "connections";
-	
+
 	private static final int UPDATE_VERSION = 3;
 	
 	private MinecraftServer server;
@@ -568,15 +568,10 @@ public final class TransporterNetwork extends SavedData
 		return data;
 	}
 
-	public @NotNull CompoundTag save(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
 		serialize(tag);
 		return tag;
-	}
-
-	public static SavedData.Factory<TransporterNetwork> dataFactory(MinecraftServer server)
-	{
-		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 	
 	@Nonnull
@@ -593,6 +588,6 @@ public final class TransporterNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
+        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
     }
 }

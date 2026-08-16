@@ -1,7 +1,15 @@
 package net.povstalec.sgjourney.common.items;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -13,17 +21,12 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundGDOOpenScreenPacket;
 import net.povstalec.sgjourney.common.sgjourney.ITransmissionReceiver;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
 
 public class GDOItem extends Item
 {
@@ -126,7 +129,7 @@ public class GDOItem extends Item
 		// Open the GDO screen / Send IDC transmission
 		if(player.isShiftKeyDown())
 		{
-			PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundGDOOpenScreenPacket(usedHand == InteractionHand.MAIN_HAND, getTransmissionMessage(stack), getFrequency(stack)));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundGDOOpenScreenPacket(usedHand == InteractionHand.MAIN_HAND, getTransmissionMessage(stack), getFrequency(stack)));
 			
 	        return super.use(level, player, usedHand);
 		}
@@ -140,10 +143,16 @@ public class GDOItem extends Item
     }
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		int frequency = getFrequency(stack);
-		String idc = getTransmissionMessage(stack);
+		int frequency = 0;
+		String idc = "";
+		
+		if(stack.hasTag())
+		{
+			frequency = getFrequency(stack);
+			idc = getTransmissionMessage(stack);
+		}
 
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.frequency").append(Component.literal(": " + frequency)).withStyle(ChatFormatting.YELLOW));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.idc").append(Component.literal(": " + idc)).withStyle(ChatFormatting.AQUA));
@@ -151,7 +160,7 @@ public class GDOItem extends Item
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.check").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.gdo.description.gui").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
 	public static float transmissionRadius()
@@ -169,7 +178,10 @@ public class GDOItem extends Item
 	public static String getTransmissionMessage(ItemStack stack)
 	{
 		if(stack.getItem() instanceof GDOItem)
-			return stack.getOrDefault(DataComponentInit.IDC, "");
+		{
+			if(stack.getTag() != null && stack.getTag().contains(IDC))
+				return stack.getTag().getString(IDC);
+		}
 		
 		return "";
 	}
@@ -177,7 +189,10 @@ public class GDOItem extends Item
 	public static int getFrequency(ItemStack stack)
 	{
 		if(stack.getItem() instanceof GDOItem)
-			return stack.getOrDefault(DataComponentInit.FREQUENCY, 0);
+		{
+			if(stack.getTag() != null && stack.getTag().contains(FREQUENCY))
+				return stack.getTag().getInt(FREQUENCY);
+		}
 		
 		return 0;
 	}
@@ -186,8 +201,9 @@ public class GDOItem extends Item
 	{
 		if(stack.getItem() instanceof GDOItem)
 		{
-			stack.set(DataComponentInit.FREQUENCY, frequency);
-			stack.set(DataComponentInit.IDC, idc);
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.putInt(FREQUENCY, frequency);
+			tag.putString(IDC, idc);
 		}
 	}
 }

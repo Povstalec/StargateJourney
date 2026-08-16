@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
-import net.povstalec.sgjourney.common.block_entities.stargate.*;
-import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerScreen;
@@ -54,25 +52,25 @@ public class ClientAccess
 	{
 		minecraft.setScreen(new PocketCrystalComputerSaveScreen(interactionHand, PocketCrystalComputerScreen.SelectedCrystal.NONE, clickedPos));
 	}
-    
-    public static void spawnStargateParticles(BlockPos pos, Map<StargatePart, BlockState> blockStates)
-    {
-    	final BlockState state = minecraft.level.getBlockState(pos);
-        
-        if(state.getBlock() instanceof final AbstractStargateBlock stargateBlock)
-        {
-        	StargatePart part = state.getValue(AbstractStargateBlock.PART);
-        	Direction direction = state.getValue(AbstractStargateBlock.FACING);
-        	Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
-        	
-        	BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
-        	
-        	for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
-        	{
-        		BlockPos coverPos = entry.getKey().getRingPos(basePos, direction, orientation);
-        		
-            	minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
-        	}
-        }
-    }
+	
+	public static void spawnStargateParticles(BlockPos pos, HashMap<StargatePart, BlockState> blockStates)
+	{
+		final BlockState state = minecraft.level.getBlockState(pos);
+		
+		if(state.getBlock() instanceof final AbstractStargateBlock stargateBlock)
+		{
+			StargatePart part = state.getValue(AbstractStargateBlock.PART);
+			Direction direction = state.getValue(AbstractStargateBlock.FACING);
+			Orientation orientation = state.getValue(AbstractStargateBlock.ORIENTATION);
+			
+			BlockPos basePos = part.getBaseBlockPos(pos, direction, orientation);
+			
+			for(Map.Entry<StargatePart, BlockState> entry : blockStates.entrySet())
+			{
+				BlockPos coverPos = entry.getKey().getRingPos(basePos, direction, orientation);
+				
+				minecraft.particleEngine.destroy(coverPos, stargateBlock.defaultBlockState());
+			}
+		}
+	}
 }

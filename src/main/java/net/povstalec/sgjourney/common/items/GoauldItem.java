@@ -7,6 +7,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -16,12 +17,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
+import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
 import net.povstalec.sgjourney.common.entities.Goauld;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class GoauldItem extends Item
 {
@@ -39,7 +41,10 @@ public class GoauldItem extends Item
 	@Nullable
 	public CompoundTag getInfoTag(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.GOAULD_INFO, new CompoundTag());
+		if(stack.getTag() != null && stack.getTag().contains(Goauld.Info.GOAULD_INFO, CompoundTag.TAG_COMPOUND))
+			return stack.getTag().getCompound(Goauld.Info.GOAULD_INFO);
+		
+		return null;
 	}
 	
 	public float getHealth(ItemStack stack)
@@ -106,15 +111,15 @@ public class GoauldItem extends Item
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity target, InteractionHand hand)
 	{
-		if(player.level().isClientSide())
+		if(player.getLevel().isClientSide())
 			return super.interactLivingEntity(stack, player, target, hand);
 		
-		GoauldHost cap = target.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+		Optional<GoauldHost> cap = target.getCapability(GoauldHostProvider.GOAULD_HOST).resolve();
 		
-		if(cap == null || !(target instanceof Mob mob) || !cap.takeOverHost(stack, mob))
+		if(!cap.isPresent() || !(target instanceof Mob mob) || !cap.get().takeOverHost(stack, mob))
 			return InteractionResult.FAIL;
 		
-		target.hurt(player.damageSources().generic(), 1); //TODO Add Goa'uld damage source
+		target.hurt(DamageSource.GENERIC, 1); //TODO Add Goa'uld damage source
 		stack.shrink(1);
 		return InteractionResult.CONSUME;
 	}
@@ -137,7 +142,7 @@ public class GoauldItem extends Item
 		
 		goauld.setDeltaMovement(location.getDeltaMovement());
 		goauld.setPos(location.getX(), location.getY(), location.getZ());
-		goauld.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(goauld.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null);
+		goauld.finalizeSpawn((ServerLevel) level, level.getCurrentDifficultyAt(goauld.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null);
 		
 		return goauld;
 	}

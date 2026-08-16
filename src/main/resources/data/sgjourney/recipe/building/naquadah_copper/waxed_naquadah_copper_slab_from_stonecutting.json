@@ -1,9 +1,0 @@
-{
-	"type": "minecraft:stonecutting",
-	
-	"ingredient":
-	{
-		"item": "sgjourney:waxed_naquadah_copper_block"
-	},
-	"result": { "id": "sgjourney:waxed_naquadah_copper_slab", "count": 2 }
-}

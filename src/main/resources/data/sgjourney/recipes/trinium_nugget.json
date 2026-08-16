@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "sgjourney:trinium_ingot"
+    }
+  ],
+  "result": {
+    "count": 9,
+    "item": "sgjourney:trinium_nugget"
+  }
+}

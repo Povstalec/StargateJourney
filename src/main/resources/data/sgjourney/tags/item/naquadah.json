@@ -1,8 +1,0 @@
-{
-	"replace": false,
-	"values":
-	[
-		"sgjourney:naquadah",
-		{"id": "#c:ingots/refined_naquadah", "required": false}
-	]
-}

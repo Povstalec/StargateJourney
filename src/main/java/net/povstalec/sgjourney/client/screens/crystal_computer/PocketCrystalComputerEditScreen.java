@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.povstalec.sgjourney.client.widgets.crystal_computer.CrystalComputerButton;
@@ -54,14 +53,14 @@ public class PocketCrystalComputerEditScreen extends PocketCrystalComputerScreen
 	}
 	
 	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y)
+	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
-		graphics.drawCenteredString(font, Component.translatable("screen.sgjourney.crystal_computer.edit_entry"), x + 101, y + 14, 0xffffff);
-		graphics.drawString(font, Component.translatable("screen.sgjourney.crystal_computer.entry_name").append(":"), x + 20, y + 25, 0xffffff);
+		drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.edit_entry"), x + 101, y + 14, 0xffffff);
+		font.draw(stack, Component.translatable("screen.sgjourney.crystal_computer.entry_name").append(":"), x + 20, y + 25, 0xffffff);
 		
 		Component entryTypeComponent = memoryEntry.entryType().getComponent();
-		graphics.drawString(font, Component.translatable("info.sgjourney.entry_type").append(": ").append(entryTypeComponent), x + 20, y + 61, entryTypeComponent.getStyle().getColor().getValue());
-		graphics.drawString(font, Component.translatable("info.sgjourney.timestamp").append(": " + memoryEntry.timeStamp()), x + 20, y + 73, 0xffffff);
+		font.draw(stack, Component.translatable("info.sgjourney.entry_type").append(": ").append(entryTypeComponent), x + 20, y + 61, entryTypeComponent.getStyle().getColor().getValue());
+		font.draw(stack, Component.translatable("info.sgjourney.timestamp").append(": " + memoryEntry.timeStamp()), x + 20, y + 73, 0xffffff);
 	}
 	
 	public void editEntry()

@@ -1,63 +1,74 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
-import net.povstalec.sgjourney.common.recipe.CrystallizingRecipeInput;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.Optional;
 
-public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, CrystallizingRecipeInput>
+public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
 {
+	private static final String INVENTORY = "Inventory"; //TODO For legacy reasons
+	
 	private static final String CRYSTAL_BASE_INVENTORY = "crystal_base_inventory";
 	private static final String PRIMARY_INGREDIENT_INVENTORY = "primary_ingredient_inventory";
 	private static final String SECONDARY_INGREDIENT_INVENTORY = "secondary_ingredient_inventory";
 	private static final String OUTPUT_INVENTORY = "output_inventory";
 	private static final String FLUID_INPUT_INVENTORY = "fluid_input_inventory";
-	
+    
 	public final ItemStackHandler crystalBaseHandler = createCrystalBaseHandler();
-	protected final Lazy<IItemHandler> lazyCrystalBaseHandler = Lazy.of(() -> crystalBaseHandler);
+	protected final LazyOptional<IItemHandler> lazyCrystalBaseHandler = LazyOptional.of(() -> crystalBaseHandler);
 	public final ItemStackHandler primaryIngredientHandler = createIngredientHandler();
-	protected final Lazy<IItemHandler> lazyPrimaryIngredientHandler = Lazy.of(() -> primaryIngredientHandler);
+	protected final LazyOptional<IItemHandler> lazyPrimaryIngredientHandler = LazyOptional.of(() -> primaryIngredientHandler);
 	public final ItemStackHandler secondaryIngredientHandler = createIngredientHandler();
-	protected final Lazy<IItemHandler> lazySecondaryIngredientHandler = Lazy.of(() -> secondaryIngredientHandler);
+	protected final LazyOptional<IItemHandler> lazySecondaryIngredientHandler = LazyOptional.of(() -> secondaryIngredientHandler);
 	public final ItemStackHandler outputHandler = createOutputHandler();
-	protected final Lazy<IItemHandler> lazyOutputHandler = Lazy.of(() -> outputHandler);
+	protected final LazyOptional<IItemHandler> lazyOutputHandler = LazyOptional.of(() -> outputHandler);
 	public final ItemStackHandler fluidInputHandler = createFluidInputHandler();
-	protected final Lazy<IItemHandler> lazyFluidInputHandler = Lazy.of(() -> fluidInputHandler);
+	protected final LazyOptional<IItemHandler> lazyFluidInputHandler = LazyOptional.of(() -> fluidInputHandler);
 	
-	public final FluidTank inputFluidTank = createFluidTank();
-	protected Lazy<IFluidHandler> lazyFluidHandler = Lazy.of(() -> inputFluidTank);
+	protected LazyOptional<IFluidHandler> lazyFluidHandler = LazyOptional.empty();
 	
 	public AbstractCrystallizerEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(type, pos, state, new CrystallizingRecipeInput());
+		super(type, pos, state, new SimpleFluidContainer(3, 1));
 	}
 	
 	@Override
-	public void invalidateCapabilities()
+	public void onLoad()
 	{
-		super.invalidateCapabilities();
+		super.onLoad();
+		lazyFluidHandler = LazyOptional.of(() -> inputFluidTank);
+	}
+	
+	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
 		
 		lazyCrystalBaseHandler.invalidate();
 		lazyPrimaryIngredientHandler.invalidate();
@@ -69,32 +80,46 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
+	public void load(CompoundTag nbt)
 	{
-		super.loadAdditional(nbt, registries);
+		super.load(nbt);
 		
-		crystalBaseHandler.deserializeNBT(registries, nbt.getCompound(CRYSTAL_BASE_INVENTORY));
-		primaryIngredientHandler.deserializeNBT(registries, nbt.getCompound(PRIMARY_INGREDIENT_INVENTORY));
-		secondaryIngredientHandler.deserializeNBT(registries, nbt.getCompound(SECONDARY_INGREDIENT_INVENTORY));
-		outputHandler.deserializeNBT(registries, nbt.getCompound(OUTPUT_INVENTORY));
-		InventoryUtil.expandSlotsIfNeeded(outputHandler, 2);
-		fluidInputHandler.deserializeNBT(registries, nbt.getCompound(FLUID_INPUT_INVENTORY));
+		if(nbt.contains(INVENTORY)) // Old inventory getting updated
+		{
+			ItemStackHandler tempHandler = new ItemStackHandler(5);
+			tempHandler.deserializeNBT(nbt.getCompound(INVENTORY));
+			
+			crystalBaseHandler.insertItem(0, tempHandler.getStackInSlot(0), false);
+			primaryIngredientHandler.insertItem(0, tempHandler.getStackInSlot(1), false);
+			secondaryIngredientHandler.insertItem(0, tempHandler.getStackInSlot(2), false);
+			outputHandler.insertItem(0, tempHandler.getStackInSlot(3), false);
+			fluidInputHandler.insertItem(0, tempHandler.getStackInSlot(4), false);
+		}
+		else
+		{
+			crystalBaseHandler.deserializeNBT(nbt.getCompound(CRYSTAL_BASE_INVENTORY));
+			primaryIngredientHandler.deserializeNBT(nbt.getCompound(PRIMARY_INGREDIENT_INVENTORY));
+			secondaryIngredientHandler.deserializeNBT(nbt.getCompound(SECONDARY_INGREDIENT_INVENTORY));
+			outputHandler.deserializeNBT(nbt.getCompound(OUTPUT_INVENTORY));
+			InventoryUtil.expandSlotsIfNeeded(outputHandler, 2);
+			fluidInputHandler.deserializeNBT(nbt.getCompound(FLUID_INPUT_INVENTORY));
+		}
 		
-		inputFluidTank.readFromNBT(registries, nbt);
+		inputFluidTank.readFromNBT(nbt);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		nbt.put(CRYSTAL_BASE_INVENTORY, crystalBaseHandler.serializeNBT(registries));
-		nbt.put(PRIMARY_INGREDIENT_INVENTORY, primaryIngredientHandler.serializeNBT(registries));
-		nbt.put(SECONDARY_INGREDIENT_INVENTORY, secondaryIngredientHandler.serializeNBT(registries));
-		nbt.put(OUTPUT_INVENTORY, outputHandler.serializeNBT(registries));
-		nbt.put(FLUID_INPUT_INVENTORY, fluidInputHandler.serializeNBT(registries));
+		nbt.put(CRYSTAL_BASE_INVENTORY, crystalBaseHandler.serializeNBT());
+		nbt.put(PRIMARY_INGREDIENT_INVENTORY, primaryIngredientHandler.serializeNBT());
+		nbt.put(SECONDARY_INGREDIENT_INVENTORY, secondaryIngredientHandler.serializeNBT());
+		nbt.put(OUTPUT_INVENTORY, outputHandler.serializeNBT());
+		nbt.put(FLUID_INPUT_INVENTORY, fluidInputHandler.serializeNBT());
 		
-		nbt = inputFluidTank.writeToNBT(registries, nbt);
+		nbt = inputFluidTank.writeToNBT(nbt);
 		
-		super.saveAdditional(nbt, registries);
+		super.saveAdditional(nbt);
 	}
 	
 	public abstract boolean isDesiredInputFluid(FluidStack fluidStack);
@@ -102,58 +127,59 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	@Override
 	protected void updateSimpleContainer()
 	{
-		this.recipeInput.setItem(0, crystalBaseHandler.getStackInSlot(0));
-		this.recipeInput.setItem(1, primaryIngredientHandler.getStackInSlot(0));
-		this.recipeInput.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
-		this.recipeInput.setFluid(0, inputFluidTank.getFluid());
+		this.simpleContainer.setItem(0, crystalBaseHandler.getStackInSlot(0));
+		this.simpleContainer.setItem(1, primaryIngredientHandler.getStackInSlot(0));
+		this.simpleContainer.setItem(2, secondaryIngredientHandler.getStackInSlot(0));
+		this.simpleContainer.setFluid(0, inputFluidTank.getFluid());
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IFluidHandler getFluidHandler(Direction side)
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		return lazyFluidHandler.get();
+		if(capability == ForgeCapabilities.FLUID_HANDLER)
+			return lazyFluidHandler.cast();
+		
+		else if(capability == ForgeCapabilities.ITEM_HANDLER)
+		{
+			if(side == Direction.UP)
+				return lazyCrystalBaseHandler.cast();
+			else if(side == Direction.DOWN)
+				return lazyOutputHandler.cast();
+			else if(side == getDirection().getClockWise())
+				return lazyPrimaryIngredientHandler.cast();
+			else if(side == getDirection().getCounterClockWise())
+				return lazySecondaryIngredientHandler.cast();
+			else
+				return lazyFluidInputHandler.cast();
+		}
+		
+		return super.getCapability(capability, side);
 	}
 	
 	public abstract int inputFluidTankCapacity();
 	
 	public abstract int maxFluidReceive();
 	
-	public IItemHandler getItemHandler(Direction side)
+	private final FluidTank inputFluidTank = new FluidTank(inputFluidTankCapacity())
 	{
-		if(side == Direction.UP)
-			return lazyCrystalBaseHandler.get();
-		else if(side == Direction.DOWN)
-			return lazyOutputHandler.get();
-		else if(side == getDirection().getClockWise())
-			return lazyPrimaryIngredientHandler.get();
-		else if(side == getDirection().getCounterClockWise())
-			return lazySecondaryIngredientHandler.get();
-		else
-			return lazyFluidInputHandler.get();
-	}
-	
-	private FluidTank createFluidTank()
-	{
-		return new FluidTank(inputFluidTankCapacity())
+		@Override
+		protected void onContentsChanged()
 		{
-			@Override
-			protected void onContentsChanged()
-			{
-				updateSimpleContainer();
-				updateClient();
-				setChanged();
-			}
-			
-			@Override
-			public boolean isFluidValid(FluidStack stack)
-			{
-				return isDesiredInputFluid(stack);
-			}
-		};
-	}
+			updateSimpleContainer();
+			updateClient();
+			setChanged();
+	    }
+		
+		@Override
+	    public boolean isFluidValid(FluidStack stack)
+	    {
+			return isDesiredInputFluid(stack);
+	    }
+	};
 	
 	public void setFluid(FluidStack fluidStack)
 	{
@@ -204,7 +230,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
+				return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
 			}
 			
 			@Override
@@ -215,6 +241,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 					return stack;
 				
 				return super.insertItem(slot, stack, simulate);
+				
 			}
 		};
 	}
@@ -238,7 +265,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(Capabilities.FluidHandler.ITEM) != null;
+				return stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).isPresent();
 			}
 			
 			@Override
@@ -274,7 +301,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	public void fillFluidTank(FluidStack stack, ItemStack container)
 	{
 		inputFluidTank.fill(stack, IFluidHandler.FluidAction.EXECUTE);
-		
+
 		fluidInputHandler.extractItem(0, 1, false);
 		fluidInputHandler.insertItem(0, container, false);
     }
@@ -282,10 +309,10 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	public void dumpEmptyFluidContainers()
 	{
 		ItemStack container = fluidInputHandler.getStackInSlot(0);
-		IFluidHandlerItem fluidHandler = container.getCapability(Capabilities.FluidHandler.ITEM);
-		if(fluidHandler != null)
+		Optional<IFluidHandlerItem> fluidHandler = container.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve();
+		if(fluidHandler.isPresent())
 		{
-			if(fluidHandler.getFluidInTank(0).isEmpty()) // Try placing the container in the dump
+			if(fluidHandler.get().getFluidInTank(0).isEmpty()) // Try placing the container in the dump
 				InventoryUtil.dumpIfPossible(fluidInputHandler, 0, outputHandler, 1);
 		}
 		else
@@ -294,18 +321,17 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	
 	public void drainFluidFromInputItem()
 	{
-		IFluidHandlerItem cap = fluidInputHandler.getStackInSlot(0).getCapability(Capabilities.FluidHandler.ITEM);
-		if(cap != null)
+		fluidInputHandler.getStackInSlot(0).getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(handler ->
 		{
 			int drainAmount = Math.min(inputFluidTank.getSpace(), maxFluidReceive());
-			FluidStack fluidStack = cap.getFluidInTank(0);
+			FluidStack fluidStack = handler.getFluidInTank(0);
 			
 			if(inputFluidTank.isFluidValid(fluidStack) && isSameFluidOrEmpty(inputFluidTank.getFluidInTank(0), fluidStack))
 			{
-				fluidStack = cap.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
-				fillFluidTank(fluidStack, cap.getContainer());
+				fluidStack = handler.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+				fillFluidTank(fluidStack, handler.getContainer());
 			}
-		}
+		});
 	}
 	
 	public void dumpInputFluidTank()
@@ -316,10 +342,10 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	public boolean canOutput(R recipe)
 	{
 		// Only allows creating Stargate Upgrade Crystals when it's enabled in the config
-		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem(level.registryAccess()).getItem() instanceof StargateUpgradeItem)
+		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem().getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return InventoryUtil.canInsertStackInto(outputHandler.getStackInSlot(0), recipe.getResultItem(level.registryAccess()));
+		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem());
 	}
 	
 	@Override
@@ -339,8 +365,8 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		ItemStack outputStack = outputHandler.getStackInSlot(0);
 		
 		if(outputStack.isEmpty())
-			outputHandler.setStackInSlot(0, recipe.getResultItem(level.registryAccess()));
-		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()))
+			outputHandler.setStackInSlot(0, recipe.getResultItem());
+		else if(recipe.getResultItem().is(outputStack.getItem()))
 			outputStack.grow(1);
 	}
 	

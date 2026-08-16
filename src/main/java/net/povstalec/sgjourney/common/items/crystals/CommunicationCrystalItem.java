@@ -1,16 +1,19 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
+import java.util.List;
+import java.util.Optional;
+
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 public class CommunicationCrystalItem extends AbstractCrystalItem
 {
@@ -34,27 +37,43 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	
 	public static boolean containsFrequency(@NotNull CompoundTag tag)
 	{
-		return tag.contains(FREQUENCY, Tag.TAG_INT);
+		return tag.contains(FREQUENCY);
 	}
 	
 	public static boolean hasFrequency(ItemStack stack)
 	{
-		return stack.has(DataComponentInit.FREQUENCY);
+		if(stack.hasTag())
+			return containsFrequency(stack.getTag());
+		
+		return false;
 	}
 	
 	public static int getFrequency(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.FREQUENCY, DEFAULT_FREQUENCY);
+		if(hasFrequency(stack))
+			return stack.getTag().getInt(FREQUENCY);
+		
+		return DEFAULT_FREQUENCY;
 	}
 	
 	public static void setFrequency(ItemStack stack, int frequency)
 	{
-		stack.set(DataComponentInit.FREQUENCY, frequency);
+		stack.getOrCreateTag().putInt(FREQUENCY, frequency);
 	}
 	
 	public static void unsetFrequency(ItemStack stack)
 	{
-		stack.remove(DataComponentInit.FREQUENCY);
+		if(stack.hasTag())
+			stack.getTag().remove(FREQUENCY);
+	}
+	
+	public static CompoundTag tagSetup(int frequency)
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putInt(FREQUENCY, frequency);
+		
+		return tag;
 	}
 	
 	public int getRangeIncrease()
@@ -63,7 +82,7 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	boolean hasFrequency = hasFrequency(stack);
 		

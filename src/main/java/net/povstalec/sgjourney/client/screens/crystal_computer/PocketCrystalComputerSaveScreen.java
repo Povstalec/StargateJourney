@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.client.screens.crystal_computer;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -79,18 +79,17 @@ public class PocketCrystalComputerSaveScreen extends PocketCrystalComputerScreen
 	}
 	
 	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y)
+	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
-		
-		graphics.drawCenteredString(font, Component.translatable("screen.sgjourney.crystal_computer.save_to_selected_crystal"), x + 101, y + 14, 0xffffff);
-		graphics.drawString(font, Component.translatable("screen.sgjourney.crystal_computer.entry_name"), x + 20, y + 28, 0xffffff);
+		drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.save_to_selected_crystal"), x + 101, y + 14, 0xffffff);
+		font.draw(stack, Component.translatable("screen.sgjourney.crystal_computer.entry_name"), x + 20, y + 28, 0xffffff);
 		
 		if(selectedCrystal != SelectedCrystal.NONE)
 		{
 			if(selectedCrystalType(selectedCrystal) == CrystalCache.Type.MEMORY && !memoryCrystalHasFreeSpace(selectedCrystal))
-				graphics.drawCenteredString(font, Component.translatable("screen.sgjourney.crystal_computer.memory_crystal_full"), x + 101, y + 64, DARK_RED_COLOR);
+				drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.memory_crystal_full"), x + 101, y + 64, DARK_RED_COLOR);
 			else if(selectedCrystalType(selectedCrystal) != CrystalCache.Type.MEMORY)
-				graphics.drawCenteredString(font, Component.translatable("screen.sgjourney.crystal_computer.not_memory_crystal"), x + 101, y + 64, DARK_RED_COLOR);
+				drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.not_memory_crystal"), x + 101, y + 64, DARK_RED_COLOR);
 		}
 	}
 	

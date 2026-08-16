@@ -5,14 +5,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickAction;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
 
 public interface IHolderItem
 {
 	default ItemStack getHeldItem(ItemStack holderStack)
 	{
-		IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
 		if(itemHandler == null)
 			return ItemStack.EMPTY;
 		
@@ -23,7 +23,7 @@ public interface IHolderItem
 	
 	default ItemStack swapHeldItem(ItemStack holderStack, ItemStack otherStack)
 	{
-		IItemHandler itemHandler = holderStack.getCapability(Capabilities.ItemHandler.ITEM);
+		IItemHandler itemHandler = holderStack.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
 		if(itemHandler == null || !itemHandler.isItemValid(0, otherStack))
 			return otherStack;
 		

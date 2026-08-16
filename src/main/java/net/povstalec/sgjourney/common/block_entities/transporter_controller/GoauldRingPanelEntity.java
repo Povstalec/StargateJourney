@@ -1,15 +1,14 @@
 package net.povstalec.sgjourney.common.block_entities.transporter_controller;
 
+import java.util.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
@@ -18,14 +17,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
@@ -36,26 +30,31 @@ import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.*;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class GoauldRingPanelEntity extends TransporterControllerEntity implements CrystalCache.Interface<GoauldRingPanelEntity>
 {
@@ -80,7 +79,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	protected TransporterID.Mutable encodedID = null;
 	
 	protected final ItemStackHandler crystalItemHandler = createCrystalItemHandler();
-	protected final Lazy<IItemHandler> lazyCrystalItemHandler = Lazy.of(() -> crystalItemHandler);
+	protected final LazyOptional<IItemHandler> lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
 	
 	public GoauldRingPanelEntity(BlockPos pos, BlockState state)
 	{
@@ -88,14 +87,14 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		super.loadAdditional(tag, registries);
+		super.load(tag);
 		
 		if(tag.contains(CRYSTAL_INVENTORY))
-			crystalItemHandler.deserializeNBT(registries, tag.getCompound(CRYSTAL_INVENTORY));
+			crystalItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		else
-			crystalItemHandler.deserializeNBT(registries, tag.getCompound("Inventory")); //TODO For legacy reasons
+			crystalItemHandler.deserializeNBT(tag.getCompound("Inventory")); //TODO For legacy reasons
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
@@ -105,10 +104,10 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT(registries));
-		super.saveAdditional(tag, registries);
+		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT());
+		super.saveAdditional(tag);
 	}
 	
 	@Override
@@ -126,13 +125,13 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag()
 	{
-		CompoundTag tag = super.getUpdateTag(registries);
+		CompoundTag tag = super.getUpdateTag();
 		ListTag list = new ListTag();
 		for(int i = 0; i < 6; i++)
 		{
-			list.add(buttons.get(i).serialize(registries));
+			list.add(buttons.get(i).serialize());
 		}
 		
 		tag.put(BUTTONS, list);
@@ -141,16 +140,16 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
-		super.onDataPacket(net, packet, registries);
+		super.onDataPacket(net, packet);
 		CompoundTag tag = packet.getTag();
 		if(tag != null && tag.contains(BUTTONS, Tag.TAG_LIST))
 		{
 			ListTag list = tag.getList(BUTTONS, Tag.TAG_COMPOUND);
 			for(int i = 0; i < 6; i++)
 			{
-				buttons.get(i).deserialize(list.getCompound(i), registries);
+				buttons.get(i).deserialize(list.getCompound(i));
 			}
 		}
 	}
@@ -280,17 +279,24 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 			};
 	}
 	
-	public IItemHandler getCrystalItemHandler()
+	public LazyOptional<IItemHandler> getCrystalItemHandler()
 	{
-		return lazyCrystalItemHandler.get();
+		return lazyCrystalItemHandler.cast();
 	}
 	
-	@Nullable
-	public IItemHandler getEnergyItemHandler()
+	public LazyOptional<IItemHandler> getEnergyItemHandler()
 	{
-		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
-			return lazyEnergyItemHandler.get();
-		return null;
+		return lazyEnergyItemHandler.cast();
+	}
+	
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction side)
+	{
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+			return lazyEnergyItemHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 	
 	//============================================================================================
@@ -391,7 +397,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		if(!status.isEnabled)
 			return TransporterControllerButton.memoryButton(this, index, status);
 		
-		MutableComponent tooltip = stack.has(DataComponents.ITEM_NAME) ? stack.getHoverName().copy() : Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries");
+		MutableComponent tooltip = stack.hasCustomHoverName() ? stack.getHoverName().copy() : Component.translatable("tooltip.sgjourney.ring_panel.button.memory_entries");
 		
 		return TransporterControllerButton.memoryButton(this, index, status).setTooltip(tooltip.append(": " + entryCount).withStyle(ChatFormatting.BLUE)).setOnPress(button ->
 		{

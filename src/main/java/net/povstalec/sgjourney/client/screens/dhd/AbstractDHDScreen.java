@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.client.screens.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,27 +29,28 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY)
+    protected void renderBg(PoseStack poseStack, float pPartialTick, int pMouseX, int pMouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
-		
-		graphics.blit(texture, x, y, 0, 0, imageWidth, imageHeight);
+
+        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
-        super.render(graphics, mouseX, mouseY, delta);
-        renderTooltip(graphics, mouseX, mouseY);
+        renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, delta);
+        renderTooltip(poseStack, mouseX, mouseY);
     }
     
     @Override
-    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
 	{
-		graphics.drawCenteredString(font, ClientDHDConfig.dhd_symbols_numbers.get() ? SYMBOLS_TO_NUMBERS : NUMBERS_TO_SYMBOLS, imageWidth / 2, imageHeight + 1, 0xFFFFFF);
+		GuiComponent.drawCenteredString(poseStack, font, ClientDHDConfig.dhd_symbols_numbers.get() ? SYMBOLS_TO_NUMBERS : NUMBERS_TO_SYMBOLS, imageWidth / 2, imageHeight + 1, 0xFFFFFF);
     }
 }

@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.tech;
 
 import net.minecraft.world.entity.LivingEntity;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
+import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
 
 public interface GoauldTech
 {
@@ -11,11 +12,6 @@ public interface GoauldTech
 	 */
 	default boolean canUseGoauldTech(LivingEntity user)
 	{
-		GoauldHost cap = user.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
-		
-		if(cap != null)
-			return cap.hasNaquadahInBloodstream();
-		
-		return false;
+		return user.getCapability(GoauldHostProvider.GOAULD_HOST).resolve().map(GoauldHost::hasNaquadahInBloodstream).orElse(false);
 	}
 }

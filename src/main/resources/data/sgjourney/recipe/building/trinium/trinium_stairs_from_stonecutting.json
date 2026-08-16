@@ -1,9 +1,0 @@
-{
-	"type": "minecraft:stonecutting",
-	
-	"ingredient":
-	{
-		"item": "sgjourney:trinium_block"
-	},
-	"result": { "id": "sgjourney:trinium_stairs" }
-}

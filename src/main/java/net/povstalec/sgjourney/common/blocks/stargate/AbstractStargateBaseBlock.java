@@ -10,18 +10,16 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -43,7 +41,6 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
@@ -73,7 +70,8 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		
 		if(item instanceof StargateVariantItem)
 		{
-			if(!stack.has(DataComponentInit.STARGATE_VARIANT))
+			
+			if(!stack.hasTag())
 			{
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				if(blockEntity instanceof AbstractStargateEntity<?> stargate)
@@ -95,7 +93,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				return true;
 			}
 			
-			ResourceLocation variant = StargateVariantItem.getStargateVariant(stack);
+			ResourceLocation variant = StargateVariantItem.getVariant(stack);
 			
 			if(variant != null)
 			{
@@ -144,12 +142,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		if(stack.is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
-			return setVariant(level, pos, player, hand) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+		if(player.getItemInHand(hand).is(ItemInit.STARGATE_VARIANT_CRYSTAL.get()))
+			return setVariant(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		
-		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+		return super.use(state, level, pos, player, hand, result);
 	}
 
 	@Override
@@ -180,14 +178,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 		{
 			if(!part.equals(StargatePart.BASE))
 			{
-				BlockPos ringPos = part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION));
-				level.setBlock(ringPos,
+				level.setBlock(part.getRingPos(pos,  state.getValue(FACING), state.getValue(ORIENTATION)), 
 						ringState()
 						.setValue(AbstractStargateRingBlock.PART, part)
 						.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
 						.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
 						.setValue(WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
-				level.invalidateCapabilities(ringPos);
 			}
 		}
 		
@@ -266,7 +262,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	long energy = 0;
 		
@@ -288,14 +284,20 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         
         tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(energy))).withStyle(ChatFormatting.DARK_RED));
 		
+		
 		if(blockEntityTag != null)
         {
         	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
 				String id;
-        		if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
+        		if(blockEntityTag.contains(AbstractStargateEntity.ID)) //TODO Remove this
         		{
-					id = Address.addressIntArrayToString(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS));
+        			id = blockEntityTag.getString(AbstractStargateEntity.ID);
+                	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
+        		}
+        		else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
+        		{
+        			id = Address.addressIntArrayToString(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS));
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         		}
             	
@@ -306,24 +308,22 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         	
         	if((blockEntityTag.contains(LOCAL_POINT_OF_ORIGIN)))
             	tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
-			
-			if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)))
+        	
+			if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractStargateEntity.GENERATION_STEP)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 			
 			if(blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY) && CommonStargateNetworkConfig.primary_stargate.get())
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
-        }
+		}
         
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	
-	
-	public static ItemStack localPointOfOrigin(ItemStack stack, BlockEntityType<?> blockEntityType)
+	public static ItemStack localPointOfOrigin(ItemStack stack)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(LOCAL_POINT_OF_ORIGIN, true);
-		BlockEntity.addEntityType(compoundtag, blockEntityType);
-		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
+		stack.addTagElement("BlockEntityTag", compoundtag);
 		
 		return stack;
 	}

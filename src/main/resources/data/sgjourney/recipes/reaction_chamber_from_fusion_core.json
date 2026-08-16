@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients":
+	[
+		{ "item": "sgjourney:fusion_core" }
+	],
+	"result": { "item": "sgjourney:reaction_chamber", "count": 1 }
+}

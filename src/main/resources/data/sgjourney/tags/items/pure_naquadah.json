@@ -1,0 +1,8 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:pure_naquadah",
+		{"id": "#forge:purified_ores/naquadah", "required": false}
+	]
+}

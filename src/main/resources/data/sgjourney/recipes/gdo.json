@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"III",
+		"RQG",
+		"III"
+	],
+	
+	"key": 
+	{
+		"I": { "item": "minecraft:iron_ingot" },
+		"G": { "item": "minecraft:gold_ingot" },
+		"R": { "item": "minecraft:redstone" },
+		"Q": { "item": "minecraft:quartz" }
+		
+	},
+	
+	"result": { "item": "sgjourney:gdo" }
+}

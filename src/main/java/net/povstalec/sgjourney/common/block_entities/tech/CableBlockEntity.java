@@ -2,31 +2,32 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.blocks.tech.CableBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.data.ConduitNetworks;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class CableBlockEntity extends BlockEntity
 {
 	public static final String NETWORK_ID = "network_id";
 	
+	
 	public final SGJourneyEnergy energyStorage = createEnergyStorage();
-	private Lazy<IEnergyStorage> lazyEnergyHandler = Lazy.of(() -> energyStorage);
+	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 	
 	private int networkID = 0;
 	private ConduitNetworks.ConduitNetwork cableNetwork = null;
@@ -39,29 +40,35 @@ public abstract class CableBlockEntity extends BlockEntity
 	}
 	
 	@Override
-	public void invalidateCapabilities()
+	public void onLoad()
+	{
+		super.onLoad();
+		lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
+	}
+	
+	@Override
+	public void invalidateCaps()
 	{
 		lazyEnergyHandler.invalidate();
-		super.invalidateCapabilities();
+		super.invalidateCaps();
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag nbt)
 	{
-		super.loadAdditional(tag, registries);
-		this.networkID = tag.getInt(NETWORK_ID);
+		super.load(nbt);
+		this.networkID = nbt.getInt(NETWORK_ID);
 	}
 	
 	@Override
-	protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		super.saveAdditional(tag, registries);
-		tag.putInt(NETWORK_ID, this.networkID);
+		super.saveAdditional(nbt);
+		nbt.putInt(NETWORK_ID, this.networkID);
 	}
 	
 	public abstract long maxTransfer();
 	
-	@Nonnull
 	protected SGJourneyEnergy createEnergyStorage()
 	{
 		return new SGJourneyEnergy(maxTransfer(), maxTransfer(), maxTransfer())
@@ -139,9 +146,9 @@ public abstract class CableBlockEntity extends BlockEntity
 		{
 			BlockPos outputPos = getBlockPos().relative(direction);
 			BlockEntity blockEntity =  level.getBlockEntity(outputPos);
-			if(!(blockEntity instanceof CableBlockEntity))
+			if(blockEntity != null && !(blockEntity instanceof CableBlockEntity))
 			{
-				IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
 				if(energy != null)
 				{
 					if(energy.canReceive())
@@ -174,19 +181,25 @@ public abstract class CableBlockEntity extends BlockEntity
 		for(Direction direction : getConnectedSides())
 		{
 			BlockPos outputPos = getBlockPos().relative(direction);
-			IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
-			
-			if(energy != null && energy.canReceive() && energy.receiveEnergy(Integer.MAX_VALUE, true) > 0)
-				outputs++;
+			BlockEntity blockEntity = level.getBlockEntity(outputPos);
+			if(blockEntity != null)
+			{
+				IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
+				
+				if(energy != null && energy.canReceive() && energy.receiveEnergy(Integer.MAX_VALUE, true) > 0)
+					outputs++;
+			}
 		}
 		return outputs;
 	}
 	
 	public long outputEnergy(Direction direction, long toOutput, boolean simulate, boolean zeroPointEnergy)
 	{
-		BlockPos outputPos = getBlockPos().relative(direction);
+		BlockEntity blockEntity = level.getBlockEntity(getBlockPos().relative(direction));
+		if(blockEntity == null)
+			return 0;
 		
-		IEnergyStorage energy = getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, outputPos, direction.getOpposite());
+		IEnergyStorage energy = blockEntity.getCapability(ForgeCapabilities.ENERGY, direction.getOpposite()).resolve().orElse(null);
 		if(energy == null || !energy.canReceive())
 			return 0;
 		
@@ -222,9 +235,13 @@ public abstract class CableBlockEntity extends BlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IEnergyStorage getEnergyHandler(Direction direction)
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		return energyStorage;
+		if(capability == ForgeCapabilities.ENERGY && side != null)
+			return lazyEnergyHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 	
 	

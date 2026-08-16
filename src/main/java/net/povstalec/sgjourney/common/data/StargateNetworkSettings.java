@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.data;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -176,7 +175,7 @@ public class StargateNetworkSettings extends SavedData
 		return tag;
 	}
 
-	public @NotNull CompoundTag save(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider)
+	public @NotNull CompoundTag save(CompoundTag tag)
 	{
 		if(randomizeAddresses != null)
 			tag.putBoolean(RANDOMIZE_ADDRESSES, randomizeAddresses);
@@ -195,11 +194,6 @@ public class StargateNetworkSettings extends SavedData
 		return tag;
 	}
 
-	public static SavedData.Factory<StargateNetworkSettings> dataFactory(MinecraftServer server)
-	{
-		return new SavedData.Factory<>(StargateNetworkSettings::create, (tag, provider) -> load(tag));
-	}
-
     @Nonnull
 	public static StargateNetworkSettings get(Level level)
     {
@@ -214,6 +208,6 @@ public class StargateNetworkSettings extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
+        return storage.computeIfAbsent(StargateNetworkSettings::load, StargateNetworkSettings::create, FILE_NAME);
     }
 }

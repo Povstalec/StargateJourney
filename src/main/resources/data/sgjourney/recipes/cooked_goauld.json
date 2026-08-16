@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:smelting",
+	"category": "food",
+	"cookingtime": 200,
+	"experience": 0.35,
+	"ingredient":
+	{
+		"item": "sgjourney:goauld_carcass"
+	},
+	"result": "sgjourney:cooked_goauld"
+}

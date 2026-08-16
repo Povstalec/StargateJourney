@@ -4,23 +4,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.server.level.ServerLevel;
-import net.neoforged.fml.ModList;
+import javax.annotation.Nullable;
 
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.tech.TransceiverBlock;
+import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransceiverPeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonTransmissionConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -44,7 +48,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	
 	protected TransceiverPeripheralWrapper peripheralWrapper;
 	
-	public TransceiverEntity(BlockPos pos, BlockState state)
+	public TransceiverEntity(BlockPos pos, BlockState state) 
 	{
 		super(BlockEntityInit.TRANSCEIVER.get(), pos, state);
 		
@@ -59,20 +63,20 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
-	{
-		super.loadAdditional(tag, registries);
-		
-		editingFrequency = tag.getBoolean(EDIT_FREQUENCY);
-		frequency = tag.getInt(FREQUENCY);
-		idc = tag.getString(IDC);
+    public void load(CompoundTag tag)
+    {
+    	super.load(tag);
+
+    	editingFrequency = tag.getBoolean(EDIT_FREQUENCY);
+    	frequency = tag.getInt(FREQUENCY);
+    	idc = tag.getString(IDC);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+    protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(tag, registries);
-		
+		super.saveAdditional(tag);
+
 		tag.putBoolean(EDIT_FREQUENCY, editingFrequency);
 		tag.putInt(FREQUENCY, frequency);
 		tag.putString(IDC, idc);
@@ -85,9 +89,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag()
 	{
-		return this.saveWithoutMetadata(registries);
+		return this.saveWithoutMetadata();
 	}
 	
 	public float transmissionRadius()
@@ -95,7 +99,7 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		return CommonTransmissionConfig.max_transceiver_transmission_distance.get();
 	}
 	
-	public float transmissionRadius2()
+	public float transmissionRadiusSqr()
 	{
 		return transmissionRadius() * transmissionRadius();
 	}
@@ -131,12 +135,12 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	{
 		return idc;
 	}
-	
-	public void toggleFrequency()
-	{
-		editingFrequency = !editingFrequency;
+    
+    public void toggleFrequency()
+    {
+    	editingFrequency = !editingFrequency;
 		this.setChanged();
-	}
+    }
 	
 	@Override
 	public void receiveTransmission(int transmissionJumps, int frequency, String transmission)
@@ -145,9 +149,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 			return;
 		
 		boolean codeIsCorrect = getCurrentCode().equals(transmission);
-		
+
 		queueEvent(EVENT_TRANSMISSION_RECEIVED, frequency, transmission, codeIsCorrect);
-		
+
 		Level level = getLevel();
 		BlockPos pos = getBlockPos();
 		BlockState state = getBlockState();
@@ -199,14 +203,14 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 				
 				positions.stream().forEach(pos ->
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargate.getBlockPos()) <= transmissionRadius2())
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && CoordinateHelper.Relative.distanceSqr(getBlockPos(), stargate.getBlockPos()) <= transmissionRadiusSqr())
 					{
 						stargates.add(stargate);
 					}
 				});
 			}
 		}
-		
+
 		if(stargates.size() == 0)
 			return -1; // No Stargates nearby
 		
@@ -221,47 +225,47 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 		
 		return (int) Math.round(stargate.checkConnectionShieldingState());
 	}
-	
-	public void addToCode(int number)
-	{
-		if(!editingFrequency)
-		{
-			if(idc.length() >= 16)
-				return;
-			
-			idc = idc + String.valueOf(number);
-		}
-		else
-		{
-			long tempFrequency = frequency;
-			tempFrequency = tempFrequency * 10 + number;
-			
-			if(tempFrequency > Integer.MAX_VALUE)
-				return;
-			
-			frequency = (int) tempFrequency;
-		}
+    
+    public void addToCode(int number)
+    {
+    	if(!editingFrequency)
+    	{
+    		if(idc.length() >= 16)
+        		return;
+        	
+        	idc = idc + String.valueOf(number);
+    	}
+    	else
+    	{
+    		long tempFrequency = frequency;
+    		tempFrequency = tempFrequency * 10 + number;
+    		
+    		if(tempFrequency > Integer.MAX_VALUE)
+    			return;
+    		
+    		frequency = (int) tempFrequency;
+    	}
 		this.setChanged();
-	}
-	
-	public void removeFromCode()
-	{
-		if(!editingFrequency)
-		{
-			if(idc.length() <= 0)
-				return;
-			
-			idc = idc.substring(0, idc.length() - 1);
-		}
-		else
-		{
-			if(frequency <= 0)
-				return;
-			
-			frequency = frequency / 10;
-		}
+    }
+    
+    public void removeFromCode()
+    {
+    	if(!editingFrequency)
+    	{
+        	if(idc.length() <= 0)
+        		return;
+        	
+        	idc = idc.substring(0, idc.length() - 1);
+    	}
+    	else
+    	{
+    		if(frequency <= 0)
+        		return;
+        	
+    		frequency = frequency / 10;
+    	}
 		this.setChanged();
-	}
+    }
 	
 	public void updateClient()
 	{
@@ -291,6 +295,19 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
+	
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+	{
+		if(ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID) && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
+			return peripheralWrapper.newPeripheral().cast();
+			
+		return super.getCapability(cap, side);
+	}
+	
+	//============================================================================================
 	//******************************************Ticking*******************************************
 	//============================================================================================
 	
@@ -313,9 +330,9 @@ public class TransceiverEntity extends BlockEntity implements ITransmissionRecei
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TransceiverEntity transceiver)
-	{
+    {
 		transceiver.handleTransmissionTicks();
 		
 		transceiver.updateClient();
-	}
+    }
 }

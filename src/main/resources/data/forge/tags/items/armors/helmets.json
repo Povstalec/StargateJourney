@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_helmet",
+		"sgjourney:jaffa_helmet",
+		"sgjourney:jackal_helmet",
+		"sgjourney:falcon_helmet"
+	]
+}

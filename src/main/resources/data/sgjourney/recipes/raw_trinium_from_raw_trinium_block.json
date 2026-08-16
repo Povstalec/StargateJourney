@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients": 
+	[
+		{ "item": "sgjourney:raw_trinium_block" }
+	],
+	"result": { "item": "sgjourney:raw_trinium", "count": 9 }
+}

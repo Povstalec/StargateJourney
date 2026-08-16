@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "building",
+	"group": "waxed_exposed_naquadah_copper_pillar",
+	"ingredients":
+	[
+		{ "item": "sgjourney:exposed_naquadah_copper_pillar" },
+		{ "item": "minecraft:honeycomb" }
+	],
+	"result": { "count": 1, "item": "sgjourney:waxed_exposed_naquadah_copper_pillar" }
+}

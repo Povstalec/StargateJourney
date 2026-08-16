@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -197,7 +196,7 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 			this.onUpdate.run();
 	}
 	
-	public CompoundTag serialize(HolderLookup.Provider registries)
+	public CompoundTag serialize()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -208,12 +207,12 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 		if(coords != null)
 			tag.put(COORDS, CoordinateHelper.vec3ToTag(coords));
 		if(tooltip != null)
-			tag.putString(NAME, Component.Serializer.toJson(this.tooltip, registries));
+			tag.putString(NAME, Component.Serializer.toJson(this.tooltip));
 		
 		return tag;
 	}
 	
-	public void deserialize(CompoundTag tag, HolderLookup.Provider registries)
+	public void deserialize(CompoundTag tag)
 	{
 		this.state = ButtonState.values()[tag.getByte(STATE)];
 		this.status = ButtonStatus.values()[tag.getByte(STATUS)];
@@ -224,7 +223,7 @@ public class TransporterControllerButton<T extends TransporterControllerEntity>
 		else
 			this.coords = null;
 		if(tag.contains(NAME, Tag.TAG_STRING))
-			this.tooltip = Component.Serializer.fromJson(tag.getString(NAME), registries);
+			this.tooltip = Component.Serializer.fromJson(tag.getString(NAME));
 		else
 			this.tooltip = null;
 		

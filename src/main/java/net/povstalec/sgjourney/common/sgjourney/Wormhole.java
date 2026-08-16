@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -21,8 +22,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.PortalInfo;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.ITeleporter;
+import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
@@ -30,7 +33,6 @@ import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldin
 import net.povstalec.sgjourney.common.blockstates.ShieldingPart;
 import net.povstalec.sgjourney.common.config.CommonIrisConfig;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.DamageSourceInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
@@ -39,6 +41,7 @@ import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.WormholeTravel;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import org.jetbrains.annotations.Nullable;
 
 public class Wormhole
 {
@@ -78,7 +81,7 @@ public class Wormhole
 			
 			if(shouldWormhole(initialStargate.getPosition(), traveler, oldRelativePos.x(), relativePosition.x(), relativeMomentum.x()))
 			{
-				playWormholeSound(traveler.level(), traveler);
+				playWormholeSound(traveler.getLevel(), traveler);
 				
 				if(twoWayWormhole == WormholeTravel.ENABLED || (twoWayWormhole == WormholeTravel.CREATIVE_ONLY && traveler instanceof Player player && (player.isCreative() || player.isSpectator())))
 				{
@@ -131,7 +134,7 @@ public class Wormhole
 							if(entity instanceof ServerPlayer player)
 								player.awardStat(StatisticsInit.TIMES_KILLED_BY_WORMHOLE.get());
 							
-							livingEntity.hurt(DamageSourceInit.damageSource(server, DamageSourceInit.REVERSE_WORMHOLE), Float.MAX_VALUE);
+							livingEntity.hurt(DamageSourceInit.REVERSE_WORMHOLE, Float.MAX_VALUE);
 						}
 						else
 							entity.kill();
@@ -154,10 +157,9 @@ public class Wormhole
 	
 	protected Entity transportEntity(ServerLevel destinationLevel, Stargate destinationStargate, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		if(traveler.level() != destinationLevel)
-			traveler = traveler.changeDimension(new DimensionTransition(destinationLevel, destinationPosition, destinationMomentum,
-					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot(), false, DimensionTransition.DO_NOTHING));
-		
+		if(traveler.getLevel() != destinationLevel)
+			traveler = traveler.changeDimension(destinationLevel, new WormholeTeleporter(destinationPosition, destinationMomentum,
+					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot()));
 		else
 		{
 			traveler.moveTo(destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot());
@@ -166,7 +168,7 @@ public class Wormhole
 		
 		if(traveler != null)
 		{
-			if(!traveler.isAddedToLevel())
+			if(!traveler.isAddedToWorld())
 				destinationLevel.addFreshEntityWithPassengers(traveler);
 			
 			reconstructEvent(destinationLevel.getServer(), destinationStargate, traveler);
@@ -184,20 +186,20 @@ public class Wormhole
 		{
 			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = destinationRegion.getGalacticAddresses();
 			if(destinationGalaxyMap == null || destinationGalaxyMap.isEmpty()) // Destination Region but no Galaxies
-				AdvancementInit.WORMHOLE_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+				WormholeTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 						initialRegion, destinationRegion.getResourceKey(), initialGalaxy, null, distanceTraveled);
 			else // Destination Region with Galaxies
 			{
 				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyEntry : destinationGalaxyMap.entrySet())
 				{
-					AdvancementInit.WORMHOLE_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+					WormholeTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 							initialRegion, destinationRegion.getResourceKey(), initialGalaxy, destinationGalaxyEntry.getKey(), distanceTraveled);
 				}
 			}
 		}
 		else // No destination Region
 		{
-			AdvancementInit.WORMHOLE_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+			WormholeTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 					initialRegion, null, initialGalaxy, null, distanceTraveled);
 		}
 	}
@@ -226,7 +228,7 @@ public class Wormhole
 	
 	protected Entity transportPlayer(StargateConnection connection, ServerLevel destinationLevel, Stargate destinationStargate, ServerPlayer player, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		ServerLevel initialLevel = (ServerLevel) player.level();
+		ServerLevel initialLevel = player.getLevel();
 		Vec3 initialPos = player.position();
 		
 		player.teleportTo(destinationLevel, destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), player.getXRot());
@@ -246,7 +248,7 @@ public class Wormhole
 	
 	protected Entity recursivePassengerTeleport(StargateConnection connection, ServerLevel destinationLevel, Stargate destinationStargate, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		Level initialLevel = traveler.level();
+		Level initialLevel = traveler.getLevel();
 		ArrayList<Entity> passengers = new ArrayList<>();
 		if(initialLevel != destinationLevel)
 		{
@@ -324,7 +326,7 @@ public class Wormhole
 		return true;
 	}
 	
-	public void handleShielding(MinecraftServer server, IrisStargateEntity irisStargate, Entity traveler)
+	public void handleShielding(IrisStargateEntity<?> irisStargate, Entity traveler)
 	{
 		recursiveExecute(traveler, (entity) ->
 		{
@@ -340,7 +342,7 @@ public class Wormhole
 					if(entity instanceof ServerPlayer player)
 						player.awardStat(StatisticsInit.TIMES_SMASHED_AGAINST_IRIS.get());
 					
-					livingEntity.hurt(DamageSourceInit.damageSource(server, DamageSourceInit.IRIS), Float.MAX_VALUE);
+					livingEntity.hurt(DamageSourceInit.IRIS, Float.MAX_VALUE);
 				}
 				else
 					entity.kill();
@@ -359,31 +361,31 @@ public class Wormhole
 	//============================================================================================
 	
 	protected void irisThudEvent(AbstractStargateEntity<?> targetStargate, Entity traveler)
-	{
-		String travelerType = EntityType.getKey(traveler.getType()).toString();
-		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
-		String uuid = traveler.getUUID().toString();
-		
-		targetStargate.updateInterfaceBlocks(EVENT_IRIS_THUD, travelerType, displayName, uuid);
-	}
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	targetStargate.updateInterfaceBlocks(EVENT_IRIS_THUD, travelerType, displayName, uuid);
+    }
 	
 	protected void deconstructEvent(MinecraftServer server, Stargate initialStargate, Entity traveler, boolean disintegrated)
-	{
-		String travelerType = EntityType.getKey(traveler.getType()).toString();
-		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
-		String uuid = traveler.getUUID().toString();
-		
-		initialStargate.updateInterfaceBlocks(null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
-	}
-	
-	protected void reconstructEvent(MinecraftServer server, Stargate targetStargate, Entity traveler)
-	{
-		String travelerType = EntityType.getKey(traveler.getType()).toString();
-		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
-		String uuid = traveler.getUUID().toString();
-		
-		targetStargate.updateInterfaceBlocks(null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
-	}
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	initialStargate.updateInterfaceBlocks(null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+    }
+    
+    protected void reconstructEvent(MinecraftServer server, Stargate targetStargate, Entity traveler)
+    {
+    	String travelerType = EntityType.getKey(traveler.getType()).toString();
+    	String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+    	String uuid = traveler.getUUID().toString();
+    	
+    	targetStargate.updateInterfaceBlocks(null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
+    }
 	
 	public static void recursiveExecute(Entity traveler, WormholeFunction func)
 	{
@@ -405,5 +407,33 @@ public class Wormhole
 	public interface WormholeFunction
 	{
 		void run(Entity entity);
+	}
+	
+	public static class WormholeTeleporter implements ITeleporter
+	{
+		private final Vec3 pos;
+		private final Vec3 momentum;
+		private final float newYRot;
+		private final float newXRot;
+		
+		public WormholeTeleporter(Vec3 pos, Vec3 momentum, float newYRot, float newXRot)
+		{
+			this.pos = pos;
+			this.momentum = momentum;
+			this.newYRot = newYRot;
+			this.newXRot = newXRot;
+		}
+		
+		@Override
+		public @Nullable PortalInfo getPortalInfo(Entity entity, ServerLevel destWorld, Function<ServerLevel, PortalInfo> defaultPortalInfo)
+		{
+			return new PortalInfo(pos, momentum, newYRot, newXRot);
+		}
+		
+		@Override
+		public boolean playTeleportSound(ServerPlayer player, ServerLevel sourceWorld, ServerLevel destWorld)
+		{
+			return false;
+		}
 	}
 }

@@ -10,17 +10,16 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import java.util.function.Function;
 
 public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableModelGeometry>
 {
-	public static final ResourceLocation CABLE_LOADER = StargateJourney.sgjourneyLocation("cable_loader");
+	public static final String CABLE_LOADER = "cable_loader";
 	
 	public static final String TEXTURE = "texture";
 	public static final String PARTICLE_TEXTURE = "particle_texture";
@@ -79,7 +78,7 @@ public class CableModelLoader implements IGeometryLoader<CableModelLoader.CableM
 		}
 		
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides)
+		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			return new CableBakedModel(context, this.texture, this.particleTexture, this.thickness);
 		}

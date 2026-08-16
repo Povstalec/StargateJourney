@@ -2,21 +2,20 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
@@ -107,9 +106,9 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
-		super.serializeStargateInfo(tag, registries);
+		super.serializeStargateInfo(tag);
 		
 		tag.putInt(ROTATION, this.rotation);
 		
@@ -117,7 +116,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
 		if(tag.contains(ROTATION))
 			this.rotation = tag.getInt(ROTATION);
@@ -125,13 +124,13 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			this.rotation = tag.getInt("Rotation");
 		this.oldRotation = this.rotation;
 		
-		super.deserializeStargateInfo(tag, registries, isUpgraded);
+		super.deserializeStargateInfo(tag, isUpgraded);
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag()
 	{
-		CompoundTag tag = super.getUpdateTag(registries);
+		CompoundTag tag = super.getUpdateTag();
 		
 		tag.putInt(ROTATION, this.rotation);
 		tag.putInt(OLD_ROTATION, this.oldRotation);
@@ -143,9 +142,9 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
-		super.onDataPacket(net, packet, registries);
+		super.onDataPacket(net, packet);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
@@ -299,7 +298,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 		this.rotationDirection = rotationDirection;
 		
 		if(!this.level.isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStartup(worldPosition));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStartup(worldPosition));
 		
 		updateClient();
 		
@@ -316,7 +315,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	public StargateInfo.FeedbackMessage endRotation(boolean playSound)
 	{
 		if(!this.level.isClientSide() && playSound)
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.RotationStop(worldPosition));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.RotationStop(worldPosition));
 		
 		if(!this.rotationDirection.isRotating)
 			return setRecentFeedback(StargateInfo.Feedback.NOT_ROTATING.withInfo());
@@ -478,7 +477,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		stargate.rotate();
 		if(stargate.isRotating() && !level.isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(stargate.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(stargate.worldPosition)), new ClientBoundSoundPackets.StargateRotation(stargate.worldPosition, false));
 		
 		if(stargate.isRotating())
 			stargate.updateInterfaceBlocks(null);

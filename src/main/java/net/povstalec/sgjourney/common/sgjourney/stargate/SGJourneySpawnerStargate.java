@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -152,13 +151,13 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	}
 	
 	@Override
-	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
+	public void serializeNBT(CompoundTag tag)
 	{
 		//TODO
 	}
 	
 	@Override
-	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		this.id9ChevronAddress = id9ChevronAddress;
 		
@@ -207,7 +206,7 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	public void spawnEntity(ServerLevel level, Entity entity)
 	{
 		if(entity instanceof Mob mob)
-			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null);
+			mob.finalizeSpawn(level, level.getCurrentDifficultyAt(entity.blockPosition()), MobSpawnType.EVENT, (SpawnGroupData) null, (CompoundTag) null);
 		
 		onEntitySpawn.accept(entity, level.getRandom());
 	}

@@ -1,0 +1,80 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "type": "minecraft:uniform",
+        "min": 2,
+        "max": 4
+      },
+      "bonus_rolls": 0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "sgjourney:matok",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_nbt",
+              "tag": "{Inventory: {Size: 1, Items: [{Slot: 0, id: \"sgjourney:vial\", Count: 1, tag: {Fluid:{FluidName: \"sgjourney:liquid_naquadah\",  Amount: 50}}}]}, IsOpen: false}"
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "sgjourney:jaffa_helmet",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "sgjourney:jaffa_chestplate",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "sgjourney:jaffa_leggings",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "sgjourney:jaffa_boots",
+          "weight": 5,
+          "functions": []
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_nugget",
+          "weight": 5,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 2,
+                "max": 12
+              },
+              "add": false
+            }
+          ]
+        },
+        {
+          "type": "minecraft:item",
+          "name": "minecraft:gold_ingot",
+          "weight": 6,
+          "functions": [
+            {
+              "function": "minecraft:set_count",
+              "count": {
+                "min": 1,
+                "max": 6
+              },
+              "add": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

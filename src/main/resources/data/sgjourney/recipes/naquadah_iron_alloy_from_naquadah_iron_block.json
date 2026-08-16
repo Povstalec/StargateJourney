@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": 
+	[
+		{ "item": "sgjourney:naquadah_iron_block" }
+	],
+	"result": { "item": "sgjourney:naquadah_iron_alloy", "count": 9 }
+}

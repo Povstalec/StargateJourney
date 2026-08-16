@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"INI",
+		"RHR",
+		"INI"
+	],
+	
+	"key": 
+	{
+		"I": {"tag": "sgjourney:naquadah_ingot"},
+		"N": {"tag": "sgjourney:refined_naquadah"},
+		"R": { "item": "minecraft:redstone" },
+		"H": { "tag": "sgjourney:reaction_heater" }
+	},
+	
+	"result": { "item": "sgjourney:reaction_chamber", "count": 1 }
+}

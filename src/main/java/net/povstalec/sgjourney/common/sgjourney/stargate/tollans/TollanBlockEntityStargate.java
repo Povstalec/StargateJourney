@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.sgjourney.stargate.tollans;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -158,19 +157,19 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	//============================================================================================
 	
 	@Override
-	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
+	public void serializeNBT(CompoundTag tag)
 	{
 		tag.putIntArray(COORDINATES, Conversion.blockPosToIntArray(blockPos));
 		
-		super.serializeNBT(tag, registries);
+		super.serializeNBT(tag);
 	}
 	
 	@Override
-	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries)
+	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag)
 	{
 		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		super.deserializeNBT(id9ChevronAddress, tag, registries);
+		super.deserializeNBT(id9ChevronAddress, tag);
 		
 		if(!tag.contains(HAS_DHD) || !tag.contains(TIMES_OPENED) || !tag.contains(NETWORKS))
 		{

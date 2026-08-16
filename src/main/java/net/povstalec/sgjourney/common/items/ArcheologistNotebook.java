@@ -8,7 +8,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundArcheologistNotebookOpenScreenPacket;
 
 public class ArcheologistNotebook extends Item
@@ -24,9 +25,9 @@ public class ArcheologistNotebook extends Item
 		if(!level.isClientSide())
 		{
 			ItemStack stack = player.getItemInHand(usedHand);
-			CompoundTag compoundtag = /*stack.hasTag() ? stack.getTag() :*/ new CompoundTag(); //TODO Create a new Data Component for the book
+			CompoundTag compoundtag = stack.hasTag() ? stack.getTag() : new CompoundTag();
 			
-			PacketDistributor.sendToPlayer((ServerPlayer) player,
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
 					new ClientboundArcheologistNotebookOpenScreenPacket(usedHand == InteractionHand.MAIN_HAND, compoundtag));
 		}
 		

@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"B A",
+		"WWW",
+		"S S"
+	],
+	
+	"key": 
+	{
+		"A": { "item": "sgjourney:golden_idol" },
+		"B": { "item": "minecraft:book" },
+		"W": { "tag": "minecraft:wooden_slabs" },
+		"S": { "item": "minecraft:stick" }
+		
+	},
+	
+	"result": { "item": "sgjourney:archeology_table" }
+}

@@ -1,0 +1,10 @@
+{
+	"type": "minecraft:stonecutting",
+	"count": 1,
+	
+	"ingredient":
+	{
+		"item": "sgjourney:oxidized_naquadah_copper_block"
+	},
+	"result": "sgjourney:oxidized_naquadah_copper_stairs"
+}

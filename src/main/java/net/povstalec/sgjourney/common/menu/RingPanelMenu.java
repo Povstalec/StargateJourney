@@ -5,13 +5,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.misc.TransporterControllerButton;
 import net.povstalec.sgjourney.common.packets.ServerboundRingPanelUpdatePacket;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +82,7 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
     
     public void pressButton(int index)
     {
-		PacketDistributor.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), index));
+    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundRingPanelUpdatePacket(this.blockEntity.getBlockPos(), index));
     }
 	
 	public boolean hasItem(int slot)
@@ -92,14 +92,14 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 		
 		if(slot == 6)
 		{
-			IItemHandler cap = this.blockEntity.getEnergyItemHandler();
+			IItemHandler cap = this.blockEntity.getEnergyItemHandler().resolve().orElse(null);
 			
 			if(cap != null)
 				return !cap.getStackInSlot(0).isEmpty();
 		}
 		else
 		{
-			IItemHandler cap = this.blockEntity.getCrystalItemHandler();
+			IItemHandler cap = this.blockEntity.getCrystalItemHandler().resolve().orElse(null);
 			
 			if(cap != null)
 				return !cap.getStackInSlot(slot).isEmpty();
@@ -130,7 +130,7 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 	{
 		public Protected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Protected(int containerId, Inventory inventory, GoauldRingPanelEntity entity)
@@ -143,29 +143,27 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 	{
 		public Unprotected(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (GoauldRingPanelEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Unprotected(int containerId, Inventory inventory, GoauldRingPanelEntity entity)
 		{
 			super(MenuInit.RING_PANEL_UNPROTECTED.get(), containerId, inventory, entity);
 			
-			IItemHandler crystalHandler = this.blockEntity.getCrystalItemHandler();
-			if(crystalHandler != null)
+			this.blockEntity.getCrystalItemHandler().ifPresent(handler ->
 			{
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 0, 5, 36));
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 1, 23, 36));
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 2, 5, 54));
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 3, 23, 54));
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 4, 5, 72));
-				this.addBlockEntitySlot(new SlotItemHandler(crystalHandler, 5, 23, 72));
-			}
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 5, 36));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 1, 23, 36));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 2, 5, 54));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 3, 23, 54));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 4, 5, 72));
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 5, 23, 72));
+			});
 			
-			IItemHandler energyItemHandler = this.blockEntity.getEnergyItemHandler();
-			if(energyItemHandler != null)
+			this.blockEntity.getEnergyItemHandler().ifPresent(handler ->
 			{
-				this.addBlockEntitySlot(new SlotItemHandler(energyItemHandler, 0, 137, 30));
-			}
+				this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 137, 30));
+			});
 		}
 	}
 }

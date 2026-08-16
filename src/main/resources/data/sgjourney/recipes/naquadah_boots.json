@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing",
+	"addition":
+	{
+		"item": "sgjourney:naquadah"
+	},
+	"base":
+	{
+		"item": "minecraft:diamond_boots"
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_boots"
+	}
+}

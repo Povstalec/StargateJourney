@@ -1,16 +1,15 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -23,40 +22,45 @@ public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 	public static final String ENERGY_INVENTORY = "energy_inventory";
 	
 	public final ItemStackHandler energyItemHandler;
-	protected final Lazy<IItemHandler> lazyEnergyItemHandler;
+	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
 	public EnergySlotBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
 		
 		this.energyItemHandler = createEnergyItemHandler();
-		this.lazyEnergyItemHandler = Lazy.of(() -> energyItemHandler);
+		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		energyItemHandler.deserializeNBT(registries, tag.getCompound(ENERGY_INVENTORY));
+		energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 		
-		super.loadAdditional(tag, registries);
+		super.load(tag);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(tag, registries);
+		super.saveAdditional(tag);
 		
-		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT(registries));
+		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 	}
 	
 	
 	
 	@Override
-	public void invalidateCapabilities()
+	public void invalidateCaps()
 	{
 		lazyEnergyItemHandler.invalidate();
 		
-		super.invalidateCapabilities();
+		super.invalidateCaps();
+	}
+	
+	public LazyOptional<IItemHandler> getEnergyItemHandler()
+	{
+		return lazyEnergyItemHandler.cast();
 	}
 	
 	protected ItemStackHandler createEnergyItemHandler()
@@ -72,7 +76,7 @@ public abstract class EnergySlotBlockEntity extends EnergyBlockEntity
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot

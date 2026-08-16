@@ -127,7 +127,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	{
 		VertexConsumer consumer;
 		
-		if(StargateJourney.isIrisLoaded())
+		if(StargateJourney.isOculusLoaded())
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
@@ -149,7 +149,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
 		
-		if(!StargateJourney.isIrisLoaded())
+		if(!StargateJourney.isOculusLoaded())
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));

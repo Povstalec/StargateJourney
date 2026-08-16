@@ -4,6 +4,7 @@ import java.util.Random;
 
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -163,7 +164,7 @@ public class WormholeModel
 		float yOffset = distortionTicks * DEFAULT_SCALE;
 		
 		Matrix4f matrix4 = stack.last().pose();
-		PoseStack.Pose pose = stack.last();
+		Matrix3f matrix3 = stack.last().normal();
 		
 		int totalSides = coordinates[0].length;
 		
@@ -187,7 +188,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0),
@@ -200,7 +201,7 @@ public class WormholeModel
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0), frontRGBA.red(), frontRGBA.green(), frontRGBA.blue(), frontAlpha, uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
 						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, 0),
@@ -235,7 +236,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, 0),
@@ -248,7 +249,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, 0), backRGBA.red(), backRGBA.green(), backRGBA.blue(), backAlpha, uBackScale, vBackScale, uBackOffset, vBackOffset);
 				
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, 0),
@@ -272,7 +273,7 @@ public class WormholeModel
 		float yOffset = distortionTicks * DEFAULT_SCALE;
 		
 		Matrix4f matrix4 = stack.last().pose();
-		PoseStack.Pose pose = stack.last();
+		Matrix3f matrix3 = stack.last().normal();
 		
 		int totalSides = coordinates[0].length;
 		
@@ -296,7 +297,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress),
@@ -309,7 +310,7 @@ public class WormholeModel
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress), frontRGBA.red(), frontRGBA.green(), frontRGBA.blue(), frontRGBA.alpha(), uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0], coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
@@ -344,7 +345,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						bubbleY(coordinates[i][(j + 1) % coordinates[i].length][0], coordinates[i][(j + 1) % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, kawooshProgress),
@@ -357,7 +358,7 @@ public class WormholeModel
 						bubbleY(coordinates[i][j % coordinates[i].length][0], coordinates[i][j % coordinates[i].length][1], i, kawooshProgress),
 						distortionMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, kawooshProgress), backRGBA.red(), backRGBA.green(), backRGBA.blue(), backRGBA.alpha(), uBackScale, vBackScale, uBackOffset, vBackOffset);
 				
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						bubbleX(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						bubbleY(coordinates[i + 1][j % coordinates[i + 1].length][0], coordinates[i + 1][j % coordinates[i + 1].length][1], i + 1, kawooshProgress),
 						distortionMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, kawooshProgress),
@@ -383,7 +384,7 @@ public class WormholeModel
 		float yOffset = distortionTicks * DEFAULT_SCALE;
 		
 		Matrix4f matrix4 = stack.last().pose();
-		PoseStack.Pose pose = stack.last();
+		Matrix3f matrix3 = stack.last().normal();
 		
 		int totalSides = coordinates[0].length;
 		
@@ -407,7 +408,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i][j % coordinates[i].length][0],
 						coordinates[i][j % coordinates[i].length][1],
 						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, strudelProgress),
@@ -420,7 +421,7 @@ public class WormholeModel
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress), frontRGBA.red(), frontRGBA.green(), frontRGBA.blue(), frontRGBA.alpha(), uFrontScale, vFrontScale, uFrontOffset, vFrontOffset);
 				
-				createTriangle(frontConsumer, matrix4, pose,
+				createTriangle(frontConsumer, matrix4, matrix3,
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][0],
 						coordinates[i + 1][(j + 1) % coordinates[i + 1].length][1],
 						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][(j + 1) % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
@@ -455,7 +456,7 @@ public class WormholeModel
 			
 			for(int j = 0; j < totalSides; j++)
 			{
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i][(j + 1) % coordinates[i].length][0], 
 						coordinates[i][(j + 1) % coordinates[i].length][1], 
 						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][(j + 1) % coordinates[i].length][2], yOffset, i, strudelProgress),
@@ -468,7 +469,7 @@ public class WormholeModel
 						coordinates[i][j % coordinates[i].length][1],
 						vortexMaker(isBlockedOld, wormholeDistortion, coordinates[i][j % coordinates[i].length][2], yOffset, i, strudelProgress), backRGBA.red(), backRGBA.green(), backRGBA.blue(), backRGBA.alpha(), uBackScale, vBackScale, uBackOffset, vBackOffset);
 				
-				createTriangle(backConsumer, matrix4, pose,
+				createTriangle(backConsumer, matrix4, matrix3,
 						coordinates[i + 1][j % coordinates[i + 1].length][0], 
 						coordinates[i + 1][j % coordinates[i + 1].length][1],
 						vortexMaker(isBlocked, wormholeDistortion, coordinates[i + 1][j % coordinates[i + 1].length][2], yOffset, i + 1, strudelProgress),
@@ -585,7 +586,7 @@ public class WormholeModel
 		return totalDistortion;
 	}
 	
-	protected void createTriangle(VertexConsumer consumer, Matrix4f matrix4, PoseStack.Pose pose,
+	public void createTriangle(VertexConsumer consumer, Matrix4f matrix4, Matrix3f matrix3,
 			float x1, float y1, float z1,
 			float x2, float y2, float z2,
 			float x3, float y3, float z3,
@@ -598,25 +599,25 @@ public class WormholeModel
 		
 		if(StargateJourney.shouldRenderAMD())
 		{
-			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+			consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
 			
-			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+			consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
 			
-			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
+			consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 0, 0, 0).endVertex();
 		}
 		else
 		{
-			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+			consumer.vertex(matrix4, x1, y1, z1).color(red, green, blue, alpha).uv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 			
-			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+			consumer.vertex(matrix4, x2, y2, z2).color(red, green, blue, alpha).uv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 			
-			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
-					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
+			consumer.vertex(matrix4, x3, y3, z3).color(red, green, blue, alpha).uv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+					.overlayCoords(OverlayTexture.NO_OVERLAY).uv2(MAX_LIGHT).normal(matrix3, 1, 1, 1).endVertex();
 		}
 	}
 }

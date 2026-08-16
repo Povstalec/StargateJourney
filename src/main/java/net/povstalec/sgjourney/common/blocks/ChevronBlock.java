@@ -44,7 +44,7 @@ public class ChevronBlock extends Block implements SimpleWaterloggedBlock
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any()
 				.setValue(ORIENTATION, FrontAndTop.UP_NORTH)
-				.setValue(LIT, false)
+				.setValue(LIT, Boolean.valueOf(false))
 				.setValue(WATERLOGGED, false));
 	}
 

@@ -2,17 +2,26 @@ package net.povstalec.sgjourney.common.items;
 
 import java.util.List;
 
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.LongTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.common.capabilities.ZPMEnergyProvider;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class ZeroPointModule extends Item
 {
@@ -30,6 +39,9 @@ public class ZeroPointModule extends Item
 	 * 
 	 * When Entropy reaches its max state, the ZPM is considered depleted
 	 */
+
+	private static final String ENERGY = "Energy";
+	private static final String ENTROPY = "Entropy";
 	
 	public ZeroPointModule(Properties properties)
 	{
@@ -54,18 +66,46 @@ public class ZeroPointModule extends Item
 		return 16743680;
 	}
 	
+	@Override
+    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	{
+		return new ZPMEnergyProvider(stack) {};
+	}
+	
 	private static int getEntropy(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.ENTROPY, 0);
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
+		
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(tag.contains(ENTROPY, Tag.TAG_INT))
+		{
+			if(tag.get(ENTROPY) instanceof IntTag intTag)
+				return intTag.getAsInt();
+		}
+		
+		return 0;
 	}
 	
 	public static long getEnergy(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.ENERGY, CommonZPMConfig.zpm_energy_per_level_of_entropy.get());
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
+		
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(tag.contains(ENERGY, Tag.TAG_LONG))
+		{
+			if(tag.get(ENERGY) instanceof LongTag longTag)
+				return longTag.getAsLong();
+		}
+		
+		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		int entropy = getEntropy(stack);
 		long remainingEnergy = getEnergy(stack);
@@ -77,41 +117,6 @@ public class ZeroPointModule extends Item
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.zpm.description"));
     	
-    	super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-	}
-	
-	public static long getMaxEnergy()
-	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	}
-	
-	public static long getMaxExtract()
-	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	}
-	
-	
-	
-	public static class Energy extends ZeroPointEnergy.Item
-	{
-		public Energy(ItemStack stack)
-		{
-			super(stack, ZeroPointEnergy.MAX_ENTROPY, getMaxEnergy(), 0, getMaxExtract());
-		}
-		
-		public long maxReceive()
-		{
-			return getMaxEnergy();
-		}
-		
-		public long maxExtract()
-		{
-			return getMaxEnergy();
-		}
-		
-		public long getTrueMaxEnergyStored()
-		{
-			return getMaxEnergy();
-		}
+    	super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

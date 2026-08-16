@@ -1,22 +1,17 @@
 package net.povstalec.sgjourney.common.misc;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.component.CustomData;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
 
 import javax.annotation.Nullable;
@@ -30,7 +25,7 @@ public class InventoryUtil
         for(int i = 0; i < player.getInventory().getContainerSize(); i++)
         {
             ItemStack currentStack = player.getInventory().getItem(i);
-            if (!currentStack.isEmpty() && currentStack.is(item))
+            if (!currentStack.isEmpty() && currentStack.sameItem(new ItemStack(item)))
                 return true;
         }
 
@@ -42,7 +37,7 @@ public class InventoryUtil
         for(int i = 0; i < player.getInventory().getContainerSize(); i++)
         {
             ItemStack currentStack = player.getInventory().getItem(i);
-            if (!currentStack.isEmpty() && currentStack.is(item))
+            if (!currentStack.isEmpty() && currentStack.sameItem(new ItemStack(item)))
                 return i;
         }
 
@@ -77,43 +72,49 @@ public class InventoryUtil
     
     public static String itemName(Item item)
     {
-    	return BuiltInRegistries.ITEM.getKey(item).toString();
+    	return ForgeRegistries.ITEMS.getKey(item).toString();
     }
     
-    public static Tag addItem(HolderLookup.Provider registries, int slot, ItemStack itemStack)
+    public static CompoundTag addItem(int slot, String id, int count, @Nullable CompoundTag tag)
     {
         CompoundTag itemTag = new CompoundTag();
         
         itemTag.putInt("Slot", slot);
+        itemTag.putString("id", id);
+        itemTag.putByte("Count", (byte) count);
         
-        return itemStack.save(registries, itemTag);
+        if(tag != null)
+            itemTag.put("tag", tag);
+        
+        return itemTag;
     }
     
     @Nullable
     public static CompoundTag getBlockEntityTag(ItemStack stack)
     {
-        if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
-            return stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
+        if(stack.hasTag() && stack.getTag().contains(BlockItem.BLOCK_ENTITY_TAG))
+            return stack.getTag().getCompound(BlockItem.BLOCK_ENTITY_TAG);
         
         return null;
     }
     
-    public static ItemStack generationStep(BlockEntityType<?> blockEntityType, ItemStack stack, StructureGenEntity.Step step)
+    public static ItemStack generationStep(ItemStack stack, StructureGenEntity.Step step)
     {
         CompoundTag blockEntityTag = new CompoundTag();
-        blockEntityTag.putByte(AbstractStargateEntity.GENERATION_STEP, step.byteValue());
-        BlockEntity.addEntityType(blockEntityTag, blockEntityType);
-        
-        stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
+        blockEntityTag.putByte(StructureGenEntity.GENERATION_STEP, step.byteValue());
+        stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
         
         return stack;
     }
 	
 	public static boolean stackHasEnergy(ItemStack stack)
 	{
-		IEnergyStorage energyStorage = stack.getCapability(Capabilities.EnergyStorage.ITEM);
-		if(energyStorage != null)
+		if(stack.getCapability(ForgeCapabilities.ENERGY).isPresent())
+		{
+			IEnergyStorage energyStorage = stack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
+			
 			return energyStorage.canExtract() && energyStorage.getEnergyStored() > 0;
+		}
 		
 		return false;
 	}
@@ -140,8 +141,18 @@ public class InventoryUtil
 	@Nullable
 	public static String getPlayerNameFromHead(ItemStack stack)
 	{
-		if(stack.getItem() instanceof PlayerHeadItem playerHead)
-			return playerHead.getName(stack).getString();
+		if(stack.is(Items.PLAYER_HEAD) && stack.hasTag())
+		{
+			CompoundTag tag = stack.getTag();
+			if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_STRING))
+				return tag.getString(PlayerHeadItem.TAG_SKULL_OWNER);
+			else if(tag.contains(PlayerHeadItem.TAG_SKULL_OWNER, Tag.TAG_COMPOUND))
+			{
+				CompoundTag ownerTag = tag.getCompound(PlayerHeadItem.TAG_SKULL_OWNER);
+				if(ownerTag.contains(NAME, Tag.TAG_STRING))
+					return ownerTag.getString(NAME);
+			}
+		}
 		
 		return null;
 	}

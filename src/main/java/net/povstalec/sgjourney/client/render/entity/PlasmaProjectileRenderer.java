@@ -21,7 +21,7 @@ public class PlasmaProjectileRenderer extends EntityRenderer<PlasmaProjectile>
 	public static final int MAX_LIGHT = 15728864;
 	public static final float SIZE = 0.5F;
 	
-	private static final ResourceLocation TEXTURE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/jaffa_staff_weapon_plasma.png");
+	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/jaffa_staff_weapon_plasma.png");
 	private static final RenderType RENDER_TYPE = RenderType.entityCutoutNoCull(TEXTURE_LOCATION);
 	
 	public PlasmaProjectileRenderer(EntityRendererProvider.Context context)
@@ -39,26 +39,27 @@ public class PlasmaProjectileRenderer extends EntityRenderer<PlasmaProjectile>
 		
 		PoseStack.Pose posestack$pose = stack.last();
 		Matrix4f matrix4f = posestack$pose.pose();
+		Matrix3f matrix3f = posestack$pose.normal();
 		VertexConsumer vertexconsumer = source.getBuffer(RENDER_TYPE);
 		
-		vertex(vertexconsumer, matrix4f, posestack$pose, -SIZE, -SIZE, 0F, 1F);
-		vertex(vertexconsumer, matrix4f, posestack$pose, SIZE, -SIZE, 1F, 1F);
-		vertex(vertexconsumer, matrix4f, posestack$pose, SIZE, SIZE, 1F, 0F);
-		vertex(vertexconsumer, matrix4f, posestack$pose, -SIZE, SIZE, 0F, 0F);
+		vertex(vertexconsumer, matrix4f, matrix3f, -SIZE, -SIZE, 0F, 1F);
+		vertex(vertexconsumer, matrix4f, matrix3f, SIZE, -SIZE, 1F, 1F);
+		vertex(vertexconsumer, matrix4f, matrix3f, SIZE, SIZE, 1F, 0F);
+		vertex(vertexconsumer, matrix4f, matrix3f, -SIZE, SIZE, 0F, 0F);
 		
 		stack.popPose();
 		
 		super.render(projectile, p_114081_, partialTick, stack, source, light);
 	}
-	
-	public static void vertex(VertexConsumer consumer, Matrix4f matrix4f, PoseStack.Pose pose, float x, float y, float u, float v)
+
+	public static void vertex(VertexConsumer consumer, Matrix4f matrix4f, Matrix3f matrix3f, float x, float y, float u, float v)
 	{
-		consumer.addVertex(matrix4f, x, y + 0.125F, 0F)
-		.setColor(255, 255, 255, 255)
-		.setUv(u, v)
-		.setOverlay(OverlayTexture.NO_OVERLAY)
-		.setUv2(MAX_LIGHT, MAX_LIGHT >> 16)
-		.setNormal(pose, 1F, 1F, 1F);
+		consumer.vertex(matrix4f, x, y + 0.125F, 0F)
+		.color(255, 255, 255, 255)
+		.uv(u, v)
+		.overlayCoords(OverlayTexture.NO_OVERLAY)
+		.uv2(MAX_LIGHT).normal(matrix3f, 1F, 1F, 1F)
+		.endVertex();
 	}
 	   
 	@Override

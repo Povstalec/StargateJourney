@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"key":
+	{
+		"#": { "item": "sgjourney:naquadah_copper_nugget" },
+		"T": { "tag": "sgjourney:naquadah_copper_nugget" }
+	},
+	"pattern":
+	[
+		"TTT",
+		"T#T",
+		"TTT"
+	],
+	"result":
+	{
+		"item": "sgjourney:naquadah_copper_alloy"
+	},
+	"show_notification": true
+}

@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"CNN",
+		"AIE",
+		"CNN"
+	],
+	
+	"key": 
+	{
+		"C": { "item": "sgjourney:communication_crystal" },
+		"N": { "tag": "sgjourney:naquadah_ingot" },
+		"I": { "item": "sgjourney:basic_interface" },
+		"E": { "item": "sgjourney:energy_crystal" },
+		"A": { "item": "sgjourney:crystal_adapter" }
+		
+	},
+	
+	"result": { "item": "sgjourney:crystal_interface" }
+}

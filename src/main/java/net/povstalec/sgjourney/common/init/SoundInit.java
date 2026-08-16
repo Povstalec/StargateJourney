@@ -1,56 +1,57 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 
 public class SoundInit
 {
 	// CREDIT GOES TO: Carter's Addon Pack | https://github.com/RafaelDeJongh/cap_resources
 	
-	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, StargateJourney.MODID);
+	public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, StargateJourney.MODID);
 	
-	public static final DeferredHolder<SoundEvent, SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter");
-	public static final DeferredHolder<SoundEvent, SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");
+	public static final RegistryObject<SoundEvent> WORMHOLE_ENTER = registerSoundEvent("wormhole_enter");
+	public static final RegistryObject<SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");
 
-	public static final DeferredHolder<SoundEvent, SoundEvent> IRIS_THUD = registerSoundEvent("iris_thud");
-	public static final DeferredHolder<SoundEvent, SoundEvent> UNIVERSE_DHD_ENTER = registerSoundEvent("universe_dhd_enter");
-	public static final DeferredHolder<SoundEvent, SoundEvent> UNIVERSE_DHD_PRESS = registerSoundEvent("universe_dhd_press");
+	public static final RegistryObject<SoundEvent> IRIS_THUD = registerSoundEvent("iris_thud");
+	
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_ENTER = registerSoundEvent("universe_dhd_enter");
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_PRESS = registerSoundEvent("universe_dhd_press");
 
-	public static final DeferredHolder<SoundEvent, SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
-	public static final DeferredHolder<SoundEvent, SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
+	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
+	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
 
-	public static final DeferredHolder<SoundEvent, SoundEvent> PEGASUS_DHD_ENTER = registerSoundEvent("pegasus_dhd_enter");
-	public static final DeferredHolder<SoundEvent, SoundEvent> PEGASUS_DHD_PRESS = registerSoundEvent("pegasus_dhd_press");
+	public static final RegistryObject<SoundEvent> PEGASUS_DHD_ENTER = registerSoundEvent("pegasus_dhd_enter");
+	public static final RegistryObject<SoundEvent> PEGASUS_DHD_PRESS = registerSoundEvent("pegasus_dhd_press");
 
-	public static final DeferredHolder<SoundEvent, SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
-	public static final DeferredHolder<SoundEvent, SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
+	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
+	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
-	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
-	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
-	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");
 	
-	public static final DeferredHolder<SoundEvent, SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
+	public static final RegistryObject<SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
 	
-	public static final DeferredHolder<SoundEvent, SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
-	public static final DeferredHolder<SoundEvent, SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");
-	public static final DeferredHolder<SoundEvent, SoundEvent> MATOK_OPEN = registerSoundEvent("matok_open");
-	public static final DeferredHolder<SoundEvent, SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
+	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
+	public static final RegistryObject<SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");
+	public static final RegistryObject<SoundEvent> MATOK_OPEN = registerSoundEvent("matok_open");
+	public static final RegistryObject<SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
 
-	public static final DeferredHolder<SoundEvent, SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
-	public static final DeferredHolder<SoundEvent, SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
+	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
+	public static final RegistryObject<SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
 	
-	public static final DeferredHolder<SoundEvent, SoundEvent> EMPTY = registerSoundEvent("empty");
+	public static final RegistryObject<SoundEvent> EMPTY = registerSoundEvent("empty");
 	
 	
 	
-	private static DeferredHolder<SoundEvent, SoundEvent> registerSoundEvent(String sound)
+	private static RegistryObject<SoundEvent> registerSoundEvent(String sound)
 	{
-		return SOUNDS.register(sound, () -> SoundEvent.createVariableRangeEvent(ResourceLocation.fromNamespaceAndPath(StargateJourney.MODID, sound)));
+		return SOUNDS.register(sound, () -> SoundEvent.createVariableRangeEvent(new ResourceLocation(StargateJourney.MODID, sound)));
 	}
 	
 	

@@ -1,0 +1,10 @@
+{
+	"type": "minecraft:stonecutting",
+	"count": 1,
+	
+	"ingredient":
+	{
+		"item": "sgjourney:naquadah_block"
+	},
+	"result": "sgjourney:naquadah_stairs"
+}

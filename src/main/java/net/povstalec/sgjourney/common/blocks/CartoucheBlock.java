@@ -2,24 +2,23 @@ package net.povstalec.sgjourney.common.blocks;
 
 import java.util.List;
 
-import com.mojang.serialization.MapCodec;
+import javax.annotation.Nullable;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -96,8 +95,8 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
         }
     }
 
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+    @Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
 		if(player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
 		{
@@ -132,9 +131,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			}
 			return InteractionResult.SUCCESS;
 		}
-		else
+        else
 			return InteractionResult.FAIL;
-	}
+    }
 	
 	public abstract ItemLike getItem();
 	
@@ -151,7 +150,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
     
     @Override
-	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
     	Direction direction = state.getValue(FACING);
     	Orientation orientation = state.getValue(ORIENTATION);
@@ -166,7 +165,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			{
 				ItemStack itemstack = new ItemStack(getItem());
 				
-				blockentity.saveToItem(itemstack, level.registryAccess());
+				blockentity.saveToItem(itemstack);
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -174,11 +173,11 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			}
 		}
 
-		return super.playerWillDestroy(level, pos, state, player);
+		super.playerWillDestroy(level, pos, state, player);
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	boolean hasAddress = false;
     	String dimensionString = "";
@@ -215,7 +214,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheEntity.GENERATION_STEP)))
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
     	
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	
 	@Override
@@ -226,15 +225,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     
     public static class Stone extends CartoucheBlock
     {
-		public static final MapCodec<Stone> CODEC = simpleCodec(Stone::new);
-
 		public Stone(Properties properties)
 		{
 			super(properties);
-		}
-
-		protected MapCodec<Stone> codec() {
-			return CODEC;
 		}
 
 		@Override
@@ -258,15 +251,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     
     public static class Sandstone extends CartoucheBlock
     {
-		public static final MapCodec<Sandstone> CODEC = simpleCodec(Sandstone::new);
-
 		public Sandstone(Properties properties)
 		{
 			super(properties);
-		}
-
-		protected MapCodec<Sandstone> codec() {
-			return CODEC;
 		}
 
 		@Override
@@ -290,15 +277,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	
 	public static class RedSandstone extends CartoucheBlock
 	{
-		public static final MapCodec<RedSandstone> CODEC = simpleCodec(RedSandstone::new);
-
 		public RedSandstone(Properties properties)
 		{
 			super(properties);
-		}
-
-		protected MapCodec<RedSandstone> codec() {
-			return CODEC;
 		}
 		
 		@Override

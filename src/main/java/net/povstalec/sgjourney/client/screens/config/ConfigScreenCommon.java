@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.screens.Screen;
@@ -40,10 +41,11 @@ public class ConfigScreenCommon extends Screen
     }
 	
 	@Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-		super.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawString(this.font, this.title, this.width / 2, 8, 16777215);
+        this.renderBackground(poseStack);
+        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
+        super.render(poseStack, mouseX, mouseY, partialTick);
     }
 	
 }

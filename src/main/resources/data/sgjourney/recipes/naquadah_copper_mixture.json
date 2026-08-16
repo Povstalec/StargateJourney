@@ -1,0 +1,12 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "building",
+	"ingredients":
+	[
+		{ "item": "minecraft:raw_copper" },
+		{ "item": "sgjourney:raw_naquadah" },
+		{ "item": "sgjourney:raw_naquadah" },
+		{ "item": "sgjourney:raw_naquadah" }
+	],
+	"result": { "item": "sgjourney:naquadah_copper_mixture", "count": 4 }
+}

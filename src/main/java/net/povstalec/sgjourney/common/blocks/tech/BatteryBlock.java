@@ -1,13 +1,11 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,11 +23,11 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.tech.BatteryBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.BatteryMenu;
-import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 import javax.annotation.Nullable;
 
@@ -72,7 +70,8 @@ public abstract class BatteryBlock extends BaseEntityBlock
 		return this.defaultBlockState().setValue(FACING, context.getNearestLookingDirection());
 	}
 	
-	public void use(Level level, BlockPos pos, Player player)
+	@Override
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace)
 	{
 		if(!level.isClientSide())
 		{
@@ -93,35 +92,20 @@ public abstract class BatteryBlock extends BaseEntityBlock
 						return new BatteryMenu(windowId, playerInventory, batteryBlockEntity);
 					}
 				};
-				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
 			}
 			else
 			{
 				throw new IllegalStateException("Our named container provider is missing!");
 			}
 		}
-	}
-	
-	@Override
-	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
-	{
-		use(level, pos, player);
-		
 		return InteractionResult.SUCCESS;
-	}
-	
-	@Override
-	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
-	{
-		use(level, pos, player);
-		
-		return ItemInteractionResult.SUCCESS;
 	}
 	
 	public abstract Block getDroppedBlock();
 	
 	@Override
-	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof BatteryBlockEntity)
@@ -130,7 +114,7 @@ public abstract class BatteryBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
-				blockentity.saveToItem(itemstack, level.registryAccess());
+				blockentity.saveToItem(itemstack);
 				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -138,24 +122,16 @@ public abstract class BatteryBlock extends BaseEntityBlock
 			}
 		}
 		
-		return super.playerWillDestroy(level, pos, state, player);
+		super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	
 	
 	public static class Naquadah extends BatteryBlock
 	{
-		public static final MapCodec<BatteryBlock.Naquadah> CODEC = simpleCodec(BatteryBlock.Naquadah::new);
-		
 		public Naquadah(Properties properties)
 		{
 			super(properties);
-		}
-		
-		@Override
-		protected MapCodec<BatteryBlock.Naquadah> codec()
-		{
-			return CODEC;
 		}
 		
 		@Override

@@ -1,11 +1,14 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
+import java.util.List;
+
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-
-import java.util.List;
+import net.minecraft.world.level.Level;
 
 public class MaterializationCrystalItem extends AbstractCrystalItem
 {
@@ -23,11 +26,11 @@ public class MaterializationCrystalItem extends AbstractCrystalItem
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
         tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.materialization_crystal.description"));
 
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
     
     public static class Advanced extends MaterializationCrystalItem

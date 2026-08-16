@@ -6,7 +6,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,12 +24,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -147,15 +146,12 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	}
 	
 	@Override
-	public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor levelAccessor, BlockPos current, BlockPos offset)
+	public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor level, BlockPos current, BlockPos offset)
 	{
 		if(state.getValue(WATERLOGGED))
-			levelAccessor.getFluidTicks().schedule(new ScheduledTick<>(Fluids.WATER, current, Fluids.WATER.getTickDelay(levelAccessor), 0L));
+			level.getFluidTicks().schedule(new ScheduledTick<>(Fluids.WATER, current, Fluids.WATER.getTickDelay(level), 0L));
 		
-		if(levelAccessor instanceof Level level) // This could cause problems in the future, but for now it's an acceptable sacrifice
-			return calculateState(level, current, state);
-		
-		return state;
+		return calculateState(level, current, state);
 	}
 	
 	private void updateCable(Level level, BlockPos pos)
@@ -168,21 +164,21 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		}
 	}
 	
-	public static ConnectorType connectionTypeTo(Level level, BlockPos pos, Direction direction)
+	public static ConnectorType connectionTypeTo(BlockGetter getter, BlockPos pos, Direction direction)
 	{
 		BlockPos otherPos = pos.relative(direction);
-		BlockState state = level.getBlockState(otherPos);
+		BlockState state = getter.getBlockState(otherPos);
 		Direction otherDirection = direction.getOpposite();
 		
 		if(state.isAir())
 			return ConnectorType.NONE;
 		
 		if(state.getBlock() instanceof CableBlock)
-			return state.getBlock() == level.getBlockState(pos).getBlock() ? ConnectorType.CABLE : ConnectorType.NONE;
+			return state.getBlock() == getter.getBlockState(pos).getBlock() ? ConnectorType.CABLE : ConnectorType.NONE;
 		
-		IEnergyStorage energyStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, otherPos, otherDirection);
-		if(energyStorage != null)
-			return ConnectorType.BLOCK;
+		BlockEntity blockEntity = getter.getBlockEntity(otherPos);
+		if(blockEntity != null)
+			return blockEntity.getCapability(ForgeCapabilities.ENERGY, otherDirection).isPresent() ? ConnectorType.BLOCK : ConnectorType.NONE;
 		
 		if(state.getBlock() instanceof LightningRodBlock && state.getValue(LightningRodBlock.FACING) == direction)
 			return ConnectorType.BLOCK;
@@ -219,7 +215,7 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		};
 	}
 	
-	protected BlockState calculateState(Level level, BlockPos pos, BlockState state)
+	protected BlockState calculateState(LevelAccessor level, BlockPos pos, BlockState state)
 	{
 		ConnectorType north = connectionTypeTo(level, pos, Direction.NORTH);
 		ConnectorType east = connectionTypeTo(level, pos, Direction.EAST);
@@ -336,13 +332,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	public abstract boolean transfersZeroPointEnergy();
 	
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		if(transfersZeroPointEnergy())
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.cable.zpm_transfer").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 	
 	

@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"N",
+		"N",
+		"F"
+	],
+	
+	"key": 
+	{
+		"F": { "item": "sgjourney:naquadah_fuel_rod" },
+		"N": { "tag": "sgjourney:refined_naquadah" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_fuel_rod" }
+}

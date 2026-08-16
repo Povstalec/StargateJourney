@@ -1,17 +1,17 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<CrystallizingRecipe.AdvancedCrystallizer>
 {
@@ -26,7 +26,7 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<Cryst
 	public boolean isDesiredInputFluid(FluidStack fluidStack)
 	{
 		return VALID_FLUIDS_CACHE.computeIfAbsent(fluidStack.getFluid(), fluid -> getAvailableRecipes()
-				.map(recipe -> (CrystallizingRecipe.AdvancedCrystallizer) recipe.value())
+				.map(recipe -> (CrystallizingRecipe.AdvancedCrystallizer) recipe)
 				.anyMatch(recipe -> recipe.getInputFluid().getFluid().equals(fluidStack.getFluid())));
 	}
 	

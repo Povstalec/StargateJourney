@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
@@ -192,7 +191,19 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 	}
 	
 	@Override
-	public void renderSymbol(GuiGraphics guiGraphics)
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	{
+		if(this.visible)
+		{
+			updateRemapping();
+			this.isHovered = isOverButton(mouseX, mouseY);
+			this.renderButton(poseStack, mouseX, mouseY, partialTick);
+			updateTooltip();
+		}
+	}
+	
+	@Override
+	public void renderSymbol(PoseStack poseStack)
 	{
 		if(getSymbol() == 0)
 		{
@@ -201,10 +212,10 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			{
 				
 				if(isEngaged())
-					renderPointOfOrigin(guiGraphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderPointOfOrigin(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, pointOfOrigin, this.engagedColor);
 				else
-					renderPointOfOrigin(guiGraphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderPointOfOrigin(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, pointOfOrigin, this.disengagedColor);
 			}
 		}
@@ -214,10 +225,10 @@ public abstract class GenericDHDSymbolButton extends DHDSymbolButton
 			if(symbols != null)
 			{
 				if(isEngaged())
-					renderSymbol(guiGraphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderSymbol(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, symbols, getSymbol(), this.engagedColor);
 				else
-					renderSymbol(guiGraphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+					renderSymbol(poseStack.last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
 							this.position.symbolSize, this.position.symbolSize, symbols, getSymbol(), this.disengagedColor);
 			}
 		}

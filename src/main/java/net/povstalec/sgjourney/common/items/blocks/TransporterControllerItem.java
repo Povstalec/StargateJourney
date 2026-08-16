@@ -12,7 +12,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 import javax.annotation.Nullable;
 
@@ -35,7 +34,7 @@ public class TransporterControllerItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		CompoundTag compoundtag = InventoryUtil.getBlockEntityTag(stack);
+		CompoundTag compoundtag = getBlockEntityData(stack);
 		if(compoundtag != null)
 		{
 			BlockEntity blockentity = level.getBlockEntity(pos);
@@ -44,14 +43,14 @@ public class TransporterControllerItem extends BlockItem
             	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
             		return false;
             	
-            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(level.registryAccess());
+            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
             	CompoundTag compoundtag2 = compoundtag1.copy();
             	
             	compoundtag1.merge(compoundtag);
             	
             	if(!compoundtag1.equals(compoundtag2))
             	{
-            		blockentity.loadCustomOnly(compoundtag1, level.registryAccess());
+            		blockentity.load(compoundtag1);
             		blockentity.setChanged();
             		
             		return setupBlockEntity(level, blockentity, compoundtag);
@@ -62,10 +61,7 @@ public class TransporterControllerItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			if(baseEntity instanceof TransporterControllerEntity controller)
-			{
-				controller.setupServerAutoCache();
 				controller.generateAdditional(StructureGenEntity.Step.READY);
-			}
 		}
 			
 			return false;
@@ -82,7 +78,6 @@ public class TransporterControllerItem extends BlockItem
 			else
 				generationStep = StructureGenEntity.Step.GENERATED;
 			
-			controller.setupServerAutoCache();
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 				controller.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else

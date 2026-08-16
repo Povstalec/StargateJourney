@@ -1,21 +1,24 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 
-import java.util.LinkedList;
-import java.util.List;
+import javax.annotation.Nonnull;
 
 public class InterfacePeripheralWrapper
 {
 	private final AbstractInterfaceEntity interfaceEntity;
-	private Lazy<IPeripheral> peripheral;
+	@Nonnull
+	private LazyOptional<InterfacePeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
 	public InterfacePeripheralWrapper(AbstractInterfaceEntity interfaceEntity)
@@ -24,9 +27,8 @@ public class InterfacePeripheralWrapper
 		this.peripheral = createPeripheralLazy();
 	}
 
-	private Lazy<IPeripheral> createPeripheralLazy()
-	{
-		return Lazy.of(() -> createPeripheral(this.interfaceEntity, this.interfaceEntity.findEnergyBlockEntity()));
+	private LazyOptional<InterfacePeripheral> createPeripheralLazy() {
+		return LazyOptional.of(() -> createPeripheral(this.interfaceEntity, this.interfaceEntity.findEnergyBlockEntity()));
 	}
 
 	private static InterfacePeripheral createPeripheral(AbstractInterfaceEntity interfaceEntity, EnergyBlockEntity energyBlockEntity)
@@ -41,8 +43,8 @@ public class InterfacePeripheralWrapper
 	
 	public boolean resetInterface()
 	{
-		final IPeripheral currentPeripheral = peripheral.get();
-		final BlockEntity oldEntity = ((InterfacePeripheral) currentPeripheral).targetEntity;
+		final InterfacePeripheral currentPeripheral = peripheral.resolve().orElse(null);
+		final BlockEntity oldEntity = currentPeripheral == null ? null : currentPeripheral.targetEntity;
 		final BlockEntity newEntity = interfaceEntity.findEnergyBlockEntity();
 
 		// if the peripheral was initialized for a different BE than the interface is currently targeting
@@ -59,12 +61,11 @@ public class InterfacePeripheralWrapper
 	
 	public void queueEvent(String eventName, Object... objects)
 	{
-		if(peripheral.get() instanceof InterfacePeripheral interfacePeripheral)
-			interfacePeripheral.queueEvent(eventName, objects);
+		peripheral.ifPresent(p -> p.queueEvent(eventName, objects));
 	}
 	
-	public Lazy<IPeripheral> getPeripheral()
+	public LazyOptional<IPeripheral> getPeripheral()
 	{
-		return peripheral;
+		return peripheral.cast();
 	}
 }

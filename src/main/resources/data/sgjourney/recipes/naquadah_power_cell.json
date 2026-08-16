@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"INI",
+		"|T|",
+		"IRI"
+	],
+	
+	"key": 
+	{
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"|": { "tag": "sgjourney:naquadah_rod" },
+		"N": { "tag": "sgjourney:refined_naquadah" },
+		"T": { "item": "sgjourney:transfer_crystal" },
+		"R": { "item": "minecraft:redstone" }
+	},
+	
+	"result": { "item": "sgjourney:naquadah_power_cell" }
+}

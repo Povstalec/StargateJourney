@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:technology/obtain_crystal",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:classic_stargate_base_block"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_classic_stargate_block.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.technology.obtain_classic_stargate_block.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_classic_stargate_block": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"tag": "sgjourney:classic_stargate_block"}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_classic_stargate_block"
+		]
+	]
+}

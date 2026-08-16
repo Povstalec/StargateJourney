@@ -1,8 +1,8 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
@@ -35,23 +36,23 @@ public class SymbolBlockItem extends BlockItem
 		if(minecraftserver == null)
 			return false;
 		
-		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
+		CompoundTag compoundtag = getBlockEntityData(stack);
+		if(compoundtag != null)
 		{
-			CompoundTag compoundtag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
 			BlockEntity blockentity = level.getBlockEntity(pos);
             if(blockentity != null)
             {
             	if(!level.isClientSide && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
             		return false;
             	
-            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(minecraftserver.registryAccess());
+            	CompoundTag compoundtag1 = blockentity.saveWithoutMetadata();
             	CompoundTag compoundtag2 = compoundtag1.copy();
             	
             	compoundtag1.merge(compoundtag);
             	
             	if(!compoundtag1.equals(compoundtag2))
             	{
-            		blockentity.loadCustomOnly(compoundtag1, minecraftserver.registryAccess());
+            		blockentity.load(compoundtag1);
             		blockentity.setChanged();
             		
             		return setupBlockEntity(level, blockentity, compoundtag);
@@ -66,20 +67,20 @@ public class SymbolBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof SymbolBlockEntity symbolBlockEntity)
+		if(baseEntity instanceof SymbolBlockEntity cartouche)
 		{
 			if(info.contains(SymbolBlockEntity.SYMBOL_NUMBER, CompoundTag.TAG_INT))
-				symbolBlockEntity.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
+				cartouche.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
 			
 			if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
-				symbolBlockEntity.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
+				cartouche.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
 			else
-				symbolBlockEntity.setPointOfOriginFromLevel(level);
+				cartouche.setPointOfOriginFromLevel(level);
 			
 			if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
-				symbolBlockEntity.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
+				cartouche.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
 			else
-				symbolBlockEntity.setSymbolsFromLevel(level);
+				cartouche.setSymbolsFromLevel(level);
 		}
 		
 		return false;

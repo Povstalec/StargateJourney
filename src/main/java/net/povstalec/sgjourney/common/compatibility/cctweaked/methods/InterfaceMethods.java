@@ -22,7 +22,7 @@ public class InterfaceMethods
 		{
 			return "setEnergyTarget";
 		}
-		
+
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException
 		{
@@ -40,7 +40,7 @@ public class InterfaceMethods
 		{
 			return "addressToString";
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, BlockEntity stargate, IArguments arguments) throws LuaException

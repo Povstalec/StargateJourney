@@ -4,8 +4,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -14,7 +16,7 @@ public class NaquadahGeneratorMenu extends EnergyBlockMenu<NaquadahGeneratorEnti
 {
 	public NaquadahGeneratorMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		this(containerId, inventory, (NaquadahGeneratorEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inventory, (NaquadahGeneratorEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 	}
 	
 	public NaquadahGeneratorMenu(int containerId, Inventory inventory, NaquadahGeneratorEntity blockEntity)
@@ -25,9 +27,9 @@ public class NaquadahGeneratorMenu extends EnergyBlockMenu<NaquadahGeneratorEnti
 		addPlayerInventory(inventory, 8, 86);
 		addPlayerHotbar(inventory, 8, 144);
 		
-		IItemHandler handler = this.blockEntity.getItemHandler();
-		if(handler != null)
+		this.blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(handler -> {
 			this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 62, 35));
+		});
 	}
 	
 	public int getReactionProgress()

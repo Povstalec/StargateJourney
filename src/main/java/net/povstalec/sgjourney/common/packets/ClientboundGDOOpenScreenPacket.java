@@ -1,36 +1,45 @@
 package net.povstalec.sgjourney.common.packets;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.StargateJourney;
+import java.util.function.Supplier;
+
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundGDOOpenScreenPacket(boolean mainHand, String idc, int frequency) implements CustomPacketPayload
+public class ClientboundGDOOpenScreenPacket
 {
-    public static final CustomPacketPayload.Type<ClientboundGDOOpenScreenPacket> TYPE =
-            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_gdo_open_screen"));
+    public final boolean mainHand;
     
-    public static final StreamCodec<ByteBuf, ClientboundGDOOpenScreenPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.BOOL, ClientboundGDOOpenScreenPacket::mainHand,
-            ByteBufCodecs.STRING_UTF8, ClientboundGDOOpenScreenPacket::idc,
-            ByteBufCodecs.VAR_INT, ClientboundGDOOpenScreenPacket::frequency,
-            ClientboundGDOOpenScreenPacket::new
-    );
-    
-    @Override
-    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+    public final String idc;
+    public final int frequency;
+
+    public ClientboundGDOOpenScreenPacket(boolean mainHand, String idc, int frequency)
     {
-        return TYPE;
+        this.mainHand = mainHand;
+        
+        this.idc = idc;
+        this.frequency = frequency;
     }
 
-    public static void handle(ClientboundGDOOpenScreenPacket packet, IPayloadContext ctx)
+    public ClientboundGDOOpenScreenPacket(FriendlyByteBuf buffer)
     {
-        ctx.enqueueWork(() -> {
-        	ClientAccess.openGDOScreen(packet.mainHand, packet.idc, packet.frequency);
+        this(buffer.readBoolean(), buffer.readUtf(), buffer.readInt());
+    }
+
+    public void encode(FriendlyByteBuf buffer)
+    {
+        buffer.writeBoolean(mainHand);
+        
+        buffer.writeUtf(idc);
+        buffer.writeInt(frequency);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> {
+        	ClientAccess.openGDOScreen(mainHand, idc, frequency);
         });
+        return true;
     }
 }
 

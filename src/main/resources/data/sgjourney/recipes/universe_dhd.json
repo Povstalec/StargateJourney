@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	
+	"pattern":
+	[
+		"BQB",
+		"ICI",
+		"NXN"
+	],
+	"key":
+	{
+		"Q": {"item": "minecraft:quartz"},
+		"I": {"tag": "sgjourney:naquadah_ingot"},
+		"B": {"item": "minecraft:stone_button"},
+		"C": {"item": "sgjourney:communication_crystal"},
+		"X": {"item": "sgjourney:control_crystal"},
+		"N": {"tag": "sgjourney:naquadah"}
+	},
+	"result":
+	{
+		"item": "sgjourney:universe_dhd"
+	}
+}

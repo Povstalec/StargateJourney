@@ -4,8 +4,10 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.BatteryBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -14,7 +16,7 @@ public class BatteryMenu extends InventoryMenu<BatteryBlockEntity>
 {
 	public BatteryMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		this(containerId, inventory, (BatteryBlockEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inventory, (BatteryBlockEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 	}
 	
 	public BatteryMenu(int containerId, Inventory inventory, BatteryBlockEntity entity)
@@ -24,12 +26,11 @@ public class BatteryMenu extends InventoryMenu<BatteryBlockEntity>
 		addPlayerInventory(inventory, 8, 84);
 		addPlayerHotbar(inventory, 8, 142);
 		
-		IItemHandler itemHandler = blockEntity.getItemHandler();
-		if(itemHandler != null)
+		blockEntity.getItemHandler().ifPresent(handler ->
 		{
-			this.addSlot(new SlotItemHandler(itemHandler, 0, 8, 36));
-			this.addSlot(new SlotItemHandler(itemHandler, 1, 152, 36));
-		}
+			this.addBlockEntitySlot(new SlotItemHandler(handler, 0, 8, 36));
+			this.addBlockEntitySlot(new SlotItemHandler(handler, 1, 152, 36));
+		});
 	}
 	
 	public long getEnergy()
@@ -47,7 +48,8 @@ public class BatteryMenu extends InventoryMenu<BatteryBlockEntity>
 		if(slot < 0 || slot > 8)
 			return false;
 		
-		IItemHandler cap = blockEntity.getItemHandler();
+		IItemHandler cap = blockEntity.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+		
 		if(cap != null)
 			return !cap.getStackInSlot(slot).isEmpty();
 		

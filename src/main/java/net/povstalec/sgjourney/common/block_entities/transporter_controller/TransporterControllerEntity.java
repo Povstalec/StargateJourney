@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.block_entities.transporter_controller;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -18,11 +17,11 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
@@ -66,7 +65,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	protected int maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE; // Max distance from which it can connect to a Transporter and control it
 	
 	protected final ItemStackHandler energyItemHandler = createEnergyItemHandler();
-	protected final Lazy<IItemHandler> lazyEnergyItemHandler = Lazy.of(() -> energyItemHandler);
+	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
 	
 	@Nullable
 	protected Vec3i transporterRelativePos = null;
@@ -124,9 +123,9 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		super.loadAdditional(tag, registries);
+		super.load(tag);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
@@ -140,13 +139,13 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			transporterRelativePos = null;
 		
 		if(tag.contains(ENERGY_INVENTORY, Tag.TAG_COMPOUND))
-			energyItemHandler.deserializeNBT(registries, tag.getCompound(ENERGY_INVENTORY));
+			energyItemHandler.deserializeNBT(tag.getCompound(ENERGY_INVENTORY));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(tag, registries);
+		super.saveAdditional(tag);
 		
 		if(generationStep != Step.GENERATED)
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
@@ -154,7 +153,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 		if(transporterRelativePos != null)
 			tag.putIntArray(TRANSPORTER_POS, Conversion.vecToIntArray(transporterRelativePos));
 		
-		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT(registries));
+		tag.put(ENERGY_INVENTORY, energyItemHandler.serializeNBT());
 	}
 	
 	@Override
@@ -165,7 +164,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag()
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -178,7 +177,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries)
+	public void handleUpdateTag(CompoundTag tag)
 	{
 		energyStorage.setEnergy(tag.getLong(ENERGY));
 		
@@ -190,11 +189,11 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
-			handleUpdateTag(tag, registries);
+			handleUpdateTag(tag);
 	}
 	
 	@Override
@@ -296,7 +295,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot
@@ -327,7 +326,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 			// Uses energy from an Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
-				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
+				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
 				
 				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				{

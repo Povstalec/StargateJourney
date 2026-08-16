@@ -6,12 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -27,14 +24,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkGeneratorStructureState;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.placement.StructurePlacement;
-import net.minecraft.world.level.saveddata.maps.MapDecorationType;
-import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.world.UniqueStructurePlacement;
 import org.jetbrains.annotations.NotNull;
 
@@ -50,6 +46,11 @@ import java.util.Set;
  */
 public class SchrodingersMapItem extends Item
 {
+	public static final String TARGET_STRUCTURE = "target_structure";
+	public static final String DECORATION_TYPE = "decoration_type";
+	public static final String DIMENSION = "dimension";
+	public static final String SKIP_LOADED_CHUNKS = "skip_loaded_chunks";
+	
 	public SchrodingersMapItem(Properties properties)
 	{
 		super(properties);
@@ -58,29 +59,32 @@ public class SchrodingersMapItem extends Item
 	@Nullable
 	public static TagKey<Structure> getTargetStructure(ItemStack stack)
 	{
-		if(stack.has(DataComponentInit.TARGET_STRUCTURE))
-			return stack.get(DataComponentInit.TARGET_STRUCTURE);
+		if(stack.hasTag() && stack.getTag().contains(TARGET_STRUCTURE, Tag.TAG_STRING))
+			return TagInit.Structures.createTag(stack.getTag().getString(TARGET_STRUCTURE));
 		
 		return null;
 	}
 	
-	public static Holder<MapDecorationType> getDecorationType(ItemStack stack)
+	public static MapDecoration.Type getDecorationType(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.DECORATION_TYPE, MapDecorationTypes.RED_X);
+		if(stack.hasTag() && stack.getTag().contains(DECORATION_TYPE, Tag.TAG_BYTE))
+			return MapDecoration.Type.byIcon(stack.getTag().getByte(DECORATION_TYPE));
+		
+		return MapDecoration.Type.RED_X;
 	}
 	
 	@Nullable
 	public static ResourceKey<Level> getDimension(ItemStack stack)
 	{
-		if(stack.has(DataComponentInit.DIMENSION))
-			return stack.get(DataComponentInit.DIMENSION);
+		if(stack.hasTag() && stack.getTag().contains(DIMENSION, Tag.TAG_STRING))
+			return Conversion.stringToDimension(stack.getTag().getString(DIMENSION));
 		
 		return null;
 	}
 	
 	public static boolean shouldSkipLoadedChunks(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.SKIP_LOADED_CHUNKS, false);
+		return stack.hasTag() && stack.getTag().getBoolean(SKIP_LOADED_CHUNKS);
 	}
 	
 	public static BlockPos getSearchStartPos(TagKey<Structure> target, BlockPos defaultSearchStartPos)
@@ -97,7 +101,7 @@ public class SchrodingersMapItem extends Item
 	}
 	
 	@Nullable
-	public static ItemStack tryCreateMapItem(ServerLevel level, @Nullable Player player, ItemStack schrodingersMapStack, BlockPos defaultSearchStartPos, Holder<MapDecorationType> mapDecorationType, boolean skipLoadedChunks)
+	public static ItemStack tryCreateMapItem(ServerLevel level, @Nullable Player player, ItemStack schrodingersMapStack, BlockPos defaultSearchStartPos, MapDecoration.Type mapDecorationType, boolean skipLoadedChunks)
 	{
 		TagKey<Structure> target = getTargetStructure(schrodingersMapStack);
 		if(target == null) // No target structure found, create a normal map
@@ -142,8 +146,8 @@ public class SchrodingersMapItem extends Item
 		MapItem.renderBiomePreviewMap(level, newMapStack);
 		MapItemSavedData.addTargetDecoration(newMapStack, blockpos, "+", mapDecorationType);
 		
-		if(schrodingersMapStack.has(DataComponents.ITEM_NAME))
-			newMapStack.set(DataComponents.ITEM_NAME, schrodingersMapStack.getHoverName());
+		if(schrodingersMapStack.hasCustomHoverName())
+			newMapStack.setHoverName(schrodingersMapStack.getHoverName());
 		
 		return newMapStack;
 	}
@@ -173,7 +177,7 @@ public class SchrodingersMapItem extends Item
 					itemStack.shrink(1);
 				
 				player.awardStat(Stats.ITEM_USED.get(this));
-				player.level().playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
+				player.level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
 				
 				if(itemStack.isEmpty())
 					return InteractionResultHolder.consume(newMapStack);
@@ -245,16 +249,16 @@ public class SchrodingersMapItem extends Item
 		return null;
 	}
 	
-	public static ItemStack withDestination(Component name, @NotNull TagKey<Structure> target, @Nullable Holder<MapDecorationType> mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
+	public static ItemStack withDestination(Component name, @NotNull TagKey<Structure> target, @Nullable MapDecoration.Type mapDecorationType, @Nullable ResourceKey<Level> dimension, boolean skipLoadedChunks)
 	{
 		ItemStack stack = new ItemStack(ItemInit.SCHRODINGERS_MAP.get());
-		stack.set(DataComponents.ITEM_NAME, name);
-		stack.set(DataComponentInit.TARGET_STRUCTURE, target);
+		stack.setHoverName(name);
+		stack.getOrCreateTag().putString(TARGET_STRUCTURE, target.location().toString());
 		if(mapDecorationType != null)
-			stack.set(DataComponentInit.DECORATION_TYPE, mapDecorationType);
+			stack.getOrCreateTag().putByte(DECORATION_TYPE, mapDecorationType.getIcon());
 		if(dimension != null)
-			stack.set(DataComponentInit.DIMENSION, dimension);
-		stack.set(DataComponentInit.SKIP_LOADED_CHUNKS, skipLoadedChunks);
+			stack.getOrCreateTag().putString(DIMENSION, dimension.location().toString());
+		stack.getOrCreateTag().putBoolean(SKIP_LOADED_CHUNKS, skipLoadedChunks);
 		return stack;
 	}
 }

@@ -2,13 +2,17 @@ package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Represents a Stargate that doesn't physically exist anywhere in the world,

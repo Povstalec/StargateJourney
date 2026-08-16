@@ -38,11 +38,11 @@ public class CallForwardingDevice extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.call_forwarding_device.usage"));
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.call_forwarding_device.description"));
 
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

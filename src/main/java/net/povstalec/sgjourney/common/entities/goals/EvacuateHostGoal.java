@@ -3,6 +3,9 @@ package net.povstalec.sgjourney.common.entities.goals;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
+import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
+
+import java.util.Optional;
 
 public class EvacuateHostGoal extends Goal
 {
@@ -24,12 +27,12 @@ public class EvacuateHostGoal extends Goal
 	
 	protected boolean evacuateHost()
 	{
-		GoauldHost cap = this.mob.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+		Optional<GoauldHost> cap = this.mob.getCapability(GoauldHostProvider.GOAULD_HOST).resolve();
 		
-		if(cap == null || !cap.isHost())
+		if(!cap.isPresent() || !cap.get().isHost())
 			return false;
 		
-		cap.leaveHost(this.mob);
+		cap.get().leaveHost(this.mob);
 		return true;
 	}
 	

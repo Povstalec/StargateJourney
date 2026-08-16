@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"TTT",
+		"TIT",
+		"TTT"
+	],
+	"key":
+	{
+		"I": { "item": "sgjourney:trinium_ingot" },
+		"T": { "tag": "sgjourney:trinium_ingot" }
+	},
+	"result":
+	{
+		"item": "sgjourney:trinium_block"
+	}
+}

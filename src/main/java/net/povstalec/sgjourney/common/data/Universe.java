@@ -6,11 +6,11 @@ import java.util.Map.Entry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -694,15 +694,10 @@ public class Universe extends SavedData
 		return data;
 	}
 	
-	public @NotNull CompoundTag save(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
 	{
 		serialize(tag);
 		return tag;
-	}
-
-	public static SavedData.Factory<Universe> dataFactory(MinecraftServer server)
-	{
-		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 	
 	@Nonnull
@@ -719,6 +714,6 @@ public class Universe extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
+        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
     }
 }

@@ -1,25 +1,17 @@
 package net.povstalec.sgjourney.common.packets;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
-import org.jetbrains.annotations.NotNull;
 
-public class ClientboundUpdateConfigValuesPacket implements CustomPacketPayload
+import java.util.function.Supplier;
+
+public class ClientboundUpdateConfigValuesPacket
 {
-	public static final CustomPacketPayload.Type<ClientboundUpdateConfigValuesPacket> TYPE =
-		new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_update_config_values"));
-	
-	public static final StreamCodec<ByteBuf, ClientboundUpdateConfigValuesPacket> STREAM_CODEC = createStreamCodec();
-	
 	// DHD
 	private final long universeDHDEnergyCapacity;
 	private final long milkyWayDHDEnergyCapacity;
@@ -63,102 +55,77 @@ public class ClientboundUpdateConfigValuesPacket implements CustomPacketPayload
 		advancedCrystallizerEnergyCapacity = CommonTechConfig.advanced_crystallizer_energy_capacity.get();
 	}
 	
-	public ClientboundUpdateConfigValuesPacket(ByteBuf buffer)
+	public ClientboundUpdateConfigValuesPacket(FriendlyByteBuf buffer)
 	{
 		// DHD
-		universeDHDEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		milkyWayDHDEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		pegasusDHDEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		classicDHDEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
+		universeDHDEnergyCapacity = buffer.readLong();
+		milkyWayDHDEnergyCapacity = buffer.readLong();
+		pegasusDHDEnergyCapacity = buffer.readLong();
+		classicDHDEnergyCapacity = buffer.readLong();
 		// Transporter
-		ancientTransportRingsEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		goauldTransportRingsEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
+		ancientTransportRingsEnergyCapacity = buffer.readLong();
+		goauldTransportRingsEnergyCapacity = buffer.readLong();
 		// Transporter Controller
-		goauldRingPanelEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
+		goauldRingPanelEnergyCapacity = buffer.readLong();
 		// Naquadah Generators
-		naquadahReactorEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		naquadahGeneratorMarkIEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		naquadahGeneratorMarkIIEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
+		naquadahReactorEnergyCapacity = buffer.readLong();
+		naquadahGeneratorMarkIEnergyCapacity = buffer.readLong();
+		naquadahGeneratorMarkIIEnergyCapacity = buffer.readLong();
 		// Tech
-		naquadahLiquidizerEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		heavyNaquadahLiquidizerEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		crystallizerEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
-		advancedCrystallizerEnergyCapacity = ByteBufCodecs.VAR_LONG.decode(buffer);
+		naquadahLiquidizerEnergyCapacity = buffer.readLong();
+		heavyNaquadahLiquidizerEnergyCapacity = buffer.readLong();
+		crystallizerEnergyCapacity = buffer.readLong();
+		advancedCrystallizerEnergyCapacity = buffer.readLong();
 	}
 	
-	@Override
-	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
-	{
-		return TYPE;
-	}
-	
-	public void encode(ByteBuf buffer)
+	public void encode(FriendlyByteBuf buffer)
 	{
 		// DHD
-		ByteBufCodecs.VAR_LONG.encode(buffer, universeDHDEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, milkyWayDHDEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, pegasusDHDEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, classicDHDEnergyCapacity);
+		buffer.writeLong(universeDHDEnergyCapacity);
+		buffer.writeLong(milkyWayDHDEnergyCapacity);
+		buffer.writeLong(pegasusDHDEnergyCapacity);
+		buffer.writeLong(classicDHDEnergyCapacity);
 		// Transporter
-		ByteBufCodecs.VAR_LONG.encode(buffer, ancientTransportRingsEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, goauldTransportRingsEnergyCapacity);
+		buffer.writeLong(ancientTransportRingsEnergyCapacity);
+		buffer.writeLong(goauldTransportRingsEnergyCapacity);
 		// Transporter Controller
-		ByteBufCodecs.VAR_LONG.encode(buffer, goauldRingPanelEnergyCapacity);
+		buffer.writeLong(goauldRingPanelEnergyCapacity);
 		// Naquadah Generators
-		ByteBufCodecs.VAR_LONG.encode(buffer, naquadahReactorEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, naquadahGeneratorMarkIEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, naquadahGeneratorMarkIIEnergyCapacity);
+		buffer.writeLong(naquadahReactorEnergyCapacity);
+		buffer.writeLong(naquadahGeneratorMarkIEnergyCapacity);
+		buffer.writeLong(naquadahGeneratorMarkIIEnergyCapacity);
 		// Tech
-		ByteBufCodecs.VAR_LONG.encode(buffer, naquadahLiquidizerEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, heavyNaquadahLiquidizerEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, crystallizerEnergyCapacity);
-		ByteBufCodecs.VAR_LONG.encode(buffer, advancedCrystallizerEnergyCapacity);
+		buffer.writeLong(naquadahLiquidizerEnergyCapacity);
+		buffer.writeLong(heavyNaquadahLiquidizerEnergyCapacity);
+		buffer.writeLong(crystallizerEnergyCapacity);
+		buffer.writeLong(advancedCrystallizerEnergyCapacity);
 	}
 	
-	public static void handle(ClientboundUpdateConfigValuesPacket packet, IPayloadContext ctx)
+	public boolean handle(Supplier<NetworkEvent.Context> ctx)
 	{
-		ctx.enqueueWork(() ->
+		ctx.get().enqueueWork(() ->
 		{
 			// DHD
-			SyncedConfig.universeDHDEnergyCapacity = packet.universeDHDEnergyCapacity;
-			SyncedConfig.milkyWayDHDEnergyCapacity = packet.milkyWayDHDEnergyCapacity;
-			SyncedConfig.pegasusDHDEnergyCapacity = packet.pegasusDHDEnergyCapacity;
-			SyncedConfig.classicDHDEnergyCapacity = packet.classicDHDEnergyCapacity;
+			SyncedConfig.universeDHDEnergyCapacity = universeDHDEnergyCapacity;
+			SyncedConfig.milkyWayDHDEnergyCapacity = milkyWayDHDEnergyCapacity;
+			SyncedConfig.pegasusDHDEnergyCapacity = pegasusDHDEnergyCapacity;
+			SyncedConfig.classicDHDEnergyCapacity = classicDHDEnergyCapacity;
 			// Transporter
-			SyncedConfig.ancientTransportRingsEnergyCapacity = packet.ancientTransportRingsEnergyCapacity;
-			SyncedConfig.goauldTransportRingsEnergyCapacity = packet.goauldTransportRingsEnergyCapacity;
+			SyncedConfig.ancientTransportRingsEnergyCapacity = ancientTransportRingsEnergyCapacity;
+			SyncedConfig.goauldTransportRingsEnergyCapacity = goauldTransportRingsEnergyCapacity;
 			// Transporter Controller
-			SyncedConfig.goauldRingPanelEnergyCapacity = packet.goauldRingPanelEnergyCapacity;
+			SyncedConfig.goauldRingPanelEnergyCapacity = goauldRingPanelEnergyCapacity;
 			// Naquadah Generators
-			SyncedConfig.naquadahReactorEnergyCapacity = packet.naquadahReactorEnergyCapacity;
-			SyncedConfig.naquadahGeneratorMarkIEnergyCapacity = packet.naquadahGeneratorMarkIEnergyCapacity;
-			SyncedConfig.naquadahGeneratorMarkIIEnergyCapacity = packet.naquadahGeneratorMarkIIEnergyCapacity;
+			SyncedConfig.naquadahReactorEnergyCapacity = naquadahReactorEnergyCapacity;
+			SyncedConfig.naquadahGeneratorMarkIEnergyCapacity = naquadahGeneratorMarkIEnergyCapacity;
+			SyncedConfig.naquadahGeneratorMarkIIEnergyCapacity = naquadahGeneratorMarkIIEnergyCapacity;
 			// Tech
-			SyncedConfig.naquadahLiquidizerEnergyCapacity = packet.naquadahLiquidizerEnergyCapacity;
-			SyncedConfig.heavyNaquadahLiquidizerEnergyCapacity = packet.heavyNaquadahLiquidizerEnergyCapacity;
-			SyncedConfig.crystallizerEnergyCapacity = packet.crystallizerEnergyCapacity;
-			SyncedConfig.advancedCrystallizerEnergyCapacity = packet.advancedCrystallizerEnergyCapacity;
+			SyncedConfig.naquadahLiquidizerEnergyCapacity = naquadahLiquidizerEnergyCapacity;
+			SyncedConfig.heavyNaquadahLiquidizerEnergyCapacity = heavyNaquadahLiquidizerEnergyCapacity;
+			SyncedConfig.crystallizerEnergyCapacity = crystallizerEnergyCapacity;
+			SyncedConfig.advancedCrystallizerEnergyCapacity = advancedCrystallizerEnergyCapacity;
 		});
-	}
-	
-	
-	
-	private static StreamCodec<ByteBuf, ClientboundUpdateConfigValuesPacket> createStreamCodec()
-	{
-		return new StreamCodec<>()
-		{
-			@Override
-			public @NotNull ClientboundUpdateConfigValuesPacket decode(@NotNull ByteBuf byteBuf)
-			{
-				return new ClientboundUpdateConfigValuesPacket(byteBuf);
-			}
-			
-			@Override
-			public void encode(@NotNull ByteBuf byteBuf, @NotNull ClientboundUpdateConfigValuesPacket packet)
-			{
-				packet.encode(byteBuf);
-			}
-		};
+		return true;
 	}
 }
 

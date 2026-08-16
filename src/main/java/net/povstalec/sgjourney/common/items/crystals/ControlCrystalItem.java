@@ -36,7 +36,7 @@ public class ControlCrystalItem extends AbstractCrystalItem
 	}*/
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.control_crystal.description"));
 	}
@@ -55,7 +55,7 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		}
 		
 		@Override
-		public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 		{
 			tooltipComponents.add(ComponentHelper.tickTimer("tooltip.sgjourney.control_crystal_large.autoclose", AUTOCLOSE_TICKS, ChatFormatting.DARK_PURPLE));
 			tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.control_crystal_large.description"));

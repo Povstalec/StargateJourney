@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/use_stargate",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:matok"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_chulak.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.visit_chulak.description"
+		},
+		"frame": "task",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"entered_chulak": 
+		{
+			"trigger": "minecraft:changed_dimension",
+			"conditions": 
+			{
+				"to": "sgjourney:chulak"
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"entered_chulak"
+		]
+	]
+}

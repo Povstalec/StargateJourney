@@ -1,37 +1,43 @@
 package net.povstalec.sgjourney.common.packets;
 
-import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundArcheologistNotebookOpenScreenPacket(boolean mainHand, CompoundTag tag) implements CustomPacketPayload
+import java.util.UUID;
+import java.util.function.Supplier;
+
+public class ClientboundArcheologistNotebookOpenScreenPacket
 {
-	public static final CustomPacketPayload.Type<ClientboundArcheologistNotebookOpenScreenPacket> TYPE =
-			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_archeologist_notebook_update"));
-	
-	public static final StreamCodec<ByteBuf, ClientboundArcheologistNotebookOpenScreenPacket> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.BOOL, ClientboundArcheologistNotebookOpenScreenPacket::mainHand,
-			ByteBufCodecs.COMPOUND_TAG, ClientboundArcheologistNotebookOpenScreenPacket::tag,
-			ClientboundArcheologistNotebookOpenScreenPacket::new
-	);
-	
-	@Override
-	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
-	{
-		return TYPE;
-	}
-	
-	public static void handle(ClientboundArcheologistNotebookOpenScreenPacket packet, IPayloadContext ctx)
-	{
-		ctx.enqueueWork(() -> {
-			ClientAccess.openArcheologistNotebookScreen(packet.mainHand, packet.tag);
-		});
-	}
+    public final boolean mainHand;
+    
+    public final CompoundTag tag;
+
+    public ClientboundArcheologistNotebookOpenScreenPacket(boolean mainHand, CompoundTag tag)
+    {
+        this.mainHand = mainHand;
+        
+        this.tag = tag;
+    }
+
+    public ClientboundArcheologistNotebookOpenScreenPacket(FriendlyByteBuf buffer)
+    {
+        this(buffer.readBoolean(), buffer.readNbt());
+    }
+
+    public void encode(FriendlyByteBuf buffer)
+    {
+        buffer.writeBoolean(mainHand);
+        
+        buffer.writeNbt(tag);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> ClientAccess.openArcheologistNotebookScreen(mainHand, tag));
+        return true;
+    }
 }
 
 

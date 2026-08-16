@@ -1,9 +1,9 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -70,8 +70,8 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 			if(text.isEmpty())
 				return true;
 			
-			try { return Long.parseLong(text) >= 0; }
-			catch (NumberFormatException e) { return false; }
+		   try { return Long.parseLong(text) >= 0; }
+		   catch (NumberFormatException e) { return false; }
 		});
 		
 		this.editBox.setMaxLength(19);
@@ -93,24 +93,24 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 		
 		super.init();
 	}
-	
+
 	@Override
-	protected void renderBg(GuiGraphics graphics, float pPartialTick, int pMouseX, int pMouseY)
+	protected void renderBg(PoseStack poseStack, float partialTick, int mouseX, int mouseY)
 	{
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
 		int x = (width - imageWidth) / 2;
 		int y = (height - imageHeight) / 2;
+
+		this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
 		
-		graphics.blit(texture, x, y, 0, 0, imageWidth, imageHeight);
+		this.itemHint(poseStack, x + 165, y + 18, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
 		
-		this.itemHint(graphics, texture, x + 165, y + 18, ENERGY_HINT_OFFSET_X, HINT_OFFSET_Y, 5);
-		
-		this.renderEnergyVertical(graphics, texture, x + 185, y + 18, 6, 106, 199, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
+		this.renderEnergyVertical(poseStack, x + 185, y + 18, 6, 106, 199, 0, this.menu.getEnergy(), this.menu.getEnergyCapacity());
 	}
 	
-	protected void modeTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, Component name, Component... components)
+	protected void modeTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component name, Component... components)
 	{
 		if(this.isHovering(x, y, width, height, mouseX, mouseY))
 		{
@@ -118,39 +118,40 @@ public abstract class InterfaceScreen<T extends AbstractInterfaceEntity> extends
 			tooltips.add(name);
 			tooltips.addAll(List.of(components));
 			
-			graphics.renderComponentTooltip(this.font, tooltips, mouseX, mouseY);
+			renderComponentTooltip(poseStack, tooltips, mouseX, mouseY);
 		}
 	}
-	
+
 	@Override
-	public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
+	public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
 	{
-		renderBackground(graphics, mouseX, mouseY, delta);
-		super.render(graphics, mouseX, mouseY, delta);
+		renderBackground(poseStack);
+		super.render(poseStack, mouseX, mouseY, delta);
 		
-		renderTooltip(graphics, mouseX, mouseY);
+		renderTooltip(poseStack, mouseX, mouseY);
 		
-		this.tooltip(graphics, mouseX, mouseY, 30, 21, 126, 20, ComponentHelper.energy("tooltip.sgjourney.energy_target", this.menu.getEnergyTarget()),
+		this.tooltip(poseStack, mouseX, mouseY, 30, 21, 126, 20, ComponentHelper.energy("tooltip.sgjourney.energy_target", this.menu.getEnergyTarget()),
 				ComponentHelper.description("tooltip.sgjourney.interface.energy_target.description"));
-		this.energyTooltip(graphics, mouseX, mouseY, 185, 18, 6, 106, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
+		this.energyTooltip(poseStack, mouseX, mouseY, 185, 18, 6, 106, "tooltip.sgjourney.energy_buffer", this.menu.getEnergy(), this.menu.getEnergyCapacity());
 		
-		this.modeTooltip(graphics, mouseX, mouseY, 4, 23, 16, 16,
+		this.modeTooltip(poseStack, mouseX, mouseY, 4, 23, 16, 16,
 				Component.translatable("block.sgjourney.interface.mode").append(": ").append(this.menu.getMode().getName()),
 				this.menu.getMode().getUsage());
 		
-		this.itemTooltip(graphics, mouseX, mouseY, 165, 18, 0, ComponentHelper.description("tooltip.sgjourney.interface.energy_slot.description"));
+		this.itemTooltip(poseStack, mouseX, mouseY, 165, 18, 0, ComponentHelper.description("tooltip.sgjourney.interface.energy_slot.description"));
 	}
 	
 	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY)
+	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
 	{
-		graphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
+		this.font.draw(poseStack, this.title, (float)this.titleLabelX, (float)this.titleLabelY, 4210752);
+		this.font.draw(poseStack, this.playerInventoryTitle, (float)this.inventoryLabelX, (float)this.inventoryLabelY, 4210752);
 		
-		graphics.drawString(this.font, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 34, 57, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff, false);
-		graphics.drawString(this.font, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 34, 77, 0xffffff, false);
-		graphics.drawString(this.font, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff, false);
-		graphics.drawString(this.font, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff, false);
+		this.font.draw(poseStack, ComponentHelper.energy(menu.getEnergyBlockEnergy()), 34, 57, 0xffffff);
+		this.font.draw(poseStack, Component.translatable("info.sgjourney.open_time").append(":").withStyle(ChatFormatting.DARK_AQUA), 34, 67, 0xffffff);
+		this.font.draw(poseStack, ComponentHelper.tickTimer(menu.getStargateOpenTime(), SGJourneyStargate.MAX_OPEN_TIME, ChatFormatting.DARK_AQUA), 34, 77, 0xffffff);
+		this.font.draw(poseStack, Component.translatable("info.sgjourney.last_traveler_time").append(":").withStyle(ChatFormatting.DARK_PURPLE), 34, 87, 0xffffff);
+		this.font.draw(poseStack, Component.literal(Conversion.ticksToString(menu.getStargateTimeSinceLastTraveler())).withStyle(ChatFormatting.DARK_PURPLE), 34, 97, 0xffffff);
 	}
 	
 	@Override

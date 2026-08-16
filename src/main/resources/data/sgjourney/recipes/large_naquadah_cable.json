@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"CCC",
+		"NEN",
+		"CCC"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "sgjourney:naquadah" },
+		"E": { "item": "sgjourney:advanced_energy_crystal" },
+		"C": { "item": "sgjourney:medium_naquadah_cable" }
+	},
+	
+	"result": { "item": "sgjourney:large_naquadah_cable", "count": 6 }
+}

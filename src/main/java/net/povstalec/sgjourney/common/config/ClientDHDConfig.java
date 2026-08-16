@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientDHDConfig
 {
@@ -11,7 +11,7 @@ public class ClientDHDConfig
 	public static SGJourneyConfigValue.BooleanValue pegasus_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue classic_dhd_canon_button_layout;
 	
-	public static void init(ModConfigSpec.Builder client)
+	public static void init(ForgeConfigSpec.Builder client)
 	{
 		dhd_symbols_numbers = new SGJourneyConfigValue.BooleanValue(client, "client.dhd_symbols_numbers",
 				true,

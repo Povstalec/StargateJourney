@@ -6,11 +6,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 public abstract class StargateShieldItem extends Item
 {
+	// Vanilla Materials
+	public static final ResourceLocation COPPER_IRIS = new ResourceLocation("textures/block/copper_block.png");
+	
 	public static final String TEXTURE = "texture";
 	
 	private ResourceLocation shieldTexture;
@@ -32,12 +33,19 @@ public abstract class StargateShieldItem extends Item
 	@Nullable
 	public static ResourceLocation getShieldTexture(ItemStack stack)
 	{
-		ResourceLocation location = stack.get(DataComponentInit.IRIS_TEXTURE);
-		
-		if(location != null)
-			return location;
-		else if(stack.getItem() instanceof StargateIrisItem irisItem)
-			return irisItem.getIrisTexture();
+		if(stack.getItem() instanceof StargateShieldItem irisItem)
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			if(tag.contains(TEXTURE))
+			{
+				String texture = tag.getString(TEXTURE);
+				
+				if(ResourceLocation.isValidResourceLocation(texture))
+					return new ResourceLocation(texture);
+			}
+			else
+				return irisItem.getShieldTexture();
+		}
 		
 		return null;
 	}

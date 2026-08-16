@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:weathered_cut_naquadah_copper_slab" }
+	},
+	"result": { "item": "sgjourney:weathered_naquadah_copper_pillar" }
+}

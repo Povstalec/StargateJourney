@@ -1,0 +1,23 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_exposed_polished_naquadah_copper_stairs",
+	"pattern":
+	[
+		"B  ",
+		"BB ",
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:waxed_exposed_polished_naquadah_copper_block"
+		}
+	},
+	"result":
+	{
+		"count": 4,
+		"item": "sgjourney:waxed_exposed_polished_naquadah_copper_stairs"
+	}
+}

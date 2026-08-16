@@ -1,17 +1,17 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class CommonZPMConfig
 {
-	public static ModConfigSpec.LongValue zpm_energy_per_level_of_entropy;
-	public static ModConfigSpec.LongValue zpm_hub_max_transfer;
+	public static ForgeConfigSpec.LongValue zpm_energy_per_level_of_entropy;
+	public static ForgeConfigSpec.LongValue zpm_hub_max_transfer;
 	
-	public static ModConfigSpec.BooleanValue stargates_use_zero_point_energy;
-	public static ModConfigSpec.BooleanValue tech_uses_zero_point_energy;
-	public static ModConfigSpec.BooleanValue other_mods_use_zero_point_energy;
+	public static ForgeConfigSpec.BooleanValue stargates_use_zero_point_energy;
+	public static ForgeConfigSpec.BooleanValue tech_uses_zero_point_energy;
+	public static ForgeConfigSpec.BooleanValue other_mods_use_zero_point_energy;
 	
-	public static void init(ModConfigSpec.Builder server)
+	public static void init(ForgeConfigSpec.Builder server)
 	{
 		zpm_energy_per_level_of_entropy = server
 				.comment("The energy that can be extracted from a single level of entropy")

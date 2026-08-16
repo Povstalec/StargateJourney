@@ -1,40 +1,43 @@
 package net.povstalec.sgjourney.common.packets;
 
-import io.netty.buffer.ByteBuf;
+import java.util.function.Supplier;
+
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 
-public record ServerboundRingPanelUpdatePacket(BlockPos blockPos, int number) implements CustomPacketPayload
+public class ServerboundRingPanelUpdatePacket
 {
-	public static final CustomPacketPayload.Type<ServerboundRingPanelUpdatePacket> TYPE =
-			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("c2s_ring_panel_update"));
-	
-	public static final StreamCodec<ByteBuf, ServerboundRingPanelUpdatePacket> STREAM_CODEC = StreamCodec.composite(
-			BlockPos.STREAM_CODEC, ServerboundRingPanelUpdatePacket::blockPos,
-			ByteBufCodecs.VAR_INT, ServerboundRingPanelUpdatePacket::number,
-			ServerboundRingPanelUpdatePacket::new
-	);
-	
-	@Override
-	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
-	{
-		return TYPE;
-	}
+	public final BlockPos blockPos;
+	public final int number;
 
-    public static void handle(ServerboundRingPanelUpdatePacket packet, IPayloadContext ctx)
+    public ServerboundRingPanelUpdatePacket(BlockPos blockPos, int number)
     {
-		ctx.enqueueWork(() -> {
-			final BlockEntity blockEntity = ctx.player().level().getBlockEntity(packet.blockPos);
-			
-			if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
-				ringPanel.pressButton(packet.number);
-		});
+		this.blockPos = blockPos;
+		this.number = number;
+    }
+
+    public ServerboundRingPanelUpdatePacket(FriendlyByteBuf buffer)
+    {
+        this(buffer.readBlockPos(), buffer.readInt());
+    }
+
+    public void encode(FriendlyByteBuf buffer)
+    {
+    	buffer.writeBlockPos(blockPos);
+    	buffer.writeInt(number);
+    }
+
+    public boolean handle(Supplier<NetworkEvent.Context> ctx)
+    {
+    	ctx.get().enqueueWork(() -> {
+    		final BlockEntity blockEntity = ctx.get().getSender().level.getBlockEntity(blockPos);
+    		if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
+    			ringPanel.pressButton(number);
+    	});
+        return true;
     }
 }
 

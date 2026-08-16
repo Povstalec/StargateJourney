@@ -65,11 +65,11 @@ public abstract class EnergyBlockItem extends BlockItem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(ComponentHelper.energy(this.energyName, getEnergy(stack), getCapacity()));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
 	public static class Getter extends EnergyBlockItem

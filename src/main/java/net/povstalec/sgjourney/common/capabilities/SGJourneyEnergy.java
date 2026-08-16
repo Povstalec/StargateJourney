@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.minecraftforge.common.util.INBTSerializable;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializable<Tag>
 {
@@ -164,21 +164,21 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	{
 		return this.maxExtract;
 	}
-
-    @Override
-    public Tag serializeNBT(HolderLookup.Provider provider)
-    {
-        return LongTag.valueOf(this.energy);
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt)
-    {
-    	if(!(nbt instanceof LongTag longTag))
-    		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-    	
-    	this.setEnergy(longTag.getAsLong());
-    }
+	
+	@Override
+	public Tag serializeNBT()
+	{
+	return LongTag.valueOf(this.energy);
+	}
+	
+	@Override
+	public void deserializeNBT(Tag nbt)
+	{
+		if(!(nbt instanceof LongTag longTag))
+			throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
+	
+		this.setEnergy(longTag.getAsLong());
+	}
     
  
 	
@@ -222,21 +222,5 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 			return 0;
 		
 		return Math.min(needed, maxExtract);
-	}
-	
-	
-	public static abstract class Item extends SGJourneyEnergy
-	{
-		protected ItemStack stack;
-		
-		public Item(ItemStack stack, long capacity, long maxReceive, long maxExtract)
-		{
-			super(capacity, maxReceive, maxExtract);
-			
-			this.stack = stack;
-			this.energy = loadEnergy(stack);
-		}
-		
-		public abstract long loadEnergy(ItemStack stack);
 	}
 }

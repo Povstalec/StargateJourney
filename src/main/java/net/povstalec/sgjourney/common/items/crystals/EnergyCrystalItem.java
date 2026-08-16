@@ -4,21 +4,27 @@ import java.util.List;
 import java.util.Optional;
 
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
+	public static final String ENERGY = "Energy"; //TODO Change this to "energy"
+	
 	public EnergyCrystalItem(Properties properties)
 	{
 		super(properties);
@@ -49,9 +55,29 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
+	public static CompoundTag tagSetup(long energy)
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		tag.putLong(ENERGY, energy);
+		
+		return tag;
+	}
+	
 	public static long getEnergy(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		long energy;
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(!tag.contains(ENERGY))
+			return 0;
+		
+		if(tag.getTagType(ENERGY) == Tag.TAG_INT) // TODO This is here for legacy reasons because it was originally an int
+			energy = tag.getInt(ENERGY);
+		else
+			energy = tag.getLong(ENERGY);
+		
+		return energy;
 	}
 	
 	public long getCapacity()
@@ -70,19 +96,37 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	{
+		return new ItemEnergyProvider(stack)
+		{
+			@Override
+			public long capacity()
+			{
+				return getCapacity();
+			}
+			
+			@Override
+			public long maxReceive()
+			{
+				return getTransfer();
+			}
+
+			@Override
+			public long maxExtract()
+			{
+				return getTransfer();
+			}
+		};
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_crystal.energy_target_increase").append(Component.literal(": " + SGJourneyEnergy.energyToString(energyTargetIncrease()))).withStyle(ChatFormatting.RED));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.energy_crystal.description"));
-	}
-	
-	public static ItemStack energySetup(long energy)
-	{
-		ItemStack stack = new ItemStack(ItemInit.ENERGY_CRYSTAL.get());
-		stack.set(DataComponentInit.ENERGY, energy);
-		return stack;
 	}
 	
 	public static final class Advanced extends EnergyCrystalItem
@@ -114,60 +158,6 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		public boolean isAdvanced()
 		{
 			return true;
-		}
-		
-		public static ItemStack energySetup(long energy)
-		{
-			ItemStack stack = new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get());
-			stack.set(DataComponentInit.ENERGY, energy);
-			return stack;
-		}
-	}
-	
-	public static class Energy extends SGJourneyEnergy.Item
-	{
-		public Energy(ItemStack stack)
-		{
-			super(stack, 0, 0, 0);
-		}
-		
-		@Override
-		public long maxReceive()
-		{
-			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
-				return energyCrystal.getTransfer();
-			
-			return 0;
-		}
-		
-		@Override
-		public long maxExtract()
-		{
-			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
-				return energyCrystal.getTransfer();
-			
-			return 0;
-		}
-		
-		@Override
-		public long loadEnergy(ItemStack stack)
-		{
-			return getEnergy(stack);
-		}
-		
-		@Override
-		public long getTrueMaxEnergyStored()
-		{
-			if(stack.getItem() instanceof EnergyCrystalItem energyCrystal)
-				return energyCrystal.getCapacity();
-			
-			return 0;
-		}
-		
-		@Override
-		public void onEnergyChanged(long difference, boolean simulate)
-		{
-			stack.set(DataComponentInit.ENERGY, this.energy);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.neoforged.neoforge.common.ModConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ClientSkyConfig
 {
@@ -16,7 +16,7 @@ public class ClientSkyConfig
 	
 	public static SGJourneyConfigValue.BooleanValue custom_destiny_sky;
 	
-	public static void init(ModConfigSpec.Builder client)
+	public static void init(ForgeConfigSpec.Builder client)
 	{
 		custom_abydos_sky = new SGJourneyConfigValue.BooleanValue(client, "client.custom_abydos_sky", 
 				true, 

@@ -1,52 +1,69 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.ChatFormatting;
+import java.util.*;
+
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemContainerContents;
-import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.MutableDataComponentHolder;
-import net.neoforged.neoforge.items.ComponentItemHandler;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.CrystalCache;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
-import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.CoordinateEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterIDEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.List;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.common.capabilities.ItemInventoryProvider;
+import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 
 public class RingRemoteItem extends HolderItem
 {
+	public static final String INDEX = "index";
+	
 	public RingRemoteItem(Properties properties)
 	{
 		super(properties);
 	}
 	
+	@Override
+    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
+	{
+		return new ItemInventoryProvider(stack)
+		{
+			@Override
+			public int getNumberOfSlots()
+			{
+				return 1;
+			}
+
+			@Override
+			public boolean isValid(int slot, @NotNull ItemStack stack)
+			{
+				return stack.isEmpty() || stack.getItem() instanceof AbstractCrystalItem crystal && isCorrectCrystalType(crystal.getType());
+			}
+		};
+	}
 	
-	public static boolean isCorrectCrystalType(CrystalCache.Type type)
+	public boolean isCorrectCrystalType(CrystalCache.Type type)
 	{
 		return switch(type)
 		{
@@ -67,12 +84,16 @@ public class RingRemoteItem extends HolderItem
 	
 	protected int getIndex(ItemStack ringRemoteStack)
 	{
-		return ringRemoteStack.getOrDefault(DataComponentInit.INDEX, 0);
+		if(!ringRemoteStack.hasTag())
+			return 0;
+		
+		return ringRemoteStack.getTag().getInt(INDEX);
 	}
 	
 	protected void setIndex(ItemStack ringRemoteStack, int index)
 	{
-		ringRemoteStack.set(DataComponentInit.INDEX, index);
+		CompoundTag tag = ringRemoteStack.getOrCreateTag();
+		tag.putInt(INDEX, index);
 	}
 	
 	protected int incrementIndex(ItemStack ringRemoteStack)
@@ -247,8 +268,7 @@ public class RingRemoteItem extends HolderItem
 		
 		// Connected Transporter is ready, proceed further and check for any Crystals
 		ItemStack ringRemoteStack = player.getItemInHand(hand);
-		IItemHandler itemHandler = ringRemoteStack.getCapability(Capabilities.ItemHandler.ITEM);
-		if(itemHandler != null)
+		ringRemoteStack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
 		{
 			ItemStack crystalStack = itemHandler.getStackInSlot(0);
 			CrystalCache.Type type = getCrystalType(crystalStack);
@@ -265,7 +285,7 @@ public class RingRemoteItem extends HolderItem
 			}
 			else
 				nearestTransport((ServerLevel) level, player, transporter);
-		}
+		});
 	}
 	
 	private void nearestTransport(ServerLevel level, Player player, AbstractTransporterEntity<?> connectedTransporter)
@@ -344,7 +364,7 @@ public class RingRemoteItem extends HolderItem
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
     {
 		ItemStack heldItem = getHeldItem(stack);
 		int indexAt = getIndex(stack);
@@ -371,22 +391,6 @@ public class RingRemoteItem extends HolderItem
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.ring_remote.usage.transport"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.ring_remote.usage.select"));
 
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
-	
-	
-	
-	public static class ItemHandler extends ComponentItemHandler
-	{
-		public ItemHandler(MutableDataComponentHolder parent, DataComponentType<ItemContainerContents> component)
-		{
-			super(parent, component, 1);
-		}
-		
-		@Override
-		public boolean isItemValid(int slot, @NotNull ItemStack stack)
-		{
-			return stack.isEmpty() || stack.getItem() instanceof AbstractCrystalItem crystal && RingRemoteItem.isCorrectCrystalType(crystal.getType());
-		}
-	}
 }

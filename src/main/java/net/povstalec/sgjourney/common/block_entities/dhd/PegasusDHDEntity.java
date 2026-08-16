@@ -121,4 +121,5 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		crystalHandler.setStackInSlot(6, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
 		crystalHandler.setStackInSlot(7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
 	}
+
 }

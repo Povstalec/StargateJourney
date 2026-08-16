@@ -6,13 +6,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -30,10 +30,10 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.menu.NaquadahGeneratorMenu;
-import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -94,7 +94,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 	}
 	
 	@Override
-	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
         if(!level.isClientSide()) 
         {
@@ -125,7 +125,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
             				return new NaquadahGeneratorMenu(windowId, playerInventory, naquadahGenerator);
             			}
             		};
-					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
             	}
             	else
             		throw new IllegalStateException("Our named container provider is missing!");
@@ -135,7 +135,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
     }
 	
 	@Override
-	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof NaquadahGeneratorEntity)
@@ -144,7 +144,7 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 				
-				blockentity.saveToItem(itemstack, level.registryAccess());
+				blockentity.saveToItem(itemstack);
 				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -152,16 +152,16 @@ public abstract class NaquadahGeneratorBlock extends BaseEntityBlock
 			}
 		}
 		
-		return super.playerWillDestroy(level, pos, state, player);
+		super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	public abstract long energyPerTick();
 	
 	@Override
-	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
 		tooltipComponents.add(Component.literal(SGJourneyEnergy.energyToString(energyPerTick()) + "/Tick").withStyle(ChatFormatting.YELLOW));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 }

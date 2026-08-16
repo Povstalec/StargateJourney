@@ -17,7 +17,7 @@ public class TransceiverMethods
 		{
 			return "setFrequency";
 		}
-		
+
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, TransceiverEntity transceiver, IArguments arguments) throws LuaException
 		{

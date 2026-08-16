@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:trinium_block"}
+	},
+	"result":
+	{
+		"item": "sgjourney:trinium_slab", "count": 6
+	}
+}

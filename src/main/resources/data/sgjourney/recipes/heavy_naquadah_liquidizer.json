@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"NCN",
+		"BPB",
+		"RRR"
+	],
+	
+	"key": 
+	{
+		"P": { "item": "sgjourney:naquadah_power_cell" },
+		"C": { "item": "sgjourney:control_crystal" },
+		"N": { "tag": "sgjourney:naquadah" },
+		"B": { "item": "sgjourney:liquid_naquadah_bucket" },
+		"R": { "item": "sgjourney:reaction_chamber" }
+	},
+	
+	"result": { "item": "sgjourney:heavy_naquadah_liquidizer" }
+}

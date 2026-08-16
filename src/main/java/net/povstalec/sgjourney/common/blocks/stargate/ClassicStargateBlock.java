@@ -6,11 +6,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -102,7 +103,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				}
 				
 				if(!level.isClientSide())
-					tag = stargate.serializeStargateInfo(new CompoundTag(), level.getServer().registryAccess());
+					tag = stargate.serializeStargateInfo(new CompoundTag());
 			}
 			
 			Direction direction = level.getBlockState(pos).getValue(FACING);
@@ -150,7 +151,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 				{
 					if(!level.isClientSide())
 					{
-						stargate.deserializeStargateInfo(tag, level.getServer().registryAccess(), true);
+						stargate.deserializeStargateInfo(tag, true);
 						stargate.addStargateToNetwork();
 					}
 				}
@@ -166,12 +167,12 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 	}
 	
 	@Override
-	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		if(player.getItemInHand(hand).is(ItemInit.STARGATE_UPGRADE_CRYSTAL.get()))
-			return upgradeStargate(level, pos, player, hand) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+			return upgradeStargate(level, pos, player, hand) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
 		
-		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
+		return super.use(state, level, pos, player, hand, result);
 	}
 	
 	@Nullable
@@ -182,7 +183,7 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
     }
 	
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -201,6 +202,6 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 }

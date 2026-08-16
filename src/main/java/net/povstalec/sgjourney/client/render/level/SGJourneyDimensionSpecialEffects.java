@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.client.render.level;
 
-import net.neoforged.neoforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -11,6 +10,7 @@ import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientSkyConfig;
 import org.joml.Vector3f;
@@ -54,20 +54,20 @@ public abstract class SGJourneyDimensionSpecialEffects extends DimensionSpecialE
 	}
 
 	@Override
-	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f modelViewMatrix, Matrix4f projectionMatrix)
+	public boolean renderClouds(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, double camX, double camY, double camZ, Matrix4f projectionMatrix)
     {
         return false;
     }
 	
 	@Override
-	public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
+	public boolean renderSky(ClientLevel level, int ticks, float partialTick, PoseStack poseStack, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog)
     {
 		if(customSky())
 		{
 			if(stellarViewSky())
-				return StellarViewCompatibility.renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, isFoggy, setupFog);
+				return StellarViewCompatibility.renderSky(level, ticks, partialTick, poseStack, camera, projectionMatrix, isFoggy, setupFog);
 			else if(skyRenderer != null)
-				skyRenderer.renderSky(level, partialTick, modelViewMatrix, camera, projectionMatrix, setupFog);
+				skyRenderer.renderSky(level, partialTick, poseStack, camera, projectionMatrix, setupFog);
 			
 			return true;
 		}

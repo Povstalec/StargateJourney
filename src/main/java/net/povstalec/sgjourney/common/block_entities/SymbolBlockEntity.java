@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.common.block_entities;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -27,10 +24,9 @@ import javax.annotation.Nullable;
 
 public abstract class SymbolBlockEntity extends BlockEntity
 {
-	public static final String SYMBOL = "symbol";
-	public static final String SYMBOLS = "symbols";
-	public static final String SYMBOL_NUMBER = "symbol_number";
-	public static final ResourceLocation EMPTY = StargateJourney.EMPTY_LOCATION;
+	public static final String SYMBOL = "Symbol";
+	public static final String SYMBOLS = "Symbols";
+	public static final String SYMBOL_NUMBER = "SymbolNumber";
 	
 	public int symbolNumber = 0;
 	@Nullable
@@ -53,35 +49,28 @@ public abstract class SymbolBlockEntity extends BlockEntity
 			
 			if(symbols == null)
 				setSymbolsFromLevel(level);
-			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 		}
 		
 		super.onLoad();
 	}
 	
 	@Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+    public void load(CompoundTag tag)
     {
-    	super.loadAdditional(tag, registries);
+    	super.load(tag);
     	
     	if(tag.contains(SYMBOL_NUMBER))
     		symbolNumber = tag.getInt(SYMBOL_NUMBER);
-		else if(tag.contains("SymbolNumber")) //TODO For legacy reasons
-			symbolNumber = tag.getInt("SymbolNumber");
     	
     	if(tag.contains(SYMBOL))
     		pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString(SYMBOL));
-		else if(tag.contains("Symbol")) //TODO For legacy reasons
-			pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString("Symbol"));
     	
     	if(tag.contains(SYMBOLS))
     		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
-		else if(tag.contains("Symbols")) //TODO For legacy reasons
-			symbols = Conversion.stringToSymbols(tag.getString("Symbols"));
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+    protected void saveAdditional(@NotNull CompoundTag tag)
 	{
 		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		
@@ -91,7 +80,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.location().toString());
 		
-		super.saveAdditional(tag, registries);
+		super.saveAdditional(tag);
 	}
 	
 	@Override
@@ -101,19 +90,19 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public CompoundTag getUpdateTag()
 	{
-		return this.saveWithoutMetadata(registries);
+		return this.saveWithoutMetadata();
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
 		ResourceKey<PointOfOrigin> oldPointOfOrigin = pointOfOrigin;
 		ResourceKey<Symbols> oldSymbols = symbols;
 		int oldSymbolNumber = symbolNumber;
 		
-		super.onDataPacket(net, packet, registries);
+		super.onDataPacket(net, packet);
 		
 		boolean needsUpdate = pointOfOrigin != null && !pointOfOrigin.equals(oldPointOfOrigin);
 		needsUpdate |= symbols != null && !symbols.equals(oldSymbols);
@@ -192,6 +181,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	{
 		return this.symbols;
 	}
+	
 	
 	
 	public static class Stone extends SymbolBlockEntity

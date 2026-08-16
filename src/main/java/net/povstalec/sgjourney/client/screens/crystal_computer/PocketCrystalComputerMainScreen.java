@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.screens.crystal_computer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -76,22 +75,22 @@ public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
 	}
 	
 	@Override
-	protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y)
+	protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y)
 	{
 		ItemStack crystalStack = getCrystal(selectedCrystal);
 		
 		if(!crystalStack.isEmpty())
 		{
-			graphics.drawCenteredString(font, crystalStack.getHoverName(), x + 101, y + 14, 0xffffff);
+			drawCenteredString(stack, font, crystalStack.getHoverName(), x + 101, y + 14, 0xffffff);
 			
 			if(crystalStack.getItem() instanceof AbstractCrystalItem crystal)
 			{
 				if(crystal.getType() == CrystalCache.Type.COMMUNICATION)
-					graphics.drawString(font, Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(":"), x + 20, y + 45, 0xffffff);
+					font.draw(stack, Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(":"), x + 20, y + 45, 0xffffff);
 			}
 		}
 		else
-			graphics.drawCenteredString(font, Component.translatable("screen.sgjourney.crystal_computer.no_crystal_selected"), x + 101, y + 67, 0xffffff);
+			drawCenteredString(stack, font, Component.translatable("screen.sgjourney.crystal_computer.no_crystal_selected"), x + 101, y + 67, 0xffffff);
 	}
 	
 	@Override

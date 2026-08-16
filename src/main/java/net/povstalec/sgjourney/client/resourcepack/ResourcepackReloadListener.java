@@ -8,7 +8,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 
-import io.netty.handler.codec.DecoderException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.Registry;
@@ -19,10 +18,9 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
@@ -35,6 +33,7 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.resourcepack.symbols.SymbolSet;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 public class ResourcepackReloadListener
 {
@@ -51,7 +50,7 @@ public class ResourcepackReloadListener
 	public static final String TOLLAN = "tollan";
 	public static final String CLASSIC = "classic";
 	
-	@EventBusSubscriber(modid = StargateJourney.MODID, value = Dist.CLIENT)
+	@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
 	{
 		public ReloadListener()
@@ -120,7 +119,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Universe Stargate Variant "+ msg));
+				UniverseStargateVariant stargateVariant = UniverseStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Universe Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addUniverseStargateVariant(location, stargateVariant);
 			}
@@ -136,7 +135,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Milky Way Stargate Variant "+ msg));
+				MilkyWayStargateVariant stargateVariant = MilkyWayStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Milky Way Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addMilkyWayStargateVariant(location, stargateVariant);
 			}
@@ -152,7 +151,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Pegasus Stargate Variant "+ msg));
+				PegasusStargateVariant stargateVariant = PegasusStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Pegasus Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addPegasusStargateVariant(location, stargateVariant);
 			}
@@ -168,7 +167,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Tollan Stargate Variant "+ msg));
+				TollanStargateVariant stargateVariant = TollanStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Tollan Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addTollanStargateVariant(location, stargateVariant);
 			}
@@ -184,7 +183,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
-				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Classic Stargate Variant "+ msg));
+				ClassicStargateVariant stargateVariant = ClassicStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Classic Stargate Variant {}", msg));
 				
 				ClientStargateVariants.addClassicStargateVariant(location, stargateVariant);
 			}
@@ -200,7 +199,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, SYMBOL_SET);
-				SymbolSet symbolSet = SymbolSet.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Symbol Set {}"+ msg));
+				SymbolSet symbolSet = SymbolSet.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Symbol Set {}", msg));
 				
 				SymbolSet.addSymbolSet(SymbolSet.keyFromLocation(location), symbolSet);
 			}
@@ -216,7 +215,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, SYMBOLS);
-				ClientSymbols symbols = ClientSymbols.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Symbols {}"+ msg));
+				ClientSymbols symbols = ClientSymbols.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Symbols {}", msg));
 				
 				ClientSymbols.addSymbols(Conversion.locationToSymbols(location), symbols);
 			}
@@ -232,7 +231,7 @@ public class ResourcepackReloadListener
 			try
 			{
 				JsonObject json = GsonHelper.convertToJsonObject(element, POINT_OF_ORIGIN);
-				ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Point of Origin {}"+ msg));
+				ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, msg -> StargateJourney.LOGGER.error("Failed to parse Point of Origin {}", msg));
 				
 				ClientPointOfOrigin.addPointOfOrigin(Conversion.locationToPointOfOrigin(location), pointOfOrigin);
 			}
@@ -245,7 +244,6 @@ public class ResourcepackReloadListener
 		
 		
 		
-		@SubscribeEvent
 		public static void registerReloadListener(RegisterClientReloadListenersEvent event)
 		{
 			event.registerReloadListener(new ReloadListener());

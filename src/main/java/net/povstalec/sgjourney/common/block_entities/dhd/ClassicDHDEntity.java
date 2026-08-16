@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
@@ -26,17 +25,17 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		super.loadAdditional(tag, registries);
+		super.load(tag);
 		
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(tag, registries);
+		super.saveAdditional(tag);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}

@@ -1,9 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
@@ -76,20 +74,17 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 	//============================================================================================
 	
 	@Override
-	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
+	public void serializeNBT(CompoundTag tag)
 	{
 		tag.putIntArray(COORDINATES, Conversion.blockPosToIntArray(blockPos));
 		
-		super.serializeNBT(tag, registries);
+		super.serializeNBT(tag);
 	}
 	
-	public void deserializeNBT(TransporterID transporterID, CompoundTag tag, HolderLookup.Provider registries)
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
 	{
-		if(tag.contains(COORDINATES, Tag.TAG_INT_ARRAY))
-			blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
-		else if(tag.contains("Coordinates", Tag.TAG_INT_ARRAY)) //TODO Keeping this here for the time being for legacy reasons
-			blockPos = Conversion.intArrayToBlockPos(tag.getIntArray("Coordinates"));
+		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
 		
-		super.deserializeNBT(transporterID, tag, registries);
+		super.deserializeNBT(transporterID, tag);
 	}
 }

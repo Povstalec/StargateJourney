@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"RAR",
+		"ACA",
+		" A "
+	],
+	
+	"key": 
+	{
+		"C": { "item": "sgjourney:advanced_control_crystal" },
+		"R": { "item": "minecraft:redstone" },
+		"A": { "tag": "sgjourney:naquadah_copper_alloy" }
+		
+	},
+	
+	"result": { "item": "sgjourney:call_forwarding_device" }
+}

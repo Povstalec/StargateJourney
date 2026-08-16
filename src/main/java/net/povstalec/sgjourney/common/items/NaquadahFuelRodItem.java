@@ -15,12 +15,13 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
-import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 public class NaquadahFuelRodItem extends Item
 {
+	public static final String FUEL = "Fuel";
+	
 	public NaquadahFuelRodItem(Properties properties)
 	{
 		super(properties);
@@ -29,7 +30,9 @@ public class NaquadahFuelRodItem extends Item
 	public static ItemStack fuelRodSetup()
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_FUEL_ROD.get());
-		stack.set(DataComponentInit.NAQUADAH_FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		tag.putLong(FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
 		
 		return stack;
 	}
@@ -55,7 +58,15 @@ public class NaquadahFuelRodItem extends Item
 	
 	public static int getFuel(ItemStack stack)
 	{
-		return stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get());
+		int fuel;
+		CompoundTag tag = stack.getOrCreateTag();
+		
+		if(!tag.contains(FUEL))
+			tag.putInt(FUEL, getMaxFuel());
+		
+		fuel = tag.getInt(FUEL);
+		
+		return fuel;
 	}
 	
 	/**
@@ -65,17 +76,22 @@ public class NaquadahFuelRodItem extends Item
 	 */
 	public static boolean depleteFuel(ItemStack stack)
 	{
-		int fuel = getFuel(stack);
+		int fuel;
+		CompoundTag tag = stack.getOrCreateTag();
 		
-		if(fuel > 0)
-		{
-			fuel--;
-			
-			stack.set(DataComponentInit.NAQUADAH_FUEL, fuel);
-			return true;
-		}
+		if(!tag.contains(FUEL))
+			tag.putInt(FUEL, 0);
 		
-		return false;
+		fuel = tag.getInt(FUEL);
+		
+		fuel--;
+		
+		tag.putInt(FUEL, fuel);
+		
+		if(fuel <= 0)
+			return false;
+		
+		return true;
 	}
 	
 	public static int getMaxFuel()
@@ -84,14 +100,14 @@ public class NaquadahFuelRodItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		if(tooltipFlag.isAdvanced())
+		if(stack.hasTag() && isAdvanced.isAdvanced())
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.naquadah_fuel_rod.fuel").append(Component.literal(": " + getFuel(stack) + " / " + getMaxFuel())).withStyle(ChatFormatting.GREEN));
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.naquadah_fuel_rod.description"));
 		
-		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 	
 	public static ItemStack randomFuelRod(int minCapacity, int maxCapacity)
@@ -99,7 +115,7 @@ public class NaquadahFuelRodItem extends Item
 		ItemStack fusionCore = new ItemStack(ItemInit.NAQUADAH_FUEL_ROD.get());
 		Random random = new Random();
 		
-		fusionCore.set(DataComponentInit.NAQUADAH_FUEL, random.nextInt(minCapacity, maxCapacity + 1));
+		fusionCore.getOrCreateTag().putInt(FUEL, random.nextInt(minCapacity, maxCapacity + 1));
 		
 		return fusionCore;
 	}

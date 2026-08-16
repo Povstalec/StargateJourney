@@ -5,14 +5,14 @@ import java.util.List;
 
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.neoforged.neoforge.common.util.Lazy;
+import net.minecraftforge.common.util.LazyOptional;
 import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 
 public class TransceiverPeripheralWrapper
 {
 	private TransceiverEntity transceiver;
 	private TransceiverPeripheral transceiverPeripheral;
-	private Lazy<IPeripheral> peripheral;
+	private LazyOptional<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
 	public TransceiverPeripheralWrapper(TransceiverEntity transceiver)
@@ -25,10 +25,10 @@ public class TransceiverPeripheralWrapper
 		return new TransceiverPeripheral(transceiver);
 	}
 	
-	public Lazy<IPeripheral> newPeripheral()
+	public LazyOptional<IPeripheral> newPeripheral()
 	{
 		transceiverPeripheral = createPeripheral(transceiver);
-		peripheral = Lazy.of(() -> transceiverPeripheral);
+		peripheral = LazyOptional.of(() -> transceiverPeripheral);
 		
 		return peripheral;
 	}

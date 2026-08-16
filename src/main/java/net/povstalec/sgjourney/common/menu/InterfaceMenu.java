@@ -6,9 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
@@ -16,6 +15,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInter
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundInterfaceUpdatePacket;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,7 +41,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	
 	public void setEnergyTargetAndMode(long energyTarget, InterfaceMode mode)
 	{
-		PacketDistributor.sendToServer(new ServerboundInterfaceUpdatePacket(this.blockEntity.getBlockPos(), energyTarget, mode));
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundInterfaceUpdatePacket(this.blockEntity.getBlockPos(), energyTarget, mode));
 	}
 	
 	public long getEnergyTarget()
@@ -73,7 +73,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		return sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false);
+		return sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false);
 	}
 	
 	
@@ -82,7 +82,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	{
 		public Basic(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (BasicInterfaceEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (BasicInterfaceEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Basic(int containerId, Inventory inventory, BasicInterfaceEntity blockEntity)
@@ -101,7 +101,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	{
 		public Crystal(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (CrystalInterfaceEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (CrystalInterfaceEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Crystal(int containerId, Inventory inventory, CrystalInterfaceEntity blockEntity)
@@ -120,7 +120,7 @@ public abstract class InterfaceMenu<T extends AbstractInterfaceEntity> extends E
 	{
 		public AdvancedCrystal(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AdvancedCrystalInterfaceEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (AdvancedCrystalInterfaceEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public AdvancedCrystal(int containerId, Inventory inventory, AdvancedCrystalInterfaceEntity blockEntity)

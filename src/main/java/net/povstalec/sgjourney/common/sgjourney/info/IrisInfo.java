@@ -1,18 +1,17 @@
 package net.povstalec.sgjourney.common.sgjourney.info;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 
@@ -297,7 +296,7 @@ public class IrisInfo
 	public void playIrisThudSound()
 	{
 		if(!this.stargate.getLevel().isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) this.stargate.getLevel(), this.stargate.getLevel().getChunkAt(this.stargate.getBlockPos()).getPos(), new ClientBoundSoundPackets.IrisThud(this.stargate.getBlockPos()));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> this.stargate.getLevel().getChunkAt(this.stargate.getBlockPos())), new ClientBoundSoundPackets.IrisThud(this.stargate.getBlockPos()));
 	}
 	
 	public boolean hasIris()
@@ -387,23 +386,23 @@ public class IrisInfo
 			syncIrisProgress();
 	}
 	
-	public CompoundTag serializeIrisInventory(HolderLookup.Provider registries)
+	public CompoundTag serializeIrisInventory()
 	{
-		return irisItemHandler.serializeNBT(registries);
+		return irisItemHandler.serializeNBT();
 	}
 	
-	public void deserializeIrisInventory(HolderLookup.Provider registries, CompoundTag tag)
+	public void deserializeIrisInventory(CompoundTag tag)
 	{
-		irisItemHandler.deserializeNBT(registries, tag);
+		irisItemHandler.deserializeNBT(tag);
 	}
 	
 	
 	
 	public interface Interface
 	{
-		String IRIS_PROGRESS = "iris_progress";
+		String IRIS_PROGRESS = "IrisProgress";
 		String OLD_IRIS_PROGRESS = "old_iris_progress";
-		String IRIS_INVENTORY = "iris_inventory";
+		String IRIS_INVENTORY = "IrisInventory";
 		String IRIS_MOTION = "iris_motion";
 		
 		IrisInfo irisInfo();

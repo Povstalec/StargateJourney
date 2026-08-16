@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -25,8 +24,6 @@ import java.util.Random;
 
 public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEntityStargate>
 {
-	public static final String ROTATION = "rotation";
-	
 	public static final float CLASSIC_THICKNESS = 8.0F;
 	public static final float HORIZONTAL_CENTER_CLASSIC_HEIGHT = (CLASSIC_THICKNESS / 2) / 16;
 	
@@ -46,9 +43,9 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	}
 
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
-		super.serializeStargateInfo(tag, registries);
+		super.serializeStargateInfo(tag);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -56,17 +53,17 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
     	
-    	super.deserializeStargateInfo(tag, registries, isUpgraded);
+    	super.deserializeStargateInfo(tag, isUpgraded);
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public @NotNull CompoundTag getUpdateTag()
 	{
-		CompoundTag tag = super.getUpdateTag(registries);
+		CompoundTag tag = super.getUpdateTag();
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -74,9 +71,9 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
 	{
-		super.onDataPacket(net, packet, registries);
+		super.onDataPacket(net, packet);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);

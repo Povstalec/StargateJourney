@@ -1,34 +1,27 @@
 package net.povstalec.sgjourney.common.packets;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
-import net.povstalec.sgjourney.StargateJourney;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.network.NetworkEvent;
 import net.povstalec.sgjourney.client.ClientAccess;
 
-public record ClientboundUpdatePlayerGravityPacket(double gravity) implements CustomPacketPayload
+import java.util.function.Supplier;
+
+public record ClientboundUpdatePlayerGravityPacket(double gravity)
 {
-	public static final CustomPacketPayload.Type<ClientboundUpdatePlayerGravityPacket> TYPE =
-			new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_update_player_gravity"));
-	
-	public static final StreamCodec<ByteBuf, ClientboundUpdatePlayerGravityPacket> STREAM_CODEC = StreamCodec.composite(
-			ByteBufCodecs.DOUBLE, ClientboundUpdatePlayerGravityPacket::gravity,
-			ClientboundUpdatePlayerGravityPacket::new
-	);
-	
-	@Override
-	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+	public ClientboundUpdatePlayerGravityPacket(FriendlyByteBuf buffer)
 	{
-		return TYPE;
+		this(buffer.readDouble());
 	}
 	
-	public static void handle(ClientboundUpdatePlayerGravityPacket packet, IPayloadContext ctx)
+	public void encode(FriendlyByteBuf buffer)
 	{
-		ctx.enqueueWork(() -> {
-			ClientAccess.updatePlayerGravity(packet.gravity);
-		});
+		buffer.writeDouble(gravity);
+	}
+	
+	public boolean handle(Supplier<NetworkEvent.Context> ctx)
+	{
+		ctx.get().enqueueWork(() -> ClientAccess.updatePlayerGravity(gravity));
+		return true;
 	}
 }
 

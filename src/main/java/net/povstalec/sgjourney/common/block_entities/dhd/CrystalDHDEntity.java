@@ -2,15 +2,16 @@ package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
@@ -22,16 +23,15 @@ import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionE
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public abstract class CrystalDHDEntity extends AbstractDHDEntity implements CrystalCache.Interface<CrystalDHDEntity>
 {
-	public static final String CRYSTAL_INVENTORY = "crystal_inventory";
+	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
 	public final CrystalCache<CrystalDHDEntity> crystalCache = createCrystalCache();
 	
 	public final ItemStackHandler crystalHandler = createCrystalHandler();
-	protected final Lazy<IItemHandler> lazyCrystalHandler = Lazy.of(() -> crystalHandler);
+	protected final LazyOptional<IItemHandler> lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
 	
 	public CrystalDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -39,10 +39,10 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		super.loadAdditional(tag, registries);
-		crystalHandler.deserializeNBT(registries, tag.getCompound(CRYSTAL_INVENTORY));
+		super.load(tag);
+		crystalHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
 		
 		//TODO Remove this later
 		if(!tag.contains(ENERGY_INVENTORY) && tag.contains(CRYSTAL_INVENTORY))
@@ -50,10 +50,10 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.put(CRYSTAL_INVENTORY, crystalHandler.serializeNBT(registries));
-		super.saveAdditional(tag, registries);
+		tag.put(CRYSTAL_INVENTORY, crystalHandler.serializeNBT());
+		super.saveAdditional(tag);
 	}
 	
 	@Override
@@ -64,27 +64,25 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 	}
 	
 	@Override
-	public void invalidateCapabilities()
+	public void invalidateCaps()
 	{
 		lazyCrystalHandler.invalidate();
-		super.invalidateCapabilities();
+		super.invalidateCaps();
 	}
 	
-	//============================================================================================
-	//****************************************Capabilities****************************************
-	//============================================================================================
-	
-	public IItemHandler getItemHandler()
+	public LazyOptional<IItemHandler> getCrystalHandler()
 	{
-		return lazyCrystalHandler.get();
+		return lazyCrystalHandler.cast();
 	}
 	
-	@Nullable
-	public IItemHandler getItemHandler(Direction side)
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
 	{
-		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
-			return lazyCrystalHandler.get();
-		return null;
+		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
+			return lazyEnergyItemHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 	
 	protected ItemStackHandler createCrystalHandler()

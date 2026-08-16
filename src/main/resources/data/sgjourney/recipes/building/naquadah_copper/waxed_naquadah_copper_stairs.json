@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"group": "waxed_naquadah_copper_stairs",
+	"pattern":
+	[
+		"I  ",
+		"II ",
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:waxed_naquadah_copper_block"}
+	},
+	"result":
+	{
+		"item": "sgjourney:waxed_naquadah_copper_stairs", "count": 4
+	}
+}

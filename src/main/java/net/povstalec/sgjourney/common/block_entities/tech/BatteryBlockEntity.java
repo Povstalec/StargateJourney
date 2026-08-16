@@ -2,29 +2,30 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public abstract class BatteryBlockEntity extends EnergyBlockEntity
 {
 	public static final String INVENTORY = "inventory";
 	
 	private final ItemStackHandler itemHandler = createHandler();
-	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
+	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
 	
 	public BatteryBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
@@ -32,38 +33,42 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void invalidateCapabilities()
+	public void invalidateCaps()
 	{
-		super.invalidateCapabilities();
+		super.invalidateCaps();
 		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
+	public void load(CompoundTag nbt)
 	{
-		super.loadAdditional(nbt, registries);
-		itemHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		super.load(nbt);
+		itemHandler.deserializeNBT(nbt.getCompound(INVENTORY));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag nbt)
 	{
-		super.saveAdditional(nbt, registries);
-		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
+		super.saveAdditional(nbt);
+		nbt.put(INVENTORY, itemHandler.serializeNBT());
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IItemHandler getItemHandler()
+	public LazyOptional<IItemHandler> getItemHandler()
 	{
-		return lazyItemHandler.get();
+		return lazyItemHandler.cast();
 	}
 	
-	public IItemHandler getItemHandler(Direction side)
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		return lazyItemHandler.get();
+		if(capability == ForgeCapabilities.ITEM_HANDLER)
+			return lazyItemHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 	
 	//============================================================================================
@@ -83,7 +88,7 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
-				return stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+				return stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 			}
 			
 			// Limits the number of items per slot

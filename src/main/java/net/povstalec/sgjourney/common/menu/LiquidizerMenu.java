@@ -6,16 +6,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.SlotItemHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.HeavyNaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundLiquidizerUpdatePacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,11 +51,12 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
 		this.fluidItemInputDumpSlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.fluidItemOutputHandler, 1, 8, 53)).index;
 		
 		this.energySlotIndex = this.addBlockEntitySlot(new SlotItemHandler(this.blockEntity.energyItemHandler, 0, 142, 17)).index;
+		
     }
 	
 	public void pressDumpButton(boolean inputTank)
 	{
-		PacketDistributor.sendToServer(new ServerboundLiquidizerUpdatePacket(this.blockEntity.getBlockPos(), inputTank));
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundLiquidizerUpdatePacket(this.blockEntity.getBlockPos(), inputTank));
 	}
 	
 	public FluidStack getInputFluidStack()
@@ -84,7 +85,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
      */
     private boolean hasRequiredLiquid(ItemStack itemStack)
 	{
-		IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
 			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
@@ -97,7 +98,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
      */
     private boolean canAcceptResultingLiquid(ItemStack itemStack)
     {
-		IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
 		if(fluidHandler != null)
 			return fluidHandler.getFluidInTank(0).isEmpty() || fluidHandler.getFluidInTank(0).getFluid().isSame(blockEntity.getOutputFluidStack().getFluid());
 		
@@ -113,7 +114,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if(sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		// Try moving it to Liquid input slot
@@ -133,7 +134,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
     {
         public LiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (NaquadahLiquidizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+            this(containerId, inventory, (NaquadahLiquidizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
         }
 
 		public LiquidNaquadah(int containerId, Inventory inventory, NaquadahLiquidizerEntity blockEntity)
@@ -152,7 +153,7 @@ public abstract class LiquidizerMenu<T extends AbstractLiquidizerEntity<?>> exte
     {
         public HeavyLiquidNaquadah(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (HeavyNaquadahLiquidizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
+            this(containerId, inventory, (HeavyNaquadahLiquidizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
         }
 
 		public HeavyLiquidNaquadah(int containerId, Inventory inventory, HeavyNaquadahLiquidizerEntity blockEntity)

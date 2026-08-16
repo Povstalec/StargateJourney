@@ -1,38 +1,39 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
-import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
-import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
-	public static final String INVENTORY = "inventory";
 	public static final String REACTION_PROGRESS = "reaction_progress";
 	
 	private int reactionProgress = 0;
 	
-	private final ItemStackHandler itemStackHandler = createHandler();
-	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemStackHandler);
+	private final ItemStackHandler itemHandler = createHandler();
+	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
 	
 	public NaquadahGeneratorEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
@@ -40,26 +41,26 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void invalidateCapabilities()
+	public void invalidateCaps()
 	{
-		super.invalidateCapabilities();
+		super.invalidateCaps();
 		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void load(CompoundTag tag)
 	{
-		super.loadAdditional(tag, registries);
-		itemStackHandler.deserializeNBT(registries, tag.getCompound(INVENTORY));
+		super.load(tag);
+		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
 		
 		reactionProgress = tag.getInt(REACTION_PROGRESS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		super.saveAdditional(tag, registries);
-		tag.put(INVENTORY, itemStackHandler.serializeNBT(registries));
+		super.saveAdditional(tag);
+		tag.put("Inventory", itemHandler.serializeNBT());
 		
 		tag.putInt(REACTION_PROGRESS, reactionProgress);
 	}
@@ -70,7 +71,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	
 	public boolean hasNaquadah()
 	{
-		ItemStack stack = this.itemStackHandler.getStackInSlot(0);
+		ItemStack stack = this.itemHandler.getStackInSlot(0);
 		
 		if(stack.getItem() instanceof NaquadahFuelRodItem)
 			return NaquadahFuelRodItem.getFuel(stack) > 0;
@@ -144,9 +145,13 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	public IItemHandler getItemHandler()
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		return lazyItemHandler.get();
+		if(capability == ForgeCapabilities.ITEM_HANDLER)
+			return lazyItemHandler.cast();
+		
+		return super.getCapability(capability, side);
 	}
 	
 	//============================================================================================
@@ -222,7 +227,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		
 		if(this.hasNaquadah() && reactionProgress == 0)
 		{
-			if(NaquadahFuelRodItem.depleteFuel(this.itemStackHandler.getStackInSlot(0)))
+			if(NaquadahFuelRodItem.depleteFuel(this.itemHandler.getStackInSlot(0)))
 				this.progressReaction();
 			//else
 			//	this.itemHandler.extractItem(0, 1, false);

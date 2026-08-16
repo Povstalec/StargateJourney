@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -106,12 +105,13 @@ public abstract class DHDSymbolButton extends DHDButton
 		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
 		RenderSystem.setShaderTexture(0, pointOfOrigin.getExtendedTexture());
 		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(0F, 0F);
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(0F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(1F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(1F, 0F);
-		BufferUploader.drawWithShader(bufferbuilder.build());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
 	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
@@ -128,29 +128,27 @@ public abstract class DHDSymbolButton extends DHDButton
 		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
 		RenderSystem.setShaderTexture(0, symbols.getExtendedSymbolTexture(symbol));
 		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(0F, 0F);
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(0F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(1F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(1F, 0F);
-		BufferUploader.drawWithShader(bufferbuilder.build());
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
-	public abstract void renderSymbol(GuiGraphics guiGraphics);
+	public abstract void renderSymbol(PoseStack poseStack);
 	
-	public void renderNumber(GuiGraphics guiGraphics, Minecraft minecraft)
+	public void renderNumber(PoseStack poseStack, Minecraft minecraft)
 	{
 		Font font = minecraft.font;
 		int j = getFGColor();
-		guiGraphics.drawCenteredString(font, symbolComponent(getSymbol()), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+		drawCenteredString(poseStack, font, symbolComponent(getSymbol()), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 	
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
+    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
-		updateRemapping();
-		this.isHovered = isMouseOver(mouseX, mouseY);
-		
 		Minecraft minecraft = Minecraft.getInstance();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderTexture(0, widgets);
@@ -158,26 +156,27 @@ public abstract class DHDSymbolButton extends DHDButton
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.enableDepthTest();
-		guiGraphics.blit(widgets, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+		this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
 		
 		if(isEngaged())
 		{
 			RenderSystem.setShaderTexture(0, overlay);
 			RenderSystem.setShaderColor(engagedColor.red(), engagedColor.green(), engagedColor.blue(), engagedColor.alpha());
-			guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
 		}
 		else if(this.isHoveredOrFocused())
 		{
 			RenderSystem.setShaderTexture(0, overlay);
 			RenderSystem.setShaderColor(hoverColor.red(), hoverColor.green(), hoverColor.blue(), hoverColor.alpha());
-			guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			this.blit(poseStack, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
 		}
 		
+		this.renderBg(poseStack, minecraft, mouseX, mouseY);
+		
 		if(ClientDHDConfig.dhd_symbols_numbers.get() == SGJourneyContainerScreen.isShiftDown())
-			renderNumber(guiGraphics, minecraft);
+			renderNumber(poseStack, minecraft);
 		else
-			renderSymbol(guiGraphics);
-		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
+			renderSymbol(poseStack);
 	}
 	
     private static Component symbolComponent(int index)
