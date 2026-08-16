@@ -19,10 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.*;
-import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.*;
 import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
@@ -96,6 +93,10 @@ public class BlockInit
 					.sound(SoundType.METAL).noOcclusion()));
 	
 	// DHDs
+	public static final RegistryObject<UniverseDHDBlock> UNIVERSE_DHD = registerDHDBlock("universe_dhd",
+		() -> new UniverseDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
+			.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
+	
 	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);

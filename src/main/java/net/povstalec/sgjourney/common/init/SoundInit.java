@@ -18,6 +18,9 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");
 
 	public static final RegistryObject<SoundEvent> IRIS_THUD = registerSoundEvent("iris_thud");
+	
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_ENTER = registerSoundEvent("universe_dhd_enter");
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_PRESS = registerSoundEvent("universe_dhd_press");
 
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
