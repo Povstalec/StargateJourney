@@ -442,13 +442,13 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	@Override
-	public long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}
 	
 	@Override
-	public long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
 		return Long.MAX_VALUE;
 	}
@@ -516,7 +516,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	}
 	
 	@Override
-	protected void outputEnergy(Direction outputDirection)
+	public void outputEnergy(Direction outputDirection)
 	{
 		ItemStack energyStack = energyItemHandler.getStackInSlot(0);
 		
@@ -605,7 +605,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					
 					level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 					
-					stargate.dhdEngageStargate();
+					if(stargate.isConnected())
+						stargate.dhdDisconnectStargate(this);
+					else
+						stargate.dhdEngageStargate(this);
 					stargate.updateDHD(this);
 					
 					if(REQUIRE_ENERGY)

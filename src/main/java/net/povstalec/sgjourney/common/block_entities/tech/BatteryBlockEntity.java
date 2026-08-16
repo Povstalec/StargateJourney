@@ -135,19 +135,19 @@ public abstract class BatteryBlockEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		protected long getCapacity()
+		public long getEnergyCapacity()
 		{
 			return CommonTechConfig.large_naquadah_battery_capacity.get();
 		}
 		
 		@Override
-		protected long getMaxReceive()
+		public long getMaxEnergyReceive()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}
 		
 		@Override
-		protected long getMaxExtract()
+		public long getMaxEnergyExtract()
 		{
 			return CommonTechConfig.large_naquadah_battery_max_transfer.get();
 		}
