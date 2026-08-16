@@ -13,7 +13,7 @@ public class UniverseDHDMenu extends AbstractDHDMenu<UniverseDHDEntity>
 	
 	public UniverseDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.UNIVERSE_DHD.get(), containerId, inventory, (UniverseDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		super(MenuInit.UNIVERSE_DHD.get(), containerId, inventory, (UniverseDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 
     public UniverseDHDMenu(int containerId, Inventory inventory, UniverseDHDEntity dhd)

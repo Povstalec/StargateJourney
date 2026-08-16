@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
@@ -305,6 +306,7 @@ public class TabInit
 					.displayItems((parameters, output) ->
 					{
 						output.accept(BlockInit.UNIVERSE_STARGATE.get());
+						output.accept(UniverseDHDBlock.universeCrystalSetup());
 						output.accept(BlockInit.MILKY_WAY_STARGATE.get());
 						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get())));
 						output.accept(MilkyWayDHDBlock.milkyWayCrystalSetup());
@@ -519,6 +521,7 @@ public class TabInit
 		if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(UniverseDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(MilkyWayDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
