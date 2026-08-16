@@ -275,7 +275,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage dhdEngageStargate()
+	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd)
 	{
 		if(!addressBuffer.canBeDialed())
 			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
@@ -292,7 +292,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			}
 		}
 		else
-			return super.dhdEngageStargate();
+			return super.dhdEngageStargate(dhd);
 	}
 	
 	public int getChevronPosition(int chevron)

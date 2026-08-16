@@ -605,7 +605,10 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 					
 					level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
 					
-					stargate.dhdEngageStargate();
+					if(stargate.isConnected())
+						stargate.dhdDisconnectStargate(this);
+					else
+						stargate.dhdEngageStargate(this);
 					stargate.updateDHD(this);
 					
 					if(REQUIRE_ENERGY)

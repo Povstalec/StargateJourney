@@ -606,7 +606,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
-	public StargateInfo.FeedbackMessage dhdEngageStargate() // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
+	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd) // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
 		return engageStargate();
 	}
@@ -832,6 +832,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.Feedback feedback, Object... additionalInfo)
 	{
 		return resetStargate(feedback.withInfo(additionalInfo));
+	}
+	
+	public StargateInfo.FeedbackMessage dhdDisconnectStargate(AbstractDHDEntity dhd)
+	{
+		return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 	}
 	
 	public StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback)
