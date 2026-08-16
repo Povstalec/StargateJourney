@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
@@ -22,7 +21,7 @@ public class UniverseDHDSymbolButton extends GenericDHDSymbolButton
 		
 		this.canonSymbol = canonSymbol;
 		
-		setTooltip(Tooltip.create(symbolComponent()));
+		setTooltip(symbolComponent());
 	}
 	
 	public UniverseDHDSymbolButton(int x, int y, UniverseDHDMenu menu, int screenWidth, int screenHeight, int symbol, int canonSymbol, DefaultButton defaultButton)
