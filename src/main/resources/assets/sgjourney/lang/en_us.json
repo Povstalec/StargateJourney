@@ -244,6 +244,7 @@
 	"block.sgjourney.classic_stargate_chevron_block": "Classic Stargate Chevron Block",
 	"block.sgjourney.classic_stargate_ring_block": "Classic Stargate Ring Block",
 	
+	"block.sgjourney.universe_dhd": "Universe DHD",
 	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
 	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
 	"block.sgjourney.classic_dhd": "Classic DHD",
@@ -793,6 +794,7 @@
 	"point_of_origin.sgjourney.pyramid": "Pyramid",
 	"point_of_origin.sgjourney.serpent": "Serpent",
 	"point_of_origin.sgjourney.pontem": "Pontem",
+	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	
 	"point_of_origin.sgjourney.pokeball": "Pokéball",
 	"point_of_origin.sgjourney.triforce": "Triforce",
@@ -1264,6 +1266,7 @@
 	"gui.sgjourney.dhd_symbols_numbers": "DHD Buttons",
 	"gui.sgjourney.symbols": "Symbols",
 	"gui.sgjourney.numbers": "Numbers",
+	"gui.sgjourney.universe_dhd_button_layout": "Universe DHD Layout",
 	"gui.sgjourney.milky_way_dhd_button_layout": "Milky Way DHD Layout",
 	"gui.sgjourney.pegasus_dhd_button_layout": "Pegasus DHD Layout",
 	"gui.sgjourney.classic_dhd_button_layout": "Classic DHD Layout",

@@ -40,10 +40,7 @@ import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffe
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
-import net.povstalec.sgjourney.client.screens.dhd.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.dhd.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.PegasusDHDScreen;
+import net.povstalec.sgjourney.client.screens.dhd.*;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.entities.Human;
@@ -233,7 +230,9 @@ public class StargateJourney
 			
         	MenuScreens.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
         	MenuScreens.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
-
+			
+			MenuScreens.register(MenuInit.UNIVERSE_DHD_CRYSTAL.get(), DHDCrystalScreen.Universe::new);
+			MenuScreens.register(MenuInit.UNIVERSE_DHD.get(), UniverseDHDScreen::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
 			MenuScreens.register(MenuInit.PEGASUS_DHD_CRYSTAL.get(), DHDCrystalScreen.Pegasus::new);
