@@ -30,7 +30,7 @@ public class BlockEntityInit
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<UniverseStargateEntity>> UNIVERSE_STARGATE = BLOCK_ENTITIES.register("universe_stargate",
             () -> BlockEntityType.Builder.of(UniverseStargateEntity::new, BlockInit.UNIVERSE_STARGATE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<UniverseDHDEntity>> UNIVERSE_DHD = BLOCK_ENTITIES.register("universe_dhd",
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<UniverseDHDEntity>> UNIVERSE_DHD = BLOCK_ENTITIES.register("universe_dhd",
 		() -> BlockEntityType.Builder.of(UniverseDHDEntity::new, BlockInit.UNIVERSE_DHD.get()).build(null));
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MilkyWayStargateEntity>> MILKY_WAY_STARGATE = BLOCK_ENTITIES.register("milky_way_stargate",

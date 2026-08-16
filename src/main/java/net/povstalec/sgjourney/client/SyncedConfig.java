@@ -1,12 +1,11 @@
 package net.povstalec.sgjourney.client;
 
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientboundUpdateConfigValuesPacket;
 
 /**
@@ -40,6 +39,6 @@ public class SyncedConfig
 	
 	public static void syncConfig(ServerPlayer player)
 	{
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundUpdateConfigValuesPacket());
+		PacketDistributor.sendToPlayer(player, new ClientboundUpdateConfigValuesPacket());
 	}
 }
