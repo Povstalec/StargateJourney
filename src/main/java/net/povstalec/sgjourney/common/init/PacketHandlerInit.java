@@ -28,7 +28,7 @@ public final class PacketHandlerInit
 		INSTANCE.messageBuilder(ClientboundUpdateConfigValuesPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 			.encoder(ClientboundUpdateConfigValuesPacket::encode)
 			.decoder(ClientboundUpdateConfigValuesPacket::new)
-			.consumerMainThread(ClientboundUpdateConfigValuesPacket::handle)
+			.consumer(ClientboundUpdateConfigValuesPacket::handle)
 			.add();
 		
 		INSTANCE.messageBuilder(ClientboundUpdatePlayerGravityPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)

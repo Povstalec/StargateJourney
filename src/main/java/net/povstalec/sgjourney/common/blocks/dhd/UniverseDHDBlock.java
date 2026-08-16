@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -98,7 +99,7 @@ public class UniverseDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
 						@Override
 						public Component getDisplayName()
 						{
-							return Component.translatable("screen.sgjourney.dhd");
+							return new TranslatableComponent("screen.sgjourney.dhd");
 						}
 						
 						@Override
@@ -107,7 +108,7 @@ public class UniverseDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
 							return new DHDCrystalMenu.Universe(windowId, playerInventory, dhd);
 						}
 					};
-					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+					NetworkHooks.openGui((ServerPlayer) player, containerProvider, dhd.getBlockPos());
 				}
 				else
         		{
@@ -116,7 +117,7 @@ public class UniverseDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
             			@Override
             			public Component getDisplayName() 
             			{
-            				return Component.translatable("screen.sgjourney.dhd");
+            				return new TranslatableComponent("screen.sgjourney.dhd");
             			}
             			
             			@Override
@@ -125,7 +126,7 @@ public class UniverseDHDBlock extends CrystalDHDBlock implements SimpleWaterlogg
             				return new UniverseDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+            		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         		}
         	}
         	else
