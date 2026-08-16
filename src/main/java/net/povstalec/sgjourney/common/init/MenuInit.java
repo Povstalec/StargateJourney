@@ -33,6 +33,11 @@ public class MenuInit
 	public static final DeferredHolder<MenuType<?>, MenuType<RingPanelMenu.Protected>> RING_PANEL_PROTECTED = registerMenuType(RingPanelMenu.Protected::new, "ring_panel_protected");
 	public static final DeferredHolder<MenuType<?>, MenuType<RingPanelMenu.Unprotected>> RING_PANEL_UNPROTECTED = registerMenuType(RingPanelMenu.Unprotected::new, "ring_panel_unprotected");
 	
+	public static final DeferredHolder<MenuType<?>, MenuType<UniverseDHDMenu>> UNIVERSE_DHD =
+		registerMenuType(UniverseDHDMenu::new, "universe_dhd");
+	public static final DeferredHolder<MenuType<?>, MenuType<DHDCrystalMenu.Universe>> UNIVERSE_DHD_CRYSTAL =
+		registerMenuType(DHDCrystalMenu.Universe::new, "universe_dhd_crystal");
+	
 	public static final DeferredHolder<MenuType<?>, MenuType<MilkyWayDHDMenu>> MILKY_WAY_DHD =
             registerMenuType(MilkyWayDHDMenu::new, "milky_way_dhd");
 	public static final DeferredHolder<MenuType<?>, MenuType<DHDCrystalMenu.MilkyWay>> MILKY_WAY_DHD_CRYSTAL =

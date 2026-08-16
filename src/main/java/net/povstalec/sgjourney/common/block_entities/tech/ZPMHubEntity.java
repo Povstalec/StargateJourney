@@ -159,19 +159,19 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	}
 	
 	@Override
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
 		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
 	}
 
 	@Override
-	public long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return 0;
 	}
 
 	@Override
-	public long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return CommonZPMConfig.zpm_hub_max_transfer.get();
 	}
@@ -198,14 +198,14 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 					{
 						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
-							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.getMaxDeplete(), true);
+							long simulatedOutputAmount = zpmEnergy.extractLongEnergy(this.getMaxEnergyDeplete(), true);
 							long simulatedReceiveAmount = sgjourneyEnergy.receiveZeroPointEnergy(simulatedOutputAmount, true);
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
 							sgjourneyEnergy.receiveZeroPointEnergy(simulatedReceiveAmount, false);
 						}
 						else if(CommonZPMConfig.other_mods_use_zero_point_energy.get())
 						{
-							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.getMaxDeplete()), true);
+							int simulatedOutputAmount = zpmEnergy.extractEnergy(SGJourneyEnergy.regularEnergy(this.getMaxEnergyDeplete()), true);
 							int simulatedReceiveAmount = otherEnergy.receiveEnergy(simulatedOutputAmount, true);
 							
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);

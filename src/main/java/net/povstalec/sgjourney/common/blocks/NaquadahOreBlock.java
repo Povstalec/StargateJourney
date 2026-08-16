@@ -20,12 +20,6 @@ public class NaquadahOreBlock extends ExplosiveBlock
 		this.registerDefaultState(this.stateDefinition.any().setValue(UNSTABLE, false));
 	}
 	
-	@Override
-	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
-	{
-		builder.add(UNSTABLE);
-	}
-	
 	public void transform(BlockState state, ServerLevel level, BlockPos pos, int excitement)
 	{
 		level.setBlock(pos, naquadriaBlock.get().defaultBlockState().setValue(UNSTABLE, state.getValue(UNSTABLE)).setValue(NaquadriaOreBlock.EXCITEMENT, excitement), Block.UPDATE_ALL);

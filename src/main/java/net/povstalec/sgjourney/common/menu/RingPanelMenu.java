@@ -42,7 +42,7 @@ public abstract class RingPanelMenu extends InventoryMenu<GoauldRingPanelEntity>
 	
 	public long getMaxEnergy()
 	{
-		return this.blockEntity.energyStorage.getTrueMaxEnergyStored();
+		return this.blockEntity.getEnergyCapacity();
 	}
 	
 	public long getEnergyTarget()

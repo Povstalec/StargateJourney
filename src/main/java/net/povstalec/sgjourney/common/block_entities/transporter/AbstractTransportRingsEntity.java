@@ -30,11 +30,9 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transp
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -284,7 +282,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	protected boolean isCorrectEnergySide(Direction side)
+	public boolean isCorrectEnergySide(Direction side)
 	{
 		return getBlockState().hasProperty(AbstractTransportRingsBlock.FACING) && side != getBlockState().getValue(AbstractTransportRingsBlock.FACING);
 	}
@@ -341,9 +339,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	protected SGJourneyEnergy createEnergyStorage()
+	public SGJourneyEnergy createEnergyStorage()
 	{
-		return new SGJourneyEnergy(this.getCapacity(), this.getMaxReceive(), this.getMaxExtract())
+		return new SGJourneyEnergy(this.getEnergyCapacity(), this.getMaxEnergyReceive(), this.getMaxEnergyExtract())
 		{
 			public long receiveLongEnergy(long maxReceive, boolean simulate)
 			{
@@ -739,13 +737,13 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	public long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}
 	
 	@Override
-	public long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
 		return Long.MAX_VALUE;
 	}

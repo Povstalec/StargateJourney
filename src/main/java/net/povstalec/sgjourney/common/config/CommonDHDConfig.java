@@ -7,6 +7,11 @@ public class CommonDHDConfig
 	public static ModConfigSpec.LongValue energy_crystal_energy_target_increase;
 	public static ModConfigSpec.LongValue advanced_energy_crystal_energy_target_increase;
 	
+	public static ModConfigSpec.LongValue universe_dhd_energy_buffer_capacity;
+	public static ModConfigSpec.LongValue universe_dhd_max_energy_receive;
+	public static ModConfigSpec.LongValue universe_dhd_max_energy_extract;
+	public static ModConfigSpec.LongValue universe_dhd_button_press_energy_cost;
+	
 	public static ModConfigSpec.LongValue milky_way_dhd_energy_buffer_capacity;
 	public static ModConfigSpec.LongValue milky_way_dhd_max_energy_receive;
 	public static ModConfigSpec.LongValue milky_way_dhd_max_energy_extract;
@@ -34,56 +39,74 @@ public class CommonDHDConfig
 		
 		
 		
+		universe_dhd_energy_buffer_capacity = server
+			.comment("Capacity of the energy buffer inside the Universe DHD")
+			.defineInRange("server.universe_dhd_energy_buffer_capacity", 300000, 0L, Long.MAX_VALUE);
+		
+		universe_dhd_max_energy_receive = server
+			.comment("Maximum amount of energy that can be transferred to the Universe DHD in one tick")
+			.defineInRange("server.universe_dhd_max_energy_receive", 100000L, 0L, Long.MAX_VALUE);
+		
+		universe_dhd_max_energy_extract = server
+			.comment("Maximum amount of energy that can be transferred from the Universe DHD in one tick")
+			.defineInRange("server.universe_dhd_max_energy_extract", 10000000L, 0L, Long.MAX_VALUE);
+		
+		universe_dhd_button_press_energy_cost = server
+			.comment("Energy depleted by pressing a button on the Universe DHD")
+			.defineInRange("server.universe_dhd_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
+		
+		
+		
 		milky_way_dhd_energy_buffer_capacity = server
-				.comment("Capacity of the energy buffer inside the DHD")
+				.comment("Capacity of the energy buffer inside the Milky Way DHD")
 				.defineInRange("server.milky_way_dhd_energy_buffer_capacity", 300000, 0L, Long.MAX_VALUE);
 		
 		milky_way_dhd_max_energy_receive = server
-				.comment("Maximum amount of energy that can be transferred to the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred to the Milky Way DHD in one tick")
 				.defineInRange("server.milky_way_dhd_max_energy_receive", 100000L, 0L, Long.MAX_VALUE);
 		
 		milky_way_dhd_max_energy_extract = server
-				.comment("Maximum amount of energy that can be transferred from the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred from the Milky Way DHD in one tick")
 				.defineInRange("server.milky_way_dhd_max_energy_extract", 10000000L, 0L, Long.MAX_VALUE);
 		
 		milky_way_dhd_button_press_energy_cost = server
-				.comment("Energy depleted by pressing a button on the DHD")
+				.comment("Energy depleted by pressing a button on the Milky Way DHD")
 				.defineInRange("server.milky_way_dhd_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
 		
 		
 		
 		pegasus_dhd_energy_buffer_capacity = server
-				.comment("Capacity of the energy buffer inside the DHD")
+				.comment("Capacity of the energy buffer inside the Pegasus DHD")
 				.defineInRange("server.pegasus_dhd_energy_buffer_capacity", 500000, 0L, Long.MAX_VALUE);
 		
 		pegasus_dhd_max_energy_receive = server
-				.comment("Maximum amount of energy that can be transferred to the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred to the Pegasus DHD in one tick")
 				.defineInRange("server.pegasus_dhd_max_energy_receive", 150000L, 0L, Long.MAX_VALUE);
 		
 		pegasus_dhd_max_energy_extract = server
-				.comment("Maximum amount of energy that can be transferred from the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred from the Pegasus DHD in one tick")
 				.defineInRange("server.pegasus_dhd_max_energy_extract", 100000000L, 0L, Long.MAX_VALUE);
 		
 		pegasus_dhd_button_press_energy_cost = server
-				.comment("Energy depleted by pressing a button on the DHD")
+				.comment("Energy depleted by pressing a button on the Pegasus DHD")
 				.defineInRange("server.pegasus_dhd_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
 		
 		
 		
 		classic_dhd_energy_buffer_capacity = server
-				.comment("Capacity of the energy buffer inside the DHD")
+				.comment("Capacity of the energy buffer inside the Classic DHD")
 				.defineInRange("server.classic_dhd_energy_buffer_capacity", 300000, 0L, Long.MAX_VALUE);
 		
 		classic_dhd_max_energy_receive = server
-				.comment("Maximum amount of energy that can be transferred to the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred to the DClassic HD in one tick")
 				.defineInRange("server.classic_dhd_max_energy_receive", 100000L, 0L, Long.MAX_VALUE);
 		
 		classic_dhd_max_energy_extract = server
-				.comment("Maximum amount of energy that can be transferred from the DHD in one tick")
+				.comment("Maximum amount of energy that can be transferred from the Classic DHD in one tick")
 				.defineInRange("server.classic_dhd_max_energy_extract", 5000000L, 0L, Long.MAX_VALUE);
 		
 		classic_dhd_button_press_energy_cost = server
-				.comment("Energy depleted by pressing a button on the DHD")
+				.comment("Energy depleted by pressing a button on the Classic DHD")
 				.defineInRange("server.classic_dhd_button_press_energy_cost", 5000L, 0L, Long.MAX_VALUE);
 	}
 }

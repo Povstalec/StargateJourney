@@ -37,6 +37,8 @@ public class ConfigScreenClientDHD extends Screen
 		ConfigList configList = new ConfigList(minecraft, this.width,
 				this.height - OPTIONS_LIST_TOP_HEIGHT - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_TOP_HEIGHT, OPTIONS_LIST_ITEM_HEIGHT);
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
+			Component.translatable("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.universe_dhd_button_layout"), this.width, ClientDHDConfig.universe_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));

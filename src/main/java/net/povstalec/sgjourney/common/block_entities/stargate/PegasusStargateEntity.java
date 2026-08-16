@@ -212,6 +212,10 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
 		
+		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
+			return disconnectStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
+		
 		canEngage = canEngageStargate ? CanEngage.READY : CanEngage.NO;
 		
 		if(isSymbolOutOfBounds(symbol))
@@ -273,7 +277,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage dhdEngageStargate()
+	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd)
 	{
 		if(!addressBuffer.canBeDialed())
 			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
@@ -290,7 +294,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 			}
 		}
 		else
-			return super.dhdEngageStargate();
+			return super.dhdEngageStargate(dhd);
 	}
 	
 	public int getChevronPosition(int chevron)
@@ -325,7 +329,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+					if(!super.directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 				else
@@ -341,7 +345,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength())
+					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 			}

@@ -23,6 +23,11 @@ public final class PacketHandlerInit
 		
 		// Player
 		registrar.playToClient(
+				ClientboundUpdateConfigValuesPacket.TYPE,
+				ClientboundUpdateConfigValuesPacket.STREAM_CODEC,
+				ClientboundUpdateConfigValuesPacket::handle);
+		
+		registrar.playToClient(
 				ClientboundUpdatePlayerGravityPacket.TYPE,
 				ClientboundUpdatePlayerGravityPacket.STREAM_CODEC,
 				ClientboundUpdatePlayerGravityPacket::handle);

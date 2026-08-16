@@ -127,6 +127,14 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 	
 	
 	
+	public static class Universe extends DHDCrystalScreen<DHDCrystalMenu.Universe>
+	{
+		public Universe(DHDCrystalMenu.Universe menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/universe/universe_dhd_crystal_gui.png"));
+		}
+	}
+	
 	public static class MilkyWay extends DHDCrystalScreen<DHDCrystalMenu.MilkyWay>
 	{
 		public MilkyWay(DHDCrystalMenu.MilkyWay menu, Inventory playerInventory, Component title)
