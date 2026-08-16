@@ -127,6 +127,10 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
 		
+		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
+			return disconnectStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
+		
 		canEngage = canEngageStargate;
 		
 		if(isSymbolOutOfBounds(symbol))
@@ -142,8 +146,6 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			else
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
-		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
-			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
 		
 		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
 		
