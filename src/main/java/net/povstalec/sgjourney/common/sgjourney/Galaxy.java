@@ -278,7 +278,7 @@ public class Galaxy extends ForgeRegistryEntry<Galaxy>
 	public static int getOrGenerateSymbolPrefix(@Nullable Galaxy galaxy, long seed)
 	{
 		if(galaxy != null)
-			return galaxy.type.size();
+			return galaxy.symbolPrefix;
 		
 		return new Random(seed).nextInt(1, Address.ADDRESS_GENERATION_SYMBOLS);
 	}

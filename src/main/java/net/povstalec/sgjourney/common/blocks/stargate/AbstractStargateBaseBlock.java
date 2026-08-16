@@ -118,7 +118,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			        
 			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(variant));
 					
-					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
+					if(stargateVariant.isPresent() && !stargate.canApplyVariant(stargateVariant.get()))
 					{
 						player.displayClientMessage(new TranslatableComponent("block.sgjourney.stargate.incorrect_stargate_type"), true);
 						return true;

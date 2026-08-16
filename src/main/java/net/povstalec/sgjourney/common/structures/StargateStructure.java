@@ -4,6 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -18,6 +21,7 @@ import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,6 +54,9 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 		private final boolean primary;
 		private final boolean isProtected;
 		
+		@Nullable
+		private final ResourceKey<StargateVariant> variant;
+		
 		public static final Codec<StargateModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Address.Randomizable.codec(Address.Immutable.CODEC).optionalFieldOf("address").forGetter(modifiers -> Optional.ofNullable(modifiers.address)),
 				
@@ -59,11 +66,13 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 				Codec.BOOL.optionalFieldOf("local_point_of_origin").forGetter(modifiers -> Optional.of(modifiers.localPointOfOrigin)),
 				
 				Codec.BOOL.optionalFieldOf("primary").forGetter(modifiers -> Optional.of(modifiers.primary)),
-				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
+				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected)),
+			
+			ResourceKey.codec(StargateVariant.REGISTRY_KEY).optionalFieldOf("variant").forGetter(modifiers -> Optional.of(modifiers.variant))
 		).apply(instance, StargateModifiers::new));
 		
 		public StargateModifiers(Optional<Address.Randomizable<Address.Immutable>> address, Optional<Boolean> displayID, Optional<Boolean> upgraded,
-								 Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary, Optional<Boolean> isProtected)
+								 Optional<Boolean> localPointOfOrigin, Optional<Boolean> primary, Optional<Boolean> isProtected, Optional<ResourceKey<StargateVariant>> variant)
 		{
 			this.address = address.orElse(null);
 			
@@ -74,6 +83,8 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 			
 			this.primary = primary.orElse(false);
 			this.isProtected = isProtected.orElse(false);
+			
+			this.variant = variant.orElse(null);
 		}
 		
 		public void modifyStargate(WorldGenLevel level, Random randomSource, AbstractStargateEntity<?> stargate)
@@ -100,6 +111,16 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 			
 			if(isProtected)
 				stargate.setProtected(true);
+			
+			if(variant != null)
+			{
+				RegistryAccess registries = level.getServer().registryAccess();
+				Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
+				
+				Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(variant));
+				if(stargateVariant.isPresent() && stargate.canApplyVariant(stargateVariant.get()))
+					stargate.setVariant(variant.location());
+			}
 		}
 	}
 	
@@ -110,7 +131,7 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 		private final boolean isProtected;
 		
 		public static final Codec<DHDModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.ofNullable(modifiers.isProtected))
+				Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
 		).apply(instance, DHDModifiers::new));
 		
 		public DHDModifiers(Optional<Boolean> isProtected)

@@ -29,6 +29,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
@@ -306,7 +307,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	//============================================================================================
 	
 	@Override
-	protected void energyChanged(long difference, boolean simulate)
+	public void energyChanged(long difference, boolean simulate)
 	{
 		// If energy was 0 but now isn't, update buttons
 		// If energy wasn't 0 but now is, update buttons
@@ -316,25 +317,25 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	}
 	
 	@Override
-	protected long getCapacity()
+	public long getEnergyCapacity()
 	{
-		return CommonTransporterConfig.goauld_ring_panel_energy_capacity.get();
+		return level != null && level.isClientSide() ? SyncedConfig.goauldRingPanelEnergyCapacity : CommonTransporterConfig.goauld_ring_panel_energy_capacity.get();
 	}
 	
 	@Override
-	protected long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonTransporterConfig.goauld_ring_panel_max_energy_receive.get();
 	}
 	
 	@Override
-	protected long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}
 	
 	@Override
-	protected long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
 		return CommonTransporterConfig.goauld_ring_panel_max_energy_extract.get();
 	}

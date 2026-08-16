@@ -8,10 +8,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.SlotItemHandler;
-import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.*;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
@@ -75,7 +72,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	
 	public long getMaxEnergy()
 	{
-		return this.blockEntity.energyStorage.getTrueMaxEnergyStored();
+		return this.blockEntity.getEnergyCapacity();
 	}
 	
 	public boolean enableAdvancedProtocols()
@@ -122,6 +119,25 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	}
 	
 	
+	
+	public static class Universe extends DHDCrystalMenu<UniverseDHDEntity>
+	{
+		public Universe(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (UniverseDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		}
+		
+		public Universe(int containerId, Inventory inventory, UniverseDHDEntity blockEntity)
+		{
+			super(MenuInit.UNIVERSE_DHD_CRYSTAL.get(), containerId, inventory, blockEntity);
+		}
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.UNIVERSE_DHD.get());
+		}
+	}
 	
 	public static class MilkyWay extends DHDCrystalMenu<MilkyWayDHDEntity>
 	{

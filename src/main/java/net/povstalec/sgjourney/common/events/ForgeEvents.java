@@ -46,6 +46,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
@@ -201,7 +202,10 @@ public class ForgeEvents
 		}
 		
 		if(!player.getLevel().isClientSide())
+		{
 			SpaceLocation.updatePlayerClientGravity((ServerPlayer) player);
+			SyncedConfig.syncConfig((ServerPlayer) player);
+		}
 	}
 	
 	@SubscribeEvent

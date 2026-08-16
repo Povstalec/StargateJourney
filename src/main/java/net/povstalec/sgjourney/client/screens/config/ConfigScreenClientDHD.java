@@ -39,6 +39,8 @@ public class ConfigScreenClientDHD extends Screen
 				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
 		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.dhd_symbols_numbers"), this.width, ClientDHDConfig.dhd_symbols_numbers,
 				new TranslatableComponent("gui.sgjourney.symbols").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.numbers").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.universe_dhd_button_layout"), this.width, ClientDHDConfig.universe_dhd_canon_button_layout,
+			new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.milky_way_dhd_button_layout"), this.width, ClientDHDConfig.milky_way_dhd_canon_button_layout,
 				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.pegasus_dhd_button_layout"), this.width, ClientDHDConfig.pegasus_dhd_canon_button_layout,

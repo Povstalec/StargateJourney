@@ -8,6 +8,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 import java.util.Random;
@@ -22,6 +23,14 @@ public class ExplosiveBlock extends Block
 	{
 		super(properties);
 		this.radius = radius;
+		
+		this.registerDefaultState(this.stateDefinition.any().setValue(UNSTABLE, false));
+	}
+	
+	@Override
+	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
+	{
+		builder.add(UNSTABLE);
 	}
 	
 	@Override

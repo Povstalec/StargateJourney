@@ -99,7 +99,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	 * @param side Direction from which the Block Entity is being accessed
 	 * @return True if the direction is a valid one for accessing energy, otherwise false
 	 */
-	protected boolean isCorrectEnergySide(Direction side)
+	public boolean isCorrectEnergySide(Direction side)
 	{
 		return true;
 	}
@@ -107,7 +107,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	/**
 	 * @return True if this Block Entity is capable of receiving energy from a Zero Point Module, otherwise false
 	 */
-	protected boolean canReceiveZeroPointEnergy()
+	public boolean canReceiveZeroPointEnergy()
 	{
 		return CommonZPMConfig.tech_uses_zero_point_energy.get();
 	}
@@ -115,27 +115,27 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	/**
 	 * @return The maximum amount of energy this Block Entity can hold inside at any given time
 	 */
-	protected abstract long getCapacity();
+	public abstract long getEnergyCapacity();
 	
 	/**
 	 * @return The maximum amount of energy this Block Entity can receive in a single tick from other Energy Storages
 	 */
-	protected abstract long getMaxReceive();
+	public abstract long getMaxEnergyReceive();
 	
 	/**
 	 * @return The maximum amount of energy that can be extracted from this Block Entity in a single tick by other Energy Storages
 	 */
-	protected abstract long getMaxExtract();
+	public abstract long getMaxEnergyExtract();
 	
 	/**
-	 * @return The amount of energy that can be depleted from this Block Entity in a single tick (distinct from {@link #getMaxExtract()})
+	 * @return The amount of energy that can be depleted from this Block Entity in a single tick (distinct from {@link #getMaxEnergyExtract()})
 	 */
-	protected long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
-		return getMaxExtract();
+		return getMaxEnergyExtract();
 	}
 	
-	protected void energyChanged(long difference, boolean simulate)
+	public void energyChanged(long difference, boolean simulate)
 	{
 		if(!simulate)
 		{
@@ -145,9 +145,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		}
 	}
 	
-	protected SGJourneyEnergy createEnergyStorage()
+	public SGJourneyEnergy createEnergyStorage()
 	{
-		return new SGJourneyEnergy(this.getCapacity(), this.getMaxReceive(), this.getMaxExtract())
+		return new SGJourneyEnergy(this.getEnergyCapacity(), this.getMaxEnergyReceive(), this.getMaxEnergyExtract())
 		{
 			@Override
 			public long receiveZeroPointEnergy(long maxReceive, boolean simulate)
@@ -167,15 +167,15 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
-	protected void generateEnergy(long energyGenerated)
+	public void generateEnergy(long energyGenerated)
 	{
 		long moreEnergy = energyStorage.getTrueEnergyStored() + energyGenerated;
 		
-		if(this.getCapacity() >= moreEnergy)
+		if(this.getEnergyCapacity() >= moreEnergy)
 			this.energyStorage.setEnergy(moreEnergy);
 	}
 	
-	protected void drainEnergyStorage(IEnergyStorage energyStorage)
+	public void drainEnergyStorage(IEnergyStorage energyStorage)
 	{
 		if(!energyStorage.canExtract())
 			return;
@@ -198,7 +198,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		}
 	}
 	
-	protected void fillEnergyStorage(IEnergyStorage energyStorage)
+	public void fillEnergyStorage(IEnergyStorage energyStorage)
 	{
 		if(!energyStorage.canReceive())
 			return;
@@ -221,7 +221,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 		}
 	}
 	
-	protected void outputEnergy(Direction outputDirection)
+	public void outputEnergy(Direction outputDirection)
 	{
 		if(outputDirection == null)
 			return;

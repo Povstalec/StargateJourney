@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.TransporterInit;
@@ -17,13 +18,13 @@ public class GoauldTransportRingsEntity extends AbstractTransportRingsEntity<Goa
 	}
 	
 	@Override
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
-		return CommonTransporterConfig.goauld_transport_rings_energy_capacity.get();
+		return level != null && level.isClientSide() ? SyncedConfig.goauldTransportRingsEnergyCapacity : CommonTransporterConfig.goauld_transport_rings_energy_capacity.get();
 	}
 	
 	@Override
-	public long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonTransporterConfig.goauld_transport_rings_max_energy_receive.get();
 	}
