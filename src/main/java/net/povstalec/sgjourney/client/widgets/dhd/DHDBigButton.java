@@ -110,11 +110,19 @@ public class DHDBigButton extends DHDButton
 				((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
 	}
 	
+	public static final class Universe extends DHDBigButton
+	{
+		public Universe(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
+		{
+			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/universe/universe_dhd_big_white_button.png"));
+		}
+	}
+	
 	public static final class MilkyWay extends DHDBigButton
 	{
 		public MilkyWay(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
-			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/milky_way/milky_way_dhd_big_red_button.png"));
+			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/milky_way/milky_way_dhd_big_red_button.png"));
 		}
 	}
 	
@@ -122,7 +130,7 @@ public class DHDBigButton extends DHDButton
 	{
 		public Pegasus(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
-			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_big_blue_button.png"));
+			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_big_blue_button.png"));
 		}
 	}
 	
@@ -130,7 +138,7 @@ public class DHDBigButton extends DHDButton
 	{
 		public Classic(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
 		{
-			super(x, y, menu, press, new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/classic/classic_dhd_big_red_button.png"));
+			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_big_red_button.png"));
 		}
 	}
 }

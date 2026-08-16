@@ -19,6 +19,6 @@ public abstract class EnergyBlockMenu<T extends EnergyBlockEntity> extends Inven
 	
 	public long getEnergyCapacity()
 	{
-		return this.blockEntity.energyStorage.getTrueMaxEnergyStored();
+		return this.blockEntity.getEnergyCapacity();
 	}
 }

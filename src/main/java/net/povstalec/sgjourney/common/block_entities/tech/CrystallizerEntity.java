@@ -8,6 +8,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
@@ -56,19 +57,19 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity<Crystallizing
 	//============================================================================================
 	
 	@Override
-	protected long getCapacity()
+	public long getEnergyCapacity()
 	{
-		return CommonTechConfig.crystallizer_energy_capacity.get();
+		return level != null && level.isClientSide() ? SyncedConfig.crystallizerEnergyCapacity : CommonTechConfig.crystallizer_energy_capacity.get();
 	}
 	
 	@Override
-	protected long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonTechConfig.crystallizer_max_energy_receive.get();
 	}
 	
 	@Override
-	protected long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}

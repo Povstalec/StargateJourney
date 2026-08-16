@@ -6,6 +6,7 @@ public class ClientDHDConfig
 {
 	public static SGJourneyConfigValue.BooleanValue dhd_symbols_numbers;
 	
+	public static SGJourneyConfigValue.BooleanValue universe_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue milky_way_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue pegasus_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue classic_dhd_canon_button_layout;
@@ -17,6 +18,10 @@ public class ClientDHDConfig
 				"If true, DHD buttons will render symbols by default, otherwise they'll be render numbers by default");
 		
 		
+		
+		universe_dhd_canon_button_layout = new SGJourneyConfigValue.BooleanValue(client, "client.universe_dhd_canon_button_layout",
+				false,
+				"If true, Universe DHD symbol positions won't be ordered and instead be based on their canon positions");
 		
 		milky_way_dhd_canon_button_layout = new SGJourneyConfigValue.BooleanValue(client, "client.milky_way_dhd_canon_button_layout",
 				false,

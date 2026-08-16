@@ -253,6 +253,8 @@ public class Universe extends SavedData
 			SpaceLocation spaceLocation = SpaceLocation.fromDimensionNullable(dimension);
 			if(spaceLocation == null) // No Space Location registered for this Dimension yet
 				SpaceLocation.addSpaceLocation(dimension, SpaceLocation.createNewSpaceLocation(server, dimension));
+			else if(spaceLocation.getTemplateInfo() != null)
+				throw new RuntimeException("Space Location Template " + dimension.location() + " can't have the same name as an existing Dimension!");
 			
 		}
 		StargateJourney.LOGGER.info("Address Regions generated");
@@ -348,7 +350,7 @@ public class Universe extends SavedData
 	
 	public static ResourceKey<AddressRegion> designationToResourceKey(String designation)
 	{
-		return Conversion.locationToAddressRegionKey(new ResourceLocation(StargateJourney.MODID, designation.toLowerCase()));
+		return Conversion.locationToAddressRegionKey(StargateJourney.sgjourneyLocation(designation.toLowerCase()));
 	}
 	
 	public long generateRandomAddressSeed(String name)
