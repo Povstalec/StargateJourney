@@ -1,202 +1,173 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkDirection;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.povstalec.sgjourney.StargateJourney;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.povstalec.sgjourney.common.packets.*;
 
 public final class PacketHandlerInit
 {
-	private static final String PROTOCOL_VERSION = "1";
+	//============================================================================================
+	//****************************************Registering*****************************************
+	//============================================================================================
 	
-	public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(new ResourceLocation(StargateJourney.MODID, "main_network"), 
-			() -> PROTOCOL_VERSION, PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
-	
-	private PacketHandlerInit(){}
-	
-	public static void register()
+	@SubscribeEvent
+	public static void registerPackets(final RegisterPayloadHandlersEvent event)
 	{
-		int index = 0;
+		// Sets the current network version
+		final PayloadRegistrar registrar = event.registrar("1");
 		
 		//============================================================================================
 		//****************************************Client-bound****************************************
 		//============================================================================================
 		
 		// Player
-		INSTANCE.messageBuilder(ClientboundUpdateConfigValuesPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-			.encoder(ClientboundUpdateConfigValuesPacket::encode)
-			.decoder(ClientboundUpdateConfigValuesPacket::new)
-			.consumerMainThread(ClientboundUpdateConfigValuesPacket::handle)
-			.add();
+		registrar.playToClient(
+				ClientboundUpdateConfigValuesPacket.TYPE,
+				ClientboundUpdateConfigValuesPacket.STREAM_CODEC,
+				ClientboundUpdateConfigValuesPacket::handle);
 		
-		INSTANCE.messageBuilder(ClientboundUpdatePlayerGravityPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundUpdatePlayerGravityPacket::encode)
-				.decoder(ClientboundUpdatePlayerGravityPacket::new)
-				.consumerMainThread(ClientboundUpdatePlayerGravityPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundUpdatePlayerGravityPacket.TYPE,
+				ClientboundUpdatePlayerGravityPacket.STREAM_CODEC,
+				ClientboundUpdatePlayerGravityPacket::handle);
 		
 		// Screen opening
-		INSTANCE.messageBuilder(ClientboundDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundDialerOpenScreenPacket::encode)
-				.decoder(ClientboundDialerOpenScreenPacket::new)
-				.consumerMainThread(ClientboundDialerOpenScreenPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundDialerOpenScreenPacket.TYPE,
+				ClientboundDialerOpenScreenPacket.STREAM_CODEC,
+				ClientboundDialerOpenScreenPacket::handle);
 		
-		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundGDOOpenScreenPacket::encode)
-				.decoder(ClientboundGDOOpenScreenPacket::new)
-				.consumerMainThread(ClientboundGDOOpenScreenPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundGDOOpenScreenPacket.TYPE,
+				ClientboundGDOOpenScreenPacket.STREAM_CODEC,
+				ClientboundGDOOpenScreenPacket::handle);
 		
-		INSTANCE.messageBuilder(ClientboundCrystalComputerOpenMainScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundCrystalComputerOpenMainScreenPacket::encode)
-				.decoder(ClientboundCrystalComputerOpenMainScreenPacket::new)
-				.consumerMainThread(ClientboundCrystalComputerOpenMainScreenPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundCrystalComputerOpenMainScreenPacket.TYPE,
+				ClientboundCrystalComputerOpenMainScreenPacket.STREAM_CODEC,
+				ClientboundCrystalComputerOpenMainScreenPacket::handle);
 		
-		INSTANCE.messageBuilder(ClientboundCrystalComputerOpenSaveScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundCrystalComputerOpenSaveScreenPacket::encode)
-				.decoder(ClientboundCrystalComputerOpenSaveScreenPacket::new)
-				.consumerMainThread(ClientboundCrystalComputerOpenSaveScreenPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundCrystalComputerOpenSaveScreenPacket.TYPE,
+				ClientboundCrystalComputerOpenSaveScreenPacket.STREAM_CODEC,
+				ClientboundCrystalComputerOpenSaveScreenPacket::handle);
 		
-		INSTANCE.messageBuilder(ClientboundArcheologistNotebookOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundArcheologistNotebookOpenScreenPacket::encode)
-				.decoder(ClientboundArcheologistNotebookOpenScreenPacket::new)
-				.consumerMainThread(ClientboundArcheologistNotebookOpenScreenPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundArcheologistNotebookOpenScreenPacket.TYPE,
+				ClientboundArcheologistNotebookOpenScreenPacket.STREAM_CODEC,
+				ClientboundArcheologistNotebookOpenScreenPacket::handle);
 		
 		// Alien Tech
 		
 		// Stargates
-		INSTANCE.messageBuilder(ClientboundStargateParticleSpawnPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientboundStargateParticleSpawnPacket::encode)
-				.decoder(ClientboundStargateParticleSpawnPacket::new)
-				.consumerMainThread(ClientboundStargateParticleSpawnPacket::handle)
-				.add();
+		registrar.playToClient(
+				ClientboundStargateParticleSpawnPacket.TYPE,
+				ClientboundStargateParticleSpawnPacket.STREAM_CODEC,
+				ClientboundStargateParticleSpawnPacket::handle);
+		
 		
 		//============================================================================================
 		//*******************************************Sounds*******************************************
 		//============================================================================================
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.OpenWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.OpenWormhole::encode)
-				.decoder(ClientBoundSoundPackets.OpenWormhole::new)
-				.consumerMainThread(ClientBoundSoundPackets.OpenWormhole::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.OpenWormhole.TYPE,
+				ClientBoundSoundPackets.OpenWormhole.STREAM_CODEC,
+				ClientBoundSoundPackets.OpenWormhole::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.IdleWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.IdleWormhole::encode)
-				.decoder(ClientBoundSoundPackets.IdleWormhole::new)
-				.consumerMainThread(ClientBoundSoundPackets.IdleWormhole::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.IdleWormhole.TYPE,
+				ClientBoundSoundPackets.IdleWormhole.STREAM_CODEC,
+				ClientBoundSoundPackets.IdleWormhole::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.CloseWormhole.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.CloseWormhole::encode)
-				.decoder(ClientBoundSoundPackets.CloseWormhole::new)
-				.consumerMainThread(ClientBoundSoundPackets.CloseWormhole::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.CloseWormhole.TYPE,
+				ClientBoundSoundPackets.CloseWormhole.STREAM_CODEC,
+				ClientBoundSoundPackets.CloseWormhole::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.IrisThud.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.IrisThud::encode)
-				.decoder(ClientBoundSoundPackets.IrisThud::new)
-				.consumerMainThread(ClientBoundSoundPackets.IrisThud::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.IrisThud.TYPE,
+				ClientBoundSoundPackets.IrisThud.STREAM_CODEC,
+				ClientBoundSoundPackets.IrisThud::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.Chevron.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.Chevron::encode)
-				.decoder(ClientBoundSoundPackets.Chevron::new)
-				.consumerMainThread(ClientBoundSoundPackets.Chevron::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.Chevron.TYPE,
+				ClientBoundSoundPackets.Chevron.STREAM_CODEC,
+				ClientBoundSoundPackets.Chevron::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.Fail.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.Fail::encode)
-				.decoder(ClientBoundSoundPackets.Fail::new)
-				.consumerMainThread(ClientBoundSoundPackets.Fail::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.Fail.TYPE,
+				ClientBoundSoundPackets.Fail.STREAM_CODEC,
+				ClientBoundSoundPackets.Fail::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.StargateRotation.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.StargateRotation::encode)
-				.decoder(ClientBoundSoundPackets.StargateRotation::new)
-				.consumerMainThread(ClientBoundSoundPackets.StargateRotation::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.StargateRotation.TYPE,
+				ClientBoundSoundPackets.StargateRotation.STREAM_CODEC,
+				ClientBoundSoundPackets.StargateRotation::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.UniverseStart.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.UniverseStart::encode)
-				.decoder(ClientBoundSoundPackets.UniverseStart::new)
-				.consumerMainThread(ClientBoundSoundPackets.UniverseStart::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.UniverseStart.TYPE,
+				ClientBoundSoundPackets.UniverseStart.STREAM_CODEC,
+				ClientBoundSoundPackets.UniverseStart::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.RotationStartup.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.RotationStartup::encode)
-				.decoder(ClientBoundSoundPackets.RotationStartup::new)
-				.consumerMainThread(ClientBoundSoundPackets.RotationStartup::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.RotationStartup.TYPE,
+				ClientBoundSoundPackets.RotationStartup.STREAM_CODEC,
+				ClientBoundSoundPackets.RotationStartup::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.RotationStop.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-				.encoder(ClientBoundSoundPackets.RotationStop::encode)
-				.decoder(ClientBoundSoundPackets.RotationStop::new)
-				.consumerMainThread(ClientBoundSoundPackets.RotationStop::handle)
-				.add();
+		registrar.playToClient(
+				ClientBoundSoundPackets.RotationStop.TYPE,
+				ClientBoundSoundPackets.RotationStop.STREAM_CODEC,
+				ClientBoundSoundPackets.RotationStop::handle);
 		
-		INSTANCE.messageBuilder(ClientBoundSoundPackets.TransportRingsTransport.class, index++, NetworkDirection.PLAY_TO_CLIENT)
-			.encoder(ClientBoundSoundPackets.TransportRingsTransport::encode)
-			.decoder(ClientBoundSoundPackets.TransportRingsTransport::new)
-			.consumerMainThread(ClientBoundSoundPackets.TransportRingsTransport::handle)
-			.add();
+		registrar.playToClient(
+			ClientBoundSoundPackets.TransportRingsTransport.TYPE,
+			ClientBoundSoundPackets.TransportRingsTransport.STREAM_CODEC,
+			ClientBoundSoundPackets.TransportRingsTransport::handle);
 		
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================
 		
-		INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundDHDUpdatePacket::encode)
-				.decoder(ServerboundDHDUpdatePacket::new)
-				.consumerMainThread(ServerboundDHDUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundDHDUpdatePacket.TYPE,
+				ServerboundDHDUpdatePacket.STREAM_CODEC,
+				ServerboundDHDUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundRingPanelUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundRingPanelUpdatePacket::encode)
-				.decoder(ServerboundRingPanelUpdatePacket::new)
-				.consumerMainThread(ServerboundRingPanelUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundRingPanelUpdatePacket.TYPE,
+				ServerboundRingPanelUpdatePacket.STREAM_CODEC,
+				ServerboundRingPanelUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundInterfaceUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundInterfaceUpdatePacket::encode)
-				.decoder(ServerboundInterfaceUpdatePacket::new)
-				.consumerMainThread(ServerboundInterfaceUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundInterfaceUpdatePacket.TYPE,
+				ServerboundInterfaceUpdatePacket.STREAM_CODEC,
+				ServerboundInterfaceUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundGDOUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundGDOUpdatePacket::encode)
-				.decoder(ServerboundGDOUpdatePacket::new)
-				.consumerMainThread(ServerboundGDOUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundGDOUpdatePacket.TYPE,
+				ServerboundGDOUpdatePacket.STREAM_CODEC,
+				ServerboundGDOUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundCrystalComputerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundCrystalComputerUpdatePacket::encode)
-				.decoder(ServerboundCrystalComputerUpdatePacket::new)
-				.consumerMainThread(ServerboundCrystalComputerUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundCrystalComputerUpdatePacket.TYPE,
+				ServerboundCrystalComputerUpdatePacket.STREAM_CODEC,
+				ServerboundCrystalComputerUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundTransceiverUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundTransceiverUpdatePacket::encode)
-				.decoder(ServerboundTransceiverUpdatePacket::new)
-				.consumerMainThread(ServerboundTransceiverUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundTransceiverUpdatePacket.TYPE,
+				ServerboundTransceiverUpdatePacket.STREAM_CODEC,
+				ServerboundTransceiverUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundLiquidizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundLiquidizerUpdatePacket::encode)
-				.decoder(ServerboundLiquidizerUpdatePacket::new)
-				.consumerMainThread(ServerboundLiquidizerUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundLiquidizerUpdatePacket.TYPE,
+				ServerboundLiquidizerUpdatePacket.STREAM_CODEC,
+				ServerboundLiquidizerUpdatePacket::handle);
 		
-		INSTANCE.messageBuilder(ServerboundCrystallizerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundCrystallizerUpdatePacket::encode)
-				.decoder(ServerboundCrystallizerUpdatePacket::new)
-				.consumerMainThread(ServerboundCrystallizerUpdatePacket::handle)
-				.add();
+		registrar.playToServer(
+				ServerboundCrystallizerUpdatePacket.TYPE,
+				ServerboundCrystallizerUpdatePacket.STREAM_CODEC,
+				ServerboundCrystallizerUpdatePacket::handle);
 	}
 }

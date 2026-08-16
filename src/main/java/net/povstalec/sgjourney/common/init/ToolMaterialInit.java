@@ -1,65 +1,71 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.world.item.Item;
+import com.google.common.base.Suppliers;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+import java.util.function.Supplier;
 
 public enum ToolMaterialInit implements Tier
 {
-	NAQUADAH(4, 3200, 9.0F, 4.0F, 12, ItemInit.NAQUADAH.get()),
-	TRINIUM(4, 512, 12.0F, 3.0F, 10, ItemInit.TRINIUM_INGOT.get());
+	NAQUADAH(TagInit.Blocks.INCORRECT_FOR_NAQUADAH_TOOL, 3200, 9.0F, 4.0F, 12, () -> Ingredient.of(ItemInit.NAQUADAH.get())),
+	TRINIUM(TagInit.Blocks.INCORRECT_FOR_TRINIUM_TOOL, 512, 12.0F, 3.0F, 10, () -> Ingredient.of(ItemInit.TRINIUM_INGOT.get()));
+
+	private final TagKey<Block> incorrectBlocksForDrops;
+	private final int uses;
+	private final float speed;
+	private final float damage;
+	private final int enchantmentValue;
+	private final Supplier<Ingredient> repairIngredient;
 	
-	private final float attackDamage;
-	private final float efficiency;
-	private final int durability;
-	private final int harvestLevel;
-	private final int enchantability;
-	private final Item repairMaterial;
-	
-	ToolMaterialInit(int harvestLevel, int durability, float efficiency, float attackDamage, int enchantability, Item repairMaterial)
+	ToolMaterialInit(TagKey<Block> incorrectBlockForDrops, int uses, float speed, float damage, int enchantmentValue, Supplier<Ingredient> repairIngredient)
 	{
-		this.harvestLevel = harvestLevel;
-		this.durability = durability;
-		this.efficiency = efficiency;
-		this.attackDamage = attackDamage;
-		this.enchantability = enchantability;
-		this.repairMaterial = repairMaterial;
+		this.incorrectBlocksForDrops = incorrectBlockForDrops;
+		this.uses = uses;
+		this.speed = speed;
+		this.damage = damage;
+		this.enchantmentValue = enchantmentValue;
+		Objects.requireNonNull(repairIngredient);
+		this.repairIngredient = Suppliers.memoize(repairIngredient::get);
 	}
 
 	@Override
 	public int getUses()
 	{
-		return this.durability;
+		return this.uses;
 	}
 
 	@Override
 	public float getSpeed()
 	{
-		return this.efficiency;
+		return this.speed;
 	}
 
 	@Override
 	public float getAttackDamageBonus()
 	{
-		return this.attackDamage;
+		return this.damage;
 	}
 
 	@Override
-	public int getLevel()
+	public TagKey<Block> getIncorrectBlocksForDrops()
 	{
-		return this.harvestLevel;
+		return this.incorrectBlocksForDrops;
 	}
 
 	@Override
 	public int getEnchantmentValue()
 	{
-		return this.enchantability;
+		return this.enchantmentValue;
 	}
 
 	@Override
 	public @NotNull Ingredient getRepairIngredient()
 	{
-		return Ingredient.of(repairMaterial);
+		return this.repairIngredient.get();
 	}
 }

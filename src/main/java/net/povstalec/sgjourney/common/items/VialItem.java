@@ -1,16 +1,17 @@
 package net.povstalec.sgjourney.common.items;
 
-import net.minecraft.world.item.Item;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Random;
+import java.util.function.Supplier;
 
 public class VialItem extends FluidItem
 {
@@ -23,12 +24,6 @@ public class VialItem extends FluidItem
 	public boolean isBarVisible(ItemStack stack)
 	{
 		return false;
-	}
-	
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 	}
 	
 	public int getFluidCapacity(ItemStack stack)
@@ -70,5 +65,31 @@ public class VialItem extends FluidItem
 	{
 		Random random = new Random();
 		return heavyLiquidNaquadahSetup(random.nextInt(minCapacity, maxCapacity + 1));
+	}
+	
+	
+	public static class FluidHandler extends FluidHandlerItemStack
+	{
+		public FluidHandler(Supplier<DataComponentType<SimpleFluidContent>> componentType, ItemStack container)
+		{
+			super(componentType, container, CommonTechConfig.vial_capacity.get());
+		}
+		
+		public boolean isCorrectFluid(FluidStack fluidStack)
+		{
+			return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
+				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		}
+		
+		@Override
+		public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
+		{
+			return isCorrectFluid(fluidStack);
+		}
+		
+		public boolean canFillFluidType(FluidStack fluidStack)
+		{
+			return isCorrectFluid(fluidStack);
+		}
 	}
 }

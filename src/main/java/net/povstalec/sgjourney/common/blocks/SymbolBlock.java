@@ -2,8 +2,7 @@ package net.povstalec.sgjourney.common.blocks;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,12 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -73,8 +73,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		return RenderShape.MODEL;
 	}
 
-    @Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	public boolean use(Level level, BlockPos pos, Player player)
 	{
 		if(player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
 		{
@@ -103,34 +102,46 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					player.sendSystemMessage(text);
 				}
 			}
-			return InteractionResult.SUCCESS;
+			return true;
 		}
         else
-			return InteractionResult.FAIL;
+			return false;
     }
+
+	@Override
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	{
+		return use(level, pos, player) ? InteractionResult.SUCCESS : InteractionResult.FAIL;
+	}
+
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		return use(level, pos, player) ? ItemInteractionResult.SUCCESS : ItemInteractionResult.FAIL;
+	}
 	
 	public abstract ItemLike getItem();
     
     @Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 		{
 			ItemStack itemstack = new ItemStack(getItem());
 			
-			blockentity.saveToItem(itemstack);
+			blockentity.saveToItem(itemstack, level.registryAccess());
 
 			ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 			itementity.setDefaultPickUpDelay();
 			level.addFreshEntity(itementity);
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	int symbolNumber = 0;
 		String symbolString = "";
@@ -157,14 +168,20 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
     	
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
     
     public static class Stone extends SymbolBlock
     {
+		public static final MapCodec<Stone> CODEC = simpleCodec(Stone::new);
+
 		public Stone(Properties properties)
 		{
 			super(properties);
+		}
+
+		protected MapCodec<Stone> codec() {
+			return CODEC;
 		}
 
 		@Override
@@ -183,9 +200,15 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     
     public static class Sandstone extends SymbolBlock
     {
+		public static final MapCodec<Sandstone> CODEC = simpleCodec(Sandstone::new);
+
 		public Sandstone(Properties properties)
 		{
 			super(properties);
+		}
+
+		protected MapCodec<Sandstone> codec() {
+			return CODEC;
 		}
 
 		@Override
@@ -204,9 +227,15 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 	
 	public static class RedSandstone extends SymbolBlock
 	{
+		public static final MapCodec<RedSandstone> CODEC = simpleCodec(RedSandstone::new);
+
 		public RedSandstone(Properties properties)
 		{
 			super(properties);
+		}
+
+		protected MapCodec<RedSandstone> codec() {
+			return CODEC;
 		}
 		
 		@Override

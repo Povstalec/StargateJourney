@@ -1,37 +1,34 @@
 package net.povstalec.sgjourney.common.items.armor;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.*;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.SimpleFluidContent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.tech.AncientTech;
+import org.jetbrains.annotations.Nullable;
 
 public class PersonalShieldItem extends ArmorItem implements AncientTech
 {
-	public PersonalShieldItem(ArmorMaterial material, EquipmentSlot slot, Properties properties)
+	public PersonalShieldItem(Holder<ArmorMaterial> material, ArmorItem.Type slot, Properties properties)
 	{
 		super(material, slot, properties);
 	}
@@ -61,22 +58,9 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	}
 	
 	@Override
-	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, T entity, Consumer<T> onBroken)
+	public <T extends LivingEntity> int damageItem(ItemStack stack, int amount, @Nullable T entity, Consumer<Item> onBroken)
 	{
 		return 0;
-	}
-	
-	@Override
-    public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new FluidHandlerItemStack(stack, getMaxCapacity())
-				{
-		    		@Override
-		    		public boolean isFluidValid(int tank, @NotNull FluidStack stack)
-		    		{
-		    			return stack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
-		    		}
-				};
 	}
 	
 	public static int getFluidAmount(ItemStack stack)
@@ -88,42 +72,58 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	
 	public static FluidStack getFluidStack(ItemStack stack)
 	{
-		Optional<FluidStack> fluid = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0));
+		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
+			return cap.getFluidInTank(0);
 		
-		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
+		return FluidStack.EMPTY;
 	}
 	
 	public static void drainNaquadah(ItemStack stack, int amount)
 	{
-		stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler -> 
-		{
-			fluidHandler.drain(amount, FluidAction.EXECUTE);
-		});
+		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
+			cap.drain(amount, IFluidHandler.FluidAction.EXECUTE);
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	FluidStack fluidStack = getFluidStack(stack);
 		if(!getFluidStack(stack).equals(FluidStack.EMPTY))
 		{
-			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getTranslationKey()).withStyle(ChatFormatting.GREEN);
+			MutableComponent liquidNaquadah = Component.translatable(fluidStack.getFluidType().getDescriptionId(fluidStack)).withStyle(ChatFormatting.GREEN);
 			liquidNaquadah.append(Component.literal(" " + fluidStack.getAmount() + "mB").withStyle(ChatFormatting.GREEN));
 	    	tooltipComponents.add(liquidNaquadah);
 		}
         
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	public static ItemStack personalShieldSetup()
 	{
 		ItemStack stack = new ItemStack(ItemInit.PERSONAL_SHIELD_EMITTER.get());
-        
-        stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).ifPresent(fluidHandler ->
-        {
-        	fluidHandler.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), getMaxCapacity()), FluidAction.EXECUTE);
-        });
+		
+		IFluidHandlerItem cap = stack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(cap != null)
+        	cap.fill(new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get().getSource(), getMaxCapacity()), IFluidHandler.FluidAction.EXECUTE);
 		
 		return stack;
+	}
+	
+	
+	
+	public static class FluidHandler extends FluidHandlerItemStack
+	{
+		public FluidHandler(Supplier<DataComponentType<SimpleFluidContent>> componentType, ItemStack container)
+		{
+			super(componentType, container, getMaxCapacity());
+		}
+		
+		@Override
+		public boolean isFluidValid(int tank, @NotNull FluidStack stack)
+		{
+			return stack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
+		}
 	}
 }

@@ -1,46 +1,38 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.povstalec.sgjourney.common.capabilities.ItemFluidHolderProvider;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.entities.PlasmaProjectile;
-import net.povstalec.sgjourney.common.init.EntityInit;
-import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class StaffWeaponItem extends FluidItem.Holder
 {
-	public static final String IS_OPEN = "IsOpen";
-	
 	private static final float OPEN_ATTACK_DAMAGE = 3.0F;
 	private static final float CLOSED_ATTACK_DAMAGE = 6.0F;
 
@@ -53,22 +45,22 @@ public class StaffWeaponItem extends FluidItem.Holder
 	private static final int LIQUID_NAQUADAH_DEPLETION = 1;
 	private static final int HEAVY_LIQUID_NAQUADAH_DEPLETION = 5;
 	
-	private final Multimap<Attribute, AttributeModifier> openModifiers;
-	private final Multimap<Attribute, AttributeModifier> closedModifiers;
+	private final ItemAttributeModifiers openModifiers;
+	private final ItemAttributeModifiers closedModifiers;
 	
 	public StaffWeaponItem(Properties properties)
 	{
 		super(properties);
 		
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> openBuilder = ImmutableMultimap.builder();
-		openBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", OPEN_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
-		openBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", OPEN_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
-		this.openModifiers = openBuilder.build();
+		ItemAttributeModifiers.Entry damageEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, OPEN_ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		ItemAttributeModifiers.Entry speedEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, OPEN_ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
 		
-		ImmutableMultimap.Builder<Attribute, AttributeModifier> closedBuilder = ImmutableMultimap.builder();
-		closedBuilder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADDITION));
-		closedBuilder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADDITION));
-		this.closedModifiers = closedBuilder.build();
+		openModifiers = new ItemAttributeModifiers(Arrays.asList(damageEntry, speedEntry), true);
+		
+		damageEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, CLOSED_ATTACK_DAMAGE, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		speedEntry = new ItemAttributeModifiers.Entry(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, CLOSED_ATTACK_SPEED, AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND);
+		
+		closedModifiers = new ItemAttributeModifiers(Arrays.asList(damageEntry, speedEntry), true);
 	}
 	
 	protected void shoot(Level level, Player player, ItemStack staffWeaponStack)
@@ -131,7 +123,7 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
 		//TODO Find a good file for the attack sound
-		player.getLevel().playSound((Player) null, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
+		player.level().playSound((Player) null, player.blockPosition(), SoundInit.MATOK_ATTACK.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 		return super.hurtEnemy(stack, target, player);
 	}
 	
@@ -139,13 +131,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	public boolean canAttackBlock(BlockState state, Level level, BlockPos pos, Player player)
 	{
 		return !player.isCreative();
-	}
-	
-	@Override
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
 	}
 	
 	@Override
@@ -161,8 +146,8 @@ public class StaffWeaponItem extends FluidItem.Holder
 	 */
 	public boolean tryDepleteLiquidNaquadah(ItemStack staffWeaponItemStack)
 	{
-		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
-		if(fluidHandler instanceof ItemFluidHolderProvider fluidHolder)
+		IFluidHandlerItem fluidHandler = staffWeaponItemStack.getCapability(Capabilities.FluidHandler.ITEM);
+		if(fluidHandler instanceof Holder.FluidItemHandler fluidHolder)
 		{
 			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
 			int drainAmount;
@@ -188,53 +173,31 @@ public class StaffWeaponItem extends FluidItem.Holder
 	
 	public static boolean isOpen(ItemStack stack)
 	{
-		if(stack.is(ItemInit.MATOK.get()))
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			
-			if(!tag.contains(IS_OPEN))
-			{
-				tag.putBoolean(IS_OPEN, false);
-				stack.setTag(tag);
-			}
-			
-			return tag.getBoolean(IS_OPEN);
-		}
-		
-		return false;
+		return stack.getOrDefault(DataComponentInit.IS_OPEN, false);
 	}
 	
 	public static void setOpen(Level level, Player player, ItemStack stack, boolean isOpen)
 	{
-		if(stack.is(ItemInit.MATOK.get()))
-		{
-			CompoundTag tag = stack.getOrCreateTag();
-			tag.putBoolean(IS_OPEN, isOpen);
-			stack.setTag(tag);
-			
-			level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
-		}
-	}
-	
-	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
-	{
-		if(slot == EquipmentSlot.MAINHAND)
-			return isOpen(stack) ? this.openModifiers : this.closedModifiers;
+		stack.set(DataComponentInit.IS_OPEN, isOpen);
 		
-		return super.getAttributeModifiers(slot, stack);
+		level.playSound(player, player.blockPosition(), isOpen ? SoundInit.MATOK_OPEN.get() : SoundInit.MATOK_CLOSE.get(), SoundSource.PLAYERS, 0.25F, 1.0F);
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public ItemAttributeModifiers getDefaultAttributeModifiers(ItemStack stack)
 	{
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		return isOpen(stack) ? this.openModifiers : this.closedModifiers;
+	}
+	
+	@Override
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+	{
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 		
 		MutableComponent isOpen = isOpen(stack) ? 
 				Component.translatable("tooltip.sgjourney.matok.open").withStyle(ChatFormatting.YELLOW) :
 					Component.translatable("tooltip.sgjourney.matok.closed").withStyle(ChatFormatting.YELLOW);
 		tooltipComponents.add(isOpen);
-    	
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.open_close").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.matok.reload").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 	}
@@ -244,8 +207,26 @@ public class StaffWeaponItem extends FluidItem.Holder
 		ItemStack staffWeapon = new ItemStack(ItemInit.MATOK.get());
 		ItemStack vial = heavyLiquidNaquadah ? VialItem.heavyLiquidNaquadahSetup(amount) : VialItem.liquidNaquadahSetup(amount);
 		
-		staffWeapon.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler -> itemHandler.insertItem(0, vial, false));
+		IItemHandler itemHandler = staffWeapon.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
+			itemHandler.insertItem(0, vial, false);
 		
 		return staffWeapon;
+	}
+	
+	
+	
+	public static class FluidItemHandler extends Holder.FluidItemHandler
+	{
+		public FluidItemHandler(ItemStack stack, DataComponentType<ItemContainerContents> component)
+		{
+			super(stack, component);
+		}
+		
+		@Override
+		public boolean isItemValid(int slot, ItemStack stack)
+		{
+			return stack.isEmpty() || stack.is(ItemInit.VIAL.get());
+		}
 	}
 }

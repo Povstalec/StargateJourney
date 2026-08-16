@@ -1,38 +1,38 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-
 public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlockEntityStargate>
 {
 	public static final String CAN_ENGAGE = "can_engage";
-	public static final String ADDRESS_BUFFER = "AddressBuffer"; //TODO Rename to "address_buffer"
-	public static final String SYMBOL_BUFFER = "SymbolBuffer"; //TODO Rename to "symbol_buffer"
+	public static final String ADDRESS_BUFFER = "address_buffer";
+	public static final String SYMBOL_BUFFER = "symbol_buffer";
 	
 	public static final boolean FAST_ROTATION = CommonStargateConfig.universe_fast_rotation.get();
 	
@@ -67,9 +67,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-        super.load(tag);
+		super.loadAdditional(tag, registries);
 		
 		canEngage = tag.getBoolean(CAN_ENGAGE);
 		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
@@ -77,9 +77,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
@@ -87,9 +87,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
@@ -99,9 +99,9 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(net, packet);
+		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
@@ -202,7 +202,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	public void startSound()
 	{
 		if(!level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.UniverseStart(this.worldPosition));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.UniverseStart(this.worldPosition));
 	}
 	
 	public boolean dialFromBuffer()

@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonPermissionConfig
 {
@@ -17,7 +17,7 @@ public class CommonPermissionConfig
 	public static SGJourneyConfigValue.BooleanValue protected_inventory_access;
 	public static SGJourneyConfigValue.BooleanValue protected_blocks_ignore_explosions;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		stellar_update_permissions = new SGJourneyConfigValue.IntValue(server, "server.stellar_update_permissions",
 				2, 0, 4,

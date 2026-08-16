@@ -2,11 +2,13 @@ package net.povstalec.sgjourney.common.blocks.stargate;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -65,13 +67,13 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
     }
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
     	CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
-		if(!stack.hasTag())
+		if(blockEntityTag == null)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
-		else if(blockEntityTag != null)
+		else
 		{
 			if(blockEntityTag.contains(PegasusStargateEntity.DYNAMC_SYMBOLS) && blockEntityTag.getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
@@ -90,14 +92,15 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 			}
 		}
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
-	public static ItemStack localSymbols(ItemStack stack)
+	public static ItemStack localSymbols(ItemStack stack, BlockEntityType<?> blockEntityType)
 	{
         CompoundTag compoundtag = new CompoundTag();
         compoundtag.putBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS, false);
-		stack.addTagElement("BlockEntityTag", compoundtag);
+		BlockEntity.addEntityType(compoundtag, blockEntityType);
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(compoundtag));
 		
 		return stack;
 	}

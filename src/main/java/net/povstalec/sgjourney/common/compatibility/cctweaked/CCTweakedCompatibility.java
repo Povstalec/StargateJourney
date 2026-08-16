@@ -1,12 +1,24 @@
 package net.povstalec.sgjourney.common.compatibility.cctweaked;
 
+import dan200.computercraft.api.peripheral.PeripheralCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.methods.*;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
 public class CCTweakedCompatibility
 {
+	public static void registerPeripherals(RegisterCapabilitiesEvent event)
+	{
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral().get() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral().get() : null);
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().getPeripheral().get() : null);
+		
+		event.registerBlockEntity(PeripheralCapability.get(), BlockEntityInit.TRANSCEIVER.get(), (blockEntity, direction) -> blockEntity.getPeripheralWrapper() != null ? blockEntity.getPeripheralWrapper().newPeripheral().get() : null);
+	}
+	
 	//============================================================================================
 	//******************************************Stargate******************************************
 	//============================================================================================

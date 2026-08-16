@@ -1,45 +1,43 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
+import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusStargate;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-
-import javax.annotation.Nullable;
-
 public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntityStargate>
 {
 	public static final String CAN_ENGAGE = "can_engage";
-	public static final String ADDRESS_BUFFER = "AddressBuffer";
-	public static final String SYMBOL_BUFFER = "SymbolBuffer";
-	public static final String CURRENT_SYMBOL = "CurrentSymbol";
+	public static final String ADDRESS_BUFFER = "address_buffer";
+	public static final String SYMBOL_BUFFER = "symbol_buffer";
+	public static final String CURRENT_SYMBOL = "current_symbol";
 	
-	public static final String DYNAMC_SYMBOLS = "DynamicSymbols";
+	public static final String DYNAMC_SYMBOLS = "dynamic_symbols";
 	
 	public static final int TOTAL_SYMBOLS = 48;
 	
@@ -80,9 +78,9 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
     }
 	
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
 		tag.putBoolean(DYNAMC_SYMBOLS, dynamicSymbols);
 		
@@ -93,20 +91,20 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
 		dynamicSymbols = tag.getBoolean(DYNAMC_SYMBOLS);
 		
 		if(!dynamicSymbols)
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
-		super.deserializeStargateInfo(tag, isUpgraded);
+		super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-        super.load(tag);
+		super.loadAdditional(tag, registries);
 		
 		canEngage = CanEngage.values()[tag.getByte(CAN_ENGAGE)];
 		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
@@ -115,9 +113,9 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		tag.putByte(CAN_ENGAGE, (byte) canEngage.ordinal());
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
@@ -126,9 +124,9 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		tag.putByte(CAN_ENGAGE, (byte) canEngage.ordinal());
@@ -140,9 +138,9 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(net, packet);
+		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
@@ -239,7 +237,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		if(addressBuffer.getLength() == getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		encodedSymbols.addSymbol(symbol); // Keep track of what symbols have physically been encoded on the gate, ignoring any remapping
 		addressBuffer.addSymbol(mappedSymbol);
@@ -266,13 +264,13 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
 		StargateInfo.FeedbackMessage feedback = super.encodeChevron(symbol, incoming, encode);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{
 			if(!this.level.isClientSide())
-				PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
+				PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, false));
 		}
 		
 		return setRecentFeedback(feedback);

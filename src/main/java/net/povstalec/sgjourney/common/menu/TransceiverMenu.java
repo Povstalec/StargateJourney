@@ -3,22 +3,19 @@ package net.povstalec.sgjourney.common.menu;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.TransceiverEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundTransceiverUpdatePacket;
 
 public class TransceiverMenu extends SGJourneyMenu<TransceiverEntity>
 {
 	public TransceiverMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		this(containerId, inventory, (TransceiverEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inventory, (TransceiverEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 	
 	public TransceiverMenu(int containerId, Inventory inventory, TransceiverEntity blockEntity)
@@ -55,21 +52,21 @@ public class TransceiverMenu extends SGJourneyMenu<TransceiverEntity>
     
     public void toggleFrequency()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, true, 0, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, true, 0, false));
     }
     
     public void sendTransmission()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, 0, true));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, 0, true));
     }
     
     public void addToCode(boolean toggledFrequency, int number)
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, number, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), false, false, number, false));
     }
     
     public void removeFromCode(boolean toggledFrequency)
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), true, false, 0, false));
+		PacketDistributor.sendToServer(new ServerboundTransceiverUpdatePacket(blockEntity.getBlockPos(), true, false, 0, false));
     }
 }

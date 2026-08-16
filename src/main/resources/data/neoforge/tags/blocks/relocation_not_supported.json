@@ -1,0 +1,30 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:universe_stargate",
+		"sgjourney:universe_ring",
+		"sgjourney:universe_shielding",
+
+		"sgjourney:milky_way_stargate",
+		"sgjourney:milky_way_ring",
+		"sgjourney:milky_way_shielding",
+		"sgjourney:milky_way_dhd",
+
+		"sgjourney:pegasus_stargate",
+		"sgjourney:pegasus_ring",
+		"sgjourney:pegasus_shielding",
+		"sgjourney:pegasus_dhd",
+
+		"sgjourney:classic_stargate",
+		"sgjourney:classic_ring",
+		"sgjourney:classic_shielding",
+		"sgjourney:classic_dhd",
+
+		"sgjourney:tollan_stargate",
+		"sgjourney:tollan_ring",
+
+		"sgjourney:transport_rings",
+		"sgjourney:zpm_hub"
+	]
+}

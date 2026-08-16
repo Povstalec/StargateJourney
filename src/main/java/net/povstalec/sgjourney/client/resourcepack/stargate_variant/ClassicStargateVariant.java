@@ -32,17 +32,17 @@ public class ClassicStargateVariant extends RotatingStargateVariant
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
 	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
-	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "classic_chevron_engage");
+	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = StargateJourney.sgjourneyLocation("classic_chevron_engage");
 	
-	public static final ResourceLocation STARGATE_RING_SPIN_START = new ResourceLocation(StargateJourney.MODID, "classic_ring_spin_start");
-	public static final ResourceLocation STARGATE_RING_SPIN = new ResourceLocation(StargateJourney.MODID, "classic_ring_spin");
-	public static final ResourceLocation STARGATE_RING_SPIN_STOP = new ResourceLocation(StargateJourney.MODID, "classic_ring_spin_stop");
+	public static final ResourceLocation STARGATE_RING_SPIN_START = StargateJourney.sgjourneyLocation("classic_ring_spin_start");
+	public static final ResourceLocation STARGATE_RING_SPIN = StargateJourney.sgjourneyLocation("classic_ring_spin");
+	public static final ResourceLocation STARGATE_RING_SPIN_STOP = StargateJourney.sgjourneyLocation("classic_ring_spin_stop");
 
-	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = new ResourceLocation(StargateJourney.MODID, "classic_wormhole_open");
-	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = new ResourceLocation(StargateJourney.MODID, "classic_wormhole_idle");
-	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = new ResourceLocation(StargateJourney.MODID, "classic_wormhole_close");
+	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = StargateJourney.sgjourneyLocation("classic_wormhole_open");
+	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = StargateJourney.sgjourneyLocation("classic_wormhole_idle");
+	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = StargateJourney.sgjourneyLocation("classic_wormhole_close");
 
-	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "classic_dial_fail");
+	public static final ResourceLocation STARGATE_FAIL = StargateJourney.sgjourneyLocation("classic_dial_fail");
 	
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_TRANSLUCENT_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_TRANSLUCENT_RGBA, DEFAULT_TRANSLUCENT_RGBA);

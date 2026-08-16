@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -77,25 +78,28 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 		return nextMode;
 	}
 	
-	public abstract void openMenu(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace);
+	public abstract void openMenu(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult);
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
-        if(!level.isClientSide()) 
-        {
-			if(!player.isShiftKeyDown())
-				openMenu(state, level, pos, player, hand, trace);
-			else if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity)
-			{
-				InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
-				
-				if(nextMode != null)
-					player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
-			}
-        }
-        return InteractionResult.SUCCESS;
-    }
+		if(!level.isClientSide() && player.isShiftKeyDown() && level.getBlockEntity(pos) instanceof AbstractInterfaceEntity interfaceEntity)
+		{
+			InterfaceMode nextMode = cycleModes(state, level, pos, interfaceEntity);
+			
+			if(nextMode != null)
+				player.displayClientMessage(Component.translatable("block.sgjourney.interface.mode").append(Component.literal(": ").append(nextMode.getName())), true);
+		}
+		return InteractionResult.SUCCESS;
+	}
+	
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		if(!level.isClientSide() && !player.isShiftKeyDown())
+			openMenu(state, level, pos, player, hitResult);
+		return ItemInteractionResult.SUCCESS;
+	}
 	
 	public RenderShape getRenderShape(BlockState state)
 	{
@@ -107,7 +111,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 	public abstract long getCapacity();
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractInterfaceEntity)
@@ -116,7 +120,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			{
 				ItemStack itemstack = new ItemStack(getDroppedBlock());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -124,7 +128,7 @@ public abstract class AbstractInterfaceBlock extends BaseEntityBlock
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Override

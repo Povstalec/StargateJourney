@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.codecs.PrimitiveCodec;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -94,6 +98,34 @@ public class StargateConnection
 		INTERSTELLAR("interstellar", INTERSTELLAR_CONNECTION_COST, INTERSTELLAR_CONNECTION_DRAW, INTERSTELLAR_CONNECTION_BYPASS_DRAW),
 		INTERGALACTIC("intergalactic", INTERGALACTIC_CONNECTION_COST, INTERGALACTIC_CONNECTION_DRAW, INTERGALACTIC_CONNECTION_BYPASS_DRAW);
 		
+		public static final Codec<Type> CODEC = new PrimitiveCodec<>()
+		{
+			@Override
+			public <T> DataResult<Type> read(final DynamicOps<T> ops, final T input)
+			{
+				String string = ops.getStringValue(input).getOrThrow();
+				
+				Type type = Type.fromString(string);
+				
+				if(type != null)
+					return DataResult.success(type);
+				
+				return DataResult.error(() -> "Not a StargateConnection.Type: " + input);
+			}
+			
+			@Override
+			public <T> T write(final DynamicOps<T> ops, final Type value)
+			{
+				return ops.createString(value.getSerializedName());
+			}
+			
+			@Override
+			public String toString()
+			{
+				return "StargateConnection.Type";
+			}
+		};
+		
 		private final String name;
 		private final long establishingPowerCost;
 		private final long powerDraw;
@@ -123,6 +155,7 @@ public class StargateConnection
 			return this.name;
 		}
 		
+		@Nullable
 		public static Type fromString(String name)
 		{
 			return switch(name)
@@ -135,19 +168,21 @@ public class StargateConnection
 		}
 	}
 	
-	public enum State
+	public enum State implements StringRepresentable
 	{
-		IDLE((byte) 0, false, false),
+		IDLE("idle", (byte) 0, false, false),
 		
-		OUTGOING_CONNECTION((byte) 1, true, true),
-		INCOMING_CONNECTION((byte) -1, true, false);
+		OUTGOING_CONNECTION("outgoing_connection", (byte) 1, true, true),
+		INCOMING_CONNECTION("incoming_connection", (byte) -1, true, false);
 		
+		private final String name;
 		private final byte value;
 		private final boolean isConnected;
 		private final boolean isDialingOut;
 		
-		State(byte value, boolean isConnected, boolean isDialingOut)
+		State(String name, byte value, boolean isConnected, boolean isDialingOut)
 		{
+			this.name = name;
 			this.value = value;
 			this.isConnected = isConnected;
 			this.isDialingOut = isDialingOut;
@@ -177,7 +212,12 @@ public class StargateConnection
 				default -> IDLE;
 			};
 		}
-
+		
+		@Override
+		public String getSerializedName()
+		{
+			return name;
+		}
 	}
 	
 	//============================================================================================

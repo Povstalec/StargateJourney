@@ -2,18 +2,14 @@ package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
-import org.jetbrains.annotations.Nullable;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 
 import java.util.List;
 
@@ -56,12 +52,7 @@ public class BatteryItem extends Item
 	
 	public static long getEnergy(ItemStack stack)
 	{
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENERGY, Tag.TAG_LONG))
-			return tag.getLong(ENERGY);
-		
-		return 0;
+		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
 	}
 	
 	public long getCapacity()
@@ -75,35 +66,59 @@ public class BatteryItem extends Item
 	}
 	
 	@Override
-	public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemEnergyProvider(stack)
-		{
-			@Override
-			public long capacity()
-			{
-				return getCapacity();
-			}
-			
-			@Override
-			public long maxReceive()
-			{
-				return getTransfer();
-			}
-			
-			@Override
-			public long maxExtract()
-			{
-				return getTransfer();
-			}
-		};
-	}
-	
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + SGJourneyEnergy.energyToString(getEnergy(stack), getCapacity()))).withStyle(ChatFormatting.DARK_RED));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+	}
+	
+	
+	
+	public static class Energy extends SGJourneyEnergy.Item
+	{
+		public Energy(ItemStack stack)
+		{
+			super(stack, 0, 0, 0);
+		}
+		
+		@Override
+		public long maxReceive()
+		{
+			if(stack.getItem() instanceof BatteryItem battery)
+				return battery.getTransfer();
+			
+			return 0;
+		}
+		
+		@Override
+		public long maxExtract()
+		{
+			if(stack.getItem() instanceof BatteryItem battery)
+				return battery.getTransfer();
+			
+			return 0;
+		}
+		
+		@Override
+		public long loadEnergy(ItemStack stack)
+		{
+			return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		}
+		
+		@Override
+		public long getTrueMaxEnergyStored()
+		{
+			if(stack.getItem() instanceof BatteryItem battery)
+				return battery.getCapacity();
+			
+			return 0;
+		}
+		
+		@Override
+		public void onEnergyChanged(long difference, boolean simulate)
+		{
+			stack.set(DataComponentInit.ENERGY, this.energy);
+		}
 	}
 }

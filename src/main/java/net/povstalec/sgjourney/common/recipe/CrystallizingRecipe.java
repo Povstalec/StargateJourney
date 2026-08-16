@@ -1,117 +1,63 @@
 package net.povstalec.sgjourney.common.recipe;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.FluidInit;
-import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Map;
-
-public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidContainer>
+public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRecipeInput>
 {
-	private final NonNullList<Ingredient> ingredients;
-	private final int[] amounts;
-	private final ItemStack output;
-	private final boolean depletePrimary;
-	private final boolean depleteSecondary;
-	private final FluidStack inputFluid;
+	protected final CrystallizingIngredient crystalBase;
+	protected final CrystallizingIngredient primaryIngredient;
+	protected final CrystallizingIngredient secondaryIngredient;
+	protected final ItemStack output;
+	protected final FluidStack inputFluid;
 	
-	protected CrystallizingRecipe(ResourceLocation recipeID, JsonObject serializedRecipe)
+	public CrystallizingRecipe(int progress, ItemStack output, CrystallizingIngredient crystalBase, CrystallizingIngredient primaryIngredient, CrystallizingIngredient secondaryIngredient, FluidStack inputFluid)
 	{
-		super(recipeID, serializedRecipe);
+		super(progress);
 		
-		this.ingredients = NonNullList.withSize(3, Ingredient.EMPTY);
-		this.amounts = new int[ingredients.size()];
-		
-		Pair<Ingredient, Integer> crystalBase = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "crystal_base").asMap());
-		Pair<Ingredient, Integer> primaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "primary_ingredient").asMap());
-		Pair<Ingredient, Integer> secondaryIngredient = getIngredient(GsonHelper.getAsJsonObject(serializedRecipe, "secondary_ingredient").asMap());
-		
-		this.ingredients.set(0, crystalBase.getFirst());
-		this.amounts[0] = crystalBase.getSecond();
-		
-		this.ingredients.set(1, primaryIngredient.getFirst());
-		this.amounts[1] = primaryIngredient.getSecond();
-		
-		this.ingredients.set(2, secondaryIngredient.getFirst());
-		this.amounts[2] = secondaryIngredient.getSecond();
-		
-		this.output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(serializedRecipe, "output"));
-		
-		this.depletePrimary = !GsonHelper.isBooleanValue(serializedRecipe, "deplete_primary") || GsonHelper.getAsBoolean(serializedRecipe, "deplete_primary");
-		
-		this.depleteSecondary = !GsonHelper.isBooleanValue(serializedRecipe, "deplete_secondary") || GsonHelper.getAsBoolean(serializedRecipe, "deplete_secondary");
-		
-		if(serializedRecipe.has("input_fluid"))
-			this.inputFluid = deserializeFluidStack(GsonHelper.getAsJsonObject(serializedRecipe, "input_fluid"), defaultInputFluid());
-		else
-			this.inputFluid = defaultInputFluid();
-	}
-	
-	protected CrystallizingRecipe(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-	{
-		super(recipeID, friendlyByteBuf);
-		
-		this.amounts = friendlyByteBuf.readVarIntArray();
-		this.ingredients = NonNullList.withSize(friendlyByteBuf.readInt(), Ingredient.EMPTY);
-		
-		ingredients.replaceAll(ignored -> Ingredient.fromNetwork(friendlyByteBuf));
-		
-		this.output = friendlyByteBuf.readItem();
-		
-		this.depletePrimary = friendlyByteBuf.readBoolean();
-		this.depleteSecondary = friendlyByteBuf.readBoolean();
-		
-		this.inputFluid = FluidStack.readFromPacket(friendlyByteBuf);
-	}
-	
-	@Override
-	public void toNetwork(FriendlyByteBuf friendlyByteBuf)
-	{
-		super.toNetwork(friendlyByteBuf);
-		
-		friendlyByteBuf.writeVarIntArray(this.amounts);
-		friendlyByteBuf.writeInt(this.getIngredients().size());
-		
-		for(Ingredient ingredient : this.getIngredients())
-		{
-			ingredient.toNetwork(friendlyByteBuf);
-		}
-		friendlyByteBuf.writeItemStack(this.getResultItem(), false);
-		
-		friendlyByteBuf.writeBoolean(this.depletePrimary);
-		friendlyByteBuf.writeBoolean(this.depleteSecondary);
-		
-		this.inputFluid.writeToPacket(friendlyByteBuf);
+		this.crystalBase = crystalBase;
+		this.primaryIngredient = primaryIngredient;
+		this.secondaryIngredient = secondaryIngredient;
+		this.output = output;
+		this.inputFluid = inputFluid;
 	}
 	
 	public int getAmountInSlot(int slot)
 	{
-		if(slot < 0 || slot >= this.amounts.length)
-			return 0;
-		
-		return this.amounts[slot];
+		return switch(slot)
+		{
+			case 0 -> this.crystalBase.amount();
+			case 1 -> this.primaryIngredient.amount();
+			case 2 -> this.secondaryIngredient.amount();
+			default -> 0;
+		};
 	}
 	
 	public boolean depletePrimary()
 	{
-		return this.depletePrimary;
+		return primaryIngredient.deplete();
 	}
 	
 	public boolean depleteSecondary()
 	{
-		return this.depleteSecondary;
+		return secondaryIngredient.deplete();
 	}
 	
 	public FluidStack getInputFluid()
@@ -119,24 +65,40 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		return this.inputFluid;
 	}
 	
-	public boolean itemStackMatches(SimpleFluidContainer container, int slot)
+	@Nullable
+	private Ingredient getIngredient(int slot)
 	{
-		ItemStack stack = container.getItem(slot);
+		return switch(slot)
+		{
+			case 0 -> this.crystalBase.ingredient();
+			case 1 -> this.primaryIngredient.ingredient();
+			case 2 -> this.secondaryIngredient.ingredient();
+			default -> null;
+		};
+	}
+	
+	public boolean itemStackMatches(RecipeInput craftingInput, int slot)
+	{
+		ItemStack stack = craftingInput.getItem(slot);
 		
-		return ingredients.get(slot).test(stack) && amounts[slot] <= stack.getCount();
+		Ingredient ingredient = getIngredient(slot);
+		if(ingredient != null)
+			return ingredient.test(stack) && getAmountInSlot(slot) <= stack.getCount();
+		
+		return false;
 	}
 	
 	@Override
-	public boolean matches(@NotNull SimpleFluidContainer container, Level level)
+	public boolean matches(@NotNull CrystallizingRecipeInput craftingInput, Level level)
 	{
 		if(level.isClientSide())
 			return false;
 		
-		return itemStackMatches(container, 0) && itemStackMatches(container, 1) && itemStackMatches(container, 2) && container.testFluid(0, inputFluid);
+		return itemStackMatches(craftingInput, 0) && itemStackMatches(craftingInput, 1) && itemStackMatches(craftingInput, 2);
 	}
 	
 	@Override
-	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container)
+	public @NotNull ItemStack assemble(@NotNull CrystallizingRecipeInput recipeInput, @NotNull HolderLookup.Provider provider)
 	{
 		return output.copy();
 	}
@@ -148,30 +110,21 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	}
 	
 	@Override
-	public @NotNull ItemStack getResultItem()
+	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider)
 	{
 		return output.copy();
-	}
-	
-	public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
-	{
-		JsonElement item = pair.get("item");
-		JsonObject json = new JsonObject();
-		json.add("item", item);
-		
-		Ingredient ingredient = Ingredient.fromJson(json);
-		int amount = pair.get("amount").getAsInt();
-		
-		return new Pair<>(ingredient, amount);
 	}
 	
 	@Override
 	public @NotNull NonNullList<Ingredient> getIngredients()
 	{
-		return this.ingredients;
+		NonNullList<Ingredient> nonnulllist = NonNullList.create();
+		nonnulllist.add(this.crystalBase.ingredient());
+		nonnulllist.add(this.primaryIngredient.ingredient());
+		nonnulllist.add(this.secondaryIngredient.ingredient());
+		
+		return nonnulllist;
 	}
-	
-	protected abstract FluidStack defaultInputFluid();
 	
 	//============================================================================================
 	//****************************************Crystallizer****************************************
@@ -181,14 +134,9 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	{
 		public static final RecipeType<Crystallizer> TYPE = new RecipeType<>(){};
 		
-		protected Crystallizer(ResourceLocation recipeID, JsonObject serializedRecipe)
+		protected Crystallizer(int progress, ItemStack output, CrystallizingIngredient crystalBase, CrystallizingIngredient primaryIngredient, CrystallizingIngredient secondaryIngredient, FluidStack inputFluid)
 		{
-			super(recipeID, serializedRecipe);
-		}
-		
-		protected Crystallizer(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-		{
-			super(recipeID, friendlyByteBuf);
+			super(progress, output, crystalBase, primaryIngredient, secondaryIngredient, inputFluid);
 		}
 		
 		@Override
@@ -202,33 +150,78 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		{
 			return TYPE;
 		}
-		
-		protected FluidStack defaultInputFluid()
-		{
-			return new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100);
-		}
 	}
 	
 	public static class CrystallizerSerializer implements RecipeSerializer<Crystallizer>
 	{
 		public static final CrystallizerSerializer INSTANCE = new CrystallizerSerializer();
+		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("crystallizing");
 		
-		@Override
-		public @NotNull Crystallizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
+		public static final MapCodec<Crystallizer> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
+				recipeBuilder.group(
+								Codec.INT.optionalFieldOf("progress", 100).forGetter((recipe) -> recipe.progressTime),
+								ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) -> recipe.output),
+								CrystallizingIngredient.CODEC.fieldOf("crystal_base").forGetter((recipe) -> recipe.crystalBase),
+								CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("primary_ingredient").forGetter((recipe) -> recipe.primaryIngredient),
+								CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("secondary_ingredient").forGetter((recipe) -> recipe.secondaryIngredient),
+								FluidStack.CODEC.optionalFieldOf("input_fluid", new FluidStack(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), 100)).forGetter((recipe) -> recipe.inputFluid))
+						.apply(recipeBuilder, Crystallizer::new));
+		
+		public static final StreamCodec<RegistryFriendlyByteBuf, Crystallizer> STREAM_CODEC = StreamCodec.of(CrystallizerSerializer::toNetwork, CrystallizerSerializer::fromNetwork);
+		
+		public CrystallizerSerializer() {}
+		
+		private static Crystallizer fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf)
 		{
-			return new Crystallizer(recipeID, serializedRecipe);
+			int progress = friendlyByteBuf.readInt();
+			
+			Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount1 = friendlyByteBuf.readInt();
+			Ingredient ingredient2 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount2 = friendlyByteBuf.readInt();
+			boolean depletePrimary = friendlyByteBuf.readBoolean();
+			Ingredient ingredient3 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount3 = friendlyByteBuf.readInt();
+			boolean depleteSecondary = friendlyByteBuf.readBoolean();
+			
+			FluidStack inputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			ItemStack output = ItemStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			
+			return new Crystallizer(progress, output, new CrystallizingIngredient(ingredient1, amount1), new CrystallizingIngredient(ingredient2, amount2, depletePrimary), new CrystallizingIngredient(ingredient3, amount3, depleteSecondary), inputFluid);
+		}
+		
+		private static void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, Crystallizer recipe)
+		{
+			friendlyByteBuf.writeInt(recipe.progressTime);
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.crystalBase.ingredient());
+			friendlyByteBuf.writeInt(recipe.crystalBase.amount());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.primaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.primaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.primaryIngredient.deplete());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.secondaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.secondaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.secondaryIngredient.deplete());
+			
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.inputFluid);
+			
+			ItemStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.output);
+			
 		}
 		
 		@Override
-		public @Nullable Crystallizer fromNetwork(@NotNull ResourceLocation recipeID, @NotNull FriendlyByteBuf friendlyByteBuf)
+		public @NotNull MapCodec<Crystallizer> codec()
 		{
-			return new Crystallizer(recipeID, friendlyByteBuf);
+			return CODEC;
 		}
 		
-		@Override
-		public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf, Crystallizer recipe)
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, Crystallizer> streamCodec()
 		{
-			recipe.toNetwork(friendlyByteBuf);
+			return STREAM_CODEC;
 		}
 	}
 	
@@ -240,14 +233,9 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	{
 		public static final RecipeType<AdvancedCrystallizer> TYPE = new RecipeType<>(){};
 		
-		protected AdvancedCrystallizer(ResourceLocation recipeID, JsonObject serializedRecipe)
+		protected AdvancedCrystallizer(int progress, ItemStack output, CrystallizingIngredient crystalBase, CrystallizingIngredient primaryIngredient, CrystallizingIngredient secondaryIngredient, FluidStack inputFluid)
 		{
-			super(recipeID, serializedRecipe);
-		}
-		
-		protected AdvancedCrystallizer(ResourceLocation recipeID, FriendlyByteBuf friendlyByteBuf)
-		{
-			super(recipeID, friendlyByteBuf);
+			super(progress, output, crystalBase, primaryIngredient, secondaryIngredient, inputFluid);
 		}
 		
 		@Override
@@ -261,33 +249,78 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		{
 			return TYPE;
 		}
-		
-		protected FluidStack defaultInputFluid()
-		{
-			return new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), 100);
-		}
 	}
 	
 	public static class AdvancedCrystallizerSerializer implements RecipeSerializer<AdvancedCrystallizer>
 	{
 		public static final AdvancedCrystallizerSerializer INSTANCE = new AdvancedCrystallizerSerializer();
+		public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("advanced_crystallizing");
 		
-		@Override
-		public @NotNull AdvancedCrystallizer fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
+		public static final MapCodec<AdvancedCrystallizer> CODEC = RecordCodecBuilder.mapCodec((recipeBuilder) ->
+				recipeBuilder.group(
+								Codec.INT.optionalFieldOf("progress", 100).forGetter((recipe) -> recipe.progressTime),
+								ItemStack.STRICT_CODEC.fieldOf("output").forGetter((recipe) -> recipe.output),
+								CrystallizingIngredient.CODEC.fieldOf("crystal_base").forGetter((recipe) -> recipe.crystalBase),
+								CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("primary_ingredient").forGetter((recipe) -> recipe.primaryIngredient),
+								CrystallizingIngredient.DEPLETABLE_CODEC.fieldOf("secondary_ingredient").forGetter((recipe) -> recipe.secondaryIngredient),
+								FluidStack.CODEC.optionalFieldOf("input_fluid", new FluidStack(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), 100)).forGetter((recipe) -> recipe.inputFluid))
+						.apply(recipeBuilder, AdvancedCrystallizer::new));
+		
+		public static final StreamCodec<RegistryFriendlyByteBuf, AdvancedCrystallizer> STREAM_CODEC = StreamCodec.of(AdvancedCrystallizerSerializer::toNetwork, AdvancedCrystallizerSerializer::fromNetwork);
+		
+		public AdvancedCrystallizerSerializer() {}
+		
+		private static AdvancedCrystallizer fromNetwork(RegistryFriendlyByteBuf friendlyByteBuf)
 		{
-			return new AdvancedCrystallizer(recipeID, serializedRecipe);
+			int progress = friendlyByteBuf.readInt();
+			
+			Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount1 = friendlyByteBuf.readInt();
+			Ingredient ingredient2 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount2 = friendlyByteBuf.readInt();
+			boolean depletePrimary = friendlyByteBuf.readBoolean();
+			Ingredient ingredient3 = Ingredient.CONTENTS_STREAM_CODEC.decode(friendlyByteBuf);
+			int amount3 = friendlyByteBuf.readInt();
+			boolean depleteSecondary = friendlyByteBuf.readBoolean();
+			
+			FluidStack inputFluid = FluidStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			ItemStack output = ItemStack.STREAM_CODEC.decode(friendlyByteBuf);
+			
+			
+			return new AdvancedCrystallizer(progress, output, new CrystallizingIngredient(ingredient1, amount1), new CrystallizingIngredient(ingredient2, amount2, depletePrimary), new CrystallizingIngredient(ingredient3, amount3, depleteSecondary), inputFluid);
+		}
+		
+		private static void toNetwork(RegistryFriendlyByteBuf friendlyByteBuf, AdvancedCrystallizer recipe)
+		{
+			friendlyByteBuf.writeInt(recipe.progressTime);
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.crystalBase.ingredient());
+			friendlyByteBuf.writeInt(recipe.crystalBase.amount());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.primaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.primaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.primaryIngredient.deplete());
+			
+			Ingredient.CONTENTS_STREAM_CODEC.encode(friendlyByteBuf, recipe.secondaryIngredient.ingredient());
+			friendlyByteBuf.writeInt(recipe.secondaryIngredient.amount());
+			friendlyByteBuf.writeBoolean(recipe.secondaryIngredient.deplete());
+			
+			FluidStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.inputFluid);
+			
+			ItemStack.STREAM_CODEC.encode(friendlyByteBuf, recipe.output);
+			
 		}
 		
 		@Override
-		public @Nullable AdvancedCrystallizer fromNetwork(@NotNull ResourceLocation recipeID, @NotNull FriendlyByteBuf friendlyByteBuf)
+		public @NotNull MapCodec<AdvancedCrystallizer> codec()
 		{
-			return new AdvancedCrystallizer(recipeID, friendlyByteBuf);
+			return CODEC;
 		}
 		
-		@Override
-		public void toNetwork(@NotNull FriendlyByteBuf friendlyByteBuf, AdvancedCrystallizer recipe)
+		public @NotNull StreamCodec<RegistryFriendlyByteBuf, AdvancedCrystallizer> streamCodec()
 		{
-			recipe.toNetwork(friendlyByteBuf);
+			return STREAM_CODEC;
 		}
 	}
 }

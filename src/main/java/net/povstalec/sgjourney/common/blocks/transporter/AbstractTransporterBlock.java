@@ -1,20 +1,19 @@
 package net.povstalec.sgjourney.common.blocks.transporter;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -27,6 +26,9 @@ import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock implements ProtectedBlock
 {
@@ -58,23 +60,23 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
     }
 	
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player)
 	{
 		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
 		
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
 		{
-			transporter.saveToItem(stack);
+			transporter.saveToItem(stack, level.registryAccess());
 			if(transporter.hasCustomName())
-				stack.setHoverName(transporter.getCustomName());
+				stack.set(DataComponents.ITEM_NAME, transporter.getCustomName());
 		}
 		
 		return stack;
 	}
 	
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		BlockEntity blockentity = level.getBlockEntity(pos);
 		if(blockentity instanceof AbstractTransporterEntity<?> transporter)
@@ -83,9 +85,9 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 			{
 				ItemStack itemstack = new ItemStack(asItem());
 				
-				blockentity.saveToItem(itemstack);
+				blockentity.saveToItem(itemstack, level.registryAccess());
 				if(transporter.hasCustomName())
-					itemstack.setHoverName(transporter.getCustomName());
+					itemstack.set(DataComponents.ITEM_NAME, transporter.getCustomName());
 					
 
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
@@ -94,11 +96,11 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 			}
 		}
 
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	@Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -116,7 +118,7 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractTransporterEntity.GENERATION_STEP)))
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 	
 	@Nullable

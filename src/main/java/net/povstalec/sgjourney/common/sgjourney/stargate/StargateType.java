@@ -16,7 +16,7 @@ import java.util.Optional;
 public class StargateType<S extends Stargate>
 {
 	public static final String STARGATE_TYPE = "stargate_type";
-	public static final ResourceLocation STARGATE_TYPE_LOCATION = new ResourceLocation(StargateJourney.MODID, STARGATE_TYPE);
+	public static final ResourceLocation STARGATE_TYPE_LOCATION = StargateJourney.sgjourneyLocation(STARGATE_TYPE);
 	public static final ResourceKey<Registry<StargateType<?>>> REGISTRY_KEY = ResourceKey.createRegistryKey(STARGATE_TYPE_LOCATION);
 	public static final Codec<ResourceKey<StargateType<?>>> RESOURCE_KEY_CODEC = ResourceKey.codec(ResourceKey.createRegistryKey(STARGATE_TYPE_LOCATION));
 	
@@ -44,12 +44,12 @@ public class StargateType<S extends Stargate>
 	
 	public static ResourceLocation getKey(StargateType<?> type)
 	{
-		return StargateInit.STARGATE_TYPE.get().getKey(type);
+		return StargateInit.STARGATE_TYPE_REGISTRY.getKey(type);
 	}
 	
 	public static StargateType<?> getType(ResourceLocation key)
 	{
-		return StargateInit.STARGATE_TYPE.get().getValue(key);
+		return StargateInit.STARGATE_TYPE_REGISTRY.get(key);
 	}
 	
 	public static boolean tagHasStargateType(CompoundTag tag)

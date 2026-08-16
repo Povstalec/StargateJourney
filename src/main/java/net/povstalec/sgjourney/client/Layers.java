@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client;
 
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.entity.*;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;

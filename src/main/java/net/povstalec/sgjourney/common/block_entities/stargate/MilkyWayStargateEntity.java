@@ -1,15 +1,15 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
@@ -17,7 +17,6 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -27,6 +26,8 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlockEntityStargate>
 {
@@ -48,9 +49,9 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -58,17 +59,17 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
     	
-    	super.deserializeStargateInfo(tag, isUpgraded);
+    	super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -78,9 +79,9 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(net, packet);
+		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
@@ -145,7 +146,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
+					PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
 				this.isChevronOpen = true;
 				updateClient();
 				

@@ -8,7 +8,7 @@ import net.povstalec.sgjourney.common.entities.TriniumArrow;
 
 public class TriniumArrowRenderer extends ArrowRenderer<TriniumArrow>
 {
-	private static final ResourceLocation TEXTURE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/trinium_arrow.png");
+	private static final ResourceLocation TEXTURE_LOCATION = StargateJourney.sgjourneyLocation("textures/entity/trinium_arrow.png");
 	
 	public TriniumArrowRenderer(EntityRendererProvider.Context context)
 	{

@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.structures;
 
-import java.util.Optional;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -22,12 +20,15 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pools.JigsawPlacement;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.alias.PoolAliasLookup;
+import net.minecraft.world.level.levelgen.structure.structures.JigsawStructure;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonGenerationConfig;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
 public abstract class SGJourneyStructure extends Structure
@@ -105,7 +106,10 @@ public abstract class SGJourneyStructure extends Structure
 						blockPos,
 						false,
 						Optional.ofNullable(this.projectStartToHeightmap),
-						this.maxDistanceFromCenter) :
+						this.maxDistanceFromCenter,
+						PoolAliasLookup.EMPTY,
+						JigsawStructure.DEFAULT_DIMENSION_PADDING,
+						JigsawStructure.DEFAULT_LIQUID_SETTINGS) :
 				SGJourneyJigsawPlacement.addPieces(
 						context,
 						getStartPool(),
@@ -115,7 +119,10 @@ public abstract class SGJourneyStructure extends Structure
 						false,
 						Optional.ofNullable(this.projectStartToHeightmap),
 						this.maxDistanceFromCenter,
-						this.rotation);
+						this.rotation,
+						PoolAliasLookup.EMPTY,
+						JigsawStructure.DEFAULT_DIMENSION_PADDING,
+						JigsawStructure.DEFAULT_LIQUID_SETTINGS);
 	}
 	
 	@Override

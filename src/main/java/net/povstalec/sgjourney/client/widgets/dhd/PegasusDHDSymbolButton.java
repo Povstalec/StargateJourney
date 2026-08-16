@@ -9,8 +9,8 @@ import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 public class PegasusDHDSymbolButton extends GenericDHDSymbolButton
 {
-	public static final ResourceLocation PEGASUS_BUTTONS = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_buttons.png");
-	public static final ResourceLocation PEGASUS_BUTTONS_OVERLAY = new ResourceLocation(StargateJourney.MODID, "textures/gui/dhd/pegasus/pegasus_dhd_buttons_overlay.png");
+	public static final ResourceLocation PEGASUS_BUTTONS = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_buttons.png");
+	public static final ResourceLocation PEGASUS_BUTTONS_OVERLAY = StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_buttons_overlay.png");
 	
 	protected final int canonSymbol;
 	

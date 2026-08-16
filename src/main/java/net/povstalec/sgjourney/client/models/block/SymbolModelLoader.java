@@ -13,14 +13,13 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.ElementsModel;
-import net.minecraftforge.client.model.IModelBuilder;
-import net.minecraftforge.client.model.QuadTransformers;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.minecraftforge.client.model.geometry.IGeometryLoader;
-import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
-import net.minecraftforge.client.model.geometry.SimpleUnbakedGeometry;
+import net.neoforged.neoforge.client.RenderTypeGroup;
+import net.neoforged.neoforge.client.model.IModelBuilder;
+import net.neoforged.neoforge.client.model.QuadTransformers;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
+import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
+import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.model.geometry.SimpleUnbakedGeometry;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +74,7 @@ public abstract class SymbolModelLoader<T extends IUnbakedGeometry<T>> implement
 													   RenderTypeGroup renderTypes, int symbolTint);
 		
 		@Override
-		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ItemOverrides overrides)
 		{
 			TextureAtlasSprite particle = spriteGetter.apply(context.getMaterial("particle"));
 			
@@ -84,13 +83,13 @@ public abstract class SymbolModelLoader<T extends IUnbakedGeometry<T>> implement
 			IModelBuilder<?> builder = getBuilder(context.useAmbientOcclusion(), context.useBlockLight(), context.isGui3d(),
 					context.getTransforms(), overrides, particle, renderTypes, symbolTint);
 			
-			addQuads(context, builder, baker, spriteGetter, modelState, modelLocation);
+			addQuads(context, builder, baker, spriteGetter, modelState);
 			
 			return builder.build();
 		}
 		
 		@Override
-		protected void addQuads(IGeometryBakingContext context, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState, ResourceLocation modelLocation)
+		protected void addQuads(IGeometryBakingContext context, IModelBuilder<?> modelBuilder, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState)
 		{
 			// If there is a root transform, undo the ModelState transform, apply it, then re-apply the ModelState transform.
 			// This is necessary because of things like UV locking, which should only respond to the ModelState, and as such
@@ -103,14 +102,14 @@ public abstract class SymbolModelLoader<T extends IUnbakedGeometry<T>> implement
 				for(Direction direction : element.faces.keySet())
 				{
 					BlockElementFace face = element.faces.get(direction);
-					TextureAtlasSprite sprite = spriteGetter.apply(context.getMaterial(face.texture));
-					BakedQuad quad = BlockModel.bakeFace(element, face, sprite, direction, modelState, modelLocation);
+					TextureAtlasSprite sprite = spriteGetter.apply(context.getMaterial(face.texture()));
+					BakedQuad quad = BlockModel.bakeFace(element, face, sprite, direction, modelState);
 					postTransform.processInPlace(quad);
 					
-					if(face.cullForDirection == null)
+					if(face.cullForDirection() == null)
 						modelBuilder.addUnculledFace(quad);
 					else
-						modelBuilder.addCulledFace(modelState.getRotation().rotateTransform(face.cullForDirection), quad);
+						modelBuilder.addCulledFace(modelState.getRotation().rotateTransform(face.cullForDirection()), quad);
 				}
 			}
 		}

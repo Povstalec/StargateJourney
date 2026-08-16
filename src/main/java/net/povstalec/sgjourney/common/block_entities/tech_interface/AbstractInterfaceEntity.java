@@ -2,14 +2,13 @@ package net.povstalec.sgjourney.common.block_entities.tech_interface;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.ModList;
+import net.neoforged.fml.ModList;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
@@ -21,7 +20,6 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blocks.tech_interface.AbstractInterfaceBlock;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
-import net.povstalec.sgjourney.common.capabilities.CCTweakedCapabilities;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
@@ -33,7 +31,7 @@ import javax.annotation.Nullable;
 
 public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 {
-	public static final String ENERGY_TARGET = "EnergyTarget";
+	public static final String ENERGY_TARGET = "energy_target";
 
 	public int signalStrength = 0;
 	
@@ -104,17 +102,17 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, registries);
 		energyTarget = tag.getLong(ENERGY_TARGET);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putLong(ENERGY_TARGET, energyTarget);
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 	}
 	
 	//============================================================================================
@@ -122,18 +120,9 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	//============================================================================================
 	
 	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side)
+	public void invalidateCapabilities()
 	{
-		if(peripheralWrapper != null && cap == CCTweakedCapabilities.CAPABILITY_PERIPHERAL)
-			return peripheralWrapper.getPeripheral().cast();
-			
-		return super.getCapability(cap, side);
-	}
-
-	@Override
-	public void invalidateCaps()
-	{
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 		if(this.peripheralWrapper != null)
 			this.peripheralWrapper.getPeripheral().invalidate();
 	}
@@ -143,7 +132,11 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		requiresUpdate = true;
 		
 		if(peripheralWrapper != null)
-			return peripheralWrapper.resetInterface();
+		{
+			boolean result = peripheralWrapper.resetInterface();
+			level.invalidateCapabilities(pos);
+			return result;
+		}
 		
 		if(level.getBlockState(pos).getBlock() instanceof AbstractInterfaceBlock ccInterface)
 			ccInterface.updateInterface(state, level, pos);
@@ -304,6 +297,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	{
 		if(!ModList.get().isLoaded(StargateJourney.COMPUTERCRAFT_MODID))
 			return;
+		
 		if(this.peripheralWrapper != null)
 			this.peripheralWrapper.queueEvent(eventName, objects);
 	}

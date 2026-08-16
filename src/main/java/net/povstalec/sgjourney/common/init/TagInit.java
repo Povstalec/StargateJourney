@@ -20,7 +20,7 @@ public class TagInit
 		
 		private static TagKey<Item> tag(String name)
 		{
-            return ItemTags.create(new ResourceLocation(StargateJourney.MODID, name));
+            return ItemTags.create(StargateJourney.sgjourneyLocation(name));
         }
 		
 		public static TagKey<Item> createTag(String name)
@@ -42,9 +42,12 @@ public class TagInit
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
 		public static final TagKey<Block> TRINIUM_ARROW_CAN_BREAK = tag("trinium_arrow_can_break");
 		
+		public static final TagKey<Block> INCORRECT_FOR_NAQUADAH_TOOL = tag("incorrect_for_naquadah_tool");
+		public static final TagKey<Block> INCORRECT_FOR_TRINIUM_TOOL = tag("incorrect_for_trinium_tool");
+		
 		private static TagKey<Block> tag(String name)
 		{
-            return BlockTags.create(new ResourceLocation(StargateJourney.MODID, name));
+            return BlockTags.create(StargateJourney.sgjourneyLocation(name));
         }
 		
 		public static TagKey<Block> createTag(String name)
@@ -70,7 +73,7 @@ public class TagInit
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
-            return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(StargateJourney.MODID, name));
+            return TagKey.create(Registries.ENTITY_TYPE, StargateJourney.sgjourneyLocation(name));
         }
 		
 		public static TagKey<EntityType<?>> createTag(String name)
@@ -101,7 +104,7 @@ public class TagInit
 		
 		private static TagKey<Structure> tag(String name)
 		{
-			return TagKey.create(Registries.STRUCTURE, new ResourceLocation(StargateJourney.MODID, name));
+			return TagKey.create(Registries.STRUCTURE, StargateJourney.sgjourneyLocation(name));
 		}
 		
 		public static TagKey<Structure> createTag(String name)

@@ -13,7 +13,7 @@ public class ClassicDHDMenu extends AbstractDHDMenu<ClassicDHDEntity>
 	
 	public ClassicDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		this(containerId, inventory, (ClassicDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		this(containerId, inventory, (ClassicDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 
     public ClassicDHDMenu(int containerId, Inventory inventory, ClassicDHDEntity dhd)

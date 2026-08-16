@@ -6,15 +6,17 @@ import net.minecraft.client.renderer.block.model.BlockElement;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.event.ModelEvent;
-import net.minecraftforge.client.model.IModelBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.client.RenderTypeGroup;
+import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.IModelBuilder;
+import net.povstalec.sgjourney.StargateJourney;
 
 import java.util.List;
 
 public class CartoucheModelLoader extends SymbolModelLoader<CartoucheModelLoader.CartoucheModelGeometry>
 {
-	public static final String CARTOUCHE_LOADER = "cartouche_loader";
+	public static final ResourceLocation CARTOUCHE_LOADER = StargateJourney.sgjourneyLocation("cartouche_loader");
 	
 	@Override
 	public CartoucheModelGeometry getGeometry(JsonObject jsonObject, JsonDeserializationContext deserializationContext, List<BlockElement> elements, int symbolTint)

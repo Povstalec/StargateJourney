@@ -35,7 +35,7 @@ public class StargateMethods
 		{
 			return "getRecentFeedback";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -50,7 +50,7 @@ public class StargateMethods
 		{
 			return "sendStargateMessage";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -66,7 +66,7 @@ public class StargateMethods
 		{
 			return "getStargateVariant";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -81,7 +81,7 @@ public class StargateMethods
 		{
 			return "getPointOfOrigin";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -96,7 +96,7 @@ public class StargateMethods
 		{
 			return "getSymbols";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -126,7 +126,7 @@ public class StargateMethods
 		{
 			return "engageSymbol";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -148,7 +148,7 @@ public class StargateMethods
 		{
 			return "getDialedAddress";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -163,7 +163,7 @@ public class StargateMethods
 		{
 			return "setChevronConfiguration";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
@@ -316,7 +316,7 @@ public class StargateMethods
 			return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.getRestrictNetwork(stargate).value});
 		}
 	}
-
+	
 	// Advanced Crystal Interface
 	public static class ConnectedAddress implements InterfaceMethod<AbstractStargateEntity<?>>
 	{
@@ -325,7 +325,7 @@ public class StargateMethods
 		{
 			return "getConnectedAddress";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -340,7 +340,7 @@ public class StargateMethods
 		{
 			return "getLocalAddress";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{

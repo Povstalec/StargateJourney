@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 
 public interface BlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends Stargate
 {
-	String COORDINATES = "Coordinates";
+	String COORDINATES = "Coordinates"; //TODO Change to snake_case
 	
 	BlockPos getBlockPos();
 	
@@ -323,7 +323,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 					
 					if(stargate instanceof IrisStargateEntity<?> irisStargate && !getWormhole().checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 					{
-						getWormhole().handleShielding(irisStargate, traveler);
+						getWormhole().handleShielding(getServer(), irisStargate, traveler);
 						return traveler;
 					}
 					

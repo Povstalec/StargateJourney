@@ -1,11 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.*;
-import java.util.function.Predicate;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -13,17 +9,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Galaxy
 {
-	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(StargateJourney.MODID, "galaxy"));
+	public static final ResourceKey<Registry<Galaxy>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("galaxy"));
 	public static final Codec<ResourceKey<Galaxy>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	public static final String NAME = "name";

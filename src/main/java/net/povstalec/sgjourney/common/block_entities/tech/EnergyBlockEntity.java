@@ -1,5 +1,9 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -12,52 +16,43 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+
+import javax.annotation.Nullable;
 
 public abstract class EnergyBlockEntity extends BlockEntity
 {
-	public static final String ENERGY = "Energy"; // TODO Change this to "energy"
+	public static final String ENERGY = "energy";
 	
 	public final SGJourneyEnergy energyStorage;
-	protected LazyOptional<IEnergyStorage> lazyEnergyHandler;
+	protected Lazy<IEnergyStorage> lazyEnergyHandler;
 	
 	public EnergyBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
 		this.energyStorage = createEnergyStorage();
-		this.lazyEnergyHandler = LazyOptional.empty();
+		this.lazyEnergyHandler = Lazy.of(() -> energyStorage);
 	}
 	
 	@Override
-	public void onLoad()
-	{
-		lazyEnergyHandler = LazyOptional.of(() -> energyStorage);
-		super.onLoad();
-	}
-	
-	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
 		lazyEnergyHandler.invalidate();
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 	}
 	
 	@Override
-	public void load(CompoundTag nbt)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(nbt);
-		energyStorage.setEnergy(nbt.getLong(ENERGY));
+		super.loadAdditional(tag, registries);
+		energyStorage.setEnergy(tag.getLong(ENERGY));
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt);
-		nbt.putLong(ENERGY, energyStorage.getTrueEnergyStored());
+		super.saveAdditional(tag, registries);
+		tag.putLong(ENERGY, energyStorage.getTrueEnergyStored());
 	}
 	
 	@Override
@@ -67,9 +62,9 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		return this.saveWithoutMetadata();
+		return this.saveWithoutMetadata(registries);
 	}
 	
 	public void updateClient()
@@ -82,13 +77,18 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	public SGJourneyEnergy getEnergyStorage()
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
-			return lazyEnergyHandler.cast();
+		return energyStorage;
+	}
+	
+	@Nullable
+	public IEnergyStorage getEnergyHandler(Direction side)
+	{
+		if(isCorrectEnergySide(side))
+			return lazyEnergyHandler.get();
 		
-		return super.getCapability(capability, side);
+		return null;
 	}
 	
 	//============================================================================================
@@ -233,17 +233,23 @@ public abstract class EnergyBlockEntity extends BlockEntity
 			if(blockentity == null)
 				return;
 			
-			blockentity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(this::fillEnergyStorage);
+			IEnergyStorage energyStorage = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection), outputDirection.getOpposite());
+			if(energyStorage != null)
+				fillEnergyStorage(energyStorage);
 		}
 	}
 	
 	public void extractItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::drainEnergyStorage);
+		IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		if(itemEnergy != null)
+			drainEnergyStorage(itemEnergy);
 	}
 	
 	public void fillItemEnergy(ItemStack stack)
 	{
-		stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(this::fillEnergyStorage);
+		IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+		if(itemEnergy != null)
+			fillEnergyStorage(itemEnergy);
 	}
 }

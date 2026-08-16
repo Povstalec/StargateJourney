@@ -3,6 +3,12 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
@@ -19,12 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
@@ -33,9 +33,10 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 
 public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
+	public static final String INVENTORY = "inventory";
+	
 	private final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
-	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
+	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
 	
 	protected boolean isProtected = false;
 	
@@ -45,48 +46,48 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
-		super.invalidateCaps();
-		lazyEnergyHandler.invalidate();
+		super.invalidateCapabilities();
+		lazyItemHandler.invalidate();
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.load(tag);
-		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+		super.loadAdditional(nbt, registries);
+		itemHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
 		
-		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
-			isProtected = tag.getBoolean(PROTECTED);
+		if(nbt.contains(PROTECTED, CompoundTag.TAG_BYTE))
+			isProtected = nbt.getBoolean(PROTECTED);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
-		tag.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(nbt, registries);
+		nbt.put(INVENTORY, itemHandler.serializeNBT(registries));
 		
 		if(isProtected)
-			tag.putBoolean(PROTECTED, true);
-	}
-	
-	public LazyOptional<IItemHandler> getItemHandler()
-	{
-		return lazyItemHandler.cast();
+			nbt.putBoolean(PROTECTED, true);
 	}
 	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
+	public IItemHandler getItemHandler()
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
-			return lazyItemHandler.cast();
+		return lazyItemHandler.get();
+	}
+	
+	@Nullable
+	public IItemHandler getItemHandler(Direction side)
+	{
+		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
+			return lazyItemHandler.get();
 		
-		return super.getCapability(capability, side);
+		return null;
 	}
 	
 	//============================================================================================
@@ -182,7 +183,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		
 		if(stack.is(ItemInit.ZPM.get()))
 		{
-			stack.getCapability(ForgeCapabilities.ENERGY).ifPresent(itemEnergy ->
+			IEnergyStorage itemEnergy = stack.getCapability(Capabilities.EnergyStorage.ITEM);
+			if(itemEnergy != null)
 			{
 				if(itemEnergy instanceof ZeroPointEnergy zpmEnergy)
 				{
@@ -191,7 +193,8 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 					if(blockEntity == null)
 						return;
 					
-					blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
+					IEnergyStorage otherEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, getBlockPos().relative(outputDirection), outputDirection.getOpposite());
+					if(otherEnergy != null)
 					{
 						if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
@@ -208,9 +211,9 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 							zpmEnergy.extractLongEnergy(simulatedReceiveAmount, false);
 							otherEnergy.receiveEnergy(simulatedReceiveAmount, false);
 						}
-					});
+					}
 				}
-			});
+			}
 		}
 	}
 	

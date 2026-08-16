@@ -1,11 +1,12 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 public class ConfigScreen extends Screen
 {
@@ -39,10 +40,14 @@ public class ConfigScreen extends Screen
     }
 	
 	@Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
-        super.render(poseStack, mouseX, mouseY, partialTick);
+		super.render(graphics, mouseX, mouseY, partialTick);
+        graphics.drawString(this.font, this.title, this.width / 2, 8, 16777215);
     }
+	
+	public static void registerConfigScreen(ModContainer modContainer)
+	{
+		modContainer.registerExtensionPoint(IConfigScreenFactory.class, (mc, parent) -> new ConfigScreen(parent));
+	}
 }

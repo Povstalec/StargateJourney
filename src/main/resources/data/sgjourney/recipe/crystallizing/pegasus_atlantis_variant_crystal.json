@@ -1,0 +1,16 @@
+{
+	"type": "sgjourney:crystallizing",
+	"crystal_base": {"ingredient": {"item": "sgjourney:stargate_variant_crystal"}, "amount": 1},
+	"primary_ingredient": {"ingredient": {"item": "sgjourney:naquadah"}, "amount": 1, "deplete": true},
+	"secondary_ingredient": {"ingredient": {"item": "minecraft:lapis_lazuli"}, "amount": 1, "deplete": true},
+	"output":
+	{
+		"id": "sgjourney:stargate_variant_crystal",
+		"components":
+		{
+			"sgjourney:stargate_variant": "sgjourney:pegasus_atlantis"
+		}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
+}

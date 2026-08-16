@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.entities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -9,19 +11,15 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
-import net.minecraft.world.entity.projectile.ThrowableProjectile;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.TheEndGatewayBlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.BlockSnapshot;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.util.BlockSnapshot;
+import net.neoforged.neoforge.event.EventHooks;
 import net.povstalec.sgjourney.common.init.TagInit;
 
 public class PlasmaProjectile extends Projectile
@@ -46,29 +44,29 @@ public class PlasmaProjectile extends Projectile
 	protected void onHit(HitResult hitResult)
 	{
 		super.onHit(hitResult);
-		if(!this.level.isClientSide())
+		if(!this.level().isClientSide())
 		{
-			boolean canDestroy = ForgeEventFactory.getMobGriefingEvent(this.level, this.getOwner());
-			this.level.explode((Entity)this.getOwner(), this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy,
+			boolean canDestroy = EventHooks.canEntityGrief(this.level(), this.getOwner());
+			this.level().explode((Entity)this.getOwner(), this.getX(), this.getY(), this.getZ(), this.explosionPower, canDestroy,
 					canDestroy ? Level.ExplosionInteraction.TNT : Level.ExplosionInteraction.NONE);
 			this.discard();
 		}
-		
 	}
 	
 	@Override
 	protected void onHitEntity(EntityHitResult hitResult)
 	{
 		super.onHitEntity(hitResult);
-		if(!this.level.isClientSide())
+		if(!this.level().isClientSide())
 		{
 			Entity entity = hitResult.getEntity();
 			Entity attacker = this.getOwner();
 			
-			entity.hurt(DamageSource.explosion(entity, attacker), 14.0F);
+			DamageSource source = level().damageSources().explosion(entity, attacker);
+			entity.hurt(source, 14.0F);
 			
 			if(attacker instanceof LivingEntity)
-				this.doEnchantDamageEffects((LivingEntity)attacker, entity);
+				EnchantmentHelper.doPostAttackEffects((ServerLevel) this.level(), entity, source);
 		}
 	}
 	
@@ -77,14 +75,14 @@ public class PlasmaProjectile extends Projectile
 	{
 		super.onHitBlock(result);
 		
-		if(!this.level.isClientSide())
+		if(!this.level().isClientSide())
 		{
 			Entity entity = this.getOwner();
-			if(!(entity instanceof Mob) || ForgeEventFactory.getMobGriefingEvent(this.level, entity))
+			if(!(entity instanceof Mob) || EventHooks.canEntityGrief(this.level(), entity))
 			{
 				BlockPos blockpos = result.getBlockPos().relative(result.getDirection());
 				
-				if(this.level.isEmptyBlock(blockpos))
+				if(this.level().isEmptyBlock(blockpos))
 				{
 					for(Direction direction : Direction.values())
 					{
@@ -98,61 +96,41 @@ public class PlasmaProjectile extends Projectile
 	
 	private boolean trySetFireToBlock(BlockPos blockpos, BlockPos nearbyPos, Direction direction)
 	{
-		if(this.level.getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE) && !ForgeEventFactory.onBlockPlace(this.getOwner(), BlockSnapshot.create(level.dimension(), level, blockpos), direction))
+		if(this.level().getBlockState(nearbyPos).is(TagInit.Blocks.PLASMA_FLAMMABLE) && !EventHooks.onBlockPlace(this.getOwner(), BlockSnapshot.create(level().dimension(), level(), blockpos), direction))
 		{
-			this.level.setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level, blockpos));
+			this.level().setBlockAndUpdate(blockpos, BaseFireBlock.getState(this.level(), blockpos));
 			return true;
 		}
 		return false;
 	}
 	
 	@Override
-	protected void defineSynchedData()
+	protected void defineSynchedData(SynchedEntityData.Builder builder)
 	{
-		
+	
 	}
 	
 	@Override
 	public void tick()
 	{
 		super.tick();
-		HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
-		boolean flag = false;
-		if (hitresult.getType() == HitResult.Type.BLOCK)
-		{
-			BlockPos blockpos = ((BlockHitResult)hitresult).getBlockPos();
-			BlockState blockstate = this.level.getBlockState(blockpos);
-			if (blockstate.is(Blocks.NETHER_PORTAL))
-			{
-				this.handleInsidePortal(blockpos);
-				flag = true;
-			}
-			else if (blockstate.is(Blocks.END_GATEWAY))
-			{
-				BlockEntity blockentity = this.level.getBlockEntity(blockpos);
-				if(blockentity instanceof TheEndGatewayBlockEntity && TheEndGatewayBlockEntity.canEntityTeleport(this))
-					TheEndGatewayBlockEntity.teleportEntity(this.level, blockpos, blockstate, this, (TheEndGatewayBlockEntity)blockentity);
-				
-				flag = true;
-			}
-		}
-		
-		if (hitresult.getType() != HitResult.Type.MISS && !flag && !ForgeEventFactory.onProjectileImpact(this, hitresult))
-			this.onHit(hitresult);
+		HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
+		if(hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult))
+			this.hitTargetOrDeflectSelf(hitresult);
 		
 		this.checkInsideBlocks();
 		Vec3 vec3 = this.getDeltaMovement();
-		double d2 = this.getX() + vec3.x;
-		double d0 = this.getY() + vec3.y;
-		double d1 = this.getZ() + vec3.z;
+		double d0 = this.getX() + vec3.x;
+		double d1 = this.getY() + vec3.y;
+		double d2 = this.getZ() + vec3.z;
 		this.updateRotation();
 		float f;
-		if (this.isInWater())
+		if(this.isInWater())
 		{
 			for(int i = 0; i < 4; ++i)
 			{
 				float f1 = 0.25F;
-				this.level.addParticle(ParticleTypes.BUBBLE, d2 - vec3.x * 0.25, d0 - vec3.y * 0.25, d1 - vec3.z * 0.25, vec3.x, vec3.y, vec3.z);
+				this.level().addParticle(ParticleTypes.BUBBLE, d0 - vec3.x * 0.25, d1 - vec3.y * 0.25, d2 - vec3.z * 0.25, vec3.x, vec3.y, vec3.z);
 			}
 			
 			f = 0.8F;
@@ -161,16 +139,12 @@ public class PlasmaProjectile extends Projectile
 			f = 0.99F;
 		
 		this.setDeltaMovement(vec3.scale((double)f));
-		if (!this.isNoGravity())
-		{
-			Vec3 vec31 = this.getDeltaMovement();
-			this.setDeltaMovement(vec31.x, vec31.y - (double)this.getGravity(), vec31.z);
-		}
-		
-		this.setPos(d2, d0, d1);
+		this.applyGravity();
+		this.setPos(d0, d1, d2);
 	}
 	
-	protected float getGravity() {
-		return 0.03F;
+	@Override
+	protected double getDefaultGravity() {
+		return 0.03;
 	}
 }

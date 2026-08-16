@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.entities;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -8,27 +7,24 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.capabilities.JaffaPouchProvider;
+import net.povstalec.sgjourney.common.capabilities.JaffaPouch;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StaffWeaponItem;
-import net.povstalec.sgjourney.common.items.VialItem;
 
 import javax.annotation.Nullable;
 
 public class Jaffa extends Human
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/player/wide/efe.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.parse("textures/entity/player/wide/efe.png");
 	
-	private static final ResourceLocation ABYDOS = new ResourceLocation(StargateJourney.MODID,"abydos");
+	private static final ResourceLocation ABYDOS = StargateJourney.sgjourneyLocation("abydos");
 	
 	public Jaffa(EntityType<? extends Jaffa> type, Level level)
 	{
@@ -77,28 +73,29 @@ public class Jaffa extends Human
 	
 	@Override
 	@Nullable
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType type, @Nullable SpawnGroupData spawnGroupData, @Nullable CompoundTag tag)
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, @Nullable SpawnGroupData spawnGroupData)
 	{
 		RandomSource randomSource = level.getRandom();
 		
-		spawnGroupData = super.finalizeSpawn(level, difficulty, type, spawnGroupData, tag);
+		spawnGroupData = super.finalizeSpawn(level, difficulty, spawnType, spawnGroupData);
 		
 		setItemInHand(InteractionHand.MAIN_HAND, StaffWeaponItem.filledStaffWeapon(randomSource.nextFloat() > difficulty.getDifficulty().getId() / 3F, (int) (randomSource.nextFloat() * CommonTechConfig.vial_capacity.get())));
 		
-		if(type != MobSpawnType.EVENT)
+		if(spawnType != MobSpawnType.EVENT)
 		{
-			if(type == MobSpawnType.NATURAL)
+			if(spawnType == MobSpawnType.NATURAL)
 				setupDimensionHelmet(level, randomSource);
 			else
 				setupHelmet();
 			setupArmor();
 		}
 		
-		this.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch ->
+		JaffaPouch jaffaPouch = this.getCapability(JaffaPouch.JAFFA_POUCH_CAPABILITY);
+		if(jaffaPouch != null)
 		{
 			jaffaPouch.setPouch(true);
 			jaffaPouch.setGoauldInfo(new Goauld.Info(null, Goauld.MAX_HEALTH, -20000));
-		});
+		}
 		
 		return spawnGroupData;
 	}

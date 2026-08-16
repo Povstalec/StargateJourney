@@ -50,7 +50,7 @@ public class StargateFilterMethods
 		{
 			return "getFilterType";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -65,7 +65,7 @@ public class StargateFilterMethods
 		{
 			return "setFilterType";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
@@ -83,7 +83,7 @@ public class StargateFilterMethods
 		{
 			return "addToWhitelist";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
@@ -111,7 +111,7 @@ public class StargateFilterMethods
 		{
 			return "removeFromWhitelist";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
@@ -163,7 +163,7 @@ public class StargateFilterMethods
 		{
 			return "addToBlacklist";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
@@ -191,7 +191,7 @@ public class StargateFilterMethods
 		{
 			return "removeFromBlacklist";
 		}
-
+		
 		@SuppressWarnings("unchecked")
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
@@ -226,7 +226,7 @@ public class StargateFilterMethods
 		{
 			return "clearBlacklist";
 		}
-
+		
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{

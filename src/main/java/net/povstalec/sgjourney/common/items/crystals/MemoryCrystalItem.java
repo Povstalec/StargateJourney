@@ -1,15 +1,5 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -17,7 +7,16 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MemoryCrystalItem extends AbstractCrystalItem
 {
@@ -58,9 +57,9 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		return CommonCrystalConfig.memory_crystal_capacity.get();
 	}
-
+	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		ListTag list = getMemoryList(stack);
 		
@@ -110,7 +109,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)
 		{
-			CompoundTag tag = stack.getTag();
+			CompoundTag tag = stack.get(DataComponentInit.CRYSTAL_MEMORY);
 			if(tag != null && containsMemoryListTag(tag))
 				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND).size();
 		}
@@ -165,7 +164,11 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	public static ListTag getMemoryList(ItemStack stack)
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem)
-			return memoryListTagFromCompoundTag(stack.getTag());
+		{
+			CompoundTag tag = stack.get(DataComponentInit.CRYSTAL_MEMORY);
+			if(tag != null && tag.contains(MEMORY_LIST, Tag.TAG_LIST))
+				return tag.getList(MEMORY_LIST, Tag.TAG_COMPOUND);
+		}
 		
 		return new ListTag();
 	}
@@ -174,9 +177,9 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 	{
 		if(stack.getItem() instanceof MemoryCrystalItem && list != null)
 		{
-			CompoundTag tag = stack.getOrCreateTag();
+			CompoundTag tag = stack.getOrDefault(DataComponentInit.CRYSTAL_MEMORY, new CompoundTag());
 			tag.put(MEMORY_LIST, list);
-			stack.setTag(tag);
+			stack.set(DataComponentInit.CRYSTAL_MEMORY, tag);
 		}
 	}
 	

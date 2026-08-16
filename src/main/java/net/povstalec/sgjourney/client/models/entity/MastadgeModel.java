@@ -128,12 +128,11 @@ public class MastadgeModel extends AgeableListModel<Mastadge>
 	}
 	
 	@Override
-	public void prepareMobModel(Mastadge p_102780_, float p_102781_, float p_102782_, float p_102783_)
-	{
-		super.prepareMobModel(p_102780_, p_102781_, p_102782_, p_102783_);
-		float f = Mth.rotlerp(p_102780_.yBodyRotO, p_102780_.yBodyRot, p_102783_);
-		float f1 = Mth.rotlerp(p_102780_.yHeadRotO, p_102780_.yHeadRot, p_102783_);
-		float f2 = Mth.lerp(p_102783_, p_102780_.xRotO, p_102780_.getXRot());
+	public void prepareMobModel(Mastadge entity, float limbSwing, float limbSwingAmount, float partialTick) {
+		super.prepareMobModel(entity, limbSwing, limbSwingAmount, partialTick);
+		float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
+		float f1 = Mth.rotLerp(partialTick, entity.yHeadRotO, entity.yHeadRot);
+		float f2 = Mth.lerp(partialTick, entity.xRotO, entity.getXRot());
 		float f3 = f1 - f;
 		float f4 = f2 * ((float)Math.PI / 180F);
 		if (f3 > 20.0F) {
@@ -144,24 +143,24 @@ public class MastadgeModel extends AgeableListModel<Mastadge>
 			f3 = -20.0F;
 		}
 		
-		if (p_102782_ > 0.2F) {
-			f4 += Mth.cos(p_102781_ * 0.4F) * 0.15F * p_102782_;
+		if (limbSwingAmount > 0.2F) {
+			f4 += Mth.cos(limbSwing * 0.8F) * 0.15F * limbSwingAmount;
 		}
 		
-		float f5 = p_102780_.getEatAnim(p_102783_);
-		float f6 = p_102780_.getStandAnim(p_102783_);
+		float f5 = entity.getEatAnim(partialTick);
+		float f6 = entity.getStandAnim(partialTick);
 		float f7 = 1.0F - f6;
-		float f8 = p_102780_.getMouthAnim(p_102783_);
-		boolean flag = p_102780_.tailCounter != 0;
-		float f9 = (float)p_102780_.tickCount + p_102783_;
+		float f8 = entity.getMouthAnim(partialTick);
+		boolean flag = entity.tailCounter != 0;
+		float f9 = (float)entity.tickCount + partialTick;
 		this.headParts.y = 4.0F;
 		this.headParts.z = -12.0F;
 		this.body.xRot = 0.0F;
 		this.headParts.xRot = ((float)Math.PI / 6F) + f4;
 		this.headParts.yRot = f3 * ((float)Math.PI / 180F);
-		float f10 = p_102780_.isInWater() ? 0.2F : 1.0F;
-		float f11 = Mth.cos(f10 * p_102781_ * 0.6662F + (float)Math.PI);
-		float f12 = f11 * 0.8F * p_102782_;
+		float f10 = entity.isInWater() ? 0.2F : 1.0F;
+		float f11 = Mth.cos(f10 * limbSwing * 0.6662F + (float)Math.PI);
+		float f12 = f11 * 0.8F * limbSwingAmount;
 		float f13 = (1.0F - Math.max(f6, f5)) * (((float)Math.PI / 6F) + f4 + f8 * Mth.sin(f9) * 0.05F);
 		this.headParts.xRot = f6 * (0.2617994F + f4) + f5 * (2.1816616F + Mth.sin(f9) * 0.05F) + f13;
 		this.headParts.yRot = f6 * f3 * ((float)Math.PI / 180F) + (1.0F - Math.max(f6, f5)) * this.headParts.yRot;
@@ -176,13 +175,13 @@ public class MastadgeModel extends AgeableListModel<Mastadge>
 		this.rightFrontLeg.z = this.leftFrontLeg.z;
 		float f16 = ((-(float)Math.PI / 3F) + f15) * f6 + f12 * f7;
 		float f17 = ((-(float)Math.PI / 3F) - f15) * f6 - f12 * f7;
-		this.leftHindLeg.xRot = f14 - f11 * 0.5F * p_102782_ * f7;
-		this.rightHindLeg.xRot = f14 + f11 * 0.5F * p_102782_ * f7;
+		this.leftHindLeg.xRot = f14 - f11 * 0.5F * limbSwingAmount * f7;
+		this.rightHindLeg.xRot = f14 + f11 * 0.5F * limbSwingAmount * f7;
 		this.leftFrontLeg.xRot = f16;
 		this.rightFrontLeg.xRot = f17;
-		this.tail.xRot = ((float)Math.PI / 6F) + p_102782_ * 0.75F;
-		this.tail.y = -5.0F + p_102782_;
-		this.tail.z = 2.0F + p_102782_ * 2.0F;
+		this.tail.xRot = ((float)Math.PI / 6F) + limbSwingAmount * 0.75F;
+		this.tail.y = -5.0F + limbSwingAmount;
+		this.tail.z = 2.0F + limbSwingAmount * 2.0F;
 		if (flag) {
 			this.tail.yRot = Mth.cos(f9 * 0.7F);
 		} else {
@@ -201,7 +200,7 @@ public class MastadgeModel extends AgeableListModel<Mastadge>
 		this.leftFrontBabyLeg.y = this.leftFrontLeg.y;
 		this.leftFrontBabyLeg.z = this.leftFrontLeg.z;
 		this.leftFrontBabyLeg.xRot = this.leftFrontLeg.xRot;
-		boolean flag1 = p_102780_.isBaby();
+		boolean flag1 = entity.isBaby();
 		this.rightHindLeg.visible = !flag1;
 		this.leftHindLeg.visible = !flag1;
 		this.rightFrontLeg.visible = !flag1;

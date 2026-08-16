@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.povstalec.sgjourney.common.world.UniqueStructurePlacement;
 
 public class CommonGenerationConfig
@@ -10,14 +10,14 @@ public class CommonGenerationConfig
 	
 	public static SGJourneyConfigValue.BooleanValue generate_obstructed_stargates;
 
-	public static ForgeConfigSpec.IntValue stargate_generation_center_x_chunk_offset;
-	public static ForgeConfigSpec.IntValue stargate_generation_center_z_chunk_offset;
-	public static ForgeConfigSpec.IntValue stargate_generation_x_bound;
-	public static ForgeConfigSpec.IntValue stargate_generation_z_bound;
-	public static ForgeConfigSpec.IntValue buried_stargate_generation_x_bound;
-	public static ForgeConfigSpec.IntValue buried_stargate_generation_z_bound;
+	public static ModConfigSpec.IntValue stargate_generation_center_x_chunk_offset;
+	public static ModConfigSpec.IntValue stargate_generation_center_z_chunk_offset;
+	public static ModConfigSpec.IntValue stargate_generation_x_bound;
+	public static ModConfigSpec.IntValue stargate_generation_z_bound;
+	public static ModConfigSpec.IntValue buried_stargate_generation_x_bound;
+	public static ModConfigSpec.IntValue buried_stargate_generation_z_bound;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		common_stargate_generation = new SGJourneyConfigValue.BooleanValue(server, "server.common_stargate_generation",
 				false,

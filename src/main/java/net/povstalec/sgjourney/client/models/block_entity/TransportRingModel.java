@@ -58,10 +58,10 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 		return (float) (2 * radius * Math.tan(Math.PI / sides));
 	}
 	
-	private void renderRingSegment(VertexConsumer ringTexture, Matrix4f matrix4, Matrix3f matrix3, int combinedLight)
+	private void renderRingSegment(VertexConsumer ringTexture, Matrix4f matrix4, PoseStack.Pose pose, int combinedLight)
 	{
 		// Outer
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 0, 1,
 				-outerSideLength / 2,
 				height / 2,
 				outerRadius,
@@ -82,7 +82,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				outerRadius,
 				8 / 64F, 13 / 32F);
 		// Inner
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 0, -1,
 				innerSideLength / 2,
 				height / 2,
 				innerRadius,
@@ -103,7 +103,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				innerRadius,
 				7 / 64F, 0);
 		// Top
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 1, 0,
 				-innerSideLength / 2,
 				height / 2,
 				innerRadius,
@@ -124,7 +124,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				innerRadius,
 				7 / 64F, 5 / 32F);
 		// Bottom
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, -1, 0,
 				-outerSideLength / 2,
 				-height / 2,
 				outerRadius,
@@ -146,10 +146,10 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				8 / 64F, 18 / 32F);
 	}
 	
-	private void renderDivider(VertexConsumer ringTexture, Matrix4f matrix4, Matrix3f matrix3, int combinedLight)
+	private void renderDivider(VertexConsumer ringTexture, Matrix4f matrix4,PoseStack.Pose pose, int combinedLight)
 	{
 		// Outer
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 0, 1,
 				-dividerWidth / 2,
 				dividerHeight / 2,
 				ringHalfwayPoint + dividerLength / 2,
@@ -170,7 +170,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				ringHalfwayPoint + dividerLength / 2,
 				18 / 64F, 9 / 32F);
 		// Inner
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 0, -1,
 				dividerWidth / 2,
 				dividerHeight / 2,
 				ringHalfwayPoint - dividerLength / 2,
@@ -191,7 +191,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				ringHalfwayPoint - dividerLength / 2,
 				27 / 64F, 9 / 32F);
 		// Top
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, 1, 0,
 				-dividerWidth / 2,
 				dividerHeight / 2,
 				ringHalfwayPoint - dividerLength / 2,
@@ -212,7 +212,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				ringHalfwayPoint - dividerLength / 2,
 				18 / 64F, 0);
 		// Bottom
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 0, -1, 0,
 				-dividerWidth / 2,
 				-dividerHeight / 2,
 				ringHalfwayPoint + dividerLength / 2,
@@ -233,7 +233,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				ringHalfwayPoint + dividerLength / 2,
 				19 / 64F, 0);
 		// Left
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, -1, 0, 0,
 				-dividerWidth / 2,
 				dividerHeight / 2,
 				ringHalfwayPoint - dividerLength / 2,
@@ -254,7 +254,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 				ringHalfwayPoint + dividerLength / 2,
 				17 / 64F, 9 / 32F);
 		// Right
-		SGJourneyModel.createQuad(ringTexture, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(ringTexture, matrix4, pose, combinedLight, 1, 0, 0,
 				dividerWidth / 2,
 				dividerHeight / 2,
 				ringHalfwayPoint + dividerLength / 2,
@@ -290,7 +290,6 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 		VertexConsumer ringTexture = source.getBuffer(RenderType.entitySolid(texture));
 		
 		Matrix4f matrix4;
-		Matrix3f matrix3;
 		
 		for(int i = 0; i < sides; i++)
 		{
@@ -298,8 +297,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 			stack.pushPose();
 			stack.mulPose(Axis.YP.rotationDegrees(i * angle));
 			matrix4 = stack.last().pose();
-			matrix3 = stack.last().normal();
-			renderRingSegment(ringTexture, matrix4, matrix3, combinedLight);
+			renderRingSegment(ringTexture, matrix4, stack.last(), combinedLight);
 			
 			stack.popPose();
 			
@@ -307,8 +305,7 @@ public class TransportRingModel<TransportRingsEntity extends AbstractTransportRi
 			stack.pushPose();
 			stack.mulPose(Axis.YP.rotationDegrees(i * angle - angle / 2F));
 			matrix4 = stack.last().pose();
-			matrix3 = stack.last().normal();
-			renderDivider(ringTexture, matrix4, matrix3, combinedLight);
+			renderDivider(ringTexture, matrix4, stack.last(), combinedLight);
 			
 			stack.popPose();
 		}

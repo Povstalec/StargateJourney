@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
 
 public class ClientStargateConfig
@@ -23,7 +23,7 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.IntValue stargate_full_sound_distance;
 	public static SGJourneyConfigValue.IntValue stargate_max_sound_distance;
 	
-	public static void init(ForgeConfigSpec.Builder client)
+	public static void init(ModConfigSpec.Builder client)
 	{
 		render_amd = new SGJourneyConfigValue.EnumValue(client, "client.render_amd",
 				RenderAMD.AUTO,

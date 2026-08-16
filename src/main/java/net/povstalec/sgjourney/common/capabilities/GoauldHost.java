@@ -2,32 +2,57 @@ package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.entities.Goauld;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.goals.EvacuateHostGoal;
 import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
+import net.povstalec.sgjourney.common.init.AttachmentTypeInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.items.GoauldItem;
 
 public class GoauldHost
 {
+	public static final String GOAULD_HOST = "goauld_host";
+	
+	public static final EntityCapability<GoauldHost, Void> GOAULD_HOST_CAPABILITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(GOAULD_HOST), GoauldHost.class);
+	
 	public static final String BLOODSTREAM_NAQUADAH = "bloodstream_naquadah";
 	public static final String HOST_DATA = "host_data";
-	public static final String CUSTOM_NAME = "CustomName"; //TODO This needs to change on 1.21.1
+	public static final String CUSTOM_NAME = "custom_name";
 	
 	public static final int HEAL_DURATION = 20 * 5;
+	
+	private final LivingEntity entity;
 	
 	private CompoundTag hostData = null;
 	private Goauld.Info goauldInfo = null;
 	
-	private boolean naquadahInBloodstream = false;
+	private boolean naquadahInBloodstream;
+	
+	public GoauldHost(LivingEntity entity)
+	{
+		this.entity = entity;
+		CompoundTag goauldHost = this.entity.getData(AttachmentTypeInit.GOAULD_HOST);
+		
+		if(goauldHost.contains(Goauld.Info.GOAULD_INFO, CompoundTag.TAG_COMPOUND))
+		{
+			this.goauldInfo = new Goauld.Info();
+			this.goauldInfo.deserializeNBT(entity.getServer().registryAccess(), goauldHost.getCompound(Goauld.Info.GOAULD_INFO));
+		}
+		if(goauldHost.contains(HOST_DATA))
+			this.hostData = goauldHost.getCompound(HOST_DATA);
+		
+		this.naquadahInBloodstream = goauldHost.getBoolean(BLOODSTREAM_NAQUADAH);
+	}
 	
 	public boolean isHost()
 	{
@@ -65,6 +90,7 @@ public class GoauldHost
 		
 		this.goauldInfo = goauldInfo;
 		
+		update(host.getServer());
 		return true;
 	}
 	
@@ -77,6 +103,7 @@ public class GoauldHost
 		if(res)
 			goauld.remove(Entity.RemovalReason.DISCARDED);
 		
+		update(goauld.getServer());
 		return res;
 	}
 	
@@ -85,7 +112,7 @@ public class GoauldHost
 		if(stack == null || !(stack.getItem() instanceof GoauldItem))
 			return false;
 		
-		return takeOverHost(Goauld.Info.fromItemStack(stack), host);
+		return takeOverHost(Goauld.Info.fromItemStack(host.getServer(), stack), host);
 	}
 	
 	public void leaveHost(LivingEntity host)
@@ -93,17 +120,19 @@ public class GoauldHost
 		if(host == null || this.goauldInfo == null)
 			return;
 		
-		Goauld goauld = EntityInit.GOAULD.get().create(host.getLevel());
+		Goauld goauld = EntityInit.GOAULD.get().create(host.level());
 		goauld.moveTo(host.getX(), host.getY(), host.getZ(), host.getYRot(), 0.0F);
 		goauld.setFromInfo(this.goauldInfo);
 		
-		host.getLevel().addFreshEntity(goauld);
+		host.level().addFreshEntity(goauld);
 		
 		if(host instanceof Mob mob)
 			removeGoauldHostMobGoals(mob);
 		if(!(host instanceof Player))
 			restoreHostData(host);
 		goauldInfo = null;
+		
+		update(host.getServer());
 	}
 	
 	//============================================================================================
@@ -133,7 +162,7 @@ public class GoauldHost
 		hostData = new CompoundTag();
 		
 		if(host.getCustomName() != null)
-			hostData.putString(CUSTOM_NAME, Component.Serializer.toJson(host.getCustomName()));
+			hostData.putString(CUSTOM_NAME, Component.Serializer.toJson(host.getCustomName(), host.getServer().registryAccess()));
 	}
 	
 	public void restoreHostData(LivingEntity host)
@@ -141,7 +170,7 @@ public class GoauldHost
 		if(hostData != null)
 		{
 			if(hostData.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
-				host.setCustomName(Component.Serializer.fromJson(hostData.getString(CUSTOM_NAME)));
+				host.setCustomName(Component.Serializer.fromJson(hostData.getString(CUSTOM_NAME), host.getServer().registryAccess()));
 			else
 				host.setCustomName(null);
 		}
@@ -180,28 +209,18 @@ public class GoauldHost
 		this.naquadahInBloodstream = source.naquadahInBloodstream;
 	}
 	
-	public void saveData(CompoundTag tag)
+	public void update(MinecraftServer server)
 	{
+		CompoundTag goauldHost = new CompoundTag();
+		
 		if(this.goauldInfo != null)
-			tag.put(Goauld.Info.GOAULD_INFO, this.goauldInfo.serializeNBT());
+			goauldHost.put(Goauld.Info.GOAULD_INFO, this.goauldInfo.serializeNBT(server.registryAccess()));
 		
 		if(this.hostData != null)
-			tag.put(HOST_DATA, this.hostData);
+			goauldHost.put(HOST_DATA, this.hostData);
 		
-		tag.putBoolean(BLOODSTREAM_NAQUADAH, naquadahInBloodstream);
-	}
-	
-	public void loadData(CompoundTag tag)
-	{
-		if(tag.contains(Goauld.Info.GOAULD_INFO, CompoundTag.TAG_COMPOUND))
-		{
-			this.goauldInfo = new Goauld.Info();
-			this.goauldInfo.deserializeNBT(tag.getCompound(Goauld.Info.GOAULD_INFO));
-		}
+		goauldHost.putBoolean(BLOODSTREAM_NAQUADAH, this.naquadahInBloodstream);
 		
-		if(tag.contains(HOST_DATA, CompoundTag.TAG_COMPOUND))
-			this.hostData = tag.getCompound(HOST_DATA);
-		
-		this.naquadahInBloodstream = tag.getBoolean(BLOODSTREAM_NAQUADAH);
+		this.entity.setData(AttachmentTypeInit.GOAULD_HOST, goauldHost);
 	}
 }

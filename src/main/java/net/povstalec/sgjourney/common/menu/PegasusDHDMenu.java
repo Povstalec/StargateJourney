@@ -13,7 +13,7 @@ public class PegasusDHDMenu extends AbstractDHDMenu<PegasusDHDEntity>
 	
 	public PegasusDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.PEGASUS_DHD.get(), containerId, inventory, (PegasusDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		super(MenuInit.PEGASUS_DHD.get(), containerId, inventory, (PegasusDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 
     public PegasusDHDMenu(int containerId, Inventory inventory, PegasusDHDEntity dhd)

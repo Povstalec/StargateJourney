@@ -12,8 +12,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
-import net.povstalec.sgjourney.client.models.block.SymbolBlockBakedModel;
+import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -55,7 +54,7 @@ public class SymbolBlockItemOverrides extends ItemOverrides
 			return cache.get(key);
 		
 		SymbolBlockModelLoader.SymbolBlockModelGeometry unbaked = this.parent.withSymbolNumberAndTexture(symbolNumber, id == null ? null : ResourceLocation.tryParse(id));
-		BakedModel bakedModel = unbaked.bake(owner, baker, Material::sprite, BlockModelRotation.X0_Y0, this, SymbolBlockBakedModel.ID);
+		BakedModel bakedModel = unbaked.bake(owner, baker, Material::sprite, BlockModelRotation.X0_Y0, this);
 		
 		cache.put(key, bakedModel);
 		return bakedModel;

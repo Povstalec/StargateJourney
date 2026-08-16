@@ -4,8 +4,8 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
 
 public abstract class AbstractDHDMenu<T extends AbstractDHDEntity> extends SGJourneyMenu<T>
@@ -18,12 +18,12 @@ public abstract class AbstractDHDMenu<T extends AbstractDHDEntity> extends SGJou
 	
 	public void engageStargate()
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), -1));
+		PacketDistributor.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), -1));
 	}
     
     public void encodeSymbol(int symbol)
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), symbol));
+		PacketDistributor.sendToServer(new ServerboundDHDUpdatePacket(this.blockEntity.getBlockPos(), symbol));
     }
     
     public boolean isSymbolEngaged(int symbol)

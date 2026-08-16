@@ -1,5 +1,6 @@
 {
-  "precipitation": "rain",
+  "has_precipitation": true,
+  "temperature_modifier": "none",
   "temperature": 0.8,
   "downfall": 0.4,
   "effects": {

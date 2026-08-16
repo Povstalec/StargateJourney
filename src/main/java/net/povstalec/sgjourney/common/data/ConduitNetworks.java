@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.data;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -9,7 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -95,41 +96,40 @@ public class ConduitNetworks extends SavedData
 	
 	//================================================================================================
 	
-	private CompoundTag serializeCables()
+	private CompoundTag serializeCables(HolderLookup.Provider provider)
 	{
 		CompoundTag cables = new CompoundTag();
 		
 		this.cableMap.forEach((id, cableNetwork) ->
 		{
 			if(!cableNetwork.outputs.isEmpty())
-				cables.put(id.toString(), cableNetwork.serializeNBT());
+				cables.put(id.toString(), cableNetwork.serializeNBT(provider));
 		});
 		
 		return cables;
 	}
 	
-	public void serialize(CompoundTag tag)
+	public void serialize(CompoundTag tag, HolderLookup.Provider provider)
 	{
-		CompoundTag cables = serializeCables();
-		
+		CompoundTag cables = serializeCables(provider);
 		tag.put(CABLES, cables);
 	}
 	
-	private void deserializeCables(CompoundTag blockEntityList)
+	private void deserializeCables(HolderLookup.Provider provider, CompoundTag blockEntityList)
 	{
 		CompoundTag cables = blockEntityList.getCompound(CABLES);
 		for(String idString : cables.getAllKeys())
 		{
 			int id = Integer.parseInt(idString);
 			ConduitNetwork cableNetwork = new ConduitNetwork(id);
-			cableNetwork.deserializeNBT(cables.getCompound(idString));
+			cableNetwork.deserializeNBT(provider, cables.getCompound(idString));
 			this.cableMap.put(id, cableNetwork);
 		}
 	}
 	
-	public void deserialize(CompoundTag tag)
+	public void deserialize(HolderLookup.Provider provider, CompoundTag tag)
 	{
-		deserializeCables(tag);
+		deserializeCables(provider, tag);
 	}
 	
 	//================================================================================================
@@ -144,20 +144,25 @@ public class ConduitNetworks extends SavedData
 		return new ConduitNetworks(server);
 	}
 	
-	public static ConduitNetworks load(MinecraftServer server, CompoundTag tag)
+	public static ConduitNetworks load(MinecraftServer server, HolderLookup.Provider provider, CompoundTag tag)
 	{
 		ConduitNetworks data = create(server);
 
 		data.server = server;
-		data.deserialize(tag);
+		data.deserialize(provider, tag);
 		
 		return data;
 	}
 
-	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider)
 	{
-		serialize(tag);
+		serialize(tag, provider);
 		return tag;
+	}
+	
+	public static SavedData.Factory<ConduitNetworks> dataFactory(MinecraftServer server)
+	{
+		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, provider, tag));
 	}
 	
 	@Nonnull
@@ -174,7 +179,7 @@ public class ConduitNetworks extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 	
 	
@@ -277,7 +282,7 @@ public class ConduitNetworks extends SavedData
 		}
 		
 		@Override
-		public CompoundTag serializeNBT()
+		public CompoundTag serializeNBT(HolderLookup.Provider provider)
 		{
 			CompoundTag tag = new CompoundTag();
 			int i = 0;
@@ -291,7 +296,7 @@ public class ConduitNetworks extends SavedData
 		}
 		
 		@Override
-		public void deserializeNBT(CompoundTag tag)
+		public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag)
 		{
 			for(String key : tag.getAllKeys())
 			{

@@ -1,8 +1,11 @@
 package net.povstalec.sgjourney.common.entities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,9 +24,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.INBTSerializable;
-import net.povstalec.sgjourney.common.capabilities.GoauldHostProvider;
+import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.capabilities.GoauldHost;
 import net.povstalec.sgjourney.common.entities.goals.NearestHostGoal;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.GoauldItem;
 import net.povstalec.sgjourney.common.sgjourney.factions.AbstractFaction;
@@ -47,7 +51,7 @@ public class Goauld extends AgeableMob implements FactionMember
 	protected void registerGoals()
 	{
 		this.goalSelector.addGoal(1, new FloatGoal(this));
-		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level));
+		this.goalSelector.addGoal(1, new ClimbOnTopOfPowderSnowGoal(this, this.level()));
 		this.goalSelector.addGoal(4, new MeleeAttackGoal(this, 1.0D, false));
 		this.goalSelector.addGoal(3, new TryFindWaterGoal(this));
 		
@@ -76,12 +80,16 @@ public class Goauld extends AgeableMob implements FactionMember
 	public boolean doHurtTarget(Entity entity)
 	{
 		float damage = (float)this.getAttributeValue(Attributes.ATTACK_DAMAGE);
-		boolean damaged = entity.hurt(DamageSource.mobAttack(this), damage);
+		boolean damaged = entity.hurt(this.damageSources().mobAttack(this), damage);
 		
 		if(damaged && entity instanceof LivingEntity livingEntity)
 		{
 			if(entity.getClass() == Human.class || livingEntity instanceof Player)
-				livingEntity.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(cap -> cap.takeOverHost(this, livingEntity));
+			{
+				GoauldHost cap = livingEntity.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+				if(cap != null)
+					cap.takeOverHost(this, livingEntity);
+			}
 		}
 		
 		return damaged;
@@ -114,7 +122,7 @@ public class Goauld extends AgeableMob implements FactionMember
 	@Override
 	protected InteractionResult mobInteract(Player player, InteractionHand hand)
 	{
-		if(!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+		if(!player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty() || player.level().isClientSide())
 			return InteractionResult.PASS;
 		
 		// Catching the Goa'uld with an empty hand
@@ -141,12 +149,12 @@ public class Goauld extends AgeableMob implements FactionMember
 	
 	public ItemStack saveToItem()
 	{
-		return goauldInfo().toItemStack();
+		return goauldInfo().toItemStack(level().getServer());
 	}
 	
 	public void loadFromItem(ItemStack stack)
 	{
-		setFromInfo(Info.fromItemStack(stack));
+		setFromInfo(Info.fromItemStack(level().getServer(), stack));
 	}
 	
 	
@@ -194,12 +202,12 @@ public class Goauld extends AgeableMob implements FactionMember
 		}
 		
 		@Override
-		public CompoundTag serializeNBT()
+		public CompoundTag serializeNBT(HolderLookup.Provider provider)
 		{
 			CompoundTag tag = new CompoundTag();
 			
 			if(this.name != null)
-				tag.putString(NAME, Component.Serializer.toJson(this.name));
+				tag.putString(NAME, Component.Serializer.toJson(this.name, provider));
 			
 			tag.putFloat(HEALTH, health);
 			tag.putInt(AGE, age);
@@ -208,10 +216,10 @@ public class Goauld extends AgeableMob implements FactionMember
 		}
 		
 		@Override
-		public void deserializeNBT(CompoundTag tag)
+		public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag)
 		{
 			if(tag.contains(NAME, CompoundTag.OBJECT_HEADER))
-				this.name = Component.Serializer.fromJson(tag.getString(NAME));
+				this.name = Component.Serializer.fromJson(tag.getString(NAME), provider);
 			
 			this.health = tag.getFloat(HEALTH);
 			this.age = tag.getInt(AGE);
@@ -222,26 +230,26 @@ public class Goauld extends AgeableMob implements FactionMember
 			return new Info(this.name, this.health, this.age);
 		}
 		
-		public static Info fromItemStack(ItemStack stack)
+		public static Info fromItemStack(MinecraftServer server, ItemStack stack)
 		{
 			Info goauldInfo = new Info();
 			
-			if(stack.getItem() instanceof GoauldItem && stack.getTag() != null && stack.getTag().contains(GOAULD_INFO, CompoundTag.TAG_COMPOUND))
-				goauldInfo.deserializeNBT(stack.getTag().getCompound(GOAULD_INFO));
+			if(stack.get(DataComponentInit.GOAULD_INFO) != null)
+				goauldInfo.deserializeNBT(server.registryAccess(), stack.get(DataComponentInit.GOAULD_INFO));
 			
-			if(stack.hasCustomHoverName())
-				goauldInfo.name = stack.getHoverName();
+			if(stack.get(DataComponents.CUSTOM_NAME) != null)
+				goauldInfo.name = stack.get(DataComponents.CUSTOM_NAME);
 			
 			return goauldInfo;
 		}
 		
-		public ItemStack toItemStack()
+		public ItemStack toItemStack(MinecraftServer server)
 		{
 			ItemStack goauldStack = new ItemStack(ItemInit.GOAULD.get());
-			goauldStack.getOrCreateTag().put(GOAULD_INFO, this.serializeNBT());
+			goauldStack.set(DataComponentInit.GOAULD_INFO, serializeNBT(server.registryAccess()));
 			
 			if(this.name != null)
-				goauldStack.setHoverName(this.name);
+				goauldStack.set(DataComponents.CUSTOM_NAME, this.name);
 			
 			return goauldStack;
 		}

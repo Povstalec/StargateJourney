@@ -1,22 +1,26 @@
 package net.povstalec.sgjourney.client.screens;
 
+import java.util.Iterator;
+
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.GDOButton;
 import net.povstalec.sgjourney.client.widgets.GDOLargeButton;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundGDOUpdatePacket;
 
 public class GDOScreen extends Screen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/gdo/gdo_background.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/gdo/gdo_background.png");
 
 	private final int imageWidth = 240;
 	private final int imageHeight = 120;
@@ -70,33 +74,39 @@ public class GDOScreen extends Screen
 	}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta)
     {
     	RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
-    	this.renderBackground(poseStack);
+    	this.renderBackground(graphics, mouseX, mouseY, delta);
     	int x = (width - imageWidth) / 2;
         int y = (height - imageHeight) / 2;
 
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
-
-    	super.render(poseStack, mouseX, mouseY, delta);
-    	
-    	poseStack.pushPose();
-    	poseStack.scale(0.5F, 0.5F, 0.5F);
-    	poseStack.translate((float)x, (float)y, 0.0F);
-        
-    	renderLabels(poseStack, mouseX, mouseY, x, y);
+        graphics.blit(TEXTURE, x, y, 0, 0, imageWidth, imageHeight);
 		
-		poseStack.popPose();
+		Iterator var5 = this.renderables.iterator();
+		
+		while(var5.hasNext()) {
+			Renderable renderable = (Renderable)var5.next();
+			renderable.render(graphics, mouseX, mouseY, delta);
+		}
+
+        PoseStack stack = graphics.pose();
+        stack.pushPose();
+        stack.scale(0.5F, 0.5F, 0.5F);
+        stack.translate((float)x, (float)y, 0.0F);
+        
+    	renderLabels(graphics, mouseX, mouseY, x, y);
+		
+    	stack.popPose();
     }
     
-    protected void renderLabels(PoseStack stack, int mouseX, int mouseY, float x, float y) 
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY, int x, int y) 
 	{
-    	this.font.draw(stack, Component.literal(idc), x + 266F, y + 104F, 0x2a2927);
-		this.font.draw(stack, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266F, y + 120F, 0x2a2927);
-		this.font.draw(stack, Component.literal(String.valueOf(frequency)), x + 266F, y + 132F, 0x2a2927);
+    	graphics.drawString(this.font, Component.literal(idc), x + 266, y + 104, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.translatable("screen.sgjourney.transceiver.frequency").append(Component.literal(toggledFrequency ? ": #" : ":")), x + 266, y + 120, 0x2a2927, false);
+    	graphics.drawString(this.font, Component.literal(String.valueOf(frequency)), x + 266, y + 132, 0x2a2927, false);
     }
     
     @Override
@@ -149,12 +159,12 @@ public class GDOScreen extends Screen
     
     private void sendTransmission()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGDOUpdatePacket(mainHand, frequency, idc, true));
+		PacketDistributor.sendToServer(new ServerboundGDOUpdatePacket(mainHand, idc, frequency, true));
     }
     
     private void updateServer()
     {
-    	PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGDOUpdatePacket(mainHand, frequency, idc, false));
+		PacketDistributor.sendToServer(new ServerboundGDOUpdatePacket(mainHand, idc, frequency, false));
     }
     
     private void toggleFrequency()

@@ -1,16 +1,17 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,7 +21,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.tech.NaquadahGeneratorEntity;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import org.joml.Vector3d;
 
@@ -50,11 +50,19 @@ public class NaquadahReactorBlock extends NaquadahGeneratorBlock
 	private static final VoxelShape SHAPE_DOWN_SOUTH = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_SOUTH);
 	private static final VoxelShape SHAPE_DOWN_WEST = VoxelShapeProvider.getOrientedShapes(MIN_MAX, FrontAndTop.DOWN_WEST);
 	
+	public static final MapCodec<NaquadahGeneratorMarkIIBlock> CODEC = simpleCodec(NaquadahGeneratorMarkIIBlock::new);
+	
 	public NaquadahReactorBlock(Properties properties)
 	{
 		super(properties);
 	}
-
+	
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec()
+	{
+		return CODEC;
+	}
+	
 	@Override
 	public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -99,9 +107,9 @@ public class NaquadahReactorBlock extends NaquadahGeneratorBlock
 	}
 	
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
-		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     	tooltipComponents.add(Component.translatable("block.sgjourney.naquadah_reactor.description.mode").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
     }
 }

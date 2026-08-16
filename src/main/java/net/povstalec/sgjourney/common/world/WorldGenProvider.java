@@ -7,7 +7,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.FeatureInit;
 import net.povstalec.sgjourney.common.init.PlacedFeatureInit;

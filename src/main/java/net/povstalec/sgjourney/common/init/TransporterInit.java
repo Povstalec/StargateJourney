@@ -1,26 +1,30 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.transporter.*;
-
-import java.util.function.Supplier;
+import net.povstalec.sgjourney.common.sgjourney.transporter.AncientBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.GoauldBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 public class TransporterInit
 {
+	public static final ResourceKey<Registry<TransporterType<?>>> TRANSPORTER_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(TransporterType.TRANSPORTER_TYPE_LOCATION);
+	public static final Registry<TransporterType<?>> TRANSPORTER_TYPE_REGISTRY = new RegistryBuilder<>(TRANSPORTER_TYPE_REGISTRY_KEY).sync(true).create();
 	public static final DeferredRegister<TransporterType<?>> TRANSPORTER_TYPES = DeferredRegister.create(TransporterType.TRANSPORTER_TYPE_LOCATION, StargateJourney.MODID);
-	public static final Supplier<IForgeRegistry<TransporterType<?>>> TRANSPORTER_TYPE = TRANSPORTER_TYPES.makeRegistry(RegistryBuilder::new);
 	
 	
 	
 	// Block Entity Transporters
-	public static final RegistryObject<TransporterType<AncientBlockEntityTransportRings>> ANCIENT_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("ancient_transport_rings", () ->
+	public static final DeferredHolder<TransporterType<?>, TransporterType<AncientBlockEntityTransportRings>> ANCIENT_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("ancient_transport_rings", () ->
 			new TransporterType<>(AncientBlockEntityTransportRings::new));
-	public static final RegistryObject<TransporterType<GoauldBlockEntityTransportRings>> GOAULD_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("goauld_transport_rings", () ->
+	public static final DeferredHolder<TransporterType<?>, TransporterType<GoauldBlockEntityTransportRings>> GOAULD_TRANSPORT_RINGS = TRANSPORTER_TYPES.register("goauld_transport_rings", () ->
 			new TransporterType<>(GoauldBlockEntityTransportRings::new));
 	
 	
@@ -28,5 +32,11 @@ public class TransporterInit
 	public static void register(IEventBus eventBus)
 	{
 		TRANSPORTER_TYPES.register(eventBus);
+	}
+	
+	@SubscribeEvent
+	public static void registerRegistries(NewRegistryEvent event)
+	{
+		event.register(TRANSPORTER_TYPE_REGISTRY);
 	}
 }

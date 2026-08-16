@@ -1,24 +1,25 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonCableConfig
 {
-	public static ForgeConfigSpec.IntValue max_cables_in_network;
+	public static ModConfigSpec.IntValue max_cables_in_network;
 	
-	public static ForgeConfigSpec.LongValue lightning_strike_energy;
+	public static ModConfigSpec.LongValue lightning_strike_energy;
 	
-	public static ForgeConfigSpec.LongValue naquadah_wire_max_transfer;
-	public static ForgeConfigSpec.LongValue small_naquadah_cable_max_transfer;
-	public static ForgeConfigSpec.LongValue medium_naquadah_cable_max_transfer;
-	public static ForgeConfigSpec.LongValue large_naquadah_cable_max_transfer;
+	public static ModConfigSpec.LongValue naquadah_wire_max_transfer;
+	public static ModConfigSpec.LongValue small_naquadah_cable_max_transfer;
+	public static ModConfigSpec.LongValue medium_naquadah_cable_max_transfer;
+	public static ModConfigSpec.LongValue large_naquadah_cable_max_transfer;
 	
-	public static ForgeConfigSpec.BooleanValue naquadah_wire_transfers_zero_point_energy;
-	public static ForgeConfigSpec.BooleanValue small_naquadah_cable_transfers_zero_point_energy;
-	public static ForgeConfigSpec.BooleanValue medium_naquadah_cable_transfers_zero_point_energy;
-	public static ForgeConfigSpec.BooleanValue large_naquadah_cable_transfers_zero_point_energy;
+	public static ModConfigSpec.BooleanValue naquadah_wire_transfers_zero_point_energy;
+	public static ModConfigSpec.BooleanValue small_naquadah_cable_transfers_zero_point_energy;
+	public static ModConfigSpec.BooleanValue medium_naquadah_cable_transfers_zero_point_energy;
+	public static ModConfigSpec.BooleanValue large_naquadah_cable_transfers_zero_point_energy;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		max_cables_in_network = server
 				.comment("The maximum number of Cable Blocks in a single Cable Network")

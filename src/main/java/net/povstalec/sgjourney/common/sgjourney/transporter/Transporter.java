@@ -1,5 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
+import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -10,9 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
@@ -28,11 +30,16 @@ import java.util.UUID;
 
 public interface Transporter extends Comparable<Transporter>
 {
-	Capability<Transporter> TRANSPORTER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	String TRANSPORTER = "transporter";
 	
-	String DIMENSION = "Dimension"; //TODO Change this to "dimension"
+	BlockCapability<Transporter, Direction> TRANSPORTER_CAPABILITY_BLOCK = BlockCapability.create(
+			StargateJourney.sgjourneyLocation(TRANSPORTER), Transporter.class, Direction.class);
+	EntityCapability<Transporter, Void> TRANSPORTER_CAPABILITY_ENTITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(TRANSPORTER), Transporter.class);
 	
-	String CUSTOM_NAME = "CustomName"; //TODO Change this to "custom_name"
+	String DIMENSION = "dimension";
+	
+	String CUSTOM_NAME = "custom_name";
 	
 	String NETWORK_RESTRICTIONS = "network_restrictions";
 	String NETWORKS = "networks";
@@ -338,12 +345,12 @@ public interface Transporter extends Comparable<Transporter>
 	 * Serializes Transporter info into a tag
 	 * @param tag CompoundTag that will store the serialized information
 	 */
-	void serializeNBT(CompoundTag tag);
+	void serializeNBT(CompoundTag tag, HolderLookup.Provider registries);
 	
 	/**
 	 * Deserializes the Transporter info
 	 * @param transporterID ID of the Transporter
 	 * @param tag CompoundTag containing information to be deserialized
 	 */
-	void deserializeNBT(TransporterID transporterID, CompoundTag tag);
+	void deserializeNBT(TransporterID transporterID, CompoundTag tag, HolderLookup.Provider registries);
 }

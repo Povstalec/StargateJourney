@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
@@ -37,42 +38,42 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 		this(blockEntityType, stargateType, defaultVariant, pos, state, totalSymbols, defaultNetwork, VERTICAL_CENTER_STANDARD_HEIGHT, HORIZONTAL_CENTER_STANDARD_HEIGHT);
 	}
 	
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
-		super.deserializeStargateInfo(tag, isUpgraded);
+		super.deserializeStargateInfo(tag, registries, isUpgraded);
 		
-		short irisProgress = tag.getShort(IRIS_PROGRESS);
+		short irisProgress = tag.getShort(IrisInfo.Interface.IRIS_PROGRESS);
 		irisInfo().setIrisProgress(irisProgress, irisProgress);
-		irisInfo().deserializeIrisInventory(tag.getCompound(IRIS_INVENTORY));
+		irisInfo().deserializeIrisInventory(registries, tag.getCompound(IrisInfo.Interface.IRIS_INVENTORY));
 	}
 	
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
-		tag.putShort(IRIS_PROGRESS, irisInfo().getIrisProgress());
-		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory());
+		tag.putShort(IrisInfo.Interface.IRIS_PROGRESS, irisInfo().getIrisProgress());
+		tag.put(IrisInfo.Interface.IRIS_INVENTORY, irisInfo().serializeIrisInventory(registries));
 		
 		return tag;
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		tag.putShort(IRIS_PROGRESS, irisInfo().getIrisProgress());
 		tag.putShort(OLD_IRIS_PROGRESS, irisInfo().getIrisProgress());
-		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory());
+		tag.put(IRIS_INVENTORY, irisInfo().serializeIrisInventory(registries));
 		tag.putByte(IRIS_MOTION, (byte) irisInfo().getIrisMotion().ordinal());
 		
 		return tag;
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(net, packet);
+		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
@@ -82,7 +83,7 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 			if(progress == oldProgress && progress != irisInfo().getIrisProgress())
 				irisInfo().setIrisProgress(progress, oldProgress);
 			
-			irisInfo().deserializeIrisInventory(tag.getCompound(IRIS_INVENTORY));
+			irisInfo().deserializeIrisInventory(registries, tag.getCompound(IRIS_INVENTORY));
 			irisInfo().setIrisMotion(IrisInfo.IrisMotion.fromByte(tag.getByte(IRIS_MOTION)));
 		}
 	}

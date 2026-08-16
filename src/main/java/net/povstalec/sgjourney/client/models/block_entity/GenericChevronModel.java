@@ -61,11 +61,11 @@ public class GenericChevronModel
 	protected static void renderChevronLightFront(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		float yOffset = isRaised ? 2F / 16 : 0;
 		//Light Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -87,7 +87,7 @@ public class GenericChevronModel
 				54F/64, 17F/64);
 		
 		//Light Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -109,7 +109,7 @@ public class GenericChevronModel
 				54F/64, 17F/64);
 
 		//Light Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -131,7 +131,7 @@ public class GenericChevronModel
 				44F/64, 24F/64);
 
 		//Light Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -153,7 +153,7 @@ public class GenericChevronModel
 				58F/64, 17F/64);
 
 		//Light Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_FRONT_Z_OFFSET,
@@ -177,7 +177,7 @@ public class GenericChevronModel
 		if(isRaised)
 		{
 			//Light Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 					CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					CHEVRON_LIGHT_Z_OFFSET,
@@ -203,10 +203,10 @@ public class GenericChevronModel
 	protected static void renderChevronLightCenter(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isFrontRaised, boolean isBackRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Light Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -230,7 +230,7 @@ public class GenericChevronModel
 		if(isFrontRaised)
 		{
 			//Light Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER,
 					CHEVRON_LIGHT_Z_OFFSET,
@@ -253,7 +253,7 @@ public class GenericChevronModel
 		}
 
 		//Light Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_DIVIDER_BOTTOM_CENTER,
 				CHEVRON_LIGHT_DIVIDER_BOTTOM_HEIGHT,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -275,7 +275,7 @@ public class GenericChevronModel
 				50F/64, 13F/64);
 
 		//Light Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER,
 				CHEVRON_LIGHT_Z_OFFSET,
@@ -299,7 +299,7 @@ public class GenericChevronModel
 		if(isBackRaised)
 		{
 			//Light Back
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 					CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER,
 					-CHEVRON_LIGHT_Z_OFFSET,
@@ -325,11 +325,11 @@ public class GenericChevronModel
 	protected static void renderChevronLightBack(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isRaised)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 
 		float yOffset = isRaised ? 2F / 16 : 0;
 		//Light Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
@@ -353,7 +353,7 @@ public class GenericChevronModel
 		if(isRaised)
 		{
 			//Light Front
-			SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+			SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 					-CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					-CHEVRON_LIGHT_Z_OFFSET,
@@ -376,7 +376,7 @@ public class GenericChevronModel
 		}
 
 		//Light Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
@@ -398,7 +398,7 @@ public class GenericChevronModel
 				44F/64, 11F/64);
 
 		//Light Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
@@ -420,7 +420,7 @@ public class GenericChevronModel
 				58F/64, 4F/64);
 
 		//Light Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-CHEVRON_LIGHT_BOTTOM_CENTER,
 				-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				-CHEVRON_LIGHT_Z_OFFSET,
@@ -442,7 +442,7 @@ public class GenericChevronModel
 				57.5F/64, 0F/64);
 		
 		//Light Back
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 				CHEVRON_LIGHT_TOP_CENTER,
 				CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 				CHEVRON_LIGHT_BACK_Z_OFFSET,
@@ -475,10 +475,10 @@ public class GenericChevronModel
 	protected static void renderCenterOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 
 		//Center Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-OUTER_CHEVRON_UPPER_BOTTOM_CENTER,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				STARGATE_RING_OFFSET,
@@ -500,7 +500,7 @@ public class GenericChevronModel
 				56F/64, 43F/64);
 		
 		//Center Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-OUTER_CHEVRON_UPPER_BOTTOM_CENTER,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -522,7 +522,7 @@ public class GenericChevronModel
 				(55F + OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS * 16)/64, 43F/64);
 		
 		//Center Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -547,10 +547,10 @@ public class GenericChevronModel
 	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Left Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				STARGATE_RING_OFFSET,
@@ -572,7 +572,7 @@ public class GenericChevronModel
 				50F/64, 35F/64);
 		
 		//Left Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -594,7 +594,7 @@ public class GenericChevronModel
 				50F/64, 36F/64);
 		
 		//Left Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 1, 0,
 				-OUTER_CHEVRON_TOP_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				OUTER_CHEVRON_Z_OFFSET,
@@ -616,7 +616,7 @@ public class GenericChevronModel
 				55F/64, 36F/64);
 		
 		//Left Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, -1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				STARGATE_RING_OFFSET,
@@ -641,10 +641,10 @@ public class GenericChevronModel
 	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, boolean isOpen, float yOffset)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Right Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				OUTER_CHEVRON_TOP_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 				STARGATE_RING_OFFSET,
@@ -666,7 +666,7 @@ public class GenericChevronModel
 				63F/64, 35F/64);
 		
 		//Right Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, 1,
 			OUTER_CHEVRON_TOP_OFFSET,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 			OUTER_CHEVRON_Z_OFFSET,
@@ -688,7 +688,7 @@ public class GenericChevronModel
 			63F/64, 36F/64);
 		
 		//Right Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, -1, 0,
 			OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 			OUTER_CHEVRON_Z_OFFSET,
@@ -710,7 +710,7 @@ public class GenericChevronModel
 			64F/64, 36F/64);
 		
 		//Right Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 1, 0,
 			OUTER_CHEVRON_TOP_OFFSET,
 			OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET + yOffset,
 			STARGATE_RING_OFFSET,
@@ -742,10 +742,10 @@ public class GenericChevronModel
 	protected static void renderBackCenterOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 
 		//Center Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-OUTER_CHEVRON_UPPER_BOTTOM_CENTER,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -767,7 +767,7 @@ public class GenericChevronModel
 				56F/64, 32F/64);
 		
 		//Center Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 				0F / 16,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -789,7 +789,7 @@ public class GenericChevronModel
 				55F/64, 34F/64);
 		
 		//Center Bottom
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, -1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, -1, 0,
 				-OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-STARGATE_RING_OFFSET,
@@ -814,10 +814,10 @@ public class GenericChevronModel
 	protected static void renderLeftOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Left Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				-(OUTER_CHEVRON_TOP_OFFSET + OUTER_CHEVRON_SIDE_TOP_THICKNESS),
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -839,7 +839,7 @@ public class GenericChevronModel
 				50F/64, 24F/64);
 		
 		//Left Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 				-OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -861,7 +861,7 @@ public class GenericChevronModel
 				54F/64, 34F/64);
 		
 		//Left Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 0, 0,
 				-OUTER_CHEVRON_UPPER_BOTTOM_CENTER,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -883,7 +883,7 @@ public class GenericChevronModel
 				55F/64, 32F/64);
 		
 		//Left Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 0, 0,
 				-OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-STARGATE_RING_OFFSET,
@@ -908,10 +908,10 @@ public class GenericChevronModel
 	protected static void renderRightOuterChevron(PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight)
 	{
 		Matrix4f matrix4 = stack.last().pose();
-		Matrix3f matrix3 = stack.last().normal();
+		PoseStack.Pose pose = stack.last();
 		
 		//Right Top
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 1, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 1, 0,
 				OUTER_CHEVRON_TOP_OFFSET,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_SIDE_HEIGHT + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -933,7 +933,7 @@ public class GenericChevronModel
 				63F/64, 24F/64);
 		
 		//Right Front
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, -1,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 0, 0, -1,
 				0F / 16,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -955,7 +955,7 @@ public class GenericChevronModel
 				58F/64, 34F/64);
 		
 		//Right Right
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, 1, 0, 0,
 				OUTER_CHEVRON_SIDE_BOTTOM_THICKNESS,
 				-OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-OUTER_CHEVRON_Z_OFFSET,
@@ -977,7 +977,7 @@ public class GenericChevronModel
 				64F/64, 34F/64);
 		
 		//Right Left
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, -1, 0, 0,
+		SGJourneyModel.createQuad(consumer, matrix4, pose, combinedLight, -1, 0, 0,
 				OUTER_CHEVRON_UPPER_BOTTOM_CENTER,
 				OUTER_CHEVRON_BOTTOM_HEIGHT_CENTER + OUTER_CHEVRON_Y_OFFSET,
 				-STARGATE_RING_OFFSET,

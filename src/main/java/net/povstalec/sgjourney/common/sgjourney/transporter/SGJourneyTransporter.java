@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -168,12 +169,12 @@ public abstract class SGJourneyTransporter implements Transporter
 	//============================================================================================
 	
 	@Override
-	public void serializeNBT(CompoundTag tag)
+	public void serializeNBT(CompoundTag tag, HolderLookup.Provider registries)
 	{
 		tag.putString(DIMENSION, getDimension().location().toString());
 		
 		if(this.name != null)
-			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name));
+			tag.putString(CUSTOM_NAME, Component.Serializer.toJson(this.name, registries));
 		
 		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
 		tag.putIntArray(NETWORKS, networks.stream().toList());
@@ -183,14 +184,20 @@ public abstract class SGJourneyTransporter implements Transporter
 		tag.putBoolean(ALLOW_INTERDIMENSIONAL_TRANSPORT, allowInterdimensionalTransport);
 	}
 	
-	public void deserializeNBT(TransporterID transporterID, CompoundTag tag)
+	@Override
+	public void deserializeNBT(TransporterID transporterID, CompoundTag tag, HolderLookup.Provider registries)
 	{
 		this.transporterID = transporterID;
 		
-		this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		if(tag.contains(DIMENSION, Tag.TAG_STRING))
+			this.dimension = Conversion.stringToDimension(tag.getString(DIMENSION));
+		else if(tag.contains("Dimension", Tag.TAG_STRING)) //TODO Keeping this here for the time being for legacy reasons
+			this.dimension = Conversion.stringToDimension(tag.getString("Dimension"));
 		
-		if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
-			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+		if(tag.contains(CUSTOM_NAME, CompoundTag.TAG_STRING))
+			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
+		else if(tag.contains("CustomName", CompoundTag.OBJECT_HEADER)) //TODO Keeping this here for the time being for legacy reasons
+			this.name = Component.Serializer.fromJson(tag.getString("CustomName"), registries);
 		
 		this.hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
 		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))

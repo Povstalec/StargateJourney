@@ -1,5 +1,5 @@
 {
-	"loader": "forge:obj",
+	"loader": "neoforge:obj",
 	"model": "sgjourney:models/block/universe_stargate_chevron_engaged.obj",
 	"textures":
 	{

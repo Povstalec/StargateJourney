@@ -1,56 +1,56 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonTechConfig
 {
-	public static ForgeConfigSpec.BooleanValue fusion_core_infinite_energy;
-	public static ForgeConfigSpec.LongValue fusion_core_energy_from_fuel;
-	public static ForgeConfigSpec.IntValue fusion_core_fuel_capacity;
+	public static ModConfigSpec.BooleanValue fusion_core_infinite_energy;
+	public static ModConfigSpec.LongValue fusion_core_energy_from_fuel;
+	public static ModConfigSpec.IntValue fusion_core_fuel_capacity;
 	
-	public static ForgeConfigSpec.BooleanValue disable_kara_kesh_requirements;
-	public static ForgeConfigSpec.IntValue personal_shield_capacity;
+	public static ModConfigSpec.BooleanValue disable_kara_kesh_requirements;
+	public static ModConfigSpec.IntValue personal_shield_capacity;
 	
-	public static ForgeConfigSpec.IntValue vial_capacity;
-	public static ForgeConfigSpec.LongValue energy_from_liquid_naquadah;
-	public static ForgeConfigSpec.LongValue energy_from_heavy_liquid_naquadah;
-	public static ForgeConfigSpec.LongValue naquadah_power_cell_buffer_capacity;
-	public static ForgeConfigSpec.LongValue naquadah_power_cell_max_transfer;
+	public static ModConfigSpec.IntValue vial_capacity;
+	public static ModConfigSpec.LongValue energy_from_liquid_naquadah;
+	public static ModConfigSpec.LongValue energy_from_heavy_liquid_naquadah;
+	public static ModConfigSpec.LongValue naquadah_power_cell_buffer_capacity;
+	public static ModConfigSpec.LongValue naquadah_power_cell_max_transfer;
 	
-	public static ForgeConfigSpec.LongValue naquadah_liquidizer_energy_capacity;
-	public static ForgeConfigSpec.LongValue naquadah_liquidizer_max_energy_receive;
-	public static ForgeConfigSpec.LongValue naquadah_liquidizer_energy_per_tick;
-	public static ForgeConfigSpec.IntValue naquadah_liquidizer_fluid_input_capacity;
-	public static ForgeConfigSpec.IntValue naquadah_liquidizer_fluid_output_capacity;
-	public static ForgeConfigSpec.IntValue naquadah_liquidizer_max_fluid_receive;
-	public static ForgeConfigSpec.IntValue naquadah_liquidizer_max_fluid_extract;
+	public static ModConfigSpec.LongValue naquadah_liquidizer_energy_capacity;
+	public static ModConfigSpec.LongValue naquadah_liquidizer_max_energy_receive;
+	public static ModConfigSpec.LongValue naquadah_liquidizer_energy_per_tick;
+	public static ModConfigSpec.IntValue naquadah_liquidizer_fluid_input_capacity;
+	public static ModConfigSpec.IntValue naquadah_liquidizer_fluid_output_capacity;
+	public static ModConfigSpec.IntValue naquadah_liquidizer_max_fluid_receive;
+	public static ModConfigSpec.IntValue naquadah_liquidizer_max_fluid_extract;
 	
-	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_energy_capacity;
-	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_max_energy_receive;
-	public static ForgeConfigSpec.LongValue heavy_naquadah_liquidizer_energy_per_tick;
-	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_input_capacity;
-	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_output_capacity;
-	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_receive;
-	public static ForgeConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_extract;
+	public static ModConfigSpec.LongValue heavy_naquadah_liquidizer_energy_capacity;
+	public static ModConfigSpec.LongValue heavy_naquadah_liquidizer_max_energy_receive;
+	public static ModConfigSpec.LongValue heavy_naquadah_liquidizer_energy_per_tick;
+	public static ModConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_input_capacity;
+	public static ModConfigSpec.IntValue heavy_naquadah_liquidizer_fluid_output_capacity;
+	public static ModConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_receive;
+	public static ModConfigSpec.IntValue heavy_naquadah_liquidizer_max_fluid_extract;
 	
-	public static ForgeConfigSpec.LongValue crystallizer_energy_capacity;
-	public static ForgeConfigSpec.LongValue crystallizer_max_energy_receive;
-	public static ForgeConfigSpec.LongValue crystallizer_energy_per_tick;
-	public static ForgeConfigSpec.IntValue crystallizer_fluid_input_capacity;
-	public static ForgeConfigSpec.IntValue crystallizer_max_fluid_receive;
+	public static ModConfigSpec.LongValue crystallizer_energy_capacity;
+	public static ModConfigSpec.LongValue crystallizer_max_energy_receive;
+	public static ModConfigSpec.LongValue crystallizer_energy_per_tick;
+	public static ModConfigSpec.IntValue crystallizer_fluid_input_capacity;
+	public static ModConfigSpec.IntValue crystallizer_max_fluid_receive;
 	
-	public static ForgeConfigSpec.LongValue advanced_crystallizer_energy_capacity;
-	public static ForgeConfigSpec.LongValue advanced_crystallizer_max_energy_receive;
-	public static ForgeConfigSpec.LongValue advanced_crystallizer_energy_per_tick;
-	public static ForgeConfigSpec.IntValue advanced_crystallizer_fluid_input_capacity;
-	public static ForgeConfigSpec.IntValue advanced_crystallizer_max_fluid_receive;
+	public static ModConfigSpec.LongValue advanced_crystallizer_energy_capacity;
+	public static ModConfigSpec.LongValue advanced_crystallizer_max_energy_receive;
+	public static ModConfigSpec.LongValue advanced_crystallizer_energy_per_tick;
+	public static ModConfigSpec.IntValue advanced_crystallizer_fluid_input_capacity;
+	public static ModConfigSpec.IntValue advanced_crystallizer_max_fluid_receive;
 	
-	public static ForgeConfigSpec.LongValue small_naquadah_battery_capacity;
-	public static ForgeConfigSpec.LongValue small_naquadah_battery_max_transfer;
-	public static ForgeConfigSpec.LongValue large_naquadah_battery_capacity;
-	public static ForgeConfigSpec.LongValue large_naquadah_battery_max_transfer;
+	public static ModConfigSpec.LongValue small_naquadah_battery_capacity;
+	public static ModConfigSpec.LongValue small_naquadah_battery_max_transfer;
+	public static ModConfigSpec.LongValue large_naquadah_battery_capacity;
+	public static ModConfigSpec.LongValue large_naquadah_battery_max_transfer;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		// Fusion Core
 		

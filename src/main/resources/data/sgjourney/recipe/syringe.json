@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"N",
+		"N",
+		"V"
+	],
+	
+	"key": 
+	{
+		"N": { "tag": "sgjourney:naquadah_iron_nugget" },
+		"V": { "item": "sgjourney:vial" }
+		
+	},
+	
+	"result": { "id": "sgjourney:syringe", "count": 1 }
+}

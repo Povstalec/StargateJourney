@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public interface BlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends Transporter
 {
-	String COORDINATES = "Coordinates"; //TODO Change this to "coordinates"
+	String COORDINATES = "coordinates";
 	
 	BlockPos getBlockPos();
 	

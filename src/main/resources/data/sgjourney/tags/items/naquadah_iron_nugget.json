@@ -1,8 +1,0 @@
-{
-	"replace": false,
-	"values":
-	[
-		"sgjourney:naquadah_iron_nugget",
-		{"id": "#forge:nuggets/naquadah_alloy", "required": false}
-	]
-}

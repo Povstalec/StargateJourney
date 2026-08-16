@@ -2,10 +2,10 @@ package net.povstalec.sgjourney.common.blocks.tech;
 
 import javax.annotation.Nullable;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,18 +20,24 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.ZPMHubEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.menu.ZPMHubMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
 public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 {
+	public static final MapCodec<ZPMHubBlock> CODEC = simpleCodec(ZPMHubBlock::new);
+
 	public ZPMHubBlock(Properties properties)
 	{
 		super(properties);
+	}
+
+	protected MapCodec<ZPMHubBlock> codec() {
+		return CODEC;
 	}
 
 	@Override
@@ -46,7 +52,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
         if(!level.isClientSide())
         {
@@ -71,7 +77,7 @@ public class ZPMHubBlock extends BaseEntityBlock implements ProtectedBlock
         				return new ZPMHubMenu(windowId, playerInventory, zpmHub);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         		throw new IllegalStateException("Our named container provider is missing!");

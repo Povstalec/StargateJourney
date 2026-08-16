@@ -18,6 +18,8 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
 import net.minecraft.commands.synchronization.ArgumentTypeInfos;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -25,16 +27,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
-import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -51,9 +51,9 @@ public class CommandInit
 	private static final String TRANSPORTER_NETWORK = "transporterNetwork";
 	private static final String GENE = "gene";
 	
-	public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(ForgeRegistries.COMMAND_ARGUMENT_TYPES, StargateJourney.MODID);
+	public static final DeferredRegister<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPES = DeferredRegister.create(Registries.COMMAND_ARGUMENT_TYPE, StargateJourney.MODID);
 	
-	public static final RegistryObject<ArgumentTypeInfo<AddressArgumentType, AddressArgumentInfo.Template>> ADDRESS_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("address",
+	public static final DeferredHolder<ArgumentTypeInfo<?, ?>, ArgumentTypeInfo<AddressArgumentType, AddressArgumentInfo.Template>> ADDRESS_ARGUMENT = COMMAND_ARGUMENT_TYPES.register("address",
 			() -> ArgumentTypeInfos.registerByClass(AddressArgumentType.class, new AddressArgumentInfo()));
 	
 	public static void register(IEventBus eventBus)
@@ -268,7 +268,7 @@ public class CommandInit
 		Address.Immutable address = Universe.get(level).getExtragalacticAddressFromDimension(dimension);
 		
 		if(address == null)
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_extragalactic_address.none", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.get_extragalactic_address.none", dimensionComponent(dimension)), false);
 		else
 			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_extragalactic_address.address", dimensionComponent(dimension), address.toComponent(true)));
 		
@@ -284,8 +284,8 @@ public class CommandInit
 		
 		if(!stargates.isEmpty())
 		{
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_stargates.stargates", dimensionComponent(dimension)), false);
-			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.get_stargates.stargates", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(() -> Component.literal("-------------------------"), false);
 			
 			stargates.forEach(stargate ->
 			{
@@ -293,9 +293,9 @@ public class CommandInit
 				Vec3 stargatePos = stargate.getPosition();
 				
 				if(dimension.equals(stargateDimension) && stargatePos != null)
-					context.getSource().sendSuccess(stargate.get9ChevronAddress().toComponent(true).append(" ").append(ComponentHelper.coordinate(stargatePos)), false);
+					context.getSource().sendSuccess(() -> stargate.get9ChevronAddress().toComponent(true).append(" ").append(ComponentHelper.coordinate(stargatePos)), false);
 			});
-			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			context.getSource().sendSuccess(() -> Component.literal("-------------------------"), false);
 		}
 		else
 			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates.no_stargates", dimensionComponent(dimension)));
@@ -309,7 +309,7 @@ public class CommandInit
 		
 		int version = StargateNetwork.get(level).getVersion();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -319,7 +319,7 @@ public class CommandInit
 		
 		StargateNetwork.get(level).stellarUpdate();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stellar_update").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -334,10 +334,10 @@ public class CommandInit
 		boolean randomAddressFromSeed = StargateNetworkSettings.get(level).randomAddressFromSeed();
 		boolean primaryStargatePriority = StargateNetworkSettings.get(level).prioritizePrimaryStargates();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.randomize_addresses").append(": " + randomizeAddresses).withStyle(ChatFormatting.GOLD), false);
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(": " + generateRandomSolarSystems).withStyle(ChatFormatting.GOLD), false);
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(": " + randomAddressFromSeed).withStyle(ChatFormatting.GOLD), false);
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.primary_stargate_priority").append(": " + primaryStargatePriority).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.randomize_addresses").append(": " + randomizeAddresses).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.generate_random_solar_systems").append(": " + generateRandomSolarSystems).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.random_addresses_from_seed").append(": " + randomAddressFromSeed).withStyle(ChatFormatting.GOLD), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.primary_stargate_priority").append(": " + primaryStargatePriority).withStyle(ChatFormatting.GOLD), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -348,7 +348,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setRandomizeAddresses(setting);
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -359,7 +359,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setGenerateRandomAddressRegions(setting);
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -370,7 +370,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setRandomAddressFromSeed(setting);
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -381,7 +381,7 @@ public class CommandInit
 		
 		StargateNetworkSettings.get(level).setPrioritizePrimaryStargates(prioritize);
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_network_settings.changed").withStyle(ChatFormatting.YELLOW), false);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -394,7 +394,7 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		
 		if(StargateNetwork.get(level).setPrimaryAddressForDimension(dimension, address))
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_set").withStyle(ChatFormatting.DARK_GREEN), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.primary_stargate_set").withStyle(ChatFormatting.DARK_GREEN), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -406,7 +406,7 @@ public class CommandInit
 		Level level = context.getSource().getLevel();
 		
 		if(StargateNetwork.get(level).setPrimaryAddressForDimension(dimension, null))
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_unset").withStyle(ChatFormatting.GREEN), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.primary_stargate_unset").withStyle(ChatFormatting.GREEN), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -419,9 +419,9 @@ public class CommandInit
 		
 		Address.Immutable address = StargateNetwork.get(level).getPrimaryAddressFromDimension(dimension);
 		if(address != null)
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.AQUA), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.primary_stargate").append(Component.literal(": ").append(address.toComponent(true))).withStyle(ChatFormatting.AQUA), true);
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.primary_stargate_none").withStyle(ChatFormatting.RED), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.primary_stargate_none").withStyle(ChatFormatting.RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -437,15 +437,15 @@ public class CommandInit
 		
 		if(!transporters.isEmpty())
 		{
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.get_transporters.transporters", dimensionComponent(dimension)), false);
-			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.get_transporters.transporters", dimensionComponent(dimension)), false);
+			context.getSource().sendSuccess(() -> Component.literal("-------------------------"), false);
 			
 			for(Transporter transporter : transporters)
 			{
 				Vec3 coords = transporter.getPosition();
-				context.getSource().sendSuccess(transporter.getID().toComponent(true).append(" ").append(ComponentHelper.coordinate(coords)), false);
+				context.getSource().sendSuccess(() -> transporter.getID().toComponent(true).append(" ").append(ComponentHelper.coordinate(coords)), false);
 			}
-			context.getSource().sendSuccess(Component.literal("-------------------------"), false);
+			context.getSource().sendSuccess(() -> Component.literal("-------------------------"), false);
 		}
 		else
 			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_transporters.no_transporters", dimensionComponent(dimension)));
@@ -459,7 +459,7 @@ public class CommandInit
 		
 		TransporterNetwork.get(level).reloadNetwork();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED), true);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.transporter_network_reload").withStyle(ChatFormatting.RED), true);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -469,7 +469,7 @@ public class CommandInit
 		
 		int version = TransporterNetwork.get(level).getVersion();
 		
-		context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.transporter_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
+		context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.transporter_network_version").append(Component.literal(": " + version)).withStyle(ChatFormatting.GREEN), false);
 		return Command.SINGLE_SUCCESS;
 	}
 	
@@ -477,7 +477,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ANCIENT));
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.setGene(AncientGene.ATAGene.ANCIENT);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -486,7 +488,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.INHERITED));
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.setGene(AncientGene.ATAGene.INHERITED);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -495,7 +499,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.ARTIFICIAL));
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.setGene(AncientGene.ATAGene.ARTIFICIAL);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -504,7 +510,9 @@ public class CommandInit
 	{
 		Entity entity = EntityArgument.getEntity(context, "target");
 		
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> cap.setGene(AncientGene.ATAGene.NONE));
+		AncientGene cap = entity.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			cap.setGene(AncientGene.ATAGene.NONE);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -523,11 +531,11 @@ public class CommandInit
 			if(context.getSource().isPlayer() && blockEntity.hasPermissions(context.getSource().getPlayer(), true))
 			{
 				blockEntity.setProtected(true);
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.protected_block_set").withStyle(ChatFormatting.LIGHT_PURPLE), true);
+				context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.protected_block_set").withStyle(ChatFormatting.LIGHT_PURPLE), true);
 			}
 		}
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -546,11 +554,11 @@ public class CommandInit
 			if(context.getSource().isPlayer() && blockEntity.hasPermissions(context.getSource().getPlayer(), true))
 			{
 				blockEntity.setProtected(false);
-				context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.protected_block_unset").withStyle(ChatFormatting.LIGHT_PURPLE), true);
+				context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.protected_block_unset").withStyle(ChatFormatting.LIGHT_PURPLE), true);
 			}
 		}
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.not_protected_block").withStyle(ChatFormatting.RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -577,8 +585,8 @@ public class CommandInit
 		
 		System.out.println("===============Conduit Networks===============");
 		ConduitNetworks.get(server).printConduits();
-
-		context.getSource().sendSuccess(Component.literal("Printed debug info to console"), false);
+		
+		context.getSource().sendSuccess(() -> Component.literal("Printed info onto the console"), false);
 		
 		return Command.SINGLE_SUCCESS;
 	}

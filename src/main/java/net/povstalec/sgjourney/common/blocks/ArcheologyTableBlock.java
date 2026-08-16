@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -28,11 +29,17 @@ public class ArcheologyTableBlock extends DirectionalBlock
 	private static final VoxelShape LEG_4 = Block.box(13.0D, 0.0D, 13.0D, 15.0D, 14.0D, 15.0D);
 	
 	private static final VoxelShape TABLE = Shapes.or(TOP, LEG_1, LEG_2, LEG_3, LEG_4);
+
+	public static final MapCodec<ArcheologyTableBlock> CODEC = simpleCodec(ArcheologyTableBlock::new);
 	
 	public ArcheologyTableBlock(Properties properties) 
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+	}
+
+	protected MapCodec<ArcheologyTableBlock> codec() {
+		return CODEC;
 	}
 	
 	public BlockState getStateForPlacement(BlockPlaceContext context) 

@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		" A ",
+		"CPC",
+		" S "
+	],
+	
+	"key": 
+	{
+		"C": { "item": "sgjourney:naquadah_generator_core" },
+		"S": { "item": "sgjourney:polished_naquadah_iron_slab" },
+		"A": { "tag": "sgjourney:naquadah_iron_alloy" },
+		"P": { "item": "sgjourney:plasma_converter" }
+		
+	},
+	
+	"result": { "id": "sgjourney:naquadah_generator_mark_i" }
+}

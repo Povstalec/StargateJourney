@@ -1,11 +1,9 @@
 package net.povstalec.sgjourney.common.blocks.tech;
 
-import javax.annotation.Nullable;
-
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -18,19 +16,29 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
+
+import javax.annotation.Nullable;
 
 public class AdvancedCrystallizerBlock extends AbstractCrystallizerBlock
 {
+	public static final MapCodec<AdvancedCrystallizerBlock> CODEC = simpleCodec(AdvancedCrystallizerBlock::new);
+
 	public AdvancedCrystallizerBlock(Properties properties)
 	{
 		super(properties);
+	}
+
+	@Override
+	protected MapCodec<AdvancedCrystallizerBlock> codec()
+	{
+		return CODEC;
 	}
 
 	@Override
@@ -40,7 +48,7 @@ public class AdvancedCrystallizerBlock extends AbstractCrystallizerBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
+	public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
         if(!level.isClientSide()) 
         {
@@ -62,7 +70,7 @@ public class AdvancedCrystallizerBlock extends AbstractCrystallizerBlock
         				return new CrystallizerMenu.AdvancedCrystallizer(windowId, playerInventory, crystallizer);
         			}
         		};
-        		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         	}
         	else
         	{

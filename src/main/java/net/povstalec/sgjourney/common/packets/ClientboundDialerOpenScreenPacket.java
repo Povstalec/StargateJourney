@@ -1,36 +1,31 @@
 package net.povstalec.sgjourney.common.packets;
 
-import java.util.UUID;
-import java.util.function.Supplier;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientAccess;
+import net.povstalec.sgjourney.common.misc.StreamCodecHelper;
 
-public class ClientboundDialerOpenScreenPacket
+public record ClientboundDialerOpenScreenPacket() implements CustomPacketPayload
 {
-    public ClientboundDialerOpenScreenPacket()
-	{
-		//TODO
-	}
-
-    public ClientboundDialerOpenScreenPacket(FriendlyByteBuf buffer)
+    public static final CustomPacketPayload.Type<ClientboundDialerOpenScreenPacket> TYPE =
+            new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_dialer_open_screen"));
+    
+    public static final StreamCodec<ByteBuf, ClientboundDialerOpenScreenPacket> STREAM_CODEC = StreamCodecHelper.ofNothing(ClientboundDialerOpenScreenPacket::new);
+    
+    @Override
+    public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
     {
-		//TODO
+        return TYPE;
     }
-
-    public void encode(FriendlyByteBuf buffer)
+    
+    public static void handle(ClientboundDialerOpenScreenPacket packet, IPayloadContext ctx)
     {
-       //TODO
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() -> {
+        ctx.enqueueWork(() -> {
         	ClientAccess.updateDialer();
         });
-        return true;
     }
 }
 

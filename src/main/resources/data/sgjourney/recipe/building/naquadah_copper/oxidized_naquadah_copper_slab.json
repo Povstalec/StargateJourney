@@ -1,0 +1,13 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:oxidized_naquadah_copper_block"}
+	},
+	"result": { "id": "sgjourney:oxidized_naquadah_copper_slab", "count": 6 }
+}

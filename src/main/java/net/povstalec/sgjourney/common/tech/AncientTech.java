@@ -1,11 +1,8 @@
 package net.povstalec.sgjourney.common.tech;
 
-import java.util.Optional;
-
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 
 public interface AncientTech
 {
@@ -15,16 +12,20 @@ public interface AncientTech
 	 */
 	default boolean canUseAncientTech(LivingEntity user)
 	{
-		Optional<Boolean> canUse = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(AncientGene::canUseAncientTechnology);
+		AncientGene cap = user.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			return cap.canUseAncientTechnology();
 		
-		return canUse.orElse(false);
+		return false;
 	}
 	
 	default AncientGene.ATAGene getGeneType(Entity user)
 	{
-		Optional<AncientGene.ATAGene> geneType = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(AncientGene::getGeneType);
+		AncientGene cap = user.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
+			return cap.getGeneType();
 		
-		return geneType.orElse(AncientGene.ATAGene.NONE);
+		return AncientGene.ATAGene.NONE;
 	}
 	
 }

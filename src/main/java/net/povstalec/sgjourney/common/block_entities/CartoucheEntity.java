@@ -1,16 +1,17 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -35,15 +36,14 @@ import java.util.Optional;
 
 public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
 {
-	public static final String ADDRESS_TABLE = "AddressTable";
-	public static final String DIMENSION = "Dimension";
-	public static final String GALAXY = "Galaxy";
-	public static final String SYMBOLS = "Symbols";
-	public static final String ADDRESS = "Address";
+	public static final String ADDRESS_TABLE = "address_table";
+	public static final String DIMENSION = "dimension";
+	public static final String GALAXY = "galaxy";
+	public static final String SYMBOLS = "symbols";
+	public static final String ADDRESS = "address";
 	
 	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
 
-	@Nullable
 	private ResourceLocation addressTable;
 	
 	private ResourceKey<Symbols> symbols = null;
@@ -78,9 +78,9 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
     {
-    	super.load(tag);
+    	super.loadAdditional(tag, registries);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
@@ -99,7 +99,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	}
 	
 	@Override
-    protected void saveAdditional(@NotNull CompoundTag tag)
+    protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		if(generationStep != Step.GENERATED)
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
@@ -111,7 +111,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(address != null)
 			address.saveToCompoundTag(tag, ADDRESS);
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 	}
 	
 	@Override
@@ -121,7 +121,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
 		CompoundTag tag = new CompoundTag();
 		
@@ -136,7 +136,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
 		Address oldAddress = address;
 		ResourceKey<Symbols> oldSymbols = symbols;

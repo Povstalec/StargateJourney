@@ -16,8 +16,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.models.block_entity.IrisModel;
 import net.povstalec.sgjourney.client.models.block_entity.ShieldModel;
 import net.povstalec.sgjourney.client.models.block_entity.WormholeModel;
@@ -25,6 +26,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStarga
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
 {
@@ -99,5 +101,12 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	protected boolean canSink(AbstractStargateEntity<?> stargate)
 	{
 	    return stargate.blockCover.canSinkGate;
+	}
+	
+	@Override
+	public @NotNull AABB getRenderBoundingBox(StargateEntity stargate)
+	{
+		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3,
+				stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
 	}
 }

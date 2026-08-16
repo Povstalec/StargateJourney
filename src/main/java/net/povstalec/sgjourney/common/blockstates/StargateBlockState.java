@@ -1,10 +1,12 @@
 package net.povstalec.sgjourney.common.blockstates;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
@@ -14,24 +16,24 @@ import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.BlockPathTypes;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.common.enums.BubbleColumnDirection;
+import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.event.EventHooks;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -39,8 +41,7 @@ import java.util.function.BiConsumer;
 
 public class StargateBlockState extends BlockState
 {
-	public StargateBlockState(Block block, ImmutableMap<Property<?>, Comparable<?>> properties,
-							  MapCodec<BlockState> states)
+	public StargateBlockState(Block block, Reference2ObjectArrayMap<Property<?>, Comparable<?>> properties, MapCodec<BlockState> states)
 	{
 		super(block, properties, states);
 	}
@@ -74,6 +75,18 @@ public class StargateBlockState extends BlockState
 		return super.getDestroySpeed(reader, pos);
 	}
 	
+	protected float getDestroyProgress(BlockState state, Player player, BlockGetter level, BlockPos pos)
+	{
+		float speed = state.getDestroySpeed(level, pos);
+		if(speed == -1.0F)
+			return 0.0F;
+		else
+		{
+			int i = EventHooks.doPlayerHarvestCheck(player, state, level, pos) ? 30 : 100;
+			return player.getDigSpeed(state, pos) / speed / (float) i;
+		}
+	}
+	
 	@Override
 	public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
 	{
@@ -92,14 +105,14 @@ public class StargateBlockState extends BlockState
 				
 				if(coverState.isPresent())
 				{
-					float multiplier = ForgeHooks.isCorrectToolForDrops(coverState.get(), player) ? 30F : 100F;
+					float multiplier = player.hasCorrectToolForDrops(coverState.get()) ? 30F : 100F;
 					
 					return player.getDigSpeed(coverState.get(), pos) / destroySpeed / multiplier;
 				}
 			}
 		}
 		// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
-		return this.getBlock().getDestroyProgress(asState(), player, reader, pos);
+		return getDestroyProgress(asState(), player, reader, pos);
 	}
 	
 	@Override
@@ -144,6 +157,12 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
+	public boolean hasDynamicLightEmission()
+	{
+		return this.self().getBlock().hasDynamicLightEmission(this.self());
+	}
+	
+	@Override
 	public int getLightEmission(BlockGetter level, BlockPos pos)
 	{
 		return this.self().getBlock().getLightEmission(this.self(), level, pos);
@@ -168,21 +187,21 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean isBed(BlockGetter level, BlockPos pos, @Nullable LivingEntity sleeper)
+	public void onDestroyedByPushReaction(Level level, BlockPos pos, Direction pushDirection, FluidState fluid)
+	{
+		this.self().getBlock().onDestroyedByPushReaction(this.self(), level, pos, pushDirection, fluid);
+	}
+	
+	@Override
+	public boolean isBed(BlockGetter level, BlockPos pos, LivingEntity sleeper)
 	{
 		return this.self().getBlock().isBed(this.self(), level, pos, sleeper);
 	}
 	
 	@Override
-	public boolean isValidSpawn(LevelReader level, BlockPos pos, SpawnPlacements.Type type, EntityType<?> entityType)
+	public Optional<ServerPlayer.RespawnPosAngle> getRespawnPosition(EntityType<?> type, LevelReader level, BlockPos pos, float orientation)
 	{
-		return this.self().getBlock().isValidSpawn(this.self(), level, pos, type, entityType);
-	}
-	
-	@Override
-	public Optional<Vec3> getRespawnPosition(EntityType<?> type, LevelReader level, BlockPos pos, float orientation, @Nullable LivingEntity entity)
-	{
-		return this.self().getBlock().getRespawnPosition(this.self(), type, level, pos, orientation, entity);
+		return this.self().getBlock().getRespawnPosition(this.self(), type, level, pos, orientation);
 	}
 	
 	@Override
@@ -204,7 +223,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public ItemStack getCloneItemStack(HitResult target, BlockGetter level, BlockPos pos, Player player)
+	public ItemStack getCloneItemStack(HitResult target, LevelReader level, BlockPos pos, Player player)
 	{
 		return this.self().getBlock().getCloneItemStack(this.self(), target, level, pos, player);
 	}
@@ -222,9 +241,9 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean canSustainPlant(BlockGetter level, BlockPos pos, Direction facing, IPlantable plantable)
+	public TriState canSustainPlant(BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant)
 	{
-		return this.self().getBlock().canSustainPlant(this.self(), level, pos, facing, plantable);
+		return this.self().getBlock().canSustainPlant(this.self(), level, soilPosition, facing, plant);
 	}
 	
 	@Override
@@ -252,9 +271,9 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public int getExpDrop(LevelReader level, RandomSource randomSource, BlockPos pos, int fortuneLevel, int silkTouchLevel)
+	public int getExpDrop(LevelAccessor level, BlockPos pos, @Nullable BlockEntity blockEntity, @Nullable Entity breaker, ItemStack tool)
 	{
-		return this.self().getBlock().getExpDrop(this.self(), level, randomSource, pos, fortuneLevel, silkTouchLevel);
+		return this.self().getBlock().getExpDrop(this.self(), level, pos, blockEntity, breaker, tool);
 	}
 	
 	@Override
@@ -276,7 +295,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean shouldCheckWeakPower(LevelReader level, BlockPos pos, Direction side)
+	public boolean shouldCheckWeakPower(SignalGetter level, BlockPos pos, Direction side)
 	{
 		return this.self().getBlock().shouldCheckWeakPower(this.self(), level, pos, side);
 	}
@@ -288,7 +307,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public @Nullable float[] getBeaconColorMultiplier(LevelReader level, BlockPos pos, BlockPos beacon)
+	public @Nullable Integer getBeaconColorMultiplier(LevelReader level, BlockPos pos, BlockPos beacon)
 	{
 		return this.self().getBlock().getBeaconColorMultiplier(this.self(), level, pos, beacon);
 	}
@@ -312,7 +331,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean canStickTo(@NotNull BlockState other)
+	public boolean canStickTo(BlockState other)
 	{
 		return this.self().getBlock().canStickTo(this.self(), other);
 	}
@@ -360,13 +379,13 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public @Nullable BlockPathTypes getBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob)
+	public @Nullable PathType getBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob)
 	{
 		return this.self().getBlock().getBlockPathType(this.self(), level, pos, mob);
 	}
 	
 	@Override
-	public @Nullable BlockPathTypes getAdjacentBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob, BlockPathTypes originalType)
+	public @Nullable PathType getAdjacentBlockPathType(BlockGetter level, BlockPos pos, @Nullable Mob mob, PathType originalType)
 	{
 		return this.self().getBlock().getAdjacentBlockPathType(this.self(), level, pos, mob, originalType);
 	}
@@ -396,16 +415,16 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public @Nullable BlockState getToolModifiedState(UseOnContext context, ToolAction toolAction, boolean simulate)
+	public @Nullable BlockState getToolModifiedState(UseOnContext context, ItemAbility itemAbility, boolean simulate)
 	{
-		BlockState eventState = ForgeEventFactory.onToolUse(this.self(), context, toolAction, simulate);
-		return eventState != this.self() ? eventState : this.self().getBlock().getToolModifiedState(this.self(), context, toolAction, simulate);
+		BlockState eventState = EventHooks.onToolUse(this.self(), context, itemAbility, simulate);
+		return eventState != this.self() ? eventState : this.self().getBlock().getToolModifiedState(this.self(), context, itemAbility, simulate);
 	}
 	
 	@Override
 	public boolean isScaffolding(LivingEntity entity)
 	{
-		return this.self().getBlock().isScaffolding(this.self(), entity.level, entity.blockPosition(), entity);
+		return this.self().getBlock().isScaffolding(this.self(), entity.level(), entity.blockPosition(), entity);
 	}
 	
 	@Override
@@ -445,8 +464,26 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean isPathfindable(BlockGetter blockGetter, BlockPos pos, PathComputationType pathComputationType)
+	public boolean isEmpty()
 	{
-		return this.asState().isCollisionShapeFullBlock(blockGetter, pos);
+		return this.self().getBlock().isEmpty(this.self());
+	}
+	
+	@Override
+	public BubbleColumnDirection getBubbleColumnDirection()
+	{
+		return this.self().getBlock().getBubbleColumnDirection(this.self());
+	}
+	
+	@Override
+	public boolean isPathfindable(PathComputationType pathComputationType)
+	{
+		return switch (pathComputationType)
+		{
+			case LAND -> !this.self().isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+			case WATER -> this.self().getFluidState().is(FluidTags.WATER);
+			case AIR -> !this.self().isCollisionShapeFullBlock(EmptyBlockGetter.INSTANCE, BlockPos.ZERO);
+			default -> false;
+		};
 	}
 }

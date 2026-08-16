@@ -1,10 +1,11 @@
 package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -29,68 +30,68 @@ public abstract class SGJourneyContainerScreen<T extends AbstractContainerMenu> 
 		return false;
 	}
 	
-	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY)
+	protected void itemHint(GuiGraphics graphics, ResourceLocation texture, int x, int y, int hintTexturePosX, int hintTexturePosY)
 	{
-		this.blit(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY, 16, 16);
+		graphics.blit(texture, x, y, hintTexturePosX, hintTexturePosY, 16, 16);
 	}
 	
-	protected void itemHint(PoseStack poseStack, int mouseX, int mouseY, int hintTexturePosX, int hintTexturePosY, int slot)
+	protected void itemHint(GuiGraphics graphics, ResourceLocation texture, int x, int y, int hintTexturePosX, int hintTexturePosY, int slot)
 	{
 		if(!hasItem(slot))
-			itemHint(poseStack, mouseX, mouseY, hintTexturePosX, hintTexturePosY);
+			itemHint(graphics, texture, x, y, hintTexturePosX, hintTexturePosY);
 	}
 	
-	protected void tooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, Component... components)
+	protected void tooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, Component... components)
 	{
 		if(this.isHovering(x, y, width, height, mouseX, mouseY))
 		{
 			if(components.length == 1)
-				renderTooltip(poseStack, components[0], mouseX, mouseY);
+				graphics.renderTooltip(this.font, components[0], mouseX, mouseY);
 			else
 			{
 				List<Component> tooltips = List.of(components);
-				renderComponentTooltip(poseStack, tooltips, mouseX, mouseY);
+				graphics.renderComponentTooltip(this.font, tooltips, mouseX, mouseY);
 			}
 		}
 	}
 	
-	protected void itemTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int slot, Component... components)
+	protected void itemTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int slot, Component... components)
 	{
 		if(!hasItem(slot))
-			tooltip(poseStack, mouseX, mouseY, x, y, 16, 16, components);
+			tooltip(graphics, mouseX, mouseY, x, y, 16, 16, components);
 	}
 	
-	protected void energyTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, String name, long energy, long maxEnergy)
+	protected void energyTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, String name, long energy, long maxEnergy)
 	{
-		tooltip(poseStack, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(name, energy, maxEnergy));
+		tooltip(graphics, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(name, energy, maxEnergy));
 	}
 	
-	protected void energyTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, long energy, long maxEnergy)
+	protected void energyTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, long energy, long maxEnergy)
 	{
-		tooltip(poseStack, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(energy, maxEnergy));
+		tooltip(graphics, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(energy, maxEnergy));
 	}
 	
-	protected void energyTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, String name, long energy)
+	protected void energyTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, String name, long energy)
 	{
-		tooltip(poseStack, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(name, energy));
+		tooltip(graphics, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(name, energy));
 	}
 	
-	protected void energyTooltip(PoseStack poseStack, int mouseX, int mouseY, int x, int y, int width, int height, long energy)
+	protected void energyTooltip(GuiGraphics graphics, int mouseX, int mouseY, int x, int y, int width, int height, long energy)
 	{
-		tooltip(poseStack, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(energy));
+		tooltip(graphics, mouseX, mouseY, x, y, width, height, ComponentHelper.energy(energy));
 	}
 	
-	protected void renderEnergyHorizontal(PoseStack matrixStack, int x, int y, int width, int height, int energyTexturePosX, int energyTexturePosY, long energy, long maxEnergy)
+	protected void renderEnergyHorizontal(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height, int energyTexturePosX, int energyTexturePosY, long energy, long maxEnergy)
 	{
 		float percentage = (float) energy / maxEnergy;
 		int actual = Math.round(width * percentage);
-		this.blit(matrixStack, x, y, energyTexturePosX, energyTexturePosY, actual, height);
+		graphics.blit(texture, x, y, energyTexturePosX, energyTexturePosY, actual, height);
 	}
 	
-	protected void renderEnergyVertical(PoseStack matrixStack, int x, int y, int width, int height, int energyTexturePosX, int energyTexturePosY, long energy, long maxEnergy)
+	protected void renderEnergyVertical(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height, int energyTexturePosX, int energyTexturePosY, long energy, long maxEnergy)
 	{
 		float percentage = (float) energy / maxEnergy;
 		int actual = Math.round(height * percentage);
-		this.blit(matrixStack, x, y + height - actual, energyTexturePosX, energyTexturePosY, width, actual);
+		graphics.blit(texture, x, y + height - actual, energyTexturePosX, energyTexturePosY, width, actual);
 	}
 }

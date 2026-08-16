@@ -18,7 +18,7 @@ import net.povstalec.sgjourney.common.data.Universe;
 
 public class AddressTable
 {
-	public static final ResourceLocation ADDRESS_TABLES_LOCATION = new ResourceLocation(StargateJourney.MODID, "address_table");
+	public static final ResourceLocation ADDRESS_TABLES_LOCATION = StargateJourney.sgjourneyLocation("address_table");
 	public static final ResourceKey<Registry<AddressTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(ADDRESS_TABLES_LOCATION);
 	public static final Codec<ResourceKey<AddressTable>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	

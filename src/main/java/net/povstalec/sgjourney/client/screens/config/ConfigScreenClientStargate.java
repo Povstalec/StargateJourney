@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.client.screens.config;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
@@ -35,8 +34,8 @@ public class ConfigScreenClientStargate extends Screen
     {
 		super.init();
 		
-		ConfigList configList = new ConfigList(minecraft, this.width, this.height,
-				OPTIONS_LIST_TOP_HEIGHT, this.height - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_ITEM_HEIGHT);
+		ConfigList configList = new ConfigList(minecraft, this.width,
+				this.height - OPTIONS_LIST_TOP_HEIGHT - OPTIONS_LIST_BOTTOM_OFFSET, OPTIONS_LIST_TOP_HEIGHT, OPTIONS_LIST_ITEM_HEIGHT);
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.stargate_variants"), this.width, ClientStargateConfig.stargate_variants));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.unique_symbols"), this.width, ClientStargateConfig.unique_symbols));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.shiny_event_horizons"), this.width, ClientStargateConfig.shiny_event_horizons));
@@ -59,11 +58,10 @@ public class ConfigScreenClientStargate extends Screen
     }
 	
 	@Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
     {
-        this.renderBackground(poseStack);
-        drawCenteredString(poseStack, this.font, this.title, this.width / 2, 8, 16777215);
-        super.render(poseStack, mouseX, mouseY, partialTick);
+		super.render(graphics, mouseX, mouseY, partialTick);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 16777215);
     }
 	
 }

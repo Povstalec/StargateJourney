@@ -4,7 +4,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -60,6 +62,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 			
 			dropStargateItem(level, pos, oldState, null);
 			destroyStargate(level, baseBlockPos, getParts(false), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
+			level.invalidateCapabilities(pos);
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
@@ -77,14 +80,14 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
 		StargatePart part = state.getValue(PART);
 		BlockPos baseBlockPos = part.getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
 		
 		if(level.getBlockState(baseBlockPos).getBlock() instanceof AbstractStargateBaseBlock baseBlock)
-			return baseBlock.use(state, level, baseBlockPos, player, hand, result);
+			return baseBlock.useItemOn(stack, state, level, baseBlockPos, player, hand, hitResult);
 		
-		return InteractionResult.FAIL;
+		return ItemInteractionResult.FAIL;
 	}
 }

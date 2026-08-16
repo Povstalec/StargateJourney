@@ -11,6 +11,7 @@ import javax.annotation.Nullable;
 
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -39,9 +40,9 @@ public final class StargateNetwork extends SavedData
 	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
 	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
-	private static final String VERSION = "Version";
+	private static final String VERSION = "version";
 
-	private static final String CONNECTIONS = "Connections";
+	private static final String CONNECTIONS = "connections";
 
 	// Should increase every time there's a significant change done to the Stargate Network or the way Stargates work
 	private static final int UPDATE_VERSION = 19;
@@ -849,10 +850,15 @@ public final class StargateNetwork extends SavedData
 		return data;
 	}
 
-	public @NotNull CompoundTag save(@NotNull CompoundTag tag)
+	public @NotNull CompoundTag save(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider)
 	{
 		serialize(tag);
 		return tag;
+	}
+
+	public static SavedData.Factory<StargateNetwork> dataFactory(MinecraftServer server)
+	{
+		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 
     @Nonnull
@@ -869,7 +875,7 @@ public final class StargateNetwork extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 	
 	

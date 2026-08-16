@@ -1,0 +1,11 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "building",
+	"group": "waxed_naquadah_copper_slab",
+	"ingredients":
+	[
+		{ "item": "sgjourney:naquadah_copper_slab" },
+		{ "item": "minecraft:honeycomb" }
+	],
+	"result": { "id": "sgjourney:waxed_naquadah_copper_slab" }
+}

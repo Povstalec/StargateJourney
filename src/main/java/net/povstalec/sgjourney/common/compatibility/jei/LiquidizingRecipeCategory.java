@@ -66,13 +66,13 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 	
 	public static class NaquadahLiquidizer extends LiquidizingRecipeCategory<LiquidizingRecipe.NaquadahLiquidizer>
 	{
-		public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "naquadah_liquidizing");
+		public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("naquadah_liquidizing");
 		
 		public static final RecipeType<LiquidizingRecipe.NaquadahLiquidizer> TYPE = new RecipeType<>(RECIPE_ID, LiquidizingRecipe.NaquadahLiquidizer.class);
 		
 		public NaquadahLiquidizer(IGuiHelper helper)
 		{
-			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.NAQUADAH_LIQUIDIZER.get()));
+			super(helper, StargateJourney.sgjourneyLocation("textures/gui/jei/naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.NAQUADAH_LIQUIDIZER.get()));
 		}
 		
 		@Override
@@ -94,13 +94,13 @@ public abstract class LiquidizingRecipeCategory<T extends LiquidizingRecipe> imp
 	
 	public static class HeavyNaquadahLiquidizer extends LiquidizingRecipeCategory<LiquidizingRecipe.HeavyNaquadahLiquidizer>
 	{
-		public static final ResourceLocation RECIPE_ID = new ResourceLocation(StargateJourney.MODID, "naquadah_heavy_liquidizing");
+		public static final ResourceLocation RECIPE_ID = StargateJourney.sgjourneyLocation("naquadah_heavy_liquidizing");
 		
 		public static final RecipeType<LiquidizingRecipe.HeavyNaquadahLiquidizer> TYPE = new RecipeType<>(RECIPE_ID, LiquidizingRecipe.HeavyNaquadahLiquidizer.class);
 		
 		public HeavyNaquadahLiquidizer(IGuiHelper helper)
 		{
-			super(helper, new ResourceLocation(StargateJourney.MODID, "textures/gui/jei/heavy_naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get()));
+			super(helper, StargateJourney.sgjourneyLocation("textures/gui/jei/heavy_naquadah_liquidizer_gui.png"), new ItemStack(BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.get()));
 		}
 		
 		@Override

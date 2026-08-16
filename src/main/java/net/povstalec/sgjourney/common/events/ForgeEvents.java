@@ -1,15 +1,9 @@
 package net.povstalec.sgjourney.common.events;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,30 +20,27 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.trading.ItemCost;
 import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapDecorationTypes;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.OnDatapackSyncEvent;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingAttackEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
-import net.minecraftforge.event.level.ExplosionEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.MissingMappingsEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.OnDatapackSyncEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.ExplosionEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
+import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -60,9 +51,9 @@ import net.povstalec.sgjourney.common.block_entities.tech.NaquadahLiquidizerEnti
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
-import net.povstalec.sgjourney.common.capabilities.*;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
+import net.povstalec.sgjourney.common.capabilities.GoauldHost;
+import net.povstalec.sgjourney.common.capabilities.JaffaPouch;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.Factions;
@@ -70,23 +61,22 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.init.VillagerInit;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
-@Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@EventBusSubscriber(modid = StargateJourney.MODID)
 public class ForgeEvents
 {
-	@SubscribeEvent
-	public static void onMissingMapping(MissingMappingsEvent event)
-	{
-		RemappingHelper.startRemapping(event);
-	}
-	
 	@SubscribeEvent
 	public static void onDatapackSync(OnDatapackSyncEvent event)
 	{
@@ -117,22 +107,20 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onTick(TickEvent.ServerTickEvent event)
+	public static void onTick(ServerTickEvent.Pre event) //TODO Is Pre really what we need here?
 	{
 		MinecraftServer server = event.getServer();
-		if(event.phase.equals(TickEvent.Phase.START) && server != null)
-		{
-			Factions.get(server).tickFactions(server.getTickCount());
-			
-			StargateNetwork.get(server).handleConnections();
-			TransporterNetwork.get(server).handleConnections();
-		}
+		
+		Factions.get(server).tickFactions(server.getTickCount());
+		
+		StargateNetwork.get(server).handleConnections();
+		TransporterNetwork.get(server).handleConnections();
 	}
 	
 	@SubscribeEvent
 	public static void onChangedDimension(PlayerEvent.PlayerChangedDimensionEvent event)
 	{
-		if(!event.getEntity().getLevel().isClientSide())
+		if(!event.getEntity().level().isClientSide())
 			SpaceLocation.updatePlayerClientGravity((ServerPlayer) event.getEntity());
 	}
 	
@@ -162,7 +150,7 @@ public class ForgeEvents
 		if(entity instanceof LightningBolt lightning)
 		{
 			Vec3 vec3 = lightning.position();
-			BlockPos strikePosition = new BlockPos(vec3.x, vec3.y - 1.0E-6D, vec3.z);
+			BlockPos strikePosition = new BlockPos((int) Math.round(vec3.x), (int) Math.round(vec3.y - 1.0E-6D), (int) Math.round(vec3.z));
 
 			List<AbstractStargateEntity<?>> list = new ArrayList<>();
 			BlockState blockstate = level.getBlockState(strikePosition);
@@ -201,13 +189,13 @@ public class ForgeEvents
 			AncientGene.spawnNoGene(player);
 		else
 		{
-			long seed = ((ServerLevel) player.getLevel()).getSeed();
+			long seed = ((ServerLevel) player.level()).getSeed();
 			seed += player.getUUID().hashCode();
 			
 			AncientGene.spawnInheritedGene(seed, player, CommonGeneticConfig.player_ata_gene_inheritance_chance.get());
 		}
 		
-		if(!player.getLevel().isClientSide())
+		if(!player.level().isClientSide())
 		{
 			SpaceLocation.updatePlayerClientGravity((ServerPlayer) player);
 			SyncedConfig.syncConfig((ServerPlayer) player);
@@ -215,13 +203,21 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onLivingTick(LivingEvent.LivingTickEvent event)
+	public static void onEntityTick(EntityTickEvent.Pre event)
 	{
-		LivingEntity entity = event.getEntity();
-		Level level = entity.getLevel();
+		Entity entity = event.getEntity();
+		Level level = entity.level();
 		
-		entity.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(jaffaPouch -> jaffaPouch.tick(entity));
-		entity.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(goauldHost -> goauldHost.tick(entity));
+		if(entity instanceof LivingEntity livingEntity)
+		{
+			JaffaPouch jaffaPouch = entity.getCapability(JaffaPouch.JAFFA_POUCH_CAPABILITY);
+			if(jaffaPouch != null)
+				jaffaPouch.tick(livingEntity);
+			
+			GoauldHost goauldHost = entity.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+			if(goauldHost != null)
+				goauldHost.tick(livingEntity);
+		}
 		
 		double parentGravity = level.isClientSide() ? SpaceLocation.currentGravity : SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity();
 		if(parentGravity == 0.0)
@@ -247,7 +243,8 @@ public class ForgeEvents
 		entity.fallDistance = entity.fallDistance * (float) (-sin + 1);
 	}
 	
-	@SubscribeEvent
+	//TODO I'm guessing this is is now handled in the damage event
+	/*@SubscribeEvent
 	public static void onLivingAttack(LivingAttackEvent event)
 	{
 		LivingEntity entity = event.getEntity();
@@ -255,16 +252,17 @@ public class ForgeEvents
 		float damage = event.getAmount();
 		
 		event.setCanceled(onAttackOrHurt(entity, attacker, damage));
-	}
+	}*/
 	
 	@SubscribeEvent
-	public static void onLivingHurt(LivingHurtEvent event)
+	public static void onLivingDamage(LivingDamageEvent.Pre event)
 	{
 		LivingEntity entity = event.getEntity();
 		Entity attacker = event.getSource().getDirectEntity();
-		float damage = event.getAmount();
+		float damage = event.getOriginalDamage();
 		
-		event.setCanceled(onAttackOrHurt(entity, attacker, damage));
+		if(onAttackOrHurt(entity, attacker, damage))
+			event.setNewDamage(0);
 	}
 	
 	private static boolean onAttackOrHurt(LivingEntity entity, Entity attacker, float damage)
@@ -311,14 +309,15 @@ public class ForgeEvents
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 		
-		if(!state.getMaterial().isReplaceable())
+		if(!state.canBeReplaced())
 		{
 			pos = event.getPos().relative(event.getFace());
 			state = level.getBlockState(pos);
 			
-			if(state.getBlock() instanceof AbstractStargateBlock stargate && event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof BlockItem)
+			ItemStack stack = event.getEntity().getItemInHand(InteractionHand.MAIN_HAND);
+			if(state.getBlock() instanceof AbstractStargateBlock stargate && stack.getItem() instanceof BlockItem)
 			{
-				if(stargate.setCover(state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec()))
+				if(stargate.setCover(stack, state, level, pos, event.getEntity(), InteractionHand.MAIN_HAND, event.getHitVec()))
 				{
 					event.getEntity().swing(InteractionHand.MAIN_HAND);
 
@@ -374,7 +373,7 @@ public class ForgeEvents
 		if(state.getBlock() instanceof ProtectedBlock protectedBlock)
 		{
 			Player player = event.getPlayer();
-			Level level = player.getLevel();
+			Level level = player.level();
 			BlockPos pos = event.getPos();
 			
 			// Player doesn't have permissions to break the Block
@@ -388,7 +387,7 @@ public class ForgeEvents
 		if(state.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
 			Player player = event.getPlayer();
-			Level level = player.getLevel();
+			Level level = player.level();
 			BlockPos pos = event.getPos();
 			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, pos, state);
 			
@@ -421,50 +420,34 @@ public class ForgeEvents
 	}
 	
 	@SubscribeEvent
-	public static void onAttachCapabilitiesEvent(AttachCapabilitiesEvent<Entity> event)
-	{
-		if(event.getObject() instanceof Player || event.getObject() instanceof Human || event.getObject() instanceof AbstractVillager)
-		{
-			if(!event.getObject().getCapability(GoauldHostProvider.GOAULD_HOST).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "goauld_host"), new GoauldHostProvider());
-			
-			if(!event.getObject().getCapability(AncientGeneProvider.ANCIENT_GENE).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "ancient_gene"), new AncientGeneProvider());
-		}
-		
-		if(event.getObject() instanceof Player || event.getObject() instanceof Jaffa)
-		{
-			if(!event.getObject().getCapability(JaffaPouchProvider.JAFFA_POUCH).isPresent())
-				event.addCapability(new ResourceLocation(StargateJourney.MODID, "jaffa_pouch"), new JaffaPouchProvider());
-		}
-	}
-	
-	@SubscribeEvent
 	public static void onPlayerCloned(PlayerEvent.Clone event)
 	{
 		Player original = event.getOriginal();
 		Player clone = event.getEntity();
-		original.reviveCaps();
 		
-		original.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(oldCap ->
-				clone.getCapability(JaffaPouchProvider.JAFFA_POUCH).ifPresent(newCap -> newCap.copyFrom(oldCap)));
+		GoauldHost goauldHost = original.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+		if(goauldHost != null)
+		{
+			GoauldHost newGoauldHost = clone.getCapability(GoauldHost.GOAULD_HOST_CAPABILITY);
+			if(newGoauldHost != null)
+				newGoauldHost.copyFrom(goauldHost);
+		}
 		
-		original.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(oldCap ->
-				clone.getCapability(GoauldHostProvider.GOAULD_HOST).ifPresent(newCap -> newCap.copyFrom(oldCap)));
+		JaffaPouch jaffaPouch = original.getCapability(JaffaPouch.JAFFA_POUCH_CAPABILITY);
+		if(jaffaPouch != null)
+		{
+			JaffaPouch newJaffaPouch = clone.getCapability(JaffaPouch.JAFFA_POUCH_CAPABILITY);
+			if(newJaffaPouch != null)
+				newJaffaPouch.copyFrom(jaffaPouch);
+		}
 		
-		original.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(oldCap -> 
-			clone.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(newCap -> newCap.copyFrom(oldCap)));
-		
-		original.invalidateCaps();
-	}
-	
-	@SubscribeEvent
-	public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
-	{
-		event.register(JaffaPouch.class);
-		event.register(GoauldHost.class);
-		event.register(AncientGene.class);
-		event.register(Stargate.class);
+		AncientGene ataGene = original.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+		if(ataGene != null)
+		{
+			AncientGene newAtaGene = clone.getCapability(AncientGene.ANCIENT_GENE_CAPABILITY);
+			if(newAtaGene != null)
+				newAtaGene.copyFrom(ataGene);
+		}
 	}
 	
 	private static void addCartographerTrades(VillagerTradesEvent event)
@@ -472,7 +455,7 @@ public class ForgeEvents
 		Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 		
 		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
-		level2Trades.add(new TreasureMapForEmeraldsTrade(13, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecoration.Type.RED_X, 3, 80));
+		level2Trades.add(new TreasureMapForEmeraldsTrade(13, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 3, 80));
 	}
 	
 	private static void addArcheologistTrades(VillagerTradesEvent event)
@@ -480,25 +463,25 @@ public class ForgeEvents
 		Int2ObjectMap<List<VillagerTrades.ItemListing>> trades = event.getTrades();
 		
 		List<VillagerTrades.ItemListing> level1Trades = trades.get(1);
-		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.PAPER, 20), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(BlockInit.GOLDEN_IDOL.get(), 1), new ItemStack(Items.EMERALD, 5), 4, 12, 0.09F));
-		level1Trades.add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecoration.Type.RED_X, 2, 80));
+		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.PAPER, 20), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level1Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(BlockInit.GOLDEN_IDOL.get(), 1), new ItemStack(Items.EMERALD, 5), 4, 12, 0.09F));
+		level1Trades.add(new TreasureMapForEmeraldsTrade(8, TagInit.Structures.ON_ARCHEOLOGIST_MAPS, "filled_map.sgjourney.archeologist", MapDecorationTypes.RED_X, 2, 80));
 		
 		List<VillagerTrades.ItemListing> level2Trades = trades.get(2);
-		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(Items.COMPASS, 1), 4, 12, 0.09F));
-		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(Items.WRITABLE_BOOK, 1), 4, 12, 0.09F));
-		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(Items.COMPASS, 1), 4, 12, 0.09F));
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(Items.WRITABLE_BOOK, 1), 4, 12, 0.09F));
+		level2Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.GOLD_INGOT, 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
 		
 		List<VillagerTrades.ItemListing> level3Trades = trades.get(3);
-		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 3), new ItemStack(BlockInit.FIRE_PIT.get(), 4), 1, 12, 0.09F));
-		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(BlockInit.SANDSTONE_HIEROGLYPHS.get(), 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
-		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_WITH_LAPIS.get(), 3), 4, 12, 0.09F));
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 3), new ItemStack(BlockInit.FIRE_PIT.get(), 4), 1, 12, 0.09F));
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(BlockInit.SANDSTONE_HIEROGLYPHS.get(), 3), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level3Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_WITH_LAPIS.get(), 3), 4, 12, 0.09F));
 		
 		List<VillagerTrades.ItemListing> level4Trades = trades.get(4);
-		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.STONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.EMERALD, 4), new ItemStack(BlockInit.RED_SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
-		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemStack(Items.BONE, 4), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(BlockInit.STONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(BlockInit.SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.EMERALD, 4), new ItemStack(BlockInit.RED_SANDSTONE_SYMBOL.get(), 1), 4, 12, 0.09F));
+		level4Trades.add((trader, rand) -> new MerchantOffer(new ItemCost(Items.BONE, 4), new ItemStack(Items.EMERALD, 1), 4, 12, 0.09F));
 		
 		List<VillagerTrades.ItemListing> level5Trades = trades.get(5);
 		level5Trades.add(new TreasureMapForEmeraldsTrade.StargateMapTrade(8, "filled_map.sgjourney.chappa_ai", 80)); // The X on the map may rarely not appear due to (what seems to be) a vanilla bug: https://bugs.mojang.com/browse/MC/issues/MC-218156

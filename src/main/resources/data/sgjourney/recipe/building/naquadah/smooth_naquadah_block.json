@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"BB",
+		"BB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:polished_naquadah_block"
+		}
+	},
+	"result": { "id": "sgjourney:smooth_naquadah_block", "count": 4 }
+}

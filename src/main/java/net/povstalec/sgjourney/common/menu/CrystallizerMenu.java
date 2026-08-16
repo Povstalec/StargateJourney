@@ -6,16 +6,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ServerboundCrystallizerUpdatePacket;
 import org.jetbrains.annotations.NotNull;
 
@@ -56,7 +56,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	
 	public void pressDumpButton()
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundCrystallizerUpdatePacket(this.blockEntity.getBlockPos()));
+		PacketDistributor.sendToServer(new ServerboundCrystallizerUpdatePacket(this.blockEntity.getBlockPos()));
 	}
 	
 	public void setFluid(FluidStack fluidStack)
@@ -85,7 +85,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	 */
 	private boolean hasRequiredLiquid(ItemStack itemStack)
 	{
-		IFluidHandlerItem fluidHandler = itemStack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).resolve().orElse(null);
+		IFluidHandlerItem fluidHandler = itemStack.getCapability(Capabilities.FluidHandler.ITEM);
 		if(fluidHandler != null)
 			return blockEntity.isDesiredInputFluid(fluidHandler.getFluidInTank(0));
 		
@@ -96,7 +96,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if(sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if(sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		// Try moving it to Liquid input slot
@@ -112,7 +112,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	{
 		public Crystallizer(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (CrystallizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (CrystallizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Crystallizer(int containerId, Inventory inventory, CrystallizerEntity blockEntity)
@@ -131,7 +131,7 @@ public abstract class CrystallizerMenu<T extends AbstractCrystallizerEntity<?>> 
 	{
 		public AdvancedCrystallizer(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AdvancedCrystallizerEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (AdvancedCrystallizerEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public AdvancedCrystallizer(int containerId, Inventory inventory, AdvancedCrystallizerEntity blockEntity)

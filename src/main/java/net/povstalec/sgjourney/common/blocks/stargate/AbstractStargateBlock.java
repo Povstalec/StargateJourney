@@ -1,46 +1,33 @@
 package net.povstalec.sgjourney.common.blocks.stargate;
 
-import java.util.ArrayList;
-import java.util.Optional;
-
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.HoneycombItem;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.gameevent.GameEvent;
-import net.minecraftforge.common.ToolAction;
-import net.minecraftforge.common.ToolActions;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
@@ -49,8 +36,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.ItemAbilities;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
@@ -63,6 +54,9 @@ import net.povstalec.sgjourney.common.misc.CoverBlockPlaceContext;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class AbstractStargateBlock extends Block implements SimpleWaterloggedBlock, ProtectedBlock
 {
@@ -183,10 +177,10 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 
 	@Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
 	{
 		dropStargateItem(level, pos, state, player);
-		super.playerWillDestroy(level, pos, state, player);
+		return super.playerWillDestroy(level, pos, state, player);
 	}
 	
 	public void dropStargateItem(Level level, BlockPos pos, BlockState state, @Nullable Player player)
@@ -203,7 +197,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				
 				ItemStack itemstack = new ItemStack(asItem());
 				
-				stargate.saveToItem(itemstack);
+				stargate.saveToItem(itemstack, level.registryAccess());
 				
 				ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, itemstack);
 				itementity.setDefaultPickUpDelay();
@@ -278,7 +272,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return true;
 	}
 	
-	public boolean setCover(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public boolean setCover(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
 		if(!player.isShiftKeyDown())
 		{
@@ -287,7 +281,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(blockCover.isPresent())
 			{
 				StargatePart part = state.getValue(PART);
-				ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 				
 				if(stack.getItem() instanceof BlockItem blockItem && blockCover.get().getBlockAt(part).isEmpty())
 				{
@@ -300,7 +293,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 							player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions"), true);
 						else if(blockCover.get().setBlockAt(part, coverState))
 						{
-							level.playSound(player, pos, coverState.getBlock().getSoundType(coverState).getPlaceSound(), SoundSource.BLOCKS);
+							level.playSound(player, pos, coverState.getSoundType(level, pos, player).getPlaceSound(), SoundSource.BLOCKS);
 							
 							if(!player.isCreative())
 								stack.shrink(1);
@@ -315,9 +308,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return false;
 	}
 	
-	public boolean setIris(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public boolean setIris(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
 	{
-		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof StargateIrisItem && !level.isClientSide())
 		{
 			AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
@@ -340,16 +332,16 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result)
+	public ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
 	{
-		if(setCover(state, level, pos, player, hand, result))
-			return InteractionResult.SUCCESS;
-		else if(setIris(state, level, pos, player, hand, result))
-			return InteractionResult.SUCCESS;
-		else if(applyWax(state, level, pos, player, hand, result))
-			return InteractionResult.SUCCESS;
+		if(setCover(stack, state, level, pos, player, hand, hitResult))
+			return ItemInteractionResult.SUCCESS;
+		else if(setIris(stack, state, level, pos, player, hand, hitResult))
+			return ItemInteractionResult.SUCCESS;
+		else if(applyWax(state, level, pos, player, hand, hitResult))
+			return ItemInteractionResult.SUCCESS;
 		
-		return super.use(state, level, pos, player, hand, result);
+		return super.useItemOn(stack, state, level, pos, player, hand, hitResult);
 	}
 	
 	@Override
@@ -369,7 +361,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
     }
 	
 	@Override
-	public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter level, BlockPos pos, Player player)
+	public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player)
 	{
 		Optional<StargateBlockCover> blockCover = getBlockCover(level, state, pos);
 		
@@ -385,7 +377,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
 		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
-		stargate.saveToItem(stack);
+		stargate.saveToItem(stack, level.registryAccess());
 		
         return stack;
 	}
@@ -441,10 +433,10 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 	}
 	
 	@Nullable
-	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ToolAction toolAction, boolean simulate)
+	public BlockState getToolModifiedState(BlockState state, UseOnContext context, ItemAbility itemAbility, boolean simulate)
 	{
 		ItemStack itemStack = context.getItemInHand();
-		if(ToolActions.AXE_SCRAPE == toolAction && itemStack.canPerformAction(toolAction))
+		if(ItemAbilities.AXE_SCRAPE == itemAbility && itemStack.canPerformAction(itemAbility))
 		{
 			Level level = context.getLevel();
 			BlockPos pos = context.getClickedPos();
@@ -452,7 +444,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 			if(blockCover.isPresent() && blockCover.get().undoWeatheringAt(state.getValue(PART)))
 				return state;
 		}
-		else if(ToolActions.AXE_WAX_OFF == toolAction && itemStack.canPerformAction(toolAction))
+		else if(ItemAbilities.AXE_WAX_OFF == itemAbility && itemStack.canPerformAction(itemAbility))
 		{
 			Level level = context.getLevel();
 			BlockPos pos = context.getClickedPos();
@@ -461,6 +453,6 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 				return state;
 		}
 		
-		return super.getToolModifiedState(state, context, toolAction, simulate);
+		return super.getToolModifiedState(state, context, itemAbility, simulate);
 	}
 }

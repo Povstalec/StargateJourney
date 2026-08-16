@@ -3,26 +3,23 @@ package net.povstalec.sgjourney.common.structures;
 import java.util.Optional;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.Heightmap;
-import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
 import net.povstalec.sgjourney.common.init.StructureInit;
-import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 
 //Structure class is mostly copy-pasted from https://github.com/TelepathicGrunt/StructureTutorialMod/blob/1.19.0-Forge-Jigsaw/src/main/java/com/telepathicgrunt/structuretutorial/StructureTutorialMain.java
 public class StargateTemple extends StargateStructure
 {
-	public static final Codec<StargateTemple> CODEC = RecordCodecBuilder.<StargateTemple>mapCodec(instance ->
+	public static final MapCodec<StargateTemple> CODEC = RecordCodecBuilder.<StargateTemple>mapCodec(instance ->
 			instance.group(StargatePedestal.settingsCodec(instance),
 					StructureTemplatePool.CODEC.fieldOf("start_pool").forGetter(structure -> structure.startPool),
 					StructureTemplatePool.CODEC.optionalFieldOf("obstructed_start_pool").forGetter(structure -> Optional.ofNullable(structure.obstructedStartPool)),
@@ -35,7 +32,7 @@ public class StargateTemple extends StargateStructure
 					Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
 					StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
 					DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
-			).apply(instance, StargateTemple::new)).codec();
+			).apply(instance, StargateTemple::new));
 
 	public StargateTemple(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 						  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
@@ -43,8 +40,8 @@ public class StargateTemple extends StargateStructure
 	{
 		super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates, stargateModifiers, dhdModifiers);
 	}
-
-    @Override
+	
+	@Override
     public StructureType<?> type()
     {
         return StructureInit.STARGATE_TEMPLE.get(); // Helps the game know how to turn this structure back to json to save to chunks

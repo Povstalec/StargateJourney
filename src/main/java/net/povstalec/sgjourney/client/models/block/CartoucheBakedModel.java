@@ -10,17 +10,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.client.RenderTypeGroup;
-import net.minecraftforge.client.model.ForgeFaceData;
-import net.minecraftforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.RenderTypeGroup;
+import net.neoforged.neoforge.client.model.ExtraFaceData;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -55,13 +55,13 @@ public class CartoucheBakedModel extends SymbolBakedModel
 		return switch(orientation)
 		{
 			case UPWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 16 + SYMBOL_OFFSET, minY), new Vector3f(maxX, 16 + SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.UP, 0, "#symbol", new BlockFaceUV(uvs, 180),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction, 180), true, ID);
+					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.UP, new ModelState(){}, getRotation(direction, 180), true);
 			
 			case DOWNWARD -> FACE_BAKERY.bakeQuad(new Vector3f(minX, 0 - SYMBOL_OFFSET, minY), new Vector3f(maxX, 0 - SYMBOL_OFFSET, maxY), new BlockElementFace(Direction.DOWN, 0, "#symbol", new BlockFaceUV(uvs, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true, ID);
+					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.DOWN, new ModelState(){}, getRotation(direction), true);
 			
 			default -> FACE_BAKERY.bakeQuad(new Vector3f(minX, minY, 16 + SYMBOL_OFFSET), new Vector3f(maxX, maxY, 16 + SYMBOL_OFFSET), new BlockElementFace(Direction.SOUTH, 0, "#symbol", new BlockFaceUV(uvs, 0),
-					new ForgeFaceData(symbolTint, 0, 0, true)), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true, ID);
+					new ExtraFaceData(symbolTint, 0, 0, true), new MutableObject()), symbolSprite, Direction.SOUTH, new ModelState(){}, getRotation(direction), true);
 		};
 	}
 	

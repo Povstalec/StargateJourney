@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "pattern": [
+    "NEN",
+    "IPI",
+    " I "
+  ],
+  "key": {
+	"I": { "item": "minecraft:gold_ingot" },
+	"E": { "item": "sgjourney:energy_crystal" },
+	"N": { "item": "minecraft:gold_nugget" },
+    "P": { "item": "sgjourney:plasma_converter" }
+  },
+  "result": {
+    "id": "sgjourney:kara_kesh"
+  }
+}

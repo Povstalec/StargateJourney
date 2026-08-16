@@ -1,6 +1,6 @@
 package net.povstalec.sgjourney.common.config;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class CommonStargateNetworkConfig
 {
@@ -11,7 +11,7 @@ public class CommonStargateNetworkConfig
 	
 	public static SGJourneyConfigValue.BooleanValue disable_dhd_preference;
 	
-	public static void init(ForgeConfigSpec.Builder server)
+	public static void init(ModConfigSpec.Builder server)
 	{
 		randomize_addresses = new SGJourneyConfigValue.BooleanValue(server, "server.randomize_addresses",
 				false, //TODO Change to true once there is are more ways to obtain all addresses

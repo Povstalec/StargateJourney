@@ -9,9 +9,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.advancements.TransporterTravelCriterion;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.init.AdvancementInit;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
@@ -76,9 +77,9 @@ public class Transporting
 	
 	public static Entity transportEntity(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		if(traveler.getLevel() != destinationLevel)
-			traveler = traveler.changeDimension(destinationLevel, new Wormhole.WormholeTeleporter(destinationPosition, destinationMomentum,
-					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot()));
+		if(traveler.level() != destinationLevel)
+			traveler = traveler.changeDimension(new DimensionTransition(destinationLevel, destinationPosition, destinationMomentum,
+					CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot(), false, DimensionTransition.DO_NOTHING));
 		else
 		{
 			traveler.moveTo(destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), traveler.getXRot());
@@ -100,20 +101,20 @@ public class Transporting
 		{
 			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = destinationRegion.getGalacticAddresses();
 			if(destinationGalaxyMap == null || destinationGalaxyMap.isEmpty()) // Destination Region but no Galaxies
-				TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+				AdvancementInit.TRANSPORT_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 						initialRegion, destinationRegion.getResourceKey(), initialGalaxy, null, distanceTraveled);
 			else // Destination Region with Galaxies
 			{
 				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyEntry : destinationGalaxyMap.entrySet())
 				{
-					TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+					AdvancementInit.TRANSPORT_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 							initialRegion, destinationRegion.getResourceKey(), initialGalaxy, destinationGalaxyEntry.getKey(), distanceTraveled);
 				}
 			}
 		}
 		else // No destination Region
 		{
-			TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+			AdvancementInit.TRANSPORT_CRITERION_TRIGGER.get().trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
 					initialRegion, null, initialGalaxy, null, distanceTraveled);
 		}
 	}
@@ -142,7 +143,7 @@ public class Transporting
 	
 	public static Entity transportPlayer(TransporterConnection connection, ServerLevel destinationLevel, Transporter receivingTransporter, ServerPlayer player, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		ServerLevel initialLevel = player.getLevel();
+		ServerLevel initialLevel = (ServerLevel) player.level();
 		Vec3 initialPos = player.position();
 		
 		player.teleportTo(destinationLevel, destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), player.getXRot());
@@ -162,7 +163,7 @@ public class Transporting
 	
 	public static Entity recursivePassengerTeleport(TransporterConnection connection, ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		Level initialLevel = traveler.getLevel();
+		Level initialLevel = traveler.level();
 		ArrayList<Entity> passengers = new ArrayList<>();
 		if(initialLevel != destinationLevel)
 		{

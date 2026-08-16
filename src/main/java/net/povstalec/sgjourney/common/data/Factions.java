@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.data;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -96,11 +97,16 @@ public final class Factions extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider)
 	{
 		tag = serialize();
 		
 		return tag;
+	}
+	
+	public static SavedData.Factory<Factions> dataFactory(MinecraftServer server)
+	{
+		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 
     @Nonnull
@@ -117,6 +123,6 @@ public final class Factions extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 }

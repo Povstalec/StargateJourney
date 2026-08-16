@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 
 public class Conversion
 {
-	public static final ResourceLocation DIMENSION_LOCATION = new ResourceLocation("minecraft", "dimension");
+	public static final ResourceLocation DIMENSION_LOCATION = ResourceLocation.fromNamespaceAndPath("minecraft", "dimension");
 	public static final ResourceKey<Registry<Level>> DIMENSION_KEY = ResourceKey.createRegistryKey(DIMENSION_LOCATION);
 	
 	@Nullable

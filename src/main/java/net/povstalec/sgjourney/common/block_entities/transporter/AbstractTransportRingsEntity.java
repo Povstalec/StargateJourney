@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.*;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
@@ -14,13 +14,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
 import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
@@ -31,11 +30,12 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Transp
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
+import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
@@ -44,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.*;
 
 public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTransportRings<?>> extends AbstractTransporterEntity<TR> implements CrystalCache.Interface<AbstractTransportRingsEntity<?>>
 {
@@ -75,7 +76,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	protected int transferEfficiency = DEFAULT_TRANSFER_EFFICIENCY;
 	
 	public final ItemStackHandler crystalItemHandler;
-	protected final LazyOptional<IItemHandler> lazyCrystalItemHandler;
+	protected final Lazy<IItemHandler> lazyCrystalItemHandler;
 	
 	@Nullable
 	private BlockPos transportPos = null;
@@ -96,14 +97,14 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		super(blockEntityType, transporterType, pos, state, defaultNetwork);
 		
 		crystalItemHandler = createCrystalHandler();
-		lazyCrystalItemHandler = LazyOptional.of(() -> crystalItemHandler);
+		lazyCrystalItemHandler = Lazy.of(() -> crystalItemHandler);
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(tag);
-		crystalItemHandler.deserializeNBT(tag.getCompound(CRYSTAL_INVENTORY));
+		super.loadAdditional(tag, registries);
+		crystalItemHandler.deserializeNBT(registries, tag.getCompound(CRYSTAL_INVENTORY));
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
@@ -113,10 +114,10 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT());
-		super.saveAdditional(tag);
+		tag.put(CRYSTAL_INVENTORY, crystalItemHandler.serializeNBT(registries));
+		super.saveAdditional(tag, registries);
 	}
 	
 	@Override
@@ -127,16 +128,16 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void invalidateCapabilities()
 	{
 		lazyCrystalItemHandler.invalidate();
-		super.invalidateCaps();
+		super.invalidateCapabilities();
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		tag.putInt(EMPTY_SPACE, emptySpace);
 		tag.putInt(TRANSPORT_HEIGHT, transportHeight);
@@ -151,9 +152,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	}
 	
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.handleUpdateTag(tag);
+		super.handleUpdateTag(tag, registries);
 		
 		emptySpace = tag.getInt(EMPTY_SPACE);
 		transportHeight = tag.getInt(TRANSPORT_HEIGHT);
@@ -164,11 +165,6 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		transferEfficiency = tag.getInt(TRANSFER_EFFICIENCY);
 		maxTransportRange = tag.getDouble(TRANSPORT_RANGE);
 		energyReach = tag.getDouble(ENERGY_REACH);
-	}
-	
-	public LazyOptional<IItemHandler> getCrystalItemHandler()
-	{
-		return lazyCrystalItemHandler.cast();
 	}
 	
 	protected ItemStackHandler createCrystalHandler()
@@ -291,21 +287,18 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		return getBlockState().hasProperty(AbstractTransportRingsBlock.FACING) && side != getBlockState().getValue(AbstractTransportRingsBlock.FACING);
 	}
 	
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction side)
+	public IItemHandler getCrystalItemHandler()
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
-			return lazyEnergyItemHandler.cast();
-		
-		return super.getCapability(capability, side);
+		return lazyCrystalItemHandler.get();
 	}
-
-	@Override
-	public AABB getRenderBoundingBox()
-    {
-        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
-    }
+	
+	@Nullable
+	public IItemHandler getEnergyItemHandler(Direction direction)
+	{
+		if(!isProtected() || CommonPermissionConfig.protected_inventory_access.get())
+			return lazyEnergyItemHandler.get();
+		return null;
+	}
 	
 	//============================================================================================
 	//*******************************************Energy*******************************************
@@ -320,8 +313,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		long energyStored = energyStorage.getTrueEnergyStored();
 		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
-			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
+			IEnergyStorage energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(Capabilities.EnergyStorage.ITEM);
+			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyStored += sgjourneyEnergy.getTrueEnergyStored();
 		}
 		
@@ -337,8 +330,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		long energyCapacity = energyStorage.getTrueMaxEnergyStored();
 		for(var slot : crystalCache.energyCrystals().getSlots())
 		{
-			Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
-			if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
+			IEnergyStorage energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(Capabilities.EnergyStorage.ITEM);
+			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				energyCapacity += sgjourneyEnergy.getTrueMaxEnergyStored();
 		}
 		
@@ -360,8 +353,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				{
 					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
-						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
+						IEnergyStorage energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(Capabilities.EnergyStorage.ITEM);
+						if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							energyReceived += sgjourneyEnergy.receiveLongEnergy(maxReceive - energyReceived, simulate);
 							received = true;
@@ -395,8 +388,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 				{
 					for(var slot : crystalCache.energyCrystals().getSlots())
 					{
-						Optional<IEnergyStorage> energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(ForgeCapabilities.ENERGY).resolve();
-						if(energyStorage.isPresent() && energyStorage.get() instanceof SGJourneyEnergy sgjourneyEnergy)
+						IEnergyStorage energyStorage = crystalItemHandler.getStackInSlot(slot.index).getCapability(Capabilities.EnergyStorage.ITEM);
+						if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 						{
 							// depleteEnergy() gets around the issue of Energy Crystals having their maximum extract rate set to 100k by default
 							long extracting = sgjourneyEnergy.depleteEnergy(maxExtract - energyExtracted, simulate);
@@ -635,9 +628,9 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		updateClient();
 		
 		if(transportTicks - getTransportSoundLead() == connectionTime)
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, true));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, true));
 		else if(transportTicks == connectionTime)
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, false));
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.TransportRingsTransport(this.worldPosition, false));
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractTransportRingsEntity<?> rings)
@@ -722,8 +715,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		{
 			for(int i = 4; i <= 16; i++)
 			{
-				if(!level.getBlockState(pos.below(i)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.below(i - 2)).getMaterial().isReplaceable() && level.getBlockState(pos.below(i - 3)).getMaterial().isReplaceable())
+				if(!level.getBlockState(pos.below(i)).canBeReplaced() && level.getBlockState(pos.below(i - 1)).canBeReplaced() &&
+					level.getBlockState(pos.below(i - 2)).canBeReplaced() && level.getBlockState(pos.below(i - 3)).canBeReplaced())
 				{
 					return -i + 1;
 				}
@@ -733,8 +726,8 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		{
 			for(int i = 1; i <= 16; i++)
 			{
-				if(level.getBlockState(pos.above(i)).getMaterial().isReplaceable() && level.getBlockState(pos.above(i + 1)).getMaterial().isReplaceable() &&
-					level.getBlockState(pos.above(i + 2)).getMaterial().isReplaceable())
+				if(level.getBlockState(pos.above(i)).canBeReplaced() && level.getBlockState(pos.above(i + 1)).canBeReplaced() &&
+					level.getBlockState(pos.above(i + 2)).canBeReplaced())
 				{
 					return i;
 				}

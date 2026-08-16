@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:smithing_transform",
+	"addition":
+	{
+		"item": "minecraft:gold_ingot"
+	},
+	"base":
+	{
+		"item": "sgjourney:jaffa_leggings"
+	},
+	"result":
+	{
+		"id": "sgjourney:system_lord_leggings"
+	},
+	"template":
+	{
+		"item": "minecraft:gold_ingot"
+	}
+}

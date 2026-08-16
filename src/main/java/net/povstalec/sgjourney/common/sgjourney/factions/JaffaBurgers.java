@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.factions;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -7,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
@@ -45,7 +47,7 @@ public class JaffaBurgers extends AbstractFaction
 	public JaffaBurgers(MinecraftServer server)
 	{
 		this.spawnerStargate = StargateInit.MILKY_WAY_SPAWNER.get().constructStargate(server);
-		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag());
+		this.spawnerStargate.deserializeNBT(Address.Immutable.randomAddress(8, 36, 0), new CompoundTag(), server.registryAccess());
 		
 		this.spawnerStargate.setEntityTypeRandomizer(this::entityTypeRandomizer);
 		this.spawnerStargate.setOnEntitySpawn(this::onEntitySpawn);
@@ -64,13 +66,14 @@ public class JaffaBurgers extends AbstractFaction
 		if(entity instanceof FactionMember factionMember)
 			factionMember.setFaction(this);
 		
-		entity.setItemSlot(EquipmentSlot.MAINHAND, makeJaffaBurgerStack());
+		if(entity instanceof LivingEntity livingEntity)
+			livingEntity.setItemSlot(EquipmentSlot.MAINHAND, makeJaffaBurgerStack());
 	}
 	
 	public static ItemStack makeJaffaBurgerStack()
 	{
 		ItemStack stack = new ItemStack(ItemInit.GOAULD_BURGER.get());
-		stack.setHoverName(Component.translatable("item.sgjourney.jaffa_burger"));
+		stack.set(DataComponents.CUSTOM_NAME, Component.translatable("item.sgjourney.jaffa_burger"));
 		return stack;
 	}
 	

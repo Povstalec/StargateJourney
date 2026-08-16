@@ -6,8 +6,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.SlotItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.*;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -99,7 +99,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	protected boolean moveItemStackToBlockEntity(ItemStack sourceStack)
 	{
 		// Try moving energy stack to the energy slot
-		if((sourceStack.getCapability(ForgeCapabilities.ENERGY).isPresent() || sourceStack.getItem() instanceof IEnergyCore || sourceStack.getItem() instanceof ZeroPointModule) && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
+		if((sourceStack.getCapability(Capabilities.EnergyStorage.ITEM) != null || sourceStack.getItem() instanceof IEnergyCore || sourceStack.getItem() instanceof ZeroPointModule) && moveItemStackTo(sourceStack, energySlotIndex, energySlotIndex + 1, false))
 			return true;
 		
 		if(sourceStack.getItem() instanceof NaquadahFuelRodItem && moveItemStackTo(sourceStack, energyFeederSlotIndex, energyFeederSlotIndex + 1, false))
@@ -124,7 +124,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	{
 		public Universe(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (UniverseDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (UniverseDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Universe(int containerId, Inventory inventory, UniverseDHDEntity blockEntity)
@@ -143,7 +143,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	{
 		public MilkyWay(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (MilkyWayDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (MilkyWayDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public MilkyWay(int containerId, Inventory inventory, MilkyWayDHDEntity blockEntity)
@@ -162,7 +162,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	{
 		public Pegasus(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (PegasusDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (PegasusDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Pegasus(int containerId, Inventory inventory, PegasusDHDEntity blockEntity)
@@ -181,7 +181,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	{
 		public Classic(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (ClassicDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (ClassicDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Classic(int containerId, Inventory inventory, ClassicDHDEntity blockEntity)

@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.capabilities;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -10,10 +11,13 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.entities.Goauld;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.goals.EvacuateHostGoal;
 import net.povstalec.sgjourney.common.entities.goals.NearestThreatGoal;
+import net.povstalec.sgjourney.common.init.AttachmentTypeInit;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.items.GoauldItem;
 
@@ -21,12 +25,33 @@ import javax.annotation.Nullable;
 
 public class JaffaPouch
 {
+	public static final String JAFFA_POUCH = "jaffa_pouch";
 	public static final String HAS_POUCH = "has_pouch";
+	
+	public static final EntityCapability<JaffaPouch, Void> JAFFA_POUCH_CAPABILITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(JAFFA_POUCH), JaffaPouch.class);
 	
 	public static final int HEAL_DURATION = 20 * 5;
 	
+	private final LivingEntity entity;
+	
 	private boolean hasPouch = false;
 	private Goauld.Info goauldInfo = null;
+	
+	public JaffaPouch(LivingEntity entity)
+	{
+		this.entity = entity;
+		//TODO
+		CompoundTag jaffaPouch = this.entity.getData(AttachmentTypeInit.JAFFA_POUCH);
+		
+		this.hasPouch = jaffaPouch.getBoolean(HAS_POUCH);
+		
+		if(jaffaPouch.contains(Goauld.Info.GOAULD_INFO, CompoundTag.TAG_COMPOUND))
+		{
+			this.goauldInfo = new Goauld.Info();
+			this.goauldInfo.deserializeNBT(entity.getServer().registryAccess(), jaffaPouch.getCompound(Goauld.Info.GOAULD_INFO));
+		}
+	}
 	
 	public boolean hasPouch()
 	{
@@ -79,24 +104,15 @@ public class JaffaPouch
 			this.goauldInfo = source.goauldInfo.copy();
 	}
 	
-	public void saveData(CompoundTag tag)
+	public void update(MinecraftServer server)
 	{
-		if(this.hasPouch)
-			tag.putBoolean(HAS_POUCH, true);
+		CompoundTag jaffaPouch = new CompoundTag();
+		
+		jaffaPouch.putBoolean(HAS_POUCH, this.hasPouch);
 		
 		if(this.goauldInfo != null)
-			tag.put(Goauld.Info.GOAULD_INFO, this.goauldInfo.serializeNBT());
-	}
-	
-	public void loadData(CompoundTag tag)
-	{
-		if(tag.contains(HAS_POUCH, Tag.TAG_BYTE))
-			this.hasPouch = tag.getBoolean(HAS_POUCH);
+			jaffaPouch.put(Goauld.Info.GOAULD_INFO, this.goauldInfo.serializeNBT(server.registryAccess()));
 		
-		if(tag.contains(Goauld.Info.GOAULD_INFO, CompoundTag.TAG_COMPOUND))
-		{
-			this.goauldInfo = new Goauld.Info();
-			this.goauldInfo.deserializeNBT(tag.getCompound(Goauld.Info.GOAULD_INFO));
-		}
+		this.entity.setData(AttachmentTypeInit.JAFFA_POUCH, jaffaPouch);
 	}
 }

@@ -6,8 +6,10 @@ import java.util.Random;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -37,11 +39,9 @@ import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 public class BlockEntityList extends SavedData
 {
 	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
-	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
 	
-	public static final String STARGATES = "Stargates";
-	public static final String TRANSPORT_RINGS = "TransportRings";
-	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
+	public static final String STARGATES = "stargates";
+	public static final String TRANSPORTERS = "transporters";
 	
 	private MinecraftServer server;
 	
@@ -305,7 +305,7 @@ public class BlockEntityList extends SavedData
 			if(stargate != null)
 			{
 				CompoundTag stargateTag = new CompoundTag();
-				stargate.serializeNBT(stargateTag);
+				stargate.serializeNBT(stargateTag, server.registryAccess());
 				StargateType.addTypeToTag(stargate.getStargateType(), stargateTag);
 				
 				stargates.put(stargateID.toString(), stargateTag);
@@ -324,7 +324,7 @@ public class BlockEntityList extends SavedData
 		this.transporterMap.forEach((ringsID, transporter) -> 
 		{
 			CompoundTag transporterTag = new CompoundTag();
-			transporter.serializeNBT(transporterTag);
+			transporter.serializeNBT(transporterTag, server.registryAccess());
 			TransporterType.addTypeToTag(transporter.getTransporterType(), transporterTag);
 			
 			transportersTag.put(ringsID.toString(), transporterTag);
@@ -373,7 +373,7 @@ public class BlockEntityList extends SavedData
 			StargateType.getTypeFromTag(stargateTag).ifPresentOrElse(type ->
 			{
 				Stargate stargate = type.constructStargate(server);
-				stargate.deserializeNBT(address, stargateTag);
+				stargate.deserializeNBT(address, stargateTag, server.registryAccess());
 				this.stargateMap.put(address, stargate);
 			}, () ->
 			{
@@ -397,8 +397,14 @@ public class BlockEntityList extends SavedData
 	
 	private void loadTransporterFromBlockEntity(TransporterID.Immutable transporterID, CompoundTag transporterTag, boolean setEntityID)
 	{
-		ResourceKey<Level> dimension = Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION));
-		BlockPos blockPos = Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES));
+		ResourceKey<Level> dimension = transporterTag.contains(Transporter.DIMENSION, Tag.TAG_STRING) ?
+			Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION)) :
+			Conversion.stringToDimension(transporterTag.getString("Dimension")); //TODO For legacy reasons
+		
+		BlockPos blockPos = transporterTag.contains(BlockEntityTransporter.COORDINATES, Tag.TAG_INT_ARRAY) ?
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES)) :
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray("Coordinates")); //TODO For legacy reasons
+		
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)
@@ -435,7 +441,7 @@ public class BlockEntityList extends SavedData
 				TransporterType.getTypeFromTag(transporterTag).ifPresentOrElse(type ->
 				{
 					Transporter transporter = type.constructTransporter(server);
-					transporter.deserializeNBT(transporterID, transporterTag);
+					transporter.deserializeNBT(transporterID, transporterTag, server.registryAccess());
 					this.transporterMap.put(transporterID, transporter);
 				}, () ->
 				{
@@ -455,8 +461,7 @@ public class BlockEntityList extends SavedData
 	private void deserializeTransporters(CompoundTag blockEntityList)
 	{
 		StargateJourney.LOGGER.debug("Deserializing Transporters");
-		//TODO Transport Rings deserialization for legacy reasons
-		CompoundTag transportersTag = blockEntityList.getCompound(blockEntityList.contains(TRANSPORT_RINGS) ? TRANSPORT_RINGS : TRANSPORTERS);
+		CompoundTag transportersTag = blockEntityList.getCompound(TRANSPORTERS);
 		
 		transportersTag.getAllKeys().forEach(transporterString -> tryDeserializeTransporter(transporterString, transportersTag.getCompound(transporterString)));
 		
@@ -488,11 +493,16 @@ public class BlockEntityList extends SavedData
 		return data;
 	}
 
-	public CompoundTag save(CompoundTag tag)
+	public CompoundTag save(CompoundTag tag, HolderLookup.Provider provider)
 	{
 		tag = serialize();
 		
 		return tag;
+	}
+
+	public static SavedData.Factory<BlockEntityList> dataFactory(MinecraftServer server)
+	{
+		return new SavedData.Factory<>(() -> create(server), (tag, provider) -> load(server, tag));
 	}
 	
 	@Nonnull
@@ -509,6 +519,6 @@ public class BlockEntityList extends SavedData
     {
     	DimensionDataStorage storage = server.overworld().getDataStorage();
         
-        return storage.computeIfAbsent((tag) -> load(server, tag), () -> create(server), INCORRECT_FILE_NAME);
+        return storage.computeIfAbsent(dataFactory(server), FILE_NAME);
     }
 }

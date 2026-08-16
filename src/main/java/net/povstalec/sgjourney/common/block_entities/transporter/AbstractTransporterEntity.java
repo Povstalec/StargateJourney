@@ -1,22 +1,20 @@
 package net.povstalec.sgjourney.common.block_entities.transporter;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-
-import javax.annotation.Nullable;
-
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.*;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergySlotBlockEntity;
@@ -29,6 +27,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeriphera
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.TransporterPeripheral;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
@@ -38,21 +37,17 @@ import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
 		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;
-	public static final String CUSTOM_NAME = "CustomName";
+	public static final String CUSTOM_NAME = "custom_name";
 	
 	public static final String NETWORKS = "networks";
 	public static final String RESTRICT_NETWORK = "restrict_network";
@@ -119,9 +114,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	@Override
-	public void load(CompoundTag tag)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.load(tag);
+		super.loadAdditional(tag, registries);
 		
 		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
@@ -130,7 +125,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 			transporterID = new TransporterID.Immutable(tag.getIntArray(TRANSPORTER_ID));
     	
     	if(tag.contains(CUSTOM_NAME, Tag.TAG_STRING))
-	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME));
+	         name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
 		if(tag.contains(NETWORKS, Tag.TAG_INT_ARRAY))
@@ -143,7 +138,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
 		if(generationStep != Step.GENERATED)
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
@@ -151,10 +146,10 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 		if(transporterID.isValid())
 			tag.putIntArray(TRANSPORTER_ID, transporterID.toArray());
 		
-		super.saveAdditional(tag);
+		super.saveAdditional(tag, registries);
 		
 		if(name != null)
-	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(name));
+	         tag.putString(CUSTOM_NAME, Component.Serializer.toJson(name, registries));
 		
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		if(!networks.isEmpty())
@@ -165,9 +160,9 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
 	{
-		CompoundTag tag = super.getUpdateTag();
+		CompoundTag tag = super.getUpdateTag(registries);
 		
 		tag.putByte(RESTRICT_NETWORK, restrictNetwork.value);
 		tag.putIntArray(NETWORKS, networks.stream().toList());
@@ -176,18 +171,18 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
 	{
-		super.onDataPacket(net, packet);
+		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
-			handleUpdateTag(tag);
+			handleUpdateTag(tag, registries);
 	}
 	
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.handleUpdateTag(tag);
+		super.handleUpdateTag(tag, registries);
 		
 		restrictNetwork = Trinary.fromInt(tag.getByte(RESTRICT_NETWORK));
 		networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
@@ -573,8 +568,7 @@ public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter
 	protected void loadChunk(boolean load)
 	{
 		if(!level.isClientSide())
-			ForgeChunkManager.forceChunk(level.getServer().getLevel(level.dimension()), StargateJourney.MODID, this.getBlockPos(),
-					level.getChunk(this.getBlockPos()).getPos().x, level.getChunk(this.getBlockPos()).getPos().z, load, true);
+			level.getServer().getLevel(level.dimension()).setChunkForced(SectionPos.blockToSectionCoord(this.getBlockPos().getX()), SectionPos.blockToSectionCoord(this.getBlockPos().getZ()), load);
 	}
 	
 	public abstract void registerInterfaceMethods(SGJourneyPeripheralWrapper<TransporterPeripheral> wrapper);

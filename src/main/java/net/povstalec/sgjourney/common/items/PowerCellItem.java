@@ -1,23 +1,22 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.common.capabilities.ItemPowerCellProvider;
+import net.minecraft.world.item.component.ItemContainerContents;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -29,13 +28,6 @@ public class PowerCellItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
-	}
-	
-	@Override
 	public boolean isValidItem(ItemStack heldStack)
 	{
 		return heldStack.isEmpty() || heldStack.getItem() instanceof VialItem;
@@ -43,11 +35,7 @@ public class PowerCellItem extends FluidItem.Holder
 	
 	public long getBufferEnergy(ItemStack stack)
 	{
-		CompoundTag tag = stack.getTag();
-		if(!stack.hasTag() || !tag.contains(ItemPowerCellProvider.ENERGY_BUFFER, Tag.TAG_LONG))
-			return 0;
-		
-		return tag.getLong(ItemPowerCellProvider.ENERGY_BUFFER);
+		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
 	}
 	
 	public long getEnergyTransfer(ItemStack stack)
@@ -61,60 +49,11 @@ public class PowerCellItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
-	{
-		return new ItemPowerCellProvider(stack)
-		{
-			// ---------- Items ----------
-			
-			@Override
-			public boolean isValid(@NotNull ItemStack stack)
-			{
-				return isValidItem(stack);
-			}
-			
-			// ---------- Energy ----------
-			
-			@Override
-			public long energyCapacity()
-			{
-				return getBufferCapacity(this.stack);
-			}
-			
-			@Override
-			public long energyMaxTransfer()
-			{
-				return getEnergyTransfer(this.stack);
-			}
-			
-			// ---------- Fluids ----------
-			
-			@Override
-			public @NotNull FluidStack getFluidInTank(int tank)
-			{
-				return getFluidStack(stack);
-			}
-			
-			@Override
-			public int getTankCapacity(int tank)
-			{
-				return getFluidCapacity(this.stack);
-			}
-			
-			@Override
-			public boolean isFluidValid(int tank, @NotNull FluidStack fluidStack)
-			{
-				return isCorrectFluid(fluidStack);
-			}
-		};
-	}
-	
-	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_buffer").append(Component.literal(": " + SGJourneyEnergy.energyToString(getBufferEnergy(stack), getBufferCapacity(stack)))).withStyle(ChatFormatting.DARK_RED));
 		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 		
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.naquadah_power_cell.description"));
 		
@@ -125,10 +64,9 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-		{
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
 			itemHandler.insertItem(0, VialItem.liquidNaquadahSetup(), false);
-		});
 		
 		return stack;
 	}
@@ -137,10 +75,9 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-		{
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
 			itemHandler.insertItem(0, VialItem.randomLiquidNaquadahSetup(minCapacity, maxCapacity), false);
-		});
 		
 		return stack;
 	}
@@ -149,10 +86,9 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-		{
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
 			itemHandler.insertItem(0, VialItem.heavyLiquidNaquadahSetup(), false);
-		});
 		
 		return stack;
 	}
@@ -161,11 +97,132 @@ public class PowerCellItem extends FluidItem.Holder
 	{
 		ItemStack stack = new ItemStack(ItemInit.NAQUADAH_POWER_CELL.get());
 		
-		stack.getCapability(ForgeCapabilities.ITEM_HANDLER).ifPresent(itemHandler ->
-		{
+		IItemHandler itemHandler = stack.getCapability(Capabilities.ItemHandler.ITEM);
+		if(itemHandler != null)
 			itemHandler.insertItem(0, VialItem.randomHeavyLiquidNaquadahSetup(minCapacity, maxCapacity), false);
-		});
 		
 		return stack;
+	}
+	
+	public static class Energy extends SGJourneyEnergy.Item
+	{
+		public Energy(ItemStack stack)
+		{
+			super(stack, CommonTechConfig.naquadah_power_cell_buffer_capacity.get(), CommonTechConfig.naquadah_power_cell_max_transfer.get(), CommonTechConfig.naquadah_power_cell_max_transfer.get());
+		}
+		
+		private long convertFluidToEnergy(long maxExtract, long energyFromFluid, boolean simulate)
+		{
+			long drained = maxExtract / energyFromFluid;
+			
+			int toDrain = (int) Math.min(((PowerCellItem) stack.getItem()).getFluidAmount(stack), drained);
+			
+			IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+			if(fluidHandler instanceof FluidItem.Holder.FluidItemHandler fluidItemHandler)
+			{
+				fluidItemHandler.deplete(toDrain, simulate ? IFluidHandler.FluidAction.SIMULATE : IFluidHandler.FluidAction.EXECUTE);
+				return toDrain * energyFromFluid;
+			}
+			
+			return 0;
+		}
+		
+		public long convertLiquidNaquadahToEnergy(long maxExtract, boolean simulate)
+		{
+			IFluidHandlerItem fluidHandler = stack.getCapability(Capabilities.FluidHandler.ITEM);
+			if(fluidHandler instanceof FluidItem.Holder.FluidItemHandler fluidItemHandler)
+			{
+				FluidStack fluidStack = fluidItemHandler.getFluidInTank(0);
+				if(fluidStack.getAmount() <= 0)
+					return 0;
+				
+				if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
+					return convertFluidToEnergy(maxExtract, CommonTechConfig.energy_from_liquid_naquadah.get(), simulate);
+				else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
+					return convertFluidToEnergy(maxExtract, CommonTechConfig.energy_from_heavy_liquid_naquadah.get(), simulate);
+			}
+			
+			return 0;
+		}
+		
+		@Override
+		public long receiveLongEnergy(long maxReceive, boolean simulate)
+		{
+			return 0;
+		}
+		
+		@Override
+		public long depleteEnergy(long maxExtract, boolean simulate)
+		{
+			long currentEnergy = super.getTrueEnergyStored();
+			if(currentEnergy >= maxExtract) // If there is energy stored in the buffer, use that
+				return super.depleteEnergy(maxExtract, simulate);
+			// Try converting liquid naquadah to energy
+			long convertedEnergy = convertLiquidNaquadahToEnergy(maxExtract, simulate);
+			if(convertedEnergy <= 0) // If no energy was converted, extract everything that's left in the buffer
+				return super.depleteEnergy(maxExtract, simulate);
+			currentEnergy += convertedEnergy;
+			
+			long extractedEnergy = Math.min(maxExtract, currentEnergy);
+			long energyLeft = currentEnergy - extractedEnergy;
+			
+			if(!simulate)
+				this.setEnergy(Math.min(getTrueMaxEnergyStored(), energyLeft));
+			
+			return extractedEnergy;
+		}
+		
+		@Override
+		public long maxReceive()
+		{
+			if(stack.getItem() instanceof PowerCellItem powerCell)
+				return powerCell.getEnergyTransfer(stack);
+			
+			return 0;
+		}
+		
+		@Override
+		public long maxExtract()
+		{
+			if(stack.getItem() instanceof PowerCellItem powerCell)
+				return powerCell.getEnergyTransfer(stack);
+			
+			return 0;
+		}
+		
+		@Override
+		public long loadEnergy(ItemStack stack)
+		{
+			return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
+		}
+		
+		@Override
+		public long getTrueMaxEnergyStored()
+		{
+			if(stack.getItem() instanceof PowerCellItem powerCell)
+				return powerCell.getBufferCapacity(stack);
+			
+			return 0;
+		}
+		
+		@Override
+		public void onEnergyChanged(long difference, boolean simulate)
+		{
+			stack.set(DataComponentInit.ENERGY, this.energy);
+		}
+	}
+	
+	public static class FluidItemHandler extends FluidItem.Holder.FluidItemHandler
+	{
+		public FluidItemHandler(ItemStack stack, DataComponentType<ItemContainerContents> component)
+		{
+			super(stack, component);
+		}
+		
+		@Override
+		public boolean isItemValid(int slot, ItemStack stack)
+		{
+			return stack.isEmpty() || stack.is(ItemInit.VIAL.get());
+		}
 	}
 }

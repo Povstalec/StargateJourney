@@ -1,10 +1,9 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -48,7 +47,6 @@ public class DHDBigButton extends DHDButton
 		}
 	}
     
-    @Override
     protected int getYImage(boolean isHovering)
     {
     	if(isHovering)
@@ -66,33 +64,25 @@ public class DHDBigButton extends DHDButton
     }
     
 	@Override
-	public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
-	{
-		Minecraft minecraft = Minecraft.getInstance();
-		Font font = minecraft.font;
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, widgetsLocation);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-		int yOffset = this.getYImage(this.isHoveredOrFocused());
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.enableDepthTest();
-		this.blit(poseStack, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
-		this.renderBg(poseStack, minecraft, mouseX, mouseY);
-		int j = getFGColor();
-		drawCenteredString(poseStack, font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
-	}
-	
-	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		if(this.visible)
 		{
 			updateEngaged();
 			this.isHovered = ((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
 			
-			this.renderButton(poseStack, mouseX, mouseY, partialTick);
-			this.updateTooltip();
+			Minecraft minecraft = Minecraft.getInstance();
+			Font font = minecraft.font;
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, widgetsLocation);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+			int yOffset = this.getYImage(this.isHoveredOrFocused());
+			RenderSystem.enableBlend();
+			RenderSystem.defaultBlendFunc();
+			RenderSystem.enableDepthTest();
+			graphics.blit(widgetsLocation, this.getX(), this.getY(), 0, yOffset * DIAMETER, this.width, this.height);
+			int j = getFGColor();
+			graphics.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2, this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 		}
 	}
 	

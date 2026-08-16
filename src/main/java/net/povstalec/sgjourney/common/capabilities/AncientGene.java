@@ -1,27 +1,54 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import java.util.Random;
-
-import net.minecraft.nbt.CompoundTag;
+import com.mojang.serialization.Codec;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.init.AttachmentTypeInit;
+
+import java.util.Random;
 
 public class AncientGene
 {
-	public static final String ANCIENT_GENE = "AncientGene";
+	public static final String ANCIENT_GENE = "ancient_gene";
 	
-	public enum ATAGene
+	public static final Codec CODEC = StringRepresentable.fromValues(() -> new ATAGene[]{ATAGene.ANCIENT, ATAGene.INHERITED, ATAGene.ARTIFICIAL, ATAGene.NONE, ATAGene.UNDECIDED});
+	
+	public static final EntityCapability<AncientGene, Void> ANCIENT_GENE_CAPABILITY = EntityCapability.createVoid(
+			StargateJourney.sgjourneyLocation(ANCIENT_GENE), AncientGene.class);
+	
+	private LivingEntity entity;
+	private ATAGene gene;
+	
+	public AncientGene(LivingEntity entity)
 	{
-		ANCIENT(true),
-		INHERITED(true),
-		ARTIFICIAL(true),
-		NONE(false),
-		UNDECIDED(false);
+		this.entity = entity;
+		this.gene = this.entity.getData(AttachmentTypeInit.ATA_GENE);
+	}
+	
+	public enum ATAGene implements StringRepresentable
+	{
+		ANCIENT("ancient", true),
+		INHERITED("inherited", true),
+		ARTIFICIAL("artificial", true),
+		NONE("none", false),
+		UNDECIDED("undecided", false);
 		
+		private final String name;
 		private boolean canActivate;
 		
-		private ATAGene(boolean canActivate)
+		private ATAGene(String name, boolean canActivate)
 		{
+			this.name = name;
 			this.canActivate = canActivate;
+		}
+		
+		@Override
+		public String getSerializedName()
+		{
+			return this.name;
 		}
 		
 		private boolean canActivate()
@@ -29,8 +56,6 @@ public class AncientGene
 			return this.canActivate;
 		}
 	}
-	
-	private ATAGene gene = ATAGene.NONE;
 	
 	public ATAGene getGeneType()
 	{
@@ -65,24 +90,27 @@ public class AncientGene
 	public void setGene(ATAGene gene)
 	{
 		this.gene = gene;
+		this.entity.setData(AttachmentTypeInit.ATA_GENE, this.gene);
 	}
 	
 	public static void spawnAncientGene(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
 		{
-			if(cap.firstJoin())
-				cap.setGene(ATAGene.ANCIENT);
-		});
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.ANCIENT);
+		}
 	}
 	
 	public static void spawnInheritedGene(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
 		{
-			if(cap.firstJoin())
-				cap.setGene(ATAGene.INHERITED);
-		});
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.INHERITED);
+		}
 	}
 	
 	public static void spawnInheritedGene(long seed, Entity entity, int inheritanceChance)
@@ -103,7 +131,8 @@ public class AncientGene
 	
 	private static void spawnInheritedGene(Entity entity, int inheritanceChance, int randomValue)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap -> 
+		AncientGene cap = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(cap != null)
 		{
 			if(cap.firstJoin())
 			{
@@ -112,25 +141,27 @@ public class AncientGene
 				else
 					cap.setGene(ATAGene.NONE);
 			}
-		});
+		}
 	}
 	
 	public static void spawnArtificialGene(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
 		{
-			if(cap.firstJoin())
-				cap.setGene(ATAGene.ARTIFICIAL);
-		});
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.ARTIFICIAL);
+		}
 	}
 	
 	public static void spawnNoGene(Entity entity)
 	{
-		entity.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(cap ->
+		AncientGene ancientGene = entity.getCapability(ANCIENT_GENE_CAPABILITY);
+		if(ancientGene != null)
 		{
-			if(cap.firstJoin())
-				cap.setGene(ATAGene.NONE);
-		});
+			if(ancientGene.firstJoin())
+				ancientGene.setGene(ATAGene.NONE);
+		}
 	}
 	
 	
@@ -142,15 +173,5 @@ public class AncientGene
 	public void copyFrom(AncientGene source)
 	{
 		this.gene = source.gene;
-	}
-	
-	public void saveData(CompoundTag tag)
-	{
-		tag.putString(ANCIENT_GENE, this.gene.toString().toUpperCase());
-	}
-	
-	public void loadData(CompoundTag tag)
-	{
-		this.gene = ATAGene.valueOf(tag.getString(ANCIENT_GENE));
 	}
 }

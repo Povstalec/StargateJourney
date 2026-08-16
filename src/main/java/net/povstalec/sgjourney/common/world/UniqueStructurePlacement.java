@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.world;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.ExtraCodecs;
@@ -21,7 +22,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	public static final int MAX_CHUNKS = 1874999;
 	public static final int MAX_BOUND = 64;
 	
-	public static final Codec<UniqueStructurePlacement> CODEC = RecordCodecBuilder.<UniqueStructurePlacement>mapCodec(instance ->
+	public static final MapCodec<UniqueStructurePlacement> CODEC = RecordCodecBuilder.<UniqueStructurePlacement>mapCodec(instance ->
 			instance.group(
 				Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
 				ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt()),
@@ -33,7 +34,7 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 				Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_min").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMinZ)),
 				Codec.intRange(0, MAX_BOUND).optionalFieldOf("x_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxX)),
 				Codec.intRange(0, MAX_BOUND).optionalFieldOf("z_bound_max").forGetter(uniquePlacement -> Optional.ofNullable(uniquePlacement.chunkBoundMaxZ))
-			).apply(instance, UniqueStructurePlacement::new)).codec();
+			).apply(instance, UniqueStructurePlacement::new));
 	
 	@Nullable
 	protected Integer chunkOffsetX;
@@ -167,11 +168,11 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	
 	public static class Stargate extends UniqueStructurePlacement
 	{
-		public static final Codec<UniqueStructurePlacement.Stargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.Stargate>mapCodec(instance ->
+		public static final MapCodec<Stargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.Stargate>mapCodec(instance ->
 				instance.group(
 					Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
 					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
-				).apply(instance, UniqueStructurePlacement.Stargate::new)).codec();
+				).apply(instance, UniqueStructurePlacement.Stargate::new));
 		
 		protected Stargate(Vec3i locateOffset, int salt)
 		{
@@ -225,11 +226,11 @@ public class UniqueStructurePlacement extends RandomSpreadStructurePlacement
 	
 	public static class BuriedStargate extends Stargate
 	{
-		public static final Codec<UniqueStructurePlacement.BuriedStargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.BuriedStargate>mapCodec(instance ->
+		public static final MapCodec<UniqueStructurePlacement.BuriedStargate> CODEC = RecordCodecBuilder.<UniqueStructurePlacement.BuriedStargate>mapCodec(instance ->
 				instance.group(
 					Vec3i.offsetCodec(16).optionalFieldOf("locate_offset", Vec3i.ZERO).forGetter(uniquePlacement -> uniquePlacement.locateOffset()),
 					ExtraCodecs.NON_NEGATIVE_INT.fieldOf("salt").forGetter(uniquePlacement -> uniquePlacement.salt())
-				).apply(instance, UniqueStructurePlacement.BuriedStargate::new)).codec();
+				).apply(instance, UniqueStructurePlacement.BuriedStargate::new));
 		
 		protected BuriedStargate(Vec3i locateOffset, int salt)
 		{

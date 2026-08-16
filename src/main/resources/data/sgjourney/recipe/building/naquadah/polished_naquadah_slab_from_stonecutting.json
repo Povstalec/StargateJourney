@@ -1,0 +1,6 @@
+{
+	"type": "minecraft:stonecutting",
+	
+	"ingredient": [{ "item": "sgjourney:naquadah_block" }, { "item": "sgjourney:cut_naquadah_block" }, { "item": "sgjourney:polished_naquadah_block" }],
+	"result": { "id": "sgjourney:polished_naquadah_slab", "count": 2 }
+}
