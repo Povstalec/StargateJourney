@@ -19,10 +19,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.*;
-import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.*;
 import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
@@ -96,15 +93,19 @@ public class BlockInit
 			() -> new TollanStargateRingBlock(BlockBehaviour.Properties.of(Material.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	// DHDs
-	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd", 
+	public static final RegistryObject<UniverseDHDBlock> UNIVERSE_DHD = registerDHDBlock("universe_dhd",
+		() -> new UniverseDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
+			.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
+	
+	public static final RegistryObject<MilkyWayDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd", 
+	public static final RegistryObject<PegasusDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd",
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
+	public static final RegistryObject<ClassicDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd",
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	

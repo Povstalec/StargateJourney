@@ -350,7 +350,7 @@ public class Universe extends SavedData
 	
 	public static ResourceKey<AddressRegion> designationToResourceKey(String designation)
 	{
-		return Conversion.locationToAddressRegionKey(new ResourceLocation(StargateJourney.MODID, designation.toLowerCase()));
+		return Conversion.locationToAddressRegionKey(StargateJourney.sgjourneyLocation(designation.toLowerCase()));
 	}
 	
 	public long generateRandomAddressSeed(String name)

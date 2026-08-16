@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundUpdateConfigValuesPacke
 public class SyncedConfig
 {
 	// DHD
+	public static long universeDHDEnergyCapacity = CommonDHDConfig.universe_dhd_energy_buffer_capacity.get();
 	public static long milkyWayDHDEnergyCapacity = CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
 	public static long pegasusDHDEnergyCapacity = CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
 	public static long classicDHDEnergyCapacity = CommonDHDConfig.classic_dhd_energy_buffer_capacity.get();

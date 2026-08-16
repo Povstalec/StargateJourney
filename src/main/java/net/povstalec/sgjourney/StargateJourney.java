@@ -1,32 +1,9 @@
 package net.povstalec.sgjourney;
 
-import java.util.Calendar;
-import java.util.List;
-import java.util.function.BiFunction;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.client.event.ModelEvent;
-import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
-import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
-import net.povstalec.sgjourney.client.render.entity.*;
-import net.povstalec.sgjourney.client.screens.*;
-import net.povstalec.sgjourney.client.screens.dhd.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.dhd.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.PegasusDHDScreen;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.*;
-import net.povstalec.sgjourney.common.misc.RemappingHelper;
-import net.povstalec.sgjourney.common.misc.RenderAMD;
-import net.povstalec.sgjourney.common.sgjourney.*;
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -35,6 +12,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -50,22 +28,33 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block.CableModelLoader;
-import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
+import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
+import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
+import net.povstalec.sgjourney.client.render.block_entity.*;
+import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
+import net.povstalec.sgjourney.client.screens.dhd.*;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.entities.Human;
+import net.povstalec.sgjourney.common.entities.Jaffa;
+import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
+import net.povstalec.sgjourney.common.misc.RemappingHelper;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.Calendar;
+import java.util.List;
+import java.util.function.BiFunction;
 
 @Mod(StargateJourney.MODID)
 public class StargateJourney
@@ -210,7 +199,9 @@ public class StargateJourney
 			
         	MenuScreens.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
         	MenuScreens.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
-
+			
+			MenuScreens.register(MenuInit.UNIVERSE_DHD_CRYSTAL.get(), DHDCrystalScreen.Universe::new);
+			MenuScreens.register(MenuInit.UNIVERSE_DHD.get(), UniverseDHDScreen::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
 			MenuScreens.register(MenuInit.PEGASUS_DHD_CRYSTAL.get(), DHDCrystalScreen.Pegasus::new);

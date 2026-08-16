@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 public class ClientboundUpdateConfigValuesPacket
 {
 	// DHD
+	private final long universeDHDEnergyCapacity;
 	private final long milkyWayDHDEnergyCapacity;
 	private final long pegasusDHDEnergyCapacity;
 	private final long classicDHDEnergyCapacity;
@@ -34,6 +35,7 @@ public class ClientboundUpdateConfigValuesPacket
 	public ClientboundUpdateConfigValuesPacket()
 	{
 		// DHD
+		universeDHDEnergyCapacity = CommonDHDConfig.universe_dhd_energy_buffer_capacity.get();
 		milkyWayDHDEnergyCapacity = CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
 		pegasusDHDEnergyCapacity = CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
 		classicDHDEnergyCapacity = CommonDHDConfig.classic_dhd_energy_buffer_capacity.get();
@@ -56,6 +58,7 @@ public class ClientboundUpdateConfigValuesPacket
 	public ClientboundUpdateConfigValuesPacket(FriendlyByteBuf buffer)
 	{
 		// DHD
+		universeDHDEnergyCapacity = buffer.readLong();
 		milkyWayDHDEnergyCapacity = buffer.readLong();
 		pegasusDHDEnergyCapacity = buffer.readLong();
 		classicDHDEnergyCapacity = buffer.readLong();
@@ -78,6 +81,7 @@ public class ClientboundUpdateConfigValuesPacket
 	public void encode(FriendlyByteBuf buffer)
 	{
 		// DHD
+		buffer.writeLong(universeDHDEnergyCapacity);
 		buffer.writeLong(milkyWayDHDEnergyCapacity);
 		buffer.writeLong(pegasusDHDEnergyCapacity);
 		buffer.writeLong(classicDHDEnergyCapacity);
@@ -102,6 +106,7 @@ public class ClientboundUpdateConfigValuesPacket
 		ctx.get().enqueueWork(() ->
 		{
 			// DHD
+			SyncedConfig.universeDHDEnergyCapacity = universeDHDEnergyCapacity;
 			SyncedConfig.milkyWayDHDEnergyCapacity = milkyWayDHDEnergyCapacity;
 			SyncedConfig.pegasusDHDEnergyCapacity = pegasusDHDEnergyCapacity;
 			SyncedConfig.classicDHDEnergyCapacity = classicDHDEnergyCapacity;
