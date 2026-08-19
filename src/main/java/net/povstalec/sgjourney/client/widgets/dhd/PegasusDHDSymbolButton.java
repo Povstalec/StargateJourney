@@ -18,7 +18,7 @@ public class PegasusDHDSymbolButton extends GenericDHDSymbolButton
 								  float xCenter, float yCenter, int textureX, int textureY, int symbol, int canonSymbol, Position position)
 	{
 		super(x, y, width, height, menu, symbol, screenWidth, screenHeight, PEGASUS_BUTTONS, PEGASUS_BUTTONS_OVERLAY, xCenter, yCenter, textureX, textureY, position,
-				new ColorUtil.RGBA(255, 255, 255), new ColorUtil.RGBA(65, 65, 65), new ColorUtil.RGBA(0, 242, 255));
+				new ColorUtil.RGBA(255, 255, 255), new ColorUtil.RGBA(105, 119, 125), new ColorUtil.RGBA(0, 242, 255));
 		
 		this.canonSymbol = canonSymbol;
 		

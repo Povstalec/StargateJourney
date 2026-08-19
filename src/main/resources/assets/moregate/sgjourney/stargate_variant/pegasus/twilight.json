@@ -1,0 +1,102 @@
+{
+  "wormhole_sounds": {
+    "open": "sgjourney:pegasus_wormhole_open",
+    "idle": "sgjourney:pegasus_wormhole_idle",
+    "close": "sgjourney:pegasus_wormhole_close"
+  },
+  "wormhole": {
+    "event_horizon": {
+      "front": {
+        "texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_event_horizon.png",
+        "columns": 1,
+        "frames": 32,
+        "rows": 32,
+        "rgba": {
+          "alpha": 1,
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      },
+      "back": {
+        "texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_event_horizon.png",
+        "columns": 1,
+        "frames": 32,
+        "rows": 32,
+        "rgba": {
+          "alpha": 0.75,
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      }
+    }
+  },
+  "rotation_sounds": {
+    "rotation_sound": "sgjourney:pegasus_ring_spin"
+  },
+  "shiny_wormhole": {
+    "event_horizon": {
+      "front": {
+        "texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_event_horizon_shiny.png",
+        "columns": 1,
+        "frames": 32,
+        "rows": 32,
+        "rgba": {
+          "alpha": 1,
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      },
+      "back": {
+        "texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_event_horizon_shiny.png",
+        "columns": 1,
+        "frames": 32,
+        "rows": 32,
+        "rgba": {
+          "alpha": 0.75,
+          "red": 1,
+          "green": 1,
+          "blue": 1
+        }
+      }
+    }
+  },
+  "symbols": {
+    "engaged_symbols_glow": true,
+    "encoded_symbols_glow": true,
+    "engage_encoded_symbols": true,
+    "engage_symbols_on_incoming": true,
+    "symbol_color": {
+      "alpha": 1,
+      "red": 0.55,
+      "green": 0.55,
+      "blue": 0.55
+    },
+    "encoded_symbol_color": {
+      "alpha": 1,
+      "red": 0.7176,
+      "green": 0.7176,
+      "blue": 0
+    },
+    "engaged_symbol_color": {
+      "alpha": 1,
+      "red": 0.7176,
+      "green": 0.7176,
+      "blue": 0
+    },
+    "symbols_glow": true
+  },
+  "texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_stargate_alternate.png",
+  "engaged_texture": "moregate:textures/entity/stargate/pegasus/twilight/twilight_stargate_engaged.png",
+  "fail_sounds": {
+    "default": "sgjourney:pegasus_dial_fail"
+  },
+  "chevron_engaged_sounds": {
+    "default": "sgjourney:pegasus_chevron_engage"
+  },
+  "chevron_incoming_sounds": {
+    "default": "sgjourney:pegasus_chevron_incoming"
+  }
+}

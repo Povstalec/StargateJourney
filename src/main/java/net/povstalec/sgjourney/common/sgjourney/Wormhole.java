@@ -69,7 +69,7 @@ public class Wormhole
 	
 	protected boolean wormholeEntity(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, StargateInfo.WormholeTravel twoWayWormhole, Map<Integer, Vec3> entityLocations, Entity traveler)
 	{
-		Vec3 relativePosition = initialStargate.toStargateCoords(traveler.position().subtract(initialStargate.getPosition()), true);
+		Vec3 relativePosition = initialStargate.toStargateCoords(traveler.position().subtract(initialStargate.getPosition()), true, traveler.level());
 		Vec3 oldRelativePos = this.entityLocations.get(traveler.getId());
 		
 		if(oldRelativePos != null)
@@ -82,7 +82,7 @@ public class Wormhole
 				
 				if(twoWayWormhole == WormholeTravel.ENABLED || (twoWayWormhole == WormholeTravel.CREATIVE_ONLY && traveler instanceof Player player && (player.isCreative() || player.isSpectator())))
 				{
-					Vec3 relativeLookAngle = initialStargate.toStargateCoords(traveler.getLookAngle(), false);
+					Vec3 relativeLookAngle = initialStargate.toStargateCoords(traveler.getLookAngle(), false, traveler.level());
 					
 					if(!SGJourneyEvents.onWormholeTravel(server, initialStargate, destinationStargate, traveler, twoWayWormhole) && destinationStargate.receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle) != null)
 					{

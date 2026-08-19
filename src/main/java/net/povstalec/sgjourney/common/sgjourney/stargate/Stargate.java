@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -23,6 +24,13 @@ import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+
+import org.joml.Quaterniondc;
+import org.joml.Vector3d;
+
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.SubLevelAccess;
+import dev.ryanhcode.sable.companion.math.Pose3dc;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -104,6 +112,12 @@ public interface Stargate extends Comparable<Stargate>
 	 */
 	@Nullable
 	Vec3 getPosition();
+
+	/**
+	 * @return Block position vector of the Stargate's center or null if it doesn't have a position
+	 */
+	@Nullable
+	BlockPos getBlockPosition();
 	
 	/**
 	 * @return Unit Vector with the direction the Stargate is facing or null if it doesn't have a position
@@ -134,13 +148,27 @@ public interface Stargate extends Comparable<Stargate>
 	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
 	 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
 	 */
-	default Vec3 toStargateCoords(Vec3 vector, boolean scaleWithStargate)
+	default Vec3 toStargateCoords(Vec3 vector, boolean scaleWithStargate, Level level)
 	{
-		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(vector, getForward(), getUp(), getRight());
+		Vector3d adaptedVec = new Vector3d(vector.x,vector.y,vector.z);
+
+		SubLevelAccess subLevelAccess = SableCompanion.INSTANCE.getContaining(level, getBlockPosition());
+		if (subLevelAccess != null) {
+			Pose3dc pose = subLevelAccess.logicalPose();
+			Quaterniondc orientation = pose.orientation();
+			Vector3d rotation = new Vector3d(0);
+			rotation = orientation.getEulerAnglesXYZ(rotation);
+			// Rotate the position with the opposite of the orientation orientation
+			adaptedVec = (adaptedVec.rotateX(-rotation.x).rotateY(-rotation.y).rotateZ(-rotation.z));
+		}
+
+		Vec3 rotatedVec = new Vec3(adaptedVec.x,adaptedVec.y,adaptedVec.z);
+		
+		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(rotatedVec, getForward(), getUp(), getRight());
 		
 		if(scaleWithStargate)
-			return new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
-		
+			result = new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
+
 		return result;
 	}
 	
@@ -152,14 +180,40 @@ public interface Stargate extends Comparable<Stargate>
 	 * @param mirror Whether the coordinates should be mirrored, for example when a traveler is exiting the Stargate
 	 * @return A new vector with the coordinates of the original vector, but transformed to absolute coordinate system
 	 */
-	default Vec3 fromStargateCoords(Vec3 vector, boolean scaleWithStargate, boolean mirror)
+	default Vec3 fromStargateCoords(Vec3 vector, boolean scaleWithStargate, boolean mirror, Level level)
 	{
 		if(scaleWithStargate)
 			vector = new Vec3(vector.x(), vector.y() * getInnerRadius(), vector.z() * getInnerRadius());
 		
-		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward()), getUp(), CoordinateHelper.Relative.mirrorVector(getRight())) :
-				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(), getUp(), getRight());
+		Vector3d adaptedPos = new Vector3d(vector.x,vector.y,vector.z);
+
+		SubLevelAccess subLevelAccess = SableCompanion.INSTANCE.getContaining(level, getBlockPosition());
+		if (subLevelAccess != null) {
+			Pose3dc pose = subLevelAccess.logicalPose();
+			Quaterniondc orientation = pose.orientation();
+
+			// Rotate the position with the orientation
+			adaptedPos = adaptedPos.rotate(orientation);
+		}
+
+		Vec3 rotatedVec = new Vec3(adaptedPos.x,adaptedPos.y,adaptedPos.z);
+
+		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(rotatedVec, CoordinateHelper.Relative.mirrorVector(getForward()), getUp(), CoordinateHelper.Relative.mirrorVector(getRight())) :
+				CoordinateHelper.Relative.toOrthogonalBasis(rotatedVec, getForward(), getUp(), getRight());
 	}
+	
+	// /**
+	//  * @return Solar System the Stargate is located in or null if it's not located in any Solar System
+	//  */
+	// @Nullable
+	// default SolarSystem.Serializable getSolarSystem(MinecraftServer server)
+	// {
+	// 	ResourceKey<Level> dimension = getDimension();
+	// 	if(dimension == null)
+	// 		return null;
+		
+	// 	return Universe.get(server).getSolarSystemFromDimension(dimension);
+	// }
 	
 	/**
 	 * @return True if the Stargate is connected to a DHD, otherwise false

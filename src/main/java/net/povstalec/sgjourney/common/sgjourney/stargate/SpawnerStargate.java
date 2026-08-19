@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
@@ -28,6 +29,12 @@ public interface SpawnerStargate extends Stargate
 		return null;
 	}
 	
+	@Override
+	default @Nullable BlockPos getBlockPosition()
+	{
+		return null;
+	}
+
 	@Override
 	default @Nullable Vec3 getUp()
 	{
