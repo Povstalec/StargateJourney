@@ -42,6 +42,7 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
@@ -195,7 +196,10 @@ public class ForgeEvents
 		}
 		
 		if(!player.level().isClientSide())
+		{
 			SpaceLocation.updatePlayerClientGravity((ServerPlayer) player);
+			SyncedConfig.syncConfig((ServerPlayer) player);
+		}
 	}
 	
 	@SubscribeEvent

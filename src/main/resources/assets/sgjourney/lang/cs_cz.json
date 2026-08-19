@@ -243,6 +243,7 @@
 	"block.sgjourney.classic_stargate_chevron_block": "Klasický chevronový blok brány",
 	"block.sgjourney.classic_stargate_ring_block": "Klasický blok brány",
 	
+	"block.sgjourney.universe_dhd": "Ovládací panel 1. generace",
 	"block.sgjourney.milky_way_dhd": "Ovládací panel 2. generace",
 	"block.sgjourney.pegasus_dhd": "Ovládací panel 3. generace",
 	"block.sgjourney.classic_dhd": "Klasický ovládací panel",
@@ -569,8 +570,10 @@
 	"screen.sgjourney.crystal_computer.main_screen": "Zpět na hlavní obrazovku",
 	"screen.sgjourney.crystal_computer.select_crystal_in_computer": "Vybrat krystal v počítači: %s",
 	"screen.sgjourney.crystal_computer.select_crystal_in_computer.none": "Žádný krystal v počítači pro vybrání",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer.too_many": "Příliš mnoho krystalů v počítači pro vybrání",
 	"screen.sgjourney.crystal_computer.select_crystal_in_hand": "Vybrat krystal v ruce: %s",
 	"screen.sgjourney.crystal_computer.select_crystal_in_hand.none": "Žádný krystal v ruce pro vybrání",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand.too_many": "Příliš mnoho krystalů v ruce pro vybrání",
 	"screen.sgjourney.crystal_computer.save_to_selected_crystal": "Uložit do vybraného krystalu",
 	"screen.sgjourney.crystal_computer.confirm_delete": "Potvrdit smazání",
 	"screen.sgjourney.crystal_computer.cancel_delete": "Zrušít smazání",
@@ -789,6 +792,7 @@
 	"point_of_origin.sgjourney.pyramid": "Pyramida",
 	"point_of_origin.sgjourney.serpent": "Had",
 	"point_of_origin.sgjourney.pontem": "Pontem",
+	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	
 	"point_of_origin.sgjourney.pokeball": "Pokéball",
 	"point_of_origin.sgjourney.triforce": "Triforce",
@@ -964,7 +968,7 @@
 	"tooltip.sgjourney.address_table": "Tabulka adres",
 	"tooltip.sgjourney.dhd.advanced_protocols": "Pokročilé protokoly",
 	"tooltip.sgjourney.dhd.advanced_protocols.description": "Pokročilé protokoly ukončí spojení hvězdných bran, pokud se po 10 sekund nenajde poblíž žádný potenciální cestovatel a také umožňují automatické přemapování symbolů",
-	"tooltip.sgjourney.dhd.advanced_protocols.description.usage": "Pro aktivaci pokročilých protokolů umísti velký ovládací krystal do prostředního slotu na krystaly v DHD",
+	"tooltip.sgjourney.dhd.advanced_protocols.usage": "Pro aktivaci pokročilých protokolů umísti velký ovládací krystal do prostředního slotu na krystaly v DHD",
 	"tooltip.sgjourney.dhd.energy_target.description": "Pokud je množství energie v  bráně pod cílovým množstvím energie, DHD se pokusí dodat bráně energii dokud její množství nedosáhne cíleného množství energie",
 	"tooltip.sgjourney.dhd.energy_target.usage": "Pro zvýšení cíleného množství energie umísti energetické krystaly do krystalových slotů DHD",
 	"tooltip.sgjourney.dhd.stargate_energy": "Energie v bráně",
@@ -973,7 +977,6 @@
 	"tooltip.sgjourney.dhd.energy_transfer.usage": "Pro zvýšení rychlosti přenostu energie množství energie umísti přenosové krystaly do krystalových slotů DHD",
 	"tooltip.sgjourney.dhd.communication_range": "Komunikační vzdálenost: %s bloků",
 	"tooltip.sgjourney.dhd.communication_range.description": "Maximální vzdálenost, ze které je DHD schopné spojit se s bránou",
-	"tooltip.sgjourney.dhd.networks.usage": "Pro přidání brány do dalších sítí umísti komunikační krystaly s nastavenou frekvencí do krystalových slotů DHD",
 	"tooltip.sgjourney.dhd.networks.description": "Pokud jsou síťová omezení aktivní, spojení s hvězdnými branami jsou limitována na brány ve stejných sítích",
 	"tooltip.sgjourney.dhd.communication_range.usage": "Komunikační krystaly:",
 	"tooltip.sgjourney.dhd.communication_range.usage.communication_crystal": "Žádná frekvence -> Zvýšená komunikační vzdálenost DHD",
@@ -984,6 +987,7 @@
 	"tooltip.sgjourney.dhd.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Drží velké krystaly",
 	
+	"tooltip.sgjourney.interface.energy_slot.description": "Drží předměty dodávající energii",
 	"tooltip.sgjourney.interface.energy_target.description": "Pokud je množství energie v  bráně pod cílovým množstvím energie, rozhraní se pokusí dodat bráně energii dokud její množství nedosáhne cíleného množství energie",
 	"tooltip.sgjourney.interface.mode.off.usage": "Tento mód nedělá nic",
 	"tooltip.sgjourney.interface.mode.ring_segment.usage": "Dodává výstup porovnavače na základě toho, v jaké třetině kruhu symbolů brány se nachází nyní zvolený symbol",
@@ -1010,6 +1014,10 @@
 	"tooltip.sgjourney.interface.mode.iris.usage.input_1": "- Síla redstonového signálu 1-7 -> Zavře iris",
 	"tooltip.sgjourney.interface.mode.iris.usage.input_2": "- Síla redstonového signálu 8-15 -> Otevře iris",
 	"tooltip.sgjourney.interface.mode.shielding.usage": "Work In Progress",
+	
+	"tooltip.sgjourney.liquidizer.energy_slot.description": "Drží předměty dodávající energii",
+	
+	"tooltip.sgjourney.crystallizer.energy_slot.description": "Drží předměty dodávající energii",
 	
 	"tooltip.sgjourney.stargate_upgrade.description": "Pravé kliknutí na klasickou hvězdnou bránu ji upgraduje",
 	"tooltip.sgjourney.stargate_variant.description": "Pravé kliknutí na hvězdnou bránu změní její variantu",

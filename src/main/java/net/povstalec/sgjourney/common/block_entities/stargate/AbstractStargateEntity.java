@@ -604,7 +604,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
-	public StargateInfo.FeedbackMessage dhdEngageStargate() // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
+	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd) // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
 		return engageStargate();
 	}
@@ -831,6 +831,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.Feedback feedback, Object... additionalInfo)
 	{
 		return resetStargate(feedback.withInfo(additionalInfo));
+	}
+	
+	public StargateInfo.FeedbackMessage dhdDisconnectStargate(AbstractDHDEntity dhd)
+	{
+		return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 	}
 	
 	public StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback)
@@ -1122,6 +1127,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public int getTimesOpened()
 	{
 		return this.timesOpened;
+	}
+	
+	public boolean canApplyVariant(StargateVariant variant)
+	{
+		return variant.getBaseStargate().equals(BlockEntityType.getKey(getType()));
 	}
 	
 	public void setVariant(ResourceLocation variant)
@@ -1531,7 +1541,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 	
 	@Override
-	protected boolean canReceiveZeroPointEnergy()
+	public boolean canReceiveZeroPointEnergy()
 	{
 		return CommonZPMConfig.stargates_use_zero_point_energy.get();
 	}
@@ -1543,25 +1553,25 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	}
 
 	@Override
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
 		return CommonStargateConfig.stargate_energy_capacity.get();
 	}
 
 	@Override
-	public long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonStargateConfig.stargate_energy_max_receive.get();
 	}
 
 	@Override
-	public long getMaxExtract()
+	public long getMaxEnergyExtract()
 	{
 		return 0;
 	}
 	
 	@Override
-	public long getMaxDeplete()
+	public long getMaxEnergyDeplete()
 	{
 		return CommonStargateConfig.intergalactic_connection_energy_cost.get();
 	}

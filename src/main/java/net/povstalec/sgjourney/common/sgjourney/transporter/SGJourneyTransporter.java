@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
-import javax.annotation.Nullable;
-
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +13,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 public abstract class SGJourneyTransporter implements Transporter
@@ -196,7 +194,7 @@ public abstract class SGJourneyTransporter implements Transporter
 		else if(tag.contains("Dimension", Tag.TAG_STRING)) //TODO Keeping this here for the time being for legacy reasons
 			this.dimension = Conversion.stringToDimension(tag.getString("Dimension"));
 		
-		if(tag.contains(CUSTOM_NAME, CompoundTag.OBJECT_HEADER))
+		if(tag.contains(CUSTOM_NAME, CompoundTag.TAG_STRING))
 			this.name = Component.Serializer.fromJson(tag.getString(CUSTOM_NAME), registries);
 		else if(tag.contains("CustomName", CompoundTag.OBJECT_HEADER)) //TODO Keeping this here for the time being for legacy reasons
 			this.name = Component.Serializer.fromJson(tag.getString("CustomName"), registries);

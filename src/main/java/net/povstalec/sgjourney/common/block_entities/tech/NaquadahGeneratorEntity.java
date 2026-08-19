@@ -5,7 +5,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -14,6 +13,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -27,6 +27,7 @@ import javax.annotation.Nullable;
 public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 {
 	public static final String INVENTORY = "inventory";
+	public static final String REACTION_PROGRESS = "reaction_progress";
 	
 	private int reactionProgress = 0;
 	
@@ -46,29 +47,21 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag nbt, HolderLookup.Provider registries)
+	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.loadAdditional(nbt, registries);
-		itemStackHandler.deserializeNBT(registries, nbt.getCompound(INVENTORY));
+		super.loadAdditional(tag, registries);
+		itemStackHandler.deserializeNBT(registries, tag.getCompound(INVENTORY));
+		
+		reactionProgress = tag.getInt(REACTION_PROGRESS);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag nbt, HolderLookup.Provider registries)
+	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.saveAdditional(nbt, registries);
-		nbt.put(INVENTORY, itemStackHandler.serializeNBT(registries));
-	}
-	
-	@Override
-	public ClientboundBlockEntityDataPacket getUpdatePacket()
-	{
-		return ClientboundBlockEntityDataPacket.create(this);
-	}
-	
-	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
-	{
-		return this.saveWithoutMetadata(registries);
+		super.saveAdditional(tag, registries);
+		tag.put(INVENTORY, itemStackHandler.serializeNBT(registries));
+		
+		tag.putInt(REACTION_PROGRESS, reactionProgress);
 	}
 	
 	//============================================================================================
@@ -207,7 +200,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
-	protected boolean isCorrectEnergySide(Direction side)
+	public boolean isCorrectEnergySide(Direction side)
 	{
 		Direction direction = getDirection();
 		Direction bottom = getBottomDirection();
@@ -237,7 +230,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 			//TODO Add Enriched Naquadah
 		}
 		
-		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && energyStorage.getTrueEnergyStored() < getCapacity() && energyStorage.canReceive(getEnergyPerTick()))
+		else if(reactionProgress > 0 && reactionProgress < getReactionTime() && energyStorage.getTrueEnergyStored() < getEnergyCapacity() && energyStorage.canReceive(getEnergyPerTick()))
 			this.progressReaction();
 		
 		else if(reactionProgress >= getReactionTime())
@@ -290,19 +283,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long getCapacity()
+		public long getEnergyCapacity()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get();
+			return level != null && level.isClientSide() ? SyncedConfig.naquadahReactorEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get();
 		}
 		
 		@Override
-		public long getMaxReceive()
+		public long getMaxEnergyReceive()
 		{
 			return 0;
 		}
 		
 		@Override
-		public long getMaxExtract()
+		public long getMaxEnergyExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_reactor_max_transfer.get();
 		}
@@ -330,19 +323,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long getCapacity()
+		public long getEnergyCapacity()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
+			return level != null && level.isClientSide() ? SyncedConfig.naquadahGeneratorMarkIEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
 		}
 		
 		@Override
-		public long getMaxReceive()
+		public long getMaxEnergyReceive()
 		{
 			return 0;
 		}
 		
 		@Override
-		public long getMaxExtract()
+		public long getMaxEnergyExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_max_transfer.get();
 		}
@@ -370,19 +363,19 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		}
 		
 		@Override
-		public long getCapacity()
+		public long getEnergyCapacity()
 		{
-			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
+			return level != null && level.isClientSide() ? SyncedConfig.naquadahGeneratorMarkIIEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
 		}
 		
 		@Override
-		public long getMaxReceive()
+		public long getMaxEnergyReceive()
 		{
 			return 0;
 		}
 		
 		@Override
-		public long getMaxExtract()
+		public long getMaxEnergyExtract()
 		{
 			return CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_max_transfer.get();
 		}

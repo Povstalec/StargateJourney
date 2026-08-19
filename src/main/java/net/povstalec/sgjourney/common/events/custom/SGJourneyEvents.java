@@ -61,9 +61,14 @@ public class SGJourneyEvents
 		return NeoForge.EVENT_BUS.post(new TransporterEvent.Connect(server, transporter, connectedTransporter, connectionType)).isCanceled();
 	}
 	
-	public static boolean onTransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+	public static boolean onTransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter)
 	{
-		return NeoForge.EVENT_BUS.post(new TransporterEvent.Transport(server, transporter, destinationTransporter, traveler)).isCanceled();
+		return NeoForge.EVENT_BUS.post(new TransporterEvent.TransporterTransport(server, transporter, destinationTransporter)).isCanceled();
+	}
+	
+	public static boolean onTransporterTravellerTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+	{
+		return NeoForge.EVENT_BUS.post(new TransporterEvent.TravellerTransport(server, transporter, destinationTransporter, traveler)).isCanceled();
 	}
 	
 	// Transporter Connection

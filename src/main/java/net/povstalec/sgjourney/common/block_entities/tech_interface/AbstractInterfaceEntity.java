@@ -246,7 +246,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	}
 	
 	@Override
-	protected boolean canReceiveZeroPointEnergy()
+	public boolean canReceiveZeroPointEnergy()
 	{
 		return CommonZPMConfig.stargates_use_zero_point_energy.get();
 	}
@@ -258,12 +258,12 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	}
 	
 	@Override
-	protected void outputEnergy(Direction outputDirection)
+	public void outputEnergy(Direction outputDirection)
 	{
 		if(getEnergyBlockEntity().energyStorage.getTrueEnergyStored() >= getEnergyTarget())
 			return;
 		
-		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().energyStorage.getTrueEnergyStored(), this.getMaxDeplete());
+		long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), getEnergyBlockEntity().energyStorage.getTrueEnergyStored(), this.getMaxEnergyDeplete());
 		
 		long simulatedOutputAmount = this.energyStorage.depleteEnergy(needed, true);
 		long simulatedReceiveAmount = getEnergyBlockEntity().energyStorage.receiveLongEnergy(simulatedOutputAmount, true);

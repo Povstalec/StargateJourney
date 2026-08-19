@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.block_entities.*;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.UniverseDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
@@ -29,6 +30,8 @@ public class BlockEntityInit
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<UniverseStargateEntity>> UNIVERSE_STARGATE = BLOCK_ENTITIES.register("universe_stargate",
             () -> BlockEntityType.Builder.of(UniverseStargateEntity::new, BlockInit.UNIVERSE_STARGATE.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<UniverseDHDEntity>> UNIVERSE_DHD = BLOCK_ENTITIES.register("universe_dhd",
+		() -> BlockEntityType.Builder.of(UniverseDHDEntity::new, BlockInit.UNIVERSE_DHD.get()).build(null));
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MilkyWayStargateEntity>> MILKY_WAY_STARGATE = BLOCK_ENTITIES.register("milky_way_stargate",
             () -> BlockEntityType.Builder.of(MilkyWayStargateEntity::new, BlockInit.MILKY_WAY_STARGATE.get()).build(null));

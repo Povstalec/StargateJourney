@@ -69,6 +69,8 @@ public class TagInit
 		public static final TagKey<EntityType<?>> WORMHOLE_CANNOT_TELEPORT = tag("wormhole_cannot_teleport");
 		public static final TagKey<EntityType<?>> NO_IRIS_DAMAGE = tag("no_iris_damage");
 		
+		public static final TagKey<EntityType<?>> TRANSPORTER_CANNOT_TELEPORT = tag("transporter_cannot_teleport");
+		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
             return TagKey.create(Registries.ENTITY_TYPE, StargateJourney.sgjourneyLocation(name));

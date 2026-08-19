@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.transporter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.TransporterInit;
@@ -16,13 +17,13 @@ public class AncientTransportRingsEntity extends AbstractTransportRingsEntity<An
 	}
 	
 	@Override
-	public long getCapacity()
+	public long getEnergyCapacity()
 	{
-		return CommonTransporterConfig.ancient_transport_rings_energy_capacity.get();
+		return level != null && level.isClientSide() ? SyncedConfig.ancientTransportRingsEnergyCapacity : CommonTransporterConfig.ancient_transport_rings_energy_capacity.get();
 	}
 	
 	@Override
-	public long getMaxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonTransporterConfig.ancient_transport_rings_max_energy_receive.get();
 	}

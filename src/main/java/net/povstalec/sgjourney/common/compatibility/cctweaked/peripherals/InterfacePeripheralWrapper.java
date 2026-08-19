@@ -15,7 +15,6 @@ import java.util.List;
 public class InterfacePeripheralWrapper
 {
 	private final AbstractInterfaceEntity interfaceEntity;
-	private InterfacePeripheral interfacePeripheral;
 	private Lazy<IPeripheral> peripheral;
     protected final List<IComputerAccess> computerList = new LinkedList<>();
 	
@@ -60,7 +59,7 @@ public class InterfacePeripheralWrapper
 	
 	public void queueEvent(String eventName, Object... objects)
 	{
-		if(interfacePeripheral != null)
+		if(peripheral.get() instanceof InterfacePeripheral interfacePeripheral)
 			interfacePeripheral.queueEvent(eventName, objects);
 	}
 	

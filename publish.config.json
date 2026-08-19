@@ -20,7 +20,28 @@
     "nightly_content": "# Experimental: Stargate Journey\nA new experimental build is available for download from GitHub\nv{version}"
   },
   "artifacts": {
-    "1.19.2": {
+	  "1.18.2": {
+		  "file_glob": "build/libs/*-1.18.2-{version}.jar",
+		  "branch": "stargatejourney-1.18.2",
+		  "loaders": [
+			  "Forge"
+		  ],
+		  "game_versions": [
+			  "1.18.2"
+		  ],
+		  "java_version": "17",
+		  "version_properties": [
+			  {
+				  "file": "gradle.properties",
+				  "property": "mod_version"
+			  },
+			  {
+				  "file": "src/main/resources/META-INF/mods.toml",
+				  "property": "version"
+			  }
+		  ]
+	  },
+	  "1.19.2": {
       "file_glob": "build/libs/*-1.19.2-{version}.jar",
       "branch": "stargatejourney-1.19.2",
       "loaders": [

@@ -134,13 +134,6 @@ public class StaffWeaponItem extends FluidItem.Holder
 	}
 	
 	@Override
-	public boolean isCorrectFluid(FluidStack fluidStack)
-	{
-		return fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ||
-				fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get();
-	}
-	
-	@Override
 	public boolean isValidItem(ItemStack heldStack)
 	{
 		return heldStack.is(ItemInit.VIAL.get());
@@ -157,8 +150,13 @@ public class StaffWeaponItem extends FluidItem.Holder
 		if(fluidHandler instanceof Holder.FluidItemHandler fluidHolder)
 		{
 			FluidStack fluidStack = fluidHolder.getFluidInTank(0);
-			int drainAmount = fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get() ?
-					LIQUID_NAQUADAH_DEPLETION : HEAVY_LIQUID_NAQUADAH_DEPLETION;
+			int drainAmount;
+			if(fluidStack.getFluid() == FluidInit.LIQUID_NAQUADAH_SOURCE.get())
+				drainAmount = LIQUID_NAQUADAH_DEPLETION;
+			else if(fluidStack.getFluid() == FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get())
+				drainAmount = HEAVY_LIQUID_NAQUADAH_DEPLETION;
+			else // Not a valid fluid
+				return false;
 			
 			FluidStack depleted = fluidHolder.deplete(drainAmount, IFluidHandler.FluidAction.EXECUTE);
 			if(!depleted.isEmpty())

@@ -56,10 +56,7 @@ import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffe
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
-import net.povstalec.sgjourney.client.screens.dhd.ClassicDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.DHDCrystalScreen;
-import net.povstalec.sgjourney.client.screens.dhd.MilkyWayDHDScreen;
-import net.povstalec.sgjourney.client.screens.dhd.PegasusDHDScreen;
+import net.povstalec.sgjourney.client.screens.dhd.*;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
@@ -242,6 +239,12 @@ public class StargateJourney
 		
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.LARGE_NAQUADAH_BATTERY.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		
+		
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		
 		// Items
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
@@ -388,6 +391,8 @@ public class StargateJourney
 			event.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
 			event.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
 			
+			event.register(MenuInit.UNIVERSE_DHD_CRYSTAL.get(), DHDCrystalScreen.Universe::new);
+			event.register(MenuInit.UNIVERSE_DHD.get(), UniverseDHDScreen::new);
 			event.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
 			event.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
 			event.register(MenuInit.PEGASUS_DHD_CRYSTAL.get(), DHDCrystalScreen.Pegasus::new);

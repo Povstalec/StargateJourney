@@ -65,7 +65,7 @@ public class NaquadahFuelRodItem extends Item
 	 */
 	public static boolean depleteFuel(ItemStack stack)
 	{
-		int fuel = stack.getOrDefault(DataComponentInit.NAQUADAH_FUEL, 0);
+		int fuel = getFuel(stack);
 		
 		if(fuel > 0)
 		{
@@ -75,7 +75,7 @@ public class NaquadahFuelRodItem extends Item
 			return true;
 		}
 		
-		return true;
+		return false;
 	}
 	
 	public static int getMaxFuel()

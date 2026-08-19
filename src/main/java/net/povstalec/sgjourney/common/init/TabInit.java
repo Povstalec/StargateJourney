@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
@@ -177,6 +178,7 @@ public class TabInit
 				.displayItems((parameters, items) ->
 				{
 					items.accept(BlockInit.UNIVERSE_STARGATE.get());
+					items.accept(UniverseDHDBlock.universeCrystalSetup(parameters.holders()));
 					items.accept(BlockInit.MILKY_WAY_STARGATE.get());
 					items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), BlockEntityInit.MILKY_WAY_STARGATE.get()));
 					items.accept(MilkyWayDHDBlock.milkyWayCrystalSetup(parameters.holders()));
@@ -509,6 +511,7 @@ public class TabInit
 		if(event.getTabKey() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
 		{
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.UNIVERSE_STARGATE.get(), new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(UniverseDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.MILKY_WAY_STARGATE.get(), new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(MilkyWayDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(BlockEntityInit.PEGASUS_STARGATE.get(), new ItemStack(BlockInit.PEGASUS_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);

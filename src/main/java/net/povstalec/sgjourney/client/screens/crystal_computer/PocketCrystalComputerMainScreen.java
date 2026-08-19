@@ -164,8 +164,8 @@ public class PocketCrystalComputerMainScreen extends PocketCrystalComputerScreen
 				button -> nextPage()));
 		pageForwardButton.visible = isMemoryCrystalSelected;
 		
-		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && !getCrystalInComputer().isEmpty();
-		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && !getCrystalInHand().isEmpty();
+		crystalInComputerButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_COMPUTER && getCrystalInComputer().getCount() == 1;
+		crystalInHandButton.active = selectedCrystal != SelectedCrystal.CRYSTAL_IN_HAND && getCrystalInHand().getCount() == 1;
 		
 		if(CommunicationCrystalItem.hasFrequency(stack))
 			editBox.setValue(Integer.toString(CommunicationCrystalItem.getFrequency(stack)));

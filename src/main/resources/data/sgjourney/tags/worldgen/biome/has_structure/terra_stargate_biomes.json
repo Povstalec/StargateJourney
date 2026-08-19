@@ -6,6 +6,6 @@
 	[
 		"#minecraft:is_overworld",
 		
-		{id: "ars_nouveau:archwood_forest", required: false}
+		{"id": "ars_nouveau:archwood_forest", "required": false}
 	]
 }
