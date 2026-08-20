@@ -1,0 +1,7 @@
+{
+	"replace": false,
+	"values": [
+		"#c:buckets/liquid_naquadah",
+		"#c:buckets/heavy_liquid_naquadah"
+	]
+}
