@@ -94,7 +94,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 		if(level.isClientSide())
 			return false;
 		
-		return itemStackMatches(craftingInput, 0) && itemStackMatches(craftingInput, 1) && itemStackMatches(craftingInput, 2);
+		return itemStackMatches(craftingInput, 0) && itemStackMatches(craftingInput, 1) && itemStackMatches(craftingInput, 2) && craftingInput.testFluid(0, inputFluid);
 	}
 	
 	@Override
