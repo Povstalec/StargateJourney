@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:naquadah_nugget",
-		{"id": "#forge:nuggets/naquadah", "required": false}
+		{"id": "#c:nuggets/naquadah", "required": false}
 	]
 }

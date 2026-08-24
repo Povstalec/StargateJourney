@@ -2,6 +2,7 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:naquadah_copper_alloy"
+		"sgjourney:naquadah_copper_alloy",
+		{"id": "#c:ingots/naquadah_copper_alloy", "required": false}
 	]
 }

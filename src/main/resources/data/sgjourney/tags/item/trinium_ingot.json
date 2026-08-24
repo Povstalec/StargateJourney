@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:trinium_ingot",
-		{"id": "#forge:ingots/trinium", "required": false}
+		{"id": "#c:ingots/trinium", "required": false}
 	]
 }

@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:trinium_nugget",
-		{"id": "#forge:nuggets/trinium", "required": false}
+		{"id": "#c:nuggets/trinium", "required": false}
 	]
 }

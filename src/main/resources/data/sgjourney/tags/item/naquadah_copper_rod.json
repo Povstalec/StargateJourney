@@ -2,6 +2,7 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:naquadah_copper_rod"
+		"sgjourney:naquadah_copper_rod",
+		{"id": "#c:rods/naquadah_copper_alloy", "required": false}
 	]
 }

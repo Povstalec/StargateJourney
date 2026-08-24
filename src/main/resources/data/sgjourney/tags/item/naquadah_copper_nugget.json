@@ -2,6 +2,7 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:naquadah_copper_nugget"
+		"sgjourney:naquadah_copper_nugget",
+		{"id": "#c:nuggets/naquadah_copper_alloy", "required": false}
 	]
 }

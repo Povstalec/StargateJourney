@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:trinium_rod",
-		{"id": "#forge:rods/trinium", "required": false}
+		{"id": "#c:rods/trinium", "required": false}
 	]
 }
