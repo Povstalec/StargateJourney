@@ -316,7 +316,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.goauldRingPanelEnergyCapacity : CommonTransporterConfig.goauld_ring_panel_energy_capacity.get();
+		return SyncedConfig.goauld_ring_panel_energy_capacity;
 	}
 	
 	@Override
