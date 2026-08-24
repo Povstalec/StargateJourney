@@ -96,6 +96,15 @@ public class TabInit
 				
 				//items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 				
+				items.accept(ItemInit.WOODEN_GRAVER.get());
+				items.accept(ItemInit.STONE_GRAVER.get());
+				items.accept(ItemInit.IRON_GRAVER.get());
+				items.accept(ItemInit.GOLDEN_GRAVER.get());
+				items.accept(ItemInit.DIAMOND_GRAVER.get());
+				items.accept(ItemInit.NETHERITE_GRAVER.get());
+				items.accept(ItemInit.NAQUADAH_GRAVER.get());
+				items.accept(ItemInit.TRINIUM_GRAVER.get());
+				
 				items.accept(ItemInit.NAQUADAH_SWORD.get());
 				items.accept(ItemInit.NAQUADAH_PICKAXE.get());
 				items.accept(ItemInit.NAQUADAH_AXE.get());

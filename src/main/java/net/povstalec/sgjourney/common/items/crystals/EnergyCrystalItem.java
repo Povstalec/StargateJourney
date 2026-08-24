@@ -1,15 +1,5 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.Optional;
-
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
-import net.povstalec.sgjourney.common.config.CommonDHDConfig;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -19,7 +9,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class EnergyCrystalItem extends AbstractCrystalItem
 {
@@ -82,17 +79,17 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long getCapacity()
 	{
-		return CommonCrystalConfig.energy_crystal_capacity.get();
+		return SyncedConfig.energy_crystal_capacity;
 	}
 	
 	public long getTransfer()
 	{
-		return CommonCrystalConfig.energy_crystal_max_transfer.get();
+		return SyncedConfig.energy_crystal_max_transfer;
 	}
 	
 	public long energyTargetIncrease()
 	{
-		return CommonDHDConfig.energy_crystal_energy_target_increase.get();
+		return SyncedConfig.energy_crystal_energy_target_increase;
 	}
 	
 	@Override
@@ -139,19 +136,19 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getCapacity()
 		{
-			return CommonCrystalConfig.advanced_energy_crystal_capacity.get();
+			return SyncedConfig.advanced_energy_crystal_capacity;
 		}
 		
 		@Override
 		public long energyTargetIncrease()
 		{
-			return CommonDHDConfig.advanced_energy_crystal_energy_target_increase.get();
+			return SyncedConfig.advanced_energy_crystal_energy_target_increase;
 		}
 
 		@Override
 		public long getTransfer()
 		{
-			return CommonCrystalConfig.advanced_energy_crystal_max_transfer.get();
+			return SyncedConfig.advanced_energy_crystal_max_transfer;
 		}
 		
 		@Override

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import net.povstalec.sgjourney.client.SyncedConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,13 +54,13 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getFluidAmount(stack) / getMaxCapacity());
+		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getFluidAmount(stack) / getMaxCapacity());
+		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
@@ -93,7 +94,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	{
 		Optional<FluidStack> fluid = stack.getCapability(ForgeCapabilities.FLUID_HANDLER_ITEM).map(fluidHandler -> fluidHandler.getFluidInTank(0));
 		
-		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
+		return fluid.orElse(FluidStack.EMPTY);
 	}
 	
 	public static void drainNaquadah(ItemStack stack, int amount)

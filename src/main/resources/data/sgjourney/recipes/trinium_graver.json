@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key":
+	{
+		"#": { "tag": "minecraft:planks" },
+		"X": { "tag": "sgjourney:trinium_ingot" }
+	},
+	"pattern":
+	[
+		" X",
+		"# "
+	],
+	"result": { "item": "sgjourney:trinium_graver" },
+	"show_notification": true
+}
