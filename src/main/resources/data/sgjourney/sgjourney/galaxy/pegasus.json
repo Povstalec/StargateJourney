@@ -1,6 +1,0 @@
-{
-	"name": "galaxy.sgjourney.pegasus",
-	"type": "sgjourney:dwarf_galaxy",
-	"default_symbols": "sgjourney:galaxy_pegasus",
-	"symbol_prefix": 18
-}

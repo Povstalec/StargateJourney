@@ -35,30 +35,40 @@ repositories {
         }
     }
     maven {
-        name = "CurseMaven (CurseForge maven proxy)"
+        url "https://maven.squiddev.cc/"
+        content {
+            includeGroup("cc.tweaked")
+            includeModule("org.squiddev", "Cobalt")
+            includeModule("fuzs.forgeconfigapiport", "forgeconfigapiport-fabric")
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
+    maven {
+        name = "CreateMod"
+        url = "https://maven.createmod.net"
+    }
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    }
+    maven {
         url "https://cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
     }
-    maven {
-        name = "CC:Tweaked maven"
-        url "https://maven.squiddev.cc"
-        content {
-            includeGroup("cc.tweaked")
-        }
-    }
-    maven {
-        // location of the maven that hosts JEI files since January 2023
-        // https://github.com/mezz/JustEnoughItems/wiki/Getting-Started-%5BMinecraft-1.18.2-to-1.20.1%5D
-        name = "Jared's maven"
-        url = "https://maven.blamejared.com/"
-        content {
-            includeGroup("mezz.jei") // limit only for JEI
-        }
-    }
-    // !!! If adding new maven: !!!
-    // if adding new maven because of some mod, limit that maven only to the group of desired mod!
 }
 
 base {
@@ -155,7 +165,34 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 // "optional", meaning it will not be pulled by dependents of this mod.
 configurations {
     runtimeClasspath.extendsFrom localRuntime
+    aeronauticsBundle
 }
+
+var extractedSimulatedDir = layout.buildDirectory.dir("extracted-simulated")
+
+// Simulated has no public maven and is only shipped jar-in-jar'd inside Create:
+// Aeronautics. Pull its compiled classes straight out of that bundle so the API
+// we compile against is byte-identical to the one we run against, with no
+// separate Simulated checkout/build to keep in sync.
+var extractSimulated = tasks.register("extractSimulated", Copy) {
+    inputs.files(configurations.aeronauticsBundle)
+    from { configurations.aeronauticsBundle.collect { zipTree(it) } }
+    include "META-INF/jarjar/*simulated*.jar"
+    eachFile { it.relativePath = new RelativePath(true, "simulated.jar") }
+    includeEmptyDirs = false
+    into extractedSimulatedDir
+    // Copy reports success even when the include matches nothing, which would
+    // surface later as a baffling "cannot find ZiplineClientManager" during
+    // compileJava; fail at the source if the bundle layout ever changes.
+    doLast {
+        if (!extractedSimulatedDir.get().file("simulated.jar").asFile.exists()) {
+            throw new GradleException("No Simulated jar-in-jar found in create-aeronautics ${create_aeronautics_version}; the bundle's META-INF/jarjar layout may have changed.")
+        }
+    }
+}
+
+var simulatedCompileJar = files(extractedSimulatedDir.map { it.file("simulated.jar") })
+simulatedCompileJar.builtBy(extractSimulated)
 
 dependencies {
     // Example optional mod dependency with JEI
@@ -180,6 +217,12 @@ dependencies {
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
 
+    // compileOnly("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") {
+    //     exclude group: "foundry.veil"
+    // }
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${sable_companion_version},)"))
+    implementation("maven.modrinth:sable:${sable_mod_version}+mc${minecraft_version}")
+
     compileOnly ("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     runtimeOnly ("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
@@ -192,9 +235,9 @@ dependencies {
 
     implementation ("maven.modrinth:mekanism:10.7.17.83")
     runtimeOnly ("maven.modrinth:mekanism-generators:10.7.17.83")
-    runtimeOnly ("maven.modrinth:architectury-api:13.0.8+neoforge")
-    runtimeOnly ("maven.modrinth:potentials:EEjnSxLK")
-    runtimeOnly ("maven.modrinth:stellaris:Ll5CYnaz")
+    // runtimeOnly ("maven.modrinth:architectury-api:13.0.8+neoforge")
+    // runtimeOnly ("maven.modrinth:potentials:EEjnSxLK")
+    // runtimeOnly ("maven.modrinth:stellaris:Ll5CYnaz")
 
     // test dependencies
     testImplementation("net.neoforged:testframework:${project.neo_version}")
@@ -202,6 +245,10 @@ dependencies {
     testImplementation(platform('org.junit:junit-bom:6.1.2'))
     testImplementation('org.junit.jupiter:junit-jupiter')
     testRuntimeOnly('org.junit.platform:junit-platform-launcher')
+    // create-aeronautics jar-in-jars Simulated, Aeronautics, and Offroad at runtime.
+    localRuntime("maven.modrinth:create:${create_mod_version}+mc${minecraft_version}")
+    localRuntime("maven.modrinth:create-aeronautics:${create_aeronautics_version}+mc${minecraft_version}")
+    localRuntime("dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -3,7 +3,8 @@
 	"textures":
 	{
 		"front": "sgjourney:block/crystallizer_front",
-		"side": "sgjourney:block/chiseled_naquadah_block",
-		"top": "sgjourney:block/chiseled_naquadah_block"
+		"side": "sgjourney:block/crystallizer_side",
+		"top": "sgjourney:block/crystallizer_top",
+                "bottom": "sgjourney:block/crystallizer_bottom"
 	}
 }

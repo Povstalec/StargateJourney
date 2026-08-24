@@ -27,9 +27,9 @@ public abstract class StargateSound<T extends AbstractStargateEntity<?>> extends
 		
 		this.stargate = stargate;
 		this.stargatePos = stargate.getBlockPos();
-		this.x = stargate.getCenterPos().getX();
-		this.y = stargate.getCenterPos().getY();
-		this.z = stargate.getCenterPos().getZ();
+		this.x = stargate.getCenter().x;
+		this.y = stargate.getCenter().y;
+		this.z = stargate.getCenter().z;
 		this.relative = false;
 		this.attenuation = SoundInstance.Attenuation.NONE;
 	}
