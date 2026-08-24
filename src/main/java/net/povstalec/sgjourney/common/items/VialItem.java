@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -29,7 +30,7 @@ public class VialItem extends FluidItem
 	
 	public int getFluidCapacity(ItemStack stack)
 	{
-		return CommonTechConfig.vial_capacity.get();
+		return SyncedConfig.vial_capacity;
 	}
 	
 	// Liquid Naquadah Vial

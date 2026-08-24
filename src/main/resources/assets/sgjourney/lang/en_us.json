@@ -377,6 +377,15 @@
 
 	"item.sgjourney.call_forwarding_device": "Call Forwarding Device",
 	
+	"item.sgjourney.wooden_graver": "Wooden Graver",
+	"item.sgjourney.stone_graver": "Stone Graver",
+	"item.sgjourney.iron_graver": "Iron Graver",
+	"item.sgjourney.golden_graver": "Golden Graver",
+	"item.sgjourney.diamond_graver": "Diamond Graver",
+	"item.sgjourney.netherite_graver": "Netherite Graver",
+	"item.sgjourney.naquadah_graver": "Naquadah Graver",
+	"item.sgjourney.trinium_graver": "Trinium Graver",
+	
 	"item.sgjourney.naquadah_sword": "Naquadah Sword",
 	"item.sgjourney.naquadah_pickaxe": "Naquadah Pickaxe",
 	"item.sgjourney.naquadah_axe": "Naquadah Axe",

@@ -1,19 +1,11 @@
 package net.povstalec.sgjourney.common.items.armor;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -24,12 +16,20 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.tech.AncientTech;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
 
 public class PersonalShieldItem extends ArmorItem implements AncientTech
 {
@@ -52,13 +52,13 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getFluidAmount(stack) / getMaxCapacity());
+		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getFluidAmount(stack) / getMaxCapacity());
+		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	
@@ -92,7 +92,7 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	{
 		Optional<FluidStack> fluid = stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).map(fluidHandler -> fluidHandler.getFluidInTank(0));
 		
-		return fluid.isPresent() ? fluid.get() : FluidStack.EMPTY;
+		return fluid.orElse(FluidStack.EMPTY);
 	}
 	
 	public static void drainNaquadah(ItemStack stack, int amount)

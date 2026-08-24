@@ -376,6 +376,15 @@
 
 	"item.sgjourney.call_forwarding_device": "Zařízení přesměrující spojení",
 	
+	"item.sgjourney.wooden_graver": "Dřevěné rydlo",
+	"item.sgjourney.stone_graver": "Kamenné rydlo",
+	"item.sgjourney.iron_graver": "železné rydlo",
+	"item.sgjourney.golden_graver": "Zlaté rydlo",
+	"item.sgjourney.diamond_graver": "Diamantové rydlo",
+	"item.sgjourney.netherite_graver": "Netheritové rydlo",
+	"item.sgjourney.naquadah_graver": "Naquadahové rydlo",
+	"item.sgjourney.trinium_graver": "Triniové rydlo",
+	
 	"item.sgjourney.naquadah_sword": "Naquadahový meč",
 	"item.sgjourney.naquadah_pickaxe": "Naquadahový krumpáč",
 	"item.sgjourney.naquadah_axe": "Naquadahová sekera",

@@ -10,7 +10,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import org.jetbrains.annotations.NotNull;
@@ -57,7 +57,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 
 	public int getMemoryCapacity()
 	{
-		return CommonCrystalConfig.memory_crystal_capacity.get();
+		return SyncedConfig.memory_crystal_capacity;
 	}
 
 	@Override
@@ -339,7 +339,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		@Override
 		public int getMemoryCapacity()
 		{
-			return CommonCrystalConfig.advanced_memory_crystal_capacity.get();
+			return SyncedConfig.advanced_memory_crystal_capacity;
 		}
 
 		@Override

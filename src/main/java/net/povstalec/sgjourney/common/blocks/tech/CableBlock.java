@@ -31,6 +31,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -376,13 +377,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.naquadah_wire_max_transfer.get();
+			return SyncedConfig.naquadah_wire_max_transfer;
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.naquadah_wire_transfers_zero_point_energy.get();
+			return SyncedConfig.naquadah_wire_transfers_zero_point_energy;
 		}
 	}
 	
@@ -403,13 +404,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.small_naquadah_cable_max_transfer.get();
+			return SyncedConfig.small_naquadah_cable_max_transfer;
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.small_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.small_naquadah_cable_transfers_zero_point_energy;
 		}
 	}
 	
@@ -429,13 +430,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.medium_naquadah_cable_max_transfer.get();
+			return SyncedConfig.medium_naquadah_cable_max_transfer;
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy;
 		}
 	}
 	
@@ -455,13 +456,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.large_naquadah_cable_max_transfer.get();
+			return SyncedConfig.large_naquadah_cable_max_transfer;
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.large_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.large_naquadah_cable_transfers_zero_point_energy;
 		}
 	}
 	
