@@ -180,22 +180,22 @@ public class ItemInit
 	
 	// Tools
 	public static final RegistryObject<GraverItem> WOODEN_GRAVER = ITEMS.register("wooden_graver",
-		() -> new GraverItem(Tiers.WOOD, new Item.Properties()));
+		() -> new GraverItem(Tiers.WOOD, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> STONE_GRAVER = ITEMS.register("stone_graver",
-		() -> new GraverItem(Tiers.STONE, new Item.Properties()));
+		() -> new GraverItem(Tiers.STONE, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	//TODO COPPER_GRAVER
 	public static final RegistryObject<GraverItem> IRON_GRAVER = ITEMS.register("iron_graver",
-		() -> new GraverItem(Tiers.IRON, new Item.Properties()));
+		() -> new GraverItem(Tiers.IRON, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> GOLDEN_GRAVER = ITEMS.register("golden_graver",
-		() -> new GraverItem(Tiers.GOLD, new Item.Properties()));
+		() -> new GraverItem(Tiers.GOLD, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> DIAMOND_GRAVER = ITEMS.register("diamond_graver",
-		() -> new GraverItem(Tiers.DIAMOND, new Item.Properties()));
+		() -> new GraverItem(Tiers.DIAMOND, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> NETHERITE_GRAVER = ITEMS.register("netherite_graver",
-		() -> new GraverItem(Tiers.NETHERITE, new Item.Properties()));
+		() -> new GraverItem(Tiers.NETHERITE, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> NAQUADAH_GRAVER = ITEMS.register("naquadah_graver",
-		() -> new GraverItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant()));
+		() -> new GraverItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<GraverItem> TRINIUM_GRAVER = ITEMS.register("trinium_graver",
-		() -> new GraverItem(ToolMaterialInit.TRINIUM, new Item.Properties()));
+		() -> new GraverItem(ToolMaterialInit.TRINIUM, new Item.Properties().tab(TabInit.STARGATE_ITEMS)));
 	
 	public static final RegistryObject<SwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 
 			() -> new SwordItem(ToolMaterialInit.NAQUADAH, 4, -2.4f, new Item.Properties().fireResistant().tab(TabInit.STARGATE_ITEMS)));
