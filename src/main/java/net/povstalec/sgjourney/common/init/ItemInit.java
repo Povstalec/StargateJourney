@@ -12,12 +12,7 @@ import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.FalconArmorItem;
 import net.povstalec.sgjourney.common.items.armor.JackalArmorItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
+import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
 
@@ -184,6 +179,24 @@ public class ItemInit
 			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	
 	// Tools
+	public static final RegistryObject<GraverItem> WOODEN_GRAVER = ITEMS.register("wooden_graver",
+		() -> new GraverItem(Tiers.WOOD, new Item.Properties()));
+	public static final RegistryObject<GraverItem> STONE_GRAVER = ITEMS.register("stone_graver",
+		() -> new GraverItem(Tiers.STONE, new Item.Properties()));
+	//TODO COPPER_GRAVER
+	public static final RegistryObject<GraverItem> IRON_GRAVER = ITEMS.register("iron_graver",
+		() -> new GraverItem(Tiers.IRON, new Item.Properties()));
+	public static final RegistryObject<GraverItem> GOLDEN_GRAVER = ITEMS.register("golden_graver",
+		() -> new GraverItem(Tiers.GOLD, new Item.Properties()));
+	public static final RegistryObject<GraverItem> DIAMOND_GRAVER = ITEMS.register("diamond_graver",
+		() -> new GraverItem(Tiers.DIAMOND, new Item.Properties()));
+	public static final RegistryObject<GraverItem> NETHERITE_GRAVER = ITEMS.register("netherite_graver",
+		() -> new GraverItem(Tiers.NETHERITE, new Item.Properties()));
+	public static final RegistryObject<GraverItem> NAQUADAH_GRAVER = ITEMS.register("naquadah_graver",
+		() -> new GraverItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant()));
+	public static final RegistryObject<GraverItem> TRINIUM_GRAVER = ITEMS.register("trinium_graver",
+		() -> new GraverItem(ToolMaterialInit.TRINIUM, new Item.Properties()));
+	
 	public static final RegistryObject<SwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword", 
 			() -> new SwordItem(ToolMaterialInit.NAQUADAH, 4, -2.4f, new Item.Properties().fireResistant()));
 	public static final RegistryObject<PickaxeItem> NAQUADAH_PICKAXE = ITEMS.register("naquadah_pickaxe", 

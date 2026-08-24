@@ -19,7 +19,7 @@ public class AncientTransportRingsEntity extends AbstractTransportRingsEntity<An
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.ancientTransportRingsEnergyCapacity : CommonTransporterConfig.ancient_transport_rings_energy_capacity.get();
+		return SyncedConfig.ancient_transport_rings_energy_capacity;
 	}
 	
 	@Override
