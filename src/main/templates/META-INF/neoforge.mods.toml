@@ -38,7 +38,7 @@ displayName="${mod_name}" #mandatory
 logoFile="sgjourney_large.png" #optional
 
 # A text field displayed in the mod UI
-credits="TakeruDavis, tehgreatdoge, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev, AngelaTheSephira, slava110, mistersecret312, Smusken" #optional
+credits="TakeruDavis, tehgreatdoge, Otwnt, Kranyolsu, Carter Addon Pack, diesieben07, TelepathicGrunt, SquidDev, AngelaTheSephira, slava110, mistersecret312, Smusken, BumbleBeetle" #optional
 
 # A text field displayed in the mod UI
 authors="${mod_authors}" #optional
