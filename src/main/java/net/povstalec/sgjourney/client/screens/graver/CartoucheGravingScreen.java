@@ -6,6 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 
@@ -18,7 +19,7 @@ public class CartoucheGravingScreen extends Screen
 	
 	public CartoucheGravingScreen(boolean mainHand, CompoundTag tag)
 	{
-		super(Component.empty());
+		super(TextComponent.EMPTY);
 	}
 	
 	public void render(PoseStack stack, int mouseX, int mouseY, float delta)
