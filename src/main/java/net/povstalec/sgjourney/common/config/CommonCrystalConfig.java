@@ -8,6 +8,8 @@ public class CommonCrystalConfig
 	public static ModConfigSpec.LongValue advanced_energy_crystal_capacity;
 	public static ModConfigSpec.LongValue energy_crystal_max_transfer;
 	public static ModConfigSpec.LongValue advanced_energy_crystal_max_transfer;
+	public static ModConfigSpec.LongValue energy_crystal_energy_target_increase;
+	public static ModConfigSpec.LongValue advanced_energy_crystal_energy_target_increase;
 	
 	public static ModConfigSpec.LongValue transfer_crystal_max_transfer;
 	public static ModConfigSpec.LongValue advanced_transfer_crystal_max_transfer;
@@ -26,12 +28,20 @@ public class CommonCrystalConfig
 				.defineInRange("server.advanced_energy_crystal_capacity", 2000000L, 1L, Long.MAX_VALUE);
 		
 		energy_crystal_max_transfer = server
-				.comment("The amount of energy that can be transfered into and out of an Energy Crystal per tick")
+				.comment("The amount of energy that can be transferred into and out of an Energy Crystal per tick")
 				.defineInRange("server.energy_crystal_max_transfer", 100000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_max_transfer = server
-				.comment("The amount of energy that can be transfered into and out of an Advanced Energy Crystal per tick")
+				.comment("The amount of energy that can be transferred into and out of an Advanced Energy Crystal per tick")
 				.defineInRange("server.advanced_energy_crystal_max_transfer", 1000000L, 1L, Long.MAX_VALUE);
+		
+		energy_crystal_energy_target_increase = server
+			.comment("The amount by which the Energy Crystal increases the Energy Target")
+			.defineInRange("server.energy_crystal_energy_target_increase", 50000L, 1L, Long.MAX_VALUE);
+		
+		advanced_energy_crystal_energy_target_increase = server
+			.comment("The amount by which the AdvancedEnergy Crystal increases the Energy Target")
+			.defineInRange("server.advanced_energy_crystal_energy_target_increase", 100000L, 1L, Long.MAX_VALUE);
 		
 		
 		

@@ -71,7 +71,7 @@ public class HeavyNaquadahLiquidizerEntity extends AbstractLiquidizerEntity<Liqu
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.heavyNaquadahLiquidizerEnergyCapacity : CommonTechConfig.heavy_naquadah_liquidizer_energy_capacity.get();
+		return SyncedConfig.heavy_naquadah_liquidizer_energy_capacity;
 	}
 	
 	@Override

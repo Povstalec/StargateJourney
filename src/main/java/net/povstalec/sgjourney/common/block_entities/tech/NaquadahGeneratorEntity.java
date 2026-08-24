@@ -285,7 +285,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return level != null && level.isClientSide() ? SyncedConfig.naquadahReactorEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_reactor_capacity.get();
+			return SyncedConfig.naquadah_reactor_capacity;
 		}
 		
 		@Override
@@ -325,7 +325,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return level != null && level.isClientSide() ? SyncedConfig.naquadahGeneratorMarkIEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_generator_mark_i_capacity.get();
+			return SyncedConfig.naquadah_generator_mark_i_capacity;
 		}
 		
 		@Override
@@ -365,7 +365,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return level != null && level.isClientSide() ? SyncedConfig.naquadahGeneratorMarkIIEnergyCapacity : CommonNaquadahGeneratorConfig.naquadah_generator_mark_ii_capacity.get();
+			return SyncedConfig.naquadah_generator_mark_ii_capacity;
 		}
 		
 		@Override

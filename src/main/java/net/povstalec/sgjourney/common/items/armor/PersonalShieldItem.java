@@ -1,11 +1,12 @@
 package net.povstalec.sgjourney.common.items.armor;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -13,18 +14,17 @@ import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.tech.AncientTech;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class PersonalShieldItem extends ArmorItem implements AncientTech
 {
@@ -47,13 +47,13 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getFluidAmount(stack) / getMaxCapacity());
+		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getFluidAmount(stack) / getMaxCapacity());
+		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	

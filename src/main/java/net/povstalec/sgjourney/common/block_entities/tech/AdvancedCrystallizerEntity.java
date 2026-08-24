@@ -59,7 +59,7 @@ public class AdvancedCrystallizerEntity extends AbstractCrystallizerEntity<Cryst
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.advancedCrystallizerEnergyCapacity : CommonTechConfig.advanced_crystallizer_energy_capacity.get();
+		return SyncedConfig.advanced_crystallizer_energy_capacity;
 	}
 	
 	@Override

@@ -49,13 +49,13 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get();
+		return SyncedConfig.milky_way_dhd_energy_buffer_capacity;
 	}
 	
 	@Override
 	public long getMaxEnergyReceive()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.milkyWayDHDEnergyCapacity : CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
+		return CommonDHDConfig.milky_way_dhd_max_energy_receive.get();
 	}
 	
 	@Override

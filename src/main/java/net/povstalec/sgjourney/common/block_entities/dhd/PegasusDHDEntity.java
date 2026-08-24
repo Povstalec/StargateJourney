@@ -49,7 +49,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.pegasusDHDEnergyCapacity : CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
+		return SyncedConfig.pegasus_dhd_energy_buffer_capacity;
 	}
 	
 	@Override

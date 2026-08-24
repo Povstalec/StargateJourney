@@ -177,16 +177,34 @@ public class ItemInit
 			() -> new StargateVariantItem(new Item.Properties().rarity(Rarity.RARE).stacksTo(16)));
 	
 	// Tools
+	public static final DeferredItem<GraverItem> WOODEN_GRAVER = ITEMS.register("wooden_graver",
+		() -> new GraverItem(Tiers.WOOD, new Item.Properties()));
+	public static final DeferredItem<GraverItem> STONE_GRAVER = ITEMS.register("stone_graver",
+		() -> new GraverItem(Tiers.STONE, new Item.Properties()));
+	//TODO COPPER_GRAVER
+	public static final DeferredItem<GraverItem> IRON_GRAVER = ITEMS.register("iron_graver",
+		() -> new GraverItem(Tiers.IRON, new Item.Properties()));
+	public static final DeferredItem<GraverItem> GOLDEN_GRAVER = ITEMS.register("golden_graver",
+		() -> new GraverItem(Tiers.GOLD, new Item.Properties()));
+	public static final DeferredItem<GraverItem> DIAMOND_GRAVER = ITEMS.register("diamond_graver",
+		() -> new GraverItem(Tiers.DIAMOND, new Item.Properties()));
+	public static final DeferredItem<GraverItem> NETHERITE_GRAVER = ITEMS.register("netherite_graver",
+		() -> new GraverItem(Tiers.NETHERITE, new Item.Properties()));
+	public static final DeferredItem<GraverItem> NAQUADAH_GRAVER = ITEMS.register("naquadah_graver",
+		() -> new GraverItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant()));
+	public static final DeferredItem<GraverItem> TRINIUM_GRAVER = ITEMS.register("trinium_graver",
+		() -> new GraverItem(ToolMaterialInit.TRINIUM, new Item.Properties()));
+	
 	public static final DeferredItem<SwordItem> NAQUADAH_SWORD = ITEMS.register("naquadah_sword",
-			() -> new SwordItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(ToolMaterialInit.NAQUADAH, 4, -2.4F))));
+		() -> new SwordItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(SwordItem.createAttributes(ToolMaterialInit.NAQUADAH, 4, -2.4F))));
 	public static final DeferredItem<PickaxeItem> NAQUADAH_PICKAXE = ITEMS.register("naquadah_pickaxe",
-			() -> new PickaxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 2, -2.8F))));
+		() -> new PickaxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(PickaxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 2, -2.8F))));
 	public static final DeferredItem<AxeItem> NAQUADAH_AXE = ITEMS.register("naquadah_axe",
-			() -> new AxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 6, -3.0F))));
+		() -> new AxeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(AxeItem.createAttributes(ToolMaterialInit.NAQUADAH, 6, -3.0F))));
 	public static final DeferredItem<ShovelItem> NAQUADAH_SHOVEL = ITEMS.register("naquadah_shovel",
-			() -> new ShovelItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(ToolMaterialInit.NAQUADAH, 2.5F, -3.0F))));
+		() -> new ShovelItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(ShovelItem.createAttributes(ToolMaterialInit.NAQUADAH, 2.5F, -3.0F))));
 	public static final DeferredItem<HoeItem> NAQUADAH_HOE = ITEMS.register("naquadah_hoe",
-			() -> new HoeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(ToolMaterialInit.NAQUADAH, -2, 0))));
+		() -> new HoeItem(ToolMaterialInit.NAQUADAH, new Item.Properties().fireResistant().attributes(HoeItem.createAttributes(ToolMaterialInit.NAQUADAH, -2, 0))));
 	
 	public static final DeferredItem<SwordItem> TRINIUM_SWORD = ITEMS.register("trinium_sword",
 			() -> new SwordItem(ToolMaterialInit.TRINIUM, new Item.Properties().attributes(SwordItem.createAttributes(ToolMaterialInit.TRINIUM, 4, -2.4f))));

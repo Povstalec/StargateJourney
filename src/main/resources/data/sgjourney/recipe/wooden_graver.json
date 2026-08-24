@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key":
+	{
+		"#": { "tag": "minecraft:planks" },
+		"X": { "item": "minecraft:stick" }
+	},
+	"pattern":
+	[
+		" X",
+		"# "
+	],
+	"result": { "item": "sgjourney:wooden_graver" },
+	"show_notification": true
+}

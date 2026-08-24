@@ -11,6 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
@@ -45,7 +46,7 @@ public class PowerCellItem extends FluidItem.Holder
 	
 	public long getBufferCapacity(ItemStack stack)
 	{
-		return CommonTechConfig.naquadah_power_cell_buffer_capacity.get();
+		return SyncedConfig.naquadah_power_cell_buffer_capacity;
 	}
 	
 	@Override

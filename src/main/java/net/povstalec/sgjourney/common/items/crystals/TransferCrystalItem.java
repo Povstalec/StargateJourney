@@ -4,8 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 
 import java.util.List;
@@ -30,7 +30,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	
 	public long getMaxTransfer()
 	{
-		return CommonCrystalConfig.transfer_crystal_max_transfer.get();
+		return SyncedConfig.transfer_crystal_max_transfer;
 	}
 	
 	public int getEfficiencyMultiplier()
@@ -59,7 +59,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getMaxTransfer()
 		{
-			return CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get();
+			return SyncedConfig.advanced_transfer_crystal_max_transfer;
 		}
 		
 		@Override
