@@ -47,13 +47,13 @@ public class UniverseDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return CommonDHDConfig.universe_dhd_energy_buffer_capacity.get();
+		return SyncedConfig.universe_dhd_energy_buffer_capacity;
 	}
 	
 	@Override
 	public long getMaxEnergyReceive()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.universeDHDEnergyCapacity : CommonDHDConfig.universe_dhd_max_energy_receive.get();
+		return CommonDHDConfig.universe_dhd_max_energy_receive.get();
 	}
 	
 	@Override

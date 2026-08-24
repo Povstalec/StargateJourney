@@ -48,7 +48,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.classicDHDEnergyCapacity : CommonDHDConfig.classic_dhd_energy_buffer_capacity.get();
+		return SyncedConfig.classic_dhd_energy_buffer_capacity;
 	}
 	
 	@Override

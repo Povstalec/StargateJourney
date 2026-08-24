@@ -1,15 +1,5 @@
 package net.povstalec.sgjourney.common.items.crystals;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.memory_entry.*;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -18,6 +8,15 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class MemoryCrystalItem extends AbstractCrystalItem
 {
@@ -56,7 +55,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 
 	public int getMemoryCapacity()
 	{
-		return CommonCrystalConfig.memory_crystal_capacity.get();
+		return SyncedConfig.memory_crystal_capacity;
 	}
 
 	@Override
@@ -338,7 +337,7 @@ public class MemoryCrystalItem extends AbstractCrystalItem
 		@Override
 		public int getMemoryCapacity()
 		{
-			return CommonCrystalConfig.advanced_memory_crystal_capacity.get();
+			return SyncedConfig.advanced_memory_crystal_capacity;
 		}
 
 		@Override

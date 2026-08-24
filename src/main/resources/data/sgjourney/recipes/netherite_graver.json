@@ -1,0 +1,15 @@
+{
+	"type": "minecraft:smithing",
+	"addition":
+	{
+		"item": "minecraft:netherite_ingot"
+	},
+	"base":
+	{
+		"item": "sgjourney:diamond_graver"
+	},
+	"result":
+	{
+		"item": "sgjourney:netherite_graver"
+	}
+}

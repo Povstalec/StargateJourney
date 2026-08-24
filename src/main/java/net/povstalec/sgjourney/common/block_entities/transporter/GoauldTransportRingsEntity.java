@@ -19,7 +19,7 @@ public class GoauldTransportRingsEntity extends AbstractTransportRingsEntity<Goa
 	@Override
 	public long getEnergyCapacity()
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.goauldTransportRingsEnergyCapacity : CommonTransporterConfig.goauld_transport_rings_energy_capacity.get();
+		return SyncedConfig.goauld_transport_rings_energy_capacity;
 	}
 	
 	@Override

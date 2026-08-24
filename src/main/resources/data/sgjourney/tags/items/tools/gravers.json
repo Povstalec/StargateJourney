@@ -1,0 +1,15 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:wooden_graver",
+		"sgjourney:stone_graver",
+		"sgjourney:iron_graver",
+		"sgjourney:golden_graver",
+		"sgjourney:diamond_graver",
+		"sgjourney:netherite_graver",
+		
+		"sgjourney:naquadah_graver",
+		"sgjourney:trinium_graver"
+	]
+}
