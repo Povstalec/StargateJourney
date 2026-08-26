@@ -20,11 +20,9 @@ export GEM_HOME=$HOME/.gem
 # make the change "permanent"
 echo 'export GEM_HOME=$HOME/.gem' >> $HOME/.bashrc
 ```
-Windows installation
-```
-1. Download `Ruby+Devkit 3.3.12-1 (x64)` from https://rubyinstaller.org/downloads/
-2. Run the installation file and go through all of the installation steps (Ideally install 1, 2 and 3 when prompted to choose)
-```
+Windows installation  
+- Download `Ruby+Devkit 3.3.12-1 (x64)` from https://rubyinstaller.org/downloads/
+- Run the installation file and go through all of the installation steps (Ideally install 1, 2 and 3 when prompted to choose)
 2. Clone the repository  
 ```bash
 git clone -b documentation git@github.com:Povstalec/StargateJourney.git
