@@ -9,6 +9,7 @@ That should allow to replace ruby with TypeScript, which has a better IDE suppor
 
 ## Local development setup
 1. Install ruby and jekyll  
+   WARNING: Ruby 3.3 is REQUIRED, newer versions will NOT work!  
    [Testing your GitHub Pages site locally with Jekyll](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll)  
 Ubuntu installation
 ```bash
@@ -29,11 +30,11 @@ cd StargateJourney
 # build the bundle
 bundle install
 ```
-3. Clone an implementation branch into the `implementation_branch` directory (those files will be used for assets sourcing - recipes, item textures)  
+4. Clone an implementation branch into the `implementation_branch` directory (those files will be used for assets sourcing - recipes, item textures)  
 ```bash
 git clone -b main git@github.com:Povstalec/StargateJourney.git implementation_branch
 ```
-4. Serve the site locally (it might be required to let the site build twice to load dynamically added assets from the implementation branch)  
+5. Serve the site locally (it might be required to let the site build twice to load dynamically added assets from the implementation branch)  
 ```bash
 # To clear the current build, delete the _site directory
 # You may also need to use --force_polling if you have issues with livereload (e.g. on WSL)
