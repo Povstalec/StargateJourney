@@ -20,9 +20,16 @@ export GEM_HOME=$HOME/.gem
 # make the change "permanent"
 echo 'export GEM_HOME=$HOME/.gem' >> $HOME/.bashrc
 ```
+Windows installation
+```
+1. Download `Ruby+Devkit 3.3.12-1 (x64)` from https://rubyinstaller.org/downloads/
+2. Run the installation file and go through all of the installation steps (Ideally install 1, 2 and 3 when prompted to choose)
+```
 2. Clone the repository  
 ```bash
 git clone -b documentation git@github.com:Povstalec/StargateJourney.git
+# If that doesn't work, you can try
+git clone -b documentation https://github.com/Povstalec/StargateJourney.git
 ```
 3. Build the site
 ```bash
@@ -33,6 +40,8 @@ bundle install
 4. Clone an implementation branch into the `implementation_branch` directory (those files will be used for assets sourcing - recipes, item textures)  
 ```bash
 git clone -b main git@github.com:Povstalec/StargateJourney.git implementation_branch
+# If that doesn't work, you can try
+git clone -b main https://github.com/Povstalec/StargateJourney.git implementation_branch
 ```
 5. Serve the site locally (it might be required to let the site build twice to load dynamically added assets from the implementation branch)  
 ```bash
