@@ -359,6 +359,7 @@ public class TabInit
 						}
 						if(CommonStargateConfig.enable_stargate_variants.get())
 						{
+							output.accept(ItemInit.STARGATE_VARIANT_CRYSTAL.get());
 							parameters.holders()
 								.lookup(StargateVariant.REGISTRY_KEY)
 								.ifPresent(regLookup ->
