@@ -87,6 +87,12 @@ public class SymbolSet
 		return extendedTextures.get(symbol - 1);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 	@Nullable
 	public static ResourceKey<SymbolSet> keyFromLocation(ResourceLocation location)
 	{

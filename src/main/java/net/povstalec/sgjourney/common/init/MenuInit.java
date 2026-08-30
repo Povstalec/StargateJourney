@@ -76,6 +76,13 @@ public class MenuInit
 	
 	public static final RegistryObject<MenuType<BatteryMenu>> NAQUADAH_BATTERY =
 			registerMenuType(BatteryMenu::new, "naquadah_battery");
+	
+	public static final RegistryObject<MenuType<CartoucheMenu.Stone>> STONE_CARTOUCHE =
+		registerMenuType(CartoucheMenu.Stone::new, "stone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheMenu.Sandstone>> SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheMenu.Sandstone::new, "sandstone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheMenu.RedSandstone>> RED_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheMenu.RedSandstone::new, "red_sandstone_cartouche");
 
 
 

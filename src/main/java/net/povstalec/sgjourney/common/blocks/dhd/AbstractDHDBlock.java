@@ -132,9 +132,9 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(AbstractDHDEntity.POINT_OF_ORIGIN))
-				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "Error");
+				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
 			if(blockEntityTag.contains(AbstractDHDEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "Error");
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "tooltip.sgjourney.error");
 			
 			if(blockEntityTag.contains(AbstractDHDEntity.ENERGY))
 				energy = blockEntityTag.getLong(AbstractDHDEntity.ENERGY);

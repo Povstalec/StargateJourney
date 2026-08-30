@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
@@ -19,6 +18,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -34,6 +34,12 @@ public record PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin
 			ClientPointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("client_point_of_origin").forGetter(pointOfOrigin -> pointOfOrigin.clientPointOfOrigin),
 			Galaxy.RESOURCE_KEY_CODEC.listOf().optionalFieldOf("generated_galaxies", List.of()).forGetter(pointOfOrigin -> pointOfOrigin.generatedGalaxies)
 	).apply(instance, PointOfOrigin::new));
+	
+	@Override
+	public @NotNull String toString()
+	{
+		return clientPointOfOrigin.location().toString();
+	}
 	
 	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
 	{

@@ -45,6 +45,8 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
 	public static final RegistryObject<SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
 	
+	public static final RegistryObject<SoundEvent> GRAVER_ENGRAVE = registerSoundEvent("graver_engrave");
+	
 	public static final RegistryObject<SoundEvent> EMPTY = registerSoundEvent("empty");
 	
 	

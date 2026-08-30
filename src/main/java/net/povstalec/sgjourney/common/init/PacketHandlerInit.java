@@ -68,6 +68,12 @@ public final class PacketHandlerInit
 				.consumerMainThread(ClientboundArcheologistNotebookOpenScreenPacket::handle)
 				.add();
 		
+		INSTANCE.messageBuilder(ClientboundSymbolPaperOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+			.encoder(ClientboundSymbolPaperOpenScreenPacket::encode)
+			.decoder(ClientboundSymbolPaperOpenScreenPacket::new)
+			.consumerMainThread(ClientboundSymbolPaperOpenScreenPacket::handle)
+			.add();
+		
 		// Alien Tech
 		
 		// Stargates

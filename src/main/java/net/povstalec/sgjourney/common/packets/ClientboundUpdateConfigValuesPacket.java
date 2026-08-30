@@ -309,40 +309,40 @@ public class ClientboundUpdateConfigValuesPacket
 			//============================================================================================
 			
 			// Crystals
-			SyncedConfig.energy_crystal_capacity = CommonCrystalConfig.energy_crystal_capacity.get();
-			SyncedConfig.advanced_energy_crystal_capacity = CommonCrystalConfig.advanced_energy_crystal_capacity.get();
-			SyncedConfig.energy_crystal_max_transfer = CommonCrystalConfig.energy_crystal_max_transfer.get();
-			SyncedConfig.advanced_energy_crystal_max_transfer = CommonCrystalConfig.advanced_energy_crystal_max_transfer.get();
-			SyncedConfig.energy_crystal_energy_target_increase = CommonCrystalConfig.energy_crystal_energy_target_increase.get();
-			SyncedConfig.advanced_energy_crystal_energy_target_increase = CommonCrystalConfig.advanced_energy_crystal_energy_target_increase.get();
+			SyncedConfig.energy_crystal_capacity = energy_crystal_capacity;
+			SyncedConfig.advanced_energy_crystal_capacity = advanced_energy_crystal_capacity;
+			SyncedConfig.energy_crystal_max_transfer = energy_crystal_max_transfer;
+			SyncedConfig.advanced_energy_crystal_max_transfer = advanced_energy_crystal_max_transfer;
+			SyncedConfig.energy_crystal_energy_target_increase = energy_crystal_energy_target_increase;
+			SyncedConfig.advanced_energy_crystal_energy_target_increase = advanced_energy_crystal_energy_target_increase;
 			
-			SyncedConfig.transfer_crystal_max_transfer = CommonCrystalConfig.transfer_crystal_max_transfer.get();
-			SyncedConfig.advanced_transfer_crystal_max_transfer = CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get();
+			SyncedConfig.transfer_crystal_max_transfer = transfer_crystal_max_transfer;
+			SyncedConfig.advanced_transfer_crystal_max_transfer = advanced_transfer_crystal_max_transfer;
 			
-			SyncedConfig.memory_crystal_capacity = CommonCrystalConfig.memory_crystal_capacity.get();
-			SyncedConfig.advanced_memory_crystal_capacity = CommonCrystalConfig.advanced_memory_crystal_capacity.get();
+			SyncedConfig.memory_crystal_capacity = memory_crystal_capacity;
+			SyncedConfig.advanced_memory_crystal_capacity = advanced_memory_crystal_capacity;
 			
 			// Tech
-			SyncedConfig.fusion_core_infinite_energy = CommonTechConfig.fusion_core_infinite_energy.get();
-			SyncedConfig.fusion_core_energy_from_fuel = CommonTechConfig.fusion_core_energy_from_fuel.get();
-			SyncedConfig.fusion_core_fuel_capacity = CommonTechConfig.fusion_core_fuel_capacity.get();
+			SyncedConfig.fusion_core_infinite_energy = fusion_core_infinite_energy;
+			SyncedConfig.fusion_core_energy_from_fuel = fusion_core_energy_from_fuel;
+			SyncedConfig.fusion_core_fuel_capacity = fusion_core_fuel_capacity;
 			
-			SyncedConfig.vial_capacity = CommonTechConfig.vial_capacity.get();
+			SyncedConfig.vial_capacity = vial_capacity;
 			
-			SyncedConfig.personal_shield_capacity = CommonTechConfig.personal_shield_capacity.get();
+			SyncedConfig.personal_shield_capacity = personal_shield_capacity;
 			
-			SyncedConfig.naquadah_power_cell_buffer_capacity = CommonTechConfig.naquadah_power_cell_buffer_capacity.get();
+			SyncedConfig.naquadah_power_cell_buffer_capacity = naquadah_power_cell_buffer_capacity;
 			
 			// Cable
-			SyncedConfig.naquadah_wire_max_transfer = CommonCableConfig.naquadah_wire_max_transfer.get();
-			SyncedConfig.small_naquadah_cable_max_transfer = CommonCableConfig.small_naquadah_cable_max_transfer.get();
-			SyncedConfig.medium_naquadah_cable_max_transfer = CommonCableConfig.medium_naquadah_cable_max_transfer.get();
-			SyncedConfig.large_naquadah_cable_max_transfer = CommonCableConfig.large_naquadah_cable_max_transfer.get();
+			SyncedConfig.naquadah_wire_max_transfer = naquadah_wire_max_transfer;
+			SyncedConfig.small_naquadah_cable_max_transfer = small_naquadah_cable_max_transfer;
+			SyncedConfig.medium_naquadah_cable_max_transfer = medium_naquadah_cable_max_transfer;
+			SyncedConfig.large_naquadah_cable_max_transfer = large_naquadah_cable_max_transfer;
 			
-			SyncedConfig.naquadah_wire_transfers_zero_point_energy = CommonCableConfig.naquadah_wire_transfers_zero_point_energy.get();
-			SyncedConfig.small_naquadah_cable_transfers_zero_point_energy = CommonCableConfig.small_naquadah_cable_transfers_zero_point_energy.get();
-			SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy = CommonCableConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
-			SyncedConfig.large_naquadah_cable_transfers_zero_point_energy = CommonCableConfig.large_naquadah_cable_transfers_zero_point_energy.get();
+			SyncedConfig.naquadah_wire_transfers_zero_point_energy = naquadah_wire_transfers_zero_point_energy;
+			SyncedConfig.small_naquadah_cable_transfers_zero_point_energy = small_naquadah_cable_transfers_zero_point_energy;
+			SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy = medium_naquadah_cable_transfers_zero_point_energy;
+			SyncedConfig.large_naquadah_cable_transfers_zero_point_energy = large_naquadah_cable_transfers_zero_point_energy;
 		});
 		return true;
 	}

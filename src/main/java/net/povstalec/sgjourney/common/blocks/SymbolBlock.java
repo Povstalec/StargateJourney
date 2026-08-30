@@ -17,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
@@ -40,7 +41,7 @@ import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
-public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock
+public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock, SpecialGravableBlock
 {
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	
@@ -143,10 +144,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 
         	if(symbolNumber == 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOL))
-				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "Error");
+				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "tooltip.sgjourney.error");
 
         	if(symbolNumber != 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "Error");
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
     	}
 		
 		if(symbolNumber == 0)
@@ -159,6 +160,14 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
+	
+	@Override
+	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
+	{
+		return InteractionResult.PASS;
+	}
+	
+	
     
     public static class Stone extends SymbolBlock
     {

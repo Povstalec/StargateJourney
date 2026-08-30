@@ -416,6 +416,8 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödingerova mapa",
 	
+	"item.sgjourney.symbol_paper": "Papír se symboly",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologův zápisník",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahová helma",
@@ -503,6 +505,8 @@
 	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
 	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
+	
+	"sounds.sgjourney.graver_engrave" : "rydlo ryje",
 	
 	"sounds.sgjourney.nothing" : "nic",
 	
@@ -853,6 +857,7 @@
 	"info.sgjourney.timestamp": "Časová značka",
 	
 	"tooltip.sgjourney.unknown": "Neznámé",
+	"tooltip.sgjourney.error": "Error",
 	"tooltip.sgjourney.empty": "Prázdné",
 	"tooltip.sgjourney.text": "Text",
 	"tooltip.sgjourney.symbol": "Symbol",

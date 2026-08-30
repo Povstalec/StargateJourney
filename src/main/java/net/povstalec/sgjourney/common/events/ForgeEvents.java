@@ -1,10 +1,5 @@
 package net.povstalec.sgjourney.common.events;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,8 +56,6 @@ import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.*;
-import net.povstalec.sgjourney.common.capabilities.AncientGene;
-import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
 import net.povstalec.sgjourney.common.data.Factions;
@@ -71,12 +64,21 @@ import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.entities.Human;
 import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.*;
+import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.init.VillagerInit;
+import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEvents
@@ -405,6 +407,21 @@ public class ForgeEvents
 						event.setCanceled(true);
 				}
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onBlockModified(BlockEvent.BlockToolModificationEvent event)
+	{
+		if(GraverItem.DEFAULT_GRAVER_ACTIONS.contains(event.getToolAction()))
+		{
+			Level level = event.getContext().getLevel();
+			BlockPos pos = event.getContext().getClickedPos();
+			BlockState state = level.getBlockState(pos);
+			
+			BlockState newState = GraverItem.DEFAULT_ENGRAVABLE.get(state.getBlock());
+			if(newState != null)
+				event.setFinalState(newState);
 		}
 	}
 

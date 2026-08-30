@@ -75,10 +75,10 @@ public class MilkyWayStargateBlock extends RotatingStargateBaseBlock
 		if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
-				pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "Error");
+				pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
 			
 			if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
-				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
+				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "tooltip.sgjourney.error");
 		}
 		
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));

@@ -96,7 +96,7 @@ public abstract class InventoryMenu<T extends BlockEntity> extends SGJourneyMenu
 	}
 	
 	@Override
-	public @NotNull ItemStack quickMoveStack(Player playerIn, int index)
+	public @NotNull ItemStack quickMoveStack(@NotNull Player player, int index)
 	{
 		Slot sourceSlot = slots.get(index);
 		if(!sourceSlot.hasItem())
@@ -127,7 +127,7 @@ public abstract class InventoryMenu<T extends BlockEntity> extends SGJourneyMenu
 		else
 			sourceSlot.setChanged();
 		
-		sourceSlot.onTake(playerIn, sourceStack);
+		sourceSlot.onTake(player, sourceStack);
 		return copyOfSourceStack;
 	}
 }

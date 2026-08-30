@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
 import net.povstalec.sgjourney.client.screens.DialerScreen;
 import net.povstalec.sgjourney.client.screens.GDOScreen;
+import net.povstalec.sgjourney.client.screens.SymbolPaperScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerScreen;
@@ -26,6 +27,11 @@ public class ClientAccess
 	public static void updatePlayerGravity(double gravity)
 	{
 		SpaceLocation.currentGravity = gravity;
+	}
+	
+	public static void openSymbolPaperScreen(InteractionHand interactionHand)
+	{
+		minecraft.setScreen(new SymbolPaperScreen(interactionHand));
 	}
 	
 	public static void openArcheologistNotebookScreen(boolean mainHand, CompoundTag tag)

@@ -37,10 +37,9 @@ import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.client.screens.dhd.*;
+import net.povstalec.sgjourney.client.screens.graver.CartoucheGravingScreen;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
@@ -221,6 +220,10 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
 			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
+			
+			MenuScreens.register(MenuInit.STONE_CARTOUCHE.get(), CartoucheGravingScreen.Stone::new);
+			MenuScreens.register(MenuInit.SANDSTONE_CARTOUCHE.get(), CartoucheGravingScreen.Sandstone::new);
+			MenuScreens.register(MenuInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheGravingScreen.RedSandstone::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
@@ -230,8 +233,8 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
 			
-			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
-			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
+			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer.Ancient::new);
         	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer.Goauld::new);

@@ -161,6 +161,12 @@ public class ClientSymbols
 		return extendedTextures.get(symbol - 1);
 	}
 	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 	public static List<ResourceLocation> createSpriteTexturesList(String prefix, int first, int last)
 	{
 		ResourceLocation[] textures = new ResourceLocation[last - first + 1];

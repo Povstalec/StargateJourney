@@ -667,6 +667,15 @@
 			"minecraft:item/armor/equip_iron6"
 		]
 	},
+	"graver_engrave":
+	{
+		"subtitle": "sounds.sgjourney.graver_engrave",
+		"sounds":
+		[
+			"minecraft:ui/stonecutter/cut1",
+			"minecraft:ui/stonecutter/cut2"
+		]
+	},
 
 	"empty": {}
 }

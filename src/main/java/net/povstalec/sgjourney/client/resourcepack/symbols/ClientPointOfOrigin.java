@@ -64,6 +64,12 @@ public class ClientPointOfOrigin
 		return extendedTexture;
 	}
 	
+	@Override
+	public String toString()
+	{
+		return name;
+	}
+	
 	
 	
 	public static void addPointOfOrigin(ResourceKey<PointOfOrigin> key, ClientPointOfOrigin symbolSet)

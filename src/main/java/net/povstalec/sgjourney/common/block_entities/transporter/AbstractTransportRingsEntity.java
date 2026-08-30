@@ -304,7 +304,14 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public AABB getRenderBoundingBox()
     {
-        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
+		BlockState state = getBlockState();
+		
+		if(state.hasProperty(AbstractTransportRingsBlock.FACING))
+			return state.getValue(AbstractTransportRingsBlock.FACING) == Direction.DOWN ?
+				new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY(), getBlockPos().getZ() + 4) :
+				new AABB(getBlockPos().getX() - 3, getBlockPos().getY(), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
+		
+        return super.getRenderBoundingBox();
     }
 	
 	//============================================================================================

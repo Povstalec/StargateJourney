@@ -417,6 +417,8 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödinger's Map",
 	
+	"item.sgjourney.symbol_paper": "Symbol Paper",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologist Notebook",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
@@ -504,6 +506,8 @@
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
 	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
+	
+	"sounds.sgjourney.graver_engrave" : "Graver engraves",
 	
 	"sounds.sgjourney.nothing" : "Nothing",
 	
@@ -855,6 +859,7 @@
 	"info.sgjourney.timestamp": "Timestamp",
 	
 	"tooltip.sgjourney.unknown": "Unknown",
+	"tooltip.sgjourney.error": "Error",
 	"tooltip.sgjourney.empty": "Empty",
 	"tooltip.sgjourney.text": "Text",
 	"tooltip.sgjourney.symbol": "Symbol",

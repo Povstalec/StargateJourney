@@ -80,6 +80,31 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		this(ArrayHelper.integerListToArray(addressList));
 	}
 	
+	
+	/**
+	 * Verifies the validity of the provided Address array
+	 * @param addressArray Integer Array representing the Address
+	 * @return True if the array is a valid Address array, otherwise false
+	 */
+	public static boolean isValid(int[] addressArray)
+	{
+		if(addressArray.length > MAX_ADDRESS_LENGTH)
+			return false;
+		
+		if(!ArrayHelper.differentNumbers(addressArray))
+			return false;
+		
+		for(int i = 0; i < addressArray.length; i++)
+		{
+			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
+				return false;
+			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
+				return false;
+		}
+		
+		return true;
+	}
+	
 	/**
 	 * Verifies the validity of the provided Address array
 	 * @param addressArray Integer Array representing the Address
@@ -317,17 +342,27 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	// Static functions
 	
-	private static boolean isAllowedInAddress(char character)
+	public static boolean isAllowedInAddress(char character)
 	{
 		return character == '-' || Character.isDigit(character);
 	}
 	
 	public static boolean canBeTransformedToAddress(String addressString)
 	{
-		for(int i = 0; i < addressString.length(); i++)
+		if(!addressString.startsWith(ADDRESS_DIVIDER) || !addressString.endsWith(ADDRESS_DIVIDER))
+			return false;
+		
+		String[] segments = addressString.split(ADDRESS_DIVIDER);
+		for(int i = 1; i < segments.length; ++i)
 		{
-			if(!isAllowedInAddress(addressString.charAt(i)))
+			if(segments[i].isEmpty() || segments[i].length() > 2)
 				return false;
+			
+			for(int j = 0; j < segments[i].length(); ++j)
+			{
+				if(!isAllowedInAddress(segments[i].charAt(j)))
+					return false;
+			}
 		}
 		
 		return true;
