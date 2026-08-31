@@ -30,7 +30,11 @@ import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block.CableModelLoader;
 import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
-import net.povstalec.sgjourney.client.render.block_entity.*;
+import net.povstalec.sgjourney.client.render.block_entity.stargate.*;
+import net.povstalec.sgjourney.client.render.block_entity.transporter.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHubRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPlugRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPortRenderer;
 import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
@@ -210,8 +214,6 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
-        	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-
         	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
         	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen.Crystallizer::new);
@@ -235,6 +237,10 @@ public class StargateJourney
 			
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
+			
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PORT.get(), ZPMPortRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HUB.get(), ZPMHubRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer.Ancient::new);
         	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer.Goauld::new);

@@ -94,7 +94,7 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 				ensureDash();
 			}
 		};
-		this.editBox.setFilter(text -> acceptedAsAddress(text));
+		this.editBox.setFilter(CartoucheGravingScreen::acceptedAsAddress);
 		
 		this.editBox.setMaxLength(28);
 		this.editBox.setResponder(address::fromString);

@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"I I",
+		"CNC",
+		"ICI"
+	],
+	
+	"key": 
+	{
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"N": { "tag": "sgjourney:naquadah" },
+		"C": { "item": "sgjourney:medium_naquadah_cable" }
+	},
+	
+	"result": { "item": "sgjourney:zpm_plug" }
+}

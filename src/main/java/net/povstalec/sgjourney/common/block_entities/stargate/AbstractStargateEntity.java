@@ -185,7 +185,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected boolean isPrimary = false;
 	protected boolean isProtected = false;
 	
-	public StargateBlockCover blockCover = new StargateBlockCover(StargatePart.DEFAULT_PARTS);
+	public StargateBlockCover blockCover = new StargateBlockCover(this, StargatePart.DEFAULT_PARTS);
 	
 	@Nullable
 	protected Vec3i dhdRelativePos = null;

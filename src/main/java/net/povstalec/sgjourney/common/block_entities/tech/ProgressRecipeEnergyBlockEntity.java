@@ -5,6 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -114,32 +115,41 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 	 */
 	public abstract long energyPerProgressTick();
 	
+	public boolean canOutputStack(ItemStack stack)
+	{
+		return true;
+	}
+	
 	public void doProgress()
 	{
 		getRecipe().ifPresentOrElse(recipe -> // Has base ingredients, progress
 		{
-			maxProgress = recipe.getProgressTime(); // Update max progress time
-			
-			if(progress < recipe.getProgressTime()) // Progress recipe
+			if(canOutput(recipe)) // Check if output can stack
 			{
-				if(energyStorage.hasEnergy(energyPerProgressTick()))
+				maxProgress = recipe.getProgressTime(); // Update max progress time
+				
+				if(progress < recipe.getProgressTime()) // Progress recipe
 				{
-					energyStorage.depleteEnergy(energyPerProgressTick(), false);
-					progress++;
-					
-					updateClient();
-					setChanged();
+					if(energyStorage.hasEnergy(energyPerProgressTick()))
+					{
+						energyStorage.depleteEnergy(energyPerProgressTick(), false);
+						progress++;
+						
+						updateClient();
+						setChanged();
+					}
+				}
+				else if(progress >= recipe.getProgressTime()) // Wait until it's possible to output
+				{
+					if(tryCreateOutput(recipe))
+					{
+						depleteIngredients(recipe);
+						resetProgress();
+					}
 				}
 			}
-			else if(progress >= recipe.getProgressTime()) // Wait until it's possible to output
-			{
-				if(canOutput(recipe)) // Check if there's space for the output
-				{
-					depleteIngredients(recipe);
-					createOutput(recipe);
-					resetProgress();
-				}
-			}
+			else
+				resetProgress();
 		}, this::resetProgress); // Doesn't have base ingredients, stop progress
 	}
 	
@@ -147,7 +157,7 @@ public abstract class ProgressRecipeEnergyBlockEntity<R extends ProgressRecipe<C
 	
 	public abstract void depleteIngredients(R recipe);
 	
-	public abstract void createOutput(R recipe);
+	public abstract boolean tryCreateOutput(R recipe);
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ProgressRecipeEnergyBlockEntity<?, ?> recipeBlockEntity)
 	{

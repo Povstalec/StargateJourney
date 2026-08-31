@@ -227,6 +227,7 @@
 	"block.sgjourney.universe_ring": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.universe_stargate_chevron": "Chevron brány 1. generace",
+	"block.sgjourney.universe_stargate_bearing": "Ložisko brány 1. generace",
 	"block.sgjourney.milky_way_stargate": "Hvězdná brána 2. generace",
 	"block.sgjourney.milky_way_ring": "Hvězdná brána 2. generace",
 	"block.sgjourney.milky_way_shielding": "Ochrana hvězdné brány",
@@ -299,9 +300,9 @@
 	"block.sgjourney.ancient_gene_detector.right_click": "Pravé kliknutí pro detekování antického genu v sobě",
 	"block.sgjourney.ancient_gene_detector.redstone": "Napájej redstonem pro detekování antického genu v entitách poblíž (dosah se zvyšuje o 2 bloky za každou úrověn redstonového signálu)",
 	
-	"block.sgjourney.zpm_hub": "ZPM Hub",
-	"block.sgjourney.zpm_port": "ZPM Port",
-	"block.sgjourney.zpm_plug": "ZPM zástrčka",
+	"block.sgjourney.zpm_hub": "ZPM hub",
+	"block.sgjourney.zpm_port": "ZPM port",
+	"block.sgjourney.zpm_plug": "ZPM zásuvka",
 
 	"block.sgjourney.transceiver": "Vysílač",
 	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",

@@ -23,6 +23,9 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInter
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMHubEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPlugEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPortEntity;
 
 public class BlockEntityInit
 {
@@ -85,7 +88,11 @@ public class BlockEntityInit
             () -> BlockEntityType.Builder.of(CrystalInterfaceEntity::new, BlockInit.CRYSTAL_INTERFACE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<AdvancedCrystalInterfaceEntity>> ADVANCED_CRYSTAL_INTERFACE = BLOCK_ENTITIES.register("advanced_crystal_interface",
             () -> BlockEntityType.Builder.of(AdvancedCrystalInterfaceEntity::new, BlockInit.ADVANCED_CRYSTAL_INTERFACE.get()).build(null));
-
+	
+	public static final RegistryObject<BlockEntityType<ZPMPlugEntity>> ZPM_PLUG = BLOCK_ENTITIES.register("zpm_plug",
+		() -> BlockEntityType.Builder.of(ZPMPlugEntity::new, BlockInit.ZPM_PLUG.get()).build(null));
+	public static final RegistryObject<BlockEntityType<ZPMPortEntity>> ZPM_PORT = BLOCK_ENTITIES.register("zpm_port",
+		() -> BlockEntityType.Builder.of(ZPMPortEntity::new, BlockInit.ZPM_PORT.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ZPMHubEntity>> ZPM_HUB = BLOCK_ENTITIES.register("zpm_hub",
             () -> BlockEntityType.Builder.of(ZPMHubEntity::new, BlockInit.ZPM_HUB.get()).build(null));
 	

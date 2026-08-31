@@ -29,6 +29,9 @@ import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBloc
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPlugBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPortBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -597,10 +600,12 @@ public class BlockInit
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
-	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub", 
+	public static final RegistryObject<ZPMPlugBlock> ZPM_PLUG = registerBlock("zpm_plug",
+		() -> new ZPMPlugBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.UNCOMMON, 1);
+	public static final RegistryObject<ZPMPortBlock> ZPM_PORT = registerBlock("zpm_port",
+		() -> new ZPMPortBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
+	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub",
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), Rarity.EPIC, 1);
-	//TODO ZPM Port
-	//TODO ZPM Plug
 	
 	public static final RegistryObject<NaquadahLiquidizerBlock> NAQUADAH_LIQUIDIZER = registerBlock("naquadah_liquidizer", 
 			() -> new NaquadahLiquidizerBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F)), 1);

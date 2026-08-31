@@ -74,7 +74,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	
 	public void updateClient()
 	{
-		if(!level.isClientSide())
+		if(level != null && !level.isClientSide())
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 	}
 	

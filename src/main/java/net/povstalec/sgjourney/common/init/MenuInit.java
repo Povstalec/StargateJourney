@@ -56,9 +56,6 @@ public class MenuInit
 	public static final RegistryObject<MenuType<NaquadahGeneratorMenu>> NAQUADAH_GENERATOR =
             registerMenuType(NaquadahGeneratorMenu::new, "naquadah_generator");
 	
-	public static final RegistryObject<MenuType<ZPMHubMenu>> ZPM_HUB =
-            registerMenuType(ZPMHubMenu::new, "zpm_hub");
-	
 	public static final RegistryObject<MenuType<CrystallizerMenu.Crystallizer>> CRYSTALLIZER =
             registerMenuType(CrystallizerMenu.Crystallizer::new, "crystallizer");
 	

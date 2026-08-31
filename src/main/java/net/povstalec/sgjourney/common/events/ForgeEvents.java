@@ -473,6 +473,9 @@ public class ForgeEvents
 			clone.getCapability(AncientGeneProvider.ANCIENT_GENE).ifPresent(newCap -> newCap.copyFrom(oldCap)));
 		
 		original.invalidateCaps();
+		
+		if(!clone.getLevel().isClientSide())
+			SpaceLocation.updatePlayerClientGravity((ServerPlayer) clone);
 	}
 	
 	@SubscribeEvent

@@ -57,7 +57,15 @@ public class ZeroPointModule extends Item
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (ZeroPointEnergy.MAX_ENTROPY - (float) getEntropy(stack)) / ZeroPointEnergy.MAX_ENTROPY);
+		return Math.round(13.0F * getFullPercentage(stack));
+	}
+	
+	public static float getFullPercentage(ItemStack stack)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
+		
+		return (ZeroPointEnergy.MAX_ENTROPY - (float) getEntropy(stack)) / ZeroPointEnergy.MAX_ENTROPY;
 	}
 
 	@Override
@@ -72,7 +80,7 @@ public class ZeroPointModule extends Item
 		return new ZPMEnergyProvider(stack) {};
 	}
 	
-	private static int getEntropy(ItemStack stack)
+	public static int getEntropy(ItemStack stack)
 	{
 		if(!stack.is(ItemInit.ZPM.get()))
 			return 0;
@@ -93,15 +101,25 @@ public class ZeroPointModule extends Item
 		if(!stack.is(ItemInit.ZPM.get()))
 			return 0;
 		
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENERGY, Tag.TAG_LONG))
+		if(stack.hasTag())
 		{
-			if(tag.get(ENERGY) instanceof LongTag longTag)
-				return longTag.getAsLong();
+			CompoundTag tag = stack.getTag();
+			if(tag.contains(ENERGY, Tag.TAG_LONG))
+			{
+				if(tag.get(ENERGY) instanceof LongTag longTag)
+					return longTag.getAsLong();
+			}
 		}
 		
 		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
+	}
+	
+	public static boolean hasEnergy(ItemStack stack)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return false;
+		
+		return getEntropy(stack) < ZeroPointEnergy.MAX_ENTROPY || getEnergy(stack) > 0;
 	}
 	
 	@Override

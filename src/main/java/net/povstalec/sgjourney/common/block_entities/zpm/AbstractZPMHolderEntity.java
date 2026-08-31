@@ -1,54 +1,51 @@
-package net.povstalec.sgjourney.common.block_entities.tech;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+package net.povstalec.sgjourney.common.block_entities.zpm;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Player;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
-import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import org.jetbrains.annotations.NotNull;
 
-public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEntity
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public abstract class AbstractZPMHolderEntity extends EnergyBlockEntity implements ProtectedBlockEntity
 {
 	private final ItemStackHandler itemHandler = createHandler();
 	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
-	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.empty();
 	
 	protected boolean isProtected = false;
 	
-	public ZPMHubEntity(BlockPos pos, BlockState state)
+	public AbstractZPMHolderEntity(BlockEntityType<?> type, BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.ZPM_HUB.get(), pos, state);
+		super(type, pos, state);
 	}
 	
 	@Override
 	public void invalidateCaps()
 	{
 		super.invalidateCaps();
-		lazyEnergyHandler.invalidate();
+		lazyItemHandler.invalidate();
 	}
 	
 	@Override
@@ -74,6 +71,11 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	public LazyOptional<IItemHandler> getItemHandler()
 	{
 		return lazyItemHandler.cast();
+	}
+	
+	public ItemStack getHeldItemStack()
+	{
+		return getItemHandler().map(itemHandler -> itemHandler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
 	}
 	
 	//============================================================================================
@@ -106,13 +108,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 				@Override
 				public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 				{
-					switch(slot)
-					{
-					case 0:
-						return stack.getItem() == ItemInit.ZPM.get();
-					default: 
-						return false;
-					}
+					return stack.isEmpty() || stack.is(ItemInit.ZPM.get());
 				}
 				
 				// Limits the number of items per slot
@@ -126,9 +122,7 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 				public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 				{
 					if(!isItemValid(slot, stack))
-					{
 						return stack;
-					}
 					
 					return super.insertItem(slot, stack, simulate);
 					
@@ -150,30 +144,6 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 	//============================================================================================
 	//*******************************************Energy*******************************************
 	//============================================================================================
-	
-	@Override
-	public boolean isCorrectEnergySide(Direction side)
-	{
-		return side == Direction.DOWN;
-	}
-	
-	@Override
-	public long getEnergyCapacity()
-	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	}
-
-	@Override
-	public long getMaxEnergyReceive()
-	{
-		return 0;
-	}
-
-	@Override
-	public long getMaxEnergyExtract()
-	{
-		return CommonZPMConfig.zpm_hub_max_transfer.get();
-	}
 	
 	@Override
 	public void outputEnergy(Direction outputDirection)
@@ -238,23 +208,5 @@ public class ZPMHubEntity extends EnergyBlockEntity implements ProtectedBlockEnt
 		}
 		
 		return true;
-	}
-	
-	//============================================================================================
-	//******************************************Ticking*******************************************
-	//============================================================================================
-	
-	public static void tick(Level level, BlockPos pos, BlockState state, ZPMHubEntity hub)
-	{
-		if(level.isClientSide())
-			return;
-		
-		hub.outputEnergy(Direction.DOWN);
-
-		//ItemStack stack = hub.itemHandler.getStackInSlot(0);
-		//long energy = ZeroPointModule.isNearingEntropy(stack) ? ZeroPointModule.getEnergyInLevel(stack) : ZeroPointModule.getMaxEnergy();
-		//hub.setEnergy(energy);
-		
-		//PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(hub.worldPosition)), new ClientboundNaquadahGeneratorUpdatePacket(hub.worldPosition, hub.getReactionProgress(), hub.getEnergy()));
 	}
 }

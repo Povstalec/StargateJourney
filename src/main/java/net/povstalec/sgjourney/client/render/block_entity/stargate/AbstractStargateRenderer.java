@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.client.render.block_entity;
+package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import java.util.Map;
 

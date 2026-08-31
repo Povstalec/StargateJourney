@@ -1,7 +1,23 @@
 {
-    "parent": "item/generated",
-    "textures": 
+	"loader": "forge:separate_transforms",
+	"gui_light": "front",
+	"base":
 	{
-        "layer0": "sgjourney:item/zero_point_module"
-    }
+		"parent": "sgjourney:item/zpm"
+	},
+	"perspectives":
+	{
+		"gui":
+		{
+			"parent": "sgjourney:item/zpm_inventory"
+		},
+		"fixed":
+		{
+			"parent": "sgjourney:item/zpm_inventory"
+		},
+		"ground":
+		{
+			"parent": "sgjourney:item/zpm_inventory"
+		}
+	}
 }

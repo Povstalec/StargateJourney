@@ -345,7 +345,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem().getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem());
+		return InventoryUtil.canInsertStackInto(outputHandler.getStackInSlot(0), recipe.getResultItem());
 	}
 	
 	@Override
@@ -360,14 +360,22 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	}
 	
 	@Override
-	public void createOutput(R recipe)
+	public boolean tryCreateOutput(R recipe)
 	{
 		ItemStack outputStack = outputHandler.getStackInSlot(0);
 		
 		if(outputStack.isEmpty())
+		{
 			outputHandler.setStackInSlot(0, recipe.getResultItem());
-		else if(recipe.getResultItem().is(outputStack.getItem()))
+			return true;
+		}
+		else if(recipe.getResultItem().is(outputStack.getItem()) && ItemStack.tagMatches(recipe.getResultItem(), outputStack))
+		{
 			outputStack.grow(1);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity<?> crystallizer)

@@ -1,9 +1,5 @@
 package net.povstalec.sgjourney.common.blocks.transporter;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,13 +16,15 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 public abstract class AbstractTransporterBlock extends BaseEntityBlock implements ProtectedBlock
 {
@@ -118,26 +116,4 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
-	
-	@Nullable
-	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
-			return transporter;
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
-			return transporter.hasPermissions(player, sendMessage);
-		
-		return true;
-	}
 }
