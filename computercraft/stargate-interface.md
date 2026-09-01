@@ -19,11 +19,11 @@ custom_css: "/assets/css/computercraft.css"
 
 <blockquote class="warning"> 
 <p>
-    Unless there is a label with interface name at the function, it can be used by <b>any interface</b>.<br> 
-    If there is a label, the function <b>is only available</b> for the specified interface.
+    Unless there is a label with specific interface types displayed, the function can be used by <b>any interface</b>.<br> 
+    If there is a label, the function <b>is only available</b> for the specified interfaces.
 </p> 
 <p>
-    A similar applies to return values. 
+    This also applies to return values. 
     Some return values might be <b>only available</b> for crystal or advanced crystal interface.
 </p>
 
@@ -35,11 +35,11 @@ custom_css: "/assets/css/computercraft.css"
 </blockquote>
 
 ## Rotating Stargate functions
-Functions available for an interface connected to a stargate can be rotated --
+Functions available for an interface connected to a Stargate that can be rotated --
 [Classic]({{ '/stargate-technology/stargate/#classic-stargate' | absolute_url }}),
 [Universe]({{ '/stargate-technology/stargate/#universe-stargate' | absolute_url }})
 and [Milky Way]({{ '/stargate-technology/stargate/#milky-way-stargate' | absolute_url }})
-stargates.
+Stargates.
 
 <div class="flex-row flex-wrap" markdown="block" style="gap: 1em">
 
@@ -100,7 +100,7 @@ ___
 %}
 
 Stops the inner ring rotation if it was started by a computer.  
-Does nothing if the ring rotates due to a redstone signal.
+Does nothing if the ring is rotating due to a redstone signal.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
@@ -136,11 +136,11 @@ ___
 %}
 
 Returns the current symbol under the top chevron.
-The symbol may not be exactly centered.
+The symbol is allowed to not be exactly centered.
 
 **Returns**
 1. `number` The symbol under the top chevron or `-1`
-   (e.g. when no symbol is at the top on the universe stargate)
+   (e.g. when no symbol is at the top on the universe Stargate)
 
 **See also**
 - [isCurrentSymbol](#isCurrentSymbol)
@@ -171,18 +171,18 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/7de36d93323131cb4b71d3ae902791b6ea6c7596/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/RotationMethods.java#L60"
 %}
 
-Returns the current gate rotation.
-> For Classic and Milky Way stargates: `0 - 155`  
+Returns the current Stargate's ring rotation.
+> For Classic and Milky Way Stargates: `0 - 155`  
 > `0` when the Point of Origin is centered under the top chevron.   
 > Plus `4` for each symbol to the right centered under the top chevron,  
 > `152` for the last symbol (`38`) centered under the top chevron.  
 > 
-> For Universe stargate: `0 - 322`  
+> For Universe Stargate: `0 - 322`  
 > `0` when the chevron to the left from the Point of Origin is centered at the top,  
 > `9` when the Point of Origin is centered at the top.
 
 **Returns**
-1. `number` The current ring rotation based on the stargate type.
+1. `number` The current ring rotation based on the Stargate type.
 
 **See also**
 - [getRotationDegrees](#getRotationDegrees)
@@ -214,7 +214,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/7de36d93323131cb4b71d3ae902791b6ea6c7596/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/RotationMethods.java#L75"
 %}
 
-Returns the current gate rotation in degrees.
+Returns the current Stargate's ring rotation in degrees.
 
 **Returns**
 1. `number` The current ring rotation in degrees [`0 - 360`]
@@ -249,7 +249,7 @@ ___
 %}
 
 Returns `true` when the current symbol is **centered** under the top chevron,
-and it is the desired symbol specified as parameter.
+and it is the desired symbol specified as the parameter.
 Returns `false` otherwise.
 
 **Parameters**
@@ -294,7 +294,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L89"
 %}
 
-Rotates the stargate ring **anticlockwise**, positioning the specified symbol centered under the top chevron.  
+Rotates the Stargate's ring **anticlockwise**, positioning the specified symbol centered under the top chevron.  
 The method **does not block** the execution for the whole rotation.  
 The rotation is stopped when the interface is destroyed.
 
@@ -306,7 +306,7 @@ The rotation is stopped when the interface is destroyed.
 2. `string` {% include components/interface_label.html type="crystal" -%}{%- include components/interface_label.html type="advanced_crystal" -%} A description of the feedback
 
 **Throws**
-- When the chevron is open or the symbol is not available on the stargate.
+- When the chevron is open or the symbol is not available on the Stargate.
 
 **See also**
 - [rotateClockwise](#rotateClockwise)
@@ -344,7 +344,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/MilkyWayStargateMethods.java#L61"
 %}
 
-Rotates the inner ring clockwise, positioning the specified symbol centered under the top chevron.  
+Rotates the Stargate's ring **clockwise**, positioning the specified symbol centered under the top chevron.  
 The method does not block the execution for the whole rotation.  
 The rotation is stopped when the interface is destroyed.
 
@@ -523,13 +523,13 @@ Functions exclusive for an interface connected to a
     source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L24"
 %}
 
-Controls the gate ability to dynamically switch symbols based on its location.
-The gate will keep the value when picked up.
+Controls the Stargate's ability to dynamically switch symbols based on its location.
+The Stargate will keep this value when picked up.
 
-When disabled, the symbols and the Point of Origin used by the gate can be overriden.
+When disabled, the symbols and the Point of Origin used by the Stargate can be overriden.
 
 **Parameters**
-1. `enabled`: `boolean` Whether the gate should dynamically change symbols.
+1. `enabled`: `boolean` Whether the Stargate should dynamically change symbols.
 
 **See also**
 - [overrideSymbols](#overrideSymbols)
@@ -558,12 +558,12 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L47"
 %}
 
-Overrides the symbols used by the gate.
-This change has only visual effect.
-The gate will reset its symbols based on its location when the chunk is unloaded.
+Overrides the symbols used by the Stargate.
+This change is only a visual effect.
+The Stargate will reset its symbols based on its location when the chunk is unloaded.
 To keep the overridden symbols, disable dynamic symbols with [`dynamicSymbols(false)`](#dynamicSymbols).
 
-All symbols options in the base mod are available on [GitHub / data directory](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/data/sgjourney/sgjourney/symbols).
+All symbol options in the base mod are available on [GitHub / data directory](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/data/sgjourney/sgjourney/symbols).
 Their textures are available in a [different folder](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/assets/sgjourney/textures/symbol).
 More symbols can be added with datapacks and resourcepacks.
 
@@ -604,9 +604,9 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/3e4ecd319aacab568b40e18b80a049d034120f3f/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/PegasusStargateMethods.java#L69"
 %}
 
-Overrides the Point Of Origin used by the gate.
-This change has only visual effect.
-The gate will reset its Point Of Origin based on its location when the chunk is unloaded.
+Overrides the Point Of Origin used by the Stargate.
+This change is only a visual effect.
+The Stargate will reset its Point Of Origin based on its location when the chunk is unloaded.
 To keep the overridden symbols, disable dynamic symbols with [`dynamicSymbols(false)`](#dynamicSymbols).
 
 All Point Of Origin options in the base mod (more can be added by datapacks) are available in [GitHub / data directory](https://github.com/Povstalec/StargateJourney/tree/main/src/main/resources/data/sgjourney/sgjourney/point_of_origin).
@@ -665,7 +665,7 @@ Functions available for an interface connected to **any** Stargate.
 Disconnects the Stargate if there is an active connection.
 The Stargate will be reset if it isn't connected (encoded chevrons will be deactivated).
 
-The Stargate won't disconnect/reset if the connection is currently forming (before the kawoosh finishes).
+The Stargate won't disconnect/reset if the connection is currently forming (after the final chevron is encoded and before the kawoosh finishes).
 
 **Returns**
 1. `boolean` `true` if the connection was closed, `false` if there was no connection or the Stargate failed to disconnect (e.g. function was called during kawoosh).
@@ -703,8 +703,8 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/7de36d93323131cb4b71d3ae902791b6ea6c7596/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L106"
 %}
 
-Confirms the encoded address and instructs the gate to initiate the connection.
-If the address is correct and the gate was able to connect to the destination gate, wormhole will be established.
+Confirms the encoded address and instructs the Stargate to initiate the connection.
+If the address is correct and the Stargate was able to connect to the destination Stargate, a wormhole will be established.
 
 **Returns**
 1. `number` The recent Stargate Feedback `[int]`
@@ -716,10 +716,10 @@ If the address is correct and the gate was able to connect to the destination ga
 - [encodeChevron](#encodeChevron)
 
 **Usage**  
-The following example encodes address for Abydos, waits until the gate encodes all the symbols and then engages the stargate with a 3 second delay.
+The following example encodes an address for Abydos, waits until the Stargate encodes all the symbols and then engages the Stargate with a 3 second delay.
 ```lua
 -- find any interface connected to the computer
--- this example requires at least crystal interface to work with engageSymbol method and any stargate type
+-- this example requires at least crystal interface to work with engageSymbol method and any Stargate type
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface")
 if interface == nil then
     error("The interface is not connected")
@@ -732,14 +732,14 @@ local canEngageStargate = false
 for index, symbol in pairs(address) do
     print(interface.engageSymbol(symbol, engageDirectly, canEngageStargate))
 end
--- requested engaging all symbols waiting for gate to finish
+-- requested engaging all symbols waiting for Stargate to finish
 while #interface.getDialedAddress() < #address do
     sleep(1)
 end
--- because canEngageStargate is false, the gate will not activate by engaging point of origin
+-- because canEngageStargate is false, the Stargate will not activate by engaging point of origin
 print("Address encoded, sleeping for 3s")
 sleep(3)
-print("Engaging stargate now")
+print("Engaging Stargate now")
 local feedbackCode, message = interface.engageStargate()
 -- The message is not available for basic interface
 print(feedbackCode, message)
@@ -757,7 +757,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L89"
 %}
 
-Returns a number from `0` to `9` which represents a number of chevrons that are engaged on the Stargate.
+Returns a number from `0` to `9` which represents the number of chevrons that are engaged on the Stargate.
 
 **Returns**
 1. `number` The number of chevrons that have been engaged (`0 - 9`).
@@ -786,7 +786,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L95"
 %}
 
-Returns a number of **ticks** for which Stargate has been active.
+Returns the number of **ticks** for which the Stargate has been active.
 
 **Returns**
 1. `number` The number of ticks the Stargate has been active for, returns `0` if it's inactive.
@@ -795,7 +795,7 @@ Returns a number of **ticks** for which Stargate has been active.
 - [Minecraft tick](https://minecraft.fandom.com/wiki/Tick)
 
 **Usage**
-- Print a number of seconds for which the Stargate has been active
+- Print the number of seconds for which the Stargate has been active
 ```lua
 -- find any interface connected to the computer
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
@@ -804,7 +804,7 @@ if interface == nil then
 end
 -- use the interface:
 local openTimeInTicks = interface.getOpenTime()
--- each second has 20 ticks if the gate is not lagging
+-- each second has 20 ticks if the Stargate is not lagging
 local openTimeInSeconds = math.floor(openTimeInTicks / 20)
 print("Stargate has been open for "..openTimeInSeconds.." seconds")
 ```
@@ -953,7 +953,7 @@ ___
 %}
 
 Returns information about the Stargate state.  
-For Crystal interfaces also returns a second string value with a status description.
+For Crystal interfaces; this also returns a second string value with a status description.
 
 **Returns**
 1. `number` The most recent Stargate Feedback `[int]`
@@ -1091,7 +1091,7 @@ if interface == nil then
 end
 -- use the interface:
 local type = interface.getStargateType()
-print("The stargate identifier: "..type)
+print("The Stargate identifier: "..type)
 ```
 
 </section>
@@ -1127,7 +1127,7 @@ if interface == nil then
 end
 -- use the interface:
 local variant = interface.getStargateVariant()
-print("The stargate variant: "..variant)
+print("The Stargate variant: "..variant)
 ```
 
 </section>
@@ -1175,7 +1175,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L65"
 %}
 
-Check whether the Stargate is connected to another gate.
+Check whether the Stargate is connected to another Stargate.
 
 {: .note }
 The function returns `true` even before kawoosh.  
@@ -1217,7 +1217,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/StargatePeripheral.java#L71"
 %}
 
-Returns `true` when there is an active **outgoing** connection (this Stargate dialed the other gate).
+Returns `true` when there is an active **outgoing** connection (this Stargate dialed the other Stargate).
 
 **Returns**
 1. `boolean` Whether the Stargate is currently connected and the connection is outgoing. Returns `false` otherwise (the Stargate is not connected or the connection is incoming).
@@ -1239,7 +1239,7 @@ local isDialingOut = interface.isStargateDialingOut()
 if isDialingOut then
     print("Stargate is dialing out")
 else
-    print("The connection is incoming, or the gate is not active")
+    print("The connection is incoming, or the Stargate is not active")
 end
 ```
 
@@ -1317,13 +1317,12 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/StargateMethods.java#L49"
 %}
 Sends the `message` through the current Stargate connection,
-which can be received by a computer on the other side as event `stargate_message_received`.
+which can be received by a computer on the other side as an event `stargate_message_received`.
 
-**Basic** and **Crystal interfaces** can only send messages **after the wormhole has fully formed**  
-(`isWormholeOpen` returns `true`).
+**Basic** and **Crystal interfaces** can only send messages **after the wormhole has fully formed** (`isWormholeOpen` returns `true`).
 
-The Advanced Crystal interface can send a message once the Stargate **is connected**  
-(`isStargateConnected` returns `true`).
+The **Advanced Crystal interface** can send a message once the Stargate **is connected** (`isStargateConnected` returns `true`).
+
 Any interface can receive the message.
 
 **Parameters**
@@ -1352,7 +1351,7 @@ else
     print("The message could not be sent")
 end
 ```
-- Receive a message from the stargate
+- Receive a message from the Stargate
 ```lua
 -- find any interface connected to the computer
 local interface = peripheral.find("advanced_crystal_interface") or peripheral.find("crystal_interface") or peripheral.find("basic_interface")
@@ -1428,7 +1427,7 @@ ___
 {%- include components/interface_label.html type="crystal" -%}
 {%- include components/interface_label.html type="advanced_crystal" %}
 
-Returns the address dialed by the gate.  
+Returns the address dialed by the Stargate.  
 If the currently active connection is incoming or there is no active connection, the address will be empty.
 
 **Returns**
@@ -1507,10 +1506,10 @@ ___
 {%- include components/interface_label.html type="crystal" -%}
 {%- include components/interface_label.html type="advanced_crystal" %}
 
-Checks whether there is a DHD connected to the stargate.
+Checks whether there is a DHD connected to the Stargate.
 
 **Returns**
-1. `boolean`: `true` if there is a DHD connected to the stargate, `false` otherwise.
+1. `boolean`: `true` if there is a DHD connected to the Stargate, `false` otherwise.
 
 **Usage**
 ```lua
@@ -1548,7 +1547,7 @@ The point of origin (symbol `0`) cannot be used in remapping.
 
 **Parameters**
 1. `originalSymbol`: `number` The original symbol that will represent the `newSymbol`.  
-Must not be `0` or symbol already physically encoded on the stargate.
+Must not be `0` or symbol already physically encoded on the Stargate.
 2. `newSymbol`: `number` The new symbol that will be added to the dialed address instead of the `originalSymbol`  
 Must not be `0` or symbol already in the dialed address.
 
@@ -1572,7 +1571,7 @@ local originalSymbol = 1
 local newSymbol = 38
 interface.remapSymbol(originalSymbol, newSymbol)
 interface.engageSymbol(originalSymbol)
--- original symbol physically encoded on the stargate
+-- original symbol physically encoded on the Stargate
 local address = interface.getDialedAddress()
 print(interface.addressToString(address)) 
 -- newSymbol was appended to the address
@@ -1594,7 +1593,7 @@ ___
 Causes the chevrons to encode in the order specified by configuration.
 This configuration resets every time a Stargate is reset.
 
-[//]: # (TODO: explain when stargate resets)
+[//]: # (TODO: explain when Stargate resets)
 
 **Parameters**
 1. `configuration`: `number[]` An array of length 8 representing the order of chevrons.   
@@ -1609,8 +1608,7 @@ The top chevron is always encoded as the last one, this can't be changed.
 1. `string` The message `"Chevron configuration set successfully"`
 
 **Throws**
-- When specified configuration is invalid.
-The configuration must be an array of exact length 8 with numbers from 1 to 8 without duplicates.
+- When specified configuration is invalid. The configuration must be an array of exact length 8 with numbers from 1 to 8 without duplicates.
 
 **See also**
 - [disconnectStargate](#disconnectStargate) Resets the Stargate
@@ -1651,13 +1649,13 @@ ___
 {%- include components/interface_label.html type="crystal" -%}
 {%- include components/interface_label.html type="advanced_crystal" %}
 
-Adds the stargate to the given network.
+Adds the Stargate to the given network.
 
 **Parameters**
-1. `network`: `number` The number of the network to which the gate should be added.
+1. `network`: `number` The number of the network to which the Stargate should be added.
 
 **Returns**
-1. `boolean`: `true` if the stargate was added to the network and wasn't in it already, `false` otherwise.
+1. `boolean`: `true` if the Stargate was added to the network and wasn't in it already, `false` otherwise.
 
 **See also**
 - [getNetworks](#getNetworks)
@@ -1677,7 +1675,7 @@ local added = interface.addNetwork(network)
 if added then
     print("Stargate was added to network "..network)
 else
-    print("Failed to add stargate to network")
+    print("Failed to add Stargate to network")
 end
 ```
 
@@ -1745,7 +1743,7 @@ interface.clearBlacklist()
 interface.setFilterType(-1) -- set filter to blacklist mode
 interface.addToBlacklist(address)
 -- now the Stargate will not be able to dial the specified address 
--- or accept a 9-chevron connection from the other gate.
+-- or accept a 9-chevron connection from the other Stargate.
 ```
 
 </section>
@@ -1811,7 +1809,7 @@ interface.addToWhitelist(address)
 -- now the Stargate can only estabilish a connection with a Stargate 
 -- on Abydos using the 7-chevron address
 -- all 8-chevron and 9-chevron connections are blocked
--- including such connections with stargates on Abydos
+-- including such connections with Stargates on Abydos
 -- only 7-chevron connection from/to Abydos is possible
 ```
 
@@ -1989,7 +1987,7 @@ ___
 %}
 {%- include components/interface_label.html type="advanced_crystal" -%}
 
-Returns the 9-chevron address of this (local) stargate.
+Returns the 9-chevron address of this (local) Stargate.
 
 **Returns**
 1. `number[]`: The 9-chevron address
@@ -2025,7 +2023,7 @@ ___
 {%- include components/interface_label.html type="crystal" -%}
 {%- include components/interface_label.html type="advanced_crystal" %}
 
-Returns the list of networks in which the stargate is.
+Returns the list of networks to which the Stargate has been assigned.
 
 **Returns**
 1. `number[]` The list of Stargate's networks
@@ -2182,16 +2180,16 @@ ___
 %}
 {%- include components/interface_label.html type="advanced_crystal" %}
 
-Removes the stargate from the given network.
+Removes the Stargate from the given network.
 
-Each stargate has its default network based on its generation.
-If the stargate is not in any other network, it is always in its default network from which it can not be removed.
+Each Stargate has its default network based on its generation.
+If the Stargate is not in any other network, it is always in its default network from which it can not be removed.
 
 **Parameters**
-1. `network`: `number` The network from which the stargate should be removed.
+1. `network`: `number` The network from which the Stargate should be removed.
 
 **Returns**
-1. `boolean`: `true` if the stargate was in the network and was successfully removed, `false` otherwise.
+1. `boolean`: `true` if the Stargate was in the network and was successfully removed, `false` otherwise.
 
 **See also**
 - [Network restrictions]({{ '/stargate-technology/stargate/#network-restrictions' | absolute_url }})
@@ -2353,7 +2351,7 @@ The function does not wait for the iris to close.
 
 **Returns**
 1. `boolean`: `false` when the iris is already being closed (in motion) by a computer, `true` otherwise.
-`true` if no iris is installed on the gate.
+`true` if no iris is installed on the Stargate.
 
 **See also**
 - [`openIris`](#openIris)
@@ -2393,7 +2391,7 @@ The function does not wait for the iris to open.
 
 **Returns**
 1. `boolean`: `false` when the iris is already being opened (in motion) by a computer, `true` otherwise.
-`true` if no iris is installed on the gate.
+`true` if no iris is installed on the Stargate.
 
 **See also**
 - [`closeIris`](#closeIris)
@@ -2433,7 +2431,7 @@ The function does not wait for the iris to stop.
 
 **Returns**
 1. `boolean`: `false` when the iris is already being stopped by a computer, `true` otherwise.
-`true` if no iris is installed on the gate.
+`true` if no iris is installed on the Stargate.
 
 **See also**
 - [`closeIris`](#closeIris)
@@ -2469,11 +2467,11 @@ ___
 %}
 
 Retrieves the internal iris closing progress.  
-This progress is internally used for [blocking the gate by the iris](https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/client/models/WormholeModel.java#L51).
+This progress is internally used for [blocking the Stargate by the iris](https://github.com/Povstalec/StargateJourney/blob/e2419d72c2000262cd05757a30e5feda1248ff27/src/main/java/net/povstalec/sgjourney/client/models/WormholeModel.java#L51).
 
 **Returns**
 1. `number`: The internal iris closing progress<br>
-> `0` when the iris is fully opened or not installed on the gate  
+> `0` when the iris is fully opened or not installed on the Stargate  
 > `58` when the iris is fully closed.
 
 **See also**
@@ -2496,7 +2494,7 @@ Retrieves the percentage of the iris closing progress.
 
 **Returns**
 1. `number`: The percentage (decimal) of the iris closing progress<br>
-> `0` when the iris is fully opened or not installed on the gate<br>
+> `0` when the iris is fully opened or not installed on the Stargate<br>
 > `100` when the iris is fully closed
 
 **See also**
@@ -2534,7 +2532,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/7de36d93323131cb4b71d3ae902791b6ea6c7596/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/IrisMethods.java#L104"
 %}
 
-Retrieves the iris remaining durability.
+Retrieves the iris' remaining durability.
 
 **Returns**
 1. `number`: The remaining durability of the iris
@@ -2567,7 +2565,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/7de36d93323131cb4b71d3ae902791b6ea6c7596/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/IrisMethods.java#L119"
 %}
 
-Retrieves the iris maximum durability.
+Retrieves the iris' maximum durability.
 
 **Returns**
 1. `number`: The maximum iris durability

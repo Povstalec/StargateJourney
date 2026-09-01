@@ -24,7 +24,7 @@ There are three available Interfaces -
 Basic Interface,
 Crystal Interface,
 and Advanced Crystal Interface.  
-[See the interface page for general description and redstone interaction.]({{ '/stargate-technology/interface' | absolute_url }})
+[See the interface page for a general description and redstone interactions.]({{ '/stargate-technology/interface' | absolute_url }})
 
 
 <div class="flex-row flex-wrap" markdown="block">
@@ -39,7 +39,7 @@ ___
 
 <section id="available-functions" markdown="block">
 
-## Available functions
+## Available Functions
 
 **Functions available** on the interface depends on the technology to which the **interface is connected**.
 - [Interface connected to a Stargate]({{ '/computercraft/stargate-interface/' | absolute_url }})
@@ -51,7 +51,7 @@ ___
 
 <section id="connecting-the-interface" markdown="block">
 
-## Connecting the interface
+## Connecting the Interface
 
 The interface **needs to face** the technology it should connect to.  
 The correct orientation can be seen on the image below where the basic interface is **facing the glass block**.
@@ -70,7 +70,7 @@ Note that the cable modems on both sides need to be **activated by right-clickin
 
 ![Connecting the interface to the computer]({{ site.baseurl }}/assets/img/computercraft/connecting_interface_to_computer.png)
 
-In the program, interface can be acquired using the find function.
+In the program, an interface can be acquired using the find function.
 ```lua
 local interface = peripheral.find("basic_interface")
 if interface == nil then
@@ -96,8 +96,8 @@ end
 ___
 
 ## Common Interface Functions
-The following functions are available to **any interface** at all times.
-Even when the interface is not connected ty any other technology.
+The following functions are available using **any interface** at all times.
+Even when the interface is not connected to any other technology.
 
 <section id="addressToString" markdown="block">
 
@@ -107,13 +107,13 @@ Even when the interface is not connected ty any other technology.
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/methods/InterfaceMethods.java#L35"
 %}
 
-Converts the array specified by address to a form used elsewhere in the mod: `-1-2-3-4-5-6-7-8-`.
+Converts the array specified by the Stargate's address into the standard form used by the mod: `-1-2-3-4-5-6-7-8-`.
 
 **Parameters**
 1. `address`: `number[]` The array of numbers representing an address.
 
 **Returns**
-1. `string` The address in text form used elsewhere in the mod. Returns `"-"` when the address is empty or has more than 8 symbols.
+1. `string` The address in text form used by the mod. Returns `"-"` when the address is empty or has more than 8 symbols.
 
 **Usage**
 - Convert the abydos address to text `-26-6-14-31-11-29-`
@@ -187,7 +187,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L102"
 %}
 
-Returns the maximal amount of energy [FE] that can be stored in the interface.
+Returns the maximum amount of energy [FE] that can be stored in the interface.
 
 **Returns**
 1. `number` The interface capacity
@@ -217,7 +217,7 @@ ___
     source="https://github.com/Povstalec/StargateJourney/blob/6a4c5800c8f3ef88c352accfd76306db9db1325c/src/main/java/net/povstalec/sgjourney/common/compatibility/cctweaked/peripherals/InterfacePeripheral.java#L108"
 %}
 
-Returns the current energy target that is set for the interface.
+Returns the current energy target that is set for the interface. 
 
 **Returns**
 1. `number` The current energy target [FE]
