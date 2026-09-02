@@ -2,6 +2,9 @@ package net.povstalec.sgjourney.common.blocks.zpm;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -15,12 +18,15 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPlugEntity;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
-public class ZPMPlugBlock extends HorizontalDirectionalZPMHolderBlock
+public class ZPMPlugBlock extends HorizontalDirectionalZPMEnergyHolderBlock
 {
 	private static final VoxelShape BODY_X = Block.box(0.0D, 0.0D, 4.0D, 16.0D, 11.0D, 12.0D);
 	private static final VoxelShape BODY_Z = Block.box(4.0D, 0.0D, 0.0D, 12.0D, 11.0D, 16.0D);
@@ -57,9 +63,23 @@ public class ZPMPlugBlock extends HorizontalDirectionalZPMHolderBlock
 	}
 	
 	@Override
-	public @NotNull VoxelShape getShape(BlockState state, @NotNull BlockGetter getter, @NotNull BlockPos pos, @NotNull CollisionContext collision)
+	public @NotNull VoxelShape getShape(@NotNull BlockState state, @NotNull BlockGetter getter, @NotNull BlockPos pos, @NotNull CollisionContext collision)
 	{
 		return state.getValue(FACING).getAxis() == Direction.Axis.X ? ZPM_PLUG_X : ZPM_PLUG_Z;
+	}
+	
+	@Override
+	public long getMaxEnergyTransfer()
+	{
+		return SyncedConfig.zpm_plug_max_transfer.get();
+	}
+	
+	@Override
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	{
+		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.zpm_plug.description"));
 	}
 	
 	@Nullable

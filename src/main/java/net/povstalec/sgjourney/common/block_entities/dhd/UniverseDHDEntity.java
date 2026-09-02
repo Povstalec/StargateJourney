@@ -5,7 +5,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -47,7 +47,7 @@ public class UniverseDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return SyncedConfig.universe_dhd_energy_buffer_capacity;
+		return SyncedConfig.universe_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override

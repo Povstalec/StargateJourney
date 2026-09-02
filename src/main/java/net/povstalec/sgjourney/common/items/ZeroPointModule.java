@@ -1,18 +1,9 @@
 package net.povstalec.sgjourney.common.items;
 
-import java.util.List;
-
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,8 +11,16 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.povstalec.sgjourney.common.capabilities.ZPMEnergyProvider;
+import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class ZeroPointModule extends Item
 {
@@ -49,13 +48,13 @@ public class ZeroPointModule extends Item
 	}
 
 	@Override
-	public boolean isBarVisible(ItemStack stack)
+	public boolean isBarVisible(@NotNull ItemStack stack)
 	{
 		return !StargateJourneyConfig.disable_energy_use.get();
 	}
 
 	@Override
-	public int getBarWidth(ItemStack stack)
+	public int getBarWidth(@NotNull ItemStack stack)
 	{
 		return Math.round(13.0F * getFullPercentage(stack));
 	}
@@ -65,11 +64,11 @@ public class ZeroPointModule extends Item
 		if(!stack.is(ItemInit.ZPM.get()))
 			return 0;
 		
-		return (ZeroPointEnergy.MAX_ENTROPY - (float) getEntropy(stack)) / ZeroPointEnergy.MAX_ENTROPY;
+		return (SyncedConfig.zpm_max_entropy.get() - (float) getEntropy(stack)) / SyncedConfig.zpm_max_entropy.get();
 	}
 
 	@Override
-	public int getBarColor(ItemStack stack)
+	public int getBarColor(@NotNull ItemStack stack)
 	{
 		return 16743680;
 	}
@@ -77,23 +76,43 @@ public class ZeroPointModule extends Item
 	@Override
     public final ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag tag)
 	{
-		return new ZPMEnergyProvider(stack) {};
+		return CommonZPMConfig.zpm_has_energy_capability.get() ? new ZPMEnergyProvider(stack) : super.initCapabilities(stack, tag);
 	}
 	
+	public static void setEntropy(ItemStack stack, int entropy)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return;
+		
+		CompoundTag tag = stack.getOrCreateTag();
+		// WARNING: Weird stuff can happen if you try to use putInt(), so just don't
+		tag.put(ENTROPY, IntTag.valueOf(entropy));
+	}
+		
 	public static int getEntropy(ItemStack stack)
 	{
 		if(!stack.is(ItemInit.ZPM.get()))
 			return 0;
 		
-		CompoundTag tag = stack.getOrCreateTag();
-		
-		if(tag.contains(ENTROPY, Tag.TAG_INT))
+		if(stack.hasTag())
 		{
+			CompoundTag tag = stack.getTag();
 			if(tag.get(ENTROPY) instanceof IntTag intTag)
+				// WARNING: Weird stuff can happen if you try to use getInt(), so just don't
 				return intTag.getAsInt();
 		}
 		
 		return 0;
+	}
+	
+	public static void setEnergy(ItemStack stack, long energy)
+	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return;
+		
+		CompoundTag tag = stack.getOrCreateTag();
+		// WARNING: Weird stuff can happen if you try to use putLong(), so just don't
+		tag.put(ENERGY, LongTag.valueOf(energy));
 	}
 	
 	public static long getEnergy(ItemStack stack)
@@ -104,14 +123,15 @@ public class ZeroPointModule extends Item
 		if(stack.hasTag())
 		{
 			CompoundTag tag = stack.getTag();
-			if(tag.contains(ENERGY, Tag.TAG_LONG))
-			{
-				if(tag.get(ENERGY) instanceof LongTag longTag)
-					return longTag.getAsLong();
-			}
+			// WARNING: Weird stuff can happen if you try to use getLong(), so just don't
+			if(tag.get(ENERGY) instanceof LongTag longTag)
+				return longTag.getAsLong();
+			// WARNING: Weird stuff can happen if you try to use getInt(), so just don't
+			else if(tag.get(ENERGY) instanceof IntTag intTag)
+				return intTag.getAsInt();
 		}
 		
-		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
+		return SyncedConfig.zpm_energy_per_entropy_level.get();
 	}
 	
 	public static boolean hasEnergy(ItemStack stack)
@@ -119,16 +139,16 @@ public class ZeroPointModule extends Item
 		if(!stack.is(ItemInit.ZPM.get()))
 			return false;
 		
-		return getEntropy(stack) < ZeroPointEnergy.MAX_ENTROPY || getEnergy(stack) > 0;
+		return getEntropy(stack) < SyncedConfig.zpm_max_entropy.get() || getEnergy(stack) > 0;
 	}
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
 	{
 		int entropy = getEntropy(stack);
 		long remainingEnergy = getEnergy(stack);
 		
-		float currentEntropy = (float) entropy * 100 / ZeroPointEnergy.MAX_ENTROPY;
+		float currentEntropy = (float) entropy * 100 / SyncedConfig.zpm_max_entropy.get();
 		
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.zpm.entropy").append(Component.literal(": " + currentEntropy + "%")).withStyle(ChatFormatting.GOLD));
     	tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy").append(Component.literal(": " + ZeroPointEnergy.zeroPointEnergyToString(entropy, remainingEnergy))).withStyle(ChatFormatting.DARK_RED));

@@ -3,16 +3,17 @@
 	"category": "misc",
 	"pattern":
 	[
-		"I I",
-		"CNC",
+		"IZI",
+		"CTC",
 		"ICI"
 	],
 	
 	"key": 
 	{
 		"I": { "tag": "sgjourney:naquadah_ingot" },
-		"N": { "tag": "sgjourney:naquadah" },
-		"C": { "item": "sgjourney:medium_naquadah_cable" }
+		"T": { "item": "sgjourney:transfer_crystal" },
+		"C": { "item": "sgjourney:medium_naquadah_cable" },
+		"Z": { "item": "sgjourney:zpm_holder" }
 	},
 	
 	"result": { "item": "sgjourney:zpm_plug" }

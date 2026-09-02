@@ -30,8 +30,11 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 	}
 	
 	@Override
-	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace)
+	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult trace)
 	{
+		if(!hasPermissions(level, pos, state, player, true))
+			return InteractionResult.PASS;
+		
 		ItemStack itemInHand = player.getItemInHand(hand);
 		if(itemInHand.isEmpty() || itemInHand.is(ItemInit.ZPM.get()))
 		{
@@ -76,7 +79,7 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 	}
 	
 	@Override
-	public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, @NotNull Level level, @NotNull BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.getBlock() != newState.getBlock())
 		{

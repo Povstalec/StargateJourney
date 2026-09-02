@@ -21,7 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
@@ -316,7 +316,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	public long getEnergyCapacity()
 	{
-		return SyncedConfig.goauld_ring_panel_energy_capacity;
+		return SyncedConfig.goauld_ring_panel_energy_capacity.get();
 	}
 	
 	@Override

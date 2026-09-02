@@ -28,25 +28,25 @@ public class CommonCableConfig
 		
 		lightning_strike_energy = server
 				.comment("The amount of energy that will be generated if Lightning strikes a Stargate or a Lightning Rod connected to a cable")
-				.defineInRange("server.lightning_strike_energy", 100000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.lightning_strike_energy", 100_000L, 0L, Long.MAX_VALUE);
 		
 		
 		
 		naquadah_wire_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred through the Naquadah Wire per tick")
-				.defineInRange("server.naquadah_wire_max_transfer", 5000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_wire_max_transfer", 5_000L, 1L, Long.MAX_VALUE);
 		
 		small_naquadah_cable_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred through the Small Naquadah Cable per tick")
-				.defineInRange("server.small_naquadah_cable_max_transfer", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.small_naquadah_cable_max_transfer", 100_000L, 1L, Long.MAX_VALUE);
 		
 		medium_naquadah_cable_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred through the Medium Naquadah Cable per tick")
-				.defineInRange("server.medium_naquadah_cable_max_transfer", 10000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.medium_naquadah_cable_max_transfer", 10_000_000L, 1L, Long.MAX_VALUE);
 		
 		large_naquadah_cable_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred through the Large Naquadah Cable per tick")
-				.defineInRange("server.large_naquadah_cable_max_transfer", 100000000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.large_naquadah_cable_max_transfer", 100_000_000_000L, 1L, Long.MAX_VALUE);
 		
 		
 		

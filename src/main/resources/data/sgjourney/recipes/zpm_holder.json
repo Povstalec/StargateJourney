@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"RIR",
+		"R R",
+		"RIR"
+	],
+	
+	"key": 
+	{
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"R": { "tag": "sgjourney:naquadah_rod" }
+	},
+	
+	"result": { "item": "sgjourney:zpm_holder" }
+}

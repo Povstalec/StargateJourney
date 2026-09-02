@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -49,7 +49,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	@Override
 	public long getEnergyCapacity()
 	{
-		return SyncedConfig.pegasus_dhd_energy_buffer_capacity;
+		return SyncedConfig.pegasus_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override

@@ -43,6 +43,7 @@
 		
 		"sgjourney:ancient_gene_detector",
 		
+		"sgjourney:zpm_holder",
 		"sgjourney:zpm_plug",
 		"sgjourney:zpm_port",
 		"sgjourney:zpm_hub",

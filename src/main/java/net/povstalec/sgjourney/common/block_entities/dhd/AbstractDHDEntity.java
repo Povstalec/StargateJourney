@@ -1,55 +1,55 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
-import java.util.*;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
+import net.povstalec.sgjourney.common.config.*;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.misc.*;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
 {
@@ -92,6 +92,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public final ItemStackHandler energyItemHandler;
 	protected final LazyOptional<IItemHandler> lazyEnergyItemHandler;
 	
+	public final ZeroPointEnergy zpmEnergy;
+	
 	protected SymbolInfo symbolInfo;
 	protected boolean isNew = false;
 	
@@ -107,6 +109,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = LazyOptional.of(() -> energyItemHandler);
+		
+		this.zpmEnergy = createZPMEnergyStorage();
 		
 		this.symbolInfo = new SymbolInfo();
 	}
@@ -186,6 +190,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		isNew = tag.getBoolean(IS_NEW);
 		
 		super.load(tag);
+		zpmEnergy.updateFromZPMItem(energyItemHandler.getStackInSlot(0));
 	}
 	
 	@Override
@@ -318,14 +323,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			@Override
 			protected void onContentsChanged(int slot)
 			{
+				zpmEnergy.updateFromZPMItem(energyItemHandler.getStackInSlot(0));
 				setChanged();
+				updateClient();
 			}
 			
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
+					return stack.getItem() instanceof IEnergyCore || SyncedConfig.dhd_holds_zpm.get() && stack.getItem() instanceof ZeroPointModule || stack.getCapability(ForgeCapabilities.ENERGY).isPresent();
 				
 				return true;
 			}
@@ -426,7 +433,47 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
+	public ZeroPointEnergy createZPMEnergyStorage()
+	{
+		return new ZeroPointEnergy(energyItemHandler.getStackInSlot(0))
+		{
+			@Override
+			public long receiveLongEnergy(long maxReceive, boolean simulate)
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return super.receiveLongEnergy(maxReceive, simulate);
+			}
+			
+			@Override
+			public long depleteEnergy(long maxExtract, boolean simulate)
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return super.depleteEnergy(maxExtract, simulate);
+			}
+			
+			@Override
+			public long getTrueEnergyStored()
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return this.energy;
+				
+			}
+			
+			@Override
+			public void onEnergyChanged(long difference, boolean simulate)
+			{
+				updateZPMItem(energyItemHandler.getStackInSlot(0));
+			}
+		};
+	}
+	
 	protected abstract long buttonPressEnergyCost();
+	
+	@Override
+	public boolean canReceiveZeroPointEnergy()
+	{
+		return SyncedConfig.dhd_holds_zpm.get() || CommonZPMConfig.stargates_use_zero_point_energy.get();
+	}
 	
 	public long minStoredEnergy()
 	{
@@ -466,21 +513,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		else if(energyStack.getCapability(ForgeCapabilities.ENERGY).isPresent())
 		{
-			energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(energy ->
+			energyStack.getCapability(ForgeCapabilities.ENERGY).ifPresent(otherEnergyStorage ->
 			{
-				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
-				{
-					long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
-					long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
-					energyStorage.receiveLongEnergy(energyExtracted, false);
-				}
-				else
-				{
-					int energyNeeded = (int) Math.min(energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored(), Integer.MAX_VALUE);
-					int energyExtracted = energy.extractEnergy(energyNeeded, false);
-					energyStorage.receiveLongEnergy(energyExtracted, false);
-				}
+				long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
+				energyStorage.drainOtherEnergyStorage(otherEnergyStorage, energyNeeded);
 			});
+		}
+		else if(SyncedConfig.dhd_holds_zpm.get())
+		{
+			long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
+			energyStorage.drainOtherEnergyStorage(zpmEnergy, energyNeeded);
 		}
 	}
 	
@@ -494,23 +536,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
-				
-				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				{
-					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
-					stargate.energyStorage.receiveLongEnergy(energySent, false);
-				}
-				else
-				{
-					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
-					stargate.energyStorage.receiveLongEnergy(energySent, false);
-				}
+				stargate.energyStorage.drainOtherEnergyStorage(energyStorage, needed);
 			}
+			else if(SyncedConfig.dhd_holds_zpm.get() && zpmEnergy.hasEnergy())
+				zpmEnergy.fillOtherEnergyStorage(stargate.energyStorage, needed);
 			// Uses energy from the DHD energy buffer
 			else
 			{
-				long energySent = energyStorage.depleteEnergy(needed, false);
-				stargate.energyStorage.receiveLongEnergy(energySent, false);
+				// Using depleteEnergy() here because extracting is disabled in order to avoid pull-based energy systems siphoning energy from the DHD
+				long simulatedOutputAmount = energyStorage.depleteEnergy(needed, true);
+				long simulatedReceiveAmount = stargate.energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
+				
+				energyStorage.depleteEnergy(simulatedReceiveAmount, false);
+				stargate.energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 			}
 		}
 	}

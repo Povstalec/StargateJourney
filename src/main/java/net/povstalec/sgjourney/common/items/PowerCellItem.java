@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.ItemPowerCellProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
@@ -58,7 +58,7 @@ public class PowerCellItem extends FluidItem.Holder
 	
 	public long getBufferCapacity(ItemStack stack)
 	{
-		return SyncedConfig.naquadah_power_cell_buffer_capacity;
+		return SyncedConfig.naquadah_power_cell_buffer_capacity.get();
 	}
 	
 	@Override

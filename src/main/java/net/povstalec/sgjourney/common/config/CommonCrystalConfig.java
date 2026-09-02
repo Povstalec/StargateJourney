@@ -21,46 +21,46 @@ public class CommonCrystalConfig
 	{
 		energy_crystal_capacity = server
 				.comment("The amount of energy an Energy Crystal can hold")
-				.defineInRange("server.energy_crystal_capacity", 500000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.energy_crystal_capacity", 500_000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_capacity = server
 				.comment("The amount of energy an Advanced Energy Crystal can hold")
-				.defineInRange("server.advanced_energy_crystal_capacity", 2000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_energy_crystal_capacity", 2_000_000L, 1L, Long.MAX_VALUE);
 		
 		energy_crystal_max_transfer = server
 				.comment("The amount of energy that can be transferred into and out of an Energy Crystal per tick")
-				.defineInRange("server.energy_crystal_max_transfer", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.energy_crystal_max_transfer", 100_000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_max_transfer = server
 				.comment("The amount of energy that can be transferred into and out of an Advanced Energy Crystal per tick")
-				.defineInRange("server.advanced_energy_crystal_max_transfer", 1000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_energy_crystal_max_transfer", 1_000_000L, 1L, Long.MAX_VALUE);
 		
 		energy_crystal_energy_target_increase = server
 			.comment("The amount by which the Energy Crystal increases the Energy Target")
-			.defineInRange("server.energy_crystal_energy_target_increase", 50000L, 1L, Long.MAX_VALUE);
+			.defineInRange("server.energy_crystal_energy_target_increase", 50_000L, 1L, Long.MAX_VALUE);
 		
 		advanced_energy_crystal_energy_target_increase = server
 			.comment("The amount by which the AdvancedEnergy Crystal increases the Energy Target")
-			.defineInRange("server.advanced_energy_crystal_energy_target_increase", 100000L, 1L, Long.MAX_VALUE);
+			.defineInRange("server.advanced_energy_crystal_energy_target_increase", 100_000L, 1L, Long.MAX_VALUE);
 		
 		
 		
 		transfer_crystal_max_transfer = server
 				.comment("The amount of energy a Transfer Crystal can transfer per tick")
-				.defineInRange("server.transfer_crystal_max_transfer", 2500L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.transfer_crystal_max_transfer", 2_500L, 1L, Long.MAX_VALUE);
 		
 		advanced_transfer_crystal_max_transfer = server
 				.comment("The amount of energy an Advanced Transfer Crystal can transfer per tick")
-				.defineInRange("server.advanced_transfer_crystal_max_transfer", 5000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.advanced_transfer_crystal_max_transfer", 5_000L, 1L, Long.MAX_VALUE);
 		
 		
 		
 		memory_crystal_capacity = server
 				.comment("The memory capacity of the Memory Crystal")
-				.defineInRange("server.memory_crystal_capacity", 10, 1, 1000);
+				.defineInRange("server.memory_crystal_capacity", 10, 1, 100);
 		
 		advanced_memory_crystal_capacity = server
 				.comment("The memory capacity of the Advanced Memory Crystal")
-				.defineInRange("server.advanced_memory_crystal_capacity", 50, 1, 1000);
+				.defineInRange("server.advanced_memory_crystal_capacity", 50, 1, 100);
 	}
 }

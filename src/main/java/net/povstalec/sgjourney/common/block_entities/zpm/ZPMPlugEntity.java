@@ -1,14 +1,18 @@
 package net.povstalec.sgjourney.common.block_entities.zpm;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.blocks.zpm.ZPMPlugBlock;
+import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 
-public class ZPMPlugEntity extends AbstractZPMHolderEntity
+public class ZPMPlugEntity extends AbstractZPMEnergyExtractorEntity
 {
 	public ZPMPlugEntity(BlockPos pos, BlockState state)
 	{
@@ -23,18 +27,6 @@ public class ZPMPlugEntity extends AbstractZPMHolderEntity
 	public boolean isCorrectEnergySide(Direction side)
 	{
 		return side == Direction.DOWN || side.getAxis() == getBlockState().getValue(ZPMPlugBlock.FACING).getAxis();
-	}
-	
-	@Override
-	public long getEnergyCapacity()
-	{
-		return CommonZPMConfig.zpm_energy_per_level_of_entropy.get();
-	}
-
-	@Override
-	public long getMaxEnergyReceive()
-	{
-		return 0;
 	}
 
 	@Override
@@ -63,5 +55,19 @@ public class ZPMPlugEntity extends AbstractZPMHolderEntity
 			hub.outputEnergy(Direction.NORTH);
 			hub.outputEnergy(Direction.SOUTH);
 		}
+	}
+	
+	@Override
+	public boolean hasPermissions(Player player, boolean sendMessage)
+	{
+		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_zpm_plug_permissions.get()))
+		{
+			if(sendMessage)
+				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+			
+			return false;
+		}
+		
+		return true;
 	}
 }

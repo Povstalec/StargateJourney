@@ -24,13 +24,12 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
@@ -376,13 +375,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return SyncedConfig.naquadah_wire_max_transfer;
+			return SyncedConfig.naquadah_wire_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return SyncedConfig.naquadah_wire_transfers_zero_point_energy;
+			return SyncedConfig.naquadah_wire_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -403,13 +402,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return SyncedConfig.small_naquadah_cable_max_transfer;
+			return SyncedConfig.small_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return SyncedConfig.small_naquadah_cable_transfers_zero_point_energy;
+			return SyncedConfig.small_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -429,13 +428,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return SyncedConfig.medium_naquadah_cable_max_transfer;
+			return SyncedConfig.medium_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy;
+			return SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -455,13 +454,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return SyncedConfig.large_naquadah_cable_max_transfer;
+			return SyncedConfig.large_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return SyncedConfig.large_naquadah_cable_transfers_zero_point_energy;
+			return SyncedConfig.large_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	

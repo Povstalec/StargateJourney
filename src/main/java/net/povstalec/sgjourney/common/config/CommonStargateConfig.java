@@ -187,7 +187,7 @@ public class CommonStargateConfig
 		
 		system_wide_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection inside a solar system")
-				.defineInRange("server.system_wide_connection_energy_cost", 50000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.system_wide_connection_energy_cost", 50_000L, 0L, Long.MAX_VALUE);
 		
 		system_wide_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for system-wide connections")
@@ -195,13 +195,13 @@ public class CommonStargateConfig
 		
 		system_wide_connection_bypass_energy_draw = server
 				.comment("The amount of energy required to establish a connection inside a solar system after exceeding the maximum open time")
-				.defineInRange("server.system_wide_connection_bypass_energy_draw", 50000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.system_wide_connection_bypass_energy_draw", 50_000L, 0L, Long.MAX_VALUE);
 		
 		
 		
 		interstellar_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection inside the galaxy")
-				.defineInRange("server.interstellar_connection_energy_cost", 100000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.interstellar_connection_energy_cost", 100_000L, 0L, Long.MAX_VALUE);
 		
 		interstellar_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections")
@@ -209,31 +209,31 @@ public class CommonStargateConfig
 		
 		interstellar_connection_bypass_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections after exceeding the maximum open time")
-				.defineInRange("server.interstellar_connection_bypass_energy_draw", 5000000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.interstellar_connection_bypass_energy_draw", 5_000_000L, 0, Long.MAX_VALUE);
 		
 		
 		
 		intergalactic_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection outside the galaxy")
-				.defineInRange("server.intergalactic_connection_energy_cost", 100000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_energy_cost", 100_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		intergalactic_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections")
-				.defineInRange("server.intergalactic_connection_energy_draw", 50000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_energy_draw", 50_000L, 0, Long.MAX_VALUE);
 		
 		intergalactic_connection_bypass_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections after exceeding the maximum open time")
-				.defineInRange("server.intergalactic_connection_bypass_energy_draw", 5000000000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_bypass_energy_draw", 5_000_000_000L, 0, Long.MAX_VALUE);
 		
 		
 		
 		stargate_energy_capacity = server
 				.comment("The maximum amount of energy the Stargate can hold")
-				.defineInRange("server.stargate_energy_capacity", 1000000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.stargate_energy_capacity", 1_000_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		stargate_energy_max_receive = server
 				.comment("The maximum amount of energy the Stargate can receive at once")
-				.defineInRange("server.stargate_energy_max_receive", 100000000000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.stargate_energy_max_receive", 100_000_000_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		
 	}

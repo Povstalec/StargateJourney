@@ -32,6 +32,7 @@ import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.client.render.block_entity.stargate.*;
 import net.povstalec.sgjourney.client.render.block_entity.transporter.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHolderRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHubRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPlugRenderer;
 import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPortRenderer;
@@ -238,6 +239,7 @@ public class StargateJourney
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
 			
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HOLDER.get(), ZPMHolderRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.ZPM_PORT.get(), ZPMPortRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.ZPM_HUB.get(), ZPMHubRenderer::new);

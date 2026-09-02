@@ -12,6 +12,9 @@ public class CommonPermissionConfig
 	public static SGJourneyConfigValue.IntValue protected_transporter_permissions;
 	public static SGJourneyConfigValue.IntValue protected_transporter_controller_permissions;
 	
+	public static SGJourneyConfigValue.IntValue protected_zpm_holder_permissions;
+	public static SGJourneyConfigValue.IntValue protected_zpm_plug_permissions;
+	public static SGJourneyConfigValue.IntValue protected_zpm_port_permissions;
 	public static SGJourneyConfigValue.IntValue protected_zpm_hub_permissions;
 	
 	public static SGJourneyConfigValue.BooleanValue protected_inventory_access;
@@ -44,6 +47,18 @@ public class CommonPermissionConfig
 				"Decides the player permission level required to modify or break protected Transporter Controllers");
 		
 		
+		
+		protected_zpm_holder_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_holder_permissions",
+			0, 0, 4,
+			"Decides the player permission level required to modify or break protected ZPM Holders");
+		
+		protected_zpm_plug_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_plug_permissions",
+			0, 0, 4,
+			"Decides the player permission level required to modify or break protected ZPM Plugs");
+		
+		protected_zpm_port_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_port_permissions",
+			0, 0, 4,
+			"Decides the player permission level required to modify or break protected ZPM Ports");
 		
 		protected_zpm_hub_permissions = new SGJourneyConfigValue.IntValue(server, "server.protected_zpm_hub_permissions",
 				0, 0, 4,

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,13 +51,13 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
+		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity.get());
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
+		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity.get());
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	

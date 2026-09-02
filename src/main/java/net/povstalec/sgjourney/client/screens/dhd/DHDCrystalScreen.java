@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -104,7 +105,8 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		this.itemTooltip(poseStack, mouseX, mouseY, 62, 35, 7, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 62, 17, 8, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		
-		this.itemTooltip(poseStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot.description"));
+		this.itemTooltip(poseStack, mouseX, mouseY, 134, 27, 9, ComponentHelper.description(SyncedConfig.dhd_holds_zpm.get() ?
+			"tooltip.sgjourney.dhd.energy_slot.description.zpm" : "tooltip.sgjourney.dhd.energy_slot.description"));
 		this.itemTooltip(poseStack, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot.description"));
     }
     

@@ -46,12 +46,12 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
+	public float getDestroySpeed(@NotNull BlockGetter reader, @NotNull BlockPos pos)
 	{
 		// Null checks here because ProjectMMO passes a null values in here https://github.com/Caltinor/Project-MMO-2.0/issues/706
 		if(reader != null && pos != null && this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
 			if(stargate != null && !CommonStargateConfig.can_break_connected_stargate.get())
 			{
 				StargateConnection.State state = stargate.getConnectionState();
@@ -75,7 +75,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
+	public float getDestroyProgress(@NotNull Player player, @NotNull BlockGetter reader, @NotNull BlockPos pos)
 	{
 		float destroySpeed = getDestroySpeed(reader, pos);
 		if(destroySpeed == -1.0F)
@@ -127,7 +127,7 @@ public class StargateBlockState extends BlockState
 	
 	// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
 	@Override
-	protected BlockState asState()
+	protected @NotNull BlockState asState()
 	{
 		return this;
 	}
@@ -445,7 +445,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public boolean isPathfindable(BlockGetter blockGetter, BlockPos pos, PathComputationType pathComputationType)
+	public boolean isPathfindable(@NotNull BlockGetter blockGetter, @NotNull BlockPos pos, @NotNull PathComputationType pathComputationType)
 	{
 		return this.asState().isCollisionShapeFullBlock(blockGetter, pos);
 	}

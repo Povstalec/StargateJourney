@@ -39,11 +39,11 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_reactor_capacity = server
 				.comment("The amount of energy a Naquadah Reactor can hold")
-				.defineInRange("server.naquadah_reactor_capacity", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_reactor_capacity", 100_000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_reactor_max_transfer = server
 				.comment("The maximum amount of energy a Naquadah Reactor can transfer at once")
-				.defineInRange("server.naquadah_reactor_max_transfer", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_reactor_max_transfer", 100_000L, 1L, Long.MAX_VALUE);
 		
 		
 		
@@ -53,15 +53,15 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_i_energy_per_tick = server
 				.comment("The amount of FE generated per one tick of reaction by the Mark I Naquadah Generator")
-				.defineInRange("server.naquadah_generator_mark_i_energy_per_tick", 1000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_i_energy_per_tick", 1_000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_i_capacity = server
 				.comment("The amount of energy a Mark I Naquadah Generator can hold")
-				.defineInRange("server.naquadah_generator_mark_i_capacity", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_i_capacity", 100_000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_i_max_transfer = server
 				.comment("The maximum amount of energy a Mark I Naquadah Generator can transfer at once")
-				.defineInRange("server.naquadah_generator_mark_i_max_transfer", 100000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_i_max_transfer", 100_000L, 1L, Long.MAX_VALUE);
 		
 		
 		
@@ -71,14 +71,14 @@ public class CommonNaquadahGeneratorConfig
 		
 		naquadah_generator_mark_ii_energy_per_tick = server
 				.comment("The amount of FE generated per one tick of reaction by the Mark II Naquadah Generator")
-				.defineInRange("server.naquadah_generator_mark_ii_energy_per_tick", 1200L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_ii_energy_per_tick", 1_200L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_ii_capacity = server
 				.comment("The amount of energy a Mark II Naquadah Generator can hold")
-				.defineInRange("server.naquadah_generator_mark_ii_capacity", 1200000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_ii_capacity", 1_200_000L, 1L, Long.MAX_VALUE);
 		
 		naquadah_generator_mark_ii_max_transfer = server
 				.comment("The maximum amount of energy a Mark II Naquadah Generator can transfer at once")
-				.defineInRange("server.naquadah_generator_mark_ii_max_transfer", 1000000L, 1L, Long.MAX_VALUE);
+				.defineInRange("server.naquadah_generator_mark_ii_max_transfer", 1_000_000L, 1L, Long.MAX_VALUE);
 	}
 }

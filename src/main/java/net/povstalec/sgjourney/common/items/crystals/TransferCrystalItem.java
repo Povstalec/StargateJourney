@@ -7,7 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +43,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 	
 	public long getMaxTransfer()
 	{
-		return SyncedConfig.transfer_crystal_max_transfer;
+		return SyncedConfig.transfer_crystal_max_transfer.get();
 	}
 	
 	public int getEfficiencyMultiplier()
@@ -93,7 +93,7 @@ public class TransferCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getMaxTransfer()
 		{
-			return SyncedConfig.advanced_transfer_crystal_max_transfer;
+			return SyncedConfig.advanced_transfer_crystal_max_transfer.get();
 		}
 		
 		@Override

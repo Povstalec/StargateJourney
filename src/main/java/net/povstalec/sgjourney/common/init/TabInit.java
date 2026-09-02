@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.List;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -25,6 +23,8 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
 public class TabInit
@@ -310,6 +310,7 @@ public class TabInit
 				
 				items.accept(BlockInit.ANCIENT_GENE_DETECTOR.get());
 				
+				items.accept(BlockInit.ZPM_HOLDER.get());
 				items.accept(BlockInit.ZPM_PLUG.get());
 				items.accept(BlockInit.ZPM_PORT.get());
 				items.accept(BlockInit.ZPM_HUB.get());

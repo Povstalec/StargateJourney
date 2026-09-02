@@ -7,11 +7,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class HorizontalDirectionalZPMHolderBlock extends AbstractZPMHolderBlock
+public abstract class HorizontalDirectionalZPMEnergyHolderBlock extends AbstractZPMEnergyHolderBlock
 {
 	public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 	
-	public HorizontalDirectionalZPMHolderBlock(Properties properties)
+	public HorizontalDirectionalZPMEnergyHolderBlock(Properties properties)
 	{
 		super(properties);
 	}
