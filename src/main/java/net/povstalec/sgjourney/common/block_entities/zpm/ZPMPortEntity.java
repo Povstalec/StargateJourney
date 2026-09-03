@@ -7,6 +7,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.blocks.zpm.HorizontalDirectionalZPMEnergyHolderBlock;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
@@ -25,7 +26,7 @@ public class ZPMPortEntity extends AbstractZPMEnergyExtractorEntity
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return side == Direction.DOWN;
+		return side == getBlockState().getValue(HorizontalDirectionalZPMEnergyHolderBlock.FACING).getOpposite();
 	}
 
 	@Override
@@ -43,7 +44,7 @@ public class ZPMPortEntity extends AbstractZPMEnergyExtractorEntity
 		if(level.isClientSide())
 			return;
 		
-		hub.outputEnergy(Direction.DOWN);
+		hub.outputEnergy(state.getValue(HorizontalDirectionalZPMEnergyHolderBlock.FACING).getOpposite());
 	}
 	
 	@Override

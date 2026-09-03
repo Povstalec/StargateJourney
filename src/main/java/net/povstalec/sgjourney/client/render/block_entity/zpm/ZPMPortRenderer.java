@@ -17,7 +17,7 @@ public class ZPMPortRenderer extends AbstractZPMHolderRenderer<ZPMPortEntity>
 	public void render(@NotNull ZPMPortEntity zpmPort, float partialTick, @NotNull PoseStack stack, @NotNull MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
 		stack.pushPose();
-		stack.translate(0.5, 0.75, 0.5);
+		stack.translate(0.5, 0.8125, 0.5);
 		
 		renderZPM(zpmPort.getHeldItemStack(), stack, source, combinedLight, combinedOverlay);
 		

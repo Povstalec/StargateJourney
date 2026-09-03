@@ -42,7 +42,7 @@ public class CommonZPMConfig
 		
 		zpm_port_max_transfer = server
 			.comment("Maximum amount of energy that can be transferred from the ZPM Port in one tick")
-			.defineInRange("server.zpm_port_max_transfer", 10_000_000_000L, 1L, Long.MAX_VALUE);
+			.defineInRange("server.zpm_port_max_transfer", 100_000_000_000L, 1L, Long.MAX_VALUE);
 
 		zpm_hub_max_transfer = server
 				.comment("Maximum amount of energy that can be transferred from the ZPM Hub in one tick")

@@ -606,7 +606,7 @@ public class BlockInit
 	public static final RegistryObject<ZPMPlugBlock> ZPM_PLUG = registerBlock("zpm_plug",
 		() -> new ZPMPlugBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 1);
 	public static final RegistryObject<ZPMPortBlock> ZPM_PORT = registerBlock("zpm_port",
-		() -> new ZPMPortBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.RARE, 1);
+		() -> new ZPMPortBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion()), Rarity.RARE, 1);
 	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub",
 			() -> new ZPMHubBlock(BlockBehaviour.Properties.of(Material.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.EPIC, 1);
 	
