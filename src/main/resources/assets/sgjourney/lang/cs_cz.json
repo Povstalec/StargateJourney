@@ -383,7 +383,7 @@
 	
 	"item.sgjourney.wooden_graver": "Dřevěné rydlo",
 	"item.sgjourney.stone_graver": "Kamenné rydlo",
-	"item.sgjourney.iron_graver": "železné rydlo",
+	"item.sgjourney.iron_graver": "Železné rydlo",
 	"item.sgjourney.golden_graver": "Zlaté rydlo",
 	"item.sgjourney.diamond_graver": "Diamantové rydlo",
 	"item.sgjourney.netherite_graver": "Netheritové rydlo",
@@ -548,6 +548,13 @@
 	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
 	"itemGroup.stargate_stuff": "Stargate Journey - Brány a ovládání",
 	"itemGroup.stargate_items": "Stargate Journey - Předměty",
+	
+	"screen.sgjourney.graving.engrave": "Vyrýt",
+	"screen.sgjourney.graving.cartouche.same_address": "Tato adresa je již do kartuše vyrytá",
+	"screen.sgjourney.graving.cartouche.should_not_contain_point_of_origin": "Vyrytá adresa by neměla obsahovat výchozí bod (0)",
+	"screen.sgjourney.graving.cartouche.overwrite_address": "Opravdu chceš přepsat adresu této kartuše?",
+	"screen.sgjourney.graving.cartouche.overwrite_address.warning": "Adresa této kartuše obsahuje odkaz na dimenzi, který jí umožňuje se automaticky aktualizovat v případě že se adresa změní. Její přepsání způsobí v kartuši ztrátu schopnosti se takto automaticky aktualizovat.",
+	"screen.sgjourney.graving.cartouche.insert_symbol_paper": "Vlož papír se symboly pro změnu symbolů na kartuši",
 
 	"screen.sgjourney.archeology_table": "Arheologický stůl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
@@ -755,7 +762,7 @@
 	"symbol_set.sgjourney.galaxy_andromeda": "Symboly Andromedy",
 	
 	
-	"symbols.sgjourney.galaxy_universal": "Univerzální",
+	"symbols.sgjourney.universal": "Univerzální",
 	"symbols.sgjourney.galaxy_milky_way": "Mléčná dráha",
 	"symbols.sgjourney.galaxy_pegasus": "Pegas",
 	"symbols.sgjourney.galaxy_ida": "Ida",
@@ -846,7 +853,13 @@
 	"info.sgjourney.address": "Addresa",
 	"info.sgjourney.encoded_address": "Zadaná adresa",
 	"info.sgjourney.9_chevron_address": "9-chevronová adresa",
+	"info.sgjourney.address.too_long": "Addresa je příliš dlouhá <0, 9>",
+	"info.sgjourney.address.duplicate_symbols": "Addresa obsahuje duplikátní symboly",
+	"info.sgjourney.address.symbol_out_of_bounds": "Symbol adresy %s přesahuje meze <0, 47>",
+	"info.sgjourney.address.symbols_after_point_of_origin": "Adresa nepovoluje žádné symboly za výchozím bodem (0)",
 	"info.sgjourney.transporter_id": "ID transportéru",
+	"info.sgjourney.transporter_id.too_long": "ID transportéru je příliš dlouhé <0, 7>",
+	"info.sgjourney.transporter_id.symbol_out_of_bounds": "Symbol ID transportéru %s přesahuje meze <1, 8>",
 	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.recent_feedback": "Poslední zpětná vazba",
 	"info.sgjourney.iris": "Iris",
@@ -907,8 +920,8 @@
 	"tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier": "Násobitel účinnosti přenosu",
 	"tooltip.sgjourney.communication_crystal.description": "Může být naladěn na specifickou frekvenci, nebo zvýšit komunikační dosah",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
-	"tooltip.sgjourney..communication_crystal.frequency_none": "Nenastavena žádná frekvence",
-	"tooltip.sgjourney.communication_crystal.communication_range": "Zvednutí komunkační vzdálenost o %s bloků",
+	"tooltip.sgjourney.communication_crystal.frequency_none": "Nenastavena žádná frekvence",
+	"tooltip.sgjourney.communication_crystal.communication_range_increase": "Zvednutí komunkační vzdálenost o %s bloků",
 	"tooltip.sgjourney.communication_crystal.crystal_computer": "Frekvence může být změněna s pomocí krystalového počítače",
 	"tooltip.sgjourney.materialization_crystal.description": "Umožňuje transport mezi dimenzemi",
 	
@@ -957,7 +970,6 @@
 	"tooltip.sgjourney.transporter.interdimensional_transport": "Mezidimenzionální transport: %s",
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "Pokud je aktivní,transportér bude schopný transportovat mezi dimenzemi ve stejném solárním systému",
 	
-	"tooltip.sgjourney.connection_range": "Dosah spojení: %s bloků",
 	"tooltip.sgjourney.transport_rings.materialization_crystal_slot.description": "Drží materializační krystaly",
 	"tooltip.sgjourney.transport_rings.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.transport_rings.energy_slot.description": "Drží předměty dodávající energii",
@@ -1112,14 +1124,14 @@
 	"message.sgjourney.dhd.error.not_enough_energy": "Ovládací panel nemá dost energie",
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
 	
-	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
+	"message.sgjourney.stargate.error.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
 	"message.sgjourney.stargate.error.iris": "Cesta blokována iris",
 	"message.sgjourney.stargate.error.already_has_iris": "Hvězdná brána již má iris",
 	
 	"message.sgjourney.stargate.info.none": "Nic",
 	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
 	
-	"message.sgjourney.stargate.symbol_encoded": "Symbol %s zadán",
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol %s zadán",
 	"message.sgjourney.stargate.error.symbol_in_address": "Symbol %s byl již zadán",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol %s je mimo meze",
 	"message.sgjourney.stargate.error.encode_when_connected": "Nelze zadávat symboly během spojení",

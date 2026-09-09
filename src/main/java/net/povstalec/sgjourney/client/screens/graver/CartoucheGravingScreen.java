@@ -2,20 +2,31 @@ package net.povstalec.sgjourney.client.screens.graver;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
+import net.povstalec.sgjourney.client.models.block.CartoucheBakedModel;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.CartoucheMenu;
+import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import net.povstalec.sgjourney.common.misc.ParsingResult;
+import net.povstalec.sgjourney.common.packets.ServerboundGravingUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
@@ -29,23 +40,27 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 	public static final float CARTOUCHE_HALF_AT = 1 + CARTOUCHE_HEIGHT / 2F;
 	
 	protected final ResourceLocation texture;
-	protected final ColorUtil.RGBA rgba;
+	protected ColorUtil.RGBA rgba;
 	
 	protected EditBox editBox;
+	protected Button gravingButton;
 	protected final Address.Mutable address;
+	protected final boolean wasDimensionAddress;
 	
 	public CartoucheGravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
 	{
 		super(menu, playerInventory, title);
 		
 		this.texture = texture;
+		
 		this.rgba = rgba;
 		
 		this.imageWidth = 176;
-		this.imageHeight = 252;
+		this.imageHeight = 250;
 		
 		this.inventoryLabelY = this.imageHeight - 94;
 		
+		wasDimensionAddress = menu.blockEntity.getAddress() instanceof Address.Dimension;
 		address = new Address.Mutable(menu.blockEntity.getAddress());
 	}
 	
@@ -54,72 +69,85 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 	{
 		super.init();
 		
-		this.editBox = new EditBox(this.font, leftPos + 8, topPos + 136, 176, 20, Component.translatable("tooltip.sgjourney.energy_target"))
-		{
-			public void ensureDash()
-			{
-				int pos = getCursorPosition();
-				String value = getValue();
-				
-				if(!value.startsWith("-"))
+		BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
+		BakedModel model = dispatcher.getBlockModel(menu.blockEntity.getBlockState());
+		if(model instanceof CartoucheBakedModel cartoucheModel)
+			this.rgba = new ColorUtil.RGBA(cartoucheModel.getSymbolTint());
+		
+		this.gravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"),
+				button ->
 				{
-					setValue('-' + value);
-					setCursorPosition(pos + 1);
-				}
-				if(!value.endsWith("-"))
-				{
-					setValue(value + '-');
-					setCursorPosition(pos);
-				}
-			}
-			
-			@Override
-			public void insertText(@NotNull String text)
-			{
-				super.insertText(text.replace(' ', '-'));
-				ensureDash();
-			}
-			
-			@Override
-			public void deleteWords(int pos)
-			{
-				super.deleteWords(pos);
-				ensureDash();
-			}
-			
-			@Override
-			public void deleteChars(int pos)
-			{
-				super.deleteChars(pos);
-				ensureDash();
-			}
-		};
-		this.editBox.setFilter(CartoucheGravingScreen::acceptedAsAddress);
+					if(wasDimensionAddress)
+					{
+						minecraft.setScreen(new ConfirmScreen(confirm ->
+						{
+							if(confirm)
+								engrave();
+							else
+								minecraft.setScreen(this);
+						},
+							Component.translatable("screen.sgjourney.graving.cartouche.overwrite_address"),
+							Component.translatable("screen.sgjourney.graving.cartouche.overwrite_address.warning"),
+							CommonComponents.GUI_ACKNOWLEDGE,
+							CommonComponents.GUI_CANCEL)
+						{
+							@Override
+							public boolean isPauseScreen()
+							{
+								return false;
+							}
+						});
+					}
+					else
+						engrave();
+				})
+			.bounds(leftPos + 121, topPos + 109, 56, 20).build();
+		
+		this.gravingButton.active = false;
+		this.gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+		this.addRenderableWidget(this.gravingButton);
+		
+		this.editBox = new EditBox(font, leftPos, topPos + 130, 176, 20, Component.translatable("tooltip.sgjourney.address"));
+		this.editBox.setFilter(Address::canBeTransformedToAddress);
 		
 		this.editBox.setMaxLength(28);
-		this.editBox.setResponder(address::fromString);
 		this.editBox.setValue(address.toString());
+		this.editBox.setResponder(text ->
+		{
+			int[] addressArray = Address.addressStringToIntArray(text);
+			if(ArrayHelper.contains(addressArray, 0))
+			{
+				address.reset();
+				gravingButton.active = false;
+				gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.should_not_contain_point_of_origin")));
+			}
+			else
+			{
+				ParsingResult parsingResult = Address.intArrayParsingResult(addressArray);
+				if(parsingResult.isSuccess())
+				{
+					address.fromString(text);
+					boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress());
+					gravingButton.active = isAddressDifferent;
+					gravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+				}
+				else
+				{
+					address.reset();
+					gravingButton.active = false;
+					gravingButton.setTooltip(Tooltip.create(parsingResult.getMessage()));
+				}
+			}
+		});
 		
 		this.addRenderableWidget(this.editBox);
 		this.setInitialFocus(this.editBox);
 	}
 	
-	public static boolean acceptedAsAddress(String addressString)
+	public void engrave()
 	{
-		String[] segments = addressString.split(Address.ADDRESS_DIVIDER);
-		for(int i = 1; i < segments.length; ++i)
-		{
-			if(segments[i].isEmpty() || segments[i].length() > 2)
-				return false;
-			
-			for(int j = 0; j < segments[i].length(); ++j)
-			{
-				if(!Address.isAllowedInAddress(segments[i].charAt(j)))
-					return false;
-			}
-		}
-		
-		return true;
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos()).withSymbols(getSymbols()).withAddress(new Address.Immutable(address)));
+		onClose();
 	}
 	
 	public ResourceKey<Symbols> getSymbols()
@@ -164,6 +192,8 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
 		this.blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		
+		this.itemHint(stack, leftPos + 124, topPos + 57, 176, 0, 0);
 	}
 	
 	@Override
@@ -172,6 +202,8 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		renderBackground(stack);
 		super.render(stack, mouseX, mouseY, delta);
 		renderTooltip(stack, mouseX, mouseY);
+		
+		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.graving.cartouche.insert_symbol_paper"));
 	}
 	
 	@Override
@@ -180,6 +212,12 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
 		
 		renderSymbols(poseStack);
+	}
+	
+	@Override
+	protected boolean hasItem(int slot)
+	{
+		return !menu.tempContainer.getItem(slot).isEmpty();
 	}
 	
 	

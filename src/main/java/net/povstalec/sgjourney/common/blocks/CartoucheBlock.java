@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,7 +34,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
@@ -42,6 +43,7 @@ import net.povstalec.sgjourney.common.menu.CartoucheMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -112,7 +114,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 				
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				
-				if(blockEntity instanceof CartoucheEntity cartouche)
+				if(blockEntity instanceof CartoucheBlockEntity cartouche)
 				{
 					Address address = cartouche.getAddress();
 					
@@ -161,7 +163,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	if(doubleblockhalf == DoubleBlockHalf.UPPER)
     		pos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof CartoucheEntity)
+		if(blockentity instanceof CartoucheBlockEntity)
 		{
 			if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 			{
@@ -188,33 +190,33 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		
     	if(blockEntityTag != null)
     	{
-			if(blockEntityTag.contains(CartoucheEntity.ADDRESS, Tag.TAG_COMPOUND))
+			if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_COMPOUND))
 			{
-				Address.Dimension address = Address.Dimension.loadFromCompoundTag(blockEntityTag, CartoucheEntity.ADDRESS);
+				Address.Dimension address = Address.Dimension.loadFromCompoundTag(blockEntityTag, CartoucheBlockEntity.ADDRESS);
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
 				dimensionString = address.getDimension().location().toString();
 			}
-    		else if(blockEntityTag.contains(CartoucheEntity.ADDRESS, Tag.TAG_INT_ARRAY))
+    		else if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_INT_ARRAY))
     		{
     			displayDimension = false;
-    			int[] addressArray = blockEntityTag.getIntArray(CartoucheEntity.ADDRESS);
+    			int[] addressArray = blockEntityTag.getIntArray(CartoucheBlockEntity.ADDRESS);
     			Address address = new Address.Immutable(addressArray);
     			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
     		}
     		
-    		if(blockEntityTag.contains(CartoucheEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "tooltip.sgjourney.error");
+    		if(blockEntityTag.contains(CartoucheBlockEntity.SYMBOLS))
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
         	
-        	if(blockEntityTag.contains(CartoucheEntity.ADDRESS_TABLE))
-        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
+        	if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS_TABLE))
+        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheBlockEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
     	}
     	
     	if(displayDimension)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimensionString)).withStyle(ChatFormatting.GREEN));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		if(blockEntityTag != null && blockEntityTag.contains(CartoucheEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
-				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheEntity.GENERATION_STEP)))
+		if(blockEntityTag != null && blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
     	
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
@@ -253,6 +255,20 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		return InteractionResult.PASS;
 	}
 	
+	@Override
+	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			cartouche.setSymbols(symbols);
+	}
+	
+	@Override
+	public void setAddress(Level level, BlockPos pos, BlockState state, Address address)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			cartouche.setAddress(address);
+	}
+	
 	
     
     public static class Stone extends CartoucheBlock
@@ -265,7 +281,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.Stone(pos, state);
+			return new CartoucheBlockEntity.Stone(pos, state);
 		}
 
 	    public Block getBlock()
@@ -284,7 +300,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-			if(blockEntity instanceof CartoucheEntity.Stone cartouche)
+			if(blockEntity instanceof CartoucheBlockEntity.Stone cartouche)
 			{
 				MenuProvider containerProvider = new MenuProvider()
 				{
@@ -315,7 +331,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.Sandstone(pos, state);
+			return new CartoucheBlockEntity.Sandstone(pos, state);
 		}
 
 	    public Block getBlock()
@@ -334,7 +350,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-			if(blockEntity instanceof CartoucheEntity.Sandstone cartouche)
+			if(blockEntity instanceof CartoucheBlockEntity.Sandstone cartouche)
 			{
 				MenuProvider containerProvider = new MenuProvider()
 				{
@@ -365,7 +381,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.RedSandstone(pos, state);
+			return new CartoucheBlockEntity.RedSandstone(pos, state);
 		}
 		
 		public Block getBlock()
@@ -384,7 +400,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		{
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			
-			if(blockEntity instanceof CartoucheEntity.RedSandstone cartouche)
+			if(blockEntity instanceof CartoucheBlockEntity.RedSandstone cartouche)
 			{
 				MenuProvider containerProvider = new MenuProvider()
 				{

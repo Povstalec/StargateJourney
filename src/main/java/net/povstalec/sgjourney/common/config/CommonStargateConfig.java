@@ -43,6 +43,8 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.BooleanValue enable_energy_bypass;
 	public static ForgeConfigSpec.BooleanValue can_draw_power_from_both_ends;
 	
+	public static ForgeConfigSpec.LongValue min_stable_wormhole_energy;
+	
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_draw;
 	public static ForgeConfigSpec.LongValue system_wide_connection_bypass_energy_draw;
@@ -182,6 +184,12 @@ public class CommonStargateConfig
 		can_draw_power_from_both_ends = server
 				.comment("If true, the wormhole will draw power from both connected Stargates")
 				.define("server.can_draw_power_from_both_ends", true);
+		
+		
+		
+		min_stable_wormhole_energy = server
+			.comment("The minimum amount of energy the Stargate needs to have stored for its side of the connection to be considered stable (this type of unstable wormhole is purely a visual indicator of low power)")
+			.defineInRange("server.min_stable_wormhole_energy", 10_000L, 0L, Long.MAX_VALUE);
 		
 		
 		

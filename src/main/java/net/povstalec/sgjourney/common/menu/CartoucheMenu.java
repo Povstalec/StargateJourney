@@ -7,14 +7,15 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.misc.SimpleTempContainer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheMenu<C extends CartoucheEntity> extends InventoryMenu<C>
+public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends InventoryMenu<C>
 {
 	public final SimpleTempContainer<CartoucheMenu<C>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
 	{
@@ -31,8 +32,8 @@ public abstract class CartoucheMenu<C extends CartoucheEntity> extends Inventory
     {
         super(type, containerId, inventory, blockEntity);
 		
-		addPlayerInventory(inventory, 8, 170);
-		addPlayerHotbar(inventory, 8, 228);
+		addPlayerInventory(inventory, 8, 168);
+		addPlayerHotbar(inventory, 8, 226);
 		
 		this.tempSlotIndex = addBlockEntitySlot(new Slot(tempContainer, 0, 124, 57)
 		{
@@ -44,6 +45,35 @@ public abstract class CartoucheMenu<C extends CartoucheEntity> extends Inventory
 		}).index;
 		this.access = access;
     }
+	
+	@Override
+	protected void addPlayerHotbar(Inventory playerInventory, int x, int y)
+	{
+		int selected = playerInventory.getSelected().getItem() instanceof GraverItem ? playerInventory.selected : -1;
+		
+		for(int i = 0; i < 9; ++i)
+		{
+			if(i == selected) // Lock the selected slot
+			{
+				this.addSlot(new Slot(playerInventory, i, x + i * 18, y)
+				{
+					@Override
+					public boolean mayPlace(@NotNull ItemStack stack)
+					{
+						return true;
+					}
+					
+					@Override
+					public boolean mayPickup(@NotNull Player player)
+					{
+						return false;
+					}
+				});
+			}
+			else
+				this.addSlot(new Slot(playerInventory, i, x + i * 18, y));
+		}
+	}
 	
 	@Override
 	public void removed(@NotNull Player player)
@@ -64,14 +94,14 @@ public abstract class CartoucheMenu<C extends CartoucheEntity> extends Inventory
 	
 	
 	
-	public static class Stone extends CartoucheMenu<CartoucheEntity.Stone>
+	public static class Stone extends CartoucheMenu<CartoucheBlockEntity.Stone>
 	{
 		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (CartoucheEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (CartoucheBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
-		public Stone(int containerId, Inventory inventory, CartoucheEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public Stone(int containerId, Inventory inventory, CartoucheBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
 			super(MenuInit.STONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
@@ -83,14 +113,14 @@ public abstract class CartoucheMenu<C extends CartoucheEntity> extends Inventory
 		}
 	}
 	
-	public static class Sandstone extends CartoucheMenu<CartoucheEntity.Sandstone>
+	public static class Sandstone extends CartoucheMenu<CartoucheBlockEntity.Sandstone>
     {
         public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (CartoucheBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
-		public Sandstone(int containerId, Inventory inventory, CartoucheEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public Sandstone(int containerId, Inventory inventory, CartoucheBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
 			super(MenuInit.SANDSTONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
@@ -102,14 +132,14 @@ public abstract class CartoucheMenu<C extends CartoucheEntity> extends Inventory
 		}
     }
 	
-    public static class RedSandstone extends CartoucheMenu<CartoucheEntity.RedSandstone>
+    public static class RedSandstone extends CartoucheMenu<CartoucheBlockEntity.RedSandstone>
     {
         public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (CartoucheBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
-		public RedSandstone(int containerId, Inventory inventory, CartoucheEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public RedSandstone(int containerId, Inventory inventory, CartoucheBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
 			super(MenuInit.RED_SANDSTONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}

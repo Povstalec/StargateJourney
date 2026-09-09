@@ -16,6 +16,9 @@ public class SyncedConfig
 	//***************************************Block Entities***************************************
 	//============================================================================================
 	
+	// Stargate
+	public static SyncedValue<Long> min_stable_wormhole_energy = SYNCED_VALUES.create(CommonStargateConfig.min_stable_wormhole_energy.get());
+	
 	// DHD
 	public static SyncedValue<Long> universe_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.universe_dhd_energy_buffer_capacity.get());
 	public static SyncedValue<Long> milky_way_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get());

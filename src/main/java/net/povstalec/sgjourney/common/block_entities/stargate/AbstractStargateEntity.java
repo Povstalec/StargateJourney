@@ -1110,7 +1110,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean isWormholeUnstable()
 	{
-		return REQUIRE_ENERGY && !energyStorage.hasEnergy(200 * CommonStargateConfig.interstellar_connection_energy_draw.get()); // Stargate does not have enough energy to maintain a stable wormhole
+		// Stargate does not have enough energy to maintain a stable wormhole
+		return REQUIRE_ENERGY && !energyStorage.hasEnergy(SyncedConfig.min_stable_wormhole_energy.get());
 	}
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)

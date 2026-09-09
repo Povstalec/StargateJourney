@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class CartoucheEntity extends BlockEntity implements StructureGenEntity
+public abstract class CartoucheBlockEntity extends BlockEntity implements StructureGenEntity
 {
 	public static final String ADDRESS_TABLE = "AddressTable";
 	public static final String DIMENSION = "Dimension";
@@ -50,7 +50,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	@Nullable
 	private Address address;
 	
-	public CartoucheEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state) 
+	public CartoucheBlockEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state)
 	{
 		super(cartouche, pos, state);
 	}
@@ -125,9 +125,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	{
 		CompoundTag tag = new CompoundTag();
 		
-		if(address instanceof Address.Dimension dimensionAddress)
-			dimensionAddress.saveToCompoundTagAsArray(tag, ADDRESS);
-		else if(address != null)
+		if(address != null)
 			address.saveToCompoundTag(tag, ADDRESS);
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.location().toString());
@@ -144,8 +142,10 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
-			if(tag.contains(ADDRESS, Tag.TAG_INT_ARRAY))
-				address = Address.Immutable.loadFromCompoundTag(tag, ADDRESS);
+			if(tag.contains(ADDRESS, Tag.TAG_COMPOUND)) // Dimension Address is saved to a tag, load it
+				address = Address.Dimension.loadFromCompoundTag(tag, ADDRESS);
+			else if(tag.contains(ADDRESS, Tag.TAG_INT_ARRAY)) // Immutable Address is saved as an array, load it
+				address = new Address.Immutable(tag.getIntArray(ADDRESS));
 			else
 				address = new Address.Immutable();
 			
@@ -190,11 +190,13 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	public void setDimension(ResourceLocation dimension)
 	{
 		this.address = new Address.Dimension(Conversion.locationToDimension(dimension), Optional.empty());
+		setChanged();
 	}
 	
 	public void setSymbols(ResourceKey<Symbols> symbols)
 	{
 		this.symbols = symbols;
+		setChanged();
 	}
 	
 	public ResourceKey<Symbols> getSymbols()
@@ -205,6 +207,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	public void setAddress(@Nullable Address address)
 	{
 		this.address = address;
+		setChanged();
 	}
 	
 	public Address getAddress()
@@ -255,7 +258,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
 		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
 		
-		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))) instanceof CartoucheEntity upperCartouche)
+		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.UP, orientation))) instanceof CartoucheBlockEntity upperCartouche)
 			upperCartouche.setChanged();
 	}
 	
@@ -267,10 +270,10 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Direction direction = getBlockState().getValue(CartoucheBlock.FACING);
 		Orientation orientation = getBlockState().getValue(CartoucheBlock.ORIENTATION);
 		
-		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation))) instanceof CartoucheEntity lowerCartouche)
+		if(level != null && level.getBlockEntity(worldPosition.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation))) instanceof CartoucheBlockEntity lowerCartouche)
 		{
-			setAddress(lowerCartouche.address);
-			setSymbols(lowerCartouche.symbols);
+			this.address = lowerCartouche.address;
+			this.symbols = lowerCartouche.symbols;
 			updateClient();
 		}
 	}
@@ -281,7 +284,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		Address address = AddressTable.randomAddress((ServerLevel) level, addressTable);
 		
 		if(address != null)
-			setAddress(address);
+			this.address = address;
 		
 		this.addressTable = null;
 		
@@ -299,7 +302,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		if(level.isClientSide())
 			return;
 		
-		setSymbols(Universe.get(level).getSymbols(level.dimension()));
+		this.symbols = Universe.get(level).getSymbols(level.dimension());
 	}
 	
 	public void setDimensionFromLevel(Level level)
@@ -347,7 +350,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 	
 	
 	
-	public static class Stone extends CartoucheEntity
+	public static class Stone extends CartoucheBlockEntity
 	{
 		public Stone(BlockPos pos, BlockState state)
 		{
@@ -355,7 +358,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		}
 	}
 	
-	public static class Sandstone extends CartoucheEntity
+	public static class Sandstone extends CartoucheBlockEntity
 	{
 		public Sandstone(BlockPos pos, BlockState state)
 		{
@@ -363,7 +366,7 @@ public abstract class CartoucheEntity extends BlockEntity implements StructureGe
 		}
 	}
 	
-	public static class RedSandstone extends CartoucheEntity
+	public static class RedSandstone extends CartoucheBlockEntity
 	{
 		public RedSandstone(BlockPos pos, BlockState state)
 		{

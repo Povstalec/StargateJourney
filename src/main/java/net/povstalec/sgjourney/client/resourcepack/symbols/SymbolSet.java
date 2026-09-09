@@ -82,7 +82,7 @@ public class SymbolSet
 		if(symbol > size())
 			return ClientSymbols.getDefaultExtendedSymbolTexture(symbol);
 		else if(symbol <= 0)
-			return ClientSymbols.ERROR_LOCATION;
+			return ClientSymbols.EXTENDED_ERROR_LOCATION;
 		
 		return extendedTextures.get(symbol - 1);
 	}

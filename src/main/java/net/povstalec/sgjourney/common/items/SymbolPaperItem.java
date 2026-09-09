@@ -79,12 +79,11 @@ public class SymbolPaperItem extends Item
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stack);
-		String pointOfOriginName = pointOfOrigin == null ? "" : ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin), "tooltip.sgjourney.error");
+		if(pointOfOrigin != null)
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(": ").append(Component.translatable(ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.DARK_PURPLE));
 		
 		ResourceKey<Symbols> symbols = getSymbols(stack);
-		String symbolsName = symbols == null ? "" : ClientSymbols.translationName(ClientSymbols.getSymbols(symbols), "tooltip.sgjourney.error");
-		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(": ").append(Component.translatable(pointOfOriginName)).withStyle(ChatFormatting.DARK_PURPLE));
-		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(": ").append(Component.translatable(symbolsName)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		if(symbols != null)
+			tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(": ").append(Component.translatable(ClientSymbols.translationName(ClientSymbols.getSymbols(symbols), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 }

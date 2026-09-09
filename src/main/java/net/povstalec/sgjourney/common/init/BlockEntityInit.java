@@ -62,12 +62,12 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<GoauldRingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("ring_panel", //TODO Rename to "goauld_ring_panel"
             () -> BlockEntityType.Builder.of(GoauldRingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
-			() -> BlockEntityType.Builder.of(CartoucheEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
+			() -> BlockEntityType.Builder.of(CartoucheBlockEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.Stone>> STONE_SYMBOL = BLOCK_ENTITIES.register("stone_symbol",
             () -> BlockEntityType.Builder.of(SymbolBlockEntity.Stone::new, BlockInit.STONE_SYMBOL.get()).build(null));

@@ -43,6 +43,11 @@ public abstract class SymbolBakedModel extends SimpleBakedModel
 		this.chunkRenderTypeSet = ChunkRenderTypeSet.of(list);
 	}
 	
+	public int getSymbolTint()
+	{
+		return symbolTint;
+	}
+	
 	@Override
 	public @NotNull ChunkRenderTypeSet getRenderTypes(@NotNull BlockState state, @NotNull RandomSource rand, @NotNull ModelData data)
 	{
