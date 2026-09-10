@@ -557,6 +557,9 @@
 	"screen.sgjourney.graving.cartouche.overwrite_address": "Are you sure you want to overwrite this Cartouche's Address?",
 	"screen.sgjourney.graving.cartouche.overwrite_address.warning": "This Cartouche's Address contains a reference to a Dimension, which allows it to be automatically updated in the event the Address changes. Overwriting it will cause the Cartouche to lose its ability to update automatically.",
 	"screen.sgjourney.graving.cartouche.insert_symbol_paper": "Insert Symbol Paper to change the Cartouche's Symbols",
+	"screen.sgjourney.graving.symbol_block.same_symbol": "This Symbol is already engraved in the Block",
+	"screen.sgjourney.graving.symbol_block.out_of_bounds": "Symbol is out of bounds",
+	"screen.sgjourney.graving.symbol_block.insert_symbol_paper": "Insert Symbol Paper to change the Block's Symbol type",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",

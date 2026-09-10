@@ -74,12 +74,19 @@ public class MenuInit
 	public static final RegistryObject<MenuType<BatteryMenu>> NAQUADAH_BATTERY =
 			registerMenuType(BatteryMenu::new, "naquadah_battery");
 	
-	public static final RegistryObject<MenuType<CartoucheMenu.Stone>> STONE_CARTOUCHE =
-		registerMenuType(CartoucheMenu.Stone::new, "stone_cartouche");
-	public static final RegistryObject<MenuType<CartoucheMenu.Sandstone>> SANDSTONE_CARTOUCHE =
-		registerMenuType(CartoucheMenu.Sandstone::new, "sandstone_cartouche");
-	public static final RegistryObject<MenuType<CartoucheMenu.RedSandstone>> RED_SANDSTONE_CARTOUCHE =
-		registerMenuType(CartoucheMenu.RedSandstone::new, "red_sandstone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheGravingMenu.Stone>> STONE_CARTOUCHE =
+		registerMenuType(CartoucheGravingMenu.Stone::new, "stone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheGravingMenu.Sandstone>> SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheGravingMenu.Sandstone::new, "sandstone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheGravingMenu.RedSandstone>> RED_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheGravingMenu.RedSandstone::new, "red_sandstone_cartouche");
+	
+	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.Stone>> STONE_SYMBOL =
+		registerMenuType(SymbolBlockGravingMenu.Stone::new, "stone_symbol");
+	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.Sandstone>> SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockGravingMenu.Sandstone::new, "sandstone_symbol");
+	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.RedSandstone>> RED_SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockGravingMenu.RedSandstone::new, "red_sandstone_symbol");
 
 
 

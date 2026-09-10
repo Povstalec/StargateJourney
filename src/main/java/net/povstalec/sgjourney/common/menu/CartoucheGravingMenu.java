@@ -15,9 +15,9 @@ import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.misc.SimpleTempContainer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends InventoryMenu<C>
+public abstract class CartoucheGravingMenu<C extends CartoucheBlockEntity> extends InventoryMenu<C>
 {
-	public final SimpleTempContainer<CartoucheMenu<C>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
+	public final SimpleTempContainer<CartoucheGravingMenu<C>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
 	{
 		@Override
 		public boolean canPlaceItem(int slot, @NotNull ItemStack stack)
@@ -28,7 +28,7 @@ public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends Inve
 	private final int tempSlotIndex;
 	private final ContainerLevelAccess access;
 	
-    public CartoucheMenu(MenuType<?> type, int containerId, Inventory inventory, C blockEntity, ContainerLevelAccess access)
+    public CartoucheGravingMenu(MenuType<?> type, int containerId, Inventory inventory, C blockEntity, ContainerLevelAccess access)
     {
         super(type, containerId, inventory, blockEntity);
 		
@@ -94,7 +94,7 @@ public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends Inve
 	
 	
 	
-	public static class Stone extends CartoucheMenu<CartoucheBlockEntity.Stone>
+	public static class Stone extends CartoucheGravingMenu<CartoucheBlockEntity.Stone>
 	{
 		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
@@ -113,7 +113,7 @@ public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends Inve
 		}
 	}
 	
-	public static class Sandstone extends CartoucheMenu<CartoucheBlockEntity.Sandstone>
+	public static class Sandstone extends CartoucheGravingMenu<CartoucheBlockEntity.Sandstone>
     {
         public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
@@ -132,7 +132,7 @@ public abstract class CartoucheMenu<C extends CartoucheBlockEntity> extends Inve
 		}
     }
 	
-    public static class RedSandstone extends CartoucheMenu<CartoucheBlockEntity.RedSandstone>
+    public static class RedSandstone extends CartoucheGravingMenu<CartoucheBlockEntity.RedSandstone>
     {
         public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {

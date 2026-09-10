@@ -14,6 +14,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerListener;
+import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.models.block.CartoucheBakedModel;
@@ -21,7 +24,7 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
-import net.povstalec.sgjourney.common.menu.CartoucheMenu;
+import net.povstalec.sgjourney.common.menu.CartoucheGravingMenu;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -31,7 +34,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class CartoucheGravingScreen<M extends CartoucheGravingMenu<?>> extends SGJourneyContainerScreen<M>
 {
 	public static final float X_SYMBOL_SPACE = 64F * 10F / 16F;
 	public static final float Y_SYMBOL_SPACE = 64F * 26F / 16F;
@@ -77,7 +80,8 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		this.gravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"),
 				button ->
 				{
-					if(wasDimensionAddress)
+					// The player is attempting to overwrite the Cartouche's Dimension Address
+					if(wasDimensionAddress && !address.equals(menu.blockEntity.getAddress()))
 					{
 						minecraft.setScreen(new ConfirmScreen(confirm ->
 						{
@@ -127,9 +131,7 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 				if(parsingResult.isSuccess())
 				{
 					address.fromString(text);
-					boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress());
-					gravingButton.active = isAddressDifferent;
-					gravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+					updateGravingButton();
 				}
 				else
 				{
@@ -142,11 +144,40 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		
 		this.addRenderableWidget(this.editBox);
 		this.setInitialFocus(this.editBox);
+		
+		this.menu.addSlotListener(new ContainerListener()
+		{
+			@Override
+			public void slotChanged(@NotNull AbstractContainerMenu menu, int slot, @NotNull ItemStack stack)
+			{
+				updateGravingButton();
+			}
+			
+			@Override
+			public void dataChanged(@NotNull AbstractContainerMenu menu, int slot, int dataSlot)
+			{
+				updateGravingButton();
+			}
+		});
+	}
+	
+	protected void updateGravingButton()
+	{
+		boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress()) || !getSymbols().equals(menu.blockEntity.getSymbols());
+		gravingButton.active = isAddressDifferent;
+		gravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
 	}
 	
 	public void engrave()
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos()).withSymbols(getSymbols()).withAddress(new Address.Immutable(address)));
+		ServerboundGravingUpdatePacket packet = new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos());
+		
+		if(!address.equals(menu.blockEntity.getAddress()))
+			packet.withAddress(new Address.Immutable(address));
+		if(!getSymbols().equals(menu.blockEntity.getSymbols()))
+			packet.withSymbols(getSymbols());
+		
+		PacketHandlerInit.INSTANCE.sendToServer(packet);
 		onClose();
 	}
 	
@@ -203,7 +234,7 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 		super.render(stack, mouseX, mouseY, delta);
 		renderTooltip(stack, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.graving.cartouche.insert_symbol_paper"));
+		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.graving.symbol_block.insert_symbol_paper"));
 	}
 	
 	@Override
@@ -222,27 +253,27 @@ public abstract class CartoucheGravingScreen<M extends CartoucheMenu<?>> extends
 	
 	
 	
-	public static class Stone extends CartoucheGravingScreen<CartoucheMenu.Stone>
+	public static class Stone extends CartoucheGravingScreen<CartoucheGravingMenu.Stone>
 	{
-		public Stone(CartoucheMenu.Stone menu, Inventory playerInventory, Component title)
+		public Stone(CartoucheGravingMenu.Stone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/stone_cartouche_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/stone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
 		}
 	}
 	
-	public static class Sandstone extends CartoucheGravingScreen<CartoucheMenu.Sandstone>
+	public static class Sandstone extends CartoucheGravingScreen<CartoucheGravingMenu.Sandstone>
 	{
-		public Sandstone(CartoucheMenu.Sandstone menu, Inventory playerInventory, Component title)
+		public Sandstone(CartoucheGravingMenu.Sandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/sandstone_cartouche_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
 		}
 	}
 	
-	public static class RedSandstone extends CartoucheGravingScreen<CartoucheMenu.RedSandstone>
+	public static class RedSandstone extends CartoucheGravingScreen<CartoucheGravingMenu.RedSandstone>
 	{
-		public RedSandstone(CartoucheMenu.RedSandstone menu, Inventory playerInventory, Component title)
+		public RedSandstone(CartoucheGravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/red_sandstone_cartouche_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/red_sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
 		}
 	}
 }

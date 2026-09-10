@@ -57,9 +57,8 @@ public class SimpleTempContainer<M extends AbstractContainerMenu> implements Con
 	public @NotNull ItemStack removeItem(int x, int y)
 	{
 		ItemStack itemstack = ContainerHelper.removeItem(this.items, x, y);
-		if (!itemstack.isEmpty()) {
+		if(!itemstack.isEmpty())
 			this.menu.slotsChanged(this);
-		}
 		
 		return itemstack;
 	}

@@ -7,10 +7,15 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -23,15 +28,19 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.menu.SymbolBlockGravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -156,9 +165,14 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
 	
+	protected abstract void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player);
+	
 	@Override
 	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
 	{
+		if(!level.isClientSide())
+			openSymbolBlockGravingMenu(level, pos, player);
+		
 		return InteractionResult.PASS;
 	}
 	
@@ -174,6 +188,14 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 	{
 		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
 			symbolBlock.setSymbols(symbols);
+	}
+	
+	@Override
+	public void setAddress(Level level, BlockPos pos, BlockState state, Address address)
+	{
+		// Using Address of length 1 to decide the symbol
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
+			symbolBlock.setSymbolNumber(address.symbolAt(0));
 	}
 	
 	
@@ -196,6 +218,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		{
 			return BlockInit.STONE_SYMBOL.get();
 		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.Stone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockGravingMenu.Stone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
+		}
     	
     }
     
@@ -217,6 +264,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		{
 			return BlockInit.SANDSTONE_SYMBOL.get();
 		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.Sandstone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockGravingMenu.Sandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
+		}
     	
     }
 	
@@ -237,6 +309,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		public ItemLike getItem()
 		{
 			return BlockInit.RED_SANDSTONE_SYMBOL.get();
+		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.RedSandstone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockGravingMenu.RedSandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
 		}
 		
 	}

@@ -39,7 +39,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.menu.CartoucheMenu;
+import net.povstalec.sgjourney.common.menu.CartoucheGravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -122,7 +122,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
 					
 					BlockPos underPos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
-					if(level.getBlockEntity(underPos) instanceof SymbolBlockEntity symbolBlockEntity && symbolBlockEntity.symbolNumber == 0)
+					if(level.getBlockEntity(underPos) instanceof SymbolBlockEntity symbolBlockEntity && symbolBlockEntity.getSymbolNumber() == 0)
 						address = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address));
 					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 					
@@ -313,7 +313,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheMenu.Stone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheGravingMenu.Stone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
@@ -363,7 +363,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheMenu.Sandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheGravingMenu.Sandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
@@ -413,7 +413,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheMenu.RedSandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheGravingMenu.RedSandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());

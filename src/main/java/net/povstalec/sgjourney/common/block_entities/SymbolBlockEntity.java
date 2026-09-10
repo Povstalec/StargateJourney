@@ -4,6 +4,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraftforge.client.model.data.ModelData;
 import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -28,11 +29,11 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public static final String SYMBOLS = "Symbols";
 	public static final String SYMBOL_NUMBER = "SymbolNumber";
 	
-	public int symbolNumber = 0;
+	protected int symbolNumber = 0;
 	@Nullable
-	public ResourceKey<PointOfOrigin> pointOfOrigin = null;
+	protected ResourceKey<PointOfOrigin> pointOfOrigin = null;
 	@Nullable
-	public ResourceKey<Symbols> symbols = null;
+	protected ResourceKey<Symbols> symbols = null;
 	
 	public SymbolBlockEntity(BlockEntityType<?> entity, BlockPos pos, BlockState state) 
 	{
@@ -130,6 +131,19 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		return builder.build();
 	}
 	
+	public void updateClient()
+	{
+		if(level != null && !level.isClientSide())
+			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
+	}
+	
+	@Override
+	public void setChanged()
+	{
+		super.setChanged();
+		updateClient();
+	}
+	
 	//============================================================================================
 	//************************************Getters and setters*************************************
 	//============================================================================================
@@ -137,6 +151,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public void setSymbolNumber(int symbolNumber)
 	{
 		this.symbolNumber = symbolNumber;
+		setChanged();
 	}
 	
 	public int getSymbolNumber()
@@ -147,6 +162,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public void setPointOfOrigin(@Nullable ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
 		this.pointOfOrigin = pointOfOrigin;
+		setChanged();
 	}
 	
 	public void setPointOfOriginFromLevel(Level level)
@@ -154,7 +170,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		setPointOfOrigin(Universe.get(level).getPointOfOrigin(level.dimension()));
+		this.pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension());
 	}
 	
 	@Nullable
@@ -166,6 +182,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public void setSymbols(@Nullable ResourceKey<Symbols> symbols)
 	{
 		this.symbols = symbols;
+		setChanged();
 	}
 	
 	public void setSymbolsFromLevel(Level level)
@@ -173,7 +190,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 		if(level.isClientSide())
 			return;
 		
-		setSymbols(Universe.get(level).getSymbols(level.dimension()));
+		this.symbols = Universe.get(level).getSymbols(level.dimension());
 	}
 	
 	@Nullable
