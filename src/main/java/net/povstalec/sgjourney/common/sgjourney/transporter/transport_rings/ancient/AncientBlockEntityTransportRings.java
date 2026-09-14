@@ -1,21 +1,25 @@
-package net.povstalec.sgjourney.common.sgjourney.transporter;
+package net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.ancient;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.BlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.goauld.GoauldTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 import javax.annotation.Nullable;
 
-public class GoauldBlockEntityTransportRings extends GoauldTransportRings implements BlockEntityTransportRings<GoauldTransportRingsEntity>
+public class AncientBlockEntityTransportRings extends GoauldTransportRings implements BlockEntityTransportRings<AncientTransportRingsEntity>
 {
 	protected BlockPos blockPos;
 	
-	public GoauldBlockEntityTransportRings(TransporterType<?> type, MinecraftServer server)
+	public AncientBlockEntityTransportRings(TransporterType<?> type, MinecraftServer server)
 	{
 		super(type, server);
 	}
@@ -45,11 +49,11 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 	}
 	
 	@Nullable
-	public GoauldTransportRingsEntity getTransporterEntity(MinecraftServer server)
+	public AncientTransportRingsEntity getTransporterEntity(MinecraftServer server)
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
-		if(level != null && level.getBlockEntity(blockPos) instanceof GoauldTransportRingsEntity transporter)
+		if(level != null && level.getBlockEntity(blockPos) instanceof AncientTransportRingsEntity transporter)
 			return transporter;
 		
 		return null;
@@ -67,6 +71,9 @@ public class GoauldBlockEntityTransportRings extends GoauldTransportRings implem
 			
 			this.allowInterdimensionalTransport = transporter.allowInterdimensionalTransport();
 		});
+		
+		// Make sure any changes are saved to the Block Entity List
+		updateBlockEntityList();
 	}
 	
 	//============================================================================================

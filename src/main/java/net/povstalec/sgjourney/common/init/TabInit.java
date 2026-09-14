@@ -10,6 +10,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
+import net.povstalec.sgjourney.common.blocks.SymbolBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
 import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
@@ -23,6 +25,7 @@ import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.items.*;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.List;
 
@@ -545,6 +548,20 @@ public class TabInit
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_RING_PANEL.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			
+			event.accept(SymbolBlock.localPointOfOrigin(BlockInit.SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(SymbolBlock.localPointOfOrigin(BlockInit.RED_SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			event.accept(SymbolBlock.localPointOfOrigin(BlockInit.STONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 		}
 	}
 }

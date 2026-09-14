@@ -34,6 +34,19 @@ public abstract class EnergyBlockItem extends BlockItem
 		this(block, properties, "tooltip.sgjourney.energy");
 	}
 	
+	public void setEnergy(ItemStack stack, long energy)
+	{
+		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
+		if(blockEntityTag == null)
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			blockEntityTag = new CompoundTag();
+			tag.put(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		}
+		
+		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, energy);
+	}
+	
 	public long getEnergy(ItemStack stack)
 	{
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);

@@ -169,13 +169,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	public ChatFormatting getChatFormatting()
 	{
-		return switch(this.getType())
-		{
-			case ADDRESS_7_CHEVRON -> ChatFormatting.GOLD;
-			case ADDRESS_8_CHEVRON -> ChatFormatting.LIGHT_PURPLE;
-			case ADDRESS_9_CHEVRON -> ChatFormatting.AQUA;
-			default -> ChatFormatting.GRAY;
-		};
+		return getType().getChatFormatting();
 	}
 	
 	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
@@ -431,18 +425,20 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	
 	
-	public enum Type
+	public enum Type implements Comparable<Address.Type>
 	{
-		ADDRESS_INVALID((byte) 0),
-		ADDRESS_9_CHEVRON((byte) 9),
-		ADDRESS_8_CHEVRON((byte) 8),
-		ADDRESS_7_CHEVRON((byte) 7);
+		ADDRESS_INVALID((byte) 0, ChatFormatting.GRAY),
+		ADDRESS_9_CHEVRON((byte) 9, ChatFormatting.AQUA),
+		ADDRESS_8_CHEVRON((byte) 8, ChatFormatting.LIGHT_PURPLE),
+		ADDRESS_7_CHEVRON((byte) 7, ChatFormatting.GOLD);
 		
 		private final byte value;
+		private final ChatFormatting chatFormatting;
 		
-		Type(byte value)
+		Type(byte value, ChatFormatting chatFormatting)
 		{
 			this.value = value;
+			this.chatFormatting = chatFormatting;
 		}
 		
 		public byte byteValue()
@@ -450,9 +446,9 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return value;
 		}
 		
-		public boolean below(Address.Type type)
+		public ChatFormatting getChatFormatting()
 		{
-			return this.byteValue() < type.byteValue();
+			return chatFormatting;
 		}
 		
 		public static Address.Type fromLength(int addressLength)
@@ -836,6 +832,11 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		@Nullable
 		private Address.Immutable generate9ChevronAddress(MinecraftServer server)
 		{
+			// Primary Stargate
+			Stargate primaryStargate = StargateNetwork.get(server).getPrimaryStargateInDimension(this.dimension);
+			if(primaryStargate != null)
+				return primaryStargate.get9ChevronAddress();
+			
 			List<Stargate> stargatesInDimension = StargateNetwork.get(server).getStargatesInDimension(this.dimension);
 			
 			if(stargatesInDimension.isEmpty())

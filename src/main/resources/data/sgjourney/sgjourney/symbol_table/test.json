@@ -1,0 +1,9 @@
+{
+	"symbols":
+	[
+		{ "symbol": "sgjourney:tauri", "weight": 1 },
+		{ "symbol": "sgjourney:abydos", "weight": 1 },
+		{ "symbol": { "symbols": "sgjourney:abydos", "min_symbol": 1, "max_symbol": 38 }, "weight": 1 },
+		{ "symbol": { "symbols": "sgjourney:lantea", "min_symbol": 1, "max_symbol": 38 }, "weight": 1 }
+	]
+}

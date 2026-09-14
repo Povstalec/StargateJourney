@@ -1,5 +1,5 @@
 {
-	"type": "minecraft:crafting_shaped",
+	"type": "sgjourney:nbt_retaining_shaped_recipe",
 	"category": "misc",
 	"pattern":
 	[

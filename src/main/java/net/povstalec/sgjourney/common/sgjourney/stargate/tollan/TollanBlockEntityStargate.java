@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.tollans;
+package net.povstalec.sgjourney.common.sgjourney.stargate.tollan;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -150,6 +150,9 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 			this.hasNetworkRestrictions = stargate.hasCachedNetworkRestrictions();
 			this.networks = stargate.getCachedNetworks();
 		});
+		
+		// Make sure any changes are saved to the Block Entity List
+		updateBlockEntityList();
 	}
 	
 	//============================================================================================

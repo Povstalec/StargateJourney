@@ -1,7 +1,9 @@
-package net.povstalec.sgjourney.common.sgjourney.transporter;
+package net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 import javax.annotation.Nullable;
 

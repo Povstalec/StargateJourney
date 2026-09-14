@@ -366,10 +366,10 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		
 		if(outputStack.isEmpty())
 		{
-			outputHandler.setStackInSlot(0, recipe.getResultItem());
+			outputHandler.setStackInSlot(0, recipe.assemble(simpleContainer));
 			return true;
 		}
-		else if(recipe.getResultItem().is(outputStack.getItem()) && ItemStack.tagMatches(recipe.getResultItem(), outputStack))
+		else if(recipe.getResultItem().is(outputStack.getItem()) && ItemStack.tagMatches(recipe.assemble(simpleContainer), outputStack))
 		{
 			outputStack.grow(1);
 			return true;

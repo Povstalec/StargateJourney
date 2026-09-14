@@ -7,7 +7,7 @@ import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTransporterConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.TransporterInit;
-import net.povstalec.sgjourney.common.sgjourney.transporter.AncientBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.ancient.AncientBlockEntityTransportRings;
 
 public class AncientTransportRingsEntity extends AbstractTransportRingsEntity<AncientBlockEntityTransportRings>
 {

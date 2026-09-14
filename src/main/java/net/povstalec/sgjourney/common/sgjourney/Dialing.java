@@ -267,6 +267,4 @@ public class Dialing
 	{
 		return TransporterNetwork.get(server).createConnection(transporterA, transporterB);
 	}
-	
-	
 }

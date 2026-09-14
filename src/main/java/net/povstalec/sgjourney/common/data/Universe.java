@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.data;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -10,7 +11,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -462,12 +462,24 @@ public class Universe extends SavedData
 		return List.of();
 	}
 	
-	public List<ResourceKey<Level>> getDimensionsWithGeneratedAddressRegions()
+	public List<ResourceKey<Level>> getDimensionsAddedToAddressTables()
 	{
 		List<ResourceKey<Level>> dimensions = new ArrayList<>();
-		for(SpaceLocation spaceLocation : SpaceLocation.getGeneratedAddressSpaceLocations())
+		for(SpaceLocation spaceLocation : SpaceLocation.getSpaceLocationsAdddedToAddressTables())
 		{
-			if(spaceLocation.generateInAddressTables() && spaceLocation.getAddressRegion() != null)
+			if(spaceLocation.getAddressRegion() != null)
+				dimensions.add(spaceLocation.getDimension());
+		}
+		
+		return dimensions;
+	}
+	
+	public List<ResourceKey<Level>> getDimensionsAddedToAddressTables(Predicate<SpaceLocation> filter)
+	{
+		List<ResourceKey<Level>> dimensions = new ArrayList<>();
+		for(SpaceLocation spaceLocation : SpaceLocation.getSpaceLocationsAdddedToAddressTables())
+		{
+			if(spaceLocation.getAddressRegion() != null && filter.test(spaceLocation))
 				dimensions.add(spaceLocation.getDimension());
 		}
 		

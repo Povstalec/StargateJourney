@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -130,7 +131,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return NaquadahLiquidizerSerializer.INSTANCE;
+			return RecipeTypeInit.LIQUIDIZING_SERIALIZER.get();
 		}
 		
 		@Override
@@ -194,7 +195,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<SimpleFluidContai
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return HeavyNaquadahLiquidizerSerializer.INSTANCE;
+			return RecipeTypeInit.HEAVY_LIQUIDIZING_SERIALIZER.get();
 		}
 		
 		@Override

@@ -38,7 +38,7 @@ import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 

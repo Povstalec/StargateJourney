@@ -6,7 +6,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
@@ -61,7 +60,7 @@ public class SpaceLocation
 	/// Map of Dimensions with Space Locations assigned to them
 	private static final Map<ResourceKey<Level>, SpaceLocation> DIMENSION_SPACE_LOCATIONS = new HashMap<>();
 	/// List of Dimensions that allow their Addresses to be found on Cartouches
-	private static final List<SpaceLocation> GENERATED_ADDRESS_DIMENSIONS = new ArrayList<>();
+	private static final List<SpaceLocation> ADDED_TO_ADDRESS_TABLES = new ArrayList<>();
 
 	/// For controlling gravity on the Client side
 	public static double currentGravity = 0;
@@ -391,7 +390,7 @@ public class SpaceLocation
 	{
 		TEMPLATES.clear();
 		DIMENSION_SPACE_LOCATIONS.clear();
-		GENERATED_ADDRESS_DIMENSIONS.clear();
+		ADDED_TO_ADDRESS_TABLES.clear();
 	}
 	
 	public static void printSpaceLocations()
@@ -406,9 +405,9 @@ public class SpaceLocation
 		}
 	}
 	
-	public static List<SpaceLocation> getGeneratedAddressSpaceLocations()
+	public static List<SpaceLocation> getSpaceLocationsAdddedToAddressTables()
 	{
-		return GENERATED_ADDRESS_DIMENSIONS;
+		return ADDED_TO_ADDRESS_TABLES;
 	}
 	
 	@Override
@@ -430,7 +429,7 @@ public class SpaceLocation
 		spaceLocation.dimension = dimension;
 		
 		if(spaceLocation.generateInAddressTables())
-			GENERATED_ADDRESS_DIMENSIONS.add(spaceLocation);
+			ADDED_TO_ADDRESS_TABLES.add(spaceLocation);
 		
 		return spaceLocation;
 	}

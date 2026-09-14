@@ -116,6 +116,7 @@ public class StargateJourney
             event.dataPackRegistry(AddressRegion.REGISTRY_KEY, AddressRegion.CODEC, AddressRegion.CODEC);
             event.dataPackRegistry(SpaceLocation.REGISTRY_KEY, SpaceLocation.CODEC, SpaceLocation.CODEC);
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
+            event.dataPackRegistry(SymbolTable.REGISTRY_KEY, SymbolTable.CODEC, SymbolTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });
         

@@ -1,35 +1,46 @@
 package net.povstalec.sgjourney.common.block_entities;
 
+import com.mojang.datafixers.util.Either;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraftforge.client.model.data.ModelData;
-import net.povstalec.sgjourney.client.ModelProperties;
-import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import org.jetbrains.annotations.NotNull;
-
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.ModelData;
+import net.povstalec.sgjourney.client.ModelProperties;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.SymbolTable;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public abstract class SymbolBlockEntity extends BlockEntity
+public abstract class SymbolBlockEntity extends BlockEntity implements StructureGenEntity
 {
+	public static final String SYMBOL_TABLE = "symbol_table";
 	public static final String SYMBOL = "Symbol";
 	public static final String SYMBOLS = "Symbols";
 	public static final String SYMBOL_NUMBER = "SymbolNumber";
 	
-	protected int symbolNumber = 0;
+	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
+	
+	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
+	
+	@Nullable
+	protected ResourceKey<SymbolTable> symbolTable = null;
+	
+	protected int symbolNumber = -1;
 	@Nullable
 	protected ResourceKey<PointOfOrigin> pointOfOrigin = null;
 	@Nullable
@@ -45,39 +56,50 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	{
 		if(!level.isClientSide())
 		{
+			if(generationStep == StructureGenEntity.Step.READY)
+				generate();
+			
 			if(pointOfOrigin == null)
 				setPointOfOriginFromLevel(level);
-			
 			if(symbols == null)
 				setSymbolsFromLevel(level);
+			
+			updateClient();
 		}
 		
 		super.onLoad();
 	}
 	
 	@Override
-    public void load(CompoundTag tag)
+    public void load(@NotNull CompoundTag tag)
     {
     	super.load(tag);
-    	
-    	if(tag.contains(SYMBOL_NUMBER))
-    		symbolNumber = tag.getInt(SYMBOL_NUMBER);
-    	
-    	if(tag.contains(SYMBOL))
-    		pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString(SYMBOL));
-    	
-    	if(tag.contains(SYMBOLS))
-    		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
+		
+		if(tag.contains(GENERATION_STEP, CompoundTag.TAG_BYTE))
+			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
+		
+		if(tag.contains(SYMBOL_TABLE))
+			symbolTable = Conversion.stringToSymbolTableKey(tag.getString(SYMBOL_TABLE));
+		
+		symbolNumber = tag.getInt(SYMBOL_NUMBER);
+		if(tag.contains(SYMBOL))
+			pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString(SYMBOL));
+		if(tag.contains(SYMBOLS))
+			symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
 	}
 	
 	@Override
     protected void saveAdditional(@NotNull CompoundTag tag)
 	{
-		tag.putInt(SYMBOL_NUMBER, symbolNumber);
+		if(generationStep != Step.GENERATED)
+			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
+		if(symbolTable != null)
+			tag.putString(SYMBOL_TABLE, symbolTable.location().toString());
+		
+		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		if(pointOfOrigin != null)
 			tag.putString(SYMBOL, pointOfOrigin.location().toString());
-		
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.location().toString());
 		
@@ -91,7 +113,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	}
 	
 	@Override
-	public CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag()
 	{
 		return this.saveWithoutMetadata();
 	}
@@ -171,6 +193,7 @@ public abstract class SymbolBlockEntity extends BlockEntity
 			return;
 		
 		this.pointOfOrigin = Universe.get(level).getPointOfOrigin(level.dimension());
+		setChanged();
 	}
 	
 	@Nullable
@@ -197,6 +220,74 @@ public abstract class SymbolBlockEntity extends BlockEntity
 	public ResourceKey<Symbols> getSymbols()
 	{
 		return this.symbols;
+	}
+	
+	public void setSymbolTable(@Nullable ResourceKey<SymbolTable> symbolTable)
+	{
+		this.symbolTable = symbolTable;
+		setChanged();
+	}
+	
+	@Nullable
+	public ResourceKey<SymbolTable> getSymbolTable()
+	{
+		return this.symbolTable;
+	}
+	
+	public void setSymbolFromSymbolTable()
+	{
+		SymbolTable symbolTable = SymbolTable.getSymbolTable(level, this.symbolTable);
+		Either<ResourceKey<PointOfOrigin>, SymbolTable.Symbol> eitherSymbol = SymbolTable.randomSymbol((ServerLevel) level, symbolTable);
+		
+		if(eitherSymbol != null)
+		{
+			eitherSymbol.ifLeft(pointOfOrigin ->
+			{
+				this.pointOfOrigin = pointOfOrigin;
+				this.symbolNumber = 0;
+			});
+			eitherSymbol.ifRight(symbol ->
+			{
+				this.symbols = symbol.symbols();
+				this.symbolNumber = level.getRandom().nextIntBetweenInclusive(symbol.minSymbol(), symbol.maxSymbol());
+			});
+		}
+		
+		this.symbolTable = null;
+		
+		this.setChanged();
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	public void setGenerationStep(Step step)
+	{
+		this.generationStep = step;
+	}
+	
+	@Override
+	public Step generationStep()
+	{
+		return generationStep;
+	}
+	
+	@Override
+	public void generateInStructure(WorldGenLevel level, RandomSource randomSource)
+	{
+		if(generationStep == Step.SETUP)
+			generationStep = Step.READY; // Marks the Cartouche as ready for generation
+	}
+	
+	public void generate()
+	{
+		if(symbolTable != null)
+			setSymbolFromSymbolTable();
+		
+		generationStep = Step.GENERATED;
+		setChanged();
 	}
 	
 	

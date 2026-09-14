@@ -75,29 +75,43 @@ public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<
 		this.gravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"), button -> engrave())
 			.bounds(leftPos + 121, topPos + 45, 56, 20).build();
 		
-		this.gravingButton.active = false;
-		this.gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.same_symbol")));
+		updateGravingButton();
 		this.addRenderableWidget(this.gravingButton);
 		
 		this.editBox = new EditBox(font, leftPos + 2, topPos + 44, 52, 20, Component.translatable("tooltip.sgjourney.symbol"));
 		this.editBox.setFilter(SymbolBlockGravingScreen::canParseAsPositiveNumber);
 		
 		this.editBox.setMaxLength(2);
-		this.editBox.setValue(Integer.toString(symbolNumber));
+		
+		if(menu.blockEntity.getSymbols() == null && menu.blockEntity.getPointOfOrigin() == null)
+		{
+			this.editBox.setValue("");
+		}
+		else
+			this.editBox.setValue(Integer.toString(symbolNumber));
+		
 		this.editBox.setResponder(text ->
 		{
-			int parsedNumber = text.isEmpty() ? 0 : Integer.parseInt(text);
-			
-			if(parsedNumber < Address.MIN_SYMBOL || parsedNumber > Address.MAX_SYMBOL)
+			if(text.isEmpty())
 			{
 				symbolNumber = -1;
-				gravingButton.active = false;
-				gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.out_of_bounds")));
+				updateGravingButton();
 			}
 			else
 			{
-				symbolNumber = parsedNumber;
-				updateGravingButton();
+				int parsedNumber = Integer.parseInt(text);
+				
+				if(parsedNumber < Address.MIN_SYMBOL || parsedNumber > Address.MAX_SYMBOL)
+				{
+					symbolNumber = -1;
+					gravingButton.active = false;
+					gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.out_of_bounds")));
+				}
+				else
+				{
+					symbolNumber = parsedNumber;
+					updateGravingButton();
+				}
 			}
 		});
 		
@@ -146,7 +160,12 @@ public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<
 		ServerboundGravingUpdatePacket packet = new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos());
 		
 		if(symbolNumber != menu.blockEntity.getSymbolNumber())
-			packet.withAddress(new Address.Immutable(symbolNumber));
+		{
+			if(symbolNumber >= 0)
+				packet.withAddress(new Address.Immutable(symbolNumber));
+			else
+				packet.withAddress(new Address.Immutable());
+		}
 		
 		if(symbolNumber == 0)
 		{

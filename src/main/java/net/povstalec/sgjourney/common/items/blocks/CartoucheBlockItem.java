@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -23,6 +20,8 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+
+import javax.annotation.Nullable;
 
 public class CartoucheBlockItem extends BlockItem
 {
@@ -114,13 +113,17 @@ public class CartoucheBlockItem extends BlockItem
 					cartouche.setAddress(Address.Dimension.loadFromCompoundTag(info, CartoucheBlockEntity.ADDRESS, CartoucheBlockEntity.DIMENSION, CartoucheBlockEntity.GALAXY));
 				else if(info.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_COMPOUND))
 					cartouche.setAddress(Address.Dimension.loadFromCompoundTag(info, CartoucheBlockEntity.ADDRESS));
-				else if(!info.contains(CartoucheBlockEntity.ADDRESS))
-					cartouche.setDimensionFromLevel(level);
 				
 				if(info.contains(CartoucheBlockEntity.ADDRESS_TABLE, Tag.TAG_STRING))
 				{
-					cartouche.setAddressTable(ResourceLocation.tryParse(info.getString(CartoucheBlockEntity.ADDRESS_TABLE)));
+					cartouche.setAddressTable(Conversion.stringToAddressTableKey(info.getString(CartoucheBlockEntity.ADDRESS_TABLE)));
 					cartouche.generate();
+				}
+				else if(info.contains(CartoucheBlockEntity.LOCAL_ADDRESS))
+				{
+					Address.Type type = Address.Type.fromLength(info.getByte(CartoucheBlockEntity.LOCAL_ADDRESS));
+					if(type != Address.Type.ADDRESS_INVALID)
+						cartouche.setDimensionAddressFromLevel(level, type);
 				}
 				
 				cartouche.tryGenerateAddress();

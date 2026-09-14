@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:red_sandstone_symbol" }
+	},
+	"result": { "item": "sgjourney:red_sandstone_cartouche" }
+}

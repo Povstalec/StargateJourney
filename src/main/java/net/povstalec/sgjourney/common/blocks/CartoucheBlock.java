@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -116,7 +118,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 				
 				if(blockEntity instanceof CartoucheBlockEntity cartouche)
 				{
-					Address address = cartouche.getAddress();
+					Address address = cartouche.getUpToDateAddress();
 					
 					if(address instanceof Address.Dimension dimensionAddress)
 						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
@@ -130,7 +132,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 						player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 					
 					if(cartouche.getAddressTable() != null)
-						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW));
+						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable().location())).withStyle(ChatFormatting.YELLOW));
 				}
 			}
 			return InteractionResult.SUCCESS;
@@ -144,7 +146,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	public abstract Block getBlock();
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, @NotNull ItemStack stack)
     {
     	Orientation orientation = state.getValue(ORIENTATION);
     	Direction direction = state.getValue(FACING);
@@ -154,7 +156,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
     
     @Override
-	public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public void playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, BlockState state, @NotNull Player player)
 	{
     	Direction direction = state.getValue(FACING);
     	Orientation orientation = state.getValue(ORIENTATION);
@@ -181,10 +183,9 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+    public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter getter, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
     {
-    	boolean displayDimension = true;
-    	String dimensionString = "";
+    	String dimensionString = null;
     	String symbolsString = "";
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -198,7 +199,6 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			}
     		else if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_INT_ARRAY))
     		{
-    			displayDimension = false;
     			int[] addressArray = blockEntityTag.getIntArray(CartoucheBlockEntity.ADDRESS);
     			Address address = new Address.Immutable(addressArray);
     			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
@@ -206,24 +206,41 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     		
     		if(blockEntityTag.contains(CartoucheBlockEntity.SYMBOLS))
 				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
-        	
-        	if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS_TABLE))
-        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheBlockEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
     	}
     	
-    	if(displayDimension)
+    	if(dimensionString != null)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimensionString)).withStyle(ChatFormatting.GREEN));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		if(blockEntityTag != null && blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS_TABLE))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheBlockEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-    	
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.LOCAL_ADDRESS))
+				tooltipComponents.add(localAddressComponent(Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS))));
+		}
     }
 	
+	public static Component localAddressComponent(Address.Type type)
+	{
+		MutableComponent component = switch(type)
+		{
+			case ADDRESS_7_CHEVRON -> Component.translatable("tooltip.sgjourney.local_7_chevron_address");
+			case ADDRESS_8_CHEVRON -> Component.translatable("tooltip.sgjourney.local_8_chevron_address");
+			case ADDRESS_9_CHEVRON -> Component.translatable("tooltip.sgjourney.local_9_chevron_address");
+			default -> Component.empty();
+		};
+		
+		return component.withStyle(type.getChatFormatting());
+	}
+	
 	@Override
-	public @NotNull PushReaction getPistonPushReaction(BlockState state)
+	public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state)
 	{
 		return PushReaction.BLOCK;
 	}
@@ -267,6 +284,18 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	{
 		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
 			cartouche.setAddress(address);
+	}
+	
+	
+	
+	public static ItemStack localAddressSetup(ItemLike item, Address.Type type)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putByte(CartoucheBlockEntity.LOCAL_ADDRESS, type.byteValue());
+		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		
+		return stack;
 	}
 	
 	

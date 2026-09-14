@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.tollans;
+package net.povstalec.sgjourney.common.sgjourney.stargate.tollan;
 
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;

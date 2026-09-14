@@ -40,14 +40,16 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 	public static final String SYMBOLS = "Symbols";
 	public static final String ADDRESS = "Address";
 	
+	public static final String LOCAL_ADDRESS = "local_address";
+	
 	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
 
 	@Nullable
-	protected ResourceLocation addressTable;
+	protected ResourceKey<AddressTable> addressTable = null;
 	
 	protected ResourceKey<Symbols> symbols = null;
 	@Nullable
-	protected Address address;
+	protected Address address = new Address.Immutable();
 	
 	public CartoucheBlockEntity(BlockEntityType<?> cartouche, BlockPos pos, BlockState state)
 	{
@@ -85,7 +87,7 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 			generationStep = StructureGenEntity.Step.fromByte(tag.getByte(GENERATION_STEP));
 		
 		if(tag.contains(ADDRESS_TABLE))
-    		addressTable = ResourceLocation.tryParse(tag.getString(ADDRESS_TABLE));
+    		addressTable = Conversion.stringToAddressTableKey(tag.getString(ADDRESS_TABLE));
     	if(tag.contains(SYMBOLS))
     		symbols = Conversion.stringToSymbols(tag.getString(SYMBOLS));
 		
@@ -104,7 +106,7 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 			tag.putByte(GENERATION_STEP, generationStep.byteValue());
 		
 		if(addressTable != null)
-			tag.putString(ADDRESS_TABLE, addressTable.toString());
+			tag.putString(ADDRESS_TABLE, addressTable.location().toString());
 		if(symbols != null)
 			tag.putString(SYMBOLS, symbols.location().toString());
 		if(address != null)
@@ -186,9 +188,9 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 	//************************************Getters and setters*************************************
 	//============================================================================================
 	
-	public void setDimension(ResourceLocation dimension)
+	public void setDimensionAddress(ResourceKey<Level> dimension, Address.Type type)
 	{
-		this.address = new Address.Dimension(Conversion.locationToDimension(dimension), Optional.empty());
+		this.address = new Address.Dimension(dimension, Optional.empty(), type);
 		setChanged();
 	}
 	
@@ -217,13 +219,20 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 		return this.address;
 	}
 	
-	public void setAddressTable(@Nullable ResourceLocation addressTable)
+	public Address getUpToDateAddress()
+	{
+		tryGenerateAddress();
+		
+		return getAddress();
+	}
+	
+	public void setAddressTable(@Nullable ResourceKey<AddressTable> addressTable)
 	{
 		this.addressTable = addressTable;
 	}
 	
 	@Nullable
-	public ResourceLocation getAddressTable()
+	public ResourceKey<AddressTable> getAddressTable()
 	{
 		return this.addressTable;
 	}
@@ -304,12 +313,12 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 		this.symbols = Universe.get(level).getSymbols(level.dimension());
 	}
 	
-	public void setDimensionFromLevel(Level level)
+	public void setDimensionAddressFromLevel(Level level, Address.Type type)
 	{
 		if(level.isClientSide())
 			return;
 		
-		setDimension(level.dimension().location());
+		setDimensionAddress(level.dimension(), type);
 	}
 	
 	//============================================================================================

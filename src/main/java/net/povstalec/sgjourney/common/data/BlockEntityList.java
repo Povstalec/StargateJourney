@@ -1,11 +1,5 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.HashMap;
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
@@ -25,9 +19,12 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.HashMap;
 
 /**
  * This class is designed to save all Block Entities along with their coordinates and dimensions. 
@@ -58,7 +55,7 @@ public class BlockEntityList extends SavedData
 	 * @return Stargate that got added if successful, null if unsuccessful
 	 */
 	@Nullable
-	public <SG extends BlockEntityStargate<?>> Stargate addStargate(AbstractStargateEntity<SG> stargateEntity)
+	public <SG extends BlockEntityStargate<?>> SG addStargate(AbstractStargateEntity<SG> stargateEntity)
 	{
 		Address.Immutable address = stargateEntity.get9ChevronAddress();
 		
@@ -69,7 +66,7 @@ public class BlockEntityList extends SavedData
 		}
 		
 		if(this.stargateMap.containsKey(address))
-			return this.stargateMap.get(address); // Returns an existing Stargate
+			stargateEntity.set9ChevronAddress(generate9ChevronAddress(stargateEntity.getLevel().getRandom())); // Assigns the Stargate a new Address
 		
 		if(stargateEntity.getLevel() == null)
 		{
@@ -161,7 +158,7 @@ public class BlockEntityList extends SavedData
 			address = Address.Immutable.randomAddress(8, Address.ADDRESS_GENERATION_SYMBOLS, randomSource.nextLong());
 		} while(containsStargate(address));
 		
-		return address;
+		return Address.Immutable.extendWithPointOfOrigin(address);
 	}
 	
 	@Nullable
@@ -184,15 +181,15 @@ public class BlockEntityList extends SavedData
 	 * @param transporterEntity Transporter Block Entity to add to the Transporter Network
 	 * @return Transporter that got added if successful, null if unsuccessful
 	 */
-	public <T extends BlockEntityTransporter<?>> Transporter addTransporter(AbstractTransporterEntity<T> transporterEntity)
+	public <T extends BlockEntityTransporter<?>> T addTransporter(AbstractTransporterEntity<T> transporterEntity)
 	{
 		if(!transporterEntity.getID().isValid())
-			transporterEntity.setID(generateTransporterID());
+			transporterEntity.setID(generateTransporterID(transporterEntity.getLevel().getRandom()));
 		
 		TransporterID transporterID = transporterEntity.getID();
 		
 		if(this.transporterMap.containsKey(transporterID))
-			return this.transporterMap.get(transporterID); // Returns an existing Transporter
+			transporterEntity.setID(generateTransporterID(transporterEntity.getLevel().getRandom())); // Assigns the Transporter a new ID
 		
 		if(transporterEntity.getLevel() == null)
 			return null;
@@ -270,13 +267,12 @@ public class BlockEntityList extends SavedData
 		throw new ClassCastException("Transporter " + transporterID + " is not an instance of class " + clazz + "!");
 	}
 	
-	public TransporterID.Immutable generateTransporterID()
+	public TransporterID.Immutable generateTransporterID(RandomSource randomSource)
 	{
-		Random random = new Random();
 		TransporterID.Immutable transporterID;
 		do
 		{
-			transporterID = TransporterID.Immutable.randomID(random.nextLong());
+			transporterID = TransporterID.Immutable.randomID(randomSource.nextLong());
 		} while(containsTransporter(transporterID));
 		
 		return transporterID;
@@ -448,7 +444,7 @@ public class BlockEntityList extends SavedData
 		catch(IllegalArgumentException e)
 		{
 			StargateJourney.LOGGER.error("{} cannot be transformed to Transporter ID, generating new one", id);
-			loadTransporterFromBlockEntity(generateTransporterID(), transporterTag, true);
+			loadTransporterFromBlockEntity(generateTransporterID(server.overworld().getRandom()), transporterTag, true);
 		}
 	}
 	

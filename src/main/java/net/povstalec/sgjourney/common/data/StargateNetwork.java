@@ -313,15 +313,18 @@ public final class StargateNetwork extends SavedData
 		return region.removeStargate(stargate);
 	}
 	
-	public void updateStargateEntity(AbstractStargateEntity<?> stargateEntity)
+	public void updateStargateInNetwork(@NotNull Stargate stargate)
+	{
+		stargate.update();
+		sortStargatesInRegion(stargate.getAddressRegionKey());
+	}
+	
+	public void updateStargateEntityInNetwork(AbstractStargateEntity<?> stargateEntity)
 	{
 		Stargate stargate = getStargate(stargateEntity.get9ChevronAddress());
 		
 		if(stargate != null)
-		{
-			stargate.update();
-			sortStargatesInRegion(stargate.getAddressRegionKey());
-		}
+			updateStargateInNetwork(stargate);
 	}
 	
 	public int getStargateCount()
@@ -425,6 +428,7 @@ public final class StargateNetwork extends SavedData
 		
 		// Sort Stargates in the entire Address Region
 		regionRun(addressRegionKey, regionStargates -> regionStargates.stargates.sort(null));
+		setDirty();
 	}
 	
 	@Nullable
@@ -504,6 +508,21 @@ public final class StargateNetwork extends SavedData
 	
 	@Nullable
 	public Stargate getPrimaryStargateFromDimension(ResourceKey<Level> dimension)
+	{
+		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
+		if(addressRegion == null)
+			return null;
+		
+		return getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
+	}
+	
+	/**
+	 * Like {@link #getPrimaryStargateFromDimension(ResourceKey) getPrimaryStargateFromDimension}, but will return null if the Primary Stargate is not located in the specified Dimension
+	 * @param dimension Dimension to look for the Primary Stargate in
+	 * @return Primary Stargate that's located in the specified Dimension, otherwise null
+	 */
+	@Nullable
+	public Stargate getPrimaryStargateInDimension(ResourceKey<Level> dimension)
 	{
 		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromDimension(dimension);
 		if(addressRegion == null)

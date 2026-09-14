@@ -17,7 +17,7 @@ public class Conversion
 	public static final ResourceKey<Registry<Level>> DIMENSION_KEY = ResourceKey.createRegistryKey(DIMENSION_LOCATION);
 	
 	@Nullable
-	public static ResourceKey<Level> locationToDimension(ResourceLocation location)
+	public static ResourceKey<Level> locationToDimension(@Nullable ResourceLocation location)
 	{
 		if(location != null)
 			return ResourceKey.create(DIMENSION_KEY, location);
@@ -26,9 +26,9 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<Level> stringToDimension(String dimensionString)
+	public static ResourceKey<Level> stringToDimension(@Nullable String dimensionString)
 	{
-		if(dimensionString.isEmpty())
+		if(dimensionString == null || dimensionString.isEmpty())
 			return null;
 		
 		ResourceLocation location = ResourceLocation.tryParse(dimensionString);
@@ -36,7 +36,7 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<PointOfOrigin> locationToPointOfOrigin(ResourceLocation location)
+	public static ResourceKey<PointOfOrigin> locationToPointOfOrigin(@Nullable ResourceLocation location)
 	{
 		if(location != null)
 			return ResourceKey.create(PointOfOrigin.REGISTRY_KEY, location);
@@ -45,9 +45,9 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<PointOfOrigin> stringToPointOfOrigin(String pointOfOriginString)
+	public static ResourceKey<PointOfOrigin> stringToPointOfOrigin(@Nullable String pointOfOriginString)
 	{
-		if(pointOfOriginString.isEmpty())
+		if(pointOfOriginString == null || pointOfOriginString.isEmpty())
 			return null;
 		
 		ResourceLocation location = ResourceLocation.tryParse(pointOfOriginString);
@@ -55,7 +55,7 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<Symbols> locationToSymbols(ResourceLocation location)
+	public static ResourceKey<Symbols> locationToSymbols(@Nullable ResourceLocation location)
 	{
 		if(location != null)
 			return ResourceKey.create(Symbols.REGISTRY_KEY, location);
@@ -64,9 +64,9 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<Symbols> stringToSymbols(String symbolsString)
+	public static ResourceKey<Symbols> stringToSymbols(@Nullable String symbolsString)
 	{
-		if(symbolsString.isEmpty())
+		if(symbolsString == null || symbolsString.isEmpty())
 			return null;
 		
 		ResourceLocation location = ResourceLocation.tryParse(symbolsString);
@@ -74,7 +74,7 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<Galaxy> locationToGalaxyKey(ResourceLocation location)
+	public static ResourceKey<Galaxy> locationToGalaxyKey(@Nullable ResourceLocation location)
 	{
 		if(location != null)
 			return ResourceKey.create(Galaxy.REGISTRY_KEY, location);
@@ -83,9 +83,9 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<Galaxy> stringToGalaxyKey(String galaxyString)
+	public static ResourceKey<Galaxy> stringToGalaxyKey(@Nullable String galaxyString)
 	{
-		if(galaxyString.isEmpty())
+		if(galaxyString == null || galaxyString.isEmpty())
 			return null;
 		
 		ResourceLocation location = ResourceLocation.tryParse(galaxyString);
@@ -93,7 +93,7 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<AddressRegion> locationToAddressRegionKey(ResourceLocation location)
+	public static ResourceKey<AddressRegion> locationToAddressRegionKey(@Nullable ResourceLocation location)
 	{
 		if(location != null)
 			return ResourceKey.create(AddressRegion.REGISTRY_KEY, location);
@@ -102,13 +102,51 @@ public class Conversion
 	}
 	
 	@Nullable
-	public static ResourceKey<AddressRegion> stringToAddressRegionKey(String addressRegionString)
+	public static ResourceKey<AddressRegion> stringToAddressRegionKey(@Nullable String addressRegionString)
 	{
-		if(addressRegionString.isEmpty())
+		if(addressRegionString == null || addressRegionString.isEmpty())
 			return null;
 		
 		ResourceLocation location = ResourceLocation.tryParse(addressRegionString);
 		return locationToAddressRegionKey(location);
+	}
+	
+	@Nullable
+	public static ResourceKey<AddressTable> locationToAddressTableKey(@Nullable ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(AddressTable.REGISTRY_KEY, location);
+		
+		return null;
+	}
+	
+	@Nullable
+	public static ResourceKey<AddressTable> stringToAddressTableKey(@Nullable String addressTableString)
+	{
+		if(addressTableString == null || addressTableString.isEmpty())
+			return null;
+		
+		ResourceLocation location = ResourceLocation.tryParse(addressTableString);
+		return locationToAddressTableKey(location);
+	}
+	
+	@Nullable
+	public static ResourceKey<SymbolTable> locationToSymbolTableKey(@Nullable ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(SymbolTable.REGISTRY_KEY, location);
+		
+		return null;
+	}
+	
+	@Nullable
+	public static ResourceKey<SymbolTable> stringToSymbolTableKey(@Nullable String symbolTableString)
+	{
+		if(symbolTableString == null || symbolTableString.isEmpty())
+			return null;
+		
+		ResourceLocation location = ResourceLocation.tryParse(symbolTableString);
+		return locationToSymbolTableKey(location);
 	}
 	
 	public static Vec3i intArrayToVec(int[] coordinates)

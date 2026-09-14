@@ -146,7 +146,10 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	
 	public long setEnergy(long energy)
 	{
+		long oldEnergy = this.energy;
 		this.energy = energy;
+		
+		onEnergyChanged(this.energy - oldEnergy, false);
 		
 		return energy;
 	}

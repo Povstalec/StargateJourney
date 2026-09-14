@@ -443,7 +443,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public void addStargateToNetwork()
 	{
 		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
-			set9ChevronAddress(Address.Immutable.extendWithPointOfOrigin(BlockEntityList.get(level).generate9ChevronAddress(level.getRandom())));
+			set9ChevronAddress(BlockEntityList.get(level).generate9ChevronAddress(level.getRandom()));
 		
 		StargateNetwork.get(level).addStargateEntity(this);
 		this.setChanged();
@@ -862,7 +862,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(level.isClientSide())
 			return;
 		
-		StargateNetwork.get(level).updateStargateEntity(this);
+		StargateNetwork.get(level).updateStargateEntityInNetwork(this);
 		setStargateState();
 	}
 	
@@ -1609,9 +1609,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			
 			if(dialedAddressLength < dialingAddress.getLength())
 			{
-				if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddress.getType().below(Address.Type.ADDRESS_8_CHEVRON))
+				if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 4 && dialingAddress.getType().compareTo(Address.Type.ADDRESS_8_CHEVRON) < 0)
 					return;
-				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddress.getType().below(Address.Type.ADDRESS_9_CHEVRON))
+				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddress.getType().compareTo(Address.Type.ADDRESS_9_CHEVRON) < 0)
 					return;
 				else
 					encodeChevron(dialingAddress.symbolAt(dialedAddressLength), true, false);

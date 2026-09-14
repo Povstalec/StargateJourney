@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -150,6 +151,9 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements Blo
 			this.hasNetworkRestrictions = stargate.hasCachedNetworkRestrictions();
 			this.networks = stargate.getCachedNetworks();
 		});
+		
+		// Make sure any changes are saved to the Block Entity List
+		updateBlockEntityList();
 	}
 	
 	//============================================================================================

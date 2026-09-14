@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -31,6 +32,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
@@ -105,6 +108,9 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 						text = Component.translatable("info.sgjourney.symbols").append(Component.literal(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
 					}
 					
+					if(symbolBlock.getSymbolTable() != null)
+						player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_table").append(Component.literal(": " + symbolBlock.getSymbolTable().location())).withStyle(ChatFormatting.YELLOW));
+					
 					player.sendSystemMessage(text);
 				}
 			}
@@ -161,8 +167,19 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			tooltipComponents.add(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
 			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
-    	
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_TABLE))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol_table").append(Component.literal(": " + blockEntityTag.getString(SymbolBlockEntity.SYMBOL_TABLE))).withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
+		}
     }
 	
 	protected abstract void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player);
@@ -195,7 +212,24 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 	{
 		// Using Address of length 1 to decide the symbol
 		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
-			symbolBlock.setSymbolNumber(address.symbolAt(0));
+		{
+			if(address.getLength() == 0)
+				symbolBlock.setSymbolNumber(-1);
+			else
+				symbolBlock.setSymbolNumber(address.symbolAt(0));
+		}
+	}
+	
+	
+	
+	public static ItemStack localPointOfOrigin(ItemLike item)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN, true);
+		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		
+		return stack;
 	}
 	
 	

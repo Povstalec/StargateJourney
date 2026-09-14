@@ -107,8 +107,7 @@ public abstract class CartoucheGravingScreen<M extends CartoucheGravingMenu<?>> 
 				})
 			.bounds(leftPos + 121, topPos + 109, 56, 20).build();
 		
-		this.gravingButton.active = false;
-		this.gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+		updateGravingButton();
 		this.addRenderableWidget(this.gravingButton);
 		
 		this.editBox = new EditBox(font, leftPos, topPos + 130, 176, 20, Component.translatable("tooltip.sgjourney.address"));

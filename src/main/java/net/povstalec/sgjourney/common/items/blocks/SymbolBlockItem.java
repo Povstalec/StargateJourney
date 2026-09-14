@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.items.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
@@ -67,20 +67,37 @@ public class SymbolBlockItem extends BlockItem
 	
 	private static boolean setupBlockEntity(Level level, BlockEntity baseEntity, CompoundTag info)
 	{
-		if(baseEntity instanceof SymbolBlockEntity cartouche)
+		if(baseEntity instanceof SymbolBlockEntity symbolBlock)
 		{
-			if(info.contains(SymbolBlockEntity.SYMBOL_NUMBER, CompoundTag.TAG_INT))
-				cartouche.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
+			StructureGenEntity.Step generationStep;
 			
-			if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
-				cartouche.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
+			if(info.contains(SymbolBlockEntity.GENERATION_STEP, Tag.TAG_BYTE))
+				generationStep = StructureGenEntity.Step.fromByte(info.getByte(SymbolBlockEntity.GENERATION_STEP));
 			else
-				cartouche.setPointOfOriginFromLevel(level);
+				generationStep = StructureGenEntity.Step.GENERATED;
 			
-			if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
-				cartouche.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
-			else
-				cartouche.setSymbolsFromLevel(level);
+			if(generationStep == StructureGenEntity.Step.GENERATED)
+			{
+				if(info.contains(SymbolBlockEntity.SYMBOL_TABLE, Tag.TAG_STRING))
+				{
+					symbolBlock.setSymbolTable(Conversion.stringToSymbolTableKey(info.getString(SymbolBlockEntity.SYMBOL_TABLE)));
+					symbolBlock.generate();
+				}
+				else if(info.contains(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN))
+					symbolBlock.setSymbolNumber(0);
+				else if(info.contains(SymbolBlockEntity.SYMBOL_NUMBER, CompoundTag.TAG_INT))
+					symbolBlock.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
+				
+				if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
+					symbolBlock.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
+				else if(symbolBlock.getPointOfOrigin() == null)
+					symbolBlock.setPointOfOriginFromLevel(level);
+				
+				if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
+					symbolBlock.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));
+				else if(symbolBlock.getSymbols() == null)
+					symbolBlock.setSymbolsFromLevel(level);
+			}
 		}
 		
 		return false;
