@@ -2,5 +2,6 @@
 	"name": "galaxy.sgjourney.andromeda",
 	"type": "sgjourney:large_galaxy",
 	"default_symbols": "sgjourney:galaxy_andromeda",
-	"symbol_prefix": 22
+	"symbol_prefix": 22,
+	"point_of_origin_table": "sgjourney:galaxy_andromeda"
 }

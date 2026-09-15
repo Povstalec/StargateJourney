@@ -111,6 +111,9 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					if(symbolBlock.getSymbolTable() != null)
 						player.sendSystemMessage(Component.translatable("info.sgjourney.symbol_table").append(Component.literal(": " + symbolBlock.getSymbolTable().location())).withStyle(ChatFormatting.YELLOW));
 					
+					if(symbolBlock.getSymbolTable() != null)
+						player.sendSystemMessage(Component.translatable("info.sgjourney.point_of_origin_table").append(Component.literal(": " + symbolBlock.getSymbolTable().location())).withStyle(ChatFormatting.GOLD));
+					
 					player.sendSystemMessage(text);
 				}
 			}
@@ -171,7 +174,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_TABLE))
-				tooltipComponents.add(Component.translatable("tooltip.sgjourney.symbol_table").append(Component.literal(": " + blockEntityTag.getString(SymbolBlockEntity.SYMBOL_TABLE))).withStyle(ChatFormatting.YELLOW));
+				tooltipComponents.add(Component.translatable("info.sgjourney.symbol_table").append(Component.literal(": " + blockEntityTag.getString(SymbolBlockEntity.SYMBOL_TABLE))).withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE))
+				tooltipComponents.add(Component.translatable("info.sgjourney.point_of_origin_table").append(Component.literal(": " + blockEntityTag.getString(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE))).withStyle(ChatFormatting.GOLD));
 			
 			if(blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
 				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
@@ -179,6 +185,9 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			
 			if(blockEntityTag.contains(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.random_point_of_origin").withStyle(ChatFormatting.DARK_GREEN));
 		}
     }
 	
@@ -227,6 +236,16 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
 		blockEntityTag.putBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN, true);
+		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		
+		return stack;
+	}
+	
+	public static ItemStack randomPointOfOrigin(ItemLike item)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN, true);
 		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
 		
 		return stack;

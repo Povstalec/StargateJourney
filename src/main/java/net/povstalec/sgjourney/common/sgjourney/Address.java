@@ -428,9 +428,9 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public enum Type implements Comparable<Address.Type>
 	{
 		ADDRESS_INVALID((byte) 0, ChatFormatting.GRAY),
-		ADDRESS_9_CHEVRON((byte) 9, ChatFormatting.AQUA),
+		ADDRESS_7_CHEVRON((byte) 7, ChatFormatting.GOLD),
 		ADDRESS_8_CHEVRON((byte) 8, ChatFormatting.LIGHT_PURPLE),
-		ADDRESS_7_CHEVRON((byte) 7, ChatFormatting.GOLD);
+		ADDRESS_9_CHEVRON((byte) 9, ChatFormatting.AQUA);
 		
 		private final byte value;
 		private final ChatFormatting chatFormatting;
@@ -856,12 +856,17 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			};
 		}
 		
-		public void generate(MinecraftServer server)
+		public boolean generate(MinecraftServer server)
 		{
 			Address address = generateAddress(server);
 			
-			if(address != null)
+			if(address != null && !Arrays.equals(this.addressArray, address.addressArray))
+			{
 				this.addressArray = address.addressArray.clone();
+				return true;
+			}
+			
+			return false;
 		}
 		
 		@Override

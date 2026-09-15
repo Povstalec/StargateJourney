@@ -78,20 +78,31 @@ public class SymbolBlockItem extends BlockItem
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
-				if(info.contains(SymbolBlockEntity.SYMBOL_TABLE, Tag.TAG_STRING))
+				if(info.contains(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE, Tag.TAG_STRING))
+				{
+					symbolBlock.setPointOfOriginTable(Conversion.stringToPointOfOriginTableKey(info.getString(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE)));
+					symbolBlock.generate();
+				}
+				else if(info.contains(SymbolBlockEntity.SYMBOL_TABLE, Tag.TAG_STRING))
 				{
 					symbolBlock.setSymbolTable(Conversion.stringToSymbolTableKey(info.getString(SymbolBlockEntity.SYMBOL_TABLE)));
 					symbolBlock.generate();
 				}
 				else if(info.contains(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN))
+				{
+					symbolBlock.setPointOfOriginFromLevel(level);
 					symbolBlock.setSymbolNumber(0);
+				}
+				else if(info.contains(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN))
+				{
+					symbolBlock.setRandomPointOfOrigin();
+					symbolBlock.setSymbolNumber(0);
+				}
 				else if(info.contains(SymbolBlockEntity.SYMBOL_NUMBER, CompoundTag.TAG_INT))
 					symbolBlock.setSymbolNumber(info.getInt(SymbolBlockEntity.SYMBOL_NUMBER));
 				
 				if(info.contains(SymbolBlockEntity.SYMBOL, CompoundTag.TAG_STRING))
 					symbolBlock.setPointOfOrigin(Conversion.stringToPointOfOrigin(info.getString(SymbolBlockEntity.SYMBOL)));
-				else if(symbolBlock.getPointOfOrigin() == null)
-					symbolBlock.setPointOfOriginFromLevel(level);
 				
 				if(info.contains(SymbolBlockEntity.SYMBOLS, CompoundTag.TAG_STRING))
 					symbolBlock.setSymbols(Conversion.stringToSymbols(info.getString(SymbolBlockEntity.SYMBOLS)));

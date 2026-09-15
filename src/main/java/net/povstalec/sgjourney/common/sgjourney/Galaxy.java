@@ -1,11 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.*;
-import java.util.function.Predicate;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
@@ -17,9 +13,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.GalaxyInit;
-import net.povstalec.sgjourney.common.misc.Conversion;
 
 import javax.annotation.Nullable;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class Galaxy
 {
@@ -33,7 +30,7 @@ public class Galaxy
 	public static final String CAN_GENERATE_ADDRESS_REGIONS = "can_generate_address_regions";
 	
 	public static final String ADDRESS_REGIONS = "address_region";
-	public static final String POINTS_OF_ORIGIN = "points_of_origin";
+	public static final String POINT_OF_ORIGIN_TABLE = "point_of_origin_table";
 	
 	public static final int DEFAULT_SYMBOL_PREFIX = 3; // Symbol 3 (Virgo) as a reference to the Virgo cluster of galaxies
 	
@@ -42,6 +39,7 @@ public class Galaxy
     		GalaxyInit.CODEC.fieldOf(TYPE).forGetter(galaxy -> galaxy.type),
 			Symbols.RESOURCE_KEY_CODEC.fieldOf(DEFAULT_SYMBOLS).forGetter(galaxy -> galaxy.defaultSymbols),
 			Codec.intRange(1, Address.MAX_SYMBOL).optionalFieldOf(SYMBOL_PREFIX, DEFAULT_SYMBOL_PREFIX).forGetter(galaxy -> galaxy.symbolPrefix),
+			PointOfOriginTable.RESOURCE_KEY_CODEC.optionalFieldOf(POINT_OF_ORIGIN_TABLE).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.pointOfOriginTable)),
 			Codec.BOOL.optionalFieldOf(CAN_GENERATE_ADDRESS_REGIONS, false).forGetter(galaxy -> galaxy.canGenerateAddressRegions)
 			).apply(instance, Galaxy::new));
 	
@@ -54,16 +52,18 @@ public class Galaxy
 	public final boolean canGenerateAddressRegions;
 	
 	private final Map<Address.Immutable, AddressRegion> addressRegions;
-	private final List<ResourceKey<PointOfOrigin>> pointsOfOrigin;
+	@Nullable
+	private final ResourceKey<PointOfOriginTable> pointOfOriginTable;
 	
 	// Constructor made specifically for the codec
-	private Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix, boolean canGenerateAddressRegions)
+	private Galaxy(String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix, Optional<ResourceKey<PointOfOriginTable>> pointOfOriginTable, boolean canGenerateAddressRegions)
 	{
-		this(null, name, type, defaultSymbols, symbolPrefix, canGenerateAddressRegions, new HashMap<>(), new ArrayList<>());
+		this(null, name, type, defaultSymbols, symbolPrefix, pointOfOriginTable.orElse(null), canGenerateAddressRegions, new HashMap<>());
 	}
 	
-	public Galaxy(ResourceKey<Galaxy> galaxyKey, String name, GalaxyType type, ResourceKey<Symbols> defaultSymbols, int symbolPrefix, boolean canGenerateAddressRegions,
-				   Map<Address.Immutable, AddressRegion> addressRegions, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
+	public Galaxy(ResourceKey<Galaxy> galaxyKey, String name, GalaxyType type,
+				  ResourceKey<Symbols> defaultSymbols, int symbolPrefix, ResourceKey<PointOfOriginTable> pointOfOriginTable,
+				  boolean canGenerateAddressRegions, Map<Address.Immutable, AddressRegion> addressRegions)
 	{
 		this.galaxyKey = galaxyKey;
 		
@@ -74,15 +74,15 @@ public class Galaxy
 		this.canGenerateAddressRegions = canGenerateAddressRegions;
 		
 		this.addressRegions = new HashMap<>(addressRegions);
-		this.pointsOfOrigin = new ArrayList<>(pointsOfOrigin);
+		this.pointOfOriginTable = pointOfOriginTable;
 		
 		this.addressRegions.forEach((address, addressRegion) -> addressRegion.addToGalaxy(this, address));
 	}
 	
 	// Always copy the ones actually being used so they have a ResourceKey
-	public Galaxy copyTemplateWithKey(ResourceKey<Galaxy> galaxyKey, Map<Address.Immutable, AddressRegion> addressRegions, List<ResourceKey<PointOfOrigin>> pointsOfOrigin)
+	public Galaxy copyTemplateWithKey(ResourceKey<Galaxy> galaxyKey, Map<Address.Immutable, AddressRegion> addressRegions)
 	{
-		return new Galaxy(galaxyKey, this.name, this.type, this.defaultSymbols, this.symbolPrefix, this.canGenerateAddressRegions, addressRegions, pointsOfOrigin);
+		return new Galaxy(galaxyKey, this.name, this.type, this.defaultSymbols, this.symbolPrefix, this.pointOfOriginTable, this.canGenerateAddressRegions, addressRegions);
 	}
 	
 	public ResourceKey<Galaxy> getResourceKey()
@@ -98,6 +98,12 @@ public class Galaxy
 	public ResourceKey<Symbols> getDefaultSymbols()
 	{
 		return defaultSymbols;
+	}
+	
+	@Nullable
+	public ResourceKey<PointOfOriginTable> getPointOfOriginTable()
+	{
+		return pointOfOriginTable;
 	}
 	
 	// Address Region
@@ -173,24 +179,16 @@ public class Galaxy
 	
 	// Points of Origin
 	
-	public void addPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
+	public ResourceKey<PointOfOrigin> getRandomPointOfOrigin(RandomSource randomSource)
 	{
-		if(!this.pointsOfOrigin.contains(pointOfOrigin))
-			this.pointsOfOrigin.add(pointOfOrigin);
-	}
-	
-	public ResourceKey<PointOfOrigin> getRandomPointOfOrigin(long seed)
-	{
-		int size = this.pointsOfOrigin.size();
+		PointOfOriginTable pointOfOriginTable = PointOfOriginTable.getPointOfOriginTable(this.pointOfOriginTable);
 		
-		if(size < 1)
-			return PointOfOrigin.defaultPointOfOrigin();
+		ResourceKey<PointOfOrigin> pointOfOrigin = PointOfOriginTable.randomPointOfOrigin(randomSource, pointOfOriginTable);
 		
-		Random random = new Random(seed);
+		if(pointOfOrigin != null)
+			return pointOfOrigin;
 		
-		int randomValue = random.nextInt(0, size);
-		
-		return this.pointsOfOrigin.get(randomValue);
+		return PointOfOrigin.defaultPointOfOrigin();
 	}
 	
 	// Other
@@ -216,15 +214,6 @@ public class Galaxy
 				addressRegionsTag.putIntArray(address.toString(), addressRegion.getExtragalacticAddress().toArray()));
 		
 		galaxyTag.put(ADDRESS_REGIONS, addressRegionsTag);
-		
-		CompoundTag pointOfOriginTag = new CompoundTag();
-		for(ResourceKey<PointOfOrigin> pointOfOrigin : this.pointsOfOrigin)
-		{
-			String pointOfOriginString = pointOfOrigin.location().toString();
-			pointOfOriginTag.putString(pointOfOriginString, pointOfOriginString);
-		}
-		
-		galaxyTag.put(POINTS_OF_ORIGIN, pointOfOriginTag);
 		
 		return galaxyTag;
 	}
@@ -253,14 +242,7 @@ public class Galaxy
 			}
 		}
 		
-		CompoundTag pointOfOriginTag = galaxyTag.getCompound(POINTS_OF_ORIGIN);
-		List<ResourceKey<PointOfOrigin>> pointsOfOrigin = new ArrayList<>();
-		for(String pointOfOriginString : pointOfOriginTag.getAllKeys())
-		{
-			pointsOfOrigin.add(Conversion.stringToPointOfOrigin(pointOfOriginString));
-		}
-		
-		galaxy = galaxyTemplate.copyTemplateWithKey(galaxyKey, galaxyAddressRegions, pointsOfOrigin);
+		galaxy = galaxyTemplate.copyTemplateWithKey(galaxyKey, galaxyAddressRegions);
 		
 		return galaxy;
 	}
@@ -272,16 +254,16 @@ public class Galaxy
 		return galaxy != null ? galaxy.getDefaultSymbols() : Symbols.defaultSymbols();
 	}
 	
-	public static ResourceKey<PointOfOrigin> randomOrDefaultPointOfOrigin(@Nullable Galaxy galaxy, long seed)
+	public static ResourceKey<PointOfOrigin> randomOrDefaultPointOfOrigin(@Nullable Galaxy galaxy, RandomSource randomSource)
 	{
-		return galaxy != null ? galaxy.getRandomPointOfOrigin(seed) : PointOfOrigin.defaultPointOfOrigin();
+		return galaxy != null ? galaxy.getRandomPointOfOrigin(randomSource) : PointOfOrigin.defaultPointOfOrigin();
 	}
 	
-	public static int getOrGenerateSymbolPrefix(@Nullable Galaxy galaxy, long seed)
+	public static int getOrGenerateSymbolPrefix(@Nullable Galaxy galaxy, RandomSource randomSource)
 	{
 		if(galaxy != null)
 			return galaxy.symbolPrefix;
 		
-		return new Random(seed).nextInt(1, Address.ADDRESS_GENERATION_SYMBOLS);
+		return randomSource.nextInt(1, Address.ADDRESS_GENERATION_SYMBOLS);
 	}
 }

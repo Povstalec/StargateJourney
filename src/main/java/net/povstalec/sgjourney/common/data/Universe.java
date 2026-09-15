@@ -1,17 +1,12 @@
 package net.povstalec.sgjourney.common.data;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -19,6 +14,12 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
 
 public class Universe extends SavedData
 {
@@ -67,7 +68,7 @@ public class Universe extends SavedData
 		registerGalaxies();
 		SpaceLocation.registerSpaceLocations(server);
 		
-		registerPointsOfOrigin();
+		PointOfOriginTable.registerPointOfOriginTables(server);
 		
 		registerAddressRegionsFromDataPacks();
 		generateAndRegisterSpaceLocationsAndAddressRegions();
@@ -141,7 +142,7 @@ public class Universe extends SavedData
 		
 		Set<Entry<ResourceKey<Galaxy>, Galaxy>> galaxySet = galaxyRegistry.entrySet();
 		galaxySet.forEach((galaxyEntry) ->
-				addGalaxy(galaxyEntry.getKey(), galaxyEntry.getValue().copyTemplateWithKey(galaxyEntry.getKey(), Map.of(), List.of())));
+				addGalaxy(galaxyEntry.getKey(), galaxyEntry.getValue().copyTemplateWithKey(galaxyEntry.getKey(), Map.of())));
 		StargateJourney.LOGGER.info("Galaxies registered");
 	}
 	
@@ -149,36 +150,20 @@ public class Universe extends SavedData
 	//**************************************Point of Origin***************************************
 	//============================================================================================
 	
-	public void addPointOfOrigin(Galaxy galaxy, ResourceKey<PointOfOrigin> pointOfOrigin)
+	public ResourceKey<PointOfOrigin> getRandomPointOfOriginFromDimension(ServerLevel level)
 	{
-		if(galaxy != null)
-			galaxy.addPointOfOrigin(pointOfOrigin);
-	}
-	
-	private void registerPointsOfOrigin()
-	{
-		RegistryAccess registries = server.registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		Set<Entry<ResourceKey<PointOfOrigin>, PointOfOrigin>> pointOfOriginSet = pointOfOriginRegistry.entrySet();
+		SpaceLocation spaceLocation = SpaceLocation.fromDimension(server, level.dimension());
 		
-		pointOfOriginSet.forEach((pointOfOriginEntry) -> 
-		{
-			PointOfOrigin pointOfOrigin = pointOfOriginEntry.getValue();
-			ResourceKey<PointOfOrigin> pointOfOriginKey = pointOfOriginEntry.getKey();
-			
-			for(ResourceKey<Galaxy> galaxyKey : pointOfOrigin.generatedGalaxies())
-			{
-				addPointOfOrigin(this.galaxyKeys.get(galaxyKey), pointOfOriginKey);
-			}
-		});
-	}
-	
-	public ResourceKey<PointOfOrigin> getRandomPointOfOriginFromDimension(ResourceKey<Level> dimension, long seed)
-	{
-		Galaxy galaxy = getGalaxyFromDimension(dimension);
+		PointOfOriginTable pointOfOriginTable = PointOfOriginTable.getPointOfOriginTable(spaceLocation.getPointOfOriginTable());
+		
+		ResourceKey<PointOfOrigin> pointOfOrigin = PointOfOriginTable.randomPointOfOrigin(level.getRandom(), pointOfOriginTable);
+		if(pointOfOrigin != null)
+			return pointOfOrigin;
+		
+		Galaxy galaxy = getGalaxyFromDimension(level.dimension());
 		
 		if(galaxy != null)
-			return galaxy.getRandomPointOfOrigin(seed);
+			return galaxy.getRandomPointOfOrigin(level.getRandom());
 		
 		return PointOfOrigin.defaultPointOfOrigin();
 	}
@@ -300,15 +285,14 @@ public class Universe extends SavedData
 	
 	public AddressRegion generateNewAddressRegion(ResourceKey<Level> dimension, List<Galaxy> galaxies)
 	{
-		long dimensionSeed = server.getWorldData().worldGenOptions().seed() + dimension.hashCode();
+		long dimensionSeed = Objects.hash(server.getWorldData().worldGenOptions().seed(), dimension.hashCode());
+		RandomSource randomSource = RandomSource.create(dimensionSeed);
+		
 		Galaxy galaxy = null;
 		if(!galaxies.isEmpty()) // If the list of Galaxies is not empty, choose a random Galaxy to assign this Solar System to
-		{
-			Random random = new Random(server.getWorldData().worldGenOptions().seed() + dimension.hashCode());
-			galaxy = galaxies.get(random.nextInt(0, galaxies.size()));
-		}
+			galaxy = galaxies.get(randomSource.nextInt(0, galaxies.size()));
 		
-		int symbolPrefix = Galaxy.getOrGenerateSymbolPrefix(galaxy, dimensionSeed);
+		int symbolPrefix = Galaxy.getOrGenerateSymbolPrefix(galaxy, randomSource);
 		
 		String dimensionName = dimension.location().toString();
 		
@@ -317,7 +301,7 @@ public class Universe extends SavedData
 		Address.Immutable extragalacticAddress = generateExtragalacticAddress(symbolPrefix, addressSeed);
 		
 		// Create Address Region
-		AddressRegion addressRegion = new AddressRegion(designationToResourceKey(systemName), systemName, Galaxy.randomOrDefaultPointOfOrigin(galaxy, dimensionSeed), Galaxy.getOrDefaultSymbols(galaxy), symbolPrefix, extragalacticAddress);
+		AddressRegion addressRegion = new AddressRegion(designationToResourceKey(systemName), systemName, Galaxy.randomOrDefaultPointOfOrigin(galaxy, randomSource), Galaxy.getOrDefaultSymbols(galaxy), symbolPrefix, extragalacticAddress);
 		
 		// Try assigning Address Region to a Galaxy
 		if(addAddressRegion(extragalacticAddress, addressRegion) && galaxy != null)

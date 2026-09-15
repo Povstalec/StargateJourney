@@ -72,6 +72,7 @@ import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOriginTable;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
@@ -109,6 +110,7 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		
 		SpaceLocation.registerSpaceLocations(server);
+		PointOfOriginTable.registerPointOfOriginTables(server);
 		
 		StargateNetwork.get(server).updateNetwork();
 		Universe.get(server).assignSpaceLocationsToAddressRegions();

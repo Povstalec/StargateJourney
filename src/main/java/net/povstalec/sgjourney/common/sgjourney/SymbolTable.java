@@ -7,16 +7,17 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.RandomSource;
 import net.povstalec.sgjourney.StargateJourney;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class SymbolTable
 {
-	public static final ResourceLocation SYMBOL_TABLES_LOCATION = new ResourceLocation(StargateJourney.MODID, "symbol_table");
+	public static final ResourceLocation SYMBOL_TABLES_LOCATION = StargateJourney.sgjourneyLocation("symbol_table");
 	public static final ResourceKey<Registry<SymbolTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_TABLES_LOCATION);
 	public static final Codec<ResourceKey<SymbolTable>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -36,18 +37,22 @@ public class SymbolTable
 		return symbols;
 	}
 	
-	public static SymbolTable getSymbolTable(Level level, @Nullable ResourceKey<SymbolTable> symbolTable)
+	@Nullable
+	public static SymbolTable getSymbolTable(MinecraftServer server, @Nullable ResourceKey<SymbolTable> symbolTable)
 	{
-		final RegistryAccess registries = level.getServer().registryAccess();
+		if(symbolTable == null)
+			return null;
+		
+		final RegistryAccess registries = server.registryAccess();
         final Registry<SymbolTable> registry = registries.registryOrThrow(SymbolTable.REGISTRY_KEY);
         
         return registry.get(symbolTable);
 	}
 	
 	@Nullable
-	public static Either<ResourceKey<PointOfOrigin>, Symbol> randomSymbol(ServerLevel level, SymbolTable symbolTable)
+	public static Either<ResourceKey<PointOfOrigin>, Symbol> randomSymbol(RandomSource randomSource, @Nullable SymbolTable symbolTable)
 	{
-		if(level == null || symbolTable == null)
+		if(symbolTable == null)
 			return null;
 		
 		WeightedSymbol output = null;
@@ -56,7 +61,7 @@ public class SymbolTable
 		for(WeightedSymbol weightedSymbol : symbolTable.getSymbols())
 		{
 			totalWeight += weightedSymbol.weight();
-			if(level.getRandom().nextFloat() <= (float) weightedSymbol.weight() / totalWeight)
+			if(randomSource.nextFloat() <= (float) weightedSymbol.weight() / totalWeight)
 				output = weightedSymbol;
 		}
 		
@@ -68,18 +73,48 @@ public class SymbolTable
 	
 	
 	
-	public record Symbol(ResourceKey<Symbols> symbols, int minSymbol, int maxSymbol)
+	public static class Symbol
 	{
+		@Nullable
+		private final ResourceKey<Symbols> symbols;
+		private final int minSymbol;
+		private final int maxSymbol;
+		
+		public Symbol(Optional<ResourceKey<Symbols>> symbols, int minSymbol, int maxSymbol)
+		{
+			if(minSymbol > maxSymbol)
+				throw new IllegalArgumentException("min_symbol (" + minSymbol + ") may not be more than max_symbol (" + maxSymbol + ")");
+			
+			this.symbols = symbols.orElse(null);
+			this.minSymbol = minSymbol;
+			this.maxSymbol = maxSymbol;
+		}
+		
 		public static final Codec<Symbol> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Symbols.RESOURCE_KEY_CODEC.fieldOf("symbols").forGetter(symbol -> symbol.symbols),
+			Symbols.RESOURCE_KEY_CODEC.optionalFieldOf("symbols").forGetter(symbol -> Optional.ofNullable(symbol.symbols)),
 			Codec.intRange(1, Address.MAX_SYMBOL).fieldOf("min_symbol").forGetter(symbol -> symbol.minSymbol),
 			Codec.intRange(1, Address.MAX_SYMBOL).fieldOf("max_symbol").forGetter(symbol -> symbol.maxSymbol)
 		).apply(instance, Symbol::new));
 		
-		public Symbol
+		@Nullable
+		public ResourceKey<Symbols> symbols()
 		{
-			if(minSymbol > maxSymbol)
-				throw new IllegalArgumentException("min_symbol (" + minSymbol + ") may not be more than max_symbol (" + maxSymbol + ")");
+			return symbols;
+		}
+		
+		public int minSymbol()
+		{
+			return minSymbol;
+		}
+		
+		public int maxSymbol()
+		{
+			return maxSymbol;
+		}
+		
+		public int getSymbolNumber(RandomSource randomSource)
+		{
+			return randomSource.nextIntBetweenInclusive(minSymbol, maxSymbol);
 		}
 	}
 	
@@ -89,7 +124,7 @@ public class SymbolTable
 	{
 		public static final Codec<WeightedSymbol> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.either(PointOfOrigin.RESOURCE_KEY_CODEC, Symbol.CODEC).fieldOf("symbol").forGetter(weightedSymbol -> weightedSymbol.eitherSymbol),
-			Codec.INT.fieldOf("weight").forGetter(weightedSymbol -> weightedSymbol.weight)
+			Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", 1).forGetter(weightedSymbol -> weightedSymbol.weight)
 		).apply(instance, WeightedSymbol::new));
 		
 		public WeightedSymbol(ResourceKey<PointOfOrigin> pointOfOrigin, int weight)

@@ -870,6 +870,7 @@
 	"info.sgjourney.iris_durability": "Výdrž iris",
 	"info.sgjourney.address_table": "Tabulka adres",
 	"info.sgjourney.symbol_table": "Tabulka symbolů",
+	"info.sgjourney.point_of_origin_table": "Tabulka výchozích bodů",
 	"info.sgjourney.energy": "Energy",
 	"info.sgjourney.network_restrictions": "Síťová omezení",
 	"info.sgjourney.transfer_efficiency": "Účinnost přenosu",
@@ -910,6 +911,7 @@
 	"tooltip.sgjourney.dump_tank": "Vyprázdnit nádrž",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
+	"tooltip.sgjourney.random_point_of_origin": "Náhodný výchozí bod",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
 	"tooltip.sgjourney.local_7_chevron_address": "Lokální 7-chevronová adresa",
 	"tooltip.sgjourney.local_8_chevron_address": "Lokální 8-chevronová adresa",
@@ -1004,7 +1006,6 @@
 	"tooltip.sgjourney.dhd.dialing_menu": "Pravé kliknutí na horní část otevře ovládací menu",
 	"tooltip.sgjourney.dhd.crystal_menu": "Pravé kliknutí na strany nebo shift + pravé kliknutí na horní část otevře krystalové menu",
 	"tooltip.sgjourney.address_table": "Tabulka adres",
-	"tooltip.sgjourney.symbol_table": "Tabulka symbolů",
 	"tooltip.sgjourney.dhd.advanced_protocols": "Pokročilé protokoly",
 	"tooltip.sgjourney.dhd.advanced_protocols.description": "Pokročilé protokoly ukončí spojení hvězdných bran, pokud se po 10 sekund nenajde poblíž žádný potenciální cestovatel a také umožňují automatické přemapování symbolů",
 	"tooltip.sgjourney.dhd.advanced_protocols.usage": "Pro aktivaci pokročilých protokolů umísti velký ovládací krystal do prostředního slotu na krystaly v DHD",

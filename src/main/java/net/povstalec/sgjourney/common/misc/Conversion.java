@@ -149,6 +149,25 @@ public class Conversion
 		return locationToSymbolTableKey(location);
 	}
 	
+	@Nullable
+	public static ResourceKey<PointOfOriginTable> locationToPointOfOriginTableKey(@Nullable ResourceLocation location)
+	{
+		if(location != null)
+			return ResourceKey.create(PointOfOriginTable.REGISTRY_KEY, location);
+		
+		return null;
+	}
+	
+	@Nullable
+	public static ResourceKey<PointOfOriginTable> stringToPointOfOriginTableKey(@Nullable String pointOfOriginTableString)
+	{
+		if(pointOfOriginTableString == null || pointOfOriginTableString.isEmpty())
+			return null;
+		
+		ResourceLocation location = ResourceLocation.tryParse(pointOfOriginTableString);
+		return locationToPointOfOriginTableKey(location);
+	}
+	
 	public static Vec3i intArrayToVec(int[] coordinates)
 	{
 		if(coordinates.length == 3)

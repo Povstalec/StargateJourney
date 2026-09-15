@@ -872,6 +872,7 @@
 	"info.sgjourney.iris_durability": "Iris Durability",
 	"info.sgjourney.address_table": "Address Table",
 	"info.sgjourney.symbol_table": "Symbol Table",
+	"info.sgjourney.point_of_origin_table": "Point of Origin Table",
 	"info.sgjourney.energy": "Energy",
 	"info.sgjourney.transfer_efficiency": "Transfer Efficiency",
 	"info.sgjourney.network_restrictions": "Network Restrictions",
@@ -912,6 +913,7 @@
 	"tooltip.sgjourney.dump_tank": "Dump Tank",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
+	"tooltip.sgjourney.random_point_of_origin": "Random Point of Origin",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
 	"tooltip.sgjourney.local_7_chevron_address": "Local 7-Chevron Address",
 	"tooltip.sgjourney.local_8_chevron_address": "Local 8-Chevron Address",
@@ -1007,7 +1009,6 @@
 	"tooltip.sgjourney.dhd.dialing_menu": "Right-Click on the top to open dialing menu",
 	"tooltip.sgjourney.dhd.crystal_menu": "Right-Click on the sides or Shift + Right-Click on the top to open crystal menu",
 	"tooltip.sgjourney.address_table": "Address Table",
-	"tooltip.sgjourney.symbol_table": "Symbol Table",
 	"tooltip.sgjourney.dhd.advanced_protocols": "Advanced Protocols",
 	"tooltip.sgjourney.dhd.advanced_protocols.description": "Advanced Protocols will close the Stargate connection if there is no potential traveler nearby for 10 seconds and allow for automatic symbol remapping",
 	"tooltip.sgjourney.dhd.advanced_protocols.usage": "Place a Large Control Crystal in the middle crystal slot of the DHD to activate Advanced Protocols",

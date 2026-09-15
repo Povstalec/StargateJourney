@@ -7,6 +7,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
@@ -18,7 +19,7 @@ import java.util.Map;
 
 public record AddressTable(boolean includeGeneratedAddresses, List<WeightedAddress> dimensions)
 {
-	public static final ResourceLocation ADDRESS_TABLES_LOCATION = new ResourceLocation(StargateJourney.MODID, "address_table");
+	public static final ResourceLocation ADDRESS_TABLES_LOCATION = StargateJourney.sgjourneyLocation("address_table");
 	public static final ResourceKey<Registry<AddressTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(ADDRESS_TABLES_LOCATION);
 	public static final Codec<ResourceKey<AddressTable>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
@@ -27,17 +28,20 @@ public record AddressTable(boolean includeGeneratedAddresses, List<WeightedAddre
 		WeightedAddress.CODEC.listOf().fieldOf("addresses").forGetter(AddressTable::dimensions)
 	).apply(instance, AddressTable::new));
 	
-	
-	public static AddressTable getAddressTable(Level level, @Nullable ResourceKey<AddressTable> addressTable)
+	@Nullable
+	public static AddressTable getAddressTable(MinecraftServer server, @Nullable ResourceKey<AddressTable> addressTable)
 	{
-		final RegistryAccess registries = level.getServer().registryAccess();
+		if(addressTable == null)
+			return null;
+		
+		final RegistryAccess registries = server.registryAccess();
 		final Registry<AddressTable> registry = registries.registryOrThrow(AddressTable.REGISTRY_KEY);
 		
 		return registry.get(addressTable);
 	}
 	
 	@Nullable
-	public static Address randomAddress(ServerLevel level, AddressTable addressTable)
+	public static Address randomAddress(@Nullable ServerLevel level, @Nullable AddressTable addressTable)
 	{
 		if(level == null || addressTable == null)
 			return null;
@@ -112,7 +116,7 @@ public record AddressTable(boolean includeGeneratedAddresses, List<WeightedAddre
 	{
 		public static final Codec<WeightedAddress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.either(Address.Dimension.CODEC, Address.Immutable.CODEC).fieldOf("address").forGetter(weightedAddress -> weightedAddress.addressDimension),
-			Codec.INT.fieldOf("weight").forGetter(weightedAddress -> weightedAddress.weight)
+			Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("weight", 1).forGetter(weightedAddress -> weightedAddress.weight)
 		).apply(instance, WeightedAddress::new));
 		
 		public WeightedAddress(Address.Dimension dimensionAddress, int weight)

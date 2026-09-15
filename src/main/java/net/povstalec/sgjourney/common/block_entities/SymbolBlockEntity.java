@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
@@ -20,6 +19,7 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOriginTable;
 import net.povstalec.sgjourney.common.sgjourney.SymbolTable;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
@@ -28,17 +28,21 @@ import javax.annotation.Nullable;
 
 public abstract class SymbolBlockEntity extends BlockEntity implements StructureGenEntity
 {
-	public static final String SYMBOL_TABLE = "symbol_table";
 	public static final String SYMBOL = "Symbol";
 	public static final String SYMBOLS = "Symbols";
 	public static final String SYMBOL_NUMBER = "SymbolNumber";
 	
 	public static final String LOCAL_POINT_OF_ORIGIN = "local_point_of_origin";
+	public static final String RANDOM_POINT_OF_ORIGIN = "random_point_of_origin";
+	public static final String SYMBOL_TABLE = "symbol_table";
+	public static final String POINT_OF_ORIGIN_TABLE = "point_of_origin_table";
 	
 	protected StructureGenEntity.Step generationStep = StructureGenEntity.Step.GENERATED;
 	
 	@Nullable
 	protected ResourceKey<SymbolTable> symbolTable = null;
+	@Nullable
+	protected ResourceKey<PointOfOriginTable> pointOfOriginTable = null;
 	
 	protected int symbolNumber = -1;
 	@Nullable
@@ -60,7 +64,7 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 				generate();
 			
 			if(pointOfOrigin == null)
-				setPointOfOriginFromLevel(level);
+				setRandomPointOfOrigin();
 			if(symbols == null)
 				setSymbolsFromLevel(level);
 			
@@ -80,6 +84,8 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 		
 		if(tag.contains(SYMBOL_TABLE))
 			symbolTable = Conversion.stringToSymbolTableKey(tag.getString(SYMBOL_TABLE));
+		if(tag.contains(POINT_OF_ORIGIN_TABLE))
+			pointOfOriginTable = Conversion.stringToPointOfOriginTableKey(tag.getString(POINT_OF_ORIGIN_TABLE));
 		
 		symbolNumber = tag.getInt(SYMBOL_NUMBER);
 		if(tag.contains(SYMBOL))
@@ -96,6 +102,8 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 		
 		if(symbolTable != null)
 			tag.putString(SYMBOL_TABLE, symbolTable.location().toString());
+		if(pointOfOriginTable != null)
+			tag.putString(POINT_OF_ORIGIN_TABLE, pointOfOriginTable.location().toString());
 		
 		tag.putInt(SYMBOL_NUMBER, symbolNumber);
 		if(pointOfOrigin != null)
@@ -236,8 +244,11 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 	
 	public void setSymbolFromSymbolTable()
 	{
-		SymbolTable symbolTable = SymbolTable.getSymbolTable(level, this.symbolTable);
-		Either<ResourceKey<PointOfOrigin>, SymbolTable.Symbol> eitherSymbol = SymbolTable.randomSymbol((ServerLevel) level, symbolTable);
+		if(level.isClientSide())
+			return;
+		
+		SymbolTable symbolTable = SymbolTable.getSymbolTable(level.getServer(), this.symbolTable);
+		Either<ResourceKey<PointOfOrigin>, SymbolTable.Symbol> eitherSymbol = SymbolTable.randomSymbol(level.getRandom(), symbolTable);
 		
 		if(eitherSymbol != null)
 		{
@@ -248,14 +259,48 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 			});
 			eitherSymbol.ifRight(symbol ->
 			{
-				this.symbols = symbol.symbols();
-				this.symbolNumber = level.getRandom().nextIntBetweenInclusive(symbol.minSymbol(), symbol.maxSymbol());
+				this.symbols = symbol.symbols() != null ? symbol.symbols() : Universe.get(level).getSymbols(level.dimension());
+				this.symbolNumber = symbol.getSymbolNumber(level.getRandom());
 			});
 		}
 		
 		this.symbolTable = null;
-		
 		this.setChanged();
+	}
+	
+	public void setPointOfOriginTable(@Nullable ResourceKey<PointOfOriginTable> pointOfOriginTable)
+	{
+		this.pointOfOriginTable = pointOfOriginTable;
+		setChanged();
+	}
+	
+	@Nullable
+	public ResourceKey<PointOfOriginTable> getPointOfOriginTable()
+	{
+		return this.pointOfOriginTable;
+	}
+	
+	public void setPointOfOriginFromTable()
+	{
+		if(level.isClientSide())
+			return;
+		
+		PointOfOriginTable pointOfOriginTable = PointOfOriginTable.getPointOfOriginTable(this.pointOfOriginTable);
+		ResourceKey<PointOfOrigin> pointOfOrigin = PointOfOriginTable.randomPointOfOrigin(level.getRandom(), pointOfOriginTable);
+		
+		if(pointOfOrigin != null)
+			this.pointOfOrigin = pointOfOrigin;
+		
+		this.pointOfOriginTable = null;
+		setChanged();
+	}
+	
+	public void setRandomPointOfOrigin()
+	{
+		if(level.isClientSide())
+			return;
+		
+		setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 	}
 	
 	//============================================================================================
@@ -285,6 +330,8 @@ public abstract class SymbolBlockEntity extends BlockEntity implements Structure
 	{
 		if(symbolTable != null)
 			setSymbolFromSymbolTable();
+		if(pointOfOriginTable != null)
+			setPointOfOriginFromTable();
 		
 		generationStep = Step.GENERATED;
 		setChanged();

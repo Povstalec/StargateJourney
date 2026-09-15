@@ -7,7 +7,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -221,7 +220,11 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 	
 	public Address getUpToDateAddress()
 	{
-		tryGenerateAddress();
+		if(tryGenerateAddress())
+		{
+			updateClient();
+			setChanged();
+		}
 		
 		return getAddress();
 	}
@@ -288,7 +291,7 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 	
 	public void setAddressFromAddressTable()
 	{
-		AddressTable addressTable = AddressTable.getAddressTable(level, this.addressTable);
+		AddressTable addressTable = AddressTable.getAddressTable(level.getServer(), this.addressTable);
 		Address address = AddressTable.randomAddress((ServerLevel) level, addressTable);
 		
 		if(address != null)
@@ -299,10 +302,12 @@ public abstract class CartoucheBlockEntity extends BlockEntity implements Struct
 		this.setChanged();
 	}
 	
-	public void tryGenerateAddress()
+	public boolean tryGenerateAddress()
 	{
 		if(address instanceof Address.Dimension dimensionAddress)
-			dimensionAddress.generate(level.getServer());
+			return dimensionAddress.generate(level.getServer());
+		
+		return false;
 	}
 	
 	public void setSymbolsFromLevel(Level level)
