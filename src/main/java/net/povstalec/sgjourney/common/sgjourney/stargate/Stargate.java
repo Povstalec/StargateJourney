@@ -234,6 +234,27 @@ public interface Stargate extends Comparable<Stargate>
 	}
 	
 	/**
+	 * Instantly dials a specified Address
+	 * @param address Address to dial
+	 * @return Feedback with information regarding how this Stargate's dialing attempt went
+	 */
+	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh);
+	
+	/**
+	 * Disconnects the Stargate (respects disconnect side, so it will not disconnect the Stargate if it did not initiate the connection)
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback);
+	
+	/**
+	 * Disconnects the Stargate regardless of which Stargate initiated the connection
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback);
+	
+	/**
 	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
 	 * @param feedback FeedbackMessage with information regarding why this Stargate was reset and any additional info
 	 * @return Feedback with information regarding how this Stargate's reset attempt went

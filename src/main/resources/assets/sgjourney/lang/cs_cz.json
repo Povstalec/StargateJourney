@@ -1266,6 +1266,7 @@
 	"message.sgjourney.command.protected_block_set": "Chráněný blok nastaven",
 	"message.sgjourney.command.protected_block_unset": "Chráněný blok zrušen",
 	"message.sgjourney.command.not_protected_block": "Cíl není chránitelný blok",
+	"message.sgjourney.command.stargate_not_found": "Hvězdná brána nenalezena",
 	
 	"message.sgjourney.click_to_copy.address": "Klikněte pro zkopírování adresy",
 	"message.sgjourney.click_to_copy.transporter_id": "Klikněte pro zkopírování ID transportéru",

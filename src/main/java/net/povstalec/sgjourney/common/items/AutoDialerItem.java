@@ -10,6 +10,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 
 public class AutoDialerItem extends Item
 {
@@ -26,16 +27,19 @@ public class AutoDialerItem extends Item
 
 		ItemStack stack = player.getItemInHand(usedHand);
 		
-		AbstractStargateEntity<?> stargate = LocatorHelper.getNearestStargate(level, player.getOnPos().above(), 16);
-		if(stargate != null)
+		AbstractStargateEntity<?> stargateEntity = LocatorHelper.getNearestStargate(level, player.getOnPos().above(), 16);
+		if(stargateEntity != null)
 		{
-			if(stargate.isConnected())
-				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+			if(stargateEntity.isConnected())
+				stargateEntity.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
 			{
-				Address address = new Address.Immutable(26, 6, 14, 31, 11, 29);
-				stargate.setAddress(address);
-				stargate.engageStargate(address, false);
+				Stargate stargate = stargateEntity.getStargate();
+				if(stargate != null)
+				{
+					Address address = new Address.Immutable(26, 6, 14, 31, 11, 29);
+					stargate.instaDial(address, false);
+				}
 			}
 		}
 		

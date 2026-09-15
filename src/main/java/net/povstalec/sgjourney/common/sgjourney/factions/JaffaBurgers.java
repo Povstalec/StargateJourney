@@ -15,11 +15,12 @@ import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 public class JaffaBurgers extends AbstractFaction
 {
@@ -93,9 +94,7 @@ public class JaffaBurgers extends AbstractFaction
 		if(spawnerStargate.isConnected())
 			return false;
 		
-		spawnerStargate.encodeAddress(visitTarget);
-		
-		return !spawnerStargate.dial().feedback().isError();
+		return !spawnerStargate.instaDial(visitTarget, true).feedback().isError();
 	}
 	
 	public void finalizeVisit()

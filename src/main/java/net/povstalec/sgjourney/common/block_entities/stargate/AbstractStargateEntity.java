@@ -609,7 +609,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return engageStargate();
 	}
 	
-	public StargateInfo.FeedbackMessage engageStargate()
+	public StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh)
 	{
 		if(!getAddress().canBeDialed()) // Address is too short or does not contain a Point of Origin
 			return resetStargate(makeDialAttempt(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo()));
@@ -618,7 +618,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			if(!isObstructed())
 			{
 				updateInterfaceBlocks(EVENT_STARGATE_ENGAGED, getAddress().toList());
-				return setRecentFeedback(makeDialAttempt(engageStargate(getAddress(), true)));
+				return setRecentFeedback(makeDialAttempt(engageStargate(getAddress(), doKawoosh)));
 			}
 			else
 				return resetStargate(makeDialAttempt(StargateInfo.Feedback.SELF_OBSTRUCTED.withInfo()));
@@ -627,10 +627,31 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			return disconnectStargate(makeDialAttempt(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()));
 	}
 	
+	public StargateInfo.FeedbackMessage engageStargate()
+	{
+		return engageStargate(true);
+	}
+	
 	public StargateInfo.FeedbackMessage makeDialAttempt(StargateInfo.FeedbackMessage feedback)
 	{
 		dhdCache.ifPresent(dhd -> dhd.onDialAttempt(feedback, getAddress()));
 		return feedback;
+	}
+	
+	public StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh)
+	{
+		StargateInfo.FeedbackMessage feedback = resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+		if(feedback.feedback().isError())
+			return feedback;
+		
+		for(int i = 0; i < address.getLength(); i++)
+		{
+			feedback = directEngageSymbol(address.symbolAt(i), false);
+			if(feedback.feedback().isError())
+				return feedback;
+		}
+		
+		return engageStargate(doKawoosh);
 	}
 	
 	public void chevronSound(short chevron, boolean incoming, boolean open, boolean encode)

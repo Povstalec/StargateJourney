@@ -225,7 +225,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		{
 			if(!isRotating())
 				startRotation(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirection(address.getLength()));
+						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirectionClockwise(address.getLength()));
 			
 			if(rotation == desiredRotation)
 				super.directEngageSymbol(getCurrentSymbol(), canEngage);

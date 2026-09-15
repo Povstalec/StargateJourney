@@ -5,14 +5,19 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
 
 public class AddressArgumentType implements ArgumentType<Address.Immutable>
 {
@@ -22,11 +27,16 @@ public class AddressArgumentType implements ArgumentType<Address.Immutable>
 	private static final Collection<String> EXAMPLE_INVALID = Arrays.asList("-");
 	public static final SimpleCommandExceptionType ERROR_NOT_COMPLETE = new SimpleCommandExceptionType(Component.translatable("sgjourney.argument.address.incomplete"));
 	
-	private Address.Type addressType;
+	private final Address.Type addressType;
 	
 	public AddressArgumentType(Address.Type addressType)
 	{
 		this.addressType = addressType;
+	}
+	
+	public AddressArgumentType()
+	{
+		this(Address.Type.ADDRESS_INVALID);
 	}
 	
 	public Address.Type type()
@@ -39,11 +49,21 @@ public class AddressArgumentType implements ArgumentType<Address.Immutable>
 	{
 		Address.Immutable address = Address.Immutable.read(reader);
 		
+		// Invalid Address means that there is no constraint for Address length
+		if(addressType == Address.Type.ADDRESS_INVALID && address.getType() != Address.Type.ADDRESS_INVALID)
+			return address;
+		
 		if(address.getType() == addressType)
 			return address;
 		
 		throw ERROR_NOT_COMPLETE.createWithContext(reader);
 	}
+	
+	/*@Override
+	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder p_88818_)
+	{
+		return context.getSource() instanceof SharedSuggestionProvider ? SharedSuggestionProvider.suggestResource(((SharedSuggestionProvider)context.getSource()).levels().stream().map(ResourceKey::location), p_88818_) : Suggestions.empty();
+	}*/
 	
 	public static Address.Immutable getAddress(CommandContext<CommandSourceStack> context, String string)
 	{

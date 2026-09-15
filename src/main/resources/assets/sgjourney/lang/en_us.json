@@ -1270,6 +1270,7 @@
 	"message.sgjourney.command.protected_block_set": "Protected Block set",
 	"message.sgjourney.command.protected_block_unset": "Protected Block unset",
 	"message.sgjourney.command.not_protected_block": "Target is not a protectable Block",
+	"message.sgjourney.command.stargate_not_found": "Stargate not found",
 	
 	"message.sgjourney.click_to_copy.address": "Click to copy Address",
 	"message.sgjourney.click_to_copy.transporter_id": "Click to copy Transporter ID",

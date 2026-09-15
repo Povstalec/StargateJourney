@@ -143,13 +143,6 @@ public interface SpawnerStargate extends Stargate
 	@Override
 	default void tick() {}
 	
-	//TODO Make an actual dialing method instead of the one below
-	
-	default StargateInfo.FeedbackMessage dial()
-	{
-		return Dialing.dialStargate(getServer(), this, getAddress(), true, true/*Only search for loaded Stargates*/);
-	}
-	
 	@Override
 	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{

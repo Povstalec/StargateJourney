@@ -291,8 +291,11 @@ public class ItemInit
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));
 	
-	/*public static final RegistryObject<AutoDialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
-			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));*/
+	public static final RegistryObject<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
+		() -> new AutoDialerItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).fireResistant()));
+	
+	/*public static final RegistryObject<DialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
+			() -> new DialerItem(new Item.Properties().stacksTo(1)));*/
 	
 	// Shielding
 	public static final RegistryObject<Item> STARGATE_SHIELDING_RING = ITEMS.register("stargate_shielding_ring", 

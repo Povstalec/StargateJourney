@@ -83,6 +83,21 @@ public class CommandInit
 										.executes(CommandInit::getStargates)))));
 		
 		dispatcher.register(Commands.literal(StargateJourney.MODID)
+			.then(Commands.literal(STARGATE_NETWORK)
+				.then(Commands.literal("dial").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+					.then(Commands.argument("stargate_address", new AddressArgumentType(Address.Type.ADDRESS_9_CHEVRON))
+						.then(Commands.argument("address", new AddressArgumentType())
+							.then(Commands.argument("do_kawoosh", BoolArgumentType.bool())
+								.executes(CommandInit::dialStargate)))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
+			.then(Commands.literal(STARGATE_NETWORK)
+				.then(Commands.literal("disconnect").requires(commandSourceStack -> commandSourceStack.hasPermission(2))
+					.then(Commands.argument("stargate_address", new AddressArgumentType(Address.Type.ADDRESS_9_CHEVRON))
+						.then(Commands.argument("bypass", BoolArgumentType.bool())
+							.executes(CommandInit::disconnectStargate))))));
+		
+		dispatcher.register(Commands.literal(StargateJourney.MODID)
 				.then(Commands.literal(STARGATE_NETWORK)
 						.then(Commands.literal("version").requires(commandSourceStack -> commandSourceStack.hasPermission(0))
 								.executes(CommandInit::getStargateNetworkVersion))));
@@ -299,6 +314,45 @@ public class CommandInit
 		}
 		else
 			context.getSource().sendSystemMessage(Component.translatable("message.sgjourney.command.get_stargates.no_stargates", dimensionComponent(dimension)));
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int dialStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getLevel();
+		Address.Immutable stargateAddress = AddressArgumentType.getAddress(context, "stargate_address");
+		Address.Immutable address = AddressArgumentType.getAddress(context, "address");
+		boolean doKawoosh = BoolArgumentType.getBool(context, "do_kawoosh");
+		
+		Stargate stargate = StargateNetwork.get(level).getStargate(stargateAddress);
+		if(stargate != null)
+			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
+				.append(Component.literal(": ").append(stargate.instaDial(address, doKawoosh).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
+		else
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
+		
+		return Command.SINGLE_SUCCESS;
+	}
+	
+	private static int disconnectStargate(CommandContext<CommandSourceStack> context) throws CommandSyntaxException
+	{
+		Level level = context.getSource().getLevel();
+		Address.Immutable stargateAddress = AddressArgumentType.getAddress(context, "stargate_address");
+		boolean bypass = BoolArgumentType.getBool(context, "bypass");
+		
+		Stargate stargate = StargateNetwork.get(level).getStargate(stargateAddress);
+		if(stargate != null)
+		{
+			StargateInfo.FeedbackMessage feedback = bypass ?
+				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
+				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+			
+			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
+				.append(Component.literal(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
+		}
+		else
+			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}

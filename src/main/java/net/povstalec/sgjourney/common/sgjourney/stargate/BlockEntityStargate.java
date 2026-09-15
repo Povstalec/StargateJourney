@@ -61,10 +61,10 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		return supplier.get();
 	}
 	
-	static StargateInfo.Feedback noStargateEntity()
+	static StargateInfo.FeedbackMessage noStargateEntity()
 	{
 		StargateJourney.LOGGER.error("IBlockStargate.noStargateEntity: Stargate Entity could not be found");
-		return StargateInfo.Feedback.UNKNOWN_ERROR;
+		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
 	}
 	
 	void loadFromBlockEntity(AbstractStargateEntity<?> stargate);
@@ -93,6 +93,24 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	default Address.Mutable getAddress()
 	{
 		return stargateReturn(getServer(), stargate -> stargate.getAddress(), new Address.Mutable());
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh)
+	{
+		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.instaDial(address, doKawoosh), BlockEntityStargate::noStargateEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback)
+	{
+		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback)
+	{
+		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override

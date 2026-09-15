@@ -99,6 +99,8 @@ public class TabInit
 
 				items.accept(ItemInit.GDO.get());
 				
+				items.accept(ItemInit.AUTO_DIALER.get());
+				
 				//items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 				
 				items.accept(ItemInit.WOODEN_GRAVER.get());

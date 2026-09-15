@@ -87,8 +87,7 @@ public class GoauldFaction extends AbstractFaction
 		if(spawnerStargate.isConnected())
 			return false;
 		
-		spawnerStargate.encodeAddress(incursionTarget);
-		StargateInfo.FeedbackMessage feedback = spawnerStargate.dial();
+		StargateInfo.FeedbackMessage feedback = spawnerStargate.instaDial(incursionTarget, true);
 		
 		System.out.println("Dial attempt: " + feedback);
 		

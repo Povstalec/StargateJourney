@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
 
-public class SGJourneyMenuScreen<M extends AbstractContainerMenu> extends Screen implements MenuAccess<M>
+public abstract class SGJourneyMenuScreen<M extends AbstractContainerMenu> extends Screen implements MenuAccess<M>
 {
 	protected final M menu;
 	
