@@ -28,6 +28,18 @@ public class Dialing
 	
 	public static final int[] DEFAULT_CHEVRON_CONFIGURATION = DIALED_7_CHEVRON_CONFIGURATION;
 	
+	public enum Action
+	{
+		EXECUTE,
+		SIMULATE,
+		SIMULATE_ENOUGH_ENERGY;
+		
+		public boolean simulate()
+		{
+			return this != EXECUTE;
+		}
+	}
+	
 	//============================================================================================
 	//******************************************Stargate******************************************
 	//============================================================================================
@@ -45,61 +57,68 @@ public class Dialing
 	
 	public static StargateInfo.FeedbackMessage dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
 	{
-		if(dialingStargate.addressFilterInfo().getFilterType().shouldFilter())
-		{
-			if(dialingStargate.addressFilterInfo().getFilterType().isBlacklist() && dialingStargate.addressFilterInfo().isAddressBlacklisted(address))
-				return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_BLACKLISTED);
-			
-			else if(dialingStargate.addressFilterInfo().getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo().isAddressWhitelisted(address))
-				return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
-		}
-		
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
 	}
 	
 	public static StargateInfo.FeedbackMessage dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
 	{
-		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh))
+		return dialStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, Action.EXECUTE);
+	}
+	
+	public static StargateInfo.FeedbackMessage dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded, Action action)
+	{
+		if(SGJourneyEvents.onStargateDial(server, dialingStargate, address, doKawoosh, action))
 			return StargateInfo.Feedback.NONE.withInfo();
 		
+		// Stargates don't work outside the Stargate Network
 		if(!SpaceLocation.fromDimension(server, dialingStargate.getDimension()).isInStargateNetwork())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.SELF_OUTSIDE_STARGATE_NETWORK);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.SELF_OUTSIDE_STARGATE_NETWORK);
+		
+		// Filter Addresses
+		if(dialingStargate.addressFilterInfo().getFilterType().shouldFilter())
+		{
+			if(dialingStargate.addressFilterInfo().getFilterType().isBlacklist() && dialingStargate.addressFilterInfo().isAddressBlacklisted(address))
+				return resetStargate(action, dialingStargate, StargateInfo.Feedback.TARGET_BLACKLISTED);
+			
+			else if(dialingStargate.addressFilterInfo().getFilterType().isWhitelist() && !dialingStargate.addressFilterInfo().isAddressWhitelisted(address))
+				return resetStargate(action, dialingStargate, StargateInfo.Feedback.TARGET_NOT_WHITELISTED);
+		}
 		
 		return switch(address.getType())
 		{
-			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded);
-			case ADDRESS_INVALID -> dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
+			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
+			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
+			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
+			case ADDRESS_INVALID -> resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
 		};
 	}
 	
-	private static StargateInfo.FeedbackMessage get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage get7ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		AddressRegion addressRegion = Universe.get(server).getSameGalaxyAddressRegion(dialingStargate.getAddressRegion(), dialedAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded);
+		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded, action);
 	}
 	
-	private static StargateInfo.FeedbackMessage get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage get8ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address extragalacticAddress, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
 		
 		if(addressRegion == null)
-			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
 		
-		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded);
+		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded, action);
 	}
 	
-	private static StargateInfo.FeedbackMessage getStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion dialedRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage getStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion dialedRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		AddressRegion currentRegion = dialingStargate.getAddressRegion();
 		
 		if(dialedRegion.equals(currentRegion))
-			return dialingStargate.resetStargate(StargateInfo.Feedback.SAME_SYSTEM_DIAL);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.SAME_SYSTEM_DIAL);
 		
 		// If the Stargate Network knows of no Stargates in this Address Region, try locating any Structures with them
 		if(!mustBeLoaded && !StargateNetwork.get(server).hasStargatesInRegion(dialedRegion.getResourceKey())) // No point in loading chunks if the connection requires a loaded Stargate
@@ -118,13 +137,13 @@ public class Dialing
 			}
 			
 			if(dimensions == 0)
-				return dialingStargate.resetStargate(StargateInfo.Feedback.NO_DIMENSIONS);
+				return resetStargate(action, dialingStargate, StargateInfo.Feedback.NO_DIMENSIONS);
 		}
 		
-		return getPreferredStargate(server, dialingStargate, dialedRegion, addressType, doKawoosh, mustBeLoaded);
+		return getPreferredStargate(server, dialingStargate, dialedRegion, addressType, doKawoosh, mustBeLoaded, action);
 	}
 	
-	private static StargateInfo.FeedbackMessage attemptConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage attemptConnection(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		if(mustBeLoaded && !dialedStargate.isLoaded())
 			return StargateInfo.Feedback.TARGET_NOT_LOADED.withInfo();
@@ -134,49 +153,52 @@ public class Dialing
 			return StargateInfo.Feedback.SELF_RESTRICTED.withInfo();
 		
 		if(!SpaceLocation.fromDimension(server, dialedStargate.getDimension()).isInStargateNetwork())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK);
+			return StargateInfo.Feedback.TARGET_OUTSIDE_STARGATE_NETWORK.withInfo();
 		
-		return dialedStargate.tryConnect(dialingStargate, addressType, doKawoosh);
+		return dialedStargate.tryConnect(dialingStargate, addressType, doKawoosh, action);
 	}
 	
-	private static StargateInfo.FeedbackMessage getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage getStargateFromAddress(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate == null)
-			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
 		
-		StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded);
+		StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded, action);
 		
 		// If Stargate isn't obstructed and its network isn't restricted, connect
-		if(!feedback.feedback().isSkippable())
+		if(!feedback.feedback().isError())
 			return feedback;
 		
-		return dialingStargate.resetStargate(feedback);
+		return resetStargate(action, dialingStargate, feedback);
 	}
 	
-	private static StargateInfo.FeedbackMessage get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage get9ChevronStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
-		return getStargateFromAddress(server, dialingStargate, address, doKawoosh, mustBeLoaded);
+		return getStargateFromAddress(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
 	}
 	
-	private static StargateInfo.FeedbackMessage getPreferredStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion addressRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded)
+	private static StargateInfo.FeedbackMessage getPreferredStargate(MinecraftServer server, Stargate dialingStargate, AddressRegion addressRegion, Address.Type addressType, boolean doKawoosh, boolean mustBeLoaded, Action action)
 	{
 		StargateNetwork stargateNetwork = StargateNetwork.get(server);
 		List<Stargate> stargates = stargateNetwork.getStargatesInRegion(addressRegion.getResourceKey());
 		
 		if(stargates.isEmpty())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.NO_STARGATES);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.NO_STARGATES);
 		
-		Stargate primaryStargate = stargateNetwork.getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
 		// Primary Stargate
-		if(StargateNetworkSettings.get(server).prioritizePrimaryStargates() && primaryStargate != null)
+		if(StargateNetworkSettings.get(server).prioritizePrimaryStargates())
 		{
-			StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, primaryStargate, addressType, doKawoosh, mustBeLoaded);
-			
-			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if(!feedback.feedback().isSkippable())
-				return feedback;
+			Stargate primaryStargate = stargateNetwork.getPrimaryStargateFromAddressRegion(addressRegion.getResourceKey());
+			if(primaryStargate != null)
+			{
+				StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, primaryStargate, addressType, doKawoosh, mustBeLoaded, action);
+				
+				// If Stargate isn't obstructed and its network isn't restricted, connect
+				if(!feedback.feedback().isSkippable())
+					return feedback;
+			}
 		}
 		
 		StargateInfo.FeedbackMessage feedback = StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
@@ -184,7 +206,7 @@ public class Dialing
 		// Preferred Stargate
 		for(Stargate targetStargate : stargates)
 		{
-			feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded);
+			feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded, action);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
 			if(!feedback.feedback().isSkippable())
@@ -193,12 +215,22 @@ public class Dialing
 		
 		if(feedback.feedback() == StargateInfo.Feedback.UNKNOWN_ERROR)
 			StargateJourney.LOGGER.error("Address Region has Stargates, but somehow none can be accessed");
-		return dialingStargate.resetStargate(feedback);
+		return resetStargate(action, dialingStargate, feedback);
 	}
 	
-	public static StargateInfo.FeedbackMessage connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	public static StargateInfo.FeedbackMessage connectStargates(MinecraftServer server, Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, Action action)
 	{
-		return StargateNetwork.get(server).createConnection(dialingStargate, dialedStargate, addressType, doKawoosh);
+		return StargateNetwork.get(server).createConnection(dialingStargate, dialedStargate, addressType, doKawoosh, action);
+	}
+	
+	private static StargateInfo.FeedbackMessage resetStargate(Action action, Stargate stargate, StargateInfo.Feedback feedback, Object... additionalInfo)
+	{
+		return action.simulate() ? feedback.withInfo(additionalInfo) : stargate.resetStargate(feedback, additionalInfo);
+	}
+	
+	private static StargateInfo.FeedbackMessage resetStargate(Action action, Stargate stargate, StargateInfo.FeedbackMessage feedback)
+	{
+		return action.simulate() ? feedback : stargate.resetStargate(feedback);
 	}
 	
 	//============================================================================================

@@ -105,6 +105,8 @@ public class ItemInit
 	public static final RegistryObject<Item> SCHRODINGERS_MAP = ITEMS.register("schrodingers_map",
 		() -> new SchrodingersMapItem(new Item.Properties().stacksTo(1)));
 	
+	public static final RegistryObject<Item> CHARCOAL_STICK = ITEMS.register("charcoal_stick",
+		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1)));
 	public static final RegistryObject<Item> SYMBOL_PAPER = ITEMS.register("symbol_paper",
 		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1)));
 	

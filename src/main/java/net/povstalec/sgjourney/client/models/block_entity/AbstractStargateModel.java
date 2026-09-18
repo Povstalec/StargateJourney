@@ -176,14 +176,14 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return stargateVariant.symbols().symbolsGlow();
 	}
 	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.ChevronSymbolState state, boolean incoming)
+	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.ChevronState state, StargateInfo.Direction direction)
 	{
-		if(state == StargateInfo.ChevronSymbolState.OFF)
-			return stargateVariant.symbols().symbolColor();
-		else if(state == StargateInfo.ChevronSymbolState.ENGAGED)
-			return stargateVariant.symbols().engagedSymbolColor(); // TODO Split for incoming
-		else
-			return stargateVariant.symbols().encodedSymbolColor(); // TODO Split for incoming
+		return switch(state)
+		{
+			case OFF -> stargateVariant.symbols().symbolColor();
+			case ENGAGED -> stargateVariant.symbols().engagedSymbolColor(); // TODO Split for incoming
+			case ENCODED -> stargateVariant.symbols().encodedSymbolColor(); // TODO Split for incoming
+		};
 	}
 	
 	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, boolean isEngaged)

@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
 /**
  * Interface for Blocks with special Graver interactions (like opening a screen to select specific symbols)
  */
-public interface SpecialGravableBlock
+public interface SpecialEngravableBlock extends SpecialSymbolBlock
 {
 	InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack);
 	

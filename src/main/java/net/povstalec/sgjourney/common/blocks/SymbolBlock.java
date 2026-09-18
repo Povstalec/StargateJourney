@@ -37,7 +37,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.menu.SymbolBlockGravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -48,7 +48,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock, SpecialGravableBlock
+public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock, SpecialEngravableBlock
 {
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	
@@ -210,10 +210,30 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 	}
 	
 	@Override
+	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is no Point of Origin engraved
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() == 0)
+			return symbolBlock.getPointOfOrigin();
+		
+		return null;
+	}
+	
+	@Override
 	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
 	{
 		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
 			symbolBlock.setSymbols(symbols);
+	}
+	
+	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is no symbol engraved
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() > 0)
+			return symbolBlock.getSymbols();
+		
+		return null;
 	}
 	
 	@Override
@@ -227,6 +247,16 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			else
 				symbolBlock.setSymbolNumber(address.symbolAt(0));
 		}
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is nothing
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() >= 0)
+			return new Address.Immutable(symbolBlock.getSymbolNumber());
+		
+		return null;
 	}
 	
 	
@@ -290,7 +320,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new SymbolBlockGravingMenu.Stone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+						return new SymbolBlockEngravingMenu.Stone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
@@ -336,7 +366,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new SymbolBlockGravingMenu.Sandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+						return new SymbolBlockEngravingMenu.Sandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
@@ -382,7 +412,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new SymbolBlockGravingMenu.RedSandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+						return new SymbolBlockEngravingMenu.RedSandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());

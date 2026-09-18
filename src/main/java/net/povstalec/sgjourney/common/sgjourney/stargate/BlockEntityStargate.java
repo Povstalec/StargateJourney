@@ -11,10 +11,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.Wormhole;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,21 +93,21 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
-	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh)
+	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
 	{
-		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.instaDial(address, doKawoosh), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(getServer(), stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(getServer(), stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(getServer(), stargateEntity -> stargateEntity.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(getServer(), stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
@@ -252,6 +249,12 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		return stargateReturn(getServer(), stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
+	@Override
+	default long receiveEnergy(long energy, boolean simulate)
+	{
+		return stargateReturn(getServer(), stargate -> stargate.energyStorage.receiveLongEnergy(energy, simulate), 0L);
+	}
+	
 	// Stargate Connection
 	
 	@Override
@@ -262,6 +265,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 			stargate.setKawooshTickCount(connection.getKawooshTime());
 			stargate.setOpenTime(connection.getOpenTime());
 			stargate.setTimeSinceLastTraveler(connection.getTimeSinceLastTraveler());
+			stargate.updateClient();
 		});
 	}
 	

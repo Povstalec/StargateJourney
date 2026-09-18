@@ -102,7 +102,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(this.isChevronOpen)
 		{
 			this.isChevronOpen = false;
-			chevronSound(getCurrentChevron(), false, false, false);
+			chevronSound(getCurrentChevron(), StargateInfo.ChevronSound.CLOSE);
 		}
 		
 		return super.resetStargate(feedback);
@@ -135,7 +135,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(!level.isClientSide())
 			updateClient();
 		
-		return setRecentFeedback(encodeChevron(getCurrentSymbol(), false, true));
+		return setRecentFeedback(encodeChevron(getCurrentSymbol(), StargateInfo.Direction.OUTGOING, StargateInfo.ChevronSound.ENCODE));
 	}
 	
 	public StargateInfo.FeedbackMessage openChevron()
@@ -145,7 +145,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			if(!getAddress().containsSymbol(getCurrentSymbol()))
 			{
 				if(!level.isClientSide())
-					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), false, true, false));
+					PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientBoundSoundPackets.Chevron(this.worldPosition, getCurrentChevron(), StargateInfo.ChevronSound.OPEN));
 				this.isChevronOpen = true;
 				updateClient();
 				
@@ -168,7 +168,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
 			if(feedback.feedback() == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)
-				chevronSound(getCurrentChevron(), false, false, false);
+				chevronSound(getCurrentChevron(), StargateInfo.ChevronSound.CLOSE);
 			
 			return setRecentFeedback(feedback);
 		}

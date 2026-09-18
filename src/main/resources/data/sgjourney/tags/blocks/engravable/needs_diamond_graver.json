@@ -1,0 +1,15 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:universe_dhd",
+		
+		"sgjourney:milky_way_stargate",
+		"sgjourney:milky_way_ring",
+		"sgjourney:milky_way_dhd",
+		
+		"sgjourney:classic_stargate",
+		"sgjourney:classic_ring",
+		"sgjourney:classic_dhd"
+	]
+}

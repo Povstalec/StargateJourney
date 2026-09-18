@@ -16,6 +16,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -469,6 +470,8 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	public static final class Immutable extends Address
 	{
+		public static final Address.Immutable EMPTY = new Address.Immutable();
+		
 		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
 		).apply(instance, Address.Immutable::fromCodecList));
@@ -833,9 +836,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		private Address.Immutable generate9ChevronAddress(MinecraftServer server)
 		{
 			// Primary Stargate
-			Stargate primaryStargate = StargateNetwork.get(server).getPrimaryStargateInDimension(this.dimension);
-			if(primaryStargate != null)
-				return primaryStargate.get9ChevronAddress();
+			if(StargateNetworkSettings.get(server).prioritizePrimaryStargates())
+			{
+				Stargate primaryStargate = StargateNetwork.get(server).getPrimaryStargateInDimension(this.dimension);
+				if(primaryStargate != null)
+					return primaryStargate.get9ChevronAddress();
+			}
 			
 			List<Stargate> stargatesInDimension = StargateNetwork.get(server).getStargatesInDimension(this.dimension);
 			

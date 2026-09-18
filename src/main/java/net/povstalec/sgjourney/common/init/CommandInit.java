@@ -328,7 +328,7 @@ public class CommandInit
 		Stargate stargate = StargateNetwork.get(level).getStargate(stargateAddress);
 		if(stargate != null)
 			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
-				.append(Component.literal(": ").append(stargate.instaDial(address, doKawoosh).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
+				.append(Component.literal(": ").append(stargate.instaDial(address, doKawoosh, Dialing.Action.EXECUTE).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
 		else
 			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		

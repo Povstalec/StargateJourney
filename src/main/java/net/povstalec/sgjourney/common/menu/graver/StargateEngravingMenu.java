@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.menu;
+package net.povstalec.sgjourney.common.menu.graver;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -7,17 +7,20 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
+import net.povstalec.sgjourney.common.menu.InventoryMenu;
 import net.povstalec.sgjourney.common.misc.SimpleTempContainer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class SymbolBlockGravingMenu<S extends SymbolBlockEntity> extends InventoryMenu<S>
+public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>> extends InventoryMenu<S>
 {
-	public final SimpleTempContainer<SymbolBlockGravingMenu<S>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
+	public final SimpleTempContainer<StargateEngravingMenu<S>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
 	{
 		@Override
 		public boolean canPlaceItem(int slot, @NotNull ItemStack stack)
@@ -28,7 +31,7 @@ public abstract class SymbolBlockGravingMenu<S extends SymbolBlockEntity> extend
 	private final int tempSlotIndex;
 	private final ContainerLevelAccess access;
 	
-    public SymbolBlockGravingMenu(MenuType<?> type, int containerId, Inventory inventory, S blockEntity, ContainerLevelAccess access)
+    public StargateEngravingMenu(MenuType<?> type, int containerId, Inventory inventory, S blockEntity, ContainerLevelAccess access)
     {
         super(type, containerId, inventory, blockEntity);
 		
@@ -94,60 +97,41 @@ public abstract class SymbolBlockGravingMenu<S extends SymbolBlockEntity> extend
 	
 	
 	
-	public static class Stone extends SymbolBlockGravingMenu<SymbolBlockEntity.Stone>
+	public static class MilkyWay extends StargateEngravingMenu<MilkyWayStargateEntity>
 	{
-		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		public MilkyWay(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (SymbolBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (MilkyWayStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
-		public Stone(int containerId, Inventory inventory, SymbolBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public MilkyWay(int containerId, Inventory inventory, MilkyWayStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
-			super(MenuInit.STONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
+			super(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
 		
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.STONE_SYMBOL.get());
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.MILKY_WAY_STARGATE.get());
 		}
 	}
 	
-	public static class Sandstone extends SymbolBlockGravingMenu<SymbolBlockEntity.Sandstone>
+	public static class Classic extends StargateEngravingMenu<ClassicStargateEntity>
     {
-        public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+        public Classic(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (SymbolBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (ClassicStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
-		public Sandstone(int containerId, Inventory inventory, SymbolBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public Classic(int containerId, Inventory inventory, ClassicStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
-			super(MenuInit.SANDSTONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
+			super(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
 		
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.SANDSTONE_SYMBOL.get());
-		}
-    }
-	
-    public static class RedSandstone extends SymbolBlockGravingMenu<SymbolBlockEntity.RedSandstone>
-    {
-        public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
-        {
-            this(containerId, inventory, (SymbolBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
-        }
-
-		public RedSandstone(int containerId, Inventory inventory, SymbolBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)
-		{
-			super(MenuInit.RED_SANDSTONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
-		}
-		
-		@Override
-		public boolean stillValid(@NotNull Player player)
-		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.RED_SANDSTONE_SYMBOL.get());
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_STARGATE.get());
 		}
     }
 }

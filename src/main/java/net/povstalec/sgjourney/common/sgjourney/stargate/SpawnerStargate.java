@@ -81,7 +81,7 @@ public interface SpawnerStargate extends Stargate
 	}
 	
 	@Override
-	default StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh)
+	default StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
 	{
 		StargateJourney.LOGGER.error("Stargate does not permit connections");
 		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();

@@ -23,7 +23,7 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
-import net.povstalec.sgjourney.common.menu.SymbolBlockGravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.packets.ServerboundGravingUpdatePacket;
@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu<?>> extends SGJourneyContainerScreen<M>
 {
 	public static final float SYMBOL_SIZE = 64;
 	
@@ -46,7 +46,7 @@ public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<
 	protected Button gravingButton;
 	protected int symbolNumber;
 	
-	public SymbolBlockGravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
+	public StargateEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
 	{
 		super(menu, playerInventory, title);
 		
@@ -79,7 +79,7 @@ public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<
 		this.addRenderableWidget(this.gravingButton);
 		
 		this.editBox = new EditBox(font, leftPos + 2, topPos + 44, 52, 20, Component.translatable("tooltip.sgjourney.symbol"));
-		this.editBox.setFilter(SymbolBlockGravingScreen::canParseAsPositiveNumber);
+		this.editBox.setFilter(StargateEngravingScreen::canParseAsPositiveNumber);
 		
 		this.editBox.setMaxLength(2);
 		
@@ -265,25 +265,25 @@ public abstract class SymbolBlockGravingScreen<M extends SymbolBlockGravingMenu<
 	
 	
 	
-	public static class Stone extends SymbolBlockGravingScreen<SymbolBlockGravingMenu.Stone>
+	public static class Stone extends StargateEngravingScreen<SymbolBlockEngravingMenu.Stone>
 	{
-		public Stone(SymbolBlockGravingMenu.Stone menu, Inventory playerInventory, Component title)
+		public Stone(SymbolBlockEngravingMenu.Stone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/stone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
 		}
 	}
 	
-	public static class Sandstone extends SymbolBlockGravingScreen<SymbolBlockGravingMenu.Sandstone>
+	public static class Sandstone extends StargateEngravingScreen<SymbolBlockEngravingMenu.Sandstone>
 	{
-		public Sandstone(SymbolBlockGravingMenu.Sandstone menu, Inventory playerInventory, Component title)
+		public Sandstone(SymbolBlockEngravingMenu.Sandstone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
 		}
 	}
 	
-	public static class RedSandstone extends SymbolBlockGravingScreen<SymbolBlockGravingMenu.RedSandstone>
+	public static class RedSandstone extends StargateEngravingScreen<SymbolBlockEngravingMenu.RedSandstone>
 	{
-		public RedSandstone(SymbolBlockGravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
+		public RedSandstone(SymbolBlockEngravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/red_sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
 		}

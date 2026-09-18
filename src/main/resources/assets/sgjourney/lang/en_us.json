@@ -422,6 +422,7 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödinger's Map",
 	
+	"item.sgjourney.charcoal_stick": "Charcoal Stick",
 	"item.sgjourney.symbol_paper": "Symbol Paper",
 	
 	"item.sgjourney.archeologist_notebook": "Archeologist Notebook",
@@ -450,6 +451,8 @@
 	"item.sgjourney.horus_helmet": "Horus Helmet",
 
 	"item.sgjourney.gdo": "GDO",
+	
+	"item.sgjourney.auto_dialer": "Auto-Dialer",
 
 	"item.sgjourney.stargate_shielding_ring": "Stargate Shielding Ring",
 
@@ -1109,8 +1112,16 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fusion Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	
+	"tooltip.sgjourney.charcoal_stick.description": "Used to write down symbols on paper from blocks with symbols (like Cartouches and Stargates)",
+	"tooltip.sgjourney.graver.description": "Used to engrave symbols into blocks with symbols (like Cartouches and Stargates)",
+	
+	
+	"argument.sgjourney.address.incomplete": "Incomplete Address",
 	
 	"message.sgjourney.open_wiki_link": "Open wiki link",
+	
+	"message.sgjourney.charcoal_stick.no_paper": "Must hold Paper in the other hand!",
+	"message.sgjourney.graver.low_tier": "Graver tier is too low for this block",
 	
 	"message.sgjourney.schrodingers_map.error.dimension": "Can't use map in this Dimension, expected Dimension: %s",
 	"message.sgjourney.schrodingers_map.error.structure": "Could not find Structure",

@@ -87,10 +87,10 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh)
+	public StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
 	{
 		encodeAddress(address);
-		return Dialing.dialStargate(getServer(), this, getAddress(), doKawoosh, true/*Only search for loaded Stargates*/);
+		return Dialing.dialStargate(getServer(), this, getAddress(), doKawoosh, true/*Only search for loaded Stargates*/, action);
 	}
 	
 	@Override
@@ -147,6 +147,12 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	public long extractEnergy(long energy, boolean simulate)
 	{
 		return Math.min(energy, getEnergyStored());
+	}
+	
+	@Override
+	public long receiveEnergy(long energy, boolean simulate)
+	{
+		return energy;
 	}
 	
 	// Stargate Connection

@@ -7,7 +7,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.NetworkEvent;
-import net.povstalec.sgjourney.common.blocks.SpecialGravableBlock;
+import net.povstalec.sgjourney.common.blocks.SpecialEngravableBlock;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -74,7 +74,7 @@ public class ServerboundGravingUpdatePacket
 			ServerPlayer player = ctx.get().getSender();
 			Level level = player.level;
 			BlockState state = level.getBlockState(blockPos);
-			if(state.getBlock() instanceof SpecialGravableBlock gravableBlock)
+			if(state.getBlock() instanceof SpecialEngravableBlock gravableBlock)
 			{
 				if(!pointOfOrigin.isEmpty())
 					gravableBlock.setPointOfOrigin(level, blockPos, state, Conversion.stringToPointOfOrigin(pointOfOrigin));

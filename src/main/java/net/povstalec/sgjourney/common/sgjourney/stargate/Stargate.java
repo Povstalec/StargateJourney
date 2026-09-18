@@ -12,6 +12,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -236,9 +237,10 @@ public interface Stargate extends Comparable<Stargate>
 	/**
 	 * Instantly dials a specified Address
 	 * @param address Address to dial
+	 * @param action If action.simulate() is true, the dialing attempt will only be simulated (won't actually create a connection or reset any Stargates)
 	 * @return Feedback with information regarding how this Stargate's dialing attempt went
 	 */
-	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh);
+	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action);
 	
 	/**
 	 * Disconnects the Stargate (respects disconnect side, so it will not disconnect the Stargate if it did not initiate the connection)
@@ -372,6 +374,24 @@ public interface Stargate extends Comparable<Stargate>
 	 */
 	long extractEnergy(long energy, boolean simulate);
 	
+	/**
+	 * Checks if the Stargate can extract the specified amount of energy
+	 * @param energyExtracted Amount of energy to be extracted
+	 * @return True if the Stargate can extract the specified amount of energy, otherwise false
+	 */
+	default boolean canExtract(long energyExtracted)
+	{
+		return extractEnergy(energyExtracted, true) >= energyExtracted;
+	}
+	
+	/**
+	 * Funnels energy into the Stargate's energy buffer
+	 * @param energy Amount of energy to receive
+	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is received by the energy buffer
+	 * @return Amount of energy that was actually received
+	 */
+	long receiveEnergy(long energy, boolean simulate);
+	
 	// Stargate Connection
 	
 	/**
@@ -394,12 +414,14 @@ public interface Stargate extends Comparable<Stargate>
 	
 	/**
 	 * Checks if this Stargate can connect to the dialing Stargate and creates a Stargate Connection
+	 * (Note that there is no need to reset the Stargate, as that's handled further down the line)
 	 * @param dialingStargate Stargate that dialed this Stargate
 	 * @param addressType Address type that was used to dial this Stargate
 	 * @param doKawoosh Whether kawoosh should form when the connection is established
+	 * @param action If action.simulate() is true, the connection attempt will only be simulated (won't actually create a connection or reset any Stargates)
 	 * @return Stargate Feedback describing how successful the formation of the connection was (for example, throw an error when this Stargate is already connected)
 	 */
-	StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh);
+	StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh, Dialing.Action action);
 	
 	/**
 	 * @return True if the Stargate can call forward, otherwise false

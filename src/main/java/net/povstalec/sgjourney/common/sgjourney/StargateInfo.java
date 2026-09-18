@@ -313,10 +313,27 @@ public class StargateInfo
 		}
 	}
 	
-	public enum ChevronSymbolState
+	public enum Direction
+	{
+		OUTGOING,
+		INCOMING
+	}
+	
+	public enum ChevronState
 	{
 		OFF,
-		ENCODED,
-		ENGAGED
+		ENGAGED,
+		ENCODED
+	}
+	
+	public enum ChevronSound
+	{
+		NONE,
+		ENGAGE,
+		ENCODE,
+		INCOMING,
+		
+		OPEN,
+		CLOSE
 	}
 }

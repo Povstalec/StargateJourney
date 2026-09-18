@@ -41,7 +41,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
-import net.povstalec.sgjourney.common.menu.CartoucheGravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -51,7 +51,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock, SpecialGravableBlock
+public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock, SpecialEngravableBlock
 {
 	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
@@ -280,10 +280,29 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
 	
 	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if the address is empty, as there are no symbols engraved
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche && !cartouche.getAddress().isEmpty())
+			return cartouche.getSymbols();
+		
+		return null;
+	}
+	
+	@Override
 	public void setAddress(Level level, BlockPos pos, BlockState state, Address address)
 	{
 		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
 			cartouche.setAddress(address);
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			return cartouche.getAddress();
+		
+		return null;
 	}
 	
 	
@@ -342,7 +361,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheGravingMenu.Stone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheEngravingMenu.Stone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
@@ -392,7 +411,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheGravingMenu.Sandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheEngravingMenu.Sandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
@@ -442,7 +461,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 					@Override
 					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 					{
-						return new CartoucheGravingMenu.RedSandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+						return new CartoucheEngravingMenu.RedSandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
 					}
 				};
 				NetworkHooks.openScreen((ServerPlayer) player, containerProvider, cartouche.getBlockPos());

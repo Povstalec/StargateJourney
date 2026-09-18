@@ -35,9 +35,12 @@ public class SymbolPaperItem extends Item
 		super(properties);
 	}
 	
-	public static void setPointOfOrigin(ItemStack stack, ResourceKey<PointOfOrigin> pointOfOrigin)
+	public static void setPointOfOrigin(ItemStack stack, @Nullable ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
-		stack.getOrCreateTag().putString(POINT_OF_ORIGIN, pointOfOrigin.location().toString());
+		if(pointOfOrigin != null)
+			stack.getOrCreateTag().putString(POINT_OF_ORIGIN, pointOfOrigin.location().toString());
+		else if(stack.hasTag())
+			stack.getTag().remove(POINT_OF_ORIGIN);
 	}
 	
 	@Nullable
@@ -49,9 +52,12 @@ public class SymbolPaperItem extends Item
 		return null;
 	}
 	
-	public static void setSymbols(ItemStack stack, ResourceKey<Symbols> symbols)
+	public static void setSymbols(ItemStack stack, @Nullable ResourceKey<Symbols> symbols)
 	{
-		stack.getOrCreateTag().putString(SYMBOLS, symbols.location().toString());
+		if(symbols != null)
+			stack.getOrCreateTag().putString(SYMBOLS, symbols.location().toString());
+		else if(stack.hasTag())
+			stack.getTag().remove(SYMBOLS);
 	}
 	
 	@Nullable

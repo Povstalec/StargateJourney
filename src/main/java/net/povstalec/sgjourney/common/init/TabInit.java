@@ -67,6 +67,7 @@ public class TabInit
 				items.accept(ItemInit.TRINIUM_INGOT.get());
 				items.accept(ItemInit.TRINIUM_NUGGET.get());
 				
+				items.accept(ItemInit.CHARCOAL_STICK.get());
 				items.accept(ItemInit.SYMBOL_PAPER.get());
 				
 				items.accept(ItemInit.LIQUID_NAQUADAH_BUCKET.get());

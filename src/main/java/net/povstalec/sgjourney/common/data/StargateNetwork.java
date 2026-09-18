@@ -564,50 +564,62 @@ public final class StargateNetwork extends SavedData
 		this.setDirty();
 	}
 	
-	public StargateInfo.FeedbackMessage createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh)
+	/**
+	 * Attempts to create a StargateConnection
+	 * (Note that there is no need to reset the Stargate, as that's handled further down the line)
+	 * @param dialingStargate Stargate that initiated the connection
+	 * @param dialedStargate Stargate that was dialed
+	 * @param addressType Address type that was used to dial this Stargate
+	 * @param doKawoosh Whether kawoosh should form when the connection is established
+	 * @param action If action.simulate() is true, the connection attempt will only be simulated (won't actually create a connection or reset any Stargates)
+	 * @return Stargate Feedback describing how successful the attempt was
+	 */
+	public StargateInfo.FeedbackMessage createConnection(Stargate dialingStargate, Stargate dialedStargate, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
 	{
 		StargateConnection.Type connectionType = StargateConnection.getType(server, dialingStargate, dialedStargate);
 		
 		// Event for Stargate connecting, can be canceled - !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
-		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh))
+		if(SGJourneyEvents.onStargateConnect(server, dialingStargate, dialedStargate, connectionType, addressType, doKawoosh, action))
 			return StargateInfo.Feedback.NONE.withInfo();
 		
 		// Will reset the Stargate if something's wrong
 		if(!dialedStargate.checkValidity())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE);
+			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE.withInfo();
 		
 		if(!CommonStargateConfig.allow_interstellar_8_chevron_addresses.get() &&
 				addressType == Address.Type.ADDRESS_8_CHEVRON &&
 				connectionType == StargateConnection.Type.INTERSTELLAR)
-			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS);
+			return StargateInfo.Feedback.INVALID_8_CHEVRON_ADDRESS.withInfo();
 		
 		if(!CommonStargateConfig.allow_system_wide_connections.get() && connectionType == StargateConnection.Type.SYSTEM_WIDE)
-			return dialingStargate.resetStargate(StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION);
+			return StargateInfo.Feedback.INVALID_SYSTEM_WIDE_CONNECTION.withInfo();
 		
 		if(dialingStargate.equals(dialedStargate))
-			return dialingStargate.resetStargate(StargateInfo.Feedback.SELF_DIAL);
+			return StargateInfo.Feedback.SELF_DIAL.withInfo();
 		
 		if(dialedStargate.isConnected())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.ALREADY_CONNECTED);
-		else if(dialedStargate.isObstructed())
-			return dialingStargate.resetStargate(StargateInfo.Feedback.TARGET_OBSTRUCTED);
+			return StargateInfo.Feedback.ALREADY_CONNECTED.withInfo();
 		
-		if(REQUIRE_ENERGY)
+		if(dialedStargate.isObstructed())
+			return StargateInfo.Feedback.TARGET_OBSTRUCTED.withInfo();
+		
+		if(REQUIRE_ENERGY && action != Dialing.Action.SIMULATE_ENOUGH_ENERGY)
 		{
-			if(StargateConnection.canExtract(dialingStargate, connectionType.getEstablishingPowerCost()))
-				dialingStargate.extractEnergy(connectionType.getEstablishingPowerCost(), false);
+			if(dialingStargate.canExtract(connectionType.getEstablishingPowerCost()))
+				dialingStargate.extractEnergy(connectionType.getEstablishingPowerCost(), action.simulate());
 			else
-				return dialingStargate.resetStargate(StargateInfo.Feedback.NOT_ENOUGH_POWER, SGJourneyEnergy.energyToString(connectionType.getEstablishingPowerCost()));
+				return StargateInfo.Feedback.NOT_ENOUGH_POWER.withInfo(SGJourneyEnergy.energyToString(connectionType.getEstablishingPowerCost()));
 		}
 		
 		List<Stargate> dialedStargates = dialedStargate.getDialedStargates(dialingStargate, connectionType);
 		if(dialedStargates.isEmpty())
 			return StargateInfo.Feedback.COULD_NOT_REACH_TARGET_STARGATE.withInfo();
 		
-		StargateConnection connection = StargateConnection.create(connectionType, dialingStargate, dialedStargates, doKawoosh);
+		StargateConnection connection = StargateConnection.create(connectionType, dialingStargate, dialedStargates, doKawoosh, action);
 		if(connection != null)
 		{
-			addConnection(connection);
+			if(!action.simulate())
+				addConnection(connection);
 			
 			return switch(connectionType)
 			{

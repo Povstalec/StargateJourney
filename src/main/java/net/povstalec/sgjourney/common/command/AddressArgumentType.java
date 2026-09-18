@@ -17,15 +17,16 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class AddressArgumentType implements ArgumentType<Address.Immutable>
 {
-	private static final Collection<String> EXAMPLE_9_CHEVRON = Arrays.asList("-1-2-3-4-5-6-7-8-");
-	private static final Collection<String> EXAMPLE_8_CHEVRON = Arrays.asList("-1-2-3-4-5-6-7-");
-	private static final Collection<String> EXAMPLE_7_CHEVRON = Arrays.asList("-1-2-3-4-5-6-");
-	private static final Collection<String> EXAMPLE_INVALID = Arrays.asList("-");
-	public static final SimpleCommandExceptionType ERROR_NOT_COMPLETE = new SimpleCommandExceptionType(Component.translatable("sgjourney.argument.address.incomplete"));
+	private static final Collection<String> EXAMPLE_9_CHEVRON = List.of("-1-2-3-4-5-6-7-8-");
+	private static final Collection<String> EXAMPLE_8_CHEVRON = List.of("-1-2-3-4-5-6-7-");
+	private static final Collection<String> EXAMPLE_7_CHEVRON = List.of("-1-2-3-4-5-6-");
+	private static final Collection<String> EXAMPLE_INVALID = List.of("-");
+	public static final SimpleCommandExceptionType ERROR_NOT_COMPLETE = new SimpleCommandExceptionType(Component.translatable("argument.sgjourney.address.incomplete"));
 	
 	private final Address.Type addressType;
 	

@@ -9,6 +9,7 @@ import net.povstalec.sgjourney.common.entities.FactionMember;
 import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneySpawnerStargate;
 
@@ -87,7 +88,7 @@ public class GoauldFaction extends AbstractFaction
 		if(spawnerStargate.isConnected())
 			return false;
 		
-		StargateInfo.FeedbackMessage feedback = spawnerStargate.instaDial(incursionTarget, true);
+		StargateInfo.FeedbackMessage feedback = spawnerStargate.instaDial(incursionTarget, true, Dialing.Action.EXECUTE);
 		
 		System.out.println("Dial attempt: " + feedback);
 		

@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -23,15 +24,19 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.blocks.SpecialSymbolBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 
-public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
+public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock, SpecialSymbolBlock
 {
 	public AbstractDHDBlock(Properties properties) 
 	{
@@ -142,5 +147,32 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+	}
+	
+	@Override
+	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.symbolInfo().pointOfOrigin();
+		
+		return null;
+	}
+	
+	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.symbolInfo().symbols();
+		
+		return null;
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.getAddress();
+		
+		return null;
 	}
 }

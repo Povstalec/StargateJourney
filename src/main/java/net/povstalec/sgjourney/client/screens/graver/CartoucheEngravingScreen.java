@@ -24,7 +24,7 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
-import net.povstalec.sgjourney.common.menu.CartoucheGravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -34,7 +34,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheGravingScreen<M extends CartoucheGravingMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<?>> extends SGJourneyContainerScreen<M>
 {
 	public static final float X_SYMBOL_SPACE = 64F * 10F / 16F;
 	public static final float Y_SYMBOL_SPACE = 64F * 26F / 16F;
@@ -50,7 +50,7 @@ public abstract class CartoucheGravingScreen<M extends CartoucheGravingMenu<?>> 
 	protected final Address.Mutable address;
 	protected final boolean wasDimensionAddress;
 	
-	public CartoucheGravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
+	public CartoucheEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
 	{
 		super(menu, playerInventory, title);
 		
@@ -252,25 +252,25 @@ public abstract class CartoucheGravingScreen<M extends CartoucheGravingMenu<?>> 
 	
 	
 	
-	public static class Stone extends CartoucheGravingScreen<CartoucheGravingMenu.Stone>
+	public static class Stone extends CartoucheEngravingScreen<CartoucheEngravingMenu.Stone>
 	{
-		public Stone(CartoucheGravingMenu.Stone menu, Inventory playerInventory, Component title)
+		public Stone(CartoucheEngravingMenu.Stone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/stone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
 		}
 	}
 	
-	public static class Sandstone extends CartoucheGravingScreen<CartoucheGravingMenu.Sandstone>
+	public static class Sandstone extends CartoucheEngravingScreen<CartoucheEngravingMenu.Sandstone>
 	{
-		public Sandstone(CartoucheGravingMenu.Sandstone menu, Inventory playerInventory, Component title)
+		public Sandstone(CartoucheEngravingMenu.Sandstone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
 		}
 	}
 	
-	public static class RedSandstone extends CartoucheGravingScreen<CartoucheGravingMenu.RedSandstone>
+	public static class RedSandstone extends CartoucheEngravingScreen<CartoucheEngravingMenu.RedSandstone>
 	{
-		public RedSandstone(CartoucheGravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
+		public RedSandstone(CartoucheEngravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
 		{
 			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/red_sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
 		}

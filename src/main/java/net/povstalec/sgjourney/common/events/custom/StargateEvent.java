@@ -5,6 +5,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
@@ -43,12 +44,14 @@ public class StargateEvent extends Event
 	{
 		private final Address dialedAddress;
 		private final boolean doKawoosh;
+		private final Dialing.Action action;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh)
+		public Dial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh, Dialing.Action action)
 		{
 			super(server, stargate);
 			this.dialedAddress = dialedAddress.clone();
 			this.doKawoosh = doKawoosh;
+			this.action = action;
 		}
 		
 		public Address getDialedAddress()
@@ -59,6 +62,11 @@ public class StargateEvent extends Event
 		public boolean doKawoosh()
 		{
 			return this.doKawoosh;
+		}
+		
+		public Dialing.Action action()
+		{
+			return this.action;
 		}
 	}
 	
@@ -77,8 +85,9 @@ public class StargateEvent extends Event
 		private final Stargate connectedStargate;
 		private final Address.Type addressType;
 		private final boolean doKawoosh;
+		private final Dialing.Action action;
 		
-		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
+		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
 		{
 			super(server, stargate);
 
@@ -86,6 +95,7 @@ public class StargateEvent extends Event
 			this.connectionType = connectionType;
 			this.addressType = addressType;
 			this.doKawoosh = doKawoosh;
+			this.action = action;
 		}
 		
 		public Stargate getConnectedStargate()
@@ -106,6 +116,11 @@ public class StargateEvent extends Event
 		public boolean doKawoosh()
 		{
 			return this.doKawoosh;
+		}
+		
+		public Dialing.Action action()
+		{
+			return this.action;
 		}
 	}
 	

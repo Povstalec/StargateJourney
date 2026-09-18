@@ -42,6 +42,10 @@ public class TagInit
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
 		public static final TagKey<Block> TRINIUM_ARROW_CAN_BREAK = tag("trinium_arrow_can_break");
 		
+		public static final TagKey<Block> NEEDS_STONE_GRAVER = tag("engravable/needs_stone_graver");
+		public static final TagKey<Block> NEEDS_IRON_GRAVER = tag("engravable/needs_iron_graver");
+		public static final TagKey<Block> NEEDS_DIAMOND_GRAVER = tag("engravable/needs_diamond_graver");
+		
 		private static TagKey<Block> tag(String name)
 		{
             return BlockTags.create(new ResourceLocation(StargateJourney.MODID, name));

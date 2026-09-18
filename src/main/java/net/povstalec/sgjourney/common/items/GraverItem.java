@@ -2,16 +2,16 @@ package net.povstalec.sgjourney.common.items;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.TieredItem;
-import net.minecraft.world.item.Vanishable;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -19,12 +19,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ToolAction;
-import net.povstalec.sgjourney.common.blocks.SpecialGravableBlock;
+import net.povstalec.sgjourney.common.blocks.SpecialEngravableBlock;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,24 +58,29 @@ public class GraverItem extends TieredItem implements Vanishable
 		Player player = context.getPlayer();
 		BlockState state = level.getBlockState(pos);
 		
-		if(state.getBlock() instanceof SpecialGravableBlock gravable)
-			return gravable.onGraverUsed(context);
+		if(state.getBlock() instanceof SpecialEngravableBlock engravable)
+			return engravable.onGraverUsed(context);
 		
 		BlockState newState = state.getToolModifiedState(context, GRAVER_ENGRAVE, false);
 		if(newState != null)
 		{
-			level.playSound(player, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
-			level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE);
-			level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
-			
-			ItemStack itemstack = context.getItemInHand();
-			if(player instanceof ServerPlayer serverPlayer)
+			if(isCorrectForEngraving(state))
 			{
-				CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, pos, itemstack);
-				itemstack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
+				level.playSound(player, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, level.getRandom().nextFloat() * 0.4F + 0.8F);
+				level.setBlock(pos, newState, Block.UPDATE_ALL_IMMEDIATE);
+				level.gameEvent(player, GameEvent.BLOCK_CHANGE, pos);
+				
+				ItemStack itemstack = context.getItemInHand();
+				if(player instanceof ServerPlayer serverPlayer)
+				{
+					CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, pos, itemstack);
+					itemstack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
+				}
+				
+				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
-			
-			return InteractionResult.sidedSuccess(level.isClientSide);
+			else
+				player.displayClientMessage(Component.translatable("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
 		}
 		
 		return InteractionResult.FAIL;
@@ -81,5 +90,23 @@ public class GraverItem extends TieredItem implements Vanishable
 	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
 	{
 		return DEFAULT_GRAVER_ACTIONS.contains(toolAction);
+	}
+	
+	public boolean isCorrectForEngraving(BlockState state)
+	{
+		int tier = getTier().getLevel();
+		
+		if(tier < 3 && state.is(TagInit.Blocks.NEEDS_DIAMOND_GRAVER))
+			return false;
+		else if(tier < 2 && state.is(TagInit.Blocks.NEEDS_IRON_GRAVER))
+			return false;
+		else
+			return tier >= 1 || !state.is(TagInit.Blocks.NEEDS_DIAMOND_GRAVER);
+	}
+	
+	@Override
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	{
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.graver.description"));
 	}
 }

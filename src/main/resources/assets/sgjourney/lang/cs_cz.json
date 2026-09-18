@@ -421,6 +421,7 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödingerova mapa",
 	
+	"item.sgjourney.charcoal_stick": "Uhel",
 	"item.sgjourney.symbol_paper": "Papír se symboly",
 	
 	"item.sgjourney.archeologist_notebook": "Archeologův zápisník",
@@ -449,6 +450,8 @@
 	"item.sgjourney.horus_helmet": "Horova helma",
 
 	"item.sgjourney.gdo": "GDO",
+	
+	"item.sgjourney.auto_dialer": "Automatický vytačeč",
 
 	"item.sgjourney.stargate_shielding_ring": "Ochranný kruh pro bránu",
 
@@ -1106,8 +1109,16 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
+	"tooltip.sgjourney.charcoal_stick.description": "Používaný pro zapsání symbolů z bloků se symboly (jako kartuší a hvězdných bran) na papír",
+	"tooltip.sgjourney.graver.description": "Používané pro vyrytí symbolů do bloků se symboly (jako kartuší a hvězdných bran)",
+	
+	
+	"argument.sgjourney.address.incomplete": "Neúplná adresa",
 	
 	"message.sgjourney.open_wiki_link": "Otevřít wiki link",
+	
+	"message.sgjourney.charcoal_stick.no_paper": "Je třeba ve druhé ruce držet papír!",
+	"message.sgjourney.graver.low_tier": " Úroveň rydla je pro tento blok příliš nízká",
 	
 	"message.sgjourney.schrodingers_map.error.dimension": "Mapu nejde použít v této dimenzi, očekávána dimenze: %s",
 	"message.sgjourney.schrodingers_map.error.structure": "Struktura nenalezena",

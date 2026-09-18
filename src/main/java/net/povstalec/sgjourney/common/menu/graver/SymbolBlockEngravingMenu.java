@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.menu;
+package net.povstalec.sgjourney.common.menu.graver;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -7,17 +7,18 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
+import net.povstalec.sgjourney.common.menu.InventoryMenu;
 import net.povstalec.sgjourney.common.misc.SimpleTempContainer;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheGravingMenu<C extends CartoucheBlockEntity> extends InventoryMenu<C>
+public abstract class SymbolBlockEngravingMenu<S extends SymbolBlockEntity> extends InventoryMenu<S>
 {
-	public final SimpleTempContainer<CartoucheGravingMenu<C>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
+	public final SimpleTempContainer<SymbolBlockEngravingMenu<S>> tempContainer = new SimpleTempContainer<>(this, 1, 1)
 	{
 		@Override
 		public boolean canPlaceItem(int slot, @NotNull ItemStack stack)
@@ -28,14 +29,14 @@ public abstract class CartoucheGravingMenu<C extends CartoucheBlockEntity> exten
 	private final int tempSlotIndex;
 	private final ContainerLevelAccess access;
 	
-    public CartoucheGravingMenu(MenuType<?> type, int containerId, Inventory inventory, C blockEntity, ContainerLevelAccess access)
+    public SymbolBlockEngravingMenu(MenuType<?> type, int containerId, Inventory inventory, S blockEntity, ContainerLevelAccess access)
     {
         super(type, containerId, inventory, blockEntity);
 		
-		addPlayerInventory(inventory, 8, 168);
-		addPlayerHotbar(inventory, 8, 226);
+		addPlayerInventory(inventory, 8, 82);
+		addPlayerHotbar(inventory, 8, 140);
 		
-		this.tempSlotIndex = addBlockEntitySlot(new Slot(tempContainer, 0, 124, 57)
+		this.tempSlotIndex = addBlockEntitySlot(new Slot(tempContainer, 0, 124, 24)
 		{
 			@Override
 			public boolean mayPlace(@NotNull ItemStack stack)
@@ -94,60 +95,60 @@ public abstract class CartoucheGravingMenu<C extends CartoucheBlockEntity> exten
 	
 	
 	
-	public static class Stone extends CartoucheGravingMenu<CartoucheBlockEntity.Stone>
+	public static class Stone extends SymbolBlockEngravingMenu<SymbolBlockEntity.Stone>
 	{
 		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (CartoucheBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (SymbolBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
-		public Stone(int containerId, Inventory inventory, CartoucheBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public Stone(int containerId, Inventory inventory, SymbolBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
-			super(MenuInit.STONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
+			super(MenuInit.ENGRAVING_STONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
 		
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.STONE_CARTOUCHE.get());
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.STONE_SYMBOL.get());
 		}
 	}
 	
-	public static class Sandstone extends CartoucheGravingMenu<CartoucheBlockEntity.Sandstone>
+	public static class Sandstone extends SymbolBlockEngravingMenu<SymbolBlockEntity.Sandstone>
     {
         public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (SymbolBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
-		public Sandstone(int containerId, Inventory inventory, CartoucheBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public Sandstone(int containerId, Inventory inventory, SymbolBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
-			super(MenuInit.SANDSTONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
+			super(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
 		
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.SANDSTONE_CARTOUCHE.get());
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.SANDSTONE_SYMBOL.get());
 		}
     }
 	
-    public static class RedSandstone extends CartoucheGravingMenu<CartoucheBlockEntity.RedSandstone>
+    public static class RedSandstone extends SymbolBlockEngravingMenu<SymbolBlockEntity.RedSandstone>
     {
         public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (SymbolBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
-		public RedSandstone(int containerId, Inventory inventory, CartoucheBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)
+		public RedSandstone(int containerId, Inventory inventory, SymbolBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)
 		{
-			super(MenuInit.RED_SANDSTONE_CARTOUCHE.get(), containerId, inventory, blockEntity, containerLevelAccess);
+			super(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), containerId, inventory, blockEntity, containerLevelAccess);
 		}
 		
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.RED_SANDSTONE_CARTOUCHE.get());
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.RED_SANDSTONE_SYMBOL.get());
 		}
     }
 }

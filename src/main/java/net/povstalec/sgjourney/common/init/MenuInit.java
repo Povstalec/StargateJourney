@@ -13,6 +13,9 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrys
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
+import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 
 public class MenuInit 
 {
@@ -74,19 +77,26 @@ public class MenuInit
 	public static final RegistryObject<MenuType<BatteryMenu>> NAQUADAH_BATTERY =
 			registerMenuType(BatteryMenu::new, "naquadah_battery");
 	
-	public static final RegistryObject<MenuType<CartoucheGravingMenu.Stone>> STONE_CARTOUCHE =
-		registerMenuType(CartoucheGravingMenu.Stone::new, "stone_cartouche");
-	public static final RegistryObject<MenuType<CartoucheGravingMenu.Sandstone>> SANDSTONE_CARTOUCHE =
-		registerMenuType(CartoucheGravingMenu.Sandstone::new, "sandstone_cartouche");
-	public static final RegistryObject<MenuType<CartoucheGravingMenu.RedSandstone>> RED_SANDSTONE_CARTOUCHE =
-		registerMenuType(CartoucheGravingMenu.RedSandstone::new, "red_sandstone_cartouche");
+	// Engraving
 	
-	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.Stone>> STONE_SYMBOL =
-		registerMenuType(SymbolBlockGravingMenu.Stone::new, "stone_symbol");
-	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.Sandstone>> SANDSTONE_SYMBOL =
-		registerMenuType(SymbolBlockGravingMenu.Sandstone::new, "sandstone_symbol");
-	public static final RegistryObject<MenuType<SymbolBlockGravingMenu.RedSandstone>> RED_SANDSTONE_SYMBOL =
-		registerMenuType(SymbolBlockGravingMenu.RedSandstone::new, "red_sandstone_symbol");
+	public static final RegistryObject<MenuType<CartoucheEngravingMenu.Stone>> ENGRAVING_STONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.Stone::new, "engraving_stone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheEngravingMenu.Sandstone>> ENGRAVING_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.Sandstone::new, "engraving_sandstone_cartouche");
+	public static final RegistryObject<MenuType<CartoucheEngravingMenu.RedSandstone>> ENGRAVING_RED_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.RedSandstone::new, "engraving_red_sandstone_cartouche");
+	
+	public static final RegistryObject<MenuType<SymbolBlockEngravingMenu.Stone>> ENGRAVING_STONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.Stone::new, "engraving_stone_symbol");
+	public static final RegistryObject<MenuType<SymbolBlockEngravingMenu.Sandstone>> ENGRAVING_SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.Sandstone::new, "engraving_sandstone_symbol");
+	public static final RegistryObject<MenuType<SymbolBlockEngravingMenu.RedSandstone>> ENGRAVING_RED_SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.RedSandstone::new, "engraving_red_sandstone_symbol");
+	
+	public static final RegistryObject<MenuType<StargateEngravingMenu.MilkyWay>> ENGRAVING_MILKY_WAY_STARGATE =
+		registerMenuType(StargateEngravingMenu.MilkyWay::new, "engraving_milky_way_stargate");
+	public static final RegistryObject<MenuType<StargateEngravingMenu.Classic>> ENGRAVING_CLASSIC_STARGATE =
+		registerMenuType(StargateEngravingMenu.Classic::new, "engraving_classic_stargate");
 
 
 
