@@ -27,6 +27,7 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mod.EventBusSubscriber(modid = StargateJourney.MODID)
@@ -552,20 +553,32 @@ public class TabInit
 	public static void addCreative(final CreativeModeTabEvent.BuildContents event)
 	{
 		if(event.getTab() == CreativeModeTabs.OP_BLOCKS && event.hasPermissions())
+			getHiddenItems().forEach(itemStack -> event.accept(itemStack, CreativeModeTab.TabVisibility.PARENT_TAB_ONLY));
+	}
+	
+	private static List<ItemStack> hiddenItems = null;
+	
+	public static List<ItemStack> getHiddenItems()
+	{
+		if(hiddenItems == null)
 		{
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(UniverseDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(MilkyWayDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(PegasusDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(ClassicDHDBlock.generatedDHD(), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			hiddenItems = new ArrayList<>();
 			
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-			event.accept(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_RING_PANEL.get()), StructureGenEntity.Step.SETUP), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.UNIVERSE_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(UniverseDHDBlock.generatedDHD());
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.MILKY_WAY_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(MilkyWayDHDBlock.generatedDHD());
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.PEGASUS_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(PegasusDHDBlock.generatedDHD());
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(ClassicDHDBlock.generatedDHD());
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_RING_PANEL.get()), StructureGenEntity.Step.SETUP));
 		}
+		
+		return hiddenItems;
 	}
 }
