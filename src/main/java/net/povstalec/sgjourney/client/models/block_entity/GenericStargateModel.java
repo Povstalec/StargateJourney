@@ -1,22 +1,20 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
-import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.GenericStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
-public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends GenericStargateVariant> extends AbstractStargateModel<StargateEntity, Variant>
+public abstract class GenericStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends GenericStargateVariant<StargateEntity>> extends AbstractStargateModel<StargateEntity, Variant>
 {
 	// Ring
 	protected static final float STARGATE_RING_THICKNESS = 7F;
@@ -107,7 +105,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.pushPose();
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
-		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isPrimaryChevronRaised(stargate, stargateVariant), isPrimaryChevronBackRaised(stargate, stargateVariant));
+		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isPrimaryChevronOpen(stargate, stargateVariant), isPrimaryChevronBackRaised(stargate, stargateVariant));
 		if(stargateVariant.stargateModel().useMovieStargatePrimaryChevron())
 			MovieChevronModel.renderMovieChevronFront(stack, consumer, source, light);
 		else
@@ -128,8 +126,8 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));
 		stack.translate(0, DEFAULT_RADIUS - 2.5F/16, 0);
 		
-		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isChevronRaised(stargate, stargateVariant, chevronNumber), isChevronBackRaised(stargate, stargateVariant, chevronNumber));
-		GenericChevronModel.renderOuterChevronFront(stack, consumer, source, light, isChevronLowered(stargate, stargateVariant, chevronNumber));
+		GenericChevronModel.renderChevronLight(stack, consumer, source, light, isChevronOpen(stargate, stargateVariant, chevronNumber), isChevronBackRaised(stargate, stargateVariant, chevronNumber));
+		GenericChevronModel.renderOuterChevronFront(stack, consumer, source, light, isChevronClosed(stargate, stargateVariant, chevronNumber));
 		GenericChevronModel.renderOuterChevronBack(stack, consumer, source, light);
 		
 		stack.popPose();

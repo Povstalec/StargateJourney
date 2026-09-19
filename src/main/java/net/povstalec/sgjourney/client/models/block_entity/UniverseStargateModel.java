@@ -1,21 +1,21 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
-import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity, UniverseStargateVariant>
 {
@@ -81,6 +81,22 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	public UniverseStargateModel()
 	{
 		super((short) 36);
+	}
+	
+	@Override
+	public UniverseStargateVariant getClientVariant(UniverseStargateEntity stargate)
+	{
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant != null)
+		{
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getUniverseStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasUniverseStargateVariant(stargateVariant.clientVariant()));
+		}
+		
+		return ClientStargateVariants.getUniverseStargateVariant(stargate.defaultVariant());
 	}
 	
 	public float getRotation(boolean shouldRotate)

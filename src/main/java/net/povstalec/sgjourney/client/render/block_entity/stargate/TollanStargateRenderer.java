@@ -2,60 +2,35 @@ package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.povstalec.sgjourney.client.models.block_entity.TollanStargateModel;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
-@OnlyIn(Dist.CLIENT)
-public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStargateEntity, TollanStargateVariant>
+public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStargateEntity, TollanStargateVariant, TollanStargateModel>
 {
-	protected final TollanStargateModel stargateModel;
-	
-	/*public static final int WORMHOLE_R = 50; 
+	/*public static final int WORMHOLE_R = 50;
 	public static final int WORMHOLE_G = 100;
 	public static final int WORMHOLE_B = 240;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	public TollanStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, 0.125F, true, 38F);
-		this.stargateModel = new TollanStargateModel();
+		super(context, new TollanStargateModel(), 0.125F, true, 38F);
 	}
 
-	@Override
-	protected TollanStargateVariant getClientVariant(TollanStargateEntity stargate)
-	{
-		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
-		
-		if(stargateVariant != null)
-		{
-			if(stargateVariant.isFound())
-				return ClientStargateVariants.getTollanStargateVariant(stargateVariant.clientVariant());
-			else if(!stargateVariant.isMissing())
-				stargateVariant.handleLocation(ClientStargateVariants.hasTollanStargateVariant(stargateVariant.clientVariant()));
-		}
-		
-		return ClientStargateVariants.getTollanStargateVariant(stargate.defaultVariant());
-	}
-	
 	@Override
 	public void render(TollanStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		TollanStargateVariant stargateVariant = getClientVariant(stargate);
+		TollanStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
 		Direction facing = blockstate.getValue(TollanStargateBlock.FACING);

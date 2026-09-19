@@ -76,6 +76,14 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
     }
 	
 	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
 		super.saveAdditional(tag);
@@ -86,6 +94,16 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	{
+		super.serializeStargateInfo(tag);
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		return tag;
+	}
+	
+	@Override
 	public @NotNull CompoundTag getUpdateTag()
 	{
 		CompoundTag tag = super.getUpdateTag();
@@ -93,6 +111,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		tag.putBoolean(CAN_ENGAGE, canEngage);
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		return tag;
 	}
@@ -107,6 +127,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			canEngage = tag.getBoolean(CAN_ENGAGE);
 			symbolBuffer = tag.getInt(ADDRESS_BUFFER);
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+			
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		}
 	}
 	

@@ -2,72 +2,69 @@ package net.povstalec.sgjourney.client.screens.graver;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Axis;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerListener;
-import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.ClientUtil;
-import net.povstalec.sgjourney.client.models.block.SymbolBlockBakedModel;
+import net.povstalec.sgjourney.client.models.block_entity.AbstractStargateModel;
+import net.povstalec.sgjourney.client.models.block_entity.ClassicStargateModel;
+import net.povstalec.sgjourney.client.models.block_entity.MilkyWayStargateModel;
+import net.povstalec.sgjourney.client.models.block_entity.UniverseStargateModel;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
-import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.packets.ServerboundGravingUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Objects;
 
-public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>, SG extends AbstractStargateModel<?, ?>> extends SGJourneyContainerScreen<M>
 {
-	public static final float SYMBOL_SIZE = 64;
+	public static final int MAX_LIGHT = 15728880;
 	
 	protected final ResourceLocation texture;
-	protected ColorUtil.RGBA rgba;
 	
-	protected EditBox editBox;
-	protected Button gravingButton;
-	protected int symbolNumber;
+	protected SG stargateModel;
 	
-	public StargateEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
+	public StargateEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title)
 	{
 		super(menu, playerInventory, title);
 		
 		this.texture = texture;
 		
-		this.rgba = rgba;
-		
 		this.imageWidth = 176;
-		this.imageHeight = 164;
+		this.imageHeight = 176;
 		
 		this.inventoryLabelY = this.imageHeight - 94;
-		
-		this.symbolNumber = menu.blockEntity.getSymbolNumber();
 	}
+	
+	protected abstract SG createStargateModel();
 	
 	@Override
 	protected void init()
 	{
 		super.init();
 		
-		BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
+		stargateModel = createStargateModel();
+		
+		
+		/*BlockRenderDispatcher dispatcher = minecraft.getBlockRenderer();
 		BakedModel model = dispatcher.getBlockModel(menu.blockEntity.getBlockState());
 		if(model instanceof SymbolBlockBakedModel symbolBlockModel)
 			this.rgba = new ColorUtil.RGBA(symbolBlockModel.getSymbolTint());
@@ -131,10 +128,10 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 			{
 				updateGravingButton();
 			}
-		});
+		});*/
 	}
 	
-	public void updateGravingButton()
+	/*public void updateGravingButton()
 	{
 		boolean isSymbolDifferent = symbolNumber != menu.blockEntity.getSymbolNumber() ||
 			(symbolNumber == 0 ?
@@ -182,7 +179,7 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 		
 		PacketHandlerInit.INSTANCE.sendToServer(packet);
 		onClose();
-	}
+	}*/
 	
 	@Nullable
 	public ResourceKey<Symbols> getSymbols()
@@ -191,7 +188,7 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 		if(symbols != null)
 			return symbols;
 		
-		return menu.blockEntity.getSymbols();
+		return menu.blockEntity.symbolInfo().symbols();
 	}
 	
 	@Nullable
@@ -201,10 +198,10 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 		if(pointOfOrigin != null)
 			return pointOfOrigin;
 		
-		return menu.blockEntity.getPointOfOrigin();
+		return menu.blockEntity.symbolInfo().pointOfOrigin();
 	}
 	
-	public void renderSymbol(PoseStack stack)
+	/*public void renderSymbol(PoseStack stack)
 	{
 		float xPos = (imageWidth - SYMBOL_SIZE) / 2F;
 		float yPos = 1; // There's a 1 pixel thick black border around it
@@ -225,7 +222,7 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 			
 			ClientUtil.renderSymbol(stack.last().pose(), xPos, yPos, xPos + SYMBOL_SIZE, yPos + SYMBOL_SIZE, symbols, symbolNumber, rgba);
 		}
-	}
+	}*/
 	
 	@Override
 	protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
@@ -247,14 +244,27 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 		renderTooltip(stack, mouseX, mouseY);
 		
 		itemTooltip(stack, mouseX, mouseY, 124, 24, 0, ComponentHelper.description("screen.sgjourney.graving.symbol_block.insert_symbol_paper"));
+		
+		stack.pushPose();
+		stack.translate(leftPos + imageWidth / 2F, topPos + 40, 0);
+		stack.scale(-10, -10, -10);
+		stack.mulPose(Axis.YP.rotationDegrees(-180));
+		
+		MultiBufferSource.BufferSource source = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		renderStargate(stack, source, mouseX, mouseY, delta);
+		source.endBatch();
+		
+		stack.popPose();
 	}
+	
+	protected abstract void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick);
 	
 	@Override
 	protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
 	{
 		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
 		
-		renderSymbol(poseStack);
+		//renderSymbol(poseStack);
 	}
 	
 	@Override
@@ -265,27 +275,118 @@ public abstract class StargateEngravingScreen<M extends SymbolBlockEngravingMenu
 	
 	
 	
-	public static class Stone extends StargateEngravingScreen<SymbolBlockEngravingMenu.Stone>
+	public static class Universe extends StargateEngravingScreen<StargateEngravingMenu.Universe, UniverseStargateModel>
 	{
-		public Stone(SymbolBlockEngravingMenu.Stone menu, Inventory playerInventory, Component title)
+		public Universe(StargateEngravingMenu.Universe menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/stone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/stargate/universe_stargate_engraving_gui.png"), playerInventory, title);
+		}
+		
+		protected UniverseStargateModel createStargateModel()
+		{
+			return new UniverseStargateModel()
+			{
+				@Override
+				protected @Nullable ClientPointOfOrigin getPointOfOrigin(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
+						return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
+					else
+						return ClientPointOfOrigin.getPointOfOrigin(Universe.this.getPointOfOrigin());
+				}
+				
+				@Override
+				protected @Nullable ClientSymbols getSymbols(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentSymbols().isPresent())
+						return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
+					else
+						return ClientSymbols.getSymbols(Universe.this.getSymbols());
+				}
+			};
+		}
+		
+		@Override
+		public void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick)
+		{
+			stargateModel.renderStargate(menu.blockEntity, stargateModel.getClientVariant(menu.blockEntity), partialTick, stack, source, MAX_LIGHT, OverlayTexture.NO_OVERLAY);
 		}
 	}
 	
-	public static class Sandstone extends StargateEngravingScreen<SymbolBlockEngravingMenu.Sandstone>
+	public static class MilkyWay extends StargateEngravingScreen<StargateEngravingMenu.MilkyWay, MilkyWayStargateModel>
 	{
-		public Sandstone(SymbolBlockEngravingMenu.Sandstone menu, Inventory playerInventory, Component title)
+		public MilkyWay(StargateEngravingMenu.MilkyWay menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/stargate/milky_way_stargate_engraving_gui.png"), playerInventory, title);
+		}
+		
+		protected MilkyWayStargateModel createStargateModel()
+		{
+			return new MilkyWayStargateModel()
+			{
+				@Override
+				protected @Nullable ClientPointOfOrigin getPointOfOrigin(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
+						return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
+					else
+						return ClientPointOfOrigin.getPointOfOrigin(MilkyWay.this.getPointOfOrigin());
+				}
+				
+				@Override
+				protected @Nullable ClientSymbols getSymbols(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentSymbols().isPresent())
+						return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
+					else
+						return ClientSymbols.getSymbols(MilkyWay.this.getSymbols());
+				}
+			};
+		}
+		
+		@Override
+		public void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick)
+		{
+			stargateModel.renderStargate(menu.blockEntity, stargateModel.getClientVariant(menu.blockEntity), partialTick, stack, source, MAX_LIGHT, OverlayTexture.NO_OVERLAY);
 		}
 	}
 	
-	public static class RedSandstone extends StargateEngravingScreen<SymbolBlockEngravingMenu.RedSandstone>
+	public static class Classic extends StargateEngravingScreen<StargateEngravingMenu.Classic, ClassicStargateModel>
 	{
-		public RedSandstone(SymbolBlockEngravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
+		public Classic(StargateEngravingMenu.Classic menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/red_sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/stargate/classic_stargate_engraving_gui.png"), playerInventory, title);
+		}
+		
+		@Override
+		protected ClassicStargateModel createStargateModel()
+		{
+			return new ClassicStargateModel()
+			{
+				@Override
+				protected @Nullable ClientPointOfOrigin getPointOfOrigin(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
+						return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
+					else
+						return ClientPointOfOrigin.getPointOfOrigin(Classic.this.getPointOfOrigin());
+				}
+				
+				@Override
+				protected @Nullable ClientSymbols getSymbols(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentSymbols().isPresent())
+						return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
+					else
+						return ClientSymbols.getSymbols(Classic.this.getSymbols());
+				}
+			};
+		}
+		
+		@Override
+		public void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick)
+		{
+			stargateModel.renderStargate(menu.blockEntity, stargateModel.getClientVariant(menu.blockEntity), partialTick, stack, source, MAX_LIGHT, OverlayTexture.NO_OVERLAY);
 		}
 	}
 }

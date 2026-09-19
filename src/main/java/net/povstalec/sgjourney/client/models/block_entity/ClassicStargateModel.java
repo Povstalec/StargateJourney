@@ -1,8 +1,10 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -84,6 +86,22 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	public ClassicStargateModel()
 	{
 		super((short) 39);
+	}
+	
+	@Override
+	public ClassicStargateVariant getClientVariant(ClassicStargateEntity stargate)
+	{
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant != null)
+		{
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getClassicStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasClassicStargateVariant(stargateVariant.clientVariant()));
+		}
+		
+		return ClientStargateVariants.getClassicStargateVariant(stargate.defaultVariant());
 	}
 	
 	@Override
@@ -360,7 +378,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	}
 	
 	@Override
-	protected boolean isChevronLowered(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, int chevronNumber)
+	protected boolean isChevronClosed(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, int chevronNumber)
 	{
 		return isChevronEngaged(stargate, stargateVariant, chevronNumber);
 	}
@@ -387,7 +405,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	{
 		int chevron = AbstractStargateEntity.getChevron(stargate, chevronNumber);
 		int light = chevronEngaged ? MAX_LIGHT : combinedLight;
-		float subtracted = isChevronLowered(stargate, stargateVariant, chevronNumber) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
+		float subtracted = isChevronClosed(stargate, stargateVariant, chevronNumber) ? LOCKED_CHEVRON_OFFSET + 1F/16 :  1F/16;
 		
 		stack.pushPose();
 		stack.mulPose(Axis.ZP.rotationDegrees(-CHEVRON_ANGLE * chevron));

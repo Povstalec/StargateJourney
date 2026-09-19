@@ -2,56 +2,34 @@ package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.models.block_entity.PegasusStargateModel;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
-public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusStargateEntity, PegasusStargateVariant>
+public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusStargateEntity, PegasusStargateVariant, PegasusStargateModel>
 {
-	protected final PegasusStargateModel stargateModel;
-	
-	/*public static final int WORMHOLE_R = 25; 
+	/*public static final int WORMHOLE_R = 25;
 	public static final int WORMHOLE_G = 25;
 	public static final int WORMHOLE_B = 255;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	public PegasusStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, 0.25F, false, 84F);
-		this.stargateModel = new PegasusStargateModel();
-	}
-	
-	@Override
-	protected PegasusStargateVariant getClientVariant(PegasusStargateEntity stargate)
-	{
-		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
-		
-		if(stargateVariant != null)
-		{
-			if(stargateVariant.isFound())
-				return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.clientVariant());
-			else if(!stargateVariant.isMissing())
-				stargateVariant.handleLocation(ClientStargateVariants.hasPegasusStargateVariant(stargateVariant.clientVariant()));
-		}
-		
-		return ClientStargateVariants.getPegasusStargateVariant(stargate.defaultVariant());
+		super(context, new PegasusStargateModel(), 0.25F, false, 84F);
 	}
 	
 	@Override
 	public void render(PegasusStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		PegasusStargateVariant stargateVariant = getClientVariant(stargate);
+		PegasusStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(PegasusStargateBlock.FACING).toYRot();

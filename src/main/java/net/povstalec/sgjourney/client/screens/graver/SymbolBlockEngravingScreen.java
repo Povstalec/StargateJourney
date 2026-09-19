@@ -26,7 +26,7 @@ import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.packets.ServerboundGravingUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundEngravingUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
@@ -43,7 +43,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	protected ColorUtil.RGBA rgba;
 	
 	protected EditBox editBox;
-	protected Button gravingButton;
+	protected Button engravingButton;
 	protected int symbolNumber;
 	
 	public SymbolBlockEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)
@@ -72,11 +72,11 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		if(model instanceof SymbolBlockBakedModel symbolBlockModel)
 			this.rgba = new ColorUtil.RGBA(symbolBlockModel.getSymbolTint());
 		
-		this.gravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"), button -> engrave())
+		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"), button -> engrave())
 			.bounds(leftPos + 121, topPos + 45, 56, 20).build();
 		
-		updateGravingButton();
-		this.addRenderableWidget(this.gravingButton);
+		updateEngravingButton();
+		this.addRenderableWidget(this.engravingButton);
 		
 		this.editBox = new EditBox(font, leftPos + 2, topPos + 44, 52, 20, Component.translatable("tooltip.sgjourney.symbol"));
 		this.editBox.setFilter(SymbolBlockEngravingScreen::canParseAsPositiveNumber);
@@ -95,7 +95,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 			if(text.isEmpty())
 			{
 				symbolNumber = -1;
-				updateGravingButton();
+				updateEngravingButton();
 			}
 			else
 			{
@@ -104,13 +104,13 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				if(parsedNumber < Address.MIN_SYMBOL || parsedNumber > Address.MAX_SYMBOL)
 				{
 					symbolNumber = -1;
-					gravingButton.active = false;
-					gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.out_of_bounds")));
+					engravingButton.active = false;
+					engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.out_of_bounds")));
 				}
 				else
 				{
 					symbolNumber = parsedNumber;
-					updateGravingButton();
+					updateEngravingButton();
 				}
 			}
 		});
@@ -123,25 +123,25 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 			@Override
 			public void slotChanged(@NotNull AbstractContainerMenu menu, int slot, @NotNull ItemStack stack)
 			{
-				updateGravingButton();
+				updateEngravingButton();
 			}
 			
 			@Override
 			public void dataChanged(@NotNull AbstractContainerMenu menu, int slot, int dataSlot)
 			{
-				updateGravingButton();
+				updateEngravingButton();
 			}
 		});
 	}
 	
-	public void updateGravingButton()
+	public void updateEngravingButton()
 	{
 		boolean isSymbolDifferent = symbolNumber != menu.blockEntity.getSymbolNumber() ||
 			(symbolNumber == 0 ?
 				!Objects.equals(getPointOfOrigin(), menu.blockEntity.getPointOfOrigin()) :
 				!Objects.equals(getSymbols(), menu.blockEntity.getSymbols()));
-		gravingButton.active = isSymbolDifferent;
-		gravingButton.setTooltip(isSymbolDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.same_symbol")));
+		engravingButton.active = isSymbolDifferent;
+		engravingButton.setTooltip(isSymbolDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.same_symbol")));
 	}
 	
 	public static boolean canParseAsPositiveNumber(String text)
@@ -157,7 +157,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	
 	public void engrave()
 	{
-		ServerboundGravingUpdatePacket packet = new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos());
+		ServerboundEngravingUpdatePacket packet = new ServerboundEngravingUpdatePacket(menu.blockEntity.getBlockPos());
 		
 		if(symbolNumber != menu.blockEntity.getSymbolNumber())
 		{
@@ -269,7 +269,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	{
 		public Stone(SymbolBlockEngravingMenu.Stone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/stone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/symbol_block/stone_symbol_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
 		}
 	}
 	
@@ -277,7 +277,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	{
 		public Sandstone(SymbolBlockEngravingMenu.Sandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/symbol_block/sandstone_symbol_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
 		}
 	}
 	
@@ -285,7 +285,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	{
 		public RedSandstone(SymbolBlockEngravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/symbol_block/red_sandstone_symbol_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/symbol_block/red_sandstone_symbol_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
 		}
 	}
 }

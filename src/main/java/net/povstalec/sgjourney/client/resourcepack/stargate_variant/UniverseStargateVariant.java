@@ -1,21 +1,20 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class UniverseStargateVariant extends RotatingStargateVariant
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+public class UniverseStargateVariant extends RotatingStargateVariant<UniverseStargateEntity>
 {
 	// Variant: Normal RGB - Shiny RGB
 	// Universe: 148 186 254 - 73 89 120

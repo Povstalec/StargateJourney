@@ -7,9 +7,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.GraverItem;
@@ -95,7 +97,32 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 		return moveItemStackToBlockEntity(sourceStack, 0, blockEntityInventorySlotCount(), false);
 	}
 	
+	protected boolean stargateStillValid(ContainerLevelAccess containerLevelAccess, Player player, Block block)
+	{
+		return containerLevelAccess.evaluate((level, pos) -> level.getBlockState(pos).is(block) &&
+			player.distanceToSqr(blockEntity.getCenter()) <= 256D, true);
+	}
 	
+	
+	
+	public static class Universe extends StargateEngravingMenu<UniverseStargateEntity>
+	{
+		public Universe(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (UniverseStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+		}
+		
+		public Universe(int containerId, Inventory inventory, UniverseStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
+		{
+			super(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), containerId, inventory, blockEntity, containerLevelAccess);
+		}
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stargateStillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.UNIVERSE_STARGATE.get());
+		}
+	}
 	
 	public static class MilkyWay extends StargateEngravingMenu<MilkyWayStargateEntity>
 	{
@@ -112,7 +139,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.MILKY_WAY_STARGATE.get());
+			return stargateStillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.MILKY_WAY_STARGATE.get());
 		}
 	}
 	
@@ -131,7 +158,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 		@Override
 		public boolean stillValid(@NotNull Player player)
 		{
-			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_STARGATE.get());
+			return stargateStillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_STARGATE.get());
 		}
     }
 }

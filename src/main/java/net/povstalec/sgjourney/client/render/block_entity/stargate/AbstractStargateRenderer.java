@@ -18,6 +18,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.ModelData;
+import net.povstalec.sgjourney.client.models.block_entity.AbstractStargateModel;
 import net.povstalec.sgjourney.client.models.block_entity.IrisModel;
 import net.povstalec.sgjourney.client.models.block_entity.ShieldModel;
 import net.povstalec.sgjourney.client.models.block_entity.WormholeModel;
@@ -26,17 +27,26 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
-public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant> implements BlockEntityRenderer<StargateEntity>
+public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant<StargateEntity>,
+	StargateModel extends AbstractStargateModel<StargateEntity, Variant>> implements BlockEntityRenderer<StargateEntity>
 {
+	protected final BlockRenderDispatcher blockRenderDispatcher;
+	
+	protected final StargateModel stargateModel;
+	
 	protected final WormholeModel wormholeModel;
 	protected final ShieldModel shieldModel;
 	protected final IrisModel irisModel;
 	
 	private final RandomSource randomsource = RandomSource.create();
 	
-	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context,
+	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, StargateModel stargateModel,
 			float maxDefaultDistortion, boolean renderWhenOpen, float maxOpenIrisDegrees)
 	{
+		this.blockRenderDispatcher = context.getBlockRenderDispatcher();
+		
+		this.stargateModel = stargateModel;
+		
 		this.shieldModel = new ShieldModel();
 		this.irisModel = new IrisModel(renderWhenOpen, maxOpenIrisDegrees);
 		this.wormholeModel = new WormholeModel(maxDefaultDistortion);
@@ -47,13 +57,6 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 	{
 		return 128;
 	}
-	
-	/**
-	 * Method for getting the client variant of the Stargate
-	 * @param stargate
-	 * @return
-	 */
-	protected abstract Variant getClientVariant(StargateEntity stargate);
 	
 	protected void renderWormhole(AbstractStargateEntity<?> stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
@@ -82,14 +85,13 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 			stack.pushPose();
 			
 			stack.translate(relativeBlockPos.x(), relativeBlockPos.y(), relativeBlockPos.z());
-			BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();//Minecraft.getInstance().getBlockColors().
 			//dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, ModelData.EMPTY, null);
 			
 			
-			BakedModel model = dispatcher.getBlockModel(state);
+			BakedModel model = blockRenderDispatcher.getBlockModel(state);
 			for(RenderType renderType : model.getRenderTypes(state, randomsource, ModelData.EMPTY))
 			{
-				dispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, ModelData.EMPTY), null);
+				blockRenderDispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, ModelData.EMPTY), null);
 			}
 			
 			stack.popPose();

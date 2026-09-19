@@ -1,18 +1,18 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class TollanStargateVariant extends ClientStargateVariant
+import java.util.Optional;
+
+public class TollanStargateVariant extends ClientStargateVariant<TollanStargateEntity>
 {
 	// Variant: Normal RGB - Shiny RGB
 	// Tollan: 50 100 240 - 41 88 218

@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class ServerboundGravingUpdatePacket
+public class ServerboundEngravingUpdatePacket
 {
 	private final BlockPos blockPos;
 	private String pointOfOrigin = "";
@@ -24,12 +24,12 @@ public class ServerboundGravingUpdatePacket
 	@Nullable
 	private Address address = null;
 	
-	public ServerboundGravingUpdatePacket(BlockPos blockPos)
+	public ServerboundEngravingUpdatePacket(BlockPos blockPos)
 	{
 		this.blockPos = blockPos;
 	}
 
-    public ServerboundGravingUpdatePacket(FriendlyByteBuf buffer)
+    public ServerboundEngravingUpdatePacket(FriendlyByteBuf buffer)
     {
         this(buffer.readBlockPos());
 		
@@ -39,19 +39,19 @@ public class ServerboundGravingUpdatePacket
 			this.address = Address.read(buffer);
     }
 	
-	public ServerboundGravingUpdatePacket withPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
+	public ServerboundEngravingUpdatePacket withPointOfOrigin(ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
 		this.pointOfOrigin = pointOfOrigin.location().toString();
 		return this;
 	}
 	
-	public ServerboundGravingUpdatePacket withSymbols(ResourceKey<Symbols> symbols)
+	public ServerboundEngravingUpdatePacket withSymbols(ResourceKey<Symbols> symbols)
 	{
 		this.symbols = symbols.location().toString();
 		return this;
 	}
 	
-	public ServerboundGravingUpdatePacket withAddress(Address address)
+	public ServerboundEngravingUpdatePacket withAddress(Address address)
 	{
 		this.address = address;
 		return this;

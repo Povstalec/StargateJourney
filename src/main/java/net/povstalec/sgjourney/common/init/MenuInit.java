@@ -93,6 +93,8 @@ public class MenuInit
 	public static final RegistryObject<MenuType<SymbolBlockEngravingMenu.RedSandstone>> ENGRAVING_RED_SANDSTONE_SYMBOL =
 		registerMenuType(SymbolBlockEngravingMenu.RedSandstone::new, "engraving_red_sandstone_symbol");
 	
+	public static final RegistryObject<MenuType<StargateEngravingMenu.Universe>> ENGRAVING_UNIVERSE_STARGATE =
+		registerMenuType(StargateEngravingMenu.Universe::new, "engraving_universe_stargate");
 	public static final RegistryObject<MenuType<StargateEngravingMenu.MilkyWay>> ENGRAVING_MILKY_WAY_STARGATE =
 		registerMenuType(StargateEngravingMenu.MilkyWay::new, "engraving_milky_way_stargate");
 	public static final RegistryObject<MenuType<StargateEngravingMenu.Classic>> ENGRAVING_CLASSIC_STARGATE =

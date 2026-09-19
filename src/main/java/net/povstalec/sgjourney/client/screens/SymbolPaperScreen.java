@@ -76,7 +76,7 @@ public class SymbolPaperScreen extends Screen
 		float angle = 360F / symbols.size();
 		
 		stack.pushPose();
-		stack.translate(width / 2D, height / 2D, 0);
+		stack.translate(width / 2F, height / 2F, 0);
 		
 		for(int i = 0; i < symbols.size(); i++)
 		{

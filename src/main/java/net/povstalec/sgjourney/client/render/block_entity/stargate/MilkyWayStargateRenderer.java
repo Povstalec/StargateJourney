@@ -2,56 +2,34 @@ package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.models.block_entity.MilkyWayStargateModel;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.MilkyWayStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
-public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayStargateEntity, MilkyWayStargateVariant>
+public class MilkyWayStargateRenderer extends AbstractStargateRenderer<MilkyWayStargateEntity, MilkyWayStargateVariant, MilkyWayStargateModel>
 {
-	protected final MilkyWayStargateModel stargateModel;
-	
-	/*public static final int WORMHOLE_R = 55; 
+	/*public static final int WORMHOLE_R = 55;
 	public static final int WORMHOLE_G = 55;
 	public static final int WORMHOLE_B = 255;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	public MilkyWayStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, 0.25F, false, 84F);
-		this.stargateModel = new MilkyWayStargateModel();
-	}
-	
-	@Override
-	protected MilkyWayStargateVariant getClientVariant(MilkyWayStargateEntity stargate)
-	{
-		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
-		
-		if(stargateVariant != null)
-		{
-			if(stargateVariant.isFound())
-				return ClientStargateVariants.getMilkyWayStargateVariant(stargateVariant.clientVariant());
-			else if(!stargateVariant.isMissing())
-				stargateVariant.handleLocation(ClientStargateVariants.hasMilkyWayStargateVariant(stargateVariant.clientVariant()));
-		}
-		
-		return ClientStargateVariants.getMilkyWayStargateVariant(stargate.defaultVariant());
+		super(context, new MilkyWayStargateModel(), 0.25F, false, 84F);
 	}
 	
 	@Override
 	public void render(MilkyWayStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		MilkyWayStargateVariant stargateVariant = getClientVariant(stargate);
+		MilkyWayStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(MilkyWayStargateBlock.FACING).toYRot();

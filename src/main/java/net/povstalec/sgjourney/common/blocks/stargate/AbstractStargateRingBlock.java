@@ -65,10 +65,15 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		}
     }
 	
+	public BlockPos getBaseBlockPos(BlockPos pos, BlockState state)
+	{
+		return state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
+	}
+	
 	@Override
 	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
-		BlockEntity blockentity = reader.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		BlockEntity blockentity = reader.getBlockEntity(getBaseBlockPos(pos, state));
 		
 		if(blockentity instanceof AbstractStargateEntity<?> stargate)
 			return stargate;

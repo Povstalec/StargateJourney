@@ -29,7 +29,7 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.ParsingResult;
-import net.povstalec.sgjourney.common.packets.ServerboundGravingUpdatePacket;
+import net.povstalec.sgjourney.common.packets.ServerboundEngravingUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +46,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	protected ColorUtil.RGBA rgba;
 	
 	protected EditBox editBox;
-	protected Button gravingButton;
+	protected Button engravingButton;
 	protected final Address.Mutable address;
 	protected final boolean wasDimensionAddress;
 	
@@ -77,7 +77,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		if(model instanceof CartoucheBakedModel cartoucheModel)
 			this.rgba = new ColorUtil.RGBA(cartoucheModel.getSymbolTint());
 		
-		this.gravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"),
+		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"),
 				button ->
 				{
 					// The player is attempting to overwrite the Cartouche's Dimension Address
@@ -107,8 +107,8 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 				})
 			.bounds(leftPos + 121, topPos + 109, 56, 20).build();
 		
-		updateGravingButton();
-		this.addRenderableWidget(this.gravingButton);
+		updateEngravingButton();
+		this.addRenderableWidget(this.engravingButton);
 		
 		this.editBox = new EditBox(font, leftPos, topPos + 130, 176, 20, Component.translatable("tooltip.sgjourney.address"));
 		this.editBox.setFilter(Address::canBeTransformedToAddress);
@@ -121,8 +121,8 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 			if(ArrayHelper.contains(addressArray, 0))
 			{
 				address.reset();
-				gravingButton.active = false;
-				gravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.should_not_contain_point_of_origin")));
+				engravingButton.active = false;
+				engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.should_not_contain_point_of_origin")));
 			}
 			else
 			{
@@ -130,13 +130,13 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 				if(parsingResult.isSuccess())
 				{
 					address.fromString(text);
-					updateGravingButton();
+					updateEngravingButton();
 				}
 				else
 				{
 					address.reset();
-					gravingButton.active = false;
-					gravingButton.setTooltip(Tooltip.create(parsingResult.getMessage()));
+					engravingButton.active = false;
+					engravingButton.setTooltip(Tooltip.create(parsingResult.getMessage()));
 				}
 			}
 		});
@@ -149,27 +149,27 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 			@Override
 			public void slotChanged(@NotNull AbstractContainerMenu menu, int slot, @NotNull ItemStack stack)
 			{
-				updateGravingButton();
+				updateEngravingButton();
 			}
 			
 			@Override
 			public void dataChanged(@NotNull AbstractContainerMenu menu, int slot, int dataSlot)
 			{
-				updateGravingButton();
+				updateEngravingButton();
 			}
 		});
 	}
 	
-	protected void updateGravingButton()
+	protected void updateEngravingButton()
 	{
 		boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress()) || !getSymbols().equals(menu.blockEntity.getSymbols());
-		gravingButton.active = isAddressDifferent;
-		gravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+		engravingButton.active = isAddressDifferent;
+		engravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
 	}
 	
 	public void engrave()
 	{
-		ServerboundGravingUpdatePacket packet = new ServerboundGravingUpdatePacket(menu.blockEntity.getBlockPos());
+		ServerboundEngravingUpdatePacket packet = new ServerboundEngravingUpdatePacket(menu.blockEntity.getBlockPos());
 		
 		if(!address.equals(menu.blockEntity.getAddress()))
 			packet.withAddress(new Address.Immutable(address));
@@ -256,7 +256,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		public Stone(CartoucheEngravingMenu.Stone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/stone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/cartouche/stone_cartouche_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(90, 89, 90));
 		}
 	}
 	
@@ -264,7 +264,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		public Sandstone(CartoucheEngravingMenu.Sandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/cartouche/sandstone_cartouche_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(198, 174, 113));
 		}
 	}
 	
@@ -272,7 +272,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		public RedSandstone(CartoucheEngravingMenu.RedSandstone menu, Inventory playerInventory, Component title)
 		{
-			super(menu, StargateJourney.sgjourneyLocation("textures/gui/cartouche/red_sandstone_cartouche_graving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/cartouche/red_sandstone_cartouche_engraving_gui.png"), playerInventory, title, new ColorUtil.RGBA(142, 71, 11));
 		}
 	}
 }

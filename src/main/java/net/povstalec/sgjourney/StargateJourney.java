@@ -43,6 +43,7 @@ import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.client.screens.dhd.*;
 import net.povstalec.sgjourney.client.screens.graver.CartoucheEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.StargateEngravingScreen;
 import net.povstalec.sgjourney.client.screens.graver.SymbolBlockEngravingScreen;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -234,6 +235,10 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.ENGRAVING_STONE_SYMBOL.get(), SymbolBlockEngravingScreen.Stone::new);
 			MenuScreens.register(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.Sandstone::new);
 			MenuScreens.register(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.RedSandstone::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
+			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
+			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);

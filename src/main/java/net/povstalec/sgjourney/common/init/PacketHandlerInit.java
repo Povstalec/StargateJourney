@@ -157,10 +157,10 @@ public final class PacketHandlerInit
 		//****************************************Server-bound****************************************
 		//============================================================================================
 		
-		INSTANCE.messageBuilder(ServerboundGravingUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
-				.encoder(ServerboundGravingUpdatePacket::encode)
-				.decoder(ServerboundGravingUpdatePacket::new)
-				.consumerMainThread(ServerboundGravingUpdatePacket::handle)
+		INSTANCE.messageBuilder(ServerboundEngravingUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+				.encoder(ServerboundEngravingUpdatePacket::encode)
+				.decoder(ServerboundEngravingUpdatePacket::new)
+				.consumerMainThread(ServerboundEngravingUpdatePacket::handle)
 				.add();
 		
 		INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)

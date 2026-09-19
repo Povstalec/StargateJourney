@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant>
+public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant<StargateEntity>>
 {
 	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
@@ -29,8 +29,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	protected static final int MAX_LIGHT = 15728880;
 	
 	protected static final int DEFAULT_TEXTURE_SIZE = 64;
-	
-	public static final String EMPTY = StargateJourney.EMPTY;
 	
 	protected final short numberOfSymbols;
 	
@@ -57,6 +55,13 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return ClientSymbols.getSymbols(stargate.symbolInfo().symbols());
 	}
 	
+	/**
+	 * Method for getting the client variant of the Stargate
+	 * @param stargate
+	 * @return
+	 */
+	public abstract Variant getClientVariant(StargateEntity stargate);
+	
 	//============================================================================================
 	//******************************************Rendering*****************************************
 	//============================================================================================
@@ -76,7 +81,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(stargateVariant.texture()));
 		this.renderRing(stargate, stargateVariant, partialTick, stack, consumer, source, combinedLight, combinedOverlay);
 
-		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isOculusLoaded());
 	}
 
 	public abstract void renderRing(StargateEntity stargate, Variant stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
@@ -86,7 +91,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	//******************************************Chevrons******************************************
 	//============================================================================================
 	
-	protected boolean isPrimaryChevronRaised(StargateEntity stargate, Variant stargateVariant)
+	protected boolean isPrimaryChevronOpen(StargateEntity stargate, Variant stargateVariant)
 	{
 		return false;
 	}
@@ -101,12 +106,12 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		return stargate.getAddress().hasPointOfOriginOrMaxLength();
 	}
 	
-	protected boolean isChevronRaised(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
+	protected boolean isChevronOpen(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
 	{
 		return false;
 	}
 	
-	protected boolean isChevronLowered(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
+	protected boolean isChevronClosed(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
 	{
 		return false;
 	}
@@ -123,11 +128,11 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged);
 	
 	protected void renderChevrons(StargateEntity stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+			int combinedLight, int combinedOverlay, boolean invertRenderingOrder)
 	{
 		VertexConsumer consumer;
 		
-		if(StargateJourney.isOculusLoaded())
+		if(invertRenderingOrder)
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
@@ -140,6 +145,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 					renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, true);
 			}
 		}
+		
 		// Renders Chevrons
 		consumer = source.getBuffer(SGJourneyRenderTypes.chevron(stargateVariant.texture()));
 				
@@ -149,7 +155,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
 		
-		if(!StargateJourney.isOculusLoaded())
+		if(!invertRenderingOrder)
 		{
 			// Renders lit up parts of Chevrons
 			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));

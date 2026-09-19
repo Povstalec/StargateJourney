@@ -2,56 +2,34 @@ package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.client.models.block_entity.ClassicStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
-public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicStargateEntity, ClassicStargateVariant>
+public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicStargateEntity, ClassicStargateVariant, ClassicStargateModel>
 {
-	protected final ClassicStargateModel stargateModel;
-	
-	/*public static final int WORMHOLE_R = 39; 
+	/*public static final int WORMHOLE_R = 39;
 	public static final int WORMHOLE_G = 113;
 	public static final int WORMHOLE_B = 255;
 	public static final int WORMHOLE_ALPHA = 255;*/
 	
 	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
 	{
-		super(context, 0.25F, true, 84F);
-		this.stargateModel = new ClassicStargateModel();
-	}
-
-	@Override
-	protected ClassicStargateVariant getClientVariant(ClassicStargateEntity stargate)
-	{
-		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
-		
-		if(stargateVariant != null)
-		{
-			if(stargateVariant.isFound())
-				return ClientStargateVariants.getClassicStargateVariant(stargateVariant.clientVariant());
-			else if(!stargateVariant.isMissing())
-				stargateVariant.handleLocation(ClientStargateVariants.hasClassicStargateVariant(stargateVariant.clientVariant()));
-		}
-		
-		return ClientStargateVariants.getClassicStargateVariant(stargate.defaultVariant());
+		super(context, new ClassicStargateModel(), 0.25F, true, 84F);
 	}
 	
 	@Override
 	public void render(ClassicStargateEntity stargate, float partialTick, PoseStack stack,
 			MultiBufferSource source, int combinedLight, int combinedOverlay)
 	{
-		ClassicStargateVariant stargateVariant = getClientVariant(stargate);
+		ClassicStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
 		float facing = blockstate.getValue(ClassicStargateBlock.FACING).toYRot();

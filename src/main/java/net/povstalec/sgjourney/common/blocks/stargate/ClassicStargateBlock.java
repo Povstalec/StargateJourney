@@ -6,9 +6,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -20,11 +25,12 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.blocks.SpecialSymbolBlock;
+import net.povstalec.sgjourney.common.blocks.SpecialEngravableBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
@@ -33,16 +39,18 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 
-public class ClassicStargateBlock extends RotatingStargateBaseBlock implements SpecialSymbolBlock
+public class ClassicStargateBlock extends RotatingStargateBaseBlock implements SpecialEngravableBlock
 {
 	public ClassicStargateBlock(Properties properties)
 	{
@@ -208,6 +216,37 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock implements S
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }
+	
+	protected void openStargateGravingMenu(Level level, BlockPos pos, BlockState state, @Nullable Player player)
+	{
+		if(getStargate(level, pos, state) instanceof ClassicStargateEntity classicStargate)
+		{
+			MenuProvider containerProvider = new MenuProvider()
+			{
+				@Override
+				public @NotNull Component getDisplayName()
+				{
+					return Component.empty();
+				}
+				
+				@Override
+				public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+				{
+					return new StargateEngravingMenu.Classic(windowId, playerInventory, classicStargate, ContainerLevelAccess.create(level, pos));
+				}
+			};
+			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, classicStargate.getBlockPos());
+		}
+	}
+	
+	@Override
+	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
+	{
+		if(!level.isClientSide())
+			openStargateGravingMenu(level, pos, level.getBlockState(pos), player);
+		
+		return InteractionResult.PASS;
+	}
 	
 	@Override
 	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
