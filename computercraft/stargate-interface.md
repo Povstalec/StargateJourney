@@ -961,7 +961,7 @@ For Crystal interfaces; this also returns a second string value with a status de
 
 **See also**
 - Because the wiki can quickly become outdated,   
-you can check the [feedback codes in the mod source code](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/stargate/Stargate.java#L396).
+you can check the [feedback codes in the mod source code](https://github.com/Povstalec/StargateJourney/blob/main/src/main/java/net/povstalec/sgjourney/common/sgjourney/StargateInfo.java#L120).
 
 **Usage**
 - Print the recent feedback
