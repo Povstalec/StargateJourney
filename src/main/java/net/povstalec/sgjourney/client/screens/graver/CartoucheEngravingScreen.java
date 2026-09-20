@@ -77,7 +77,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		if(model instanceof CartoucheBakedModel cartoucheModel)
 			this.rgba = new ColorUtil.RGBA(cartoucheModel.getSymbolTint());
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"),
+		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"),
 				button ->
 				{
 					// The player is attempting to overwrite the Cartouche's Dimension Address
@@ -90,8 +90,8 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 							else
 								minecraft.setScreen(this);
 						},
-							Component.translatable("screen.sgjourney.graving.cartouche.overwrite_address"),
-							Component.translatable("screen.sgjourney.graving.cartouche.overwrite_address.warning"),
+							Component.translatable("screen.sgjourney.engraving.cartouche.overwrite_address"),
+							Component.translatable("screen.sgjourney.engraving.cartouche.overwrite_address.warning"),
 							CommonComponents.GUI_ACKNOWLEDGE,
 							CommonComponents.GUI_CANCEL)
 						{
@@ -122,7 +122,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 			{
 				address.reset();
 				engravingButton.active = false;
-				engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.should_not_contain_point_of_origin")));
+				engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin")));
 			}
 			else
 			{
@@ -164,7 +164,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress()) || !getSymbols().equals(menu.blockEntity.getSymbols());
 		engravingButton.active = isAddressDifferent;
-		engravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.cartouche.same_address")));
+		engravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.cartouche.same_address")));
 	}
 	
 	public void engrave()
@@ -233,7 +233,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		super.render(stack, mouseX, mouseY, delta);
 		renderTooltip(stack, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.graving.symbol_block.insert_symbol_paper"));
+		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
 	}
 	
 	@Override

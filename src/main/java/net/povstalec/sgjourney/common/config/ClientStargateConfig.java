@@ -45,7 +45,7 @@ public class ClientStargateConfig
 		
 		enable_vortex = new SGJourneyConfigValue.BooleanValue(client, "client.enable_vortex", 
 				false, 
-				"If true Wormholes will produce Vortex after a Kawoosh");
+				"If true, all Stargates will have a vortex (officially called Strudel) protruding form the back after the Kawoosh finishes");
 		
 		event_horizon_distortion = new SGJourneyConfigValue.IntValue(client, "client.event_horizon_distortion", 
 				25, 0, 25, 

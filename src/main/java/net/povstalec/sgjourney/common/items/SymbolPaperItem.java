@@ -82,7 +82,7 @@ public class SymbolPaperItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stack);
 		if(pointOfOrigin != null)

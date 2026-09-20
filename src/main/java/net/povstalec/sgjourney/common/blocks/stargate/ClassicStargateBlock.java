@@ -249,6 +249,18 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock implements S
 	}
 	
 	@Override
+	public void setPointOfOrigin(Level level, BlockPos pos, BlockState state, ResourceKey<PointOfOrigin> pointOfOrigin)
+	{
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		if(stargate != null)
+		{
+			stargate.symbolInfo().setPointOfOrigin(pointOfOrigin);
+			stargate.setChanged();
+			stargate.updateClient();
+		}
+	}
+	
+	@Override
 	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
 	{
 		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
@@ -257,6 +269,18 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock implements S
 			return stargate.symbolInfo().pointOfOrigin();
 		
 		return null;
+	}
+	
+	@Override
+	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
+	{
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		if(stargate != null)
+		{
+			stargate.symbolInfo().setSymbols(symbols);
+			stargate.setChanged();
+			stargate.updateClient();
+		}
 	}
 	
 	@Override

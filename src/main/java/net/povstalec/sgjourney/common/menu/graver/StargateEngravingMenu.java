@@ -37,10 +37,10 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
     {
         super(type, containerId, inventory, blockEntity);
 		
-		addPlayerInventory(inventory, 8, 82);
-		addPlayerHotbar(inventory, 8, 140);
+		addPlayerInventory(inventory, 8, 140);
+		addPlayerHotbar(inventory, 8, 198);
 		
-		this.tempSlotIndex = addBlockEntitySlot(new Slot(tempContainer, 0, 124, 24)
+		this.tempSlotIndex = addBlockEntitySlot(new Slot(tempContainer, 0, 80, 81)
 		{
 			@Override
 			public boolean mayPlace(@NotNull ItemStack stack)

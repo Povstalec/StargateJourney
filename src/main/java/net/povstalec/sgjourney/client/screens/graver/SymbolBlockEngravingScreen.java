@@ -72,7 +72,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		if(model instanceof SymbolBlockBakedModel symbolBlockModel)
 			this.rgba = new ColorUtil.RGBA(symbolBlockModel.getSymbolTint());
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.graving.engrave"), button -> engrave())
+		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave())
 			.bounds(leftPos + 121, topPos + 45, 56, 20).build();
 		
 		updateEngravingButton();
@@ -105,7 +105,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				{
 					symbolNumber = -1;
 					engravingButton.active = false;
-					engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.out_of_bounds")));
+					engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.engraving.symbol_block.out_of_bounds")));
 				}
 				else
 				{
@@ -141,7 +141,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				!Objects.equals(getPointOfOrigin(), menu.blockEntity.getPointOfOrigin()) :
 				!Objects.equals(getSymbols(), menu.blockEntity.getSymbols()));
 		engravingButton.active = isSymbolDifferent;
-		engravingButton.setTooltip(isSymbolDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.graving.symbol_block.same_symbol")));
+		engravingButton.setTooltip(isSymbolDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.symbol_block.same_symbol")));
 	}
 	
 	public static boolean canParseAsPositiveNumber(String text)
@@ -246,7 +246,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		super.render(stack, mouseX, mouseY, delta);
 		renderTooltip(stack, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 124, 24, 0, ComponentHelper.description("screen.sgjourney.graving.symbol_block.insert_symbol_paper"));
+		itemTooltip(stack, mouseX, mouseY, 124, 24, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
 	}
 	
 	@Override
