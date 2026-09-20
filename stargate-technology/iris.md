@@ -68,8 +68,8 @@ you can install it into any Stargate with **right-click**
 (except for [Tollan Stargate]({{ '/stargate-technology/stargate/#tollan-stargate' | absolute_url }}),
 which is too thin for an iris installation).
 
-Only a single iris can be installed on the gate at the time.
-To remove the iris from the gate or replace it with another one,
+Only a single iris can be installed on the Stargate at the time.
+To remove the iris from the Stargate or replace it with another one,
 you must close and break it.
 
 ___
@@ -77,13 +77,13 @@ ___
 ## Controlling
 
 {: .warning }
-> Ensure all your stuff controlling the gate (the redstone circuit and related)
-> is in **the same chunk as the gate itself**.
-> Otherwise, when an incoming connection to the gate loads the remote chunk, anything **outside** the gate's chunk
+> Ensure all your stuff controlling the Stargate (the redstone circuit and related)
+> is in **the same chunk as the Stargate itself**.
+> Otherwise, when an incoming connection to the Stargate loads the remote chunk, anything **outside** the Stargate's chunk
 > will not be loaded, so that **it won't work**.
 >
 > Also, **do not use pistons** in the redstone circuits.
-> Pistons and similar mechanics will not work when the gate loads the chunk.
+> Pistons and similar mechanics will not work when the Stargate loads the chunk.
 
 ___
 
@@ -137,7 +137,7 @@ ___
 ### Automatic iris closing
 
 What if you wanted the iris to automatically open for outgoing connections,
-so you can use the gate,
+so you can use the Stargate,
 and closed for incoming connections reflecting any uninvited visitors,
 unless opened with a lever?  
 It is indeed possible with a very simple setup.
@@ -166,14 +166,14 @@ ___
 
 ### Remote iris control
 
-So you have secured the gate with an auto-closing iris for incoming connections, but how can you open the iris
+So you have secured the Stargate with an auto-closing iris for incoming connections, but how can you open the iris
 when you are on the other side of the connection?  
 [Garage Door Opener (GDO)]({{ '/stargate-technology/transceiver-gdo/#garage-door-opener-gdo' | absolute_url }}) is a hand-held device
 that allows to send a signal through the Stargate to the other side.
 For example, automatically opening the iris.
 
 {: .warning }
-[Ensure that the whole circuit is in the same chunk as the gate itself.](#controlling)
+[Ensure that the whole circuit is in the same chunk as the Stargate itself.](#controlling)
 
 <details markdown="block">
 <summary>Another example redstone circuits</summary>
@@ -193,13 +193,13 @@ is sent by the transceiver when an incorrect code is received.
 - The circuit automatically closes iris on incoming connection.
 - Opens the iris on receiving a correct code by the [transceiver]({{ site.baseurl }}/stargate-technology/transceiver-gdo/#transceiver).
 - Automatically opens the iris on outgoing connection.
-- Additionally, iris can be automatically opened when the gate is idle (there is no connection).
+- Additionally, iris can be automatically opened when the Stargate is idle (there is no connection).
 
 All repeaters are set to delay `0` (default state), and all comparators all set to comparator mode (default state).
 
 **Used items:**
 - 12 blocks
-- 2 stargate interfaces (any type)
+- 2 Stargate interfaces (any type)
 - 3 redstone comparators
 - 1 [transceiver]({{ site.baseurl }}/stargate-technology/transceiver-gdo/#transceiver)
 - 4 redstone torches
@@ -209,7 +209,7 @@ All repeaters are set to delay `0` (default state), and all comparators all set 
 ![Iris setup with GDO top view]({{ '/assets/img/stargate-technology/iris/iris_setup_with_gdo_top.png' | absolute_url }})
 
 
-Adding two slabs (**must be slabs**) with redstone dust and a torch instructs the iris to automatically open when the gate is idle.
+Adding two slabs (**must be slabs**) with redstone dust and a torch instructs the iris to automatically open when the Stargate is idle.
 
 ![Iris setup with GDO with auto open]({{ '/assets/img/stargate-technology/iris/iris_setup_with_gdo_auto_open.png' | absolute_url }})
 
@@ -243,4 +243,4 @@ You can place this file to
 replacing the `installation_folder` with the folder name where your game is installed and `your_save` with the folder name of your world.
 Then you can place it in-game with command `/place template minecraft:stargate_iris_gdo_manual_override`.
 Make sure you have enough space around you that the structure won't break your building.
-After placing, you will probably need to break the gate and place it again (remember to add the iris).
+After placing, you will probably need to break the Stargate and place it again (remember to add the iris).

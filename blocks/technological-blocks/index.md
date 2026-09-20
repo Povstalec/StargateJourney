@@ -13,30 +13,29 @@ nav_order: 0
 ___
 
 ## Stargates
-If you are __new to the topic__ and want to know what that thing is...  
-Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what-is-stargate).
+If you are __new to the topic__ and you want to know what that thing is...
+A Stargate, they call it - check [What's that Stargate anyway?]({{ site.baseurl }}/what-is-stargate).
 
 Each Stargate can have different [variants]({{ site.baseurl }}/blocks/stargate_variants) which can be also added by [datapacks]({{ site.baseurl }}/datapacks).
 
 ### Classic
-It was initially inspired by mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
-The ring can move and the gate can be dialed manually using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
+It was initially inspired by the mod [SGCraft](https://www.curseforge.com/minecraft/mc-mods/sg-craft).
+The Symbol Ring can rotate and the Stargate can be dialed manually using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
 
 ![Classic Stargate]({{ site.baseurl }}/assets/img/blocks/technological/classic_stargate.png)
 {: .max-width-512 }
 
 ### Universe
-Universe Stargate has only 35 symbols (+ Point of Origin).
-The gate cannot dial any address with the symbol 36 and above.
+The Universe Stargate has only 35 symbols (+ Point of Origin).
+The Stargate cannot dial any address with the symbol 36 and above.
 The entire Stargate rotates during the dial.
-It is also possible to dial the gate using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
+It is also possible to dial the Stargate using [redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone).
 
 ![Universe Stargate]({{ site.baseurl }}/assets/img/blocks/technological/universe_stargate.png)
 {: .max-width-512 }
 
 ### Milky Way
-The inner ring with symbols rotates
-when the gate is [powered by redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone)
+The inner ring with symbols rotates independently when the Stargate is [powered by redstone]({{ site.baseurl }}/survival/dialing/#manual-dialing-with-redstone)
 or when a [computer instructs]({{ site.baseurl }}/survival/dialing/#dialing-with-computercraft) it to do so.
 
 ![Milky Way Stargate]({{ site.baseurl }}/assets/img/blocks/technological/milkyway_stargate.png)
@@ -50,9 +49,9 @@ The chevrons light up when encoded.
 {: .max-width-512 }
 
 ### Pegasus
-The Pegasus Stargate has only 35 visible symbols (+ Point of Origin).
+The Pegasus Stargate only has 35 visible symbols (+ Point of Origin).
 Still, any symbol can be encoded, including 36 and above.
-The gate automatically picks up symbols of the galaxy each time it is placed (unless disabled by a computer).
+The Stargate automatically picks up symbols of the local galaxy each time it is placed (unless disabled by a computer).
 
 ![Pegasus Stargate]({{ site.baseurl }}/assets/img/blocks/technological/pegasus_stargate.png)
 {: .max-width-512 }
@@ -77,19 +76,19 @@ The gate automatically picks up symbols of the galaxy each time it is placed (un
 ___
 
 ## Transceiver
-The transceiver is capable of receiving an IDC (IDentification code) from the
-[Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo).
+The transceiver is capable of receiving an IDentification Code (IDC) from the
+[Garage Door Opener (GDO)]({{ site.baseurl }}/items/functional/#garage-door-opener-gdo).  
 It will provide a redstone signal pulse through a comparator when a correct IDC is received
 and will notify connected computers with an event.
 Transceiver is also able to transmit the IDC.
 
 See [Stargate Network / Stargate Iris / Controlling / Remote iris control]({{ site.baseurl }}/stargate-network/stargate_iris/#remote-iris-control)
-for redstone example.
+for a redstone example.
 
 **GUI usage**
 - The **code** is displayed on the first line of the display.
-- The **editing mode** is displayed as **#** when you are modifying the frequency.  
-  When the **#** is absent, you are modifying the identification code.  
+- The **editing mode** is displayed as **#** when you are modifying the frequency.
+  When the **#** is absent, you are modifying the identification code.
   The editing mode can be switched with the **f** button.
 - The **transmit button** on the left sends the entered IDC (IDentification Code) on the specified frequency.
 

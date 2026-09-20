@@ -64,7 +64,7 @@ The interface provides a redstone signal based on the **segment** to which a sym
 
 The Universe and Pegasus Stargates have only 36 symbols
 and are also divided into **three segments**, each with **12 symbols**.
-The interface with the Universe Stargate provides a redstone signal based on the **segment** to which a symbol **at the top of the gate** belongs.
+The interface with the Universe Stargate provides a redstone signal based on the **segment** to which a symbol **at the top of the Stargate** belongs.
 The interface with the Pegasus Stargate provides a redstone signal based on the **segment** to which **the last encoded symbol** belongs.
 
 **Redstone output:**
@@ -93,12 +93,12 @@ Each segment of the Milky Way and Classic Stargate ring has 13 symbols.
 Based on the symbol under the top chevron, the interface provides the redstone signal.
 
 Each segment of the Universe Stargate has 12 symbols,
-Based on the symbol at the top of the gate, the interface provides the redstone signal.
+Based on the symbol at the top of the Stargate, the interface provides the redstone signal.
 When there is no valid symbol at the top, the signal is `0`.
 
 {: .future }
 The different signal strength is considered a bug and will be fixed in some future release.  
-Segment and rotation modes are also planned for other gate types.
+Segment and rotation modes are also planned for other Stargate types.
 
 [//]: # (TODO: describe pegasus once it works in game)
 

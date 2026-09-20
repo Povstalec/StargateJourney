@@ -16,11 +16,11 @@ custom_css: "/assets/css/computercraft.css"
 
 <blockquote class="warning"> 
 <p>
-    Unless there is a label with interface name at the function, it can be used by <b>any interface</b>.<br> 
-    If there is a label, the function <b>is only available</b> for the specified interface.
+    Unless there is a label with specific interface types displayed, the function can be used by <b>any interface</b>.<br> 
+    If there is a label, the function <b>is only available</b> for the specified interfaces.
 </p> 
 <p>
-    A similar applies to return values. 
+    This also applies to return values. 
     Some return values might be <b>only available</b> for crystal or advanced crystal interface.
 </p>
 

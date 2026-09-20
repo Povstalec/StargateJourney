@@ -130,3 +130,4 @@ exclude:
   - implementation_branch/
   - scripts/
   - section_includes/
+  - formatting.md

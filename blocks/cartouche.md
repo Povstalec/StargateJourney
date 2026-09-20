@@ -7,7 +7,7 @@ nav_order: 30
 
 ## Cartouche
 _Stone Cartouche and Sandstone Cartouche_  
-Shows an address. Currently, there is no way to customize the address.
+When placed, it takes the Address of the dimension in which it was placed. Currently, there is no way to customize the address.
 
 ![Cartouche]({{ site.baseurl }}/assets/img/blocks/functional/cartouche.png)
 {: .max-width-256 }

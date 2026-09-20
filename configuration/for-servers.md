@@ -6,6 +6,6 @@ description: "Configuration options for the Stargate Journey Minecraft mod usefu
 ---
 
 
-- Common stargates
+- Common Stargates
 - Stargate protection
 - Primary Stargate

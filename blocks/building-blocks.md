@@ -15,7 +15,7 @@ It can be lit with a flint and steel or a fire charge.
 
 ## Sandstone Switch
 A hidden switch mechanism in a hieroglyph wall.
-Works like a lever with a redstone.
+Works like a lever and emits a redstone signal.
 
 ![Sandstone switch]({{ site.baseurl }}/assets/img/blocks/functional/sandstone_switch.png)
 {: .max-width-256 }
