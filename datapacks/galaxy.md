@@ -1,6 +1,6 @@
 ---
-title: Galaxy
-nav_order: 10
+title: Galaxy - outdated
+nav_order: 3
 parent: Datapacks and Resourcepacks
 ---
 
