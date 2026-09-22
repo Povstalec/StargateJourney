@@ -5,7 +5,7 @@ nav_order: 10
 ---
 
 
-## Naquadah ore
+## Naquadah Ore
 Available in Nether, Stone and Deepslate variants.
 Drops raw naquadah and rarely pure naquadah.
 Naturally generates on Abydos.

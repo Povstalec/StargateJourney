@@ -7,7 +7,7 @@ custom_css: "/assets/css/computercraft.css"
 
 [//]: # (TODO: Keep event list on a standalone page (here)
 [//]: # (Split events by connected peripherals)
-[//]: # (TODO: update the list of events - gate, transporter, transceiver)
+[//]: # (TODO: update the list of events - Stargate, transporter, transceiver)
 
 # Events
 {: .no_toc }
@@ -84,8 +84,8 @@ Fired whenever a **chevron** is engaged.
 3. `number` Count of engaged symbols (from `1` to `9`)
 4. `number` Engaged chevron (chevron identifier from `0` to `8`)
 5. `boolean` `true` if the chevron was engaged for incoming connection, 
-`false` if the chevron was locked by dialing this gate
-6. `number` Encoded symbol (from `0` to `38` - or `35` for the Universe gate)  
+`false` if the chevron was locked by dialing this Stargate
+6. `number` Encoded symbol (from `0` to `38` - or `35` for the Universe Stargate)  
 
 <span class="label label-blue ml-0">Basic Interface</span><span class="label label-green ml-0">Crystal Interface</span>The symbol is present only when engaged for outgoing connection.  
 <span class="label label-purple ml-0">Advanced Crystal Interface</span> The symbol is present even for incoming connection.
@@ -167,7 +167,7 @@ ___
 
 Fired whenever a Stargate resets.
 
-[//]: # (TODO: link explaining when a stargate resets)
+[//]: # (TODO: link explaining when a Stargate resets)
 
 **Return values**
 1. `string` The event name (`stargate_reset`)
