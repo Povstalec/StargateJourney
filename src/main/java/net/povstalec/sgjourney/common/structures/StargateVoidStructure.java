@@ -33,15 +33,19 @@ public class StargateVoidStructure extends StargateStructure
 					Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
 					Rotation.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
 					Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
+				TransporterModifiers.CODEC.optionalFieldOf("transporter_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterModifiers)),
+				TransporterControllerModifiers.CODEC.optionalFieldOf("transporter_controller_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterControllerModifiers)),
 					StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
 					DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
 			).apply(instance, StargateVoidStructure::new)).codec();
 
     public StargateVoidStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
                                  int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
-                                 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
+                                 Optional<Boolean> commonStargates, Optional<TransporterModifiers> transporterModifiers, Optional<TransporterControllerModifiers> transporterControllerModifiers,
+								 Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
     {
-        super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates, stargateModifiers, dhdModifiers);
+        super(config, startPool, obstructedStartPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation,
+			commonStargates, transporterModifiers, transporterControllerModifiers, stargateModifiers, dhdModifiers);
     }
 
     @Override

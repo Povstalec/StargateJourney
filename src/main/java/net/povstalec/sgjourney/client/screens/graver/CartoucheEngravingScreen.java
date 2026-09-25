@@ -34,7 +34,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<?>> extends AbstractEngravingScreen<M>
 {
 	public static final float X_SYMBOL_SPACE = 64F * 10F / 16F;
 	public static final float Y_SYMBOL_SPACE = 64F * 26F / 16F;
@@ -46,7 +46,6 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	protected ColorUtil.RGBA rgba;
 	
 	protected EditBox editBox;
-	protected Button engravingButton;
 	protected final Address.Mutable address;
 	protected final boolean wasDimensionAddress;
 	

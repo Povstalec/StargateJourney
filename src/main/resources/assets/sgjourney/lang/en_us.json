@@ -484,6 +484,9 @@
 	"entity.sgjourney.human": "Human",
 	"entity.sgjourney.jaffa": "Jaffa",
 	
+	"sounds.sgjourney.equip_naquadah_armor" : "Naquadah armor clanks",
+	"sounds.sgjourney.equip_trinium_armor" : "Trinium armor clanks",
+	
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
@@ -564,6 +567,10 @@
 	"screen.sgjourney.engraving.symbol_block.out_of_bounds": "Symbol is out of bounds",
 	"screen.sgjourney.engraving.symbol_block.insert_symbol_paper": "Insert Symbol Paper to change the Block's Symbol type",
 	"screen.sgjourney.engraving.stargate.same_symbols": "These Symbols are already engraved in the Stargate",
+	"screen.sgjourney.engraving.stargate.insert_symbol_paper": "Insert Symbol Paper to change the Stargate's Symbol type",
+	"screen.sgjourney.both.description": "Engrave Symbols and Point of Origin",
+	"screen.sgjourney.symbols.description": "Engrave only Symbols",
+	"screen.sgjourney.point_of_origin.description": "Engrave only Point of Origin",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
@@ -826,8 +833,11 @@
 	"point_of_origin.sgjourney.pyramid": "Pyramid",
 	"point_of_origin.sgjourney.serpent": "Serpent",
 	"point_of_origin.sgjourney.pontem": "Pontem",
-	"point_of_origin.sgjourney.andromeda": "Andromeda",
+	"point_of_origin.sgjourney.mercury": "Mercury",
+	"point_of_origin.sgjourney.venus": "Venus",
+	"point_of_origin.sgjourney.mars": "Mars",
 	
+	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	"point_of_origin.sgjourney.pokeball": "Pokéball",
 	"point_of_origin.sgjourney.triforce": "Triforce",
 	"point_of_origin.sgjourney.aurum": "Aurum",
@@ -836,6 +846,9 @@
 	"point_of_origin.sgjourney.wheel": "Wheel",
 	"point_of_origin.sgjourney.ursa_major": "Ursa Major",
 	"point_of_origin.sgjourney.ursa_minor": "Ursa Minor",
+	"point_of_origin.sgjourney.cave": "Cave",
+	"point_of_origin.sgjourney.mountain": "Mountain",
+	"point_of_origin.sgjourney.waves": "Waves",
 
 	"point_of_origin.sgjourney.ursa": "Ursa",
 	

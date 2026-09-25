@@ -11,6 +11,7 @@ import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.InterfaceScreen;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import org.jetbrains.annotations.NotNull;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
@@ -36,7 +37,7 @@ public class InterfaceModeButton extends SGJourneyButton
 	}
 	
 	@Override
-	public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTick)
+	public void renderButton(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		Font font = minecraft.font;

@@ -98,7 +98,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
-			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyStorage.setEnergyNoUpdate(energyStorage.getTrueMaxEnergyStored());
 			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 		}
 	}

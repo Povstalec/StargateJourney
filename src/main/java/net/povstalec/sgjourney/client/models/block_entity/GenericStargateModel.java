@@ -427,7 +427,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		{
 			boolean pointOfOriginEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-				pointOfOriginEngaged = stargate.isConnected();
+				pointOfOriginEngaged = stargate.getEncodedSymbols().hasPointOfOrigin();
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			

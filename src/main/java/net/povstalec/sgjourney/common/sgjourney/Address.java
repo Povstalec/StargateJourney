@@ -190,7 +190,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
-	public boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
+	protected boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
 	{
 		toExclusive = Math.min(toExclusive, regularSymbolCount());
 		
@@ -201,11 +201,6 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		}
 		
 		return false;
-	}
-	
-	public boolean containsRegularSymbol(int symbol)
-	{
-		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
 	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
@@ -221,7 +216,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		if(symbol == 0)
 			return hasPointOfOrigin();
 		
-		return containsRegularSymbol(symbol);
+		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
 	public boolean canBeDialed()

@@ -409,7 +409,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		CompoundTag tag = packet.getTag();
 		if(tag != null)
 		{
-			energyStorage.setEnergy(tag.getLong(ENERGY));
+			energyStorage.setEnergyNoUpdate(tag.getLong(ENERGY));
 			
 			address.fromArray(tag.getIntArray(ADDRESS));
 			encodedSymbols.fromArray(tag.getIntArray(ENCODED_SYMBOLS));
@@ -562,7 +562,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		StargateInfo.FeedbackMessage result = encodeSymbol(symbolMap.getMappedSymbol(symbol), canEngageStargate, chevronSound);
 		
 		if(result.feedback() == StargateInfo.Feedback.SYMBOL_ENCODED && !encodedSymbols.containsSymbol(symbol))
+		{
 			encodedSymbols.addSymbol(symbol); // Keep track of what symbols have physically been encoded on the gate, ignoring any remapping
+			setChanged();
+		}
+		
 		return result;
 	}
 	
@@ -1206,7 +1210,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean isSymbolInAddress(int symbol)
 	{
-		return encodedSymbols.containsRegularSymbol(symbol, 0, address.getLength()); // Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)
+		return encodedSymbols.containsSymbol(symbol, 0, address.getLength()); // Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)
 	}
 	
 	public int getChevronsEngaged()

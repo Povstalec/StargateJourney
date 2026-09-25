@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingMenu<?>> extends SGJourneyContainerScreen<M>
+public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingMenu<?>> extends AbstractEngravingScreen<M>
 {
 	public static final float SYMBOL_SIZE = 64;
 	
@@ -43,7 +43,6 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 	protected ColorUtil.RGBA rgba;
 	
 	protected EditBox editBox;
-	protected Button engravingButton;
 	protected int symbolNumber;
 	
 	public SymbolBlockEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title, ColorUtil.RGBA rgba)

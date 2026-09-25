@@ -306,7 +306,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 		{
 			boolean pointOfOriginEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-				pointOfOriginEngaged = stargate.isConnected();
+				pointOfOriginEngaged = stargate.getEncodedSymbols().hasPointOfOrigin();
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			

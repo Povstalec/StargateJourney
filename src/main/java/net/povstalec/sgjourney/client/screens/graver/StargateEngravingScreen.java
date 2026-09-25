@@ -26,7 +26,7 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStar
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
+import net.povstalec.sgjourney.client.widgets.SGJourneyCycleButton;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
@@ -42,7 +42,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nullable;
 import java.util.Objects;
 
-public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>, SG extends AbstractStargateModel<?, ?>> extends SGJourneyContainerScreen<M>
+public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>, SG extends AbstractStargateModel<?, ?>> extends AbstractEngravingScreen<M>
 {
 	public static final int MAX_LIGHT = 15728880;
 	
@@ -53,7 +53,8 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 	
 	protected SG stargateModel;
 	
-	protected Button engravingButton;
+	protected Selected selected = Selected.BOTH;
+	protected SGJourneyCycleButton<Selected> selectButton;
 	
 	public StargateEngravingScreen(M menu, ResourceLocation texture, Inventory playerInventory, Component title)
 	{
@@ -76,6 +77,19 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		
 		stargateModel = createStargateModel();
 		
+		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> Component.empty())
+			.withValues(Selected.values()).withTooltip(selected -> Tooltip.create(selected.tooltip))
+			.displayOnlyValue()
+			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 78, topPos + 40, 20, 20, 10, 0, Component.empty(),
+				(button, selected) ->
+				{
+					this.selectButton.xImageOffset = selected.ordinal();
+					this.selected = selected;
+				});
+		updateSelectionButton();
+		
+		this.addRenderableWidget(this.selectButton);
+		
 		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave())
 			.bounds(leftPos + 88 - ENGRAVING_BUTTON_WIDTH / 2, topPos + 70 - ENGRAVING_BUTTON_HEIGHT / 2, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT).build();
 		
@@ -88,6 +102,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 			public void slotChanged(@NotNull AbstractContainerMenu menu, int slot, @NotNull ItemStack stack)
 			{
 				updateEngravingButton();
+				updateSelectionButton();
 			}
 			
 			@Override
@@ -104,6 +119,27 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		!Objects.equals(getSymbols(), menu.blockEntity.symbolInfo().symbols());
 		engravingButton.active = isDifferent;
 		engravingButton.setTooltip(isDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.stargate.same_symbols")));
+	}
+	
+	public void updateSelectionButton()
+	{
+		if(SymbolPaperItem.getSymbols(menu.tempContainer.getItem(0)) != null && SymbolPaperItem.getPointOfOrigin(menu.tempContainer.getItem(0)) != null)
+		{
+			selected = Selected.BOTH;
+			this.selectButton.active = true;
+		}
+		else if(SymbolPaperItem.getPointOfOrigin(menu.tempContainer.getItem(0)) != null)
+		{
+			selected = Selected.POINT_OF_ORIGIN;
+			this.selectButton.active = false;
+		}
+		else if(SymbolPaperItem.getSymbols(menu.tempContainer.getItem(0)) != null)
+		{
+			selected = Selected.SYMBOLS;
+			this.selectButton.active = false;
+		}
+		else
+			this.selectButton.active = false;
 	}
 	
 	public void engrave()
@@ -125,9 +161,12 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 	@Nullable
 	public ResourceKey<Symbols> getSymbols()
 	{
-		ResourceKey<Symbols> symbols = SymbolPaperItem.getSymbols(menu.tempContainer.getItem(0));
-		if(symbols != null)
-			return symbols;
+		if(selected.engraveSymbols)
+		{
+			ResourceKey<Symbols> symbols = SymbolPaperItem.getSymbols(menu.tempContainer.getItem(0));
+			if(symbols != null)
+				return symbols;
+		}
 		
 		return menu.blockEntity.symbolInfo().symbols();
 	}
@@ -135,9 +174,12 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 	@Nullable
 	public ResourceKey<PointOfOrigin> getPointOfOrigin()
 	{
-		ResourceKey<PointOfOrigin> pointOfOrigin = SymbolPaperItem.getPointOfOrigin(menu.tempContainer.getItem(0));
-		if(pointOfOrigin != null)
-			return pointOfOrigin;
+		if(selected.engravePointOfOrigin)
+		{
+			ResourceKey<PointOfOrigin> pointOfOrigin = SymbolPaperItem.getPointOfOrigin(menu.tempContainer.getItem(0));
+			if(pointOfOrigin != null)
+				return pointOfOrigin;
+		}
 		
 		return menu.blockEntity.symbolInfo().pointOfOrigin();
 	}

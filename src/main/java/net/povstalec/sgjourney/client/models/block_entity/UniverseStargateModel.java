@@ -333,7 +333,7 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		{
 			boolean pointOfOriginEngaged = false;
 			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-				pointOfOriginEngaged = stargate.isConnected() || stargate.getAddress().hasPointOfOrigin();
+				pointOfOriginEngaged = stargate.getEncodedSymbols().hasPointOfOrigin();
 			else if(stargate.isConnected())
 				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
 			

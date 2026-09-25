@@ -141,8 +141,13 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	{
 		return this.energy > 0;
 	}
-    
-    
+	
+	
+	
+	public void setEnergyNoUpdate(long energy)
+	{
+		this.energy = energy;
+	}
 	
 	public long setEnergy(long energy)
 	{
@@ -182,9 +187,9 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	public void deserializeNBT(Tag nbt)
 	{
 		if(nbt instanceof LongTag longTag)
-			this.setEnergy(longTag.getAsLong());
+			this.setEnergyNoUpdate(longTag.getAsLong());
 		else if(nbt instanceof IntTag intTag)
-			this.setEnergy(intTag.getAsInt());
+			this.setEnergyNoUpdate(intTag.getAsInt());
 		else
 			throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
 	}

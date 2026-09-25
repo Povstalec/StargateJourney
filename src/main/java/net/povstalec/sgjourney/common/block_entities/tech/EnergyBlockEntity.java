@@ -49,7 +49,7 @@ public abstract class EnergyBlockEntity extends BlockEntity
 	public void load(CompoundTag nbt)
 	{
 		super.load(nbt);
-		energyStorage.setEnergy(nbt.getLong(ENERGY));
+		energyStorage.setEnergyNoUpdate(nbt.getLong(ENERGY));
 	}
 	
 	@Override

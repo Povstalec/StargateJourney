@@ -236,7 +236,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	public void handleUpdateTag(CompoundTag tag)
 	{
-		energyStorage.setEnergy(tag.getLong(ENERGY));
+		energyStorage.setEnergyNoUpdate(tag.getLong(ENERGY));
 		
 		symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		

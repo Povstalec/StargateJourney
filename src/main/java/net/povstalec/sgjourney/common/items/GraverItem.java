@@ -59,7 +59,14 @@ public class GraverItem extends TieredItem implements Vanishable
 		BlockState state = level.getBlockState(pos);
 		
 		if(state.getBlock() instanceof SpecialEngravableBlock engravable)
-			return engravable.onGraverUsed(context);
+		{
+			if(isCorrectForEngraving(state))
+				return engravable.onGraverUsed(context);
+			else if(player != null)
+				player.displayClientMessage(Component.translatable("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
+			
+			return InteractionResult.FAIL;
+		}
 		
 		BlockState newState = state.getToolModifiedState(context, GRAVER_ENGRAVE, false);
 		if(newState != null)
@@ -79,7 +86,7 @@ public class GraverItem extends TieredItem implements Vanishable
 				
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
-			else
+			else if(player != null)
 				player.displayClientMessage(Component.translatable("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
 		}
 		
