@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.menu;
+package net.povstalec.sgjourney.common.menu.dhd;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;

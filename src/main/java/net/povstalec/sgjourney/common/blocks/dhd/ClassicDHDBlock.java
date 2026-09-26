@@ -1,12 +1,11 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -14,6 +13,7 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -23,24 +23,32 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
-import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.blocks.SpecialEngravableBlock;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.common.items.CharcoalStickItem;
+import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
 import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
-public class ClassicDHDBlock extends CrystalDHDBlock
+import javax.annotation.Nullable;
+
+public class ClassicDHDBlock extends CrystalDHDBlock implements SpecialEngravableBlock
 {
 	public ClassicDHDBlock(Properties properties)
 	{
@@ -57,7 +65,21 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide()) 
+		{
+			ItemStack heldStack = player.getItemInHand(InteractionHand.MAIN_HAND);
+			
+			if(heldStack.getItem() instanceof GraverItem || heldStack.getItem() instanceof CharcoalStickItem)
+				return InteractionResult.FAIL;
+		}
+		
+		{
+			ItemStack heldStack = player.getItemInHand(InteractionHand.OFF_HAND);
+			
+			if(heldStack.getItem() instanceof GraverItem || heldStack.getItem() instanceof CharcoalStickItem)
+				return InteractionResult.FAIL;
+		}
+		
+		if(!level.isClientSide())
         {
     		BlockEntity blockEntity = level.getBlockEntity(pos);
 			
@@ -120,6 +142,59 @@ public class ClassicDHDBlock extends CrystalDHDBlock
 	{
 		return createTickerHelper(type, BlockEntityInit.CLASSIC_DHD.get(), AbstractDHDEntity::tick);
     }
+	
+	protected void openDHDGravingMenu(Level level, BlockPos pos, BlockState state, @Nullable Player player)
+	{
+		if(level.getBlockEntity(pos) instanceof ClassicDHDEntity classic)
+		{
+			MenuProvider containerProvider = new MenuProvider()
+			{
+				@Override
+				public @NotNull Component getDisplayName()
+				{
+					return Component.empty();
+				}
+				
+				@Override
+				public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+				{
+					return new DHDEngravingMenu.Classic(windowId, playerInventory, classic, ContainerLevelAccess.create(level, pos));
+				}
+			};
+			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, classic.getBlockPos());
+		}
+	}
+	
+	@Override
+	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
+	{
+		if(!level.isClientSide())
+			openDHDGravingMenu(level, pos, level.getBlockState(pos), player);
+		
+		return InteractionResult.PASS;
+	}
+	
+	@Override
+	public void setPointOfOrigin(Level level, BlockPos pos, BlockState state, ResourceKey<PointOfOrigin> pointOfOrigin)
+	{
+		if(level.getBlockEntity(pos) instanceof ClassicDHDEntity dhd)
+		{
+			dhd.symbolInfo().setPointOfOrigin(pointOfOrigin);
+			dhd.setChanged();
+			dhd.updateClient();
+		}
+	}
+	
+	@Override
+	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
+	{
+		if(level.getBlockEntity(pos) instanceof ClassicDHDEntity dhd)
+		{
+			dhd.symbolInfo().setSymbols(symbols);
+			dhd.setChanged();
+			dhd.updateClient();
+		}
+	}
 	
 	public static ItemStack generatedDHD()
 	{

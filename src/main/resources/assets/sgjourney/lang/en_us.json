@@ -568,6 +568,8 @@
 	"screen.sgjourney.engraving.symbol_block.insert_symbol_paper": "Insert Symbol Paper to change the Block's Symbol type",
 	"screen.sgjourney.engraving.stargate.same_symbols": "These Symbols are already engraved in the Stargate",
 	"screen.sgjourney.engraving.stargate.insert_symbol_paper": "Insert Symbol Paper to change the Stargate's Symbol type",
+	"screen.sgjourney.engraving.dhd.same_symbols": "These Symbols are already engraved in the DHD",
+	"screen.sgjourney.engraving.dhd.insert_symbol_paper": "Insert Symbol Paper to change the DHD's Symbol type",
 	"screen.sgjourney.both.description": "Engrave Symbols and Point of Origin",
 	"screen.sgjourney.symbols.description": "Engrave only Symbols",
 	"screen.sgjourney.point_of_origin.description": "Engrave only Point of Origin",

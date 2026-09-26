@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.menu;
+package net.povstalec.sgjourney.common.menu.dhd;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
+import net.povstalec.sgjourney.common.menu.InventoryMenu;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

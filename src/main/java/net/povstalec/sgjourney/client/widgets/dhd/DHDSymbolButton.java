@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -15,13 +16,14 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
-public abstract class DHDSymbolButton extends DHDButton
+public abstract class DHDSymbolButton<M extends IDHDMenu> extends DHDButton
 {
-	protected AbstractDHDMenu<?> menu;
+	protected M menu;
 	protected ResourceLocation widgets;
 	protected ResourceLocation overlay;
 	
@@ -36,10 +38,10 @@ public abstract class DHDSymbolButton extends DHDButton
 	
 	protected boolean isRemapped = false;
 	
-    public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
-						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
+    public DHDSymbolButton(int x, int y, int width, int height, M menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
+						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor, Button.OnPress onPress)
 	{
-		super(x, y, width, height, Component.empty(), (button) -> {});
+		super(x, y, width, height, Component.empty(), onPress);
 		
 		this.menu = menu;
 		this.widgets = widgets;
@@ -63,13 +65,6 @@ public abstract class DHDSymbolButton extends DHDButton
 			else
 				setTooltip(Tooltip.create(symbolComponent()));
 		}
-	}
-	
-	@Override
-	public void onPress()
-	{
-		super.onPress();
-		menu.encodeSymbol(getSymbol());
 	}
 	
 	public int getSymbol()
@@ -122,7 +117,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	}
 	
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
 		Minecraft minecraft = Minecraft.getInstance();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);

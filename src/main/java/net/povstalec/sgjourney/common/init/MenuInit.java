@@ -13,7 +13,12 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrys
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.MilkyWayDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.UniverseDHDMenu;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 
@@ -99,6 +104,13 @@ public class MenuInit
 		registerMenuType(StargateEngravingMenu.MilkyWay::new, "engraving_milky_way_stargate");
 	public static final RegistryObject<MenuType<StargateEngravingMenu.Classic>> ENGRAVING_CLASSIC_STARGATE =
 		registerMenuType(StargateEngravingMenu.Classic::new, "engraving_classic_stargate");
+	
+	public static final RegistryObject<MenuType<DHDEngravingMenu.Universe>> ENGRAVING_UNIVERSE_DHD =
+		registerMenuType(DHDEngravingMenu.Universe::new, "engraving_universe_dhd");
+	public static final RegistryObject<MenuType<DHDEngravingMenu.MilkyWay>> ENGRAVING_MILKY_WAY_DHD =
+		registerMenuType(DHDEngravingMenu.MilkyWay::new, "engraving_milky_way_dhd");
+	public static final RegistryObject<MenuType<DHDEngravingMenu.Classic>> ENGRAVING_CLASSIC_DHD =
+		registerMenuType(DHDEngravingMenu.Classic::new, "engraving_classic_dhd");
 
 
 

@@ -566,6 +566,8 @@
 	"screen.sgjourney.engraving.symbol_block.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolu na bloku",
 	"screen.sgjourney.engraving.stargate.same_symbols": "Tyto symboly jsou již do brány vyryty",
 	"screen.sgjourney.engraving.stargate.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolů na hvězdné bráně",
+	"screen.sgjourney.engraving.dhd.same_symbols": "Tyto symboly jsou již do DHD vyryty",
+	"screen.sgjourney.engraving.dhd.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolů na DHD",
 	"screen.sgjourney.both.description": "Vyrýt symboly i výchozí bod",
 	"screen.sgjourney.symbols.description": "Vyrýt pouze symboly",
 	"screen.sgjourney.point_of_origin.description": "Vyrýt pouze výchozí bod",

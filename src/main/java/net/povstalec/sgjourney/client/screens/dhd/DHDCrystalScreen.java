@@ -13,7 +13,7 @@ import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 

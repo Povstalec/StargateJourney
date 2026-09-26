@@ -9,7 +9,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.client.screens.SGJourneyMenuScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.menu.dhd.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SGJourneyMenuScreen<T>
 {
@@ -27,6 +30,16 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
         this.texture = texture;
     }
 	
+	public void engageStargate()
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(menu.blockEntity.getBlockPos(), -1));
+	}
+	
+	public void encodeSymbol(int symbol)
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(menu.blockEntity.getBlockPos(), symbol));
+	}
+	
 	@Override
 	public boolean isPauseScreen()
 	{
@@ -34,7 +47,7 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
 	}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
         renderBackground(poseStack);
 		

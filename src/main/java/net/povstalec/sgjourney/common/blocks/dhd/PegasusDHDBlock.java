@@ -40,11 +40,10 @@ import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterloggedBlock

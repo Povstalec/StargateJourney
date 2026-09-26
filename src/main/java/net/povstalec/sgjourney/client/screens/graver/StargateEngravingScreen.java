@@ -203,7 +203,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		super.render(stack, mouseX, mouseY, delta);
 		renderTooltip(stack, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 80, 81, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
+		itemTooltip(stack, mouseX, mouseY, 80, 81, 0, ComponentHelper.description("screen.sgjourney.engraving.stargate.insert_symbol_paper"));
 		
 		stack.pushPose();
 		stack.translate(leftPos + imageWidth / 2F, topPos + 71, 0);
