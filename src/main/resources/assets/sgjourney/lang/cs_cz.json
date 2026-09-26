@@ -838,19 +838,28 @@
 	"point_of_origin.sgjourney.mars": "Mars",
 	
 	"point_of_origin.sgjourney.andromeda": "Andromeda",
-	"point_of_origin.sgjourney.pokeball": "Pokéball",
-	"point_of_origin.sgjourney.triforce": "Triforce",
-	"point_of_origin.sgjourney.aurum": "Aurum",
-	"point_of_origin.sgjourney.ankh": "Anch",
-	"point_of_origin.sgjourney.reflection": "Odraz",
-	"point_of_origin.sgjourney.wheel": "Kolo",
 	"point_of_origin.sgjourney.ursa_major": "Velký vůz",
 	"point_of_origin.sgjourney.ursa_minor": "Malý vůz",
 	"point_of_origin.sgjourney.cave": "Jeskyně",
 	"point_of_origin.sgjourney.mountain": "Hora",
 	"point_of_origin.sgjourney.waves": "Vlny",
-
+	
 	"point_of_origin.sgjourney.ursa": "Ursa",
+	
+	"point_of_origin.sgjourney.abel": "Ábel",
+	"point_of_origin.sgjourney.aida": "Aida",
+	"point_of_origin.sgjourney.ankh": "Anch",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.dain": "Dáinn",
+	"point_of_origin.sgjourney.floating_islands": "Vznáčející se ostrovy",
+	"point_of_origin.sgjourney.mathematical_compass": "Matematický kompas",
+	"point_of_origin.sgjourney.petu": "Petu",
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
+	"point_of_origin.sgjourney.reflection": "Odraz",
+	"point_of_origin.sgjourney.thorn": "Trn",
+	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.vertuga": "Vertuga",
+	"point_of_origin.sgjourney.wheel": "Kolo",
 	
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",

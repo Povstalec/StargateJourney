@@ -1,16 +1,23 @@
 {
 	"points_of_origin":
 	[
+		{ "point_of_origin": "sgjourney:abel", "weight": 1 },
+		{ "point_of_origin": "sgjourney:aida", "weight": 1 },
 		{ "point_of_origin": "sgjourney:ankh", "weight": 1 },
+		{ "point_of_origin": "sgjourney:dain", "weight": 1 },
 		{ "point_of_origin": "sgjourney:aurum", "weight": 1 },
 		{ "point_of_origin": "sgjourney:coatepec", "weight": 1 },
 		{ "point_of_origin": "sgjourney:destiny", "weight": 1 },
 		{ "point_of_origin": "sgjourney:hammer", "weight": 1 },
+		{ "point_of_origin": "sgjourney:mathematical_compass", "weight": 1 },
+		{ "point_of_origin": "sgjourney:petu", "weight": 1 },
 		{ "point_of_origin": "sgjourney:phoenix", "weight": 1 },
 		{ "point_of_origin": "sgjourney:reflection", "weight": 1 },
+		{ "point_of_origin": "sgjourney:thorn", "weight": 1 },
 		{ "point_of_origin": "sgjourney:triforce", "weight": 1 },
 		{ "point_of_origin": "sgjourney:ursa_major", "weight": 1 },
 		{ "point_of_origin": "sgjourney:ursa_minor", "weight": 1 },
+		{ "point_of_origin": "sgjourney:vertuga", "weight": 1 },
 		{ "point_of_origin": "sgjourney:wheel", "weight": 1 },
 		
 		{ "point_of_origin": "sgjourney:gamekeeper", "weight": 1 }

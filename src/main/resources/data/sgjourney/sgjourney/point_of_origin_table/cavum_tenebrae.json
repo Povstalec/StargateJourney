@@ -1,0 +1,7 @@
+{
+	"copy_from": "sgjourney:galaxy_milky_way",
+	"points_of_origin":
+	[
+		{ "point_of_origin": "sgjourney:floating_islands", "weight": 2 }
+	]
+}

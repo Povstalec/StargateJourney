@@ -840,19 +840,28 @@
 	"point_of_origin.sgjourney.mars": "Mars",
 	
 	"point_of_origin.sgjourney.andromeda": "Andromeda",
-	"point_of_origin.sgjourney.pokeball": "Pokéball",
-	"point_of_origin.sgjourney.triforce": "Triforce",
-	"point_of_origin.sgjourney.aurum": "Aurum",
-	"point_of_origin.sgjourney.ankh": "Ankh",
-	"point_of_origin.sgjourney.reflection": "Reflection",
-	"point_of_origin.sgjourney.wheel": "Wheel",
 	"point_of_origin.sgjourney.ursa_major": "Ursa Major",
 	"point_of_origin.sgjourney.ursa_minor": "Ursa Minor",
 	"point_of_origin.sgjourney.cave": "Cave",
 	"point_of_origin.sgjourney.mountain": "Mountain",
 	"point_of_origin.sgjourney.waves": "Waves",
-
+	
 	"point_of_origin.sgjourney.ursa": "Ursa",
+	
+	"point_of_origin.sgjourney.abel": "Abel",
+	"point_of_origin.sgjourney.aida": "Aida",
+	"point_of_origin.sgjourney.ankh": "Ankh",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.dain": "Dain",
+	"point_of_origin.sgjourney.floating_islands": "Floating Islands",
+	"point_of_origin.sgjourney.mathematical_compass": "Mathematical Compass",
+	"point_of_origin.sgjourney.petu": "Petu",
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
+	"point_of_origin.sgjourney.reflection": "Reflection",
+	"point_of_origin.sgjourney.thorn": "Thorn",
+	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.vertuga": "Vertuga",
+	"point_of_origin.sgjourney.wheel": "Wheel",
 	
 	
 	"info.sgjourney.add_to_network": "Add To Network",
