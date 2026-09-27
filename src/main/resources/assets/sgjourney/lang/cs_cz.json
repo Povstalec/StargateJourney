@@ -222,6 +222,8 @@
 	"block.sgjourney.stone_cartouche": "Kamenná kartuše",
 
 	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
+	"block.sgjourney.cartouche.description": "Dvojblok, který může mít v sobě vyrytou adresu",
+	"block.sgjourney.symbol_block.description": "Blok, který může mít v sobě vyrytý symbol, nebo výchozí bod",
 	
 	"block.sgjourney.universe_stargate": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_ring": "Hvězdná brána 1. generace",
@@ -578,6 +580,7 @@
 	"screen.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
 	"screen.sgjourney.naquadah_generator": "Naquadahový Generátor",
 	"screen.sgjourney.dhd": "DHD",
+	"screen.sgjourney.auto_dialer": "Automatický vytačeč",
 	
 	"screen.sgjourney.ancient_transport_rings": "Antické transportní kruhy",
 	"screen.sgjourney.goauld_transport_rings": "Goa'uldí transportní kruhy",
@@ -962,6 +965,13 @@
 	"tooltip.sgjourney.communication_crystal.crystal_computer": "Frekvence může být změněna s pomocí krystalového počítače",
 	"tooltip.sgjourney.materialization_crystal.description": "Umožňuje transport mezi dimenzemi",
 	
+	"tooltip.sgjourney.auto_dialer.description": "Zařízení, které dokáže instantně vytočit bránu",
+	"tooltip.sgjourney.auto_dialer.usage.menu": "Shift + pravé kliknutí otevře menu",
+	"tooltip.sgjourney.auto_dialer.usage.dial": "Pravé kliknutí vytočí/zavře hvězdnou bránu",
+	"tooltip.sgjourney.auto_dialer.kawoosh": "Kawoosh",
+	"tooltip.sgjourney.auto_dialer.kawoosh_on": "Na začátku spojení se vytvoří kawoosh",
+	"tooltip.sgjourney.auto_dialer.kawoosh_off": "Na začátku spojení se nevytvoří kawoosh",
+	
 	"tooltip.sgjourney.call_forwarding_device.description": "Když je vloženo do DHD, přesměruje veškeré cestovatele co neprojdou filtrem do jiné hvězdné brány",
 	"tooltip.sgjourney.call_forwarding_device.usage": "Pravé kliknutí otevře rozhraní filtru",
 	
@@ -1150,6 +1160,8 @@
 	"message.sgjourney.schrodingers_map.error.unique_structure": "Unikátní struktura nenalezena",
 	"message.sgjourney.schrodingers_map.error.unique_structure_not_found": "Uinkátní struktura očekávána na pozici %s ale nenalezena",
 	"message.sgjourney.schrodingers_map.error.troubleshoot": "Podívat se na wiki jak řešit tento problém",
+	
+	"message.sgjourney.auto_dialer.error.no_address": "Nebyla specifikována žádná adresa!",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",

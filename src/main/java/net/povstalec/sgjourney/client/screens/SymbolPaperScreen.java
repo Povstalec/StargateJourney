@@ -56,8 +56,11 @@ public class SymbolPaperScreen extends Screen
 		return false;
 	}
 	
-	public void renderPointOfOrigin(PoseStack stack, ClientPointOfOrigin pointOfOrigin)
+	public void renderPointOfOrigin(PoseStack stack, @Nullable ClientPointOfOrigin pointOfOrigin)
 	{
+		if(pointOfOrigin == null)
+			return;
+		
 		float xStart = (width - POINT_OF_ORIGIN_SIZE) / 2F;
 		float yStart = (height - POINT_OF_ORIGIN_SIZE) / 2F;
 		float xEnd = xStart + POINT_OF_ORIGIN_SIZE;
@@ -66,8 +69,11 @@ public class SymbolPaperScreen extends Screen
 		ClientUtil.renderPointOfOrigin(stack.last().pose(), xStart, yStart, xEnd, yEnd, pointOfOrigin, RGBA);
 	}
 	
-	public void renderSymbols(PoseStack stack, ClientSymbols symbols)
+	public void renderSymbols(PoseStack stack, @Nullable ClientSymbols symbols)
 	{
+		if(symbols == null)
+			return;
+		
 		float xStart = -SYMBOL_SIZE / 2F;
 		float yStart = -SYMBOL_SIZE / 2F;
 		float xEnd = xStart + SYMBOL_SIZE;

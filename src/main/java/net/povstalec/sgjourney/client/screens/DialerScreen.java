@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
+import org.jetbrains.annotations.NotNull;
 
 public class DialerScreen extends Screen
 {
@@ -28,7 +29,7 @@ public class DialerScreen extends Screen
 	}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
     	RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

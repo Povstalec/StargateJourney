@@ -44,6 +44,12 @@ public final class PacketHandlerInit
 				.consumerMainThread(ClientboundDialerOpenScreenPacket::handle)
 				.add();
 		
+		INSTANCE.messageBuilder(ClientboundAutoDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
+			.encoder(ClientboundAutoDialerOpenScreenPacket::encode)
+			.decoder(ClientboundAutoDialerOpenScreenPacket::new)
+			.consumerMainThread(ClientboundAutoDialerOpenScreenPacket::handle)
+			.add();
+		
 		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 				.encoder(ClientboundGDOOpenScreenPacket::encode)
 				.decoder(ClientboundGDOOpenScreenPacket::new)
@@ -156,6 +162,12 @@ public final class PacketHandlerInit
 		//============================================================================================
 		//****************************************Server-bound****************************************
 		//============================================================================================
+		
+		INSTANCE.messageBuilder(ServerboundAutoDialerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
+			.encoder(ServerboundAutoDialerUpdatePacket::encode)
+			.decoder(ServerboundAutoDialerUpdatePacket::new)
+			.consumerMainThread(ServerboundAutoDialerUpdatePacket::handle)
+			.add();
 		
 		INSTANCE.messageBuilder(ServerboundEngravingUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
 				.encoder(ServerboundEngravingUpdatePacket::encode)

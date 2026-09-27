@@ -38,6 +38,7 @@ import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -189,6 +190,8 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			if(blockEntityTag.contains(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.random_point_of_origin").withStyle(ChatFormatting.DARK_GREEN));
 		}
+		
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.symbol_block.description"));
     }
 	
 	protected abstract void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player);

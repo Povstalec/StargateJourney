@@ -17,6 +17,7 @@ public class TagInit
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
+		public static final TagKey<Item> STOPS_DHD_INTERACTION = tag("stops_dhd_interaction");
 		
 		private static TagKey<Item> tag(String name)
 		{

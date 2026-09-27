@@ -42,6 +42,7 @@ import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -224,6 +225,8 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			if(blockEntityTag.contains(CartoucheBlockEntity.LOCAL_ADDRESS))
 				tooltipComponents.add(localAddressComponent(Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS))));
 		}
+		
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.cartouche.description"));
     }
 	
 	public static Component localAddressComponent(Address.Type type)
