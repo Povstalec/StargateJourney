@@ -17,6 +17,7 @@ public class TagInit
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
+		public static final TagKey<Item> STOPS_DHD_INTERACTION = tag("stops_dhd_interaction");
 		
 		private static TagKey<Item> tag(String name)
 		{
@@ -41,6 +42,10 @@ public class TagInit
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
 		public static final TagKey<Block> TRINIUM_ARROW_CAN_BREAK = tag("trinium_arrow_can_break");
+		
+		public static final TagKey<Block> NEEDS_STONE_GRAVER = tag("engravable/needs_stone_graver");
+		public static final TagKey<Block> NEEDS_IRON_GRAVER = tag("engravable/needs_iron_graver");
+		public static final TagKey<Block> NEEDS_DIAMOND_GRAVER = tag("engravable/needs_diamond_graver");
 		
 		private static TagKey<Block> tag(String name)
 		{

@@ -357,9 +357,10 @@ public abstract class AbstractLiquidizerEntity<R extends LiquidizingRecipe> exte
 	}
 	
 	@Override
-	public void createOutput(R recipe)
+	public boolean tryCreateOutput(R recipe)
 	{
 		outputFluidTank.fill(recipe.getOutputFluid().copy(), IFluidHandler.FluidAction.EXECUTE);
+		return true;
 	}
 	
 	public void outputLiquid()

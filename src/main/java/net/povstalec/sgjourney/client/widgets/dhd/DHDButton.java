@@ -1,13 +1,10 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
+import org.jetbrains.annotations.NotNull;
 
 public class DHDButton extends SGJourneyButton
 {
@@ -36,7 +33,7 @@ public class DHDButton extends SGJourneyButton
 	}
 	
 	@Override
-	public void playDownSound(SoundManager soundManager) {}
+	public void playDownSound(@NotNull SoundManager soundManager) {}
 	
 	public void updateTooltip()
 	{

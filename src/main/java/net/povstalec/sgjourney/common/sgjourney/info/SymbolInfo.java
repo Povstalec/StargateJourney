@@ -28,6 +28,7 @@ public class SymbolInfo
 		this.pointOfOrigin = pointOfOrigin;
 	}
 	
+	@Nullable
 	public ResourceKey<PointOfOrigin> pointOfOrigin()
 	{
 		return this.pointOfOrigin;
@@ -42,6 +43,7 @@ public class SymbolInfo
 		this.symbols = symbols;
 	}
 	
+	@Nullable
 	public ResourceKey<Symbols> symbols()
 	{
 		return this.symbols;

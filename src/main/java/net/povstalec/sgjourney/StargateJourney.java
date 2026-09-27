@@ -34,17 +34,24 @@ import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block.CableModelLoader;
 import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
-import net.povstalec.sgjourney.client.render.block_entity.*;
+import net.povstalec.sgjourney.client.render.block_entity.stargate.*;
+import net.povstalec.sgjourney.client.render.block_entity.transporter.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHolderRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHubRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPlugRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPortRenderer;
 import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.client.screens.dhd.*;
+import net.povstalec.sgjourney.client.screens.graver.CartoucheEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.DHDEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.StargateEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.SymbolBlockEngravingScreen;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
@@ -133,6 +140,14 @@ public class StargateJourney
         	RegistryBuilder<AddressTable> addressTableBuilder = new RegistryBuilder<>();
         	addressTableBuilder.setName(new ResourceLocation(MODID, "address_table"));
         	event.create(addressTableBuilder);
+			
+			RegistryBuilder<SymbolTable> symbolTableBuilder = new RegistryBuilder<>();
+			symbolTableBuilder.setName(new ResourceLocation(MODID, "symbol_table"));
+			event.create(symbolTableBuilder);
+			
+			RegistryBuilder<PointOfOriginTable> pointOfOriginTableBuilder = new RegistryBuilder<>();
+			pointOfOriginTableBuilder.setName(new ResourceLocation(MODID, "point_of_origin_table"));
+			event.create(pointOfOriginTableBuilder);
 
         	RegistryBuilder<StargateVariant> stargateVariantBuilder = new RegistryBuilder<>();
         	stargateVariantBuilder.setName(new ResourceLocation(MODID, "stargate_variant"));
@@ -143,7 +158,9 @@ public class StargateJourney
         	pointOfOriginBuilder.dataPackRegistry(PointOfOrigin.CODEC, PointOfOrigin.CODEC);
 			addressRegionBuilder.dataPackRegistry(AddressRegion.CODEC, AddressRegion.CODEC);
 			spaceLocationBuilder.dataPackRegistry(SpaceLocation.CODEC, SpaceLocation.CODEC);
-        	addressTableBuilder.dataPackRegistry(AddressTable.CODEC, AddressTable.CODEC);
+			addressTableBuilder.dataPackRegistry(AddressTable.CODEC, AddressTable.CODEC);
+			symbolTableBuilder.dataPackRegistry(SymbolTable.CODEC, SymbolTable.CODEC);
+			pointOfOriginTableBuilder.dataPackRegistry(PointOfOriginTable.CODEC, PointOfOriginTable.CODEC);
         	stargateVariantBuilder.dataPackRegistry(StargateVariant.CODEC, StargateVariant.CODEC);
         });
         
@@ -242,8 +259,6 @@ public class StargateJourney
 
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
-        	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-
         	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
         	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
         	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen.Crystallizer::new);
@@ -252,6 +267,22 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
 			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_STONE_CARTOUCHE.get(), CartoucheEngravingScreen.Stone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.Sandstone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_RED_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.RedSandstone::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_STONE_SYMBOL.get(), SymbolBlockEngravingScreen.Stone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.Sandstone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.RedSandstone::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
+			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
+			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
+			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
+			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
@@ -261,8 +292,13 @@ public class StargateJourney
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
 			
-			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
-			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
+			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
+			
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HOLDER.get(), ZPMHolderRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PORT.get(), ZPMPortRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HUB.get(), ZPMHubRenderer::new);
         	
         	BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer.Ancient::new);
         	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer.Goauld::new);

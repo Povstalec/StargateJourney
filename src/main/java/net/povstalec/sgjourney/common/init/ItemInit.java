@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.common.init;
 
+import com.google.common.collect.Sets;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -15,6 +17,10 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ItemInit
 {
@@ -98,6 +104,11 @@ public class ItemInit
 	// Useful Items
 	public static final RegistryObject<Item> SCHRODINGERS_MAP = ITEMS.register("schrodingers_map",
 		() -> new SchrodingersMapItem(new Item.Properties().stacksTo(1)));
+	
+	public static final RegistryObject<Item> CHARCOAL_STICK = ITEMS.register("charcoal_stick",
+		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1)));
+	public static final RegistryObject<Item> SYMBOL_PAPER = ITEMS.register("symbol_paper",
+		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1)));
 	
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
@@ -282,8 +293,11 @@ public class ItemInit
 	public static final RegistryObject<GDOItem> GDO = ITEMS.register("gdo", 
 			() -> new GDOItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
-	/*public static final RegistryObject<AutoDialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
-			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));*/
+	public static final RegistryObject<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
+		() -> new AutoDialerItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).fireResistant()));
+	
+	/*public static final RegistryObject<DialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
+			() -> new DialerItem(new Item.Properties().stacksTo(1)));*/
 	
 	// Shielding
 	public static final RegistryObject<Item> STARGATE_SHIELDING_RING = ITEMS.register("stargate_shielding_ring", 
@@ -331,5 +345,10 @@ public class ItemInit
 	public static void register(IEventBus eventBus)
 	{
 		ITEMS.register(eventBus);
+	}
+	
+	public static Set<ToolAction> ofToolActions(ToolAction... actions)
+	{
+		return Stream.of(actions).collect(Collectors.toCollection(Sets::newIdentityHashSet));
 	}
 }
