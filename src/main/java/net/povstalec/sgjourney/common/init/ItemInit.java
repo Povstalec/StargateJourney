@@ -108,7 +108,7 @@ public class ItemInit
 	public static final RegistryObject<Item> CHARCOAL_STICK = ITEMS.register("charcoal_stick",
 		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<Item> SYMBOL_PAPER = ITEMS.register("symbol_paper",
-		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
+		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1)));
 	
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
