@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -40,6 +41,12 @@ public class Symbols extends ForgeRegistryEntry<Symbols>
 	public ResourceKey<ClientSymbols> clientSymbols()
 	{
 		return clientSymbols;
+	}
+	
+	@Override
+	public @NotNull String toString()
+	{
+		return clientSymbols.location().toString();
 	}
 	
 	public static ResourceKey<Symbols> defaultSymbols()

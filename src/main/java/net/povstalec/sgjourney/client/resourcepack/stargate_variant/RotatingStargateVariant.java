@@ -1,12 +1,13 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
-public abstract class RotatingStargateVariant extends ClientStargateVariant
+import java.util.Optional;
+
+public abstract class RotatingStargateVariant<SG extends AbstractStargateEntity<?>> extends ClientStargateVariant<SG>
 {
 	public static final String ROTATION_SOUNDS = "rotation_sounds";
 	

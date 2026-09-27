@@ -8,6 +8,8 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.*;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.ancient.AncientBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.goauld.GoauldBlockEntityTransportRings;
 
 import java.util.function.Supplier;
 

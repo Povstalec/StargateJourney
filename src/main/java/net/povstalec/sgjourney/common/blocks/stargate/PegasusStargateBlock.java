@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -17,16 +18,20 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
+import net.povstalec.sgjourney.common.blocks.SpecialSymbolBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class PegasusStargateBlock extends AbstractStargateBaseBlock
+public class PegasusStargateBlock extends AbstractStargateBaseBlock implements SpecialSymbolBlock
 {
 	public PegasusStargateBlock(Properties properties)
 	{
@@ -80,11 +85,11 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 			{
 				String pointOfOrigin = "";
 				if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
-					pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "Error");
+					pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
 				
 				String symbols = "";
 				if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
-					symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "Error");
+					symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "tooltip.sgjourney.error");
 				
 		        tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(": ").append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
 		        tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(": ").append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
@@ -101,5 +106,38 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock
 		stack.addTagElement("BlockEntityTag", compoundtag);
 		
 		return stack;
+	}
+	
+	@Override
+	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
+	{
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		
+		if(stargate != null)
+			return stargate.symbolInfo().pointOfOrigin();
+		
+		return null;
+	}
+	
+	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		
+		if(stargate != null)
+			return stargate.symbolInfo().symbols();
+		
+		return null;
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
+		
+		if(stargate != null)
+			return stargate.getEncodedSymbols();
+		
+		return null;
 	}
 }

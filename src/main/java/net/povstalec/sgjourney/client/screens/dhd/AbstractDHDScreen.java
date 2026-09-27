@@ -8,11 +8,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
+import net.povstalec.sgjourney.client.screens.SGJourneyMenuScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.menu.dhd.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.packets.ServerboundDHDUpdatePacket;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SGJourneyContainerScreen<T>
+public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SGJourneyMenuScreen<T>
 {
 	private final ResourceLocation texture;
 	
@@ -21,36 +24,52 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
 	
 	public AbstractDHDScreen(T menu, Inventory playerInventory, Component title, ResourceLocation texture)
 	{
-        super(menu, playerInventory, title);
+        super(menu, title);
         this.imageWidth = 192;
         this.imageHeight = 192;
         
         this.texture = texture;
     }
+	
+	public void engageStargate()
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(menu.blockEntity.getBlockPos(), -1));
+	}
+	
+	public void encodeSymbol(int symbol)
+	{
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundDHDUpdatePacket(menu.blockEntity.getBlockPos(), symbol));
+	}
+	
+	@Override
+	public boolean isPauseScreen()
+	{
+		return false;
+	}
 
     @Override
-    protected void renderBg(PoseStack poseStack, float pPartialTick, int pMouseX, int pMouseY)
-    {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, texture);
-		int x = (width - imageWidth) / 2;
-        int y = (height - imageHeight) / 2;
-
-        this.blit(poseStack, x, y, 0, 0, imageWidth, imageHeight);
-    }
-
-    @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
     {
         renderBackground(poseStack);
+		
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, texture);
+		
+		this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		
+		RenderSystem.disableDepthTest();
         super.render(poseStack, mouseX, mouseY, delta);
-        renderTooltip(poseStack, mouseX, mouseY);
-    }
-    
-    @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
-	{
+		
+		PoseStack posestack = RenderSystem.getModelViewStack();
+		posestack.pushPose();
+		posestack.translate((float) leftPos, (float) topPos, 0.0F);
+		RenderSystem.applyModelViewMatrix();
+		
 		GuiComponent.drawCenteredString(poseStack, font, ClientDHDConfig.dhd_symbols_numbers.get() ? SYMBOLS_TO_NUMBERS : NUMBERS_TO_SYMBOLS, imageWidth / 2, imageHeight + 1, 0xFFFFFF);
+		
+		posestack.popPose();
+		RenderSystem.applyModelViewMatrix();
+		RenderSystem.enableDepthTest();
     }
 }

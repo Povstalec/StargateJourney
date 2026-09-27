@@ -7,7 +7,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
@@ -112,27 +110,5 @@ public abstract class TransporterControllerBlock extends HorizontalDirectionalBl
 			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
-	}
-	
-	@Nullable
-	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof TransporterControllerEntity transporterController)
-			return transporterController;
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof TransporterControllerEntity transporterController)
-			return transporterController.hasPermissions(player, sendMessage);
-		
-		return true;
 	}
 }

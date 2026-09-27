@@ -358,9 +358,24 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Override
 	public void stopRotationSound(){}
 	
-	public static RotationDirection alternatingDirection(int addressLength)
+	/**
+	 * Alternating rotation direction that starts clockwise
+	 * @param addressLength Length of the currently encoded Address
+	 * @return Rotation direction to use
+	 */
+	public static RotationDirection alternatingDirectionClockwise(int addressLength)
 	{
 		return addressLength % 2 == 1 ? RotationDirection.CLOCKWISE : RotationDirection.ANTICLOCKWISE;
+	}
+	
+	/**
+	 * Alternating rotation direction that starts anticlockwise
+	 * @param addressLength Length of the currently encoded Address
+	 * @return Rotation direction to use
+	 */
+	public static RotationDirection alternatingDirectionAnticlockwise(int addressLength)
+	{
+		return addressLength % 2 == 1 ? RotationDirection.ANTICLOCKWISE : RotationDirection.CLOCKWISE;
 	}
 	
 	public RotationDirection bestSymbolDirection(int desiredSymbol)

@@ -9,16 +9,17 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class PointOfOrigin extends ForgeRegistryEntry<PointOfOrigin>
 {
@@ -30,16 +31,16 @@ public class PointOfOrigin extends ForgeRegistryEntry<PointOfOrigin>
 	
 	public static final Codec<PointOfOrigin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ClientPointOfOrigin.RESOURCE_KEY_CODEC.fieldOf("client_point_of_origin").forGetter(pointOfOrigin -> pointOfOrigin.clientPointOfOrigin),
-			Galaxy.RESOURCE_KEY_CODEC.listOf().optionalFieldOf("generated_galaxies", List.of()).forGetter(pointOfOrigin -> pointOfOrigin.generatedGalaxies)
+			WeightedTable.CODEC.listOf().optionalFieldOf("point_of_origin_tables", List.of()).forGetter(pointOfOrigin -> pointOfOrigin.pointOfOriginTables)
 	).apply(instance, PointOfOrigin::new));
 	
 	private final ResourceKey<ClientPointOfOrigin> clientPointOfOrigin;
-	private final List<ResourceKey<Galaxy>> generatedGalaxies;
+	private final List<WeightedTable> pointOfOriginTables;
 	
-	public PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin, List<ResourceKey<Galaxy>> generatedGalaxies)
+	public PointOfOrigin(ResourceKey<ClientPointOfOrigin> clientPointOfOrigin, List<WeightedTable> pointOfOriginTables)
 	{
 		this.clientPointOfOrigin = clientPointOfOrigin;
-		this.generatedGalaxies = generatedGalaxies;
+		this.pointOfOriginTables = pointOfOriginTables;
 	}
 	
 	public ResourceKey<ClientPointOfOrigin> clientPointOfOrigin()
@@ -47,9 +48,15 @@ public class PointOfOrigin extends ForgeRegistryEntry<PointOfOrigin>
 		return clientPointOfOrigin;
 	}
 	
-	public List<ResourceKey<Galaxy>> generatedGalaxies()
+	public List<WeightedTable> pointOfOriginTables()
 	{
-		return generatedGalaxies;
+		return pointOfOriginTables;
+	}
+	
+	@Override
+	public @NotNull String toString()
+	{
+		return clientPointOfOrigin.location().toString();
 	}
 	
 	public static ResourceKey<PointOfOrigin> defaultPointOfOrigin()
@@ -73,13 +80,31 @@ public class PointOfOrigin extends ForgeRegistryEntry<PointOfOrigin>
 		return Universe.get(server).getPointOfOrigin(dimension);
 	}
 	
+	public static ResourceKey<PointOfOrigin> randomPointOfOrigin(@Nullable ServerLevel level)
+	{
+		if(level == null)
+			return defaultPointOfOrigin();
+		
+		return Universe.get(level).getRandomPointOfOriginFromDimension(level);
+	}
+	
 	public static ResourceKey<PointOfOrigin> randomPointOfOrigin(MinecraftServer server, ResourceKey<Level> dimension)
 	{
-		return Universe.get(server).getRandomPointOfOriginFromDimension(dimension, new Random().nextLong());
+		return randomPointOfOrigin(server.getLevel(dimension));
 	}
 	
 	public static MutableComponent makeComponent(@Nullable ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
 		return new TextComponent(pointOfOrigin != null ? pointOfOrigin.location().toString() : "-");
+	}
+	
+	
+	
+	public record WeightedTable(ResourceKey<PointOfOriginTable> table, int weight)
+	{
+		public static final Codec<WeightedTable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			PointOfOriginTable.RESOURCE_KEY_CODEC.fieldOf("table").forGetter(table -> table.table),
+			Codec.intRange(1, Integer.MAX_VALUE).fieldOf("weight").forGetter(table -> table.weight)
+		).apply(instance, WeightedTable::new));
 	}
 }

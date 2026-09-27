@@ -39,7 +39,7 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
@@ -109,7 +109,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
-			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyStorage.setEnergyNoUpdate(energyStorage.getTrueMaxEnergyStored());
 			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 		}
 	}
@@ -306,7 +306,14 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 	@Override
 	public AABB getRenderBoundingBox()
     {
-        return new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
+		BlockState state = getBlockState();
+		
+		if(state.hasProperty(AbstractTransportRingsBlock.FACING))
+			return state.getValue(AbstractTransportRingsBlock.FACING) == Direction.DOWN ?
+				new AABB(getBlockPos().getX() - 3, getBlockPos().getY() - (3 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY(), getBlockPos().getZ() + 4) :
+				new AABB(getBlockPos().getX() - 3, getBlockPos().getY(), getBlockPos().getZ() - 3, getBlockPos().getX() + 4, getBlockPos().getY() + (4 + MAX_TRANSPORT_HEIGHT), getBlockPos().getZ() + 4);
+		
+        return super.getRenderBoundingBox();
     }
 	
 	//============================================================================================

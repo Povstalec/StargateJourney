@@ -222,11 +222,14 @@
 	"block.sgjourney.stone_cartouche": "Kamenná kartuše",
 
 	"block.sgjourney.cartouche.not_enough_space": "Kartuše nemá dost místa",
+	"block.sgjourney.cartouche.description": "Dvojblok, který může mít v sobě vyrytou adresu",
+	"block.sgjourney.symbol_block.description": "Blok, který může mít v sobě vyrytý symbol, nebo výchozí bod",
 	
 	"block.sgjourney.universe_stargate": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_ring": "Hvězdná brána 1. generace",
 	"block.sgjourney.universe_shielding": "Ochrana hvězdné brány",
 	"block.sgjourney.universe_stargate_chevron": "Chevron brány 1. generace",
+	"block.sgjourney.universe_stargate_bearing": "Ložisko brány 1. generace",
 	"block.sgjourney.milky_way_stargate": "Hvězdná brána 2. generace",
 	"block.sgjourney.milky_way_ring": "Hvězdná brána 2. generace",
 	"block.sgjourney.milky_way_shielding": "Ochrana hvězdné brány",
@@ -299,9 +302,13 @@
 	"block.sgjourney.ancient_gene_detector.right_click": "Pravé kliknutí pro detekování antického genu v sobě",
 	"block.sgjourney.ancient_gene_detector.redstone": "Napájej redstonem pro detekování antického genu v entitách poblíž (dosah se zvyšuje o 2 bloky za každou úrověn redstonového signálu)",
 	
-	"block.sgjourney.zpm_hub": "ZPM Hub",
-	"block.sgjourney.zpm_port": "ZPM Port",
-	"block.sgjourney.zpm_plug": "ZPM zástrčka",
+	"block.sgjourney.zpm_holder": "Držák na ZPM",
+	"block.sgjourney.zpm_plug": "ZPM zásuvka",
+	"block.sgjourney.zpm_plug.description": "Zařízení pro extrakci energie ze ZPM a její přesměrování dále",
+	"block.sgjourney.zpm_port": "ZPM port",
+	"block.sgjourney.zpm_port.description": "Zařízení pro extrakci energie ze ZPM a její přesměrování dále",
+	"block.sgjourney.zpm_hub": "ZPM hub",
+	"block.sgjourney.zpm_hub.description": "Zařízení pro extrakci energie ze ZPM a její přesměrování dále",
 
 	"block.sgjourney.transceiver": "Vysílač",
 	"block.sgjourney.transceiver.description": "Zařízení pro vysílání a zachycování signálů z jiných vysílačů a GDO",
@@ -378,7 +385,7 @@
 	
 	"item.sgjourney.wooden_graver": "Dřevěné rydlo",
 	"item.sgjourney.stone_graver": "Kamenné rydlo",
-	"item.sgjourney.iron_graver": "železné rydlo",
+	"item.sgjourney.iron_graver": "Železné rydlo",
 	"item.sgjourney.golden_graver": "Zlaté rydlo",
 	"item.sgjourney.diamond_graver": "Diamantové rydlo",
 	"item.sgjourney.netherite_graver": "Netheritové rydlo",
@@ -416,6 +423,9 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödingerova mapa",
 	
+	"item.sgjourney.charcoal_stick": "Uhel",
+	"item.sgjourney.symbol_paper": "Papír se symboly",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologův zápisník",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadahová helma",
@@ -442,6 +452,8 @@
 	"item.sgjourney.horus_helmet": "Horova helma",
 
 	"item.sgjourney.gdo": "GDO",
+	
+	"item.sgjourney.auto_dialer": "Automatický vytačeč",
 
 	"item.sgjourney.stargate_shielding_ring": "Ochranný kruh pro bránu",
 
@@ -473,6 +485,9 @@
 	"entity.sgjourney.human": "Člověk",
 	"entity.sgjourney.jaffa": "Jaffa",
 	
+	"sounds.sgjourney.equip_naquadah_armor" : "řinčení naquadahové zbroje",
+	"sounds.sgjourney.equip_trinium_armor" : "řinčení triniové zbroje",
+	
 	"sounds.sgjourney.dial_start" : "vytáčení začalo",
 	"sounds.sgjourney.ring_spin_start" : "otáčení začalo",
 	"sounds.sgjourney.ring_spin" : "brána se otáčí",
@@ -503,6 +518,8 @@
 	"sounds.sgjourney.matok_attack" : "útok z tyčové zbraně",
 	"sounds.sgjourney.matok_open" : "tyčové zbraň se otevře",
 	"sounds.sgjourney.matok_close" : "tyčové zbraň se zavře",
+	
+	"sounds.sgjourney.graver_engrave" : "rydlo ryje",
 	
 	"sounds.sgjourney.nothing" : "nic",
 	
@@ -539,6 +556,23 @@
 	"itemGroup.stargate_blocks": "Stargate Journey - Bloky",
 	"itemGroup.stargate_stuff": "Stargate Journey - Brány a ovládání",
 	"itemGroup.stargate_items": "Stargate Journey - Předměty",
+	
+	"screen.sgjourney.engraving.engrave": "Vyrýt",
+	"screen.sgjourney.engraving.cartouche.same_address": "Tato adresa je již do kartuše vyrytá",
+	"screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin": "Vyrytá adresa by neměla obsahovat výchozí bod (0)",
+	"screen.sgjourney.engraving.cartouche.overwrite_address": "Opravdu chceš přepsat adresu této kartuše?",
+	"screen.sgjourney.engraving.cartouche.overwrite_address.warning": "Adresa této kartuše obsahuje odkaz na dimenzi, který jí umožňuje se automaticky aktualizovat v případě že se adresa změní. Její přepsání způsobí v kartuši ztrátu schopnosti se takto automaticky aktualizovat.",
+	"screen.sgjourney.engraving.cartouche.insert_symbol_paper": "Vlož papír se symboly pro změnu symbolů na kartuši",
+	"screen.sgjourney.engraving.symbol_block.same_symbol": "Tento symbol je již do bloku vyrytý",
+	"screen.sgjourney.engraving.symbol_block.out_of_bounds": "Symbol je mimo meze <0, 47>",
+	"screen.sgjourney.engraving.symbol_block.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolu na bloku",
+	"screen.sgjourney.engraving.stargate.same_symbols": "Tyto symboly jsou již do brány vyryty",
+	"screen.sgjourney.engraving.stargate.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolů na hvězdné bráně",
+	"screen.sgjourney.engraving.dhd.same_symbols": "Tyto symboly jsou již do DHD vyryty",
+	"screen.sgjourney.engraving.dhd.insert_symbol_paper": "Vlož papír se symboly pro změnu typu symbolů na DHD",
+	"screen.sgjourney.both.description": "Vyrýt symboly i výchozí bod",
+	"screen.sgjourney.symbols.description": "Vyrýt pouze symboly",
+	"screen.sgjourney.point_of_origin.description": "Vyrýt pouze výchozí bod",
 
 	"screen.sgjourney.archeology_table": "Arheologický stůl",
 	"screen.sgjourney.basic_interface": "Základní rozhraní",
@@ -546,6 +580,7 @@
 	"screen.sgjourney.advanced_crystal_interface": "Pokročilé krystalové rozhraní",
 	"screen.sgjourney.naquadah_generator": "Naquadahový Generátor",
 	"screen.sgjourney.dhd": "DHD",
+	"screen.sgjourney.auto_dialer": "Automatický vytačeč",
 	
 	"screen.sgjourney.ancient_transport_rings": "Antické transportní kruhy",
 	"screen.sgjourney.goauld_transport_rings": "Goa'uldí transportní kruhy",
@@ -746,7 +781,7 @@
 	"symbol_set.sgjourney.galaxy_andromeda": "Symboly Andromedy",
 	
 	
-	"symbols.sgjourney.galaxy_universal": "Univerzální",
+	"symbols.sgjourney.universal": "Univerzální",
 	"symbols.sgjourney.galaxy_milky_way": "Mléčná dráha",
 	"symbols.sgjourney.galaxy_pegasus": "Pegas",
 	"symbols.sgjourney.galaxy_ida": "Ida",
@@ -801,18 +836,33 @@
 	"point_of_origin.sgjourney.pyramid": "Pyramida",
 	"point_of_origin.sgjourney.serpent": "Had",
 	"point_of_origin.sgjourney.pontem": "Pontem",
-	"point_of_origin.sgjourney.andromeda": "Andromeda",
+	"point_of_origin.sgjourney.mercury": "Merkur",
+	"point_of_origin.sgjourney.venus": "Venuše",
+	"point_of_origin.sgjourney.mars": "Mars",
 	
-	"point_of_origin.sgjourney.pokeball": "Pokéball",
-	"point_of_origin.sgjourney.triforce": "Triforce",
-	"point_of_origin.sgjourney.aurum": "Aurum",
-	"point_of_origin.sgjourney.ankh": "Anch",
-	"point_of_origin.sgjourney.reflection": "Odraz",
-	"point_of_origin.sgjourney.wheel": "Kolo",
+	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	"point_of_origin.sgjourney.ursa_major": "Velký vůz",
 	"point_of_origin.sgjourney.ursa_minor": "Malý vůz",
-
+	"point_of_origin.sgjourney.cave": "Jeskyně",
+	"point_of_origin.sgjourney.mountain": "Hora",
+	"point_of_origin.sgjourney.waves": "Vlny",
+	
 	"point_of_origin.sgjourney.ursa": "Ursa",
+	
+	"point_of_origin.sgjourney.abel": "Ábel",
+	"point_of_origin.sgjourney.aida": "Aida",
+	"point_of_origin.sgjourney.ankh": "Anch",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.dain": "Dáinn",
+	"point_of_origin.sgjourney.floating_islands": "Vznáčející se ostrovy",
+	"point_of_origin.sgjourney.mathematical_compass": "Matematický kompas",
+	"point_of_origin.sgjourney.petu": "Petu",
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
+	"point_of_origin.sgjourney.reflection": "Odraz",
+	"point_of_origin.sgjourney.thorn": "Trn",
+	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.vertuga": "Vertuga",
+	"point_of_origin.sgjourney.wheel": "Kolo",
 	
 	
 	"info.sgjourney.add_to_network": "Přidat do sítě",
@@ -837,13 +887,21 @@
 	"info.sgjourney.address": "Addresa",
 	"info.sgjourney.encoded_address": "Zadaná adresa",
 	"info.sgjourney.9_chevron_address": "9-chevronová adresa",
+	"info.sgjourney.address.too_long": "Addresa je příliš dlouhá <0, 9>",
+	"info.sgjourney.address.duplicate_symbols": "Addresa obsahuje duplikátní symboly",
+	"info.sgjourney.address.symbol_out_of_bounds": "Symbol adresy %s je mimo meze <0, 47>",
+	"info.sgjourney.address.symbols_after_point_of_origin": "Adresa nepovoluje žádné symboly za výchozím bodem (0)",
 	"info.sgjourney.transporter_id": "ID transportéru",
+	"info.sgjourney.transporter_id.too_long": "ID transportéru je příliš dlouhé <0, 7>",
+	"info.sgjourney.transporter_id.symbol_out_of_bounds": "Symbol ID transportéru %s je mimo meze <1, 8>",
 	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.recent_feedback": "Poslední zpětná vazba",
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Textura iris",
 	"info.sgjourney.iris_durability": "Výdrž iris",
 	"info.sgjourney.address_table": "Tabulka adres",
+	"info.sgjourney.symbol_table": "Tabulka symbolů",
+	"info.sgjourney.point_of_origin_table": "Tabulka výchozích bodů",
 	"info.sgjourney.energy": "Energy",
 	"info.sgjourney.network_restrictions": "Síťová omezení",
 	"info.sgjourney.transfer_efficiency": "Účinnost přenosu",
@@ -853,6 +911,7 @@
 	"info.sgjourney.timestamp": "Časová značka",
 	
 	"tooltip.sgjourney.unknown": "Neznámé",
+	"tooltip.sgjourney.error": "Error",
 	"tooltip.sgjourney.empty": "Prázdné",
 	"tooltip.sgjourney.text": "Text",
 	"tooltip.sgjourney.symbol": "Symbol",
@@ -883,7 +942,11 @@
 	"tooltip.sgjourney.dump_tank": "Vyprázdnit nádrž",
 
 	"tooltip.sgjourney.not_added_to_network": "Nebude přidáno do sítě",
+	"tooltip.sgjourney.random_point_of_origin": "Náhodný výchozí bod",
 	"tooltip.sgjourney.local_point_of_origin": "Lokální výchozí bod",
+	"tooltip.sgjourney.local_7_chevron_address": "Lokální 7-chevronová adresa",
+	"tooltip.sgjourney.local_8_chevron_address": "Lokální 8-chevronová adresa",
+	"tooltip.sgjourney.local_9_chevron_address": "Lokální 9-chevronová adresa",
 	"tooltip.sgjourney.dynamic_symbols": "Dynamické symboly",
 	
 	"tooltip.sgjourney.control_crystal.description": "Dokáže změnit funkování technologie na základě uploadovaných programů",
@@ -897,10 +960,17 @@
 	"tooltip.sgjourney.transfer_crystal.transfer_efficiency_multiplier": "Násobitel účinnosti přenosu",
 	"tooltip.sgjourney.communication_crystal.description": "Může být naladěn na specifickou frekvenci, nebo zvýšit komunikační dosah",
 	"tooltip.sgjourney.communication_crystal.frequency": "Frekvence",
-	"tooltip.sgjourney..communication_crystal.frequency_none": "Nenastavena žádná frekvence",
-	"tooltip.sgjourney.communication_crystal.communication_range": "Zvednutí komunkační vzdálenost o %s bloků",
+	"tooltip.sgjourney.communication_crystal.frequency_none": "Nenastavena žádná frekvence",
+	"tooltip.sgjourney.communication_crystal.communication_range_increase": "Zvednutí komunkační vzdálenost o %s bloků",
 	"tooltip.sgjourney.communication_crystal.crystal_computer": "Frekvence může být změněna s pomocí krystalového počítače",
 	"tooltip.sgjourney.materialization_crystal.description": "Umožňuje transport mezi dimenzemi",
+	
+	"tooltip.sgjourney.auto_dialer.description": "Zařízení, které dokáže instantně vytočit bránu",
+	"tooltip.sgjourney.auto_dialer.usage.menu": "Shift + pravé kliknutí otevře menu",
+	"tooltip.sgjourney.auto_dialer.usage.dial": "Pravé kliknutí vytočí/zavře hvězdnou bránu",
+	"tooltip.sgjourney.auto_dialer.kawoosh": "Kawoosh",
+	"tooltip.sgjourney.auto_dialer.kawoosh_on": "Na začátku spojení se vytvoří kawoosh",
+	"tooltip.sgjourney.auto_dialer.kawoosh_off": "Na začátku spojení se nevytvoří kawoosh",
 	
 	"tooltip.sgjourney.call_forwarding_device.description": "Když je vloženo do DHD, přesměruje veškeré cestovatele co neprojdou filtrem do jiné hvězdné brány",
 	"tooltip.sgjourney.call_forwarding_device.usage": "Pravé kliknutí otevře rozhraní filtru",
@@ -947,7 +1017,6 @@
 	"tooltip.sgjourney.transporter.interdimensional_transport": "Mezidimenzionální transport: %s",
 	"tooltip.sgjourney.transporter.interdimensional_transport.description": "Pokud je aktivní,transportér bude schopný transportovat mezi dimenzemi ve stejném solárním systému",
 	
-	"tooltip.sgjourney.connection_range": "Dosah spojení: %s bloků",
 	"tooltip.sgjourney.transport_rings.materialization_crystal_slot.description": "Drží materializační krystaly",
 	"tooltip.sgjourney.transport_rings.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.transport_rings.energy_slot.description": "Drží předměty dodávající energii",
@@ -991,7 +1060,8 @@
 	"tooltip.sgjourney.dhd.communication_range.usage.communication_crystal": "Žádná frekvence -> Zvýšená komunikační vzdálenost DHD",
 	"tooltip.sgjourney.dhd.networks.usage.communication_crystal": "Frekvence -> Přidání brány do další sítě",
 	"tooltip.sgjourney.dhd.networks.usage.control_crystal": "Ovládaci krystal -> Aktivace síťových omezení",
-	"tooltip.sgjourney.dhd.energy_slot.description": "Drží energetická jádra, ZPM a jiné předměty dodávající energii",
+	"tooltip.sgjourney.dhd.energy_slot.description": "Drží energetická jádra a jiné předměty dodávající energii",
+	"tooltip.sgjourney.dhd.energy_slot.description.zpm": "Drží energetická jádra, ZPM a jiné předměty dodávající energii",
 	"tooltip.sgjourney.dhd.energy_fuel_slot.description": "Drží předměty pro doplnění paliva do energetických jader",
 	"tooltip.sgjourney.dhd.crystal_slot.description": "Drží krystaly a pokročilé krystaly",
 	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Drží velké krystaly",
@@ -1074,14 +1144,24 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fúzní palivo",
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
+	"tooltip.sgjourney.charcoal_stick.description": "Používaný pro zapsání symbolů z bloků se symboly (jako kartuší a hvězdných bran) na papír",
+	"tooltip.sgjourney.graver.description": "Používané pro vyrytí symbolů do bloků se symboly (jako kartuší a hvězdných bran)",
+	
+	
+	"argument.sgjourney.address.incomplete": "Neúplná adresa",
 	
 	"message.sgjourney.open_wiki_link": "Otevřít wiki link",
+	
+	"message.sgjourney.charcoal_stick.no_paper": "Je třeba ve druhé ruce držet papír!",
+	"message.sgjourney.graver.low_tier": " Úroveň rydla je pro tento blok příliš nízká",
 	
 	"message.sgjourney.schrodingers_map.error.dimension": "Mapu nejde použít v této dimenzi, očekávána dimenze: %s",
 	"message.sgjourney.schrodingers_map.error.structure": "Struktura nenalezena",
 	"message.sgjourney.schrodingers_map.error.unique_structure": "Unikátní struktura nenalezena",
 	"message.sgjourney.schrodingers_map.error.unique_structure_not_found": "Uinkátní struktura očekávána na pozici %s ale nenalezena",
 	"message.sgjourney.schrodingers_map.error.troubleshoot": "Podívat se na wiki jak řešit tento problém",
+	
+	"message.sgjourney.auto_dialer.error.no_address": "Nebyla specifikována žádná adresa!",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transportní kruhy jsou již v provozu",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "Žádné transportní kruhy poblíž",
@@ -1101,14 +1181,14 @@
 	"message.sgjourney.dhd.error.not_enough_energy": "Ovládací panel nemá dost energie",
 	"message.sgjourney.dhd.error.not_connected_to_stargate": "Ovládací panel není připojen k hvězdné bráně",
 	
-	"message.sgjourney.stargate.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
+	"message.sgjourney.stargate.error.one_way_wormhole": "Není možné projít červí dírou tímto směrem",
 	"message.sgjourney.stargate.error.iris": "Cesta blokována iris",
 	"message.sgjourney.stargate.error.already_has_iris": "Hvězdná brána již má iris",
 	
 	"message.sgjourney.stargate.info.none": "Nic",
 	"message.sgjourney.stargate.error.unknown": "Neznámá chyba",
 	
-	"message.sgjourney.stargate.symbol_encoded": "Symbol %s zadán",
+	"message.sgjourney.stargate.info.symbol_encoded": "Symbol %s zadán",
 	"message.sgjourney.stargate.error.symbol_in_address": "Symbol %s byl již zadán",
 	"message.sgjourney.stargate.error.symbol_out_of_bounds": "Symbol %s je mimo meze",
 	"message.sgjourney.stargate.error.encode_when_connected": "Nelze zadávat symboly během spojení",
@@ -1234,6 +1314,7 @@
 	"message.sgjourney.command.protected_block_set": "Chráněný blok nastaven",
 	"message.sgjourney.command.protected_block_unset": "Chráněný blok zrušen",
 	"message.sgjourney.command.not_protected_block": "Cíl není chránitelný blok",
+	"message.sgjourney.command.stargate_not_found": "Hvězdná brána nenalezena",
 	
 	"message.sgjourney.click_to_copy.address": "Klikněte pro zkopírování adresy",
 	"message.sgjourney.click_to_copy.transporter_id": "Klikněte pro zkopírování ID transportéru",

@@ -139,7 +139,7 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 			this.isProtected = isProtected.orElse(false);
 		}
 		
-		public void modifyDHD(AbstractDHDEntity dhd)
+		public void modifyDHD(WorldGenLevel level, Random randomSource, AbstractDHDEntity dhd)
 		{
 			if(isProtected)
 				dhd.setProtected(true);
@@ -160,6 +160,8 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 				//Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
 				Rot.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
 				Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
+				TransporterModifiers.CODEC.optionalFieldOf("transporter_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterModifiers)),
+				TransporterControllerModifiers.CODEC.optionalFieldOf("transporter_controller_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterControllerModifiers)),
 				StargateModifiers.CODEC.optionalFieldOf("stargate_modifiers").forGetter(structure -> Optional.ofNullable(structure.stargateModifiers)),
 				DHDModifiers.CODEC.optionalFieldOf("dhd_modifiers").forGetter(structure -> Optional.ofNullable(structure.dhdModifiers))
 			).apply(instance, StargateStructure.Configuration::new)).codec();
@@ -174,9 +176,10 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 		
 		public Configuration(Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, /*int maxDistanceFromCenter, */Optional<Rot> rotation,
-							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
+							 Optional<Boolean> commonStargates, Optional<TransporterModifiers> transporterModifiers, Optional<TransporterControllerModifiers> transporterControllerModifiers,
+							 Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
 		{
-			super(startPool, startJigsawName, size, startHeight, projectStartToHeightmap, /*maxDistanceFromCenter, */rotation, commonStargates);
+			super(startPool, startJigsawName, size, startHeight, projectStartToHeightmap, /*maxDistanceFromCenter, */rotation, commonStargates, transporterModifiers, transporterControllerModifiers);
 			
 			this.obstructedStartPool = obstructedStartPool.orElse(null);
 			
@@ -198,7 +201,7 @@ public abstract class StargateStructure<T extends SGJourneyStructure.Configurati
 			if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity<?> stargate)
 				stargateModifiers.modifyStargate(level, randomSource, stargate);
 			else if(dhdModifiers != null && generatedEntity instanceof AbstractDHDEntity dhd)
-				dhdModifiers.modifyDHD(dhd);
+				dhdModifiers.modifyDHD(level, randomSource, dhd);
 		}
 	}
 }

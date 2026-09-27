@@ -1,27 +1,30 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class DHDSymbolButton extends DHDButton
+public abstract class DHDSymbolButton<M extends IDHDMenu> extends DHDButton
 {
-	protected AbstractDHDMenu<?> menu;
+	protected M menu;
 	protected ResourceLocation overlay;
 	
 	protected final int symbol;
@@ -35,10 +38,10 @@ public abstract class DHDSymbolButton extends DHDButton
 	
 	protected boolean isRemapped = false;
 	
-    public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
-						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
+    public DHDSymbolButton(int x, int y, int width, int height, M menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
+						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor, Button.OnPress onPress)
 	{
-		super(widgets, x, y, width, height, TextComponent.EMPTY, (button) -> {});
+		super(widgets, x, y, width, height, TextComponent.EMPTY, onPress);
 		
 		this.menu = menu;
 		this.overlay = overlay;
@@ -61,13 +64,6 @@ public abstract class DHDSymbolButton extends DHDButton
 			else
 				setTooltip(symbolComponent());
 		}
-	}
-	
-	@Override
-	public void onPress()
-	{
-		super.onPress();
-		menu.encodeSymbol(getSymbol());
 	}
 	
 	public int getSymbol()
@@ -97,21 +93,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
-		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
-		RenderSystem.setShaderTexture(0, pointOfOrigin.getExtendedTexture());
-		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
-		bufferbuilder.end();
-		BufferUploader.end(bufferbuilder);
+		ClientUtil.renderPointOfOrigin(matrix4f, xStart, yStart, xEnd, yEnd, pointOfOrigin, rgba);
 	}
 	
 	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
@@ -121,21 +103,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
-		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
-		RenderSystem.setShaderTexture(0, symbols.getExtendedSymbolTexture(symbol));
-		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
-		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
-		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
-		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
-		bufferbuilder.end();
-		BufferUploader.end(bufferbuilder);
+		ClientUtil.renderSymbol(matrix4f, xStart, yStart, xEnd, yEnd, symbols, symbol, rgba);
 	}
 	
 	public abstract void renderSymbol(PoseStack poseStack);
@@ -148,7 +116,7 @@ public abstract class DHDSymbolButton extends DHDButton
 	}
 	
     @Override
-    public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
     {
 		Minecraft minecraft = Minecraft.getInstance();
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);

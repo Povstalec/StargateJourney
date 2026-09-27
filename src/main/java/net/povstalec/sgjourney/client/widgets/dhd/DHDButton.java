@@ -5,6 +5,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.widgets.SGJourneyButton;
+import org.jetbrains.annotations.NotNull;
 
 public class DHDButton extends SGJourneyButton
 {
@@ -33,7 +34,7 @@ public class DHDButton extends SGJourneyButton
 	}
 	
 	@Override
-	public void playDownSound(SoundManager soundManager) {}
+	public void playDownSound(@NotNull SoundManager soundManager) {}
 	
 	public void updateTooltip()
 	{

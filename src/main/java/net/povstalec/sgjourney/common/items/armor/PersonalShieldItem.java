@@ -19,8 +19,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.tech.AncientTech;
@@ -52,13 +52,13 @@ public class PersonalShieldItem extends ArmorItem implements AncientTech
 	@Override
 	public int getBarWidth(ItemStack stack)
 	{
-		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
+		return Math.round(13.0F * (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity.get());
 	}
 
 	@Override
 	public int getBarColor(ItemStack stack)
 	{
-		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity);
+		float f = Math.max(0.0F, (float) getFluidAmount(stack) / SyncedConfig.personal_shield_capacity.get());
 		return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
 	}
 	

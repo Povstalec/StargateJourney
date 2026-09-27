@@ -14,9 +14,9 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.blocks.tech.NaquadahGeneratorBlock;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
@@ -289,7 +289,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_reactor_capacity;
+			return SyncedConfig.naquadah_reactor_capacity.get();
 		}
 		
 		@Override
@@ -329,7 +329,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_generator_mark_i_capacity;
+			return SyncedConfig.naquadah_generator_mark_i_capacity.get();
 		}
 		
 		@Override
@@ -369,7 +369,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_generator_mark_ii_capacity;
+			return SyncedConfig.naquadah_generator_mark_ii_capacity.get();
 		}
 		
 		@Override

@@ -18,5 +18,7 @@ cookta2012 - Many fixes, especially ones related to CC:Tweaked
 Peperehobbits01 - French translations
 lukaskabc - Many fixes and help, but most importantly doing the wiki
 elinka47 - Japanese translations
+Smusken - Russian translations
+BumbleBeetle - Lots of help with tags
 
-I guess I could thank the Stargate franchize for... existing... as inspiration. Yeah, let's go with that.
+I guess I could thank the Stargate franchise for... existing... as inspiration. Yeah, let's go with that.

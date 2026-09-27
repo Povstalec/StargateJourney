@@ -176,7 +176,7 @@ public class StargateBlockItem extends BlockItem
 				stargate.generateAdditional(StructureGenEntity.Step.GENERATED);
 				
 				if(!level.isClientSide())
-					StargateNetwork.get(level).updateStargateEntity(stargate);
+					StargateNetwork.get(level).updateStargateEntityInNetwork(stargate);
 			}
 			else
 			{

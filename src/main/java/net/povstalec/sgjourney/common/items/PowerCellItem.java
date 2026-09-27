@@ -12,10 +12,10 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.items.CapabilityItemHandler;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.ItemPowerCellProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -58,9 +58,9 @@ public class PowerCellItem extends FluidItem.Holder
 		return CommonTechConfig.naquadah_power_cell_max_transfer.get();
 	}
 	
-	public long getBufferCapacity(@Nullable Level level, ItemStack stack)
+	public long getBufferCapacity(ItemStack stack)
 	{
-		return level != null && level.isClientSide() ? SyncedConfig.naquadah_power_cell_buffer_capacity : CommonTechConfig.naquadah_power_cell_buffer_capacity.get();
+		return SyncedConfig.naquadah_power_cell_buffer_capacity.get();
 	}
 	
 	@Override
@@ -81,7 +81,7 @@ public class PowerCellItem extends FluidItem.Holder
 			@Override
 			public long energyCapacity()
 			{
-				return getBufferCapacity(null, this.stack);
+				return getBufferCapacity(this.stack);
 			}
 			
 			@Override
@@ -115,7 +115,7 @@ public class PowerCellItem extends FluidItem.Holder
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_buffer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(getBufferEnergy(stack), getBufferCapacity(level, stack)))).withStyle(ChatFormatting.DARK_RED));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_buffer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(getBufferEnergy(stack), getBufferCapacity(stack)))).withStyle(ChatFormatting.DARK_RED));
 		
 		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 		

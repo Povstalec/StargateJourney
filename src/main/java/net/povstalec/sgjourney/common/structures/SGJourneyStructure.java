@@ -22,8 +22,9 @@ import net.minecraft.world.level.levelgen.structure.pieces.PieceGenerator;
 import net.minecraft.world.level.levelgen.structure.pieces.PieceGeneratorSupplier;
 import net.minecraft.world.level.levelgen.structure.pieces.PiecesContainer;
 import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.TransporterControllerEntity;
 import net.povstalec.sgjourney.common.misc.SGJourneyJigsawPlacement;
 import org.jetbrains.annotations.NotNull;
 
@@ -113,7 +114,9 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 				Heightmap.Types.CODEC.optionalFieldOf("project_start_to_heightmap").forGetter(structure -> Optional.ofNullable(structure.projectStartToHeightmap)),
 				//Codec.intRange(1, 128).fieldOf("max_distance_from_center").forGetter(structure -> structure.maxDistanceFromCenter),
 				Rot.CODEC.optionalFieldOf("rotation").forGetter(structure -> Optional.ofNullable(structure.rotation)),
-				Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates))
+				Codec.BOOL.optionalFieldOf("common_stargates").forGetter(structure -> Optional.ofNullable(structure.commonStargates)),
+				TransporterModifiers.CODEC.optionalFieldOf("transporter_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterModifiers)),
+				TransporterControllerModifiers.CODEC.optionalFieldOf("transporter_controller_modifiers").forGetter(structure -> Optional.ofNullable(structure.transporterControllerModifiers))
 			).apply(instance, Configuration::new)).codec();
 		
 		protected final Holder<StructureTemplatePool> startPool;
@@ -129,9 +132,14 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 		@Nullable
 		protected Boolean commonStargates; // Decides whether this Structure should generate while Common Stargate Generation config setting is set to true of false
 		
+		@Nullable
+		protected TransporterModifiers transporterModifiers;
+		@Nullable
+		protected TransporterControllerModifiers transporterControllerModifiers;
+		
 		public Configuration(Holder<StructureTemplatePool> startPool, Optional<ResourceLocation> startJigsawName,
 							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, /*int maxDistanceFromCenter, */Optional<Rot> rotation,
-							 Optional<Boolean> commonStargates)
+							 Optional<Boolean> commonStargates, Optional<TransporterModifiers> transporterModifiers, Optional<TransporterControllerModifiers> transporterControllerModifiers)
 		{
 			super(startPool, size);
 			
@@ -144,6 +152,9 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 			this.rotation = rotation.orElse(null);
 			
 			this.commonStargates = commonStargates.orElse(null);
+			
+			this.transporterModifiers = transporterModifiers.orElse(null);
+			this.transporterControllerModifiers = transporterControllerModifiers.orElse(null);
 		}
 		
 		public Boolean commonStargates()
@@ -185,6 +196,53 @@ public abstract class SGJourneyStructure<T extends SGJourneyStructure.Configurat
 		protected void generateBlockEntity(WorldGenLevel level, BlockPos startPos, Random randomSource, StructureGenEntity generatedEntity)
 		{
 			generatedEntity.generateInStructure(level, randomSource);
+			
+			if(transporterModifiers != null && generatedEntity instanceof AbstractTransporterEntity<?> transporter)
+				transporterModifiers.modifyTransporter(level, randomSource, transporter);
+			else if(transporterControllerModifiers != null && generatedEntity instanceof TransporterControllerEntity transporterController)
+				transporterControllerModifiers.modifyTransporterController(level, randomSource, transporterController);
+		}
+	}
+	
+	
+	
+	public static class TransporterModifiers
+	{
+		private final boolean isProtected;
+		
+		public static final Codec<TransporterModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
+		).apply(instance, TransporterModifiers::new));
+		
+		public TransporterModifiers(Optional<Boolean> isProtected)
+		{
+			this.isProtected = isProtected.orElse(false);
+		}
+		
+		public void modifyTransporter(WorldGenLevel level, Random randomSource, AbstractTransporterEntity<?> transporter)
+		{
+			if(isProtected)
+				transporter.setProtected(true);
+		}
+	}
+	
+	public static class TransporterControllerModifiers
+	{
+		private final boolean isProtected;
+		
+		public static final Codec<TransporterControllerModifiers> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.BOOL.optionalFieldOf("protected").forGetter(modifiers -> Optional.of(modifiers.isProtected))
+		).apply(instance, TransporterControllerModifiers::new));
+		
+		public TransporterControllerModifiers(Optional<Boolean> isProtected)
+		{
+			this.isProtected = isProtected.orElse(false);
+		}
+		
+		public void modifyTransporterController(WorldGenLevel level, Random randomSource, TransporterControllerEntity transporterController)
+		{
+			if(isProtected)
+				transporterController.setProtected(true);
 		}
 	}
 }

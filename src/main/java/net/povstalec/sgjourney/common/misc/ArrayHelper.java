@@ -43,7 +43,7 @@ public class ArrayHelper
 	public static boolean differentNumbers(int[] address)
 	{
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
-		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
+		Set<Integer> arraySet = new HashSet<>(arrayList);
 		return (arraySet.size() == address.length);
 	}
 	
@@ -64,5 +64,16 @@ public class ArrayHelper
 			return 0;
 		
 		return array[index];
+	}
+	
+	public static boolean contains(int[] array, int number)
+	{
+		for(int i : array)
+		{
+			if(i == number)
+				return true;
+		}
+		
+		return false;
 	}
 }

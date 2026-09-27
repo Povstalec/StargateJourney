@@ -57,33 +57,27 @@ public class SoundAccess
     	}
     }
 	
-    public static void playChevronSound(BlockPos pos, short chevron, boolean incoming, boolean open, boolean encode)
+    public static void playChevronSound(BlockPos pos, short chevron, StargateInfo.ChevronSound sound)
     {
     	if(minecraft.level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate)
     	{
-    		if(stargate instanceof MilkyWayStargateEntity milkyWayStargate && (open || encode))
-    		{
-    			if(open)
-    			{
-        			GenericStargateSound sound = new GenericStargateSound(stargate, getChevronOpenSound(milkyWayStargate, chevron), 0.5F);
-            		minecraft.getSoundManager().play(sound);
-    			}
-    			else if(encode)
-    			{
-    				GenericStargateSound sound = new GenericStargateSound(stargate, getChevronEncodeSound(milkyWayStargate, chevron), 0.5F);
-            		minecraft.getSoundManager().play(sound);
-    			}
-    		}
-    		else if(incoming)
-    		{
-    			GenericStargateSound sound = new GenericStargateSound(stargate, getChevronIncomingSound(stargate, chevron), 0.5F);
-        		minecraft.getSoundManager().play(sound);
-    		}
-    		else
-    		{
-    			GenericStargateSound sound = new GenericStargateSound(stargate, getChevronEngageSound(stargate, chevron), 0.5F);
-        		minecraft.getSoundManager().play(sound);
-    		}
+			switch(sound)
+			{
+				case OPEN ->
+				{
+					if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+						 minecraft.getSoundManager().play(new GenericStargateSound(stargate, getChevronOpenSound(milkyWayStargate, chevron), 0.5F));
+				}
+				case ENCODE ->
+				{
+					if(stargate instanceof MilkyWayStargateEntity milkyWayStargate)
+						minecraft.getSoundManager().play(new GenericStargateSound(stargate, getChevronEncodeSound(milkyWayStargate, chevron), 0.5F));
+					else
+						minecraft.getSoundManager().play(new GenericStargateSound(stargate, getChevronEngageSound(stargate, chevron), 0.5F));
+				}
+				case INCOMING -> minecraft.getSoundManager().play(new GenericStargateSound(stargate, getChevronIncomingSound(stargate, chevron), 0.5F));
+				case ENGAGE, CLOSE -> minecraft.getSoundManager().play(new GenericStargateSound(stargate, getChevronEngageSound(stargate, chevron), 0.5F));
+			}
     	}
     }
 	

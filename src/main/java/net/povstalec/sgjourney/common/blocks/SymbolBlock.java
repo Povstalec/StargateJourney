@@ -9,10 +9,16 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,21 +31,27 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.UUID;
 
-public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock
+public abstract class SymbolBlock extends DirectionalBlock implements EntityBlock, SpecialEngravableBlock
 {
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
 	
@@ -99,6 +111,12 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 						text = new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": ")).append(symbols).withStyle(ChatFormatting.LIGHT_PURPLE);
 					}
 					
+					if(symbolBlock.getSymbolTable() != null)
+						player.sendMessage(new TranslatableComponent("info.sgjourney.symbol_table").append(new TextComponent(": " + symbolBlock.getSymbolTable().location())).withStyle(ChatFormatting.YELLOW), Util.NIL_UUID);
+					
+					if(symbolBlock.getSymbolTable() != null)
+						player.sendMessage(new TranslatableComponent("info.sgjourney.point_of_origin_table").append(new TextComponent(": " + symbolBlock.getSymbolTable().location())).withStyle(ChatFormatting.GOLD), Util.NIL_UUID);
+					
 					player.sendMessage(text, Util.NIL_UUID);
 				}
 			}
@@ -142,10 +160,10 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 
         	if(symbolNumber == 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOL))
-				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "Error");
+				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "tooltip.sgjourney.error");
 
         	if(symbolNumber != 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "Error");
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
     	}
 		
 		if(symbolNumber == 0)
@@ -155,9 +173,120 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 			tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbol_number").append(new TextComponent(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
 			tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbols").append(new TextComponent(": ").append(new TranslatableComponent(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
-    	
-        super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(SymbolBlockEntity.SYMBOL_TABLE))
+				tooltipComponents.add(new TranslatableComponent("info.sgjourney.symbol_table").append(new TextComponent(": " + blockEntityTag.getString(SymbolBlockEntity.SYMBOL_TABLE))).withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE))
+				tooltipComponents.add(new TranslatableComponent("info.sgjourney.point_of_origin_table").append(new TextComponent(": " + blockEntityTag.getString(SymbolBlockEntity.POINT_OF_ORIGIN_TABLE))).withStyle(ChatFormatting.GOLD));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN))
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.local_point_of_origin").withStyle(ChatFormatting.GREEN));
+			
+			if(blockEntityTag.contains(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN))
+				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.random_point_of_origin").withStyle(ChatFormatting.DARK_GREEN));
+		}
+		
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.symbol_block.description"));
     }
+	
+	protected abstract void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player);
+	
+	@Override
+	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
+	{
+		if(!level.isClientSide())
+			openSymbolBlockGravingMenu(level, pos, player);
+		
+		return InteractionResult.PASS;
+	}
+	
+	@Override
+	public void setPointOfOrigin(Level level, BlockPos pos, BlockState state, ResourceKey<PointOfOrigin> pointOfOrigin)
+	{
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
+			symbolBlock.setPointOfOrigin(pointOfOrigin);
+	}
+	
+	@Override
+	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is no Point of Origin engraved
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() == 0)
+			return symbolBlock.getPointOfOrigin();
+		
+		return null;
+	}
+	
+	@Override
+	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
+	{
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
+			symbolBlock.setSymbols(symbols);
+	}
+	
+	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is no symbol engraved
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() > 0)
+			return symbolBlock.getSymbols();
+		
+		return null;
+	}
+	
+	@Override
+	public void setAddress(Level level, BlockPos pos, BlockState state, Address address)
+	{
+		// Using Address of length 1 to decide the symbol
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock)
+		{
+			if(address.getLength() == 0)
+				symbolBlock.setSymbolNumber(-1);
+			else
+				symbolBlock.setSymbolNumber(address.symbolAt(0));
+		}
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if there are is nothing
+		if(level.getBlockEntity(pos) instanceof SymbolBlockEntity symbolBlock && symbolBlock.getSymbolNumber() >= 0)
+			return new Address.Immutable(symbolBlock.getSymbolNumber());
+		
+		return null;
+	}
+	
+	
+	
+	public static ItemStack localPointOfOrigin(ItemLike item)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN, true);
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	public static ItemStack randomPointOfOrigin(ItemLike item)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN, true);
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
+		
+		return stack;
+	}
+	
+	
     
     public static class Stone extends SymbolBlock
     {
@@ -176,6 +305,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		public ItemLike getItem()
 		{
 			return BlockInit.STONE_SYMBOL.get();
+		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.Stone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return TextComponent.EMPTY;
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockEngravingMenu.Stone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openGui((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
 		}
     	
     }
@@ -198,6 +352,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		{
 			return BlockInit.SANDSTONE_SYMBOL.get();
 		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.Sandstone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return TextComponent.EMPTY;
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockEngravingMenu.Sandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openGui((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
+		}
     	
     }
 	
@@ -218,6 +397,31 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		public ItemLike getItem()
 		{
 			return BlockInit.RED_SANDSTONE_SYMBOL.get();
+		}
+		
+		@Override
+		protected void openSymbolBlockGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof SymbolBlockEntity.RedSandstone symbolBlockEntity)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return TextComponent.EMPTY;
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new SymbolBlockEngravingMenu.RedSandstone(windowId, playerInventory, symbolBlockEntity, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkHooks.openGui((ServerPlayer) player, containerProvider, symbolBlockEntity.getBlockPos());
+			}
 		}
 		
 	}

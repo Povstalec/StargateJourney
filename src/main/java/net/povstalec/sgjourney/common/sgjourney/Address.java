@@ -9,15 +9,18 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.ParsingResult;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
@@ -50,12 +53,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	{
 		try
 		{
-			verifyValidity(addressArray);
+			throwIfInvalid(addressArray);
 			this.addressArray = addressArray;
 		}
 		catch(IllegalArgumentException e)
 		{
-			StargateJourney.LOGGER.error("Error parsing address " + addressIntArrayToString(addressArray), e);
+			StargateJourney.LOGGER.error("Error parsing address {}", addressIntArrayToString(addressArray), e);
 		}
 	}
 	
@@ -79,26 +82,37 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		this(ArrayHelper.integerListToArray(addressList));
 	}
 	
+	
+	public static ParsingResult intArrayParsingResult(int[] addressArray)
+	{
+		if(addressArray.length > MAX_ADDRESS_LENGTH)
+			return ParsingResult.failure(Component.translatable("info.sgjourney.address.too_long"), () -> { throw new IllegalArgumentException("Address is too long <0, 9>"); });
+		
+		if(!ArrayHelper.differentNumbers(addressArray))
+			return ParsingResult.failure(Component.translatable("info.sgjourney.address.duplicate_symbols"), () -> { throw new IllegalArgumentException("Address contains duplicate symbols"); });
+		
+		for(int i = 0; i < addressArray.length; i++)
+		{
+			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
+			{
+				final int symbol = addressArray[i];
+				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbol_out_of_bounds"), () -> { throw new IllegalArgumentException("Address symbol " + symbol + " out of bounds <0, 47>"); });
+			}
+			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
+				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbols_after_point_of_origin"), () -> { throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin"); });
+		}
+		
+		return ParsingResult.success();
+	}
+	
 	/**
 	 * Verifies the validity of the provided Address array
 	 * @param addressArray Integer Array representing the Address
 	 * @throws IllegalArgumentException Throws an exception if the provided array is not a valid Address array
 	 */
-	public static void verifyValidity(int[] addressArray) throws IllegalArgumentException
+	public static void throwIfInvalid(int[] addressArray) throws IllegalArgumentException
 	{
-		if(addressArray.length > MAX_ADDRESS_LENGTH)
-			throw new IllegalArgumentException("Address is too long <0, 9>");
-		
-		if(!ArrayHelper.differentNumbers(addressArray))
-			throw new IllegalArgumentException("Address contains duplicate symbols");
-		
-		for(int i = 0; i < addressArray.length; i++)
-		{
-			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
-				throw new IllegalArgumentException("Address symbol " + addressArray[i] + " out of bounds <0, 47>");
-			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
-				throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin");
-		}
+		intArrayParsingResult(addressArray).doThrow();
 	}
 	
 	public int getLength()
@@ -156,13 +170,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	public ChatFormatting getChatFormatting()
 	{
-		return switch(this.getType())
-		{
-			case ADDRESS_7_CHEVRON -> ChatFormatting.GOLD;
-			case ADDRESS_8_CHEVRON -> ChatFormatting.LIGHT_PURPLE;
-			case ADDRESS_9_CHEVRON -> ChatFormatting.AQUA;
-			default -> ChatFormatting.GRAY;
-		};
+		return getType().getChatFormatting();
 	}
 	
 	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
@@ -182,7 +190,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return toComponent(copyToClipboard, getChatFormatting());
 	}
 	
-	public boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
+	protected boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
 	{
 		toExclusive = Math.min(toExclusive, regularSymbolCount());
 		
@@ -193,11 +201,6 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		}
 		
 		return false;
-	}
-	
-	public boolean containsRegularSymbol(int symbol)
-	{
-		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
 	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
@@ -213,7 +216,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		if(symbol == 0)
 			return hasPointOfOrigin();
 		
-		return containsRegularSymbol(symbol);
+		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
 	public boolean canBeDialed()
@@ -316,17 +319,27 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	// Static functions
 	
-	private static boolean isAllowedInAddress(char character)
+	public static boolean isAllowedInAddress(char character)
 	{
 		return character == '-' || Character.isDigit(character);
 	}
 	
 	public static boolean canBeTransformedToAddress(String addressString)
 	{
-		for(int i = 0; i < addressString.length(); i++)
+		String[] segments = addressString.split(ADDRESS_DIVIDER);
+		
+		boolean hasLeadingDash = addressString.startsWith(ADDRESS_DIVIDER);
+		// We don't require a leading '-', but if there is one, there should be nothing before it
+		if(hasLeadingDash && segments.length > 0 && !segments[0].isEmpty())
+			return false;
+		
+		for(int i = hasLeadingDash ? 1 : 0; i < segments.length; ++i)
 		{
-			if(!isAllowedInAddress(addressString.charAt(i)))
-				return false;
+			for(int j = 0; j < segments[i].length(); ++j)
+			{
+				if(!isAllowedInAddress(segments[i].charAt(j)))
+					return false;
+			}
 		}
 		
 		return true;
@@ -337,17 +350,13 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		if(addressString == null || !canBeTransformedToAddress(addressString))
 			return new int[0];
 		
-		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
+		String[] segments = addressString.split(ADDRESS_DIVIDER);
 		int[] intArray = new int[0];
 		
-		for(int i = 1; i < stringArray.length; i++)
+		for(int i = addressString.startsWith(ADDRESS_DIVIDER) ? 1 : 0; i < segments.length; i++)
 		{
-			int number = Character.getNumericValue(stringArray[i].charAt(0));
-			int length = stringArray[i].length();
-			if(length > 1)
-				number = number * 10 + Character.getNumericValue(stringArray[i].charAt(1));
-			
-			intArray = ArrayHelper.growIntArray(intArray, number);
+			if(!segments[i].isEmpty())
+				intArray = ArrayHelper.growIntArray(intArray, Integer.parseInt(segments[i]));
 		}
 		
 		return intArray;
@@ -389,20 +398,43 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return addressArray;
 	}
 	
+	public abstract void write(FriendlyByteBuf buffer);
 	
+	protected abstract byte bufferId();
 	
-	public enum Type
+	public static void write(FriendlyByteBuf buffer, Address address)
 	{
-		ADDRESS_INVALID((byte) 0),
-		ADDRESS_9_CHEVRON((byte) 9),
-		ADDRESS_8_CHEVRON((byte) 8),
-		ADDRESS_7_CHEVRON((byte) 7);
+		buffer.writeByte(address.bufferId());
+		address.write(buffer);
+	}
+	
+	public static Address read(FriendlyByteBuf buffer)
+	{
+		return switch(buffer.readByte())
+		{
+			case 0 -> Address.Immutable.read(buffer);
+			case 1 -> Address.Mutable.read(buffer);
+			case 2 -> Address.Dimension.read(buffer);
+			default -> throw new RuntimeException("Received byte does not correspond to any valid Address Type!");
+		};
+	}
+	
+	
+	
+	public enum Type implements Comparable<Address.Type>
+	{
+		ADDRESS_INVALID((byte) 0, ChatFormatting.GRAY),
+		ADDRESS_7_CHEVRON((byte) 7, ChatFormatting.GOLD),
+		ADDRESS_8_CHEVRON((byte) 8, ChatFormatting.LIGHT_PURPLE),
+		ADDRESS_9_CHEVRON((byte) 9, ChatFormatting.AQUA);
 		
 		private final byte value;
+		private final ChatFormatting chatFormatting;
 		
-		Type(byte value)
+		Type(byte value, ChatFormatting chatFormatting)
 		{
 			this.value = value;
+			this.chatFormatting = chatFormatting;
 		}
 		
 		public byte byteValue()
@@ -410,9 +442,9 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			return value;
 		}
 		
-		public boolean below(Address.Type type)
+		public ChatFormatting getChatFormatting()
 		{
-			return this.byteValue() < type.byteValue();
+			return chatFormatting;
 		}
 		
 		public static Address.Type fromLength(int addressLength)
@@ -433,6 +465,8 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	public static final class Immutable extends Address
 	{
+		public static final Address.Immutable EMPTY = new Address.Immutable();
+		
 		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
 		).apply(instance, Address.Immutable::fromCodecList));
@@ -485,7 +519,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static Address.Immutable fromCodecList(List<Integer> addressList)
 		{
 			int[] addressArray = ArrayHelper.integerListToArray(addressList);
-			verifyValidity(addressArray);
+			throwIfInvalid(addressArray);
 			return new Address.Immutable(addressArray);
 		}
 		
@@ -524,6 +558,23 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				return new Address.Immutable(tag.getIntArray(addressKey));
 			
 			return null;
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 0;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeVarIntArray(addressArray);
+		}
+		
+		public static Address.Immutable read(FriendlyByteBuf buffer)
+		{
+			return new Address.Immutable(buffer.readVarIntArray());
 		}
 	}
 	
@@ -603,7 +654,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		{
 			try
 			{
-				verifyValidity(addressArray);
+				throwIfInvalid(addressArray);
 				this.addressArray = addressArray;
 			}
 			catch(IllegalArgumentException e)
@@ -655,7 +706,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static Address.Mutable fromCodecList(List<Integer> addressList)
 		{
 			int[] addressArray = ArrayHelper.integerListToArray(addressList);
-			verifyValidity(addressArray);
+			throwIfInvalid(addressArray);
 			return new Address.Mutable(addressArray);
 		}
 		
@@ -680,6 +731,23 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				return new Address.Mutable(tag.getIntArray(addressKey));
 			
 			return null;
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 1;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeVarIntArray(addressArray);
+		}
+		
+		public static Address.Mutable read(FriendlyByteBuf buffer)
+		{
+			return new Address.Mutable(buffer.readVarIntArray());
 		}
 	}
 	
@@ -762,6 +830,14 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		@Nullable
 		private Address.Immutable generate9ChevronAddress(MinecraftServer server)
 		{
+			// Primary Stargate
+			if(StargateNetworkSettings.get(server).prioritizePrimaryStargates())
+			{
+				Stargate primaryStargate = StargateNetwork.get(server).getPrimaryStargateInDimension(this.dimension);
+				if(primaryStargate != null)
+					return primaryStargate.get9ChevronAddress();
+			}
+			
 			List<Stargate> stargatesInDimension = StargateNetwork.get(server).getStargatesInDimension(this.dimension);
 			
 			if(stargatesInDimension.isEmpty())
@@ -781,12 +857,17 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			};
 		}
 		
-		public void generate(MinecraftServer server)
+		public boolean generate(MinecraftServer server)
 		{
 			Address address = generateAddress(server);
 			
-			if(address != null)
+			if(address != null && !Arrays.equals(this.addressArray, address.addressArray))
+			{
 				this.addressArray = address.addressArray.clone();
+				return true;
+			}
+			
+			return false;
 		}
 		
 		@Override
@@ -813,11 +894,6 @@ public abstract class Address implements Cloneable, Comparable<Address>
 			tag.put(addressKey, addressTag);
 		}
 		
-		public void saveToCompoundTagAsArray(CompoundTag tag, String addressKey)
-		{
-			super.saveToCompoundTag(tag, addressKey);
-		}
-		
 		public static Address.Dimension loadFromCompoundTag(CompoundTag tag, String addressKey, String dimensionKey, String galaxyKey) //TODO For legacy reasons
 		{
 			int[] addressArray = tag.getIntArray(addressKey);
@@ -839,6 +915,30 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				return null;
 			
 			return loadFromCompoundTag(tag.getCompound(addressKey), ADDRESS, DIMENSION, GALAXY);
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 2;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeUtf(dimension.location().toString());
+			buffer.writeUtf(galaxyKey != null ? galaxyKey.location().toString() : "");
+			buffer.writeByte(addressType.value);
+		}
+		
+		public static Address.Dimension read(FriendlyByteBuf buffer)
+		{
+			ResourceKey<Level> dimension = Conversion.stringToDimension(buffer.readUtf());
+			String galaxyString = buffer.readUtf();
+			ResourceKey<Galaxy> galaxyKey = galaxyString.isEmpty() ? null : Conversion.stringToGalaxyKey(buffer.readUtf());
+			byte addressType = buffer.readByte();
+			
+			return new Address.Dimension(dimension, Optional.ofNullable(galaxyKey), addressType);
 		}
 	}
 	

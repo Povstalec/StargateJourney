@@ -52,6 +52,11 @@ public abstract class SymbolBakedModel extends SimpleBakedModel
 		}
 	}
 	
+	public int getSymbolTint()
+	{
+		return symbolTint;
+	}
+	
 	@NotNull
 	@Override
 	public List<BakedQuad> getQuads(BlockState state, Direction side, @NotNull Random randomSource, @NotNull IModelData extraData)
