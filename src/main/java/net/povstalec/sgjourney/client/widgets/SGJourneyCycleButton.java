@@ -62,7 +62,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 	}
 	
 	@Override
-    public void renderButton(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
@@ -75,7 +75,6 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
-        this.renderBg(stack, minecraft, mouseX, mouseY);
         int j = getFGColor();
         drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}

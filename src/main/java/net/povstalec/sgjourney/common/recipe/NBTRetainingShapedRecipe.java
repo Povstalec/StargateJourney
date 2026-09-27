@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -32,13 +33,17 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 	public static int MAX_WIDTH = 3;
 	public static int MAX_HEIGHT = 3;
 	
+	protected ItemStack result;
+	
 	public NBTRetainingShapedRecipe(ResourceLocation location, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result)
 	{
 		super(location, group, category, width, height, ingredients, result);
+		
+		this.result = result;
 	}
 	
 	@Override
-	public @NotNull ItemStack assemble(CraftingContainer container)
+	public @NotNull ItemStack assemble(CraftingContainer container, RegistryAccess registryAccess)
 	{
 		long energy = 0;
 		long energyTarget = -1;
@@ -67,7 +72,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 		
 		// Result section
 		
-		ItemStack result = this.getResultItem().copy();
+		ItemStack result = this.getResultItem(registryAccess).copy();
 		
 		// Retain Energy
 		final long totalEnergy = energy;
@@ -145,7 +150,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 				ingredient.toNetwork(friendlyByteBuf);
 			}
 			
-			friendlyByteBuf.writeItem(recipe.getResultItem());
+			friendlyByteBuf.writeItem(recipe.result);
 		}
 	}
 	

@@ -163,7 +163,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		
 		// Result section
 		
-		ItemStack result = getResultItem();
+		ItemStack result = getResultItem(registryAccess);
 		
 		// Retain Energy
 		final long totalEnergy = energy;

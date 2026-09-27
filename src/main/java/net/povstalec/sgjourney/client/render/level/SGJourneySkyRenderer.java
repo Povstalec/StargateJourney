@@ -479,7 +479,8 @@ public abstract class SGJourneySkyRenderer
         	RenderSystem.setShaderColor(skyX * 0.2F + 0.04F, skyY * 0.2F + 0.04F, skyZ * 0.6F + 0.1F, 1.0F);
         else
         	RenderSystem.setShaderColor(skyX, skyY, skyZ, 1.0F);
-        
+		
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.depthMask(true);
 	}
 }
