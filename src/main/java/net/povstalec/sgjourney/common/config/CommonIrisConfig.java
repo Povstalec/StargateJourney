@@ -38,50 +38,50 @@ public class CommonIrisConfig
 		
 		copper_iris_durability = server
 				.comment("Durability of the Copper Iris")
-				.defineInRange("server.copper_iris_durability", 1024, 1, Integer.MAX_VALUE);
+				.defineInRange("server.copper_iris_durability", 1_024, 1, Integer.MAX_VALUE);
 		
 		iron_iris_durability = server
 				.comment("Durability of the Iron Iris")
-				.defineInRange("server.iron_iris_durability", 2048, 1, Integer.MAX_VALUE);
+				.defineInRange("server.iron_iris_durability", 2_048, 1, Integer.MAX_VALUE);
 		
 		gold_iris_durability = server
 				.comment("Durability of the Gold Iris")
-				.defineInRange("server.gold_iris_durability", 1024, 1, Integer.MAX_VALUE);
+				.defineInRange("server.gold_iris_durability", 1_024, 1, Integer.MAX_VALUE);
 		
 		diamond_iris_durability = server
 				.comment("Durability of the Diamond Iris")
-				.defineInRange("server.diamond_iris_durability", 8192, 1, Integer.MAX_VALUE);
+				.defineInRange("server.diamond_iris_durability", 8_192, 1, Integer.MAX_VALUE);
 		
 		netherite_iris_durability = server
 				.comment("Durability of the Netherite Iris")
-				.defineInRange("server.netherite_iris_durability", 16384, 1, Integer.MAX_VALUE);
+				.defineInRange("server.netherite_iris_durability", 16_384, 1, Integer.MAX_VALUE);
 		
 		
 		
 		naquadah_iris_durability = server
 				.comment("Durability of the Naquadah Iris")
-				.defineInRange("server.naquadah_iris_durability", 4096, 1, Integer.MAX_VALUE);
+				.defineInRange("server.naquadah_iris_durability", 4_096, 1, Integer.MAX_VALUE);
 		
 		naquadah_copper_alloy_iris_durability = server
 				.comment("Durability of the Naquadah-Copper Alloy Iris")
-				.defineInRange("server.naquadah_copper_alloy_iris_durability", 8192, 1, Integer.MAX_VALUE);
+				.defineInRange("server.naquadah_copper_alloy_iris_durability", 8_192, 1, Integer.MAX_VALUE);
 		
 		naquadah_iron_alloy_iris_durability = server
 				.comment("Durability of the Naquadah-Iron Alloy Iris")
-				.defineInRange("server.naquadah_iron_alloy_iris_durability", 8192, 1, Integer.MAX_VALUE);
+				.defineInRange("server.naquadah_iron_alloy_iris_durability", 8_192, 1, Integer.MAX_VALUE);
 		
 		trinium_iris_durability = server
 				.comment("Durability of the Trinium Iris")
-				.defineInRange("server.trinium_iris_durability", 16384, 1, Integer.MAX_VALUE);
+				.defineInRange("server.trinium_iris_durability", 16_384, 1, Integer.MAX_VALUE);
 		
 		
 		
 		bronze_iris_durability = server
 				.comment("Durability of the Bronze Iris")
-				.defineInRange("server.bronze_iris_durability", 4096, 1, Integer.MAX_VALUE);
+				.defineInRange("server.bronze_iris_durability", 4_096, 1, Integer.MAX_VALUE);
 		
 		steel_iris_durability = server
 				.comment("Durability of the Steel Iris")
-				.defineInRange("server.steel_iris_durability", 4096, 1, Integer.MAX_VALUE);
+				.defineInRange("server.steel_iris_durability", 4_096, 1, Integer.MAX_VALUE);
 	}
 }

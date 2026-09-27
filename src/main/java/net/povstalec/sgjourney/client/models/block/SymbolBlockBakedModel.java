@@ -82,7 +82,7 @@ public class SymbolBlockBakedModel extends SymbolBakedModel
 	public TextureAtlasSprite getSymbolSprite(@NotNull ModelData extraData)
 	{
 		Integer symbolNumber = extraData.get(ModelProperties.SYMBOL_INDEX_PROPERTY);
-		if(symbolNumber == null) // No symbol number somehow
+		if(symbolNumber == null || symbolNumber < 0) // No symbol number somehow
 			return null;
 		
 		// Show Point of Origin

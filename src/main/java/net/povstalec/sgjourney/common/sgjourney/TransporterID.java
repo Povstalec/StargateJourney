@@ -4,9 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.*;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.misc.ParsingResult;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -55,16 +54,23 @@ public abstract class TransporterID implements Cloneable, Comparable<Transporter
 		this(ArrayHelper.integerListToArray(idList));
 	}
 	
-	public static void verifyValidity(int[] idArray) throws IllegalArgumentException
+	public static ParsingResult intArrayParsingResult(int[] idArray)
 	{
 		if(idArray.length > FULL_ID_LENGTH)
-			throw new IllegalArgumentException("Transporter ID is too long <0, 7>");
+			return ParsingResult.failure(Component.translatable("info.sgjourney.transporter_id.too_long"), () -> { throw new IllegalArgumentException("Transporter ID is too long <0, 7>"); });
 		
 		for(int j : idArray)
 		{
 			if(j < MIN_SYMBOL || j > MAX_SYMBOL)
-				throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 8>");
+				return ParsingResult.failure(Component.translatable("info.sgjourney.transporter_id.symbol_out_of_bounds"), () -> { throw new IllegalArgumentException("Transporter ID symbol " + j + " out of bounds <1, 8>"); });
 		}
+		
+		return ParsingResult.success();
+	}
+	
+	public static void verifyValidity(int[] idArray) throws IllegalArgumentException
+	{
+		intArrayParsingResult(idArray).doThrow();
 	}
 	
 	public int getLength()

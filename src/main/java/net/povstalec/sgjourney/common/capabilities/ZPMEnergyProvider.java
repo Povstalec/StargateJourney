@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.capabilities;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -12,109 +9,63 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-public abstract class ZPMEnergyProvider implements ICapabilityProvider
+public class ZPMEnergyProvider implements ICapabilityProvider
 {
 	private static final String ENERGY = "Energy";
 	private static final String ENTROPY = "Entropy";
 	
-	private ItemStack stack;
+	private final ItemStack zpmStack;
+	public final ZeroPointEnergy zeroPointEnergy;
+	private final LazyOptional<IEnergyStorage> lazyEnergyHandler;
 	
-	
-	public ZPMEnergyProvider(ItemStack stack)
+	public ZPMEnergyProvider(ItemStack zpmStack)
 	{
-		this.stack = stack;
+		this.zpmStack = zpmStack;
+		this.zeroPointEnergy = createZeroPointEnergy(zpmStack);
+		this.lazyEnergyHandler = LazyOptional.of(() -> this.zeroPointEnergy);
 	}
 	
-	private final ZeroPointEnergy ENERGY_STORAGE = new ZeroPointEnergy(ZeroPointEnergy.MAX_ENTROPY, this.capacity(), this.maxReceive(), this.maxExtract())
+	public ZeroPointEnergy createZeroPointEnergy(ItemStack zpmStack)
 	{
-		@Override
-	    public long receiveLongEnergy(long maxReceive, boolean simulate)
-	    {
-	    	loadEnergy();
-	        return super.receiveLongEnergy(maxReceive, simulate);
-	    }
-	    
-		@Override
-	    public long depleteEnergy(long maxExtract, boolean simulate)
-	    {
-	    	loadEnergy();
-	        return super.depleteEnergy(maxExtract, simulate);
-	    }
-		
-		@Override
-		public long getTrueEnergyStored()
+		return new ZeroPointEnergy(zpmStack)
 		{
-			loadEnergy();
-			return this.energy;
+			@Override
+			public long receiveLongEnergy(long maxReceive, boolean simulate)
+			{
+				loadEnergy();
+				return super.receiveLongEnergy(maxReceive, simulate);
+			}
 			
-		}
-	    
-		@Override
-		public boolean canExtract()
-		{
-			return canExtractEnergy();
-		}
-		
-		@Override
-		public boolean canReceive()
-		{
-			return canReceiveEnergy();
-		}
-
-		@Override
-		public void onEnergyChanged(long difference, boolean simulate)
-		{
-			energyChanged(difference, simulate);
-		}
-	};
-	
-	private LazyOptional<IEnergyStorage> lazyEnergyHandler = LazyOptional.of(() -> ENERGY_STORAGE);
-	
-	public long capacity()
-	{
-		return getMaxEnergy();
-	}
-	
-	public long maxReceive()
-	{
-		return 0;
-	}
-	
-	public long maxExtract()
-	{
-		return getMaxExtract();
-	}
-	
-	public boolean canReceiveEnergy()
-	{
-		return false;
-	}
-	
-	public boolean canExtractEnergy()
-	{
-		return true;
+			@Override
+			public long depleteEnergy(long maxExtract, boolean simulate)
+			{
+				loadEnergy();
+				return super.depleteEnergy(maxExtract, simulate);
+			}
+			
+			@Override
+			public long getTrueEnergyStored()
+			{
+				loadEnergy();
+				return this.energy;
+				
+			}
+			
+			@Override
+			public void onEnergyChanged(long difference, boolean simulate)
+			{
+				energyChanged(difference, simulate);
+			}
+		};
 	}
 	
 	public void energyChanged(long difference, boolean simulate)
 	{
 		saveEnergy();
-	}
-	
-	public long getEnergy()
-	{
-		return ENERGY_STORAGE.getTrueEnergyStored();
-	}
-	
-	public static long getMaxEnergy()
-	{
-		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
-	}
-	
-	public static long getMaxExtract()
-	{
-		return ZeroPointEnergy.ENERGY_PER_ENTROPY_LEVEL;
 	}
 	
 	@Override
@@ -127,18 +78,18 @@ public abstract class ZPMEnergyProvider implements ICapabilityProvider
 	
 	public void loadEnergy()
 	{
-		CompoundTag tag = stack.getOrCreateTag();
+		CompoundTag tag = zpmStack.getOrCreateTag();
 		if(tag.contains(ENERGY, Tag.TAG_LONG))
-			ENERGY_STORAGE.deserializeNBT(tag.get(ENERGY));
+			zeroPointEnergy.deserializeNBT(tag.get(ENERGY));
 		if(tag.contains(ENTROPY, Tag.TAG_INT))
-			this.ENERGY_STORAGE.deserializeEntropy(tag.get(ENTROPY));
+			this.zeroPointEnergy.deserializeEntropy(tag.get(ENTROPY));
 	}
 	
 	public void saveEnergy()
 	{
-		CompoundTag tag = stack.getOrCreateTag();
-		tag.put(ENERGY, ENERGY_STORAGE.serializeNBT());
-		tag.put(ENTROPY, ENERGY_STORAGE.serializeEntropy());
-		stack.setTag(tag);
+		CompoundTag tag = zpmStack.getOrCreateTag();
+		tag.put(ENERGY, zeroPointEnergy.serializeNBT());
+		tag.put(ENTROPY, zeroPointEnergy.serializeEntropy());
+		zpmStack.setTag(tag);
 	}
 }

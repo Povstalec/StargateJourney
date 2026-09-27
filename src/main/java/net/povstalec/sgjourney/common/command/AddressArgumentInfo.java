@@ -36,7 +36,7 @@ public class AddressArgumentInfo implements ArgumentTypeInfo<AddressArgumentType
 	
 	public final class Template implements ArgumentTypeInfo.Template<AddressArgumentType>
 	{
-		final Address.Type type;
+		private final Address.Type type;
 		
 		Template(Address.Type type)
 		{

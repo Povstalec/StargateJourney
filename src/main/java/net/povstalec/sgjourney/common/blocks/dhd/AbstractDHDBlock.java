@@ -1,25 +1,19 @@
 package net.povstalec.sgjourney.common.blocks.dhd;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -27,18 +21,22 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
+import net.povstalec.sgjourney.common.blocks.SpecialSymbolBlock;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 
-public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock
+public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implements EntityBlock, ProtectedBlock, SpecialSymbolBlock
 {
 	public AbstractDHDBlock(Properties properties) 
 	{
@@ -132,9 +130,9 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(AbstractDHDEntity.POINT_OF_ORIGIN))
-				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "Error");
+				pointOfOriginString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractDHDEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
 			if(blockEntityTag.contains(AbstractDHDEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "Error");
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractDHDEntity.SYMBOLS))), "tooltip.sgjourney.error");
 			
 			if(blockEntityTag.contains(AbstractDHDEntity.ENERGY))
 				energy = blockEntityTag.getLong(AbstractDHDEntity.ENERGY);
@@ -151,25 +149,30 @@ public abstract class AbstractDHDBlock extends HorizontalDirectionalBlock implem
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
 	
-	@Nullable
-	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
+	@Override
+	public @Nullable ResourceKey<PointOfOrigin> getPointOfOrigin(Level level, BlockPos pos, BlockState state)
 	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof AbstractDHDEntity dhd)
-			return dhd;
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.symbolInfo().pointOfOrigin();
 		
 		return null;
 	}
 	
 	@Override
-	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
 	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.symbolInfo().symbols();
 		
-		if(blockEntity instanceof AbstractDHDEntity dhd)
-			return dhd.hasPermissions(player, sendMessage);
+		return null;
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof AbstractDHDEntity dhd)
+			return dhd.getAddress();
 		
-		return true;
+		return null;
 	}
 }

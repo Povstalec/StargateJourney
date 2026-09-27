@@ -3,5 +3,6 @@
 	"type": "sgjourney:medium_galaxy",
 	"default_symbols": "sgjourney:galaxy_milky_way",
 	"symbol_prefix": 1,
+	"point_of_origin_table": "sgjourney:galaxy_milky_way",
 	"can_generate_address_regions": true
 }

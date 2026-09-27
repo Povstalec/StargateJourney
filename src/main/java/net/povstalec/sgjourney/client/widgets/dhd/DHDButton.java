@@ -43,7 +43,7 @@ public class DHDButton extends Button
 	}
 	
 	@Override
-	public void playDownSound(SoundManager soundManager) {}
+	public void playDownSound(@NotNull SoundManager soundManager) {}
 	
 	public void updateTooltip()
 	{

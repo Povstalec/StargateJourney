@@ -243,7 +243,8 @@
 	"block.sgjourney.classic_stargate_base_block": "Базовый блок классических Звёздных врат",
 	"block.sgjourney.classic_stargate_chevron_block": "Шевронный блок классических Звёздных врат",
 	"block.sgjourney.classic_stargate_ring_block": "Кольцевой блок классических Звёздных врат",
-	
+
+	"block.sgjourney.universe_dhd": "DHD Вселенной",
 	"block.sgjourney.milky_way_dhd": "DHD Млечного пути",
 	"block.sgjourney.pegasus_dhd": "DHD Пегаса",
 	"block.sgjourney.classic_dhd": "Классический DHD",
@@ -571,8 +572,10 @@
 	"screen.sgjourney.crystal_computer.main_screen": "Вернуться на главный экран",
 	"screen.sgjourney.crystal_computer.select_crystal_in_computer": "Выбрать кристалл в компьютере: %s",
 	"screen.sgjourney.crystal_computer.select_crystal_in_computer.none": "В компьютере нет кристаллов для выбора",
+	"screen.sgjourney.crystal_computer.select_crystal_in_computer.too_many": "В компьютере доступно слишком много кристаллов для выбора",
 	"screen.sgjourney.crystal_computer.select_crystal_in_hand": "Выбрать кристалл в руке: %s",
 	"screen.sgjourney.crystal_computer.select_crystal_in_hand.none": "В руке нет кристаллов для выбора",
+	"screen.sgjourney.crystal_computer.select_crystal_in_hand.too_many": "В руке слишком много кристаллов для выбора",
 	"screen.sgjourney.crystal_computer.save_to_selected_crystal": "Сохранить на выбранный кристалл",
 	"screen.sgjourney.crystal_computer.confirm_delete": "Подтвердить удаление",
 	"screen.sgjourney.crystal_computer.cancel_delete": "Отменить удаление",
@@ -791,8 +794,9 @@
 	"point_of_origin.sgjourney.pyramid": "Пирамида",
 	"point_of_origin.sgjourney.serpent": "Змей",
 	"point_of_origin.sgjourney.pontem": "Понтем",
-
-	"point_of_origin.sgjourney.pokeball": "Pokéball",
+	"point_of_origin.sgjourney.andromeda": "Андромеда",
+	
+	"point_of_origin.sgjourney.pokeball": "Покебол",
 	"point_of_origin.sgjourney.triforce": "Трифорс",
 	"point_of_origin.sgjourney.aurum": "Аурум",
 	"point_of_origin.sgjourney.ankh": "Анх",
@@ -984,7 +988,8 @@
 	"tooltip.sgjourney.dhd.energy_fuel_slot.description": "Слот для предметов, заправляющих энергетические ядра",
 	"tooltip.sgjourney.dhd.crystal_slot.description": "Слот для обычных и улучшенных кристаллов",
 	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Слот для больших кристаллов",
-	
+
+	"tooltip.sgjourney.interface.energy_slot.description": "Вмещает предметы, обеспечивающие энергию",
 	"tooltip.sgjourney.interface.energy_target.description": "Если количество энергии в Звёздных вратах ниже установленного лимита питания, интерфейс попытается передать энергию на Звёздные врата для достижения этого уровня",
 	"tooltip.sgjourney.interface.mode.off.usage": "Этот режим ничего не делает",
 	"tooltip.sgjourney.interface.mode.ring_segment.usage": "Выдаёт сигнал компаратора в зависимости от того, в какой трети символьного кольца Звёздных врат находится выбранный символ",
@@ -1012,6 +1017,10 @@
 	"tooltip.sgjourney.interface.mode.iris.usage.input_2": "- Сила входного сигнала редстоуна 8–15 -> Открывает диафрагму",
 	"tooltip.sgjourney.interface.mode.shielding.usage": "В разработке (WIP)",
 
+	"tooltip.sgjourney.liquidizer.energy_slot.description": "Вмещает предметы, обеспечивающие энергию",
+	
+	"tooltip.sgjourney.crystallizer.energy_slot.description": "Вмещает предметы, обеспечивающие энергию",
+	
 	"tooltip.sgjourney.stargate_upgrade.description": "ПКМ по классическим Звёздным вратам, чтобы улучшить их",
 	"tooltip.sgjourney.stargate_variant.description": "ПКМ по Звёздным вратам, чтобы изменить их модификацию",
 	
@@ -1257,6 +1266,7 @@
 	"gui.sgjourney.dhd_symbols_numbers": "DHD кнопки",
 	"gui.sgjourney.symbols": "Символы",
 	"gui.sgjourney.numbers": "Номера",
+	"gui.sgjourney.universe_dhd_button_layout": "Раскладка DHD Вселенной",
 	"gui.sgjourney.milky_way_dhd_button_layout": "Раскладка DHD Млечного Пути",
 	"gui.sgjourney.pegasus_dhd_button_layout": "Раскладка DHD Пегаса",
 	"gui.sgjourney.classic_dhd_button_layout": "Классическая раскладка DHD",

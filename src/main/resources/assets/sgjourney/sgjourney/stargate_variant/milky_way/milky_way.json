@@ -84,7 +84,6 @@
 	},
 	"shiny_wormhole":
 	{
-		"disconnect_ticks": { "wait_ticks": 16, "fade_in_ticks": 10, "stable_ticks": 0, "fade_out_ticks": 20 },
 		"event_horizon":
 		{
 			"front":

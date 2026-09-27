@@ -1,18 +1,17 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public abstract class GenericStargateVariant extends RotatingStargateVariant
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+public abstract class GenericStargateVariant<SG extends AbstractStargateEntity<?>> extends RotatingStargateVariant<SG>
 {
 	public static final String STARGATE_MODEL = "stargate_model";
 	

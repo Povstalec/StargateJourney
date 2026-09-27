@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.FastColor;
 
 public class ColorUtil
 {
@@ -74,6 +75,14 @@ public class ColorUtil
 		public RGBA(int red, int green, int blue)
 		{
 			this(red, green, blue, 255);
+		}
+		
+		public RGBA(int argb)
+		{
+			this.red = FastColor.ARGB32.red(argb) / 255F;
+			this.green = FastColor.ARGB32.green(argb) / 255F;
+			this.blue = FastColor.ARGB32.blue(argb) / 255F;
+			this.alpha = FastColor.ARGB32.alpha(argb) / 255F;
 		}
 		
 		public float red()

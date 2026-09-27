@@ -39,9 +39,11 @@ public abstract class StargateStructure extends SGJourneyStructure
 	
 	public StargateStructure(Structure.StructureSettings config, Holder<StructureTemplatePool> startPool, Optional<Holder<StructureTemplatePool>> obstructedStartPool, Optional<ResourceLocation> startJigsawName,
 							 int size, HeightProvider startHeight, Optional<Heightmap.Types> projectStartToHeightmap, int maxDistanceFromCenter, Optional<Rotation> rotation,
-							 Optional<Boolean> commonStargates, Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
+							 Optional<Boolean> commonStargates, Optional<TransporterModifiers> transporterModifiers, Optional<TransporterControllerModifiers> transporterControllerModifiers,
+							 Optional<StargateModifiers> stargateModifiers, Optional<DHDModifiers> dhdModifiers)
 	{
-		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation, commonStargates);
+		super(config, startPool, startJigsawName, size, startHeight, projectStartToHeightmap, maxDistanceFromCenter, rotation,
+			commonStargates, transporterModifiers, transporterControllerModifiers);
 		
 		this.obstructedStartPool = obstructedStartPool.orElse(null);
 		
@@ -63,7 +65,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 		if(stargateModifiers != null && generatedEntity instanceof AbstractStargateEntity<?> stargate)
 			stargateModifiers.modifyStargate(level, randomSource, stargate);
 		else if(dhdModifiers != null && generatedEntity instanceof AbstractDHDEntity dhd)
-			dhdModifiers.modifyDHD(dhd);
+			dhdModifiers.modifyDHD(level, randomSource, dhd);
 	}
 	
 	
@@ -164,7 +166,7 @@ public abstract class StargateStructure extends SGJourneyStructure
 			this.isProtected = isProtected.orElse(false);
 		}
 		
-		public void modifyDHD(AbstractDHDEntity dhd)
+		public void modifyDHD(WorldGenLevel level, RandomSource randomSource, AbstractDHDEntity dhd)
 		{
 			if(isProtected)
 				dhd.setProtected(true);
