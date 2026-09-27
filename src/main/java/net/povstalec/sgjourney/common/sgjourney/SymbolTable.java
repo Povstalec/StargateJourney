@@ -8,14 +8,15 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
-public class SymbolTable
+public class SymbolTable extends ForgeRegistryEntry<SymbolTable>
 {
 	public static final ResourceLocation SYMBOL_TABLES_LOCATION = StargateJourney.sgjourneyLocation("symbol_table");
 	public static final ResourceKey<Registry<SymbolTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_TABLES_LOCATION);
@@ -50,7 +51,7 @@ public class SymbolTable
 	}
 	
 	@Nullable
-	public static Either<ResourceKey<PointOfOrigin>, Symbol> randomSymbol(RandomSource randomSource, @Nullable SymbolTable symbolTable)
+	public static Either<ResourceKey<PointOfOrigin>, Symbol> randomSymbol(Random randomSource, @Nullable SymbolTable symbolTable)
 	{
 		if(symbolTable == null)
 			return null;
@@ -112,9 +113,9 @@ public class SymbolTable
 			return maxSymbol;
 		}
 		
-		public int getSymbolNumber(RandomSource randomSource)
+		public int getSymbolNumber(Random randomSource)
 		{
-			return randomSource.nextIntBetweenInclusive(minSymbol, maxSymbol);
+			return randomSource.nextInt(maxSymbol - minSymbol + 1) + minSymbol;
 		}
 	}
 	

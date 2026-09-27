@@ -8,8 +8,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
@@ -59,7 +59,7 @@ public abstract class AbstractZPMEnergyExtractorEntity extends AbstractZPMHolder
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
 	{
-		if(capability == ForgeCapabilities.ENERGY && isCorrectEnergySide(side))
+		if(capability == CapabilityEnergy.ENERGY && isCorrectEnergySide(side))
 			return lazyEnergyHandler.cast();
 		
 		return super.getCapability(capability, side);
@@ -153,7 +153,7 @@ public abstract class AbstractZPMEnergyExtractorEntity extends AbstractZPMHolder
 			if(blockEntity == null)
 				return;
 			
-			blockEntity.getCapability(ForgeCapabilities.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
+			blockEntity.getCapability(CapabilityEnergy.ENERGY, outputDirection.getOpposite()).ifPresent(otherEnergy ->
 			{
 				if(otherEnergy instanceof SGJourneyEnergy sgjourneyEnergy)
 				{

@@ -20,7 +20,7 @@ public abstract class AbstractZPMHolderRenderer<ZPMHolder extends AbstractZPMHol
 	
 	public AbstractZPMHolderRenderer(BlockEntityRendererProvider.Context context)
 	{
-		itemRenderer = context.getItemRenderer();
+		itemRenderer = Minecraft.getInstance().getItemRenderer();
 	}
 	
 	protected void renderZPM(ItemStack itemStack, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)

@@ -4,6 +4,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -96,8 +98,8 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
 				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "tooltip.sgjourney.error");
 		}
 		
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(new TextComponent(": ")).append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(new TextComponent(": ")).append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
 	}
@@ -111,7 +113,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
 				@Override
 				public @NotNull Component getDisplayName()
 				{
-					return Component.empty();
+					return TextComponent.EMPTY;
 				}
 				
 				@Override
@@ -120,7 +122,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
 					return new StargateEngravingMenu.Universe(windowId, playerInventory, universeStargate, ContainerLevelAccess.create(level, pos));
 				}
 			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, universeStargate.getBlockPos());
+			NetworkHooks.openGui((ServerPlayer) player, containerProvider, universeStargate.getBlockPos());
 		}
 	}
 	

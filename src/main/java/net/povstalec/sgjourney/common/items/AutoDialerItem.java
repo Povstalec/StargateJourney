@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -102,7 +103,7 @@ public class AutoDialerItem extends Item
 					Address address = getAddress(stack);
 					if(address.isEmpty())
 					{
-						player.displayClientMessage(Component.translatable("message.sgjourney.auto_dialer.error.no_address").withStyle(ChatFormatting.RED), true);
+						player.displayClientMessage(new TranslatableComponent("message.sgjourney.auto_dialer.error.no_address").withStyle(ChatFormatting.RED), true);
 						return InteractionResultHolder.success(stack);
 					}
 					
@@ -129,8 +130,8 @@ public class AutoDialerItem extends Item
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("info.sgjourney.address").append(": ").append(getAddress(stack).toComponent(false)).withStyle(ChatFormatting.YELLOW));
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh").append(": " + doKawoosh(stack)).withStyle(ChatFormatting.DARK_BLUE));
+		tooltipComponents.add(new TranslatableComponent("info.sgjourney.address").append(": ").append(getAddress(stack).toComponent(false)).withStyle(ChatFormatting.YELLOW));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.auto_dialer.kawoosh").append(": " + doKawoosh(stack)).withStyle(ChatFormatting.DARK_BLUE));
 		
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.auto_dialer.usage.menu"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.auto_dialer.usage.dial"));

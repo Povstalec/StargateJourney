@@ -86,20 +86,20 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static ParsingResult intArrayParsingResult(int[] addressArray)
 	{
 		if(addressArray.length > MAX_ADDRESS_LENGTH)
-			return ParsingResult.failure(Component.translatable("info.sgjourney.address.too_long"), () -> { throw new IllegalArgumentException("Address is too long <0, 9>"); });
+			return ParsingResult.failure(new TranslatableComponent("info.sgjourney.address.too_long"), () -> { throw new IllegalArgumentException("Address is too long <0, 9>"); });
 		
 		if(!ArrayHelper.differentNumbers(addressArray))
-			return ParsingResult.failure(Component.translatable("info.sgjourney.address.duplicate_symbols"), () -> { throw new IllegalArgumentException("Address contains duplicate symbols"); });
+			return ParsingResult.failure(new TranslatableComponent("info.sgjourney.address.duplicate_symbols"), () -> { throw new IllegalArgumentException("Address contains duplicate symbols"); });
 		
 		for(int i = 0; i < addressArray.length; i++)
 		{
 			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
 			{
 				final int symbol = addressArray[i];
-				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbol_out_of_bounds"), () -> { throw new IllegalArgumentException("Address symbol " + symbol + " out of bounds <0, 47>"); });
+				return ParsingResult.failure(new TranslatableComponent("info.sgjourney.address.symbol_out_of_bounds"), () -> { throw new IllegalArgumentException("Address symbol " + symbol + " out of bounds <0, 47>"); });
 			}
 			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
-				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbols_after_point_of_origin"), () -> { throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin"); });
+				return ParsingResult.failure(new TranslatableComponent("info.sgjourney.address.symbols_after_point_of_origin"), () -> { throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin"); });
 		}
 		
 		return ParsingResult.success();

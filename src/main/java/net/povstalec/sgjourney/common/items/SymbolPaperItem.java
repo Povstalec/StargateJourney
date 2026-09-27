@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -86,10 +87,10 @@ public class SymbolPaperItem extends Item
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stack);
 		if(pointOfOrigin != null)
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(": ").append(Component.translatable(ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.DARK_PURPLE));
+			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(": ").append(new TranslatableComponent(ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.DARK_PURPLE));
 		
 		ResourceKey<Symbols> symbols = getSymbols(stack);
 		if(symbols != null)
-			tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(": ").append(Component.translatable(ClientSymbols.translationName(ClientSymbols.getSymbols(symbols), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(": ").append(new TranslatableComponent(ClientSymbols.translationName(ClientSymbols.getSymbols(symbols), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 }

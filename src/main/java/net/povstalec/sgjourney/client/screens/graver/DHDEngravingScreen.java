@@ -4,13 +4,14 @@ import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Widget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,7 +24,6 @@ import net.povstalec.sgjourney.client.widgets.dhd.*;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
-import net.povstalec.sgjourney.common.misc.ButtonTooltip;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.packets.ServerboundEngravingUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -80,10 +80,10 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 	{
 		super.init();
 		
-		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> Component.empty())
+		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> TextComponent.EMPTY)
 			.withValues(Selected.values()).withTooltip(selected -> Minecraft.getInstance().font.split(selected.tooltip, 200))
 			.displayOnlyValue()
-			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 27, topPos + 106, 20, 20, 10, 0, Component.empty(),
+			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 27, topPos + 106, 20, 20, 10, 0, TextComponent.EMPTY,
 				(button, selected) ->
 				{
 					this.selectButton.xImageOffset = selected.ordinal();
@@ -93,7 +93,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		
 		this.addRenderableWidget(this.selectButton);
 		
-		this.engravingButton = new Button(leftPos + 49, topPos + 106, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave(), engravingButtonTooltip);
+		this.engravingButton = new Button(leftPos + 49, topPos + 106, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, new TranslatableComponent("screen.sgjourney.engraving.engrave"), button -> engrave(), engravingButtonTooltip);
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -120,7 +120,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		boolean isDifferent = !Objects.equals(getPointOfOrigin(), menu.blockEntity.symbolInfo().pointOfOrigin()) ||
 		!Objects.equals(getSymbols(), menu.blockEntity.symbolInfo().symbols());
 		engravingButton.active = isDifferent;
-		engravingButtonTooltip.setTooltip(isDifferent ? null : Component.translatable("screen.sgjourney.engraving.dhd.same_symbols"));
+		engravingButtonTooltip.setTooltip(isDifferent ? null : new TranslatableComponent("screen.sgjourney.engraving.dhd.same_symbols"));
 	}
 	
 	public void updateSelectionButton()

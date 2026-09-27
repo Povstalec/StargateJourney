@@ -6,7 +6,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
@@ -286,7 +285,7 @@ public class Universe extends SavedData
 	public AddressRegion generateNewAddressRegion(ResourceKey<Level> dimension, List<Galaxy> galaxies)
 	{
 		long dimensionSeed = server.getWorldData().worldGenSettings().seed() + dimension.hashCode();
-		RandomSource randomSource = RandomSource.create(dimensionSeed);
+		Random randomSource = new Random(dimensionSeed);
 		
 		Galaxy galaxy = null;
 		if(!galaxies.isEmpty()) // If the list of Galaxies is not empty, choose a random Galaxy to assign this Solar System to

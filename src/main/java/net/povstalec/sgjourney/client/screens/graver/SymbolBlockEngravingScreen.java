@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -69,12 +70,12 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		if(model instanceof SymbolBlockBakedModel symbolBlockModel)
 			this.rgba = new ColorUtil.RGBA(symbolBlockModel.getSymbolTint());
 		
-		this.engravingButton = new Button(leftPos + 121, topPos + 45, 56, 20, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave());
+		this.engravingButton = new Button(leftPos + 121, topPos + 45, 56, 20, new TranslatableComponent("screen.sgjourney.engraving.engrave"), button -> engrave());
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
 		
-		this.editBox = new EditBox(font, leftPos + 2, topPos + 44, 52, 20, Component.translatable("tooltip.sgjourney.symbol"));
+		this.editBox = new EditBox(font, leftPos + 2, topPos + 44, 52, 20, new TranslatableComponent("tooltip.sgjourney.symbol"));
 		this.editBox.setFilter(SymbolBlockEngravingScreen::canParseAsPositiveNumber);
 		
 		this.editBox.setMaxLength(2);
@@ -101,7 +102,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				{
 					symbolNumber = -1;
 					engravingButton.active = false;
-					engravingButtonTooltip.setTooltip(Component.translatable("screen.sgjourney.engraving.symbol_block.out_of_bounds"));
+					engravingButtonTooltip.setTooltip(new TranslatableComponent("screen.sgjourney.engraving.symbol_block.out_of_bounds"));
 				}
 				else
 				{
@@ -137,7 +138,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				!Objects.equals(getPointOfOrigin(), menu.blockEntity.getPointOfOrigin()) :
 				!Objects.equals(getSymbols(), menu.blockEntity.getSymbols()));
 		engravingButton.active = isSymbolDifferent;
-		engravingButtonTooltip.setTooltip(isSymbolDifferent ? null : Component.translatable("screen.sgjourney.engraving.symbol_block.same_symbol"));
+		engravingButtonTooltip.setTooltip(isSymbolDifferent ? null : new TranslatableComponent("screen.sgjourney.engraving.symbol_block.same_symbol"));
 	}
 	
 	public static boolean canParseAsPositiveNumber(String text)

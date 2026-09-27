@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -154,7 +154,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 			ItemStack containerStack = container.getItem(j);
 			
 			// Retain Energy
-			IEnergyStorage energyStorage = containerStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+			IEnergyStorage energyStorage = containerStack.getCapability(CapabilityEnergy.ENERGY).resolve().orElse(null);
 			
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				energy += sgjourneyEnergy.getTrueEnergyStored();
@@ -168,7 +168,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		
 		// Retain Energy
 		final long totalEnergy = energy;
-		result.getCapability(ForgeCapabilities.ENERGY).ifPresent(energyStorage ->
+		result.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyStorage ->
 		{
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				sgjourneyEnergy.setEnergy(Math.min(totalEnergy, sgjourneyEnergy.getTrueMaxEnergyStored()));

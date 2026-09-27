@@ -32,9 +32,7 @@ import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
@@ -323,10 +321,10 @@ public class CommandInit
 		
 		Stargate stargate = StargateNetwork.get(level).getStargate(stargateAddress);
 		if(stargate != null)
-			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
-				.append(Component.literal(": ").append(stargate.instaDial(address, doKawoosh, Dialing.Action.EXECUTE).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
+			context.getSource().sendSuccess(new TranslatableComponent("info.sgjourney.recent_feedback")
+				.append(new TextComponent(": ").append(stargate.instaDial(address, doKawoosh, Dialing.Action.EXECUTE).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
+			context.getSource().sendSuccess(new TranslatableComponent("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -344,11 +342,11 @@ public class CommandInit
 				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
 				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			
-			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
-				.append(Component.literal(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
+			context.getSource().sendSuccess(new TranslatableComponent("info.sgjourney.recent_feedback")
+				.append(new TextComponent(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
 		}
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
+			context.getSource().sendSuccess(new TranslatableComponent("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}

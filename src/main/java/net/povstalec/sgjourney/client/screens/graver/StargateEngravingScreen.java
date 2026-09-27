@@ -10,6 +10,8 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -77,10 +79,10 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		
 		stargateModel = createStargateModel();
 		
-		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> Component.empty())
+		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> TextComponent.EMPTY)
 			.withValues(Selected.values()).withTooltip(selected -> Minecraft.getInstance().font.split(selected.tooltip, 200))
 			.displayOnlyValue()
-			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 78, topPos + 40, 20, 20, 10, 0, Component.empty(),
+			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 78, topPos + 40, 20, 20, 10, 0, TextComponent.EMPTY,
 				(button, selected) ->
 				{
 					this.selectButton.xImageOffset = selected.ordinal();
@@ -90,7 +92,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		
 		this.addRenderableWidget(this.selectButton);
 		
-		this.engravingButton = new Button(leftPos + 88 - ENGRAVING_BUTTON_WIDTH / 2, topPos + 70 - ENGRAVING_BUTTON_HEIGHT / 2, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave());
+		this.engravingButton = new Button(leftPos + 88 - ENGRAVING_BUTTON_WIDTH / 2, topPos + 70 - ENGRAVING_BUTTON_HEIGHT / 2, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, new TranslatableComponent("screen.sgjourney.engraving.engrave"), button -> engrave());
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -117,7 +119,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		boolean isDifferent = !Objects.equals(getPointOfOrigin(), menu.blockEntity.symbolInfo().pointOfOrigin()) ||
 		!Objects.equals(getSymbols(), menu.blockEntity.symbolInfo().symbols());
 		engravingButton.active = isDifferent;
-		engravingButtonTooltip.setTooltip(isDifferent ? null : Component.translatable("screen.sgjourney.engraving.stargate.same_symbols"));
+		engravingButtonTooltip.setTooltip(isDifferent ? null : new TranslatableComponent("screen.sgjourney.engraving.stargate.same_symbols"));
 	}
 	
 	public void updateSelectionButton()

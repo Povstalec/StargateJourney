@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 public class ParsingResult
 {
@@ -14,7 +15,7 @@ public class ParsingResult
 	{
 		this.isSuccess = true;
 		this.doThrow = () -> {};
-		this.message = Component.empty();
+		this.message = TextComponent.EMPTY;
 	}
 	
 	private ParsingResult(Component message, Runnable doThrow)

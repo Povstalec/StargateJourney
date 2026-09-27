@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.common.block_entities.zpm;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
@@ -21,7 +21,7 @@ public class ZPMHolderEntity extends AbstractZPMHolderEntity
 		if(isProtected() && !player.hasPermissions(CommonPermissionConfig.protected_zpm_holder_permissions.get()))
 		{
 			if(sendMessage)
-				player.displayClientMessage(Component.translatable("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
+				player.displayClientMessage(new TranslatableComponent("block.sgjourney.protected_permissions").withStyle(ChatFormatting.DARK_RED), true);
 			
 			return false;
 		}

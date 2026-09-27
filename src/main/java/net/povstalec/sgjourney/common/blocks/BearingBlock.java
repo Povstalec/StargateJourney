@@ -4,7 +4,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.FrontAndTop;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -20,6 +19,8 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import java.util.Random;
 
 public class BearingBlock extends Block implements SimpleWaterloggedBlock
 {
@@ -108,7 +109,7 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 	}
 	
 	@Override
-	public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
+	public void tick(BlockState state, ServerLevel level, BlockPos pos, Random randomSource)
 	{
 		if(state.getValue(POWERED) && !level.hasNeighborSignal(pos))
 			level.setBlock(pos, state.cycle(POWERED), 2);

@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.renderer.GameRenderer;
@@ -16,7 +15,6 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
@@ -33,7 +31,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 	public SGJourneyCycleButton(ResourceLocation texture, int x, int y, int width, int height, int xOffset, int yOffset, Component message,
 	                            Component name, int index, T value, ValueListSupplier<T> values, Function<T, Component> valueStringifier,
 								Function<CycleButton<T>, MutableComponent> narrationProvider, OnValueChange<T> onValueChange,
-								OptionInstance.TooltipSupplier<T> tooltipSupplier, boolean displayOnlyValue)
+								TooltipSupplier<T> tooltipSupplier, boolean displayOnlyValue)
 	{
 		super(x, y, width, height, message, name, index, value, values, valueStringifier, narrationProvider, onValueChange, tooltipSupplier, displayOnlyValue);
 		
@@ -88,7 +86,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 		@Nullable
 		private T initialValue;
 		private final Function<T, Component> valueStringifier;
-		private OptionInstance.TooltipSupplier<T> tooltipSupplier = (value) -> null;
+		private TooltipSupplier<T> tooltipSupplier = (value) -> null;
 		private Function<CycleButton<T>, MutableComponent> narrationProvider = CycleButton::createDefaultNarrationMessage;
 		private ValueListSupplier<T> values = ValueListSupplier.create(ImmutableList.of());
 		private boolean displayOnlyValue;
@@ -98,7 +96,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 			this.valueStringifier = valueStringifier;
 		}
 		
-		public Builder<T> withValues(Collection<T> values)
+		public Builder<T> withValues(List<T> values)
 		{
 			return this.withValues(ValueListSupplier.create(values));
 		}
@@ -125,7 +123,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 			return this;
 		}
 		
-		public Builder<T> withTooltip(OptionInstance.TooltipSupplier<T> tooltipSupplier)
+		public Builder<T> withTooltip(TooltipSupplier<T> tooltipSupplier)
 		{
 			this.tooltipSupplier = tooltipSupplier;
 			return this;

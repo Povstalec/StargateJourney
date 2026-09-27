@@ -47,7 +47,7 @@ public final class PacketHandlerInit
 		INSTANCE.messageBuilder(ClientboundAutoDialerOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 			.encoder(ClientboundAutoDialerOpenScreenPacket::encode)
 			.decoder(ClientboundAutoDialerOpenScreenPacket::new)
-			.consumerMainThread(ClientboundAutoDialerOpenScreenPacket::handle)
+			.consumer(ClientboundAutoDialerOpenScreenPacket::handle)
 			.add();
 		
 		INSTANCE.messageBuilder(ClientboundGDOOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
@@ -77,7 +77,7 @@ public final class PacketHandlerInit
 		INSTANCE.messageBuilder(ClientboundSymbolPaperOpenScreenPacket.class, index++, NetworkDirection.PLAY_TO_CLIENT)
 			.encoder(ClientboundSymbolPaperOpenScreenPacket::encode)
 			.decoder(ClientboundSymbolPaperOpenScreenPacket::new)
-			.consumerMainThread(ClientboundSymbolPaperOpenScreenPacket::handle)
+			.consumer(ClientboundSymbolPaperOpenScreenPacket::handle)
 			.add();
 		
 		// Alien Tech
@@ -166,13 +166,13 @@ public final class PacketHandlerInit
 		INSTANCE.messageBuilder(ServerboundAutoDialerUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
 			.encoder(ServerboundAutoDialerUpdatePacket::encode)
 			.decoder(ServerboundAutoDialerUpdatePacket::new)
-			.consumerMainThread(ServerboundAutoDialerUpdatePacket::handle)
+			.consumer(ServerboundAutoDialerUpdatePacket::handle)
 			.add();
 		
 		INSTANCE.messageBuilder(ServerboundEngravingUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)
 				.encoder(ServerboundEngravingUpdatePacket::encode)
 				.decoder(ServerboundEngravingUpdatePacket::new)
-				.consumerMainThread(ServerboundEngravingUpdatePacket::handle)
+				.consumer(ServerboundEngravingUpdatePacket::handle)
 				.add();
 		
 		INSTANCE.messageBuilder(ServerboundDHDUpdatePacket.class, index++, NetworkDirection.PLAY_TO_SERVER)

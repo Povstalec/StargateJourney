@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -28,7 +29,7 @@ public abstract class ButtonTooltip implements Button.OnTooltip
 	
 	public Component getComponent()
 	{
-		return component != null ? component : Component.empty();
+		return component != null ? component : TextComponent.EMPTY;
 	}
 	
 	@Override

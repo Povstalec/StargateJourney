@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
@@ -66,7 +67,7 @@ public class CharcoalStickItem extends Item
 			ItemStack otherStack = player.getItemInHand(otherHand);
 			if(!otherStack.is(Items.PAPER))
 			{
-				player.displayClientMessage(Component.translatable("message.sgjourney.charcoal_stick.no_paper").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(new TranslatableComponent("message.sgjourney.charcoal_stick.no_paper").withStyle(ChatFormatting.RED), true);
 				return InteractionResult.FAIL;
 			}
 			

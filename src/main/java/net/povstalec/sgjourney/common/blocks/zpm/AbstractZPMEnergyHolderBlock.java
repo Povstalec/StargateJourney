@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.blocks.zpm;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -23,6 +25,6 @@ public abstract class AbstractZPMEnergyHolderBlock extends AbstractZPMHolderBloc
 	@Override
 	public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.energy_transfer").append(Component.literal(": " + SGJourneyEnergy.energyToString(getMaxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
+		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.energy_transfer").append(new TextComponent(": " + SGJourneyEnergy.energyToString(getMaxEnergyTransfer()) + "/t")).withStyle(ChatFormatting.RED));
 	}
 }

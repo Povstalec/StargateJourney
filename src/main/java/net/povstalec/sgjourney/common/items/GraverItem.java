@@ -6,9 +6,9 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -63,7 +63,7 @@ public class GraverItem extends TieredItem implements Vanishable
 			if(isCorrectForEngraving(state))
 				return engravable.onGraverUsed(context);
 			else if(player != null)
-				player.displayClientMessage(Component.translatable("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(new TranslatableComponent("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
 			
 			return InteractionResult.FAIL;
 		}
@@ -87,7 +87,7 @@ public class GraverItem extends TieredItem implements Vanishable
 				return InteractionResult.sidedSuccess(level.isClientSide);
 			}
 			else if(player != null)
-				player.displayClientMessage(Component.translatable("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
+				player.displayClientMessage(new TranslatableComponent("message.sgjourney.graver.low_tier").withStyle(ChatFormatting.RED), true);
 		}
 		
 		return InteractionResult.FAIL;

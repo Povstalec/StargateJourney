@@ -9,7 +9,8 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -60,7 +61,7 @@ public class AutoDialerScreen extends Screen
 	
 	public AutoDialerScreen(InteractionHand interactionHand)
 	{
-		super(Component.translatable("screen.sgjourney.auto_dialer"));
+		super(new TranslatableComponent("screen.sgjourney.auto_dialer"));
 		
 		this.interactionHand = interactionHand;
 		
@@ -84,12 +85,12 @@ public class AutoDialerScreen extends Screen
 		this.addRenderableWidget(this.doneButton);
 		
 		this.addRenderableWidget(CycleButton.booleanBuilder(CommonComponents.OPTION_ON, CommonComponents.OPTION_OFF)
-				.withTooltip(value -> Minecraft.getInstance().font.split(value ? Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_on") : Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_off"), 200))
+				.withTooltip(value -> Minecraft.getInstance().font.split(value ? new TranslatableComponent("tooltip.sgjourney.auto_dialer.kawoosh_on") : new TranslatableComponent("tooltip.sgjourney.auto_dialer.kawoosh_off"), 200))
 				.withInitialValue(doKawoosh)
-			.create(leftPos + imageWidth - BUTTON_WIDTH / 2 - 46, topPos + 60, BUTTON_WIDTH, BUTTON_HEIGHT, Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh"),
+			.create(leftPos + imageWidth - BUTTON_WIDTH / 2 - 46, topPos + 60, BUTTON_WIDTH, BUTTON_HEIGHT, new TranslatableComponent("tooltip.sgjourney.auto_dialer.kawoosh"),
 			(button, value) -> doKawoosh = value));
 		
-		this.editBox = new EditBox(font, leftPos + (imageWidth - EDIT_BOX_WIDTH) / 2, topPos + 20, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, Component.translatable("tooltip.sgjourney.address"));
+		this.editBox = new EditBox(font, leftPos + (imageWidth - EDIT_BOX_WIDTH) / 2, topPos + 20, EDIT_BOX_WIDTH, EDIT_BOX_HEIGHT, new TranslatableComponent("tooltip.sgjourney.address"));
 		this.editBox.setFilter(Address::canBeTransformedToAddress);
 		
 		this.editBox.setMaxLength(28);
@@ -102,7 +103,7 @@ public class AutoDialerScreen extends Screen
 			{
 				address.fromString(text);
 				doneButton.active = true;
-				doneButtonTooltip.setTooltip(Component.empty());
+				doneButtonTooltip.setTooltip(TextComponent.EMPTY);
 			}
 			else
 			{

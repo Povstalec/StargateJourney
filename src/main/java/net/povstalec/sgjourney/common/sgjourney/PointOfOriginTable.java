@@ -7,13 +7,13 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.RandomSource;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class PointOfOriginTable
+public class PointOfOriginTable extends ForgeRegistryEntry<PointOfOriginTable>
 {
 	public static final ResourceLocation SYMBOL_TABLES_LOCATION = StargateJourney.sgjourneyLocation("point_of_origin_table");
 	public static final ResourceKey<Registry<PointOfOriginTable>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOL_TABLES_LOCATION);
@@ -56,7 +56,7 @@ public class PointOfOriginTable
 	}
 	
 	@Nullable
-	public static ResourceKey<PointOfOrigin> randomPointOfOrigin(RandomSource randomSource, PointOfOriginTable pointOfOriginTable)
+	public static ResourceKey<PointOfOrigin> randomPointOfOrigin(Random randomSource, PointOfOriginTable pointOfOriginTable)
 	{
 		if(pointOfOriginTable == null)
 			return null;

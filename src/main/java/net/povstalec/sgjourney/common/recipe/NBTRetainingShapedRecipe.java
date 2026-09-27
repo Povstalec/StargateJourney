@@ -15,7 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.init.RecipeTypeInit;
@@ -47,7 +47,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 			ItemStack containerStack = container.getItem(j);
 			
 			// Retain Energy
-			IEnergyStorage energyStorage = containerStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+			IEnergyStorage energyStorage = containerStack.getCapability(CapabilityEnergy.ENERGY).resolve().orElse(null);
 			
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				energy += sgjourneyEnergy.getTrueEnergyStored();
@@ -70,7 +70,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 		
 		// Retain Energy
 		final long totalEnergy = energy;
-		result.getCapability(ForgeCapabilities.ENERGY).ifPresent(energyStorage ->
+		result.getCapability(CapabilityEnergy.ENERGY).ifPresent(energyStorage ->
 		{
 			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
 				sgjourneyEnergy.setEnergy(Math.min(totalEnergy, sgjourneyEnergy.getTrueMaxEnergyStored()));
@@ -99,6 +99,33 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 	public static final class Serializer implements RecipeSerializer<NBTRetainingShapedRecipe>
 	{
 		public static final NBTRetainingShapedRecipe.Serializer INSTANCE = new NBTRetainingShapedRecipe.Serializer();
+		
+		private ResourceLocation name;
+		
+		@Override
+		public RecipeSerializer<?> setRegistryName(ResourceLocation name)
+		{
+			this.name = name;
+			return this;
+		}
+		
+		@Override
+		public ResourceLocation getRegistryName()
+		{
+			return name;
+		}
+		
+		@Override
+		public Class<RecipeSerializer<?>> getRegistryType()
+		{
+			return NBTRetainingShapedRecipe.Serializer.castClass(RecipeSerializer.class);
+		}
+		
+		@SuppressWarnings("unchecked") // Need this wrapper, because generics
+		private static <G> Class<G> castClass(Class<?> cls)
+		{
+			return (Class<G>)cls;
+		}
 		
 		@Override
 		public NBTRetainingShapedRecipe fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)

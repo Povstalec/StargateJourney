@@ -6,7 +6,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -42,7 +42,7 @@ public class SymbolPaperScreen extends Screen
 	
 	public SymbolPaperScreen(InteractionHand interactionHand)
 	{
-		super(Component.empty());
+		super(TextComponent.EMPTY);
 		
 		ItemStack stack = Minecraft.getInstance().player.getItemInHand(interactionHand);
 		

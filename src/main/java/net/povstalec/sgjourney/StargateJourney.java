@@ -141,10 +141,12 @@ public class StargateJourney
 			
 			RegistryBuilder<SymbolTable> symbolTableBuilder = new RegistryBuilder<>();
 			symbolTableBuilder.setName(new ResourceLocation(MODID, "symbol_table"));
+			symbolTableBuilder.setType(SymbolTable.class);
 			event.create(symbolTableBuilder);
 			
 			RegistryBuilder<PointOfOriginTable> pointOfOriginTableBuilder = new RegistryBuilder<>();
 			pointOfOriginTableBuilder.setName(new ResourceLocation(MODID, "point_of_origin_table"));
+			pointOfOriginTableBuilder.setType(PointOfOriginTable.class);
 			event.create(pointOfOriginTableBuilder);
 
         	RegistryBuilder<StargateVariant> stargateVariantBuilder = new RegistryBuilder<>();

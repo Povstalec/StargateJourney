@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -74,7 +75,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		if(model instanceof CartoucheBakedModel cartoucheModel)
 			this.rgba = new ColorUtil.RGBA(cartoucheModel.getSymbolTint());
 		
-		this.engravingButton = new Button(leftPos + 121, topPos + 109, 56, 20, Component.translatable("screen.sgjourney.engraving.engrave"),
+		this.engravingButton = new Button(leftPos + 121, topPos + 109, 56, 20, new TranslatableComponent("screen.sgjourney.engraving.engrave"),
 				button ->
 				{
 					// The player is attempting to overwrite the Cartouche's Dimension Address
@@ -87,9 +88,9 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 							else
 								minecraft.setScreen(this);
 						},
-							Component.translatable("screen.sgjourney.engraving.cartouche.overwrite_address"),
-							Component.translatable("screen.sgjourney.engraving.cartouche.overwrite_address.warning"),
-							CommonComponents.GUI_ACKNOWLEDGE,
+							new TranslatableComponent("screen.sgjourney.engraving.cartouche.overwrite_address"),
+							new TranslatableComponent("screen.sgjourney.engraving.cartouche.overwrite_address.warning"),
+							CommonComponents.GUI_PROCEED,
 							CommonComponents.GUI_CANCEL)
 						{
 							@Override
@@ -106,7 +107,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
 		
-		this.editBox = new EditBox(font, leftPos, topPos + 130, 176, 20, Component.translatable("tooltip.sgjourney.address"));
+		this.editBox = new EditBox(font, leftPos, topPos + 130, 176, 20, new TranslatableComponent("tooltip.sgjourney.address"));
 		this.editBox.setFilter(Address::canBeTransformedToAddress);
 		
 		this.editBox.setMaxLength(28);
@@ -118,7 +119,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 			{
 				address.reset();
 				engravingButton.active = false;
-				engravingButtonTooltip.setTooltip(Component.translatable("screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin"));
+				engravingButtonTooltip.setTooltip(new TranslatableComponent("screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin"));
 			}
 			else
 			{
@@ -160,7 +161,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress()) || !getSymbols().equals(menu.blockEntity.getSymbols());
 		engravingButton.active = isAddressDifferent;
-		engravingButtonTooltip.setTooltip(isAddressDifferent ? null : Component.translatable("screen.sgjourney.engraving.cartouche.same_address"));
+		engravingButtonTooltip.setTooltip(isAddressDifferent ? null : new TranslatableComponent("screen.sgjourney.engraving.cartouche.same_address"));
 	}
 	
 	public void engrave()
