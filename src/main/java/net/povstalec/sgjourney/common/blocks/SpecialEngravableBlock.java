@@ -36,14 +36,14 @@ public interface SpecialEngravableBlock extends SpecialSymbolBlock
 		if(player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof GraverItem)
 		{
 			player.swing(InteractionHand.MAIN_HAND, true);
-			player.level.playSound(null, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, player.level.getRandom().nextFloat() * 0.4F + 0.8F);
+			player.level().playSound(null, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, player.level().getRandom().nextFloat() * 0.4F + 0.8F);
 			ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
 			itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 		}
 		else if(player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof GraverItem)
 		{
 			player.swing(InteractionHand.OFF_HAND, true);
-			player.level.playSound(null, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, player.level.getRandom().nextFloat() * 0.4F + 0.8F);
+			player.level().playSound(null, pos, SoundInit.GRAVER_ENGRAVE.get(), SoundSource.BLOCKS, 1.0F, player.level().getRandom().nextFloat() * 0.4F + 0.8F);
 			ItemStack itemStack = player.getItemInHand(InteractionHand.OFF_HAND);
 			itemStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(InteractionHand.OFF_HAND));
 		}

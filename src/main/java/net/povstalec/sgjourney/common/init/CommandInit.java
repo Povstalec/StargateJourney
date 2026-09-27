@@ -1,14 +1,10 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.List;
-import java.util.Map;
-
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -35,15 +31,17 @@ import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
-import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.command.AddressArgumentInfo;
+import net.povstalec.sgjourney.common.command.AddressArgumentType;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+
+import java.util.List;
+import java.util.Map;
 
 public class CommandInit
 {
@@ -327,10 +325,10 @@ public class CommandInit
 		
 		Stargate stargate = StargateNetwork.get(level).getStargate(stargateAddress);
 		if(stargate != null)
-			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
+			context.getSource().sendSuccess(() -> Component.translatable("info.sgjourney.recent_feedback")
 				.append(Component.literal(": ").append(stargate.instaDial(address, doKawoosh, Dialing.Action.EXECUTE).getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}
@@ -348,11 +346,11 @@ public class CommandInit
 				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
 				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			
-			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
+			context.getSource().sendSuccess(() -> Component.translatable("info.sgjourney.recent_feedback")
 				.append(Component.literal(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
 		}
 		else
-			context.getSource().sendSuccess(Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
+			context.getSource().sendSuccess(() -> Component.translatable("message.sgjourney.command.stargate_not_found").withStyle(ChatFormatting.DARK_RED), true);
 		
 		return Command.SINGLE_SUCCESS;
 	}

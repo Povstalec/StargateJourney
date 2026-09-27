@@ -109,7 +109,7 @@ public abstract class DHDEngravingMenu<S extends AbstractDHDEntity> extends Inve
 	{
 		public Universe(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (UniverseDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (UniverseDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Universe(int containerId, Inventory inventory, UniverseDHDEntity blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -128,7 +128,7 @@ public abstract class DHDEngravingMenu<S extends AbstractDHDEntity> extends Inve
 	{
 		public MilkyWay(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (MilkyWayDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (MilkyWayDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public MilkyWay(int containerId, Inventory inventory, MilkyWayDHDEntity blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -147,7 +147,7 @@ public abstract class DHDEngravingMenu<S extends AbstractDHDEntity> extends Inve
     {
         public Classic(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (ClassicDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (ClassicDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public Classic(int containerId, Inventory inventory, ClassicDHDEntity blockEntity, ContainerLevelAccess containerLevelAccess)

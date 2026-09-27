@@ -476,7 +476,7 @@ public class ForgeEvents
 		
 		original.invalidateCaps();
 		
-		if(!clone.getLevel().isClientSide())
+		if(!clone.level().isClientSide())
 			SpaceLocation.updatePlayerClientGravity((ServerPlayer) clone);
 	}
 	

@@ -109,7 +109,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 	{
 		public Universe(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (UniverseStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (UniverseStargateEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Universe(int containerId, Inventory inventory, UniverseStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -128,7 +128,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 	{
 		public MilkyWay(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (MilkyWayStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (MilkyWayStargateEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public MilkyWay(int containerId, Inventory inventory, MilkyWayStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -147,7 +147,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
     {
         public Classic(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (ClassicStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (ClassicStargateEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public Classic(int containerId, Inventory inventory, ClassicStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)

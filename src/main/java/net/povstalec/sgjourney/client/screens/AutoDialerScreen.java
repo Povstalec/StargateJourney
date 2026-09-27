@@ -2,9 +2,8 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
@@ -17,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.AutoDialerItem;
 import net.povstalec.sgjourney.common.misc.ParsingResult;
@@ -124,33 +122,33 @@ public class AutoDialerScreen extends Screen
 	}
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
     {
-		renderBackground(poseStack);
+		renderBackground(guiGraphics);
 		
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		
-		this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
 		RenderSystem.disableDepthTest();
-		super.render(poseStack, mouseX, mouseY, delta);
+		super.render(guiGraphics, mouseX, mouseY, delta);
 		
 		PoseStack posestack = RenderSystem.getModelViewStack();
 		posestack.pushPose();
 		posestack.translate((float) leftPos, (float) topPos, 0.0F);
 		RenderSystem.applyModelViewMatrix();
 		
-		renderLabels(poseStack, mouseX, mouseY);
+		renderLabels(guiGraphics, mouseX, mouseY);
 		
 		posestack.popPose();
 		RenderSystem.applyModelViewMatrix();
 		RenderSystem.enableDepthTest();
     }
 	
-	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 	}
 }

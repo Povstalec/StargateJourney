@@ -99,7 +99,7 @@ public abstract class CartoucheEngravingMenu<C extends CartoucheBlockEntity> ext
 	{
 		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (CartoucheBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (CartoucheBlockEntity.Stone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Stone(int containerId, Inventory inventory, CartoucheBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -118,7 +118,7 @@ public abstract class CartoucheEngravingMenu<C extends CartoucheBlockEntity> ext
     {
         public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (CartoucheBlockEntity.Sandstone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public Sandstone(int containerId, Inventory inventory, CartoucheBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -137,7 +137,7 @@ public abstract class CartoucheEngravingMenu<C extends CartoucheBlockEntity> ext
     {
         public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (CartoucheBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (CartoucheBlockEntity.RedSandstone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public RedSandstone(int containerId, Inventory inventory, CartoucheBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)

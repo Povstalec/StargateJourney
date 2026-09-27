@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
@@ -62,7 +63,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 	}
 	
 	@Override
-    public void renderButton(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
     {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
@@ -74,10 +75,9 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
-        this.renderBg(stack, minecraft, mouseX, mouseY);
+		guiGraphics.blit(texture, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
         int j = getFGColor();
-        drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+		guiGraphics.drawCenteredString(font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 	
 	

@@ -72,7 +72,7 @@ public class ServerboundEngravingUpdatePacket
     	ctx.get().enqueueWork(() ->
 		{
 			ServerPlayer player = ctx.get().getSender();
-			Level level = player.level;
+			Level level = player.level();
 			BlockState state = level.getBlockState(blockPos);
 			if(state.getBlock() instanceof SpecialEngravableBlock gravableBlock)
 			{

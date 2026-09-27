@@ -81,7 +81,7 @@ public class CharcoalStickItem extends Item
 				otherStack.shrink(1);
 			
 			player.awardStat(Stats.ITEM_USED.get(this));
-			player.level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
+			player.level().playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
 			
 			if(otherStack.isEmpty())
 				player.setItemInHand(otherHand, symbolPaperStack);

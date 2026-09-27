@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.client.screens.graver;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -190,45 +191,46 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 	}
 	
 	@Override
-	protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY)
 	{
-		this.renderBackground(stack);
+		this.renderBackground(guiGraphics);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
-		this.blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
+		PoseStack stack = guiGraphics.pose();
 		stack.pushPose();
 		stack.translate(leftPos + imageWidth / 2F, topPos + 55, 0);
 		stack.scale(0.5F, 0.5F, 0.5F);
 		
 		RenderSystem.setShaderTexture(0, dhdTexture);
-		this.blit(stack, -dhdImageWidth / 2, -dhdImageHeight / 2, 0, 0, dhdImageWidth, dhdImageHeight);
+		guiGraphics.blit(texture, -dhdImageWidth / 2, -dhdImageHeight / 2, 0, 0, dhdImageWidth, dhdImageHeight);
 		
 		for(Renderable renderable : this.dhdRenderables)
 		{
-			renderable.render(stack, mouseX, mouseY, partialTick);
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
 		}
 		
 		stack.popPose();
 		
-		this.itemHint(stack, leftPos + 8, topPos + 108, 176, 0, 0);
+		this.itemHint(guiGraphics, texture, leftPos + 8, topPos + 108, 176, 0, 0);
 	}
 	
 	@Override
-	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
 	{
-		renderBackground(stack);
-		super.render(stack, mouseX, mouseY, delta);
-		renderTooltip(stack, mouseX, mouseY);
+		renderBackground(guiGraphics);
+		super.render(guiGraphics, mouseX, mouseY, delta);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 8, 108, 0, ComponentHelper.description("screen.sgjourney.engraving.dhd.insert_symbol_paper"));
+		itemTooltip(guiGraphics, mouseX, mouseY, 8, 108, 0, ComponentHelper.description("screen.sgjourney.engraving.dhd.insert_symbol_paper"));
 	}
 	
 	@Override
-	protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
 		
 		//renderSymbol(poseStack);
 	}
