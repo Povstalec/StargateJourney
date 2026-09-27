@@ -117,7 +117,7 @@ public class AutoDialerScreen extends Screen
 	
 	public void save()
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundAutoDialerUpdatePacket(interactionHand, address, doKawoosh));
+		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundAutoDialerUpdatePacket(interactionHand, Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address)), doKawoosh));
 		onClose();
 	}
 	

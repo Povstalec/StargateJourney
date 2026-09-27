@@ -78,7 +78,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
 	{
-		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		//TODO For legacy reasons any symbols that can't be loaded are replaced by default symbols
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS, PointOfOrigin.defaultPointOfOrigin(), Symbols.defaultSymbols());
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
 	}
