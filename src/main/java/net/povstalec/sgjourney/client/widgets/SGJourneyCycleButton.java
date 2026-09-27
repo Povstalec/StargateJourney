@@ -58,7 +58,7 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
 	
 	protected boolean isHovered(int x, int y)
 	{
-		return x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
+		return x >= this.x && y >= this.y && x < this.x + this.width && y < this.y + this.height;
 	}
 	
 	@Override
@@ -74,10 +74,10 @@ public class SGJourneyCycleButton<T> extends CycleButton<T>
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(stack, this.getX(), this.getY(), xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
+        this.blit(stack, this.x, this.y, xOffset + x * this.width, yOffset + y * this.height, this.width, this.height);
         this.renderBg(stack, minecraft, mouseX, mouseY);
         int j = getFGColor();
-        drawCenteredString(stack, font, this.getMessage(), this.getX() + this.width / 2 , this.getY() + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
+        drawCenteredString(stack, font, this.getMessage(), this.x + this.width / 2 , this.y + (this.height - 8) / 2, j | Mth.ceil(this.alpha * 255.0F) << 24);
 	}
 	
 	

@@ -12,7 +12,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -32,9 +31,9 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 	public static int MAX_WIDTH = 3;
 	public static int MAX_HEIGHT = 3;
 	
-	public NBTRetainingShapedRecipe(ResourceLocation location, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result)
+	public NBTRetainingShapedRecipe(ResourceLocation location, String group, int width, int height, NonNullList<Ingredient> ingredients, ItemStack result)
 	{
-		super(location, group, category, width, height, ingredients, result);
+		super(location, group, width, height, ingredients, result);
 	}
 	
 	@Override
@@ -105,14 +104,13 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 		public NBTRetainingShapedRecipe fromJson(@NotNull ResourceLocation recipeID, @NotNull JsonObject serializedRecipe)
 		{
 			String s = GsonHelper.getAsString(serializedRecipe, "group", "");
-			CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(serializedRecipe, "category", null), CraftingBookCategory.MISC);
 			Map<String, Ingredient> map = keyFromJson(GsonHelper.getAsJsonObject(serializedRecipe, "key"));
 			String[] astring = shrink(patternFromJson(GsonHelper.getAsJsonArray(serializedRecipe, "pattern")));
 			int i = astring[0].length();
 			int j = astring.length;
 			NonNullList<Ingredient> nonnulllist = dissolvePattern(astring, map, i, j);
 			ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(serializedRecipe, "result"));
-			return new NBTRetainingShapedRecipe(recipeID, s, craftingbookcategory, i, j, nonnulllist, itemstack);
+			return new NBTRetainingShapedRecipe(recipeID, s, i, j, nonnulllist, itemstack);
 		}
 		
 		@Override
@@ -121,7 +119,6 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 			int i = friendlyByteBuf.readVarInt();
 			int j = friendlyByteBuf.readVarInt();
 			String s = friendlyByteBuf.readUtf();
-			CraftingBookCategory craftingbookcategory = friendlyByteBuf.readEnum(CraftingBookCategory.class);
 			NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i * j, Ingredient.EMPTY);
 			
 			for(int k = 0; k < nonnulllist.size(); ++k) {
@@ -129,7 +126,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 			}
 			
 			ItemStack itemstack = friendlyByteBuf.readItem();
-			return new NBTRetainingShapedRecipe(recipeID, s, craftingbookcategory, i, j, nonnulllist, itemstack);
+			return new NBTRetainingShapedRecipe(recipeID, s, i, j, nonnulllist, itemstack);
 		}
 		
 		@Override
@@ -138,7 +135,6 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 			friendlyByteBuf.writeVarInt(recipe.getWidth());
 			friendlyByteBuf.writeVarInt(recipe.getHeight());
 			friendlyByteBuf.writeUtf(recipe.getGroup());
-			friendlyByteBuf.writeEnum(recipe.category());
 			
 			for(Ingredient ingredient : recipe.getIngredients())
 			{

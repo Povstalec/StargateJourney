@@ -1,10 +1,16 @@
 package net.povstalec.sgjourney.client.screens.graver;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
+import net.povstalec.sgjourney.common.misc.ButtonTooltip;
+
+import java.util.function.Consumer;
 
 public abstract class AbstractEngravingScreen<M extends AbstractContainerMenu> extends SGJourneyContainerScreen<M>
 {
@@ -27,6 +33,14 @@ public abstract class AbstractEngravingScreen<M extends AbstractContainerMenu> e
 	}
 	
 	protected Button engravingButton;
+	protected final ButtonTooltip engravingButtonTooltip = new ButtonTooltip()
+	{
+		@Override
+		public void onTooltip(Button button, PoseStack stack, int mouseX, int mouseY)
+		{
+			renderTooltip(stack, getComponent(), mouseX, mouseY);
+		}
+	};
 	
 	public AbstractEngravingScreen(M menu, Inventory playerInventory, Component title)
 	{

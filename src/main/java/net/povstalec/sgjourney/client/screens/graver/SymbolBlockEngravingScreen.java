@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,7 +19,6 @@ import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockBakedModel;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
@@ -71,8 +69,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		if(model instanceof SymbolBlockBakedModel symbolBlockModel)
 			this.rgba = new ColorUtil.RGBA(symbolBlockModel.getSymbolTint());
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave())
-			.bounds(leftPos + 121, topPos + 45, 56, 20).build();
+		this.engravingButton = new Button(leftPos + 121, topPos + 45, 56, 20, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave());
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -104,7 +101,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				{
 					symbolNumber = -1;
 					engravingButton.active = false;
-					engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.engraving.symbol_block.out_of_bounds")));
+					engravingButtonTooltip.setTooltip(Component.translatable("screen.sgjourney.engraving.symbol_block.out_of_bounds"));
 				}
 				else
 				{
@@ -140,7 +137,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				!Objects.equals(getPointOfOrigin(), menu.blockEntity.getPointOfOrigin()) :
 				!Objects.equals(getSymbols(), menu.blockEntity.getSymbols()));
 		engravingButton.active = isSymbolDifferent;
-		engravingButton.setTooltip(isSymbolDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.symbol_block.same_symbol")));
+		engravingButtonTooltip.setTooltip(isSymbolDifferent ? null : Component.translatable("screen.sgjourney.engraving.symbol_block.same_symbol"));
 	}
 	
 	public static boolean canParseAsPositiveNumber(String text)

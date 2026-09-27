@@ -63,8 +63,6 @@ public class SGJourneyJEIPlugin implements IModPlugin
 
 		List<CrystallizingRecipe.AdvancedCrystallizer> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizingRecipe.AdvancedCrystallizer.TYPE);
 		registration.addRecipes(new RecipeType<>(CrystallizingRecipeCategory.AdvancedCrystallizer.RECIPE_ID, CrystallizingRecipe.AdvancedCrystallizer.class), advancedCrystallizerRecipes);
-		
-		registration.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, TabInit.getHiddenItems());
 	}
 	@Override
 	public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration)

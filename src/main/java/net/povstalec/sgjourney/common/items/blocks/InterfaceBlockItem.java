@@ -22,7 +22,7 @@ public class InterfaceBlockItem extends EnergyBlockItem.Getter
 		{
 			CompoundTag tag = stack.getOrCreateTag();
 			blockEntityTag = new CompoundTag();
-			tag.put(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+			tag.put("BlockEntityTag", blockEntityTag);
 		}
 		
 		blockEntityTag.putLong(AbstractInterfaceEntity.ENERGY_TARGET, energy);

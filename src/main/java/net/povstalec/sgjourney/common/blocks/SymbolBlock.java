@@ -269,7 +269,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
 		blockEntityTag.putBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN, true);
-		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}
@@ -279,7 +279,7 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
 		blockEntityTag.putBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN, true);
-		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}

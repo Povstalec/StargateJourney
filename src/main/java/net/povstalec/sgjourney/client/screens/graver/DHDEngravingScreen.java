@@ -3,9 +3,12 @@ package net.povstalec.sgjourney.client.screens.graver;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.Widget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -20,6 +23,7 @@ import net.povstalec.sgjourney.client.widgets.dhd.*;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ButtonTooltip;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.packets.ServerboundEngravingUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -35,7 +39,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 	private static final int ENGRAVING_BUTTON_WIDTH = 56;
 	private static final int ENGRAVING_BUTTON_HEIGHT = 20;
 	
-	public final List<Renderable> dhdRenderables = Lists.newArrayList();
+	public final List<Widget> dhdRenderables = Lists.newArrayList();
 	
 	protected final ResourceLocation texture;
 	
@@ -65,7 +69,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		this.inventoryLabelY = this.imageHeight - 94;
 	}
 	
-	protected <T extends Renderable> T addDHDRenderable(T renderable)
+	protected <T extends GuiEventListener & Widget & NarratableEntry> T addDHDRenderable(T renderable)
 	{
 		this.dhdRenderables.add(renderable);
 		return renderable;
@@ -77,7 +81,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		super.init();
 		
 		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> Component.empty())
-			.withValues(Selected.values()).withTooltip(selected -> Tooltip.create(selected.tooltip))
+			.withValues(Selected.values()).withTooltip(selected -> Minecraft.getInstance().font.split(selected.tooltip, 200))
 			.displayOnlyValue()
 			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 27, topPos + 106, 20, 20, 10, 0, Component.empty(),
 				(button, selected) ->
@@ -89,8 +93,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		
 		this.addRenderableWidget(this.selectButton);
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave())
-			.bounds(leftPos + 49, topPos + 106, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT).build();
+		this.engravingButton = new Button(leftPos + 49, topPos + 106, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave(), engravingButtonTooltip);
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -117,7 +120,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		boolean isDifferent = !Objects.equals(getPointOfOrigin(), menu.blockEntity.symbolInfo().pointOfOrigin()) ||
 		!Objects.equals(getSymbols(), menu.blockEntity.symbolInfo().symbols());
 		engravingButton.active = isDifferent;
-		engravingButton.setTooltip(isDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.dhd.same_symbols")));
+		engravingButtonTooltip.setTooltip(isDifferent ? null : Component.translatable("screen.sgjourney.engraving.dhd.same_symbols"));
 	}
 	
 	public void updateSelectionButton()
@@ -205,7 +208,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		RenderSystem.setShaderTexture(0, dhdTexture);
 		this.blit(stack, -dhdImageWidth / 2, -dhdImageHeight / 2, 0, 0, dhdImageWidth, dhdImageHeight);
 		
-		for(Renderable renderable : this.dhdRenderables)
+		for(Widget renderable : this.dhdRenderables)
 		{
 			renderable.render(stack, mouseX, mouseY, partialTick);
 		}

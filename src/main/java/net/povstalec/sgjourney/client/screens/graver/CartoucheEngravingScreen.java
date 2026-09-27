@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.ConfirmScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -21,7 +20,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.models.block.CartoucheBakedModel;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
@@ -76,7 +74,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		if(model instanceof CartoucheBakedModel cartoucheModel)
 			this.rgba = new ColorUtil.RGBA(cartoucheModel.getSymbolTint());
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"),
+		this.engravingButton = new Button(leftPos + 121, topPos + 109, 56, 20, Component.translatable("screen.sgjourney.engraving.engrave"),
 				button ->
 				{
 					// The player is attempting to overwrite the Cartouche's Dimension Address
@@ -103,8 +101,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 					}
 					else
 						engrave();
-				})
-			.bounds(leftPos + 121, topPos + 109, 56, 20).build();
+				});
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -121,7 +118,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 			{
 				address.reset();
 				engravingButton.active = false;
-				engravingButton.setTooltip(Tooltip.create(Component.translatable("screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin")));
+				engravingButtonTooltip.setTooltip(Component.translatable("screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin"));
 			}
 			else
 			{
@@ -135,7 +132,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 				{
 					address.reset();
 					engravingButton.active = false;
-					engravingButton.setTooltip(Tooltip.create(parsingResult.getMessage()));
+					engravingButtonTooltip.setTooltip(parsingResult.getMessage());
 				}
 			}
 		});
@@ -163,7 +160,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 	{
 		boolean isAddressDifferent = !address.equals(menu.blockEntity.getAddress()) || !getSymbols().equals(menu.blockEntity.getSymbols());
 		engravingButton.active = isAddressDifferent;
-		engravingButton.setTooltip(isAddressDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.cartouche.same_address")));
+		engravingButtonTooltip.setTooltip(isAddressDifferent ? null : Component.translatable("screen.sgjourney.engraving.cartouche.same_address"));
 	}
 	
 	public void engrave()

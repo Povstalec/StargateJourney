@@ -2,13 +2,10 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
@@ -17,9 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.ClientDHDConfig;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.AutoDialerItem;
+import net.povstalec.sgjourney.common.misc.ButtonTooltip;
 import net.povstalec.sgjourney.common.misc.ParsingResult;
 import net.povstalec.sgjourney.common.packets.ServerboundAutoDialerUpdatePacket;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -50,6 +47,14 @@ public class AutoDialerScreen extends Screen
 	protected boolean doKawoosh = true;
 	
 	protected Button doneButton;
+	protected final ButtonTooltip doneButtonTooltip = new ButtonTooltip()
+	{
+		@Override
+		public void onTooltip(Button button, PoseStack stack, int mouseX, int mouseY)
+		{
+			renderTooltip(stack, getComponent(), mouseX, mouseY);
+		}
+	};
 	
 	protected final InteractionHand interactionHand;
 	
@@ -73,14 +78,13 @@ public class AutoDialerScreen extends Screen
 		address.fromAddress(AutoDialerItem.getAddress(stack));
 		doKawoosh = AutoDialerItem.doKawoosh(stack);
 		
-		this.doneButton = Button.builder(CommonComponents.GUI_DONE,
-				button -> save())
-			.bounds(leftPos - BUTTON_WIDTH / 2 + 46, topPos + 60, BUTTON_WIDTH, BUTTON_HEIGHT).build();
+		this.doneButton = new Button(leftPos - BUTTON_WIDTH / 2 + 46, topPos + 60, BUTTON_WIDTH, BUTTON_HEIGHT, CommonComponents.GUI_DONE,
+				button -> save());
 		
 		this.addRenderableWidget(this.doneButton);
 		
 		this.addRenderableWidget(CycleButton.booleanBuilder(CommonComponents.OPTION_ON, CommonComponents.OPTION_OFF)
-				.withTooltip(value -> Tooltip.create(value ? Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_on") : Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_off")))
+				.withTooltip(value -> Minecraft.getInstance().font.split(value ? Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_on") : Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh_off"), 200))
 				.withInitialValue(doKawoosh)
 			.create(leftPos + imageWidth - BUTTON_WIDTH / 2 - 46, topPos + 60, BUTTON_WIDTH, BUTTON_HEIGHT, Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh"),
 			(button, value) -> doKawoosh = value));
@@ -98,13 +102,13 @@ public class AutoDialerScreen extends Screen
 			{
 				address.fromString(text);
 				doneButton.active = true;
-				doneButton.setTooltip(Tooltip.create(Component.empty()));
+				doneButtonTooltip.setTooltip(Component.empty());
 			}
 			else
 			{
 				address.reset();
 				doneButton.active = false;
-				doneButton.setTooltip(Tooltip.create(parsingResult.getMessage()));
+				doneButtonTooltip.setTooltip(parsingResult.getMessage());
 			}
 		});
 		

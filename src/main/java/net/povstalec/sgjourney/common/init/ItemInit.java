@@ -106,9 +106,9 @@ public class ItemInit
 		() -> new SchrodingersMapItem(new Item.Properties().stacksTo(1)));
 	
 	public static final RegistryObject<Item> CHARCOAL_STICK = ITEMS.register("charcoal_stick",
-		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1)));
+		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	public static final RegistryObject<Item> SYMBOL_PAPER = ITEMS.register("symbol_paper",
-		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1)));
+		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
 	public static final RegistryObject<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket", 
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE, new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET).tab(TabInit.STARGATE_ITEMS)));
@@ -294,7 +294,7 @@ public class ItemInit
 			() -> new GDOItem(new Item.Properties().stacksTo(1).tab(TabInit.STARGATE_ITEMS)));
 	
 	public static final RegistryObject<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
-		() -> new AutoDialerItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).fireResistant()));
+		() -> new AutoDialerItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).fireResistant().tab(TabInit.STARGATE_ITEMS)));
 	
 	/*public static final RegistryObject<DialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
 			() -> new DialerItem(new Item.Properties().stacksTo(1)));*/

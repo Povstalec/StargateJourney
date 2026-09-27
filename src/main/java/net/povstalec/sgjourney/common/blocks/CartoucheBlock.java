@@ -315,7 +315,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
 		blockEntityTag.putByte(CartoucheBlockEntity.LOCAL_ADDRESS, type.byteValue());
-		stack.addTagElement(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+		stack.addTagElement("BlockEntityTag", blockEntityTag);
 		
 		return stack;
 	}

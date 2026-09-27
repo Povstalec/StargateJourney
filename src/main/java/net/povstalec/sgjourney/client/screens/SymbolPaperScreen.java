@@ -2,7 +2,7 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
@@ -87,7 +87,7 @@ public class SymbolPaperScreen extends Screen
 		for(int i = 0; i < symbols.size(); i++)
 		{
 			stack.pushPose();
-			stack.mulPose(Axis.ZP.rotationDegrees(i * -angle));
+			stack.mulPose(Vector3f.ZP.rotationDegrees(i * -angle));
 			stack.translate(0, -88, 0);
 			ClientUtil.renderSymbol(stack.last().pose(), xStart, yStart, xEnd, yEnd, symbols, i + 1, RGBA);
 			stack.popPose();

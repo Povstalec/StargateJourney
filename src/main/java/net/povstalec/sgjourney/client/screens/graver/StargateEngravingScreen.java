@@ -3,9 +3,9 @@ package net.povstalec.sgjourney.client.screens.graver;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -78,7 +78,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		stargateModel = createStargateModel();
 		
 		this.selectButton = new SGJourneyCycleButton.Builder<Selected>(selected -> Component.empty())
-			.withValues(Selected.values()).withTooltip(selected -> Tooltip.create(selected.tooltip))
+			.withValues(Selected.values()).withTooltip(selected -> Minecraft.getInstance().font.split(selected.tooltip, 200))
 			.displayOnlyValue()
 			.create(StargateJourney.sgjourneyLocation("textures/gui/widgets.png"), leftPos + 78, topPos + 40, 20, 20, 10, 0, Component.empty(),
 				(button, selected) ->
@@ -90,8 +90,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		
 		this.addRenderableWidget(this.selectButton);
 		
-		this.engravingButton = Button.builder(Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave())
-			.bounds(leftPos + 88 - ENGRAVING_BUTTON_WIDTH / 2, topPos + 70 - ENGRAVING_BUTTON_HEIGHT / 2, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT).build();
+		this.engravingButton = new Button(leftPos + 88 - ENGRAVING_BUTTON_WIDTH / 2, topPos + 70 - ENGRAVING_BUTTON_HEIGHT / 2, ENGRAVING_BUTTON_WIDTH, ENGRAVING_BUTTON_HEIGHT, Component.translatable("screen.sgjourney.engraving.engrave"), button -> engrave());
 		
 		updateEngravingButton();
 		this.addRenderableWidget(this.engravingButton);
@@ -118,7 +117,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		boolean isDifferent = !Objects.equals(getPointOfOrigin(), menu.blockEntity.symbolInfo().pointOfOrigin()) ||
 		!Objects.equals(getSymbols(), menu.blockEntity.symbolInfo().symbols());
 		engravingButton.active = isDifferent;
-		engravingButton.setTooltip(isDifferent ? null : Tooltip.create(Component.translatable("screen.sgjourney.engraving.stargate.same_symbols")));
+		engravingButtonTooltip.setTooltip(isDifferent ? null : Component.translatable("screen.sgjourney.engraving.stargate.same_symbols"));
 	}
 	
 	public void updateSelectionButton()
@@ -208,7 +207,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		stack.pushPose();
 		stack.translate(leftPos + imageWidth / 2F, topPos + 71, 0);
 		stack.scale(-16, -16, -16);
-		stack.mulPose(Axis.YP.rotationDegrees(-180));
+		stack.mulPose(Vector3f.YP.rotationDegrees(-180));
 		
 		MultiBufferSource.BufferSource source = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		renderStargate(stack, source, mouseX, mouseY, delta);
