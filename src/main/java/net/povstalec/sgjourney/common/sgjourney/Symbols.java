@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
@@ -29,6 +30,12 @@ public record Symbols(ResourceKey<ClientSymbols> clientSymbols)
 	public static final Codec<Symbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			ClientSymbols.RESOURCE_KEY_CODEC.fieldOf("client_symbols").forGetter(symbols -> symbols.clientSymbols)
 	).apply(instance, Symbols::new));
+	
+	@Override
+	public @NotNull String toString()
+	{
+		return clientSymbols.location().toString();
+	}
 	
 	public static ResourceKey<Symbols> defaultSymbols()
 	{

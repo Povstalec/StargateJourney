@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.tech;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import org.jetbrains.annotations.NotNull;
@@ -290,7 +290,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_reactor_capacity;
+			return SyncedConfig.naquadah_reactor_capacity.get();
 		}
 		
 		@Override
@@ -330,7 +330,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_generator_mark_i_capacity;
+			return SyncedConfig.naquadah_generator_mark_i_capacity.get();
 		}
 		
 		@Override
@@ -370,7 +370,7 @@ public abstract class NaquadahGeneratorEntity extends EnergyBlockEntity
 		@Override
 		public long getEnergyCapacity()
 		{
-			return SyncedConfig.naquadah_generator_mark_ii_capacity;
+			return SyncedConfig.naquadah_generator_mark_ii_capacity.get();
 		}
 		
 		@Override

@@ -61,13 +61,13 @@ public class InventoryUtil
 	
 	public static boolean canInsertStackInto(ItemStack slotStack, ItemStack toInsert)
 	{
-		if(slotStack.isEmpty())
+		if(toInsert.isEmpty() || slotStack.isEmpty())
 			return true;
 		
 		if(slotStack.getMaxStackSize() <= slotStack.getCount())
 			return false;
 		
-		return slotStack.getItem() == toInsert.getItem();
+		return slotStack.getItem() == toInsert.getItem() && ItemStack.tagMatches(slotStack, toInsert);
 	}
     
     public static String itemName(Item item)

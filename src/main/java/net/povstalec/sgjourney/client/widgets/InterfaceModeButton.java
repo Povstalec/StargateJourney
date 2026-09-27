@@ -1,9 +1,7 @@
 package net.povstalec.sgjourney.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -12,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.InterfaceScreen;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import org.jetbrains.annotations.NotNull;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
@@ -37,7 +36,7 @@ public class InterfaceModeButton extends SGJourneyButton
 	}
 	
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
+	protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
 	{
 		this.isHovered = isHovered(mouseX, mouseY);
 		

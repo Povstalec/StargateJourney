@@ -1,17 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.tech;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
-import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
-import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -24,10 +12,20 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
+import net.povstalec.sgjourney.common.blocks.tech.AbstractCrystallizerBlock;
+import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
+import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> extends ProgressRecipeEnergyBlockEntity<R, SimpleFluidContainer>
@@ -345,7 +343,7 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 		if(!CommonStargateConfig.enable_classic_stargate_upgrades.get() && recipe.getResultItem(level.registryAccess()).getItem() instanceof StargateUpgradeItem)
 			return false;
 		
-		return InventoryUtil.canInsertStackInto(simpleContainer.getItem(3), recipe.getResultItem(level.registryAccess()));
+		return InventoryUtil.canInsertStackInto(outputHandler.getStackInSlot(0), recipe.getResultItem(level.registryAccess()));
 	}
 	
 	@Override
@@ -360,14 +358,22 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	}
 	
 	@Override
-	public void createOutput(R recipe)
+	public boolean tryCreateOutput(R recipe)
 	{
 		ItemStack outputStack = outputHandler.getStackInSlot(0);
 		
 		if(outputStack.isEmpty())
-			outputHandler.setStackInSlot(0, recipe.getResultItem(level.registryAccess()));
-		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()))
+		{
+			outputHandler.setStackInSlot(0, recipe.assemble(simpleContainer, level.registryAccess()));
+			return true;
+		}
+		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()) && ItemStack.isSameItemSameTags(recipe.assemble(simpleContainer, level.registryAccess()), outputStack))
+		{
 			outputStack.grow(1);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity<?> crystallizer)

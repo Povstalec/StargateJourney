@@ -144,35 +144,29 @@ public abstract class ClientBoundSoundPackets
     {
 	    public final BlockPos pos;
     	public final short chevron;
-    	public final boolean incoming;
-    	public final boolean open;
-    	public final boolean encode;
+    	public final StargateInfo.ChevronSound sound;
     	
-    	public Chevron(BlockPos pos, short chevron, boolean incoming, boolean open, boolean encode)
+    	public Chevron(BlockPos pos, short chevron, StargateInfo.ChevronSound sound)
     	{
     		this.pos = pos;
     		this.chevron = chevron;
-    		this.incoming = incoming;
-    		this.open = open;
-    		this.encode = encode;
+    		this.sound = sound;
     	}
     	public Chevron(FriendlyByteBuf buffer)
     	{
-    		 this(buffer.readBlockPos(), buffer.readShort(), buffer.readBoolean(), buffer.readBoolean(), buffer.readBoolean());
+    		 this(buffer.readBlockPos(), buffer.readShort(), StargateInfo.ChevronSound.values()[buffer.readByte()]);
     	}
 
         public void encode(FriendlyByteBuf buffer)
         {
             buffer.writeBlockPos(this.pos);
             buffer.writeShort(this.chevron);
-            buffer.writeBoolean(this.incoming);
-            buffer.writeBoolean(this.open);
-            buffer.writeBoolean(this.encode);
+            buffer.writeByte(this.sound.ordinal());
         }
     	
     	public boolean handle(Supplier<NetworkEvent.Context> ctx)
         {
-            ctx.get().enqueueWork(() -> SoundAccess.playChevronSound(pos, chevron, incoming, open, encode));
+            ctx.get().enqueueWork(() -> SoundAccess.playChevronSound(pos, chevron, sound));
             return true;
         }
     }

@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.function.Supplier;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.item.BlockItem;
@@ -19,7 +17,10 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.*;
-import net.povstalec.sgjourney.common.blocks.dhd.*;
+import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
@@ -29,11 +30,18 @@ import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBloc
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMHolderBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPlugBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPortBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.items.blocks.*;
 
+import java.util.function.Supplier;
+
+//A class for initializing blocks
 public class BlockInit
 {
 	public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, StargateJourney.MODID);
@@ -97,15 +105,15 @@ public class BlockInit
 		() -> new UniverseDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 			.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final RegistryObject<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
+	public static final RegistryObject<MilkyWayDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final RegistryObject<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd", 
+	public static final RegistryObject<PegasusDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd",
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final RegistryObject<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd", 
+	public static final RegistryObject<ClassicDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd",
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	
@@ -561,17 +569,17 @@ public class BlockInit
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
 	// Cartouches
 	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche", 
-			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> RED_SANDSTONE_CARTOUCHE = registerCartoucheBlock("red_sandstone_cartouche",
-			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerCartoucheBlock("stone_cartouche",
 			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Symbols
-	public static final RegistryObject<SymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol",
-			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
-	public static final RegistryObject<SymbolBlock> RED_SANDSTONE_SYMBOL = registerBlock("red_sandstone_symbol",
-			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
-	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol", 
+	public static final RegistryObject<SymbolBlock> SANDSTONE_SYMBOL = registerSymbolBlock("sandstone_symbol",
+			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<SymbolBlock> RED_SANDSTONE_SYMBOL = registerSymbolBlock("red_sandstone_symbol",
+			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerSymbolBlock("stone_symbol",
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Tech
 	public static final RegistryObject<NaquadahReactorBlock> NAQUADAH_REACTOR = registerEnergyBlock("naquadah_reactor",
@@ -597,10 +605,14 @@ public class BlockInit
 	public static final RegistryObject<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector", 
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
-	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub", 
-			() -> new ZPMHubBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
-	//TODO ZPM Port
-	//TODO ZPM Plug
+	public static final RegistryObject<ZPMHolderBlock> ZPM_HOLDER = registerBlock("zpm_holder",
+		() -> new ZPMHolderBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.COMMON, 1);
+	public static final RegistryObject<ZPMPlugBlock> ZPM_PLUG = registerBlock("zpm_plug",
+		() -> new ZPMPlugBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 1);
+	public static final RegistryObject<ZPMPortBlock> ZPM_PORT = registerBlock("zpm_port",
+		() -> new ZPMPortBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion()), Rarity.RARE, 1);
+	public static final RegistryObject<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub",
+			() -> new ZPMHubBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.RARE, 1);
 	
 	public static final RegistryObject<NaquadahLiquidizerBlock> NAQUADAH_LIQUIDIZER = registerBlock("naquadah_liquidizer", 
 			() -> new NaquadahLiquidizerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), 1);
@@ -699,6 +711,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>RegistryObject<T> registerSymbolBlock(String name, Supplier<T> block)
+	{
+		RegistryObject<T> toReturn = BLOCKS.register(name, block);
+		
+		registerSymbolBlockItem(name, toReturn, 1);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>RegistryObject<T> registerEnergyBlock(String name, Supplier<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		RegistryObject<T> toReturn = BLOCKS.register(name, block);
@@ -757,6 +778,11 @@ public class BlockInit
 		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
 	}
 	
+	private static <T extends Block>RegistryObject<Item> registerSymbolBlockItem(String name, RegistryObject<T> block, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new SymbolBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+	}
+	
 	private static <T extends Block>RegistryObject<Item> registerEnergyBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
@@ -764,7 +790,7 @@ public class BlockInit
 	
 	private static <T extends Block>RegistryObject<Item> registerInterfaceBlockItem(String name, RegistryObject<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
-		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter, "tooltip.sgjourney.energy_buffer"));
+		return ItemInit.ITEMS.register(name, () -> new InterfaceBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
 	}
 	
 	public static void register(IEventBus eventBus)

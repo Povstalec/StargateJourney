@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"OZO",
+		"CTC",
+		"OLO"
+	],
+	
+	"key": 
+	{
+		"T": { "item": "sgjourney:advanced_transfer_crystal" },
+		"C": { "item": "sgjourney:advanced_control_crystal" },
+		"L": { "item": "sgjourney:large_naquadah_cable" },
+		"Z": { "item": "sgjourney:zpm_holder" },
+		"O": { "item": "minecraft:orange_terracotta" }
+	},
+	
+	"result": { "item": "sgjourney:zpm_hub" }
+}

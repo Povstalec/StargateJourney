@@ -1,7 +1,3 @@
 {
-	"client_point_of_origin": "sgjourney:pyramid",
-	"generated_galaxies":
-	[
-		"sgjourney:milky_way"
-	]
+	"client_point_of_origin": "sgjourney:pyramid"
 }
