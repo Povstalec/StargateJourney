@@ -178,6 +178,8 @@ public class TabInit
 					items.accept(ItemInit.GOAULD_CARCASS.get());
 					items.accept(ItemInit.COOKED_GOAULD.get());
 					items.accept(ItemInit.GOAULD_FOSSIL.get());
+					
+					//items.accept(ItemInit.EYE_OF_RA_BANNER_PATTERN.get());
 				}).build());
 
 	public static final DeferredHolder<CreativeModeTab, CreativeModeTab> STARGATE_STUFF = CREATIVE_MODE_TABS.register("stargate_stuff", () ->

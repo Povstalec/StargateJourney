@@ -5,6 +5,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.event.ModMismatchEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
@@ -13,12 +14,37 @@ import net.povstalec.sgjourney.common.init.EntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.PowerCellItem;
 import net.povstalec.sgjourney.common.items.VialItem;
+import net.povstalec.sgjourney.common.misc.RegionUpdateHelper;
+
+import java.nio.file.Paths;
 
 public class ModEvents
 {
 	@EventBusSubscriber(modid = StargateJourney.MODID)
 	public static class Common
 	{
+		/*@SubscribeEvent
+		public static void onVersionMismatch(ModMismatchEvent event)
+		{
+			event.getVersionDifference(StargateJourney.MODID).ifPresent(info ->
+			{
+			/*if(info.oldVersion().getMajorVersion() == 0 &&
+				info.oldVersion().getMinorVersion() == 6 &&
+				info.oldVersion().getIncrementalVersion() < 49)
+			{*/
+				/*boolean resolved = true;
+				
+				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve("region"));
+				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve(Paths.get("documents", "DIM-1")));
+				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve(Paths.get("documents", "DIM1")));
+				resolved &= RegionUpdateHelper.updateDimensions(event.getLevelDirectory().path().resolve("dimensions"));
+				
+				if(resolved)
+					event.markResolved(StargateJourney.MODID);
+				//}
+			});
+		}*/
+		
 		@SubscribeEvent
 		public static void entityAttributeEvent(EntityAttributeCreationEvent event)
 		{

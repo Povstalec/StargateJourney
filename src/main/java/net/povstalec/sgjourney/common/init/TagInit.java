@@ -8,6 +8,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BannerPattern;
+import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.povstalec.sgjourney.StargateJourney;
 
@@ -32,6 +34,21 @@ public class TagInit
         {
             return ItemTags.create(new ResourceLocation("forge", name));
         }*/
+	}
+	
+	public static class BannerPatterns
+	{
+		public static final TagKey<BannerPattern> EYE_OF_RA = tag("pattern_item/eye_of_ra");
+		
+		private static TagKey<BannerPattern> tag(String name)
+		{
+			return TagKey.create(Registries.BANNER_PATTERN, StargateJourney.sgjourneyLocation(name));
+		}
+		
+		public static TagKey<BannerPattern> createTag(String name)
+		{
+			return TagKey.create(Registries.BANNER_PATTERN, ResourceLocation.tryParse(name));
+		}
 	}
 	
 	public static class Blocks

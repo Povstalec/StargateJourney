@@ -5,10 +5,12 @@ import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
+import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.*;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicSpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
@@ -23,8 +25,8 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseSpawne
 public class StargateInit
 {
 	public static final ResourceKey<Registry<StargateType<?>>> STARGATE_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(StargateType.STARGATE_TYPE_LOCATION);
-	public static final Registry<StargateType<?>> STARGATE_TYPE_REGISTRY = new net.neoforged.neoforge.registries.RegistryBuilder<>(STARGATE_TYPE_REGISTRY_KEY).sync(true).create();
-	public static final net.neoforged.neoforge.registries.DeferredRegister<StargateType<?>> STARGATE_TYPES = net.neoforged.neoforge.registries.DeferredRegister.create(StargateType.STARGATE_TYPE_LOCATION, StargateJourney.MODID);
+	public static final Registry<StargateType<?>> STARGATE_TYPE_REGISTRY = new RegistryBuilder<>(STARGATE_TYPE_REGISTRY_KEY).sync(true).create();
+	public static final DeferredRegister<StargateType<?>> STARGATE_TYPES = DeferredRegister.create(StargateType.STARGATE_TYPE_LOCATION, StargateJourney.MODID);
 	
 	
 	

@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.init;
 
+import net.minecraft.tags.BannerPatternTags;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -324,6 +325,10 @@ public class ItemInit
 			() -> new Item(new Item.Properties().food(FoodInit.COOKED_GOAULD)));
 	public static final DeferredItem<Item> GOAULD_FOSSIL = ITEMS.register("goauld_fossil",
 			() -> new Item(new Item.Properties()));
+	
+	// Banner Patterns
+	/*public static final DeferredItem<BannerPatternItem> EYE_OF_RA_BANNER_PATTERN = ITEMS.register("eye_of_ra_banner_pattern",
+		() -> new BannerPatternItem(TagInit.BannerPatterns.EYE_OF_RA, (new Item.Properties()).stacksTo(1).rarity(Rarity.UNCOMMON)));*/
 		
 	
 	public static void register(IEventBus eventBus)
