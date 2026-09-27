@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class DHDButton extends Button
 {
@@ -34,7 +35,7 @@ public class DHDButton extends Button
 	}
 	
 	@Override
-	public void playDownSound(SoundManager soundManager) {}
+	public void playDownSound(@NotNull SoundManager soundManager) {}
 	
 	public void updateTooltip()
 	{

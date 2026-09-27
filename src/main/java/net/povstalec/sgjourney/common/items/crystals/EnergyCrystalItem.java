@@ -9,7 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.capabilities.ItemEnergyProvider;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
@@ -79,17 +79,17 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 	
 	public long getCapacity()
 	{
-		return SyncedConfig.energy_crystal_capacity;
+		return SyncedConfig.energy_crystal_capacity.get();
 	}
 	
 	public long getTransfer()
 	{
-		return SyncedConfig.energy_crystal_max_transfer;
+		return SyncedConfig.energy_crystal_max_transfer.get();
 	}
 	
 	public long energyTargetIncrease()
 	{
-		return SyncedConfig.energy_crystal_energy_target_increase;
+		return SyncedConfig.energy_crystal_energy_target_increase.get();
 	}
 	
 	@Override
@@ -136,19 +136,19 @@ public class EnergyCrystalItem extends AbstractCrystalItem
 		@Override
 		public long getCapacity()
 		{
-			return SyncedConfig.advanced_energy_crystal_capacity;
+			return SyncedConfig.advanced_energy_crystal_capacity.get();
 		}
 		
 		@Override
 		public long energyTargetIncrease()
 		{
-			return SyncedConfig.advanced_energy_crystal_energy_target_increase;
+			return SyncedConfig.advanced_energy_crystal_energy_target_increase.get();
 		}
 
 		@Override
 		public long getTransfer()
 		{
-			return SyncedConfig.advanced_energy_crystal_max_transfer;
+			return SyncedConfig.advanced_energy_crystal_max_transfer.get();
 		}
 		
 		@Override

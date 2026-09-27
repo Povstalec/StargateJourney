@@ -111,7 +111,10 @@ public class StargateNetworkSettings extends SavedData
 	
 	public void setPrimaryAddress(ResourceKey<AddressRegion> addressRegionKey, @Nullable Address.Immutable primaryAddress)
 	{
-		this.primaryAddresses.put(addressRegionKey, primaryAddress);
+		if(primaryAddress == null)
+			this.primaryAddresses.remove(addressRegionKey);
+		else
+			this.primaryAddresses.put(addressRegionKey, primaryAddress);
 		this.setDirty();
 	}
 	

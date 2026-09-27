@@ -179,7 +179,7 @@ public abstract class TransporterControllerEntity extends EnergyBlockEntity impl
 	@Override
 	public void handleUpdateTag(CompoundTag tag)
 	{
-		energyStorage.setEnergy(tag.getLong(ENERGY));
+		energyStorage.setEnergyNoUpdate(tag.getLong(ENERGY));
 		
 		if(tag.contains(TRANSPORTER_POS, Tag.TAG_INT_ARRAY))
 			transporterRelativePos = Conversion.intArrayToVec(tag.getIntArray(TRANSPORTER_POS));

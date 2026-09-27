@@ -222,12 +222,15 @@
 	"block.sgjourney.stone_cartouche": "Stone Cartouche",
 
 	"block.sgjourney.cartouche.not_enough_space": "Cartouche does not have enough space",
+	"block.sgjourney.cartouche.description": "Double block that can have an Address engraved into it",
+	"block.sgjourney.symbol_block.description": "Block that can have a symbol or a Point of Origin engraved into it",
 
 	
 	"block.sgjourney.universe_stargate": "Universe Stargate",
 	"block.sgjourney.universe_ring": "Universe Stargate",
 	"block.sgjourney.universe_shielding": "Stargate Shielding",
 	"block.sgjourney.universe_stargate_chevron": "Universe Stargate Chevron",
+	"block.sgjourney.universe_stargate_bearing": "Universe Stargate Bearing",
 	"block.sgjourney.milky_way_stargate": "Milky Way Stargate",
 	"block.sgjourney.milky_way_ring": "Milky Way Stargate",
 	"block.sgjourney.milky_way_shielding": "Stargate Shielding",
@@ -300,9 +303,13 @@
 	"block.sgjourney.ancient_gene_detector.right_click": "Right-Click to detect ATA gene in yourself",
 	"block.sgjourney.ancient_gene_detector.redstone": "Power with redstone to detect ATA gene in nearby entities (radius increased by 2 blocks for every redstone signal level)",
 	
-	"block.sgjourney.zpm_hub": "ZPM Hub",
-	"block.sgjourney.zpm_port": "ZPM Port",
+	"block.sgjourney.zpm_holder": "ZPM Holder",
 	"block.sgjourney.zpm_plug": "ZPM Plug",
+	"block.sgjourney.zpm_plug.description": "Device that extracts energy from a ZPM and funnels it further",
+	"block.sgjourney.zpm_port": "ZPM Port",
+	"block.sgjourney.zpm_port.description": "Device that extracts energy from a ZPM and funnels it further",
+	"block.sgjourney.zpm_hub": "ZPM Hub",
+	"block.sgjourney.zpm_hub.description": "Device that extracts energy from a ZPM and funnels it further",
 
 	"block.sgjourney.transceiver": "Transceiver",
 	"block.sgjourney.transceiver.description": "Device used for transmitting and receiving signals from other Transceivers and GDOs",
@@ -417,6 +424,9 @@
 	
 	"item.sgjourney.schrodingers_map": "Schrödinger's Map",
 	
+	"item.sgjourney.charcoal_stick": "Charcoal Stick",
+	"item.sgjourney.symbol_paper": "Symbol Paper",
+	
 	"item.sgjourney.archeologist_notebook": "Archeologist Notebook",
 	
 	"item.sgjourney.naquadah_helmet": "Naquadah Helmet",
@@ -443,6 +453,8 @@
 	"item.sgjourney.horus_helmet": "Horus Helmet",
 
 	"item.sgjourney.gdo": "GDO",
+	
+	"item.sgjourney.auto_dialer": "Auto-Dialer",
 
 	"item.sgjourney.stargate_shielding_ring": "Stargate Shielding Ring",
 
@@ -474,6 +486,9 @@
 	"entity.sgjourney.human": "Human",
 	"entity.sgjourney.jaffa": "Jaffa",
 	
+	"sounds.sgjourney.equip_naquadah_armor" : "Naquadah armor clanks",
+	"sounds.sgjourney.equip_trinium_armor" : "Trinium armor clanks",
+	
 	"sounds.sgjourney.dial_start" : "Stargate starts dialing",
 	"sounds.sgjourney.ring_spin_start" : "Stargate starts spinning",
 	"sounds.sgjourney.ring_spin" : "Stargate ring spins",
@@ -504,6 +519,8 @@
 	"sounds.sgjourney.matok_attack" : "Staff Weapon attack",
 	"sounds.sgjourney.matok_open" : "Staff Weapon opens",
 	"sounds.sgjourney.matok_close" : "Staff Weapon closes",
+	
+	"sounds.sgjourney.graver_engrave" : "Graver engraves",
 	
 	"sounds.sgjourney.nothing" : "Nothing",
 	
@@ -541,6 +558,23 @@
 	"itemGroup.stargate_blocks": "Stargate Journey - Blocks",
 	"itemGroup.stargate_stuff": "Stargate Journey - Stargate Stuff",
 	"itemGroup.stargate_items": "Stargate Journey - Items",
+	
+	"screen.sgjourney.engraving.engrave": "Engrave",
+	"screen.sgjourney.engraving.cartouche.same_address": "This Address is already engraved in the Cartouche",
+	"screen.sgjourney.engraving.cartouche.should_not_contain_point_of_origin": "Engraved Address should not contain Point of Origin (0)",
+	"screen.sgjourney.engraving.cartouche.overwrite_address": "Are you sure you want to overwrite this Cartouche's Address?",
+	"screen.sgjourney.engraving.cartouche.overwrite_address.warning": "This Cartouche's Address contains a reference to a Dimension, which allows it to be automatically updated in the event the Address changes. Overwriting it will cause the Cartouche to lose its ability to update automatically.",
+	"screen.sgjourney.engraving.cartouche.insert_symbol_paper": "Insert Symbol Paper to change the Cartouche's Symbols",
+	"screen.sgjourney.engraving.symbol_block.same_symbol": "This Symbol is already engraved in the Block",
+	"screen.sgjourney.engraving.symbol_block.out_of_bounds": "Symbol is out of bounds",
+	"screen.sgjourney.engraving.symbol_block.insert_symbol_paper": "Insert Symbol Paper to change the Block's Symbol type",
+	"screen.sgjourney.engraving.stargate.same_symbols": "These Symbols are already engraved in the Stargate",
+	"screen.sgjourney.engraving.stargate.insert_symbol_paper": "Insert Symbol Paper to change the Stargate's Symbol type",
+	"screen.sgjourney.engraving.dhd.same_symbols": "These Symbols are already engraved in the DHD",
+	"screen.sgjourney.engraving.dhd.insert_symbol_paper": "Insert Symbol Paper to change the DHD's Symbol type",
+	"screen.sgjourney.both.description": "Engrave Symbols and Point of Origin",
+	"screen.sgjourney.symbols.description": "Engrave only Symbols",
+	"screen.sgjourney.point_of_origin.description": "Engrave only Point of Origin",
 
 	"screen.sgjourney.archeology_table": "Archeology Table",
 	"screen.sgjourney.basic_interface": "Basic Interface",
@@ -548,6 +582,7 @@
 	"screen.sgjourney.advanced_crystal_interface": "Advanced Crystal Interface",
 	"screen.sgjourney.naquadah_generator": "Naquadah Generator",
 	"screen.sgjourney.dhd": "Dial Home Device",
+	"screen.sgjourney.auto_dialer": "Auto-Dialer",
 	
 	"screen.sgjourney.ancient_transport_rings": "Ancient Transport Rings",
 	"screen.sgjourney.goauld_transport_rings": "Goa'uld Transport Rings",
@@ -803,18 +838,33 @@
 	"point_of_origin.sgjourney.pyramid": "Pyramid",
 	"point_of_origin.sgjourney.serpent": "Serpent",
 	"point_of_origin.sgjourney.pontem": "Pontem",
-	"point_of_origin.sgjourney.andromeda": "Andromeda",
+	"point_of_origin.sgjourney.mercury": "Mercury",
+	"point_of_origin.sgjourney.venus": "Venus",
+	"point_of_origin.sgjourney.mars": "Mars",
 	
-	"point_of_origin.sgjourney.pokeball": "Pokéball",
-	"point_of_origin.sgjourney.triforce": "Triforce",
-	"point_of_origin.sgjourney.aurum": "Aurum",
-	"point_of_origin.sgjourney.ankh": "Ankh",
-	"point_of_origin.sgjourney.reflection": "Reflection",
-	"point_of_origin.sgjourney.wheel": "Wheel",
+	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	"point_of_origin.sgjourney.ursa_major": "Ursa Major",
 	"point_of_origin.sgjourney.ursa_minor": "Ursa Minor",
-
+	"point_of_origin.sgjourney.cave": "Cave",
+	"point_of_origin.sgjourney.mountain": "Mountain",
+	"point_of_origin.sgjourney.waves": "Waves",
+	
 	"point_of_origin.sgjourney.ursa": "Ursa",
+	
+	"point_of_origin.sgjourney.abel": "Abel",
+	"point_of_origin.sgjourney.aida": "Aida",
+	"point_of_origin.sgjourney.ankh": "Ankh",
+	"point_of_origin.sgjourney.aurum": "Aurum",
+	"point_of_origin.sgjourney.dain": "Dain",
+	"point_of_origin.sgjourney.floating_islands": "Floating Islands",
+	"point_of_origin.sgjourney.mathematical_compass": "Mathematical Compass",
+	"point_of_origin.sgjourney.petu": "Petu",
+	"point_of_origin.sgjourney.pokeball": "Pokéball",
+	"point_of_origin.sgjourney.reflection": "Reflection",
+	"point_of_origin.sgjourney.thorn": "Thorn",
+	"point_of_origin.sgjourney.triforce": "Triforce",
+	"point_of_origin.sgjourney.vertuga": "Vertuga",
+	"point_of_origin.sgjourney.wheel": "Wheel",
 	
 	
 	"info.sgjourney.add_to_network": "Add To Network",
@@ -839,13 +889,21 @@
 	"info.sgjourney.address": "Address",
 	"info.sgjourney.encoded_address": "Encoded Address",
 	"info.sgjourney.9_chevron_address": "9-Chevron Address",
+	"info.sgjourney.address.too_long": "Address is too long <0, 9>",
+	"info.sgjourney.address.duplicate_symbols": "Address contains duplicate symbols",
+	"info.sgjourney.address.symbol_out_of_bounds": "Address symbol %s out of bounds <0, 47>",
+	"info.sgjourney.address.symbols_after_point_of_origin": "No symbols allowed in Address after Point of Origin (0)",
 	"info.sgjourney.transporter_id": "Transporter ID",
+	"info.sgjourney.transporter_id.too_long": "Transporter ID is too long <0, 7>",
+	"info.sgjourney.transporter_id.symbol_out_of_bounds": "Transporter ID symbol %s out of bounds <1, 8>",
 	"info.sgjourney.dimension": "Dimension",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Iris Texture",
 	"info.sgjourney.iris_durability": "Iris Durability",
 	"info.sgjourney.address_table": "Address Table",
+	"info.sgjourney.symbol_table": "Symbol Table",
+	"info.sgjourney.point_of_origin_table": "Point of Origin Table",
 	"info.sgjourney.energy": "Energy",
 	"info.sgjourney.transfer_efficiency": "Transfer Efficiency",
 	"info.sgjourney.network_restrictions": "Network Restrictions",
@@ -855,6 +913,7 @@
 	"info.sgjourney.timestamp": "Timestamp",
 	
 	"tooltip.sgjourney.unknown": "Unknown",
+	"tooltip.sgjourney.error": "Error",
 	"tooltip.sgjourney.empty": "Empty",
 	"tooltip.sgjourney.text": "Text",
 	"tooltip.sgjourney.symbol": "Symbol",
@@ -885,7 +944,11 @@
 	"tooltip.sgjourney.dump_tank": "Dump Tank",
 
 	"tooltip.sgjourney.not_added_to_network": "Won't be added to network",
+	"tooltip.sgjourney.random_point_of_origin": "Random Point of Origin",
 	"tooltip.sgjourney.local_point_of_origin": "Local Point of Origin",
+	"tooltip.sgjourney.local_7_chevron_address": "Local 7-Chevron Address",
+	"tooltip.sgjourney.local_8_chevron_address": "Local 8-Chevron Address",
+	"tooltip.sgjourney.local_9_chevron_address": "Local 9-Chevron Address",
 	"tooltip.sgjourney.dynamic_symbols": "Dynamic Symbols",
 	
 	"tooltip.sgjourney.control_crystal.description": "Can change the functionality of technology based on uploaded programs",
@@ -903,6 +966,13 @@
 	"tooltip.sgjourney.communication_crystal.communication_range_increase": "Communication Range Increase: %s blocks",
 	"tooltip.sgjourney.communication_crystal.crystal_computer": "Frequency can be changed with a Crystal Computer",
 	"tooltip.sgjourney.materialization_crystal.description": "Enables interdimensional transport",
+	
+	"tooltip.sgjourney.auto_dialer.description": "Device that can dial a Stargate instantaneously",
+	"tooltip.sgjourney.auto_dialer.usage.menu": "Shift + Right-Click to open menu",
+	"tooltip.sgjourney.auto_dialer.usage.dial": "Right-Click to dial/disconnect a Stargate",
+	"tooltip.sgjourney.auto_dialer.kawoosh": "Kawoosh",
+	"tooltip.sgjourney.auto_dialer.kawoosh_on": "Kawoosh will form when the connection is established",
+	"tooltip.sgjourney.auto_dialer.kawoosh_off": "Kawoosh will not form when the connection is established",
 
 	"tooltip.sgjourney.call_forwarding_device.description": "When placed inside a DHD, redirects any incoming travelers to another Stargate if they can't pass through its filter",
 	"tooltip.sgjourney.call_forwarding_device.usage": "Right-click to open filter interface",
@@ -993,7 +1063,8 @@
 	"tooltip.sgjourney.dhd.communication_range.usage.communication_crystal": "No Frequency -> Increase DHD communication range",
 	"tooltip.sgjourney.dhd.networks.usage.communication_crystal": "Frequency -> Add Stargate to another Network",
 	"tooltip.sgjourney.dhd.networks.usage.control_crystal": "Control Crystal -> Activate network restrictions",
-	"tooltip.sgjourney.dhd.energy_slot.description": "Holds Energy Cores, ZPM and other energy providing items",
+	"tooltip.sgjourney.dhd.energy_slot.description": "Holds Energy Cores and other energy providing items",
+	"tooltip.sgjourney.dhd.energy_slot.description.zpm": "Holds Energy Cores, ZPM and other energy providing items",
 	"tooltip.sgjourney.dhd.energy_fuel_slot.description": "Holds items for refueling Energy Cores",
 	"tooltip.sgjourney.dhd.crystal_slot.description": "Holds Crystals and Advanced Crystals",
 	"tooltip.sgjourney.dhd.large_crystal_slot.description": "Holds Large Crystals",
@@ -1076,14 +1147,24 @@
 	"tooltip.sgjourney.fusion_core.fuel": "Fusion Fuel",
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	
+	"tooltip.sgjourney.charcoal_stick.description": "Used to write down symbols on paper from blocks with symbols (like Cartouches and Stargates)",
+	"tooltip.sgjourney.graver.description": "Used to engrave symbols into blocks with symbols (like Cartouches and Stargates)",
+	
+	
+	"argument.sgjourney.address.incomplete": "Incomplete Address",
 	
 	"message.sgjourney.open_wiki_link": "Open wiki link",
+	
+	"message.sgjourney.charcoal_stick.no_paper": "Must hold Paper in the other hand!",
+	"message.sgjourney.graver.low_tier": "Graver tier is too low for this block",
 	
 	"message.sgjourney.schrodingers_map.error.dimension": "Can't use map in this Dimension, expected Dimension: %s",
 	"message.sgjourney.schrodingers_map.error.structure": "Could not find Structure",
 	"message.sgjourney.schrodingers_map.error.unique_structure": "Could not find Unique Structure",
 	"message.sgjourney.schrodingers_map.error.unique_structure_not_found": "Expected Unique Structure at %s but found none",
 	"message.sgjourney.schrodingers_map.error.troubleshoot": "Check how to troubleshoot this problem on the wiki",
+	
+	"message.sgjourney.auto_dialer.error.no_address": "No Address specified!",
 	
 	"message.sgjourney.ring_remote.error.transport_rings_busy": "Transport Rings Busy",
 	"message.sgjourney.ring_remote.error.no_transport_rings_nearby": "No Transport Rings Nearby",
@@ -1237,6 +1318,7 @@
 	"message.sgjourney.command.protected_block_set": "Protected Block set",
 	"message.sgjourney.command.protected_block_unset": "Protected Block unset",
 	"message.sgjourney.command.not_protected_block": "Target is not a protectable Block",
+	"message.sgjourney.command.stargate_not_found": "Stargate not found",
 	
 	"message.sgjourney.click_to_copy.address": "Click to copy Address",
 	"message.sgjourney.click_to_copy.transporter_id": "Click to copy Transporter ID",

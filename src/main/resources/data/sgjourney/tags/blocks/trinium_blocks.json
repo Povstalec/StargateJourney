@@ -1,0 +1,25 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:trinium_block",
+		"sgjourney:trinium_stairs",
+		"sgjourney:trinium_slab",
+		
+		"sgjourney:cut_trinium_block",
+		"sgjourney:cut_trinium_stairs",
+		"sgjourney:cut_trinium_slab",
+		
+		"sgjourney:trinium_pillar",
+		
+		"sgjourney:polished_trinium_block",
+		"sgjourney:polished_trinium_stairs",
+		"sgjourney:polished_trinium_slab",
+		
+		"sgjourney:chiseled_trinium_block",
+		
+		"sgjourney:smooth_trinium_block",
+		"sgjourney:smooth_trinium_stairs",
+		"sgjourney:smooth_trinium_slab"
+	]
+}

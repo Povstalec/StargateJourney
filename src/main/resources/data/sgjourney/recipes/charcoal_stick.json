@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"C",
+		"C"
+	],
+	
+	"key":
+	{
+		"C": {"item": "minecraft:charcoal"}
+	},
+	
+	"result": { "item": "sgjourney:charcoal_stick", "count": 1 }
+}

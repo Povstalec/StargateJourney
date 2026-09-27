@@ -1,0 +1,61 @@
+package net.povstalec.sgjourney.client.render.block_entity.stargate;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.client.models.block_entity.ClassicStargateModel;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
+import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.ClassicStargateBlock;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+
+public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicStargateEntity, ClassicStargateVariant, ClassicStargateModel>
+{
+	/*public static final int WORMHOLE_R = 39;
+	public static final int WORMHOLE_G = 113;
+	public static final int WORMHOLE_B = 255;
+	public static final int WORMHOLE_ALPHA = 255;*/
+	
+	public ClassicStargateRenderer(BlockEntityRendererProvider.Context context)
+	{
+		super(context, new ClassicStargateModel(), 0.25F, true, 84F);
+	}
+	
+	@Override
+	public void render(ClassicStargateEntity stargate, float partialTick, PoseStack stack,
+			MultiBufferSource source, int combinedLight, int combinedOverlay)
+	{
+		ClassicStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
+		
+		BlockState blockstate = stargate.getBlockState();
+		float facing = blockstate.getValue(ClassicStargateBlock.FACING).toYRot();
+		Vec3 center = stargate.getRelativeCenter();
+		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
+	    
+	    this.renderCover(stargate, stack, source, combinedLight, combinedOverlay);
+		
+        stack.pushPose();
+		stack.translate(center.x(), center.y(), center.z());
+        stack.mulPose(Axis.YP.rotationDegrees(-facing));
+        
+        if(orientation == Orientation.UPWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(-90));
+        else if(orientation == Orientation.DOWNWARD)
+            stack.mulPose(Axis.XP.rotationDegrees(90));
+		
+        this.stargateModel.setRotation(stargate.getRotationDegrees(partialTick));
+		this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
+
+		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
+		
+	    this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+	    
+	    stack.popPose();
+	    
+	}
+	
+}

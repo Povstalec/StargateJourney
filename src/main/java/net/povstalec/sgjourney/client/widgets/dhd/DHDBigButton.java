@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Tooltip;
@@ -10,13 +9,13 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
+import org.jetbrains.annotations.NotNull;
 
-public class DHDBigButton extends DHDButton
+public abstract class DHDBigButton<M extends IDHDMenu> extends DHDButton
 {
 	public ResourceLocation widgetsLocation;
-	public AbstractDHDMenu<?> menu;
+	public M menu;
 
 	private static final int RADIUS = 27;
 	private static final int DIAMETER = RADIUS * 2;
@@ -24,7 +23,7 @@ public class DHDBigButton extends DHDButton
 	
 	protected boolean isEngaged = false;
 	
-    public DHDBigButton(int x, int y, AbstractDHDMenu<?> menu, OnPress press, ResourceLocation widgets)
+    public DHDBigButton(int x, int y, M menu, OnPress press, ResourceLocation widgets)
 	{
 		super(x, y, DIAMETER, DIAMETER, Component.empty(), press);
 		
@@ -44,7 +43,7 @@ public class DHDBigButton extends DHDButton
 			if(isEngaged)
 				setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.disconnect_stargate")));
 			else
-				setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.disconnect_stargate")));
+				setTooltip(Tooltip.create(Component.translatable("tooltip.sgjourney.engage_stargate")));
 		}
 	}
     
@@ -64,9 +63,14 @@ public class DHDBigButton extends DHDButton
 		else
 			return 0;
     }
+	
+	public boolean isOverButton(double mouseX, double mouseY)
+	{
+		return (Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2;
+	}
     
 	@Override
-	public void renderButton(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	public void renderButton(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
 	{
 		Minecraft minecraft = Minecraft.getInstance();
 		Font font = minecraft.font;
@@ -84,12 +88,12 @@ public class DHDBigButton extends DHDButton
 	}
 	
 	@Override
-	public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick)
+	public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTick)
 	{
 		if(this.visible)
 		{
 			updateEngaged();
-			this.isHovered = ((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
+			this.isHovered = isOverButton(mouseX, mouseY);
 			
 			this.renderButton(poseStack, mouseX, mouseY, partialTick);
 			this.updateTooltip();
@@ -99,46 +103,12 @@ public class DHDBigButton extends DHDButton
 	@Override
 	public boolean isMouseOver(double mouseX, double mouseY)
 	{
-		return this.active && this.visible &&
-				((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
+		return this.active && this.visible && isOverButton(mouseX, mouseY);
 	}
 
 	@Override
 	protected boolean clicked(double mouseX, double mouseY)
 	{
-		return this.active && this.visible &&
-				((Math.pow(mouseX - (this.getX() + RADIUS), 2) + Math.pow(mouseY - (this.getY() + RADIUS), 2)) <= RADIUS_2);
-	}
-	
-	public static final class Universe extends DHDBigButton
-	{
-		public Universe(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
-		{
-			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/universe/universe_dhd_big_white_button.png"));
-		}
-	}
-	
-	public static final class MilkyWay extends DHDBigButton
-	{
-		public MilkyWay(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
-		{
-			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/milky_way/milky_way_dhd_big_red_button.png"));
-		}
-	}
-	
-	public static final class Pegasus extends DHDBigButton
-	{
-		public Pegasus(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
-		{
-			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/pegasus/pegasus_dhd_big_blue_button.png"));
-		}
-	}
-	
-	public static final class Classic extends DHDBigButton
-	{
-		public Classic(int x, int y, AbstractDHDMenu<?> menu, OnPress press)
-		{
-			super(x, y, menu, press, StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_big_red_button.png"));
-		}
+		return this.active && this.visible && isOverButton(mouseX, mouseY);
 	}
 }

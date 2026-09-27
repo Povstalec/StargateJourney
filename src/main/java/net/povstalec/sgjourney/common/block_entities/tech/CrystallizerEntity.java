@@ -8,7 +8,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
@@ -59,7 +59,7 @@ public class CrystallizerEntity extends AbstractCrystallizerEntity<Crystallizing
 	@Override
 	public long getEnergyCapacity()
 	{
-		return SyncedConfig.crystallizer_energy_capacity;
+		return SyncedConfig.crystallizer_energy_capacity.get();
 	}
 	
 	@Override

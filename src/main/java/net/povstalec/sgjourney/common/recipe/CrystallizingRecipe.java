@@ -8,10 +8,17 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import net.povstalec.sgjourney.common.misc.SimpleFluidContainer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -138,7 +145,36 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	@Override
 	public @NotNull ItemStack assemble(@NotNull SimpleFluidContainer container)
 	{
-		return output.copy();
+		long energy = 0;
+		
+		for(int j = 0; j < container.getContainerSize(); ++j)
+		{
+			ItemStack containerStack = container.getItem(j);
+			
+			// Retain Energy
+			IEnergyStorage energyStorage = containerStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
+			
+			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				energy += sgjourneyEnergy.getTrueEnergyStored();
+			else if(energyStorage != null)
+				energy += energyStorage.getEnergyStored();
+		}
+		
+		// Result section
+		
+		ItemStack result = getResultItem();
+		
+		// Retain Energy
+		final long totalEnergy = energy;
+		result.getCapability(ForgeCapabilities.ENERGY).ifPresent(energyStorage ->
+		{
+			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				sgjourneyEnergy.setEnergy(Math.min(totalEnergy, sgjourneyEnergy.getTrueMaxEnergyStored()));
+			else
+				energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(totalEnergy), false);
+		});
+		
+		return result;
 	}
 	
 	@Override
@@ -150,7 +186,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 	@Override
 	public @NotNull ItemStack getResultItem()
 	{
-		return output.copy();
+		return output;
 	}
 	
 	public static Pair<Ingredient, Integer> getIngredient(Map<String, JsonElement> pair)
@@ -194,7 +230,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return CrystallizerSerializer.INSTANCE;
+			return RecipeTypeInit.CRYSTALLIZING_SERIALIZER.get();
 		}
 		
 		@Override
@@ -253,7 +289,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return AdvancedCrystallizerSerializer.INSTANCE;
+			return RecipeTypeInit.ADVANCED_CRYSTALLIZING_SERIALIZER.get();
 		}
 		
 		@Override

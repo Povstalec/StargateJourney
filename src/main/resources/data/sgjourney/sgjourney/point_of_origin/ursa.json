@@ -1,7 +1,3 @@
 {
-	"client_point_of_origin": "sgjourney:ursa",
-	"generated_galaxies":
-	[
-		"sgjourney:pegasus"
-	]
+	"client_point_of_origin": "sgjourney:ursa"
 }

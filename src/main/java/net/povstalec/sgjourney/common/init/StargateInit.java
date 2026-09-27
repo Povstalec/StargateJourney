@@ -14,8 +14,8 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlock
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWaySpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusSpawnerStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.tollans.TollanSpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanSpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseSpawnerStargate;
 

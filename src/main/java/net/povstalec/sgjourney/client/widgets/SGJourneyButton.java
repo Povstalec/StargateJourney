@@ -8,12 +8,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SGJourneyButton extends Button
 {
@@ -58,7 +56,7 @@ public abstract class SGJourneyButton extends Button
 	}
 	
 	@Override
-    public void renderButton(PoseStack stack, int mouseX, int mouseY, float partialTick)
+    public void renderButton(@NotNull PoseStack stack, int mouseX, int mouseY, float partialTick)
     {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
