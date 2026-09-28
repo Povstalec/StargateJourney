@@ -205,7 +205,7 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		stack.scale(0.5F, 0.5F, 0.5F);
 		
 		RenderSystem.setShaderTexture(0, dhdTexture);
-		guiGraphics.blit(texture, -dhdImageWidth / 2, -dhdImageHeight / 2, 0, 0, dhdImageWidth, dhdImageHeight);
+		guiGraphics.blit(dhdTexture, -dhdImageWidth / 2, -dhdImageHeight / 2, 0, 0, dhdImageWidth, dhdImageHeight);
 		
 		for(Renderable renderable : this.dhdRenderables)
 		{
