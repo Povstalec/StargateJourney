@@ -18,7 +18,7 @@ public class RecipeTypeInit
 	
 	// Recipe Types
 	
-	public static final DeferredHolder<RecipeType<?>, RecipeType<NBTRetainingShapedRecipe>> NBT_RETAINING_SHAPED_RECIPE_TYPE = TYPES.register("naquadah_liquidizing", () -> NBTRetainingShapedRecipe.TYPE);
+	public static final DeferredHolder<RecipeType<?>, RecipeType<NBTRetainingShapedRecipe>> NBT_RETAINING_SHAPED_RECIPE_TYPE = TYPES.register("nbt_retaining_shaped_recipe", () -> NBTRetainingShapedRecipe.TYPE);
 	
 	public static final DeferredHolder<RecipeType<?>, RecipeType<LiquidizingRecipe.NaquadahLiquidizer>> LIQUIDIZING_TYPE = TYPES.register("naquadah_liquidizing", () -> LiquidizingRecipe.NaquadahLiquidizer.TYPE);
 	public static final DeferredHolder<RecipeType<?>, RecipeType<LiquidizingRecipe.HeavyNaquadahLiquidizer>> HEAVY_LIQUIDIZING_TYPE = TYPES.register("naquadah_heavy_liquidizing", () -> LiquidizingRecipe.HeavyNaquadahLiquidizer.TYPE);

@@ -8,7 +8,7 @@
 		"OLO"
 	],
 	
-	"key": 
+	"key":
 	{
 		"T": { "item": "sgjourney:advanced_transfer_crystal" },
 		"C": { "item": "sgjourney:advanced_control_crystal" },
@@ -17,5 +17,5 @@
 		"O": { "item": "minecraft:orange_terracotta" }
 	},
 	
-	"result": { "item": "sgjourney:zpm_hub" }
+	"result": { "id": "sgjourney:zpm_hub" }
 }

@@ -3,5 +3,5 @@
 	"count": 1,
 	
 	"ingredient": { "item": "minecraft:stone" },
-	"result": "sgjourney:stone_symbol"
+	"result": { "id": "sgjourney:stone_symbol" }
 }

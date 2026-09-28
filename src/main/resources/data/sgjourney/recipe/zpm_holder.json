@@ -8,11 +8,11 @@
 		"RIR"
 	],
 	
-	"key": 
+	"key":
 	{
 		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"R": { "tag": "sgjourney:naquadah_rod" }
 	},
 	
-	"result": { "item": "sgjourney:zpm_holder" }
+	"result": { "id": "sgjourney:zpm_holder" }
 }

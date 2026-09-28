@@ -46,7 +46,7 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 		
 		this.renderSymbolRing(stargate, stargateVariant, stack, consumer, source, combinedLight, this.rotation);
 		
-		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isOculusLoaded());
+		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isIrisLoaded());
 	}
 	
 	public void setRotation(float rotation)

@@ -99,7 +99,7 @@ public abstract class SymbolBlockEngravingMenu<S extends SymbolBlockEntity> exte
 	{
 		public Stone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (SymbolBlockEntity.Stone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (SymbolBlockEntity.Stone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Stone(int containerId, Inventory inventory, SymbolBlockEntity.Stone blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -118,7 +118,7 @@ public abstract class SymbolBlockEngravingMenu<S extends SymbolBlockEntity> exte
     {
         public Sandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (SymbolBlockEntity.Sandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (SymbolBlockEntity.Sandstone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public Sandstone(int containerId, Inventory inventory, SymbolBlockEntity.Sandstone blockEntity, ContainerLevelAccess containerLevelAccess)
@@ -137,7 +137,7 @@ public abstract class SymbolBlockEngravingMenu<S extends SymbolBlockEntity> exte
     {
         public RedSandstone(int containerId, Inventory inventory, FriendlyByteBuf extraData)
         {
-            this(containerId, inventory, (SymbolBlockEntity.RedSandstone) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+            this(containerId, inventory, (SymbolBlockEntity.RedSandstone) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
         }
 
 		public RedSandstone(int containerId, Inventory inventory, SymbolBlockEntity.RedSandstone blockEntity, ContainerLevelAccess containerLevelAccess)

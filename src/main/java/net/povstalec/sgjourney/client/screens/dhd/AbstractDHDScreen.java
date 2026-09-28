@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.client.screens.dhd;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -58,7 +59,10 @@ public abstract class AbstractDHDScreen<T extends AbstractDHDMenu<?>> extends SG
 		graphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
 		RenderSystem.disableDepthTest();
-        super.render(graphics, mouseX, mouseY, delta);
+		for(Renderable renderable : this.renderables)
+		{
+			renderable.render(graphics, mouseX, mouseY, delta);
+		}
 		
 		PoseStack posestack = graphics.pose();
 		posestack.pushPose();

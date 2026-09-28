@@ -1,11 +1,13 @@
 package net.povstalec.sgjourney.common.blocks.zpm;
 
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -21,9 +23,17 @@ import java.util.List;
 
 public class ZPMHubBlock extends AbstractZPMEnergyHolderBlock
 {
+	public static final MapCodec<ZPMHubBlock> CODEC = simpleCodec(ZPMHubBlock::new);
+	
 	public ZPMHubBlock(Properties properties)
 	{
 		super(properties);
+	}
+	
+	@Override
+	protected MapCodec<? extends BaseEntityBlock> codec()
+	{
+		return CODEC;
 	}
 	
 	@Override
@@ -39,9 +49,9 @@ public class ZPMHubBlock extends AbstractZPMEnergyHolderBlock
 	}
 	
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 		
 		tooltipComponents.add(ComponentHelper.description("block.sgjourney.zpm_hub.description"));
 	}

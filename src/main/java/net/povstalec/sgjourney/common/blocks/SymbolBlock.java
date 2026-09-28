@@ -28,6 +28,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -278,20 +279,22 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
 	
 	
 	
-	public static ItemStack localPointOfOrigin(ItemLike item)
+	public static ItemStack localPointOfOrigin(BlockEntityType<?> blockEntityType, ItemLike item)
 	{
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
+		BlockEntity.addEntityType(blockEntityTag, blockEntityType);
 		blockEntityTag.putBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN, true);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		
 		return stack;
 	}
 	
-	public static ItemStack randomPointOfOrigin(ItemLike item)
+	public static ItemStack randomPointOfOrigin(BlockEntityType<?> blockEntityType, ItemLike item)
 	{
 		ItemStack stack = new ItemStack(item);
 		CompoundTag blockEntityTag = new CompoundTag();
+		BlockEntity.addEntityType(blockEntityTag, blockEntityType);
 		blockEntityTag.putBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN, true);
 		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		

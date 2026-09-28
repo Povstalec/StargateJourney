@@ -8,7 +8,7 @@
 		"ICI"
 	],
 	
-	"key": 
+	"key":
 	{
 		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"T": { "item": "sgjourney:transfer_crystal" },
@@ -16,5 +16,5 @@
 		"Z": { "item": "sgjourney:zpm_holder" }
 	},
 	
-	"result": { "item": "sgjourney:zpm_plug" }
+	"result": { "id": "sgjourney:zpm_plug" }
 }

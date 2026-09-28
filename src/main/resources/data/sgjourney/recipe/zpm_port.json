@@ -8,7 +8,7 @@
 		"ILI"
 	],
 	
-	"key": 
+	"key":
 	{
 		"I": { "tag": "sgjourney:naquadah_ingot" },
 		"T": { "item": "sgjourney:advanced_transfer_crystal" },
@@ -17,5 +17,5 @@
 		"Z": { "item": "sgjourney:zpm_holder" }
 	},
 	
-	"result": { "item": "sgjourney:zpm_port" }
+	"result": { "id": "sgjourney:zpm_port" }
 }

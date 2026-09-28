@@ -2,13 +2,9 @@ package net.povstalec.sgjourney.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.CommonComponents;
@@ -16,9 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.AutoDialerItem;
 import net.povstalec.sgjourney.common.misc.ParsingResult;
 import net.povstalec.sgjourney.common.packets.ServerboundAutoDialerUpdatePacket;
@@ -27,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class AutoDialerScreen extends Screen
 {
-	private static final ResourceLocation TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/gui/auto_dialer_gui.png");
+	private static final ResourceLocation TEXTURE = StargateJourney.sgjourneyLocation("textures/gui/auto_dialer_gui.png");
 	
 	public static final int EDIT_BOX_WIDTH = 176;
 	public static final int EDIT_BOX_HEIGHT = 20;
@@ -113,7 +108,7 @@ public class AutoDialerScreen extends Screen
 	
 	public void save()
 	{
-		PacketHandlerInit.INSTANCE.sendToServer(new ServerboundAutoDialerUpdatePacket(interactionHand, Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address)), doKawoosh));
+		PacketDistributor.sendToServer(new ServerboundAutoDialerUpdatePacket(interactionHand, Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address)), doKawoosh));
 		onClose();
 	}
 	
@@ -124,33 +119,36 @@ public class AutoDialerScreen extends Screen
 	}
 
     @Override
-    public void render(@NotNull PoseStack poseStack, int mouseX, int mouseY, float delta)
+    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
     {
-		renderBackground(poseStack);
+		renderBackground(guiGraphics, mouseX, mouseY, partialTick);
 		
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		
-		this.blit(poseStack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
 		RenderSystem.disableDepthTest();
-		super.render(poseStack, mouseX, mouseY, delta);
+		for(Renderable renderable : this.renderables)
+		{
+			renderable.render(guiGraphics, mouseX, mouseY, partialTick);
+		}
 		
-		PoseStack posestack = RenderSystem.getModelViewStack();
+		PoseStack posestack = guiGraphics.pose();
 		posestack.pushPose();
 		posestack.translate((float) leftPos, (float) topPos, 0.0F);
 		RenderSystem.applyModelViewMatrix();
 		
-		renderLabels(poseStack, mouseX, mouseY);
+		renderLabels(guiGraphics, mouseX, mouseY);
 		
 		posestack.popPose();
 		RenderSystem.applyModelViewMatrix();
 		RenderSystem.enableDepthTest();
     }
 	
-	protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752, false);
 	}
 }

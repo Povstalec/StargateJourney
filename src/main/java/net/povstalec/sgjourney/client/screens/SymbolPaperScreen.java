@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -56,7 +58,7 @@ public class SymbolPaperScreen extends Screen
 		return false;
 	}
 	
-	public void renderPointOfOrigin(PoseStack stack, @Nullable ClientPointOfOrigin pointOfOrigin)
+	public void renderPointOfOrigin(GuiGraphics guiGraphics, @Nullable ClientPointOfOrigin pointOfOrigin)
 	{
 		if(pointOfOrigin == null)
 			return;
@@ -66,10 +68,10 @@ public class SymbolPaperScreen extends Screen
 		float xEnd = xStart + POINT_OF_ORIGIN_SIZE;
 		float yEnd = yStart + POINT_OF_ORIGIN_SIZE;
 		
-		ClientUtil.renderPointOfOrigin(stack.last().pose(), xStart, yStart, xEnd, yEnd, pointOfOrigin, RGBA);
+		ClientUtil.renderPointOfOrigin(guiGraphics.pose().last().pose(), xStart, yStart, xEnd, yEnd, pointOfOrigin, RGBA);
 	}
 	
-	public void renderSymbols(PoseStack stack, @Nullable ClientSymbols symbols)
+	public void renderSymbols(GuiGraphics guiGraphics, @Nullable ClientSymbols symbols)
 	{
 		if(symbols == null)
 			return;
@@ -81,6 +83,7 @@ public class SymbolPaperScreen extends Screen
 		
 		float angle = 360F / symbols.size();
 		
+		PoseStack stack = guiGraphics.pose();
 		stack.pushPose();
 		stack.translate(width / 2F, height / 2F, 0);
 		
@@ -97,21 +100,23 @@ public class SymbolPaperScreen extends Screen
 	}
 	
 	@Override
-	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float delta)
 	{
-		renderBackground(stack);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, TEXTURE);
 		int x = (width - IMAGE_WIDTH) / 2;
 		int y = (height - IMAGE_HEIGHT) / 2;
-		blit(stack, x, y, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
+		guiGraphics.blit(TEXTURE, x, y, 0, 0, IMAGE_WIDTH, IMAGE_HEIGHT);
 		
-		super.render(stack, mouseX, mouseY, delta);
+		for(Renderable renderable : this.renderables)
+		{
+			renderable.render(guiGraphics, mouseX, mouseY, delta);
+		}
 		
 		if(pointOfOrigin != null)
-			renderPointOfOrigin(stack, ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin));
+			renderPointOfOrigin(guiGraphics, ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin));
 		if(symbols != null)
-			renderSymbols(stack, ClientSymbols.getSymbols(symbols));
+			renderSymbols(guiGraphics, ClientSymbols.getSymbols(symbols));
 	}
 }

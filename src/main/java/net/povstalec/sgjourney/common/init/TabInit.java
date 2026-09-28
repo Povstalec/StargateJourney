@@ -283,31 +283,31 @@ public class TabInit
 					items.accept(BlockInit.SANDSTONE_WITH_LAPIS.get());
 					items.accept(BlockInit.SANDSTONE_WITH_GOLD.get());
 					items.accept(BlockInit.SANDSTONE_SYMBOL.get());
-					items.accept(SymbolBlock.localPointOfOrigin(BlockInit.SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(SymbolBlock.randomPointOfOrigin(BlockInit.SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.localPointOfOrigin(BlockEntityInit.SANDSTONE_SYMBOL.get(), BlockInit.SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.randomPointOfOrigin(BlockEntityInit.SANDSTONE_SYMBOL.get(), BlockInit.SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					items.accept(BlockInit.SANDSTONE_CARTOUCHE.get());
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					
 					items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
 					items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
 					items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
 					items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
-					items.accept(SymbolBlock.localPointOfOrigin(BlockInit.RED_SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(SymbolBlock.randomPointOfOrigin(BlockInit.RED_SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.localPointOfOrigin(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), BlockInit.RED_SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.randomPointOfOrigin(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), BlockInit.RED_SANDSTONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					items.accept(BlockInit.RED_SANDSTONE_CARTOUCHE.get());
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), BlockInit.RED_SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					
 					items.accept(BlockInit.STONE_SYMBOL.get());
-					items.accept(SymbolBlock.localPointOfOrigin(BlockInit.STONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(SymbolBlock.randomPointOfOrigin(BlockInit.STONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.localPointOfOrigin(BlockEntityInit.STONE_SYMBOL.get(), BlockInit.STONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(SymbolBlock.randomPointOfOrigin(BlockEntityInit.STONE_SYMBOL.get(), BlockInit.STONE_SYMBOL.get()), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					items.accept(BlockInit.STONE_CARTOUCHE.get());
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
-					items.accept(CartoucheBlock.localAddressSetup(BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.STONE_CARTOUCHE.get(), BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_7_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.STONE_CARTOUCHE.get(), BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_8_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
+					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.STONE_CARTOUCHE.get(), BlockInit.STONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					
 					items.accept(BlockInit.FIRE_PIT.get());
 					

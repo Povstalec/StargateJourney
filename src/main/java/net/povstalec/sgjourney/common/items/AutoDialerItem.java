@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -11,9 +10,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.LocatorHelper;
 import net.povstalec.sgjourney.common.packets.ClientboundAutoDialerOpenScreenPacket;
@@ -24,42 +23,33 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 public class AutoDialerItem extends Item
 {
-	public static final String DO_KAWOOSH = "do_kawoosh";
-	
 	public AutoDialerItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	public static void setAddress(ItemStack stack, Address address)
+	public static void setAddress(ItemStack stack, Address.Immutable address)
 	{
-		address.saveToCompoundTag(stack.getOrCreateTag(), Address.ADDRESS);
+		stack.set(DataComponentInit.ADDRESS_IMMUTABLE, address);
 	}
 	
-	public static Address getAddress(ItemStack stack)
+	public static Address.Immutable getAddress(ItemStack stack)
 	{
-		if(!stack.hasTag() || !stack.getTag().contains(Address.ADDRESS, Tag.TAG_INT_ARRAY))
-			return Address.Immutable.EMPTY;
-		
-		return new Address.Immutable(stack.getTag().getIntArray(Address.ADDRESS));
+		return stack.getOrDefault(DataComponentInit.ADDRESS_IMMUTABLE, Address.Immutable.EMPTY);
 	}
 	
 	public static void setDoKawoosh(ItemStack stack, boolean doKawoosh)
 	{
-		stack.getOrCreateTag().putBoolean(DO_KAWOOSH, doKawoosh);
+		stack.set(DataComponentInit.DO_KAWOOSH, doKawoosh);
 	}
 	
 	public static boolean doKawoosh(ItemStack stack)
 	{
-		if(!stack.hasTag() || !stack.getTag().contains(DO_KAWOOSH))
-			return true;
-		
-		return stack.getTag().getBoolean(DO_KAWOOSH);
+		return stack.getOrDefault(DataComponentInit.DO_KAWOOSH, true);
 	}
 	
 	//TODO Add energy storage to the item
@@ -85,7 +75,7 @@ public class AutoDialerItem extends Item
 		
 		if(player.isShiftKeyDown())
 		{
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundAutoDialerOpenScreenPacket(usedHand));
+			PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundAutoDialerOpenScreenPacket(usedHand));
 			return InteractionResultHolder.success(stack);
 		}
 		
@@ -127,7 +117,7 @@ public class AutoDialerItem extends Item
     }
 	
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(Component.translatable("info.sgjourney.address").append(": ").append(getAddress(stack).toComponent(false)).withStyle(ChatFormatting.YELLOW));
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.auto_dialer.kawoosh").append(": " + doKawoosh(stack)).withStyle(ChatFormatting.DARK_BLUE));
@@ -135,7 +125,5 @@ public class AutoDialerItem extends Item
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.auto_dialer.usage.menu"));
 		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.auto_dialer.usage.dial"));
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.auto_dialer.description"));
-		
-		super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
 	}
 }

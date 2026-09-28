@@ -71,7 +71,7 @@ public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> exte
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket packet, HolderLookup.@NotNull Provider registries)
 	{
 		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();

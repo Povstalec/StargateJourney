@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.blocks.zpm;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -11,7 +12,7 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 import net.povstalec.sgjourney.common.block_entities.zpm.AbstractZPMHolderEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.init.ItemInit;
@@ -30,10 +31,21 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 	}
 	
 	@Override
-	public @NotNull InteractionResult use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult trace)
+	protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	{
+		return use(state, level, pos, player, InteractionHand.MAIN_HAND, hitResult) ? InteractionResult.sidedSuccess(level.isClientSide()) : InteractionResult.PASS;
+	}
+	
+	@Override
+	protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult)
+	{
+		return use(state, level, pos, player, hand, hitResult) ? ItemInteractionResult.sidedSuccess(level.isClientSide()) : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+	}
+	
+	public boolean use(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player, @NotNull InteractionHand hand, @NotNull BlockHitResult trace)
 	{
 		if(!hasPermissions(level, pos, state, player, true))
-			return InteractionResult.PASS;
+			return false;
 		
 		ItemStack itemInHand = player.getItemInHand(hand);
 		if(itemInHand.isEmpty() || itemInHand.is(ItemInit.ZPM.get()))
@@ -41,13 +53,13 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 			BlockEntity blockEntity = level.getBlockEntity(pos);
 			if(blockEntity instanceof AbstractZPMHolderEntity zpmHolder)
 			{
-				IItemHandler itemHandler = zpmHolder.getItemHandler().resolve().orElse(null);
+				IItemHandler itemHandler = zpmHolder.getItemHandler();
 				if(itemHandler != null)
 				{
 					if(itemInHand.isEmpty())
 					{
 						if(itemHandler.getStackInSlot(0).isEmpty())
-							return InteractionResult.PASS;
+							return false;
 						else
 						{
 							ItemStack extractedStack = itemHandler.extractItem(0, 1, false);
@@ -57,7 +69,7 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 								zpmHolder.updateClient();
 								player.setItemInHand(hand, extractedStack);
 							}
-							return InteractionResult.sidedSuccess(level.isClientSide());
+							return true;
 						}
 					}
 					else
@@ -69,13 +81,13 @@ public abstract class AbstractZPMHolderBlock extends BaseEntityBlock implements 
 							zpmHolder.updateClient();
 							player.setItemInHand(hand, returnedStack);
 						}
-						return InteractionResult.sidedSuccess(level.isClientSide());
+						return true;
 					}
 				}
 			}
 		}
 		
-		return InteractionResult.PASS;
+		return false;
 	}
 	
 	@Override

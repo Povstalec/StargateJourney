@@ -1,59 +1,51 @@
 package net.povstalec.sgjourney.common.packets;
 
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.AutoDialerItem;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 
-import java.util.function.Supplier;
-
-public class ServerboundAutoDialerUpdatePacket
+public record ServerboundAutoDialerUpdatePacket(InteractionHand interactionHand, Address address, boolean doKawoosh) implements CustomPacketPayload
 {
-	public final InteractionHand interactionHand;
+	public static final CustomPacketPayload.Type<ServerboundAutoDialerUpdatePacket> TYPE =
+		new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("c2s_auto_dialer_update"));
 	
-    public final Address address;
-    public final boolean doKawoosh;
-
-    public ServerboundAutoDialerUpdatePacket(InteractionHand interactionHand, Address address, boolean doKawoosh)
-    {
-    	this.interactionHand = interactionHand;
-    	
-        this.address = address;
-        this.doKawoosh = doKawoosh;
-    }
-
-    public ServerboundAutoDialerUpdatePacket(FriendlyByteBuf buffer)
-    {
-    	this(buffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, Address.Mutable.read(buffer), buffer.readBoolean());
-    }
-
-    public void encode(FriendlyByteBuf buffer)
-    {
-    	buffer.writeBoolean(interactionHand == InteractionHand.MAIN_HAND);
-    	
-		address.write(buffer);
-        buffer.writeBoolean(doKawoosh);
-    }
-
-    public boolean handle(Supplier<NetworkEvent.Context> ctx)
-    {
-    	ctx.get().enqueueWork(() ->
+	public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundAutoDialerUpdatePacket> STREAM_CODEC = StreamCodec.composite(
+		NeoForgeStreamCodecs.enumCodec(InteractionHand.class), ServerboundAutoDialerUpdatePacket::interactionHand,
+		Address.STREAM_CODEC, ServerboundAutoDialerUpdatePacket::address,
+		ByteBufCodecs.BOOL, ServerboundAutoDialerUpdatePacket::doKawoosh,
+		ServerboundAutoDialerUpdatePacket::new
+	);
+	
+	@Override
+	public CustomPacketPayload.Type<? extends CustomPacketPayload> type()
+	{
+		return TYPE;
+	}
+	
+	public static void handle(ServerboundAutoDialerUpdatePacket packet, IPayloadContext ctx)
+	{
+		ctx.enqueueWork(() ->
 		{
-    		final ServerPlayer player = ctx.get().getSender();
-    		
-    		ItemStack stack = player.getItemInHand(interactionHand);
-    		
-    		if(stack.getItem() instanceof AutoDialerItem)
-    		{
-				AutoDialerItem.setAddress(stack, address);
-				AutoDialerItem.setDoKawoosh(stack, doKawoosh);
-    		}
-    	});
-        return true;
-    }
+			final Player player = ctx.player();
+			
+			ItemStack stack = player.getItemInHand(packet.interactionHand);
+			
+			if(stack.getItem() instanceof AutoDialerItem)
+			{
+				AutoDialerItem.setAddress(stack, new Address.Immutable(packet.address));
+				AutoDialerItem.setDoKawoosh(stack, packet.doKawoosh);
+			}
+		});
+	}
 }
 
 

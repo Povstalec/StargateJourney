@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.screens.graver;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -15,13 +15,12 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockBakedModel;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
@@ -179,7 +178,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 				packet.withSymbols(symbols);
 		}
 		
-		PacketHandlerInit.INSTANCE.sendToServer(packet);
+		PacketDistributor.sendToServer(packet);
 		onClose();
 	}
 	
@@ -203,7 +202,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 		return menu.blockEntity.getPointOfOrigin();
 	}
 	
-	public void renderSymbol(PoseStack stack)
+	public void renderSymbol(GuiGraphics guiGraphics)
 	{
 		float xPos = (imageWidth - SYMBOL_SIZE) / 2F;
 		float yPos = 1; // There's a 1 pixel thick black border around it
@@ -214,7 +213,7 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 			if(pointOfOrigin == null)
 				return;
 			
-			ClientUtil.renderPointOfOrigin(stack.last().pose(), xPos, yPos, xPos + SYMBOL_SIZE, yPos + SYMBOL_SIZE, pointOfOrigin, rgba);
+			ClientUtil.renderPointOfOrigin(guiGraphics.pose().last().pose(), xPos, yPos, xPos + SYMBOL_SIZE, yPos + SYMBOL_SIZE, pointOfOrigin, rgba);
 		}
 		else if(symbolNumber > 0)
 		{
@@ -222,38 +221,36 @@ public abstract class SymbolBlockEngravingScreen<M extends SymbolBlockEngravingM
 			if(symbols == null)
 				return;
 			
-			ClientUtil.renderSymbol(stack.last().pose(), xPos, yPos, xPos + SYMBOL_SIZE, yPos + SYMBOL_SIZE, symbols, symbolNumber, rgba);
+			ClientUtil.renderSymbol(guiGraphics.pose().last().pose(), xPos, yPos, xPos + SYMBOL_SIZE, yPos + SYMBOL_SIZE, symbols, symbolNumber, rgba);
 		}
 	}
 	
 	@Override
-	protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY)
 	{
-		this.renderBackground(stack);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
-		this.blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
-		this.itemHint(stack, leftPos + 124, topPos + 24, 176, 0, 0);
+		this.itemHint(guiGraphics, texture, leftPos + 124, topPos + 24, 176, 0, 0);
 	}
 	
 	@Override
-	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
-		renderBackground(stack);
-		super.render(stack, mouseX, mouseY, delta);
-		renderTooltip(stack, mouseX, mouseY);
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 124, 24, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
+		itemTooltip(guiGraphics, mouseX, mouseY, 124, 24, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
 	}
 	
 	@Override
-	protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
 		
-		renderSymbol(poseStack);
+		renderSymbol(guiGraphics);
 	}
 	
 	@Override

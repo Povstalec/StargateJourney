@@ -3,5 +3,5 @@
 	"count": 1,
 	
 	"ingredient": { "item": "minecraft:smooth_sandstone" },
-	"result": "sgjourney:sandstone_symbol"
+	"result": { "id": "sgjourney:sandstone_symbol" }
 }

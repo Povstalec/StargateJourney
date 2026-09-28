@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.zpm;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Containers;
@@ -11,23 +11,21 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.jarjar.nio.util.Lazy;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public abstract class AbstractZPMHolderEntity extends BlockEntity implements ProtectedBlockEntity
 {
+	public static final String INVENTORY = "inventory";
+	
 	protected final ItemStackHandler itemHandler = createHandler();
-	private final LazyOptional<IItemHandler> lazyItemHandler = LazyOptional.of(() -> itemHandler);
+	private final Lazy<IItemHandler> lazyItemHandler = Lazy.of(() -> itemHandler);
 	
 	protected boolean isProtected = false;
 	
@@ -37,27 +35,20 @@ public abstract class AbstractZPMHolderEntity extends BlockEntity implements Pro
 	}
 	
 	@Override
-	public void invalidateCaps()
+	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries)
 	{
-		super.invalidateCaps();
-		lazyItemHandler.invalidate();
-	}
-	
-	@Override
-	public void load(CompoundTag tag)
-	{
-		super.load(tag);
-		itemHandler.deserializeNBT(tag.getCompound("Inventory"));
+		super.loadAdditional(tag, registries);
+		itemHandler.deserializeNBT(registries, tag.getCompound(INVENTORY));
 		
 		if(tag.contains(PROTECTED, CompoundTag.TAG_BYTE))
 			isProtected = tag.getBoolean(PROTECTED);
 	}
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag)
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries)
 	{
-		super.saveAdditional(tag);
-		tag.put("Inventory", itemHandler.serializeNBT());
+		super.saveAdditional(tag, registries);
+		tag.put(INVENTORY, itemHandler.serializeNBT(registries));
 		
 		if(isProtected)
 			tag.putBoolean(PROTECTED, true);
@@ -70,9 +61,9 @@ public abstract class AbstractZPMHolderEntity extends BlockEntity implements Pro
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag()
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries)
 	{
-		return this.saveWithoutMetadata();
+		return this.saveWithoutMetadata(registries);
 	}
 	
 	public void updateClient()
@@ -81,27 +72,18 @@ public abstract class AbstractZPMHolderEntity extends BlockEntity implements Pro
 			level.sendBlockUpdated(getBlockPos(), getBlockState(), getBlockState(), Block.UPDATE_IMMEDIATE);
 	}
 	
-	public LazyOptional<IItemHandler> getItemHandler()
-	{
-		return lazyItemHandler.cast();
-	}
-	
-	public ItemStack getHeldItemStack()
-	{
-		return getItemHandler().map(itemHandler -> itemHandler.getStackInSlot(0)).orElse(ItemStack.EMPTY);
-	}
-	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
-	@Override
-	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction side)
+	public IItemHandler getItemHandler()
 	{
-		if(capability == ForgeCapabilities.ITEM_HANDLER && (!isProtected() || CommonPermissionConfig.protected_inventory_access.get()))
-			return lazyItemHandler.cast();
-		
-		return super.getCapability(capability, side);
+		return itemHandler;
+	}
+	
+	public ItemStack getHeldItemStack()
+	{
+		return itemHandler.getStackInSlot(0);
 	}
 	
 	//============================================================================================

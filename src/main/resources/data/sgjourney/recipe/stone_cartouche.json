@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:stone_symbol" }
 	},
-	"result": { "item": "sgjourney:stone_cartouche" }
+	"result": { "id": "sgjourney:stone_cartouche" }
 }

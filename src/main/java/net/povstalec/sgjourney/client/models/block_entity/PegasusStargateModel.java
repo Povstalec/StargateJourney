@@ -56,7 +56,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 
 		this.renderSymbolRing(stargate, stargateVariant, stack, consumer, source, combinedLight, 0);
 
-		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isOculusLoaded());
+		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isIrisLoaded());
 	}
 	
 	public void setCurrentSymbol(int currentSymbol)

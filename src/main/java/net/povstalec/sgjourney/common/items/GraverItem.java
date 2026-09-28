@@ -143,7 +143,7 @@ public class GraverItem extends TieredItem
 			}
 		}
 		
-		return false;
+		return true;
 	}
 	
 	public static TagKey<Block> getTagFromVanillaTier(Tiers tier)

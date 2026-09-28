@@ -72,7 +72,7 @@ public class InventoryUtil
 		if(slotStack.getMaxStackSize() <= slotStack.getCount())
 			return false;
 		
-		return slotStack.getItem() == toInsert.getItem() && ItemStack.tagMatches(slotStack, toInsert);
+		return slotStack.getItem() == toInsert.getItem() && ItemStack.isSameItemSameComponents(slotStack, toInsert);
 	}
     
     public static String itemName(Item item)

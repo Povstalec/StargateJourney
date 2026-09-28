@@ -7,13 +7,16 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.block_entity.TransportRingModel;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
+import net.povstalec.sgjourney.common.blocks.transporter.AbstractTransportRingsBlock;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -66,8 +69,14 @@ public abstract class TransportRingsRenderer<T extends AbstractTransportRingsEnt
 	public @NotNull AABB getRenderBoundingBox(T transportRings)
 	{
 		BlockPos pos = transportRings.getBlockPos();
-		return new AABB(pos.getX() - 3, pos.getY() - (3 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() - 3,
-				pos.getX() + 4, pos.getY() + (4 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() + 4);
+		BlockState state = transportRings.getBlockState();
+		
+		if(state.hasProperty(AbstractTransportRingsBlock.FACING))
+			return state.getValue(AbstractTransportRingsBlock.FACING) == Direction.DOWN ?
+				new AABB(pos.getX() - 3, pos.getY() - (3 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() - 3, pos.getX() + 4, pos.getY(), pos.getZ() + 4) :
+				new AABB(pos.getX() - 3, pos.getY(), pos.getZ() - 3, pos.getX() + 4, pos.getY() + (4 + AbstractTransportRingsEntity.MAX_TRANSPORT_HEIGHT), pos.getZ() + 4);
+		
+		return BlockEntityRenderer.super.getRenderBoundingBox(transportRings);
 	}
 	
 	

@@ -1,7 +1,6 @@
 package net.povstalec.sgjourney.common.items;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,11 +11,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
-import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolPaperOpenScreenPacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
@@ -38,16 +36,16 @@ public class SymbolPaperItem extends Item
 	public static void setPointOfOrigin(ItemStack stack, @Nullable ResourceKey<PointOfOrigin> pointOfOrigin)
 	{
 		if(pointOfOrigin != null)
-			stack.getOrCreateTag().putString(POINT_OF_ORIGIN, pointOfOrigin.location().toString());
-		else if(stack.hasTag())
-			stack.getTag().remove(POINT_OF_ORIGIN);
+			stack.set(DataComponentInit.POINT_OF_ORIGIN, pointOfOrigin);
+		else if(stack.has(DataComponentInit.POINT_OF_ORIGIN))
+			stack.remove(DataComponentInit.POINT_OF_ORIGIN);
 	}
 	
 	@Nullable
 	public static ResourceKey<PointOfOrigin> getPointOfOrigin(ItemStack stack)
 	{
-		if(stack.hasTag() && stack.getTag().contains(POINT_OF_ORIGIN, Tag.TAG_STRING))
-			return Conversion.stringToPointOfOrigin(stack.getTag().getString(POINT_OF_ORIGIN));
+		if(stack.has(DataComponentInit.POINT_OF_ORIGIN))
+			return stack.get(DataComponentInit.POINT_OF_ORIGIN);
 		
 		return null;
 	}
@@ -55,16 +53,16 @@ public class SymbolPaperItem extends Item
 	public static void setSymbols(ItemStack stack, @Nullable ResourceKey<Symbols> symbols)
 	{
 		if(symbols != null)
-			stack.getOrCreateTag().putString(SYMBOLS, symbols.location().toString());
-		else if(stack.hasTag())
-			stack.getTag().remove(SYMBOLS);
+			stack.set(DataComponentInit.SYMBOLS, symbols);
+		else if(stack.has(DataComponentInit.SYMBOLS))
+			stack.remove(DataComponentInit.SYMBOLS);
 	}
 	
 	@Nullable
 	public static ResourceKey<Symbols> getSymbols(ItemStack stack)
 	{
-		if(stack.hasTag() && stack.getTag().contains(SYMBOLS, Tag.TAG_STRING))
-			return Conversion.stringToSymbols(stack.getTag().getString(SYMBOLS));
+		if(stack.has(DataComponentInit.SYMBOLS))
+			return stack.get(DataComponentInit.SYMBOLS);
 		
 		return null;
 	}
@@ -73,16 +71,13 @@ public class SymbolPaperItem extends Item
 	public @NotNull InteractionResultHolder<ItemStack> use(Level level, @NotNull Player player, @NotNull InteractionHand usedHand)
 	{
 		if(!level.isClientSide())
-		{
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-				new ClientboundSymbolPaperOpenScreenPacket(usedHand));
-		}
+			PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSymbolPaperOpenScreenPacket(usedHand));
 		
 		return super.use(level, player, usedHand);
 	}
 	
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stack);
 		if(pointOfOrigin != null)

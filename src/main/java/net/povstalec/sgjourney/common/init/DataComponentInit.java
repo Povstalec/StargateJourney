@@ -18,6 +18,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.KaraKeshItem;
 import net.povstalec.sgjourney.common.items.SyringeItem;
+import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import java.util.function.UnaryOperator;
 
@@ -30,6 +33,7 @@ public class DataComponentInit
 
     // Items
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY = register("energy", builder -> builder.persistent(Codec.LONG));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_TARGET = register("energy_target", builder -> builder.persistent(Codec.LONG));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> FLUID = register("fluid", builder -> builder.persistent(SimpleFluidContent.CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENTROPY = register("entropy", builder -> builder.persistent(Codec.INT));
     
@@ -57,6 +61,14 @@ public class DataComponentInit
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SKIP_LOADED_CHUNKS = register("skip_loaded_chunks", builder -> builder.persistent(Codec.BOOL));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagKey<Structure>>> TARGET_STRUCTURE = register("target_structure", builder -> builder.persistent(TagKey.codec(Registries.STRUCTURE)));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Holder<MapDecorationType>>> DECORATION_TYPE = register("decoration_type", builder -> builder.persistent(MapDecorationType.CODEC));
+	
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<PointOfOrigin>>> POINT_OF_ORIGIN = register("point_of_origin", builder -> builder.persistent(PointOfOrigin.RESOURCE_KEY_CODEC));
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceKey<Symbols>>> SYMBOLS = register("symbols", builder -> builder.persistent(Symbols.RESOURCE_KEY_CODEC));
+	
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Address.Immutable>> ADDRESS_IMMUTABLE = register("address_immutable", builder -> builder.persistent(Address.Immutable.CODEC));
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Address.Mutable>> ADDRESS_MUTABLE = register("address_mutable", builder -> builder.persistent(Address.Mutable.CODEC));
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Address.Dimension>> ADDRESS_DIMENSION = register("address_dimension", builder -> builder.persistent(Address.Dimension.CODEC));
+	public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DO_KAWOOSH = register("address", builder -> builder.persistent(Codec.BOOL));
 
 
 

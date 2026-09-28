@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.screens.graver;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -17,12 +17,11 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.models.block.CartoucheBakedModel;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
@@ -175,7 +174,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		if(!getSymbols().equals(menu.blockEntity.getSymbols()))
 			packet.withSymbols(getSymbols());
 		
-		PacketHandlerInit.INSTANCE.sendToServer(packet);
+		PacketDistributor.sendToServer(packet);
 		onClose();
 	}
 	
@@ -188,7 +187,7 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		return menu.blockEntity.getSymbols();
 	}
 	
-	public void renderSymbols(PoseStack stack)
+	public void renderSymbols(GuiGraphics guiGraphics)
 	{
 		float symbolSize = Y_SYMBOL_SPACE / address.getLength();
 		if(symbolSize > X_SYMBOL_SPACE)
@@ -209,38 +208,36 @@ public abstract class CartoucheEngravingScreen<M extends CartoucheEngravingMenu<
 		for(int i = 0; i < address.getLength(); i++)
 		{
 			float yPos = yStart + symbolSize * i;
-			ClientUtil.renderSymbol(stack.last().pose(), xPos, yPos, xPos + symbolSize, yPos + symbolSize, symbols, address.symbolAt(i), rgba);
+			ClientUtil.renderSymbol(guiGraphics.pose().last().pose(), xPos, yPos, xPos + symbolSize, yPos + symbolSize, symbols, address.symbolAt(i), rgba);
 		}
 	}
 	
 	@Override
-	protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY)
 	{
-		this.renderBackground(stack);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
-		this.blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
-		this.itemHint(stack, leftPos + 124, topPos + 57, 176, 0, 0);
+		this.itemHint(guiGraphics, texture, leftPos + 124, topPos + 57, 176, 0, 0);
 	}
 	
 	@Override
-	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
-		renderBackground(stack);
-		super.render(stack, mouseX, mouseY, delta);
-		renderTooltip(stack, mouseX, mouseY);
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
+		itemTooltip(guiGraphics, mouseX, mouseY, 124, 57, 0, ComponentHelper.description("screen.sgjourney.engraving.symbol_block.insert_symbol_paper"));
 	}
 	
 	@Override
-	protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
 		
-		renderSymbols(poseStack);
+		renderSymbols(guiGraphics);
 	}
 	
 	@Override

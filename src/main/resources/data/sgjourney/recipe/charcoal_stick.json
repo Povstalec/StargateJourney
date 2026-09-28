@@ -12,5 +12,5 @@
 		"C": {"item": "minecraft:charcoal"}
 	},
 	
-	"result": { "item": "sgjourney:charcoal_stick", "count": 1 }
+	"result": { "id": "sgjourney:charcoal_stick", "count": 1 }
 }

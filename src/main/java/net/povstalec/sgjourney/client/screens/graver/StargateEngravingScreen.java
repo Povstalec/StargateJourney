@@ -1,9 +1,10 @@
 package net.povstalec.sgjourney.client.screens.graver;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.ByteBufferBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Axis;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.models.block_entity.AbstractStargateModel;
 import net.povstalec.sgjourney.client.models.block_entity.ClassicStargateModel;
@@ -30,7 +32,6 @@ import net.povstalec.sgjourney.client.widgets.SGJourneyCycleButton;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
-import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.items.SymbolPaperItem;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -154,7 +155,7 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 		if(symbols != null && !symbols.equals(menu.blockEntity.symbolInfo().symbols()))
 			packet.withSymbols(symbols);
 		
-		PacketHandlerInit.INSTANCE.sendToServer(packet);
+		PacketDistributor.sendToServer(packet);
 		onClose();
 	}
 	
@@ -185,33 +186,33 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 	}
 	
 	@Override
-	protected void renderBg(@NotNull PoseStack stack, float partialTick, int mouseX, int mouseY)
+	protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY)
 	{
-		this.renderBackground(stack);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
-		this.blit(stack, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
-		this.itemHint(stack, leftPos + 80, topPos + 81, 176, 0, 0);
+		this.itemHint(guiGraphics, texture, leftPos + 80, topPos + 81, 176, 0, 0);
 	}
 	
 	@Override
-	public void render(@NotNull PoseStack stack, int mouseX, int mouseY, float delta)
+	public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
 	{
-		renderBackground(stack);
-		super.render(stack, mouseX, mouseY, delta);
-		renderTooltip(stack, mouseX, mouseY);
+		this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
+		super.render(guiGraphics, mouseX, mouseY, partialTick);
+		renderTooltip(guiGraphics, mouseX, mouseY);
 		
-		itemTooltip(stack, mouseX, mouseY, 80, 81, 0, ComponentHelper.description("screen.sgjourney.engraving.stargate.insert_symbol_paper"));
+		itemTooltip(guiGraphics, mouseX, mouseY, 80, 81, 0, ComponentHelper.description("screen.sgjourney.engraving.stargate.insert_symbol_paper"));
 		
+		PoseStack stack = guiGraphics.pose();
 		stack.pushPose();
 		stack.translate(leftPos + imageWidth / 2F, topPos + 71, 0);
 		stack.scale(-16, -16, -16);
 		stack.mulPose(Axis.YP.rotationDegrees(-180));
 		
-		MultiBufferSource.BufferSource source = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-		renderStargate(stack, source, mouseX, mouseY, delta);
+		MultiBufferSource.BufferSource source = MultiBufferSource.immediate(new ByteBufferBuilder(786432));
+		renderStargate(stack, source, mouseX, mouseY, partialTick);
 		source.endBatch();
 		
 		stack.popPose();
@@ -220,9 +221,9 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 	protected abstract void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick);
 	
 	@Override
-	protected void renderLabels(@NotNull PoseStack poseStack, int mouseX, int mouseY)
+	protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY)
 	{
-		this.font.draw(poseStack, this.playerInventoryTitle, (float) this.inventoryLabelX, (float) this.inventoryLabelY, 4210752);
+		guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752, false);
 		
 		//renderSymbol(poseStack);
 	}

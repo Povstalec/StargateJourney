@@ -1,21 +1,27 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class EnergyBlockItem extends BlockItem
@@ -34,17 +40,73 @@ public abstract class EnergyBlockItem extends BlockItem
 		this(block, properties, "tooltip.sgjourney.energy");
 	}
 	
+	@Override
+	protected boolean updateCustomBlockEntityTag(BlockPos pos, Level level, @Nullable Player player, ItemStack stack, BlockState state)
+	{
+		return updateBlockEntityTag(level, player, pos, stack);
+	}
+	
+	protected boolean updateBlockEntityTag(Level level, @Nullable Player player, BlockPos pos, ItemStack stack)
+	{
+		MinecraftServer minecraftserver = level.getServer();
+		if(minecraftserver == null)
+			return false;
+		
+		if(stack.has(DataComponents.BLOCK_ENTITY_DATA))
+		{
+			CompoundTag compoundtag = stack.get(DataComponents.BLOCK_ENTITY_DATA).getUnsafe();
+			BlockEntity blockentity = level.getBlockEntity(pos);
+			if(blockentity != null)
+			{
+				if(!level.isClientSide() && blockentity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+					return false;
+				
+				CompoundTag compoundtag1 = blockentity.saveWithoutMetadata(minecraftserver.registryAccess());
+				CompoundTag compoundtag2 = compoundtag1.copy();
+				
+				compoundtag1.merge(compoundtag);
+				
+				if(!compoundtag1.equals(compoundtag2))
+				{
+					blockentity.loadCustomOnly(compoundtag1, minecraftserver.registryAccess());
+					blockentity.setChanged();
+					
+					return setupBlockEntity(stack, blockentity);
+				}
+			}
+		}
+		else
+		{
+			BlockEntity baseEntity = level.getBlockEntity(pos);
+			return setupBlockEntity(stack, baseEntity);
+		}
+		
+		return false;
+	}
+	
+	protected boolean setupBlockEntity(ItemStack stack, BlockEntity baseEntity)
+	{
+		if(baseEntity instanceof EnergyBlockEntity energyBlockEntity)
+		{
+			if(stack.has(DataComponentInit.ENERGY))
+				energyBlockEntity.getEnergyStorage().setEnergy(stack.get(DataComponentInit.ENERGY));
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public void setEnergy(ItemStack stack, long energy)
 	{
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
-		if(blockEntityTag == null)
+		if(blockEntityTag != null)
 		{
-			CompoundTag tag = stack.getOrCreateTag();
-			blockEntityTag = new CompoundTag();
-			tag.put(BlockItem.BLOCK_ENTITY_TAG, blockEntityTag);
+			blockEntityTag.putLong(EnergyBlockEntity.ENERGY, energy);
+			stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
 		}
-		
-		blockEntityTag.putLong(EnergyBlockEntity.ENERGY, energy);
+		else
+			stack.set(DataComponentInit.ENERGY, energy);
 	}
 	
 	public long getEnergy(ItemStack stack)
@@ -53,7 +115,7 @@ public abstract class EnergyBlockItem extends BlockItem
 		if(blockEntityTag != null && blockEntityTag.contains(EnergyBlockEntity.ENERGY, Tag.TAG_LONG))
 			return blockEntityTag.getLong(EnergyBlockEntity.ENERGY);
 		
-		return 0L;
+		return stack.getOrDefault(DataComponentInit.ENERGY, 0L);
 	}
 	
 	public abstract long getCapacity();

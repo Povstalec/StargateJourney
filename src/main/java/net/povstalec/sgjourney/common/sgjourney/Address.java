@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -44,6 +45,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
 	public static final int MAX_SYMBOL = 47;
 	public static final int ADDRESS_GENERATION_SYMBOLS = 36; // Max symbol (exclusive) allowed for normal generation purposes
+	
+	public static final StreamCodec<FriendlyByteBuf, Address> STREAM_CODEC = new StreamCodec<>()
+	{
+		public @NotNull Address decode(@NotNull FriendlyByteBuf byteBuf)
+		{
+			return read(byteBuf);
+		}
+		
+		public void encode(@NotNull FriendlyByteBuf byteBuf, @NotNull Address address)
+		{
+			write(byteBuf, address);
+		}
+	};
 	
 	protected int[] addressArray = new int[0];
 	
@@ -402,16 +416,20 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	
 	protected abstract byte bufferId();
 	
-	public static void write(FriendlyByteBuf buffer, Address address)
+	public static void write(FriendlyByteBuf buffer, @Nullable Address address)
 	{
-		buffer.writeByte(address.bufferId());
-		address.write(buffer);
+		buffer.writeByte(address != null ? address.bufferId() : -1);
+		
+		if(address != null)
+			address.write(buffer);
 	}
 	
+	@Nullable
 	public static Address read(FriendlyByteBuf buffer)
 	{
 		return switch(buffer.readByte())
 		{
+			case -1 -> null;
 			case 0 -> Address.Immutable.read(buffer);
 			case 1 -> Address.Mutable.read(buffer);
 			case 2 -> Address.Dimension.read(buffer);
@@ -470,6 +488,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
 		).apply(instance, Address.Immutable::fromCodecList));
+		
+		public static final StreamCodec<FriendlyByteBuf, Address.Immutable> STREAM_CODEC = new StreamCodec<>()
+		{
+			public @NotNull Address.Immutable decode(@NotNull FriendlyByteBuf byteBuf)
+			{
+				return Address.Immutable.read(byteBuf);
+			}
+			
+			public void encode(@NotNull FriendlyByteBuf byteBuf, @NotNull Address.Immutable address)
+			{
+				address.write(byteBuf);
+			}
+		};
 		
 		public Immutable() {}
 		
@@ -587,6 +618,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		public static final Codec<Mutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
 		).apply(instance, Mutable::fromCodecList));
+		
+		public static final StreamCodec<FriendlyByteBuf, Address.Mutable> STREAM_CODEC = new StreamCodec<>()
+		{
+			public @NotNull Address.Mutable decode(@NotNull FriendlyByteBuf byteBuf)
+			{
+				return Address.Mutable.read(byteBuf);
+			}
+			
+			public void encode(@NotNull FriendlyByteBuf byteBuf, @NotNull Address.Mutable address)
+			{
+				address.write(byteBuf);
+			}
+		};
 		
 		public Mutable() {}
 		
@@ -762,6 +806,19 @@ public abstract class Address implements Cloneable, Comparable<Address>
 				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(address -> Optional.ofNullable(address.galaxyKey)),
 				Codec.intRange(7, 9).optionalFieldOf("address_type", 7).forGetter(address -> (int) address.addressType.value)
 		).apply(instance, Dimension::new));
+		
+		public static final StreamCodec<FriendlyByteBuf, Address.Dimension> STREAM_CODEC = new StreamCodec<>()
+		{
+			public @NotNull Address.Dimension decode(@NotNull FriendlyByteBuf byteBuf)
+			{
+				return Address.Dimension.read(byteBuf);
+			}
+			
+			public void encode(@NotNull FriendlyByteBuf byteBuf, @NotNull Address.Dimension address)
+			{
+				address.write(byteBuf);
+			}
+		};
 		
 		private ResourceKey<Level> dimension;
 		@Nullable

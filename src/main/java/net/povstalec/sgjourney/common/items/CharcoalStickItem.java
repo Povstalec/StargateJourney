@@ -8,6 +8,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,7 @@ public class CharcoalStickItem extends Item
 {
 	public CharcoalStickItem(Properties properties)
 	{
-		super(properties.defaultDurability(16));
+		super(properties.durability(16));
 	}
 	
 	@Nullable
@@ -75,13 +76,13 @@ public class CharcoalStickItem extends Item
 				return InteractionResult.FAIL;
 			
 			ItemStack heldStack = context.getItemInHand();
-			heldStack.hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
+			heldStack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
 			
 			if(!player.getAbilities().instabuild)
 				otherStack.shrink(1);
 			
 			player.awardStat(Stats.ITEM_USED.get(this));
-			player.level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
+			player.level().playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
 			
 			if(otherStack.isEmpty())
 				player.setItemInHand(otherHand, symbolPaperStack);
@@ -95,7 +96,7 @@ public class CharcoalStickItem extends Item
 	}
 	
 	@Override
-	public void appendHoverText(@NotNull ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.charcoal_stick.description"));
 	}

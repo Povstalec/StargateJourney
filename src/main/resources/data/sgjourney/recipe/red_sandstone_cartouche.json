@@ -10,5 +10,5 @@
 	{
 		"S": { "item": "sgjourney:red_sandstone_symbol" }
 	},
-	"result": { "item": "sgjourney:red_sandstone_cartouche" }
+	"result": { "id": "sgjourney:red_sandstone_cartouche" }
 }

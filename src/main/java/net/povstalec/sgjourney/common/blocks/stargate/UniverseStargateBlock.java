@@ -13,15 +13,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.network.NetworkHooks;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
@@ -33,6 +32,7 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +80,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
     }
 	
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
+	public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -99,7 +99,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
 		tooltipComponents.add(Component.translatable("tooltip.sgjourney.point_of_origin").append(Component.literal(": ")).append(Component.translatable(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
+		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 	}
 	
 	protected void openStargateGravingMenu(Level level, BlockPos pos, BlockState state, @Nullable Player player)
@@ -120,7 +120,7 @@ public class UniverseStargateBlock extends RotatingStargateBaseBlock implements 
 					return new StargateEngravingMenu.Universe(windowId, playerInventory, universeStargate, ContainerLevelAccess.create(level, pos));
 				}
 			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, universeStargate.getBlockPos());
+			NetworkUtils.openMenu((ServerPlayer) player, containerProvider, universeStargate.getBlockPos());
 		}
 	}
 	

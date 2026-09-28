@@ -241,6 +241,8 @@ public class StargateJourney
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PLUG.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PORT.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_HUB.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
 		
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_WIRE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
@@ -271,7 +273,10 @@ public class StargateJourney
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getEnergyItemHandler(direction));
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.GOAULD_RING_PANEL.get(), (blockEntity, direction) -> blockEntity.getEnergyItemHandler());
 		
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_HUB.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_HOLDER.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_PLUG.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_PORT.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_HUB.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
 		
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
@@ -397,6 +402,13 @@ public class StargateJourney
 		@SubscribeEvent
 		public static void registerMenuScreens(RegisterMenuScreensEvent event)
 		{
+			event.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
+			event.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);
+			event.register(MenuInit.ADVANCED_CRYSTAL_INTERFACE.get(), InterfaceScreen.AdvancedCrystal::new);
+			
+			event.register(MenuInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsScreen.Ancient::new);
+			event.register(MenuInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsScreen.Goauld::new);
+			
 			event.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
 			event.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
 			

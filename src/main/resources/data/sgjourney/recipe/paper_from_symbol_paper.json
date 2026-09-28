@@ -5,5 +5,5 @@
 	[
 		{ "item": "sgjourney:symbol_paper" }
 	],
-	"result": { "item": "minecraft:paper", "count": 1 }
+	"result": { "id": "minecraft:paper", "count": 1 }
 }
