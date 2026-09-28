@@ -553,20 +553,20 @@ public class BlockInit
 			.sound(SoundType.STONE), 15, ParticleTypes.FLAME));
 	
 	public static final RegistryObject<Block> SANDSTONE_WITH_LAPIS = registerBlock("sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_WITH_GOLD = registerBlock("sandstone_with_gold",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_HIEROGLYPHS = registerBlock("sandstone_hieroglyphs", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 
-			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<Block> RED_SANDSTONE_WITH_LAPIS = registerBlock("red_sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> RED_SANDSTONE_WITH_GOLD = registerBlock("red_sandstone_with_gold",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> RED_SANDSTONE_GLYPHS = registerBlock("red_sandstone_glyphs",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	// Cartouches
 	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche", 
 			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
