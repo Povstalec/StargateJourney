@@ -8,8 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,7 +19,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.common.ItemAbility;
-import net.neoforged.neoforge.common.Tags;
 import net.povstalec.sgjourney.common.blocks.SpecialEngravableBlock;
 import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
@@ -144,19 +141,6 @@ public class GraverItem extends TieredItem
 		}
 		
 		return true;
-	}
-	
-	public static TagKey<Block> getTagFromVanillaTier(Tiers tier)
-	{
-		return switch(tier)
-		{
-			case WOOD -> Tags.Blocks.NEEDS_WOOD_TOOL;
-			case GOLD -> Tags.Blocks.NEEDS_GOLD_TOOL;
-			case STONE -> BlockTags.NEEDS_STONE_TOOL;
-			case IRON -> BlockTags.NEEDS_IRON_TOOL;
-			case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
-			case NETHERITE -> Tags.Blocks.NEEDS_NETHERITE_TOOL;
-		};
 	}
 	
 	@Override
