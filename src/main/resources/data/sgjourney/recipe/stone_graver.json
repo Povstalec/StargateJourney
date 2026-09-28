@@ -11,6 +11,6 @@
 		" X",
 		"# "
 	],
-	"result": { "item": "sgjourney:stone_graver" },
+	"result": { "id": "sgjourney:stone_graver" },
 	"show_notification": true
 }

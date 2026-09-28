@@ -11,6 +11,6 @@
 		" X",
 		"# "
 	],
-	"result": { "item": "sgjourney:golden_graver" },
+	"result": { "id": "sgjourney:golden_graver" },
 	"show_notification": true
 }

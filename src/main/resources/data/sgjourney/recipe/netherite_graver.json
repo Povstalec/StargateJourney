@@ -1,5 +1,5 @@
 {
-	"type": "minecraft:smithing",
+	"type": "minecraft:smithing_transform",
 	"addition":
 	{
 		"item": "minecraft:netherite_ingot"
@@ -10,6 +10,10 @@
 	},
 	"result":
 	{
-		"item": "sgjourney:netherite_graver"
+		"id": "sgjourney:netherite_graver"
+	},
+	"template":
+	{
+		"item": "minecraft:netherite_upgrade_smithing_template"
 	}
 }

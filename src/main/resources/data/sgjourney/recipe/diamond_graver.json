@@ -11,6 +11,6 @@
 		" X",
 		"# "
 	],
-	"result": { "item": "sgjourney:diamond_graver" },
+	"result": { "id": "sgjourney:diamond_graver" },
 	"show_notification": true
 }

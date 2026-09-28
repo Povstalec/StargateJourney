@@ -11,6 +11,6 @@
 		" X",
 		"# "
 	],
-	"result": { "item": "sgjourney:trinium_graver" },
+	"result": { "id": "sgjourney:trinium_graver" },
 	"show_notification": true
 }

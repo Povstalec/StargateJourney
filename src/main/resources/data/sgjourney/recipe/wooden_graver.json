@@ -11,6 +11,6 @@
 		" X",
 		"# "
 	],
-	"result": { "item": "sgjourney:wooden_graver" },
+	"result": { "id": "sgjourney:wooden_graver" },
 	"show_notification": true
 }
