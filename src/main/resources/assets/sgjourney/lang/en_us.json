@@ -841,6 +841,10 @@
 	"point_of_origin.sgjourney.mercury": "Mercury",
 	"point_of_origin.sgjourney.venus": "Venus",
 	"point_of_origin.sgjourney.mars": "Mars",
+	"point_of_origin.sgjourney.jupiter": "Jupiter",
+	"point_of_origin.sgjourney.saturn": "Saturn",
+	"point_of_origin.sgjourney.uranus": "Uranus",
+	"point_of_origin.sgjourney.neptune": "Neptune",
 	
 	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	"point_of_origin.sgjourney.ursa_major": "Ursa Major",

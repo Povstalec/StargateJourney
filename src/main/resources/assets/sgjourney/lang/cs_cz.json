@@ -839,6 +839,10 @@
 	"point_of_origin.sgjourney.mercury": "Merkur",
 	"point_of_origin.sgjourney.venus": "Venuše",
 	"point_of_origin.sgjourney.mars": "Mars",
+	"point_of_origin.sgjourney.jupiter": "Jupiter",
+	"point_of_origin.sgjourney.saturn": "Saturn",
+	"point_of_origin.sgjourney.uranus": "Uran",
+	"point_of_origin.sgjourney.neptune": "Neptun",
 	
 	"point_of_origin.sgjourney.andromeda": "Andromeda",
 	"point_of_origin.sgjourney.ursa_major": "Velký vůz",
