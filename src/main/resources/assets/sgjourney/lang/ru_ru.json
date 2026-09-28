@@ -376,6 +376,15 @@
 	"item.sgjourney.stargate_variant_crystal": "Кристалл модификации Звёздных врат",
 
 	"item.sgjourney.call_forwarding_device": "Устройство переадресации вызова",
+
+	"item.sgjourney.wooden_graver": "Деревянный штихель",
+	"item.sgjourney.stone_graver": "Каменный штихель",
+	"item.sgjourney.iron_graver": "Железный штихель",
+	"item.sgjourney.golden_graver": "Золотой штихель",
+	"item.sgjourney.diamond_graver": "Алмазный штихель",
+	"item.sgjourney.netherite_graver": "Незеритовый штихель",
+	"item.sgjourney.naquadah_graver": "Наквадаховый штихель",
+	"item.sgjourney.trinium_graver": "Триниевый штихель",
 	
 	"item.sgjourney.naquadah_sword": "Наквадаховый меч",
 	"item.sgjourney.naquadah_pickaxe": "Наквадаховая кирка",
