@@ -1,9 +1,5 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.DynamicOps;
@@ -26,6 +22,9 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class StargateConnection
 {
@@ -265,18 +264,18 @@ public class StargateConnection
 		this(uuid, connectionType, dialingStargate, dialedStargates, false, 0, 0, 0, doKawoosh);
 	}
 	
-	public static StargateConnection create(StargateConnection.Type connectionType, Stargate dialingStargate, List<Stargate> dialedStargates, boolean doKawoosh)
+	public static StargateConnection create(StargateConnection.Type connectionType, Stargate dialingStargate, List<Stargate> dialedStargates, boolean doKawoosh, Dialing.Action action)
 	{
-		UUID uuid = UUID.randomUUID();
-		
 		if(dialingStargate != null && dialedStargates != null)
 		{
+			StargateConnection stargateConnection = new StargateConnection(UUID.randomUUID(), connectionType, dialingStargate, dialedStargates, doKawoosh);
+			if(action.simulate())
+				return stargateConnection;
+			
 			for(Stargate dialedStargate : dialedStargates)
 			{
 				dialedStargate.resetStargate(StargateInfo.Feedback.INTERRUPTED_BY_INCOMING_CONNECTION);
 			}
-			
-			StargateConnection stargateConnection = new StargateConnection(uuid, connectionType, dialingStargate, dialedStargates, doKawoosh);
 
 			dialingStargate.connectStargate(stargateConnection, StargateConnection.State.OUTGOING_CONNECTION);
 			for(Stargate dialedStargate : dialedStargates)
@@ -416,14 +415,9 @@ public class StargateConnection
 		}
 	}
 	
-	public static boolean canExtract(Stargate stargate, long energyExtracted)
-	{
-		return stargate.extractEnergy(energyExtracted, true) >= energyExtracted;
-	}
-	
 	private boolean depleteEnergy(long energyDraw)
 	{
-		if(canExtract(this.dialingStargate, energyDraw))
+		if(this.dialingStargate.canExtract(energyDraw))
 		{
 			this.dialingStargate.extractEnergy(energyDraw, false);
 			return true;
@@ -432,7 +426,7 @@ public class StargateConnection
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
 			//TODO Tie this to Advanced Protocols
-			if(dialedStargate.canPowerFromOtherSide() && canExtract(dialedStargate, energyDraw))
+			if(dialedStargate.canPowerFromOtherSide() && dialedStargate.canExtract(energyDraw))
 			{
 				dialedStargate.extractEnergy(energyDraw, false);
 				return true;
@@ -649,9 +643,17 @@ public class StargateConnection
 	public int getKawooshTime()
 	{
 		int kawooshStartTicks = getDialedStargate().dialedEngageTime(doKawoosh());
-		int kawooshTime = this.connectionTime - kawooshStartTicks;
 		
-		return Math.max(kawooshTime, 0);
+		if(!doKawoosh())
+		{
+			int maxKawooshTicks = kawooshStartTicks + Math.max(getDialedStargate().wormholeEstablishTime(doKawoosh()), this.dialingStargate.wormholeEstablishTime(doKawoosh()));
+			return Math.max(this.connectionTime - maxKawooshTicks, maxKawooshTicks);
+		}
+		else
+		{
+			int kawooshTime = this.connectionTime - kawooshStartTicks;
+			return Math.max(kawooshTime, 0);
+		}
 	}
 	
 	/**
@@ -659,7 +661,7 @@ public class StargateConnection
 	 */
 	public int getOpenTime()
 	{
-		return this.openTime;
+		return doKawoosh() ? this.openTime : this.connectionTime;
 	}
 	
 	public void setTimeSinceLastTraveler(int timeSinceLastTraveler)

@@ -50,13 +50,22 @@ import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
 import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
 import net.povstalec.sgjourney.client.render.FalconArmorRenderProperties;
 import net.povstalec.sgjourney.client.render.JackalArmorRenderProperties;
-import net.povstalec.sgjourney.client.render.block_entity.*;
+import net.povstalec.sgjourney.client.render.block_entity.stargate.*;
+import net.povstalec.sgjourney.client.render.block_entity.transporter.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHolderRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHubRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPlugRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPortRenderer;
 import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
 import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
 import net.povstalec.sgjourney.client.screens.dhd.*;
+import net.povstalec.sgjourney.client.screens.graver.CartoucheEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.DHDEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.StargateEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.SymbolBlockEngravingScreen;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
@@ -146,6 +155,8 @@ public class StargateJourney
 			event.dataPackRegistry(AddressRegion.REGISTRY_KEY, AddressRegion.CODEC, AddressRegion.CODEC);
 			event.dataPackRegistry(SpaceLocation.REGISTRY_KEY, SpaceLocation.CODEC, SpaceLocation.CODEC);
 			event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
+			event.dataPackRegistry(SymbolTable.REGISTRY_KEY, SymbolTable.CODEC, SymbolTable.CODEC);
+			event.dataPackRegistry(PointOfOriginTable.REGISTRY_KEY, PointOfOriginTable.CODEC, PointOfOriginTable.CODEC);
 			event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
 		});
 		
@@ -368,6 +379,11 @@ public class StargateJourney
 			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
 			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
 			
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HOLDER.get(), ZPMHolderRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PORT.get(), ZPMPortRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HUB.get(), ZPMHubRenderer::new);
+			
 			BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer.Ancient::new);
 			BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer.Goauld::new);
 			
@@ -381,13 +397,6 @@ public class StargateJourney
 		@SubscribeEvent
 		public static void registerMenuScreens(RegisterMenuScreensEvent event)
 		{
-			event.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
-			event.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);
-			event.register(MenuInit.ADVANCED_CRYSTAL_INTERFACE.get(), InterfaceScreen.AdvancedCrystal::new);
-			
-			event.register(MenuInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsScreen.Ancient::new);
-			event.register(MenuInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsScreen.Goauld::new);
-			
 			event.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
 			event.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
 			
@@ -402,8 +411,6 @@ public class StargateJourney
 			
 			event.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 			
-			event.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-			
 			event.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
 			event.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
 			event.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen.Crystallizer::new);
@@ -412,6 +419,22 @@ public class StargateJourney
 			event.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
 			event.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
+			
+			event.register(MenuInit.ENGRAVING_STONE_CARTOUCHE.get(), CartoucheEngravingScreen.Stone::new);
+			event.register(MenuInit.ENGRAVING_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.Sandstone::new);
+			event.register(MenuInit.ENGRAVING_RED_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.RedSandstone::new);
+			
+			event.register(MenuInit.ENGRAVING_STONE_SYMBOL.get(), SymbolBlockEngravingScreen.Stone::new);
+			event.register(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.Sandstone::new);
+			event.register(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.RedSandstone::new);
+			
+			event.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
+			event.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
+			event.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
+			
+			event.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
+			event.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
+			event.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
 		}
 
 		@SubscribeEvent

@@ -1,32 +1,33 @@
 package net.povstalec.sgjourney.common.blocks;
 
-import java.util.List;
-
 import com.mojang.serialization.MapCodec;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
-import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -36,17 +37,24 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
-import net.povstalec.sgjourney.common.block_entities.CartoucheEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
+import net.povstalec.sgjourney.common.misc.NetworkUtils;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
 
-public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock
+import javax.annotation.Nullable;
+import java.util.List;
+
+public abstract class CartoucheBlock extends HorizontalDirectionalBlock implements EntityBlock, SpecialEngravableBlock
 {
 	public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
 	public static final EnumProperty<Orientation> ORIENTATION = EnumProperty.create("orientation", Orientation.class);
@@ -111,15 +119,15 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 				
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				
-				if(blockEntity instanceof CartoucheEntity cartouche)
+				if(blockEntity instanceof CartoucheBlockEntity cartouche)
 				{
-					Address address = cartouche.getAddress();
+					Address address = cartouche.getUpToDateAddress();
 					
 					if(address instanceof Address.Dimension dimensionAddress)
 						player.sendSystemMessage(Component.translatable("info.sgjourney.dimension").append(Component.literal(": ")).append(dimensionAddress.getDimension().location().toString()).withStyle(ChatFormatting.GREEN));
 					
 					BlockPos underPos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
-					if(level.getBlockEntity(underPos) instanceof SymbolBlockEntity symbolBlockEntity && symbolBlockEntity.symbolNumber == 0)
+					if(level.getBlockEntity(underPos) instanceof SymbolBlockEntity symbolBlockEntity && symbolBlockEntity.getSymbolNumber() == 0)
 						address = Address.Immutable.extendWithPointOfOrigin(new Address.Immutable(address));
 					player.sendSystemMessage(Component.translatable("info.sgjourney.address").append(Component.literal(": ")).withStyle(ChatFormatting.YELLOW).append(address.toComponent(true)));
 					
@@ -127,7 +135,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 						player.sendSystemMessage(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + cartouche.getSymbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 					
 					if(cartouche.getAddressTable() != null)
-						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable())).withStyle(ChatFormatting.YELLOW));
+						player.sendSystemMessage(Component.translatable("info.sgjourney.address_table").append(Component.literal(": " + cartouche.getAddressTable().location())).withStyle(ChatFormatting.YELLOW));
 				}
 			}
 			return InteractionResult.SUCCESS;
@@ -141,7 +149,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	public abstract Block getBlock();
 
     @Override
-    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, LivingEntity entity, @NotNull ItemStack stack)
     {
     	Orientation orientation = state.getValue(ORIENTATION);
     	Direction direction = state.getValue(FACING);
@@ -151,7 +159,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
     
     @Override
-	public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+	public @NotNull BlockState playerWillDestroy(@NotNull Level level, @NotNull BlockPos pos, BlockState state, @NotNull Player player)
 	{
     	Direction direction = state.getValue(FACING);
     	Orientation orientation = state.getValue(ORIENTATION);
@@ -160,7 +168,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     	if(doubleblockhalf == DoubleBlockHalf.UPPER)
     		pos = pos.relative(Orientation.getMultiDirection(direction, Direction.DOWN, orientation));
 		BlockEntity blockentity = level.getBlockEntity(pos);
-		if(blockentity instanceof CartoucheEntity)
+		if(blockentity instanceof CartoucheBlockEntity)
 		{
 			if(!level.isClientSide() && !player.isCreative() && player.hasCorrectToolForDrops(state))
 			{
@@ -178,51 +186,143 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 	}
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag tooltipFlag)
     {
-    	boolean hasAddress = false;
-    	String dimensionString = "";
+    	String dimensionString = null;
     	String symbolsString = "";
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
     	if(blockEntityTag != null)
     	{
-    		if(blockEntityTag.contains(CartoucheEntity.ADDRESS))
+			if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_COMPOUND))
+			{
+				Address.Dimension address = Address.Dimension.loadFromCompoundTag(blockEntityTag, CartoucheBlockEntity.ADDRESS);
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
+				dimensionString = address.getDimension().location().toString();
+			}
+    		else if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS, Tag.TAG_INT_ARRAY))
     		{
-    			hasAddress = true;
-    			
-    			int[] addressArray = blockEntityTag.getIntArray(CartoucheEntity.ADDRESS);
-    			
+    			int[] addressArray = blockEntityTag.getIntArray(CartoucheBlockEntity.ADDRESS);
     			Address address = new Address.Immutable(addressArray);
     			tooltipComponents.add(Component.translatable("tooltip.sgjourney.address").append(Component.literal(": ").append(address.toComponent(false))).withStyle(ChatFormatting.YELLOW));
     		}
     		
-    		if(blockEntityTag.contains(CartoucheEntity.DIMENSION))
-    			dimensionString = blockEntityTag.getString(CartoucheEntity.DIMENSION);
-    		
-    		if(blockEntityTag.contains(CartoucheEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheEntity.SYMBOLS))), "Error");
-        	
-        	if(blockEntityTag.contains(CartoucheEntity.ADDRESS_TABLE))
-        		tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
+    		if(blockEntityTag.contains(CartoucheBlockEntity.SYMBOLS))
+				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
     	}
     	
-    	if(!hasAddress)
+    	if(dimensionString != null)
 			tooltipComponents.add(Component.translatable("tooltip.sgjourney.dimension").append(Component.literal(": " + dimensionString)).withStyle(ChatFormatting.GREEN));
 		tooltipComponents.add(Component.translatable(ClientSymbols.symbolsOrSet()).append(Component.literal(": ")).append(Component.translatable(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		if(blockEntityTag != null && blockEntityTag.contains(CartoucheEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
-				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheEntity.GENERATION_STEP)))
-			tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
-    	
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+		if(blockEntityTag != null)
+		{
+			if(blockEntityTag.contains(CartoucheBlockEntity.ADDRESS_TABLE))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.address_table").append(Component.literal(": " + blockEntityTag.getString(CartoucheBlockEntity.ADDRESS_TABLE))).withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.GENERATION_STEP, CompoundTag.TAG_BYTE)
+				&& StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(blockEntityTag.getByte(CartoucheBlockEntity.GENERATION_STEP)))
+				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
+			
+			if(blockEntityTag.contains(CartoucheBlockEntity.LOCAL_ADDRESS))
+				tooltipComponents.add(localAddressComponent(Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS))));
+		}
+		
+		tooltipComponents.add(ComponentHelper.description("block.sgjourney.cartouche.description"));
     }
 	
+	public static Component localAddressComponent(Address.Type type)
+	{
+		MutableComponent component = switch(type)
+		{
+			case ADDRESS_7_CHEVRON -> Component.translatable("tooltip.sgjourney.local_7_chevron_address");
+			case ADDRESS_8_CHEVRON -> Component.translatable("tooltip.sgjourney.local_8_chevron_address");
+			case ADDRESS_9_CHEVRON -> Component.translatable("tooltip.sgjourney.local_9_chevron_address");
+			default -> Component.empty();
+		};
+		
+		return component.withStyle(type.getChatFormatting());
+	}
+	
 	@Override
-	public PushReaction getPistonPushReaction(BlockState state)
+	public @NotNull PushReaction getPistonPushReaction(@NotNull BlockState state)
 	{
 		return PushReaction.BLOCK;
 	}
+	
+	public static BlockPos getOtherCartoucheHalfPos(BlockPos pos, BlockState state)
+	{
+		DoubleBlockHalf half = state.getValue(CartoucheBlock.HALF);
+		Direction direction = state.getValue(CartoucheBlock.FACING);
+		Orientation orientation = state.getValue(CartoucheBlock.ORIENTATION);
+		
+		return pos.relative(Orientation.getMultiDirection(direction, half == DoubleBlockHalf.UPPER ? Direction.DOWN : Direction.UP, orientation));
+	}
+	
+	protected abstract void openCartoucheGravingMenu(Level level, BlockPos pos, @Nullable Player player);
+	
+	@Override
+	public InteractionResult onGraverUsed(Level level, BlockPos pos, @Nullable Player player, InteractionHand hand, ItemStack graverStack)
+	{
+		BlockState state = level.getBlockState(pos);
+		if(state.hasProperty(CartoucheBlock.HALF))
+		{
+			if(state.getValue(CartoucheBlock.HALF) == DoubleBlockHalf.UPPER)
+				return onGraverUsed(level, getOtherCartoucheHalfPos(pos, state), player, hand, graverStack);
+			
+			if(!level.isClientSide())
+				openCartoucheGravingMenu(level, pos, player);
+		}
+		
+		return InteractionResult.PASS;
+	}
+	
+	@Override
+	public void setSymbols(Level level, BlockPos pos, BlockState state, ResourceKey<Symbols> symbols)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			cartouche.setSymbols(symbols);
+	}
+	
+	@Override
+	public @Nullable ResourceKey<Symbols> getSymbols(Level level, BlockPos pos, BlockState state)
+	{
+		// There isn't anything to copy if the address is empty, as there are no symbols engraved
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche && !cartouche.getAddress().isEmpty())
+			return cartouche.getSymbols();
+		
+		return null;
+	}
+	
+	@Override
+	public void setAddress(Level level, BlockPos pos, BlockState state, Address address)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			cartouche.setAddress(address);
+	}
+	
+	@Override
+	public @Nullable Address getAddress(Level level, BlockPos pos, BlockState state)
+	{
+		if(level.getBlockEntity(pos) instanceof CartoucheBlockEntity cartouche)
+			return cartouche.getAddress();
+		
+		return null;
+	}
+	
+	
+	
+	public static ItemStack localAddressSetup(ItemLike item, Address.Type type)
+	{
+		ItemStack stack = new ItemStack(item);
+		CompoundTag blockEntityTag = new CompoundTag();
+		blockEntityTag.putByte(CartoucheBlockEntity.LOCAL_ADDRESS, type.byteValue());
+		stack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(blockEntityTag));
+		
+		return stack;
+	}
+	
+	
     
     public static class Stone extends CartoucheBlock
     {
@@ -240,7 +340,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.Stone(pos, state);
+			return new CartoucheBlockEntity.Stone(pos, state);
 		}
 
 	    public Block getBlock()
@@ -253,7 +353,31 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		{
 			return BlockInit.STONE_CARTOUCHE.get();
 		}
-    	
+		
+		@Override
+		protected void openCartoucheGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof CartoucheBlockEntity.Stone cartouche)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new CartoucheEngravingMenu.Stone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
+			}
+		}
     }
     
     public static class Sandstone extends CartoucheBlock
@@ -272,7 +396,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.Sandstone(pos, state);
+			return new CartoucheBlockEntity.Sandstone(pos, state);
 		}
 
 	    public Block getBlock()
@@ -285,7 +409,31 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		{
 			return BlockInit.SANDSTONE_CARTOUCHE.get();
 		}
-    	
+		
+		@Override
+		protected void openCartoucheGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof CartoucheBlockEntity.Sandstone cartouche)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new CartoucheEngravingMenu.Sandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
+			}
+		}
     }
 	
 	public static class RedSandstone extends CartoucheBlock
@@ -304,7 +452,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 		@Override
 		public BlockEntity newBlockEntity(BlockPos pos, BlockState state)
 		{
-			return new CartoucheEntity.RedSandstone(pos, state);
+			return new CartoucheBlockEntity.RedSandstone(pos, state);
 		}
 		
 		public Block getBlock()
@@ -318,5 +466,29 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
 			return BlockInit.RED_SANDSTONE_CARTOUCHE.get();
 		}
 		
+		@Override
+		protected void openCartoucheGravingMenu(Level level, BlockPos pos, @Nullable Player player)
+		{
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof CartoucheBlockEntity.RedSandstone cartouche)
+			{
+				MenuProvider containerProvider = new MenuProvider()
+				{
+					@Override
+					public @NotNull Component getDisplayName()
+					{
+						return Component.empty();
+					}
+					
+					@Override
+					public AbstractContainerMenu createMenu(int windowId, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+					{
+						return new CartoucheEngravingMenu.RedSandstone(windowId, playerInventory, cartouche, ContainerLevelAccess.create(level, pos));
+					}
+				};
+				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, cartouche.getBlockPos());
+			}
+		}
 	}
 }

@@ -1,27 +1,29 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.povstalec.sgjourney.client.ClientUtil;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.AbstractDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
-public abstract class DHDSymbolButton extends DHDButton
+public abstract class DHDSymbolButton<M extends IDHDMenu> extends DHDButton
 {
-	protected AbstractDHDMenu<?> menu;
+	protected M menu;
 	protected ResourceLocation widgets;
 	protected ResourceLocation overlay;
 	
@@ -36,10 +38,10 @@ public abstract class DHDSymbolButton extends DHDButton
 	
 	protected boolean isRemapped = false;
 	
-    public DHDSymbolButton(int x, int y, int width, int height, AbstractDHDMenu<?> menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
-						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor)
+    public DHDSymbolButton(int x, int y, int width, int height, M menu, int symbol, ResourceLocation widgets, ResourceLocation overlay,
+						   ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor, Button.OnPress onPress)
 	{
-		super(x, y, width, height, Component.empty(), (button) -> {});
+		super(x, y, width, height, Component.empty(), onPress);
 		
 		this.menu = menu;
 		this.widgets = widgets;
@@ -63,13 +65,6 @@ public abstract class DHDSymbolButton extends DHDButton
 			else
 				setTooltip(Tooltip.create(symbolComponent()));
 		}
-	}
-	
-	@Override
-	public void onPress()
-	{
-		super.onPress();
-		menu.encodeSymbol(getSymbol());
 	}
 	
 	public int getSymbol()
@@ -99,19 +94,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
-		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
-		RenderSystem.setShaderTexture(0, pointOfOrigin.getExtendedTexture());
-		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(0F, 0F);
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(0F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(1F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(1F, 0F);
-		BufferUploader.drawWithShader(bufferbuilder.build());
+		ClientUtil.renderPointOfOrigin(matrix4f, xStart, yStart, xEnd, yEnd, pointOfOrigin, rgba);
 	}
 	
 	public void renderSymbol(Matrix4f matrix4f, float xCenter, float yCenter, float xSize, float ySize, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
@@ -121,19 +104,7 @@ public abstract class DHDSymbolButton extends DHDButton
 		float xEnd = xCenter + (xSize / 2F);
 		float yEnd = yCenter + (ySize / 2F);
 		
-		RenderSystem.enableBlend();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
-		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
-		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
-		RenderSystem.setShaderTexture(0, symbols.getExtendedSymbolTexture(symbol));
-		
-		BufferBuilder bufferbuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferbuilder.addVertex(matrix4f, xStart, yStart, 0F).setUv(0F, 0F);
-		bufferbuilder.addVertex(matrix4f, xStart, yEnd, 0F).setUv(0F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yEnd, 0F).setUv(1F, 1F);
-		bufferbuilder.addVertex(matrix4f, xEnd, yStart, 0F).setUv(1F, 0F);
-		BufferUploader.drawWithShader(bufferbuilder.build());
+		ClientUtil.renderSymbol(matrix4f, xStart, yStart, xEnd, yEnd, symbols, symbol, rgba);
 	}
 	
 	public abstract void renderSymbol(GuiGraphics guiGraphics);
@@ -146,38 +117,41 @@ public abstract class DHDSymbolButton extends DHDButton
 	}
 	
     @Override
-    public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
+    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick)
     {
-		updateRemapping();
-		this.isHovered = isMouseOver(mouseX, mouseY);
-		
-		Minecraft minecraft = Minecraft.getInstance();
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderTexture(0, widgets);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
-		RenderSystem.enableBlend();
-		RenderSystem.defaultBlendFunc();
-		RenderSystem.enableDepthTest();
-		guiGraphics.blit(widgets, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
-		
-		if(isEngaged())
+		if(this.visible)
 		{
-			RenderSystem.setShaderTexture(0, overlay);
-			RenderSystem.setShaderColor(engagedColor.red(), engagedColor.green(), engagedColor.blue(), engagedColor.alpha());
-			guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			updateRemapping();
+			this.isHovered = isMouseOver(mouseX, mouseY);
+			
+			Minecraft minecraft = Minecraft.getInstance();
+			RenderSystem.setShader(GameRenderer::getPositionTexShader);
+			RenderSystem.setShaderTexture(0, widgets);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
+			RenderSystem.enableBlend();
+			RenderSystem.defaultBlendFunc();
+			RenderSystem.enableDepthTest();
+			guiGraphics.blit(widgets, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			
+			if(isEngaged())
+			{
+				RenderSystem.setShaderTexture(0, overlay);
+				RenderSystem.setShaderColor(engagedColor.red(), engagedColor.green(), engagedColor.blue(), engagedColor.alpha());
+				guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			}
+			else if(this.isHoveredOrFocused())
+			{
+				RenderSystem.setShaderTexture(0, overlay);
+				RenderSystem.setShaderColor(hoverColor.red(), hoverColor.green(), hoverColor.blue(), hoverColor.alpha());
+				guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
+			}
+			
+			if(ClientDHDConfig.dhd_symbols_numbers.get() == SGJourneyContainerScreen.isShiftDown())
+				renderNumber(guiGraphics, minecraft);
+			else
+				renderSymbol(guiGraphics);
+			RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 		}
-		else if(this.isHoveredOrFocused())
-		{
-			RenderSystem.setShaderTexture(0, overlay);
-			RenderSystem.setShaderColor(hoverColor.red(), hoverColor.green(), hoverColor.blue(), hoverColor.alpha());
-			guiGraphics.blit(overlay, this.getX(), this.getY(), textureX, textureY, this.width, this.height);
-		}
-		
-		if(ClientDHDConfig.dhd_symbols_numbers.get() == SGJourneyContainerScreen.isShiftDown())
-			renderNumber(guiGraphics, minecraft);
-		else
-			renderSymbol(guiGraphics);
-		RenderSystem.setShaderColor(1F, 1F, 1F, 1F);
 	}
 	
     private static Component symbolComponent(int index)

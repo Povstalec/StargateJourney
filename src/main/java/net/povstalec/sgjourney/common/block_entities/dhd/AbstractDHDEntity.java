@@ -32,9 +32,8 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
-import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
-import net.povstalec.sgjourney.common.config.CommonStargateConfig;
-import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.capabilities.ZeroPointEnergy;
+import net.povstalec.sgjourney.common.config.*;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
@@ -94,6 +93,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public final ItemStackHandler energyItemHandler;
 	protected final Lazy<IItemHandler> lazyEnergyItemHandler;
 	
+	public final ZeroPointEnergy zpmEnergy;
+	
 	protected SymbolInfo symbolInfo;
 	protected boolean isNew = false;
 	
@@ -109,6 +110,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		
 		this.energyItemHandler = createEnergyItemHandler();
 		this.lazyEnergyItemHandler = Lazy.of(() -> energyItemHandler);
+		
+		this.zpmEnergy = createZPMEnergyStorage();
 		
 		this.symbolInfo = new SymbolInfo();
 	}
@@ -188,6 +191,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		isNew = tag.getBoolean(IS_NEW);
 		
 		super.loadAdditional(tag, registries);
+		zpmEnergy.updateFromZPMItem(energyItemHandler.getStackInSlot(0));
 	}
 	
 	@Override
@@ -233,7 +237,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		energyStorage.setEnergy(tag.getLong(ENERGY));
+		energyStorage.setEnergyNoUpdate(tag.getLong(ENERGY));
 		
 		symbolInfo.loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -315,14 +319,16 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			@Override
 			protected void onContentsChanged(int slot)
 			{
+				zpmEnergy.updateFromZPMItem(energyItemHandler.getStackInSlot(0));
 				setChanged();
+				updateClient();
 			}
 			
 			@Override
 			public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 			{
 				if(slot == 0)
-					return stack.getItem() instanceof IEnergyCore || stack.getItem() instanceof ZeroPointModule || stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
+					return stack.getItem() instanceof IEnergyCore || SyncedConfig.dhd_holds_zpm.get() && stack.getItem() instanceof ZeroPointModule || stack.getCapability(Capabilities.EnergyStorage.ITEM) != null;
 				
 				return true;
 			}
@@ -432,7 +438,47 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	//*******************************************Energy*******************************************
 	//============================================================================================
 	
+	public ZeroPointEnergy createZPMEnergyStorage()
+	{
+		return new ZeroPointEnergy(energyItemHandler.getStackInSlot(0))
+		{
+			@Override
+			public long receiveLongEnergy(long maxReceive, boolean simulate)
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return super.receiveLongEnergy(maxReceive, simulate);
+			}
+			
+			@Override
+			public long depleteEnergy(long maxExtract, boolean simulate)
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return super.depleteEnergy(maxExtract, simulate);
+			}
+			
+			@Override
+			public long getTrueEnergyStored()
+			{
+				updateFromZPMItem(energyItemHandler.getStackInSlot(0));
+				return this.energy;
+				
+			}
+			
+			@Override
+			public void onEnergyChanged(long difference, boolean simulate)
+			{
+				updateZPMItem(energyItemHandler.getStackInSlot(0));
+			}
+		};
+	}
+	
 	protected abstract long buttonPressEnergyCost();
+	
+	@Override
+	public boolean canReceiveZeroPointEnergy()
+	{
+		return SyncedConfig.dhd_holds_zpm.get() || CommonZPMConfig.stargates_use_zero_point_energy.get();
+	}
 	
 	public long minStoredEnergy()
 	{
@@ -444,7 +490,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	@Override
 	public boolean isCorrectEnergySide(Direction side)
 	{
-		return true;
+		return side != Direction.UP;
 	}
 	
 	@Override
@@ -472,22 +518,14 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		else if(energyStack.getCapability(Capabilities.EnergyStorage.ITEM) != null)
 		{
-			IEnergyStorage energy = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
-			if(energy != null)
-			{
-				if(energy instanceof SGJourneyEnergy sgjourneyEnergy)
-				{
-					long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
-					long energyExtracted = sgjourneyEnergy.extractLongEnergy(energyNeeded, false);
-					energyStorage.receiveLongEnergy(energyExtracted, false);
-				}
-				else
-				{
-					int energyNeeded = (int) Math.min(energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored(), Integer.MAX_VALUE);
-					int energyExtracted = energy.extractEnergy(energyNeeded, false);
-					energyStorage.receiveLongEnergy(energyExtracted, false);
-				}
-			}
+			IEnergyStorage otherEnergyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
+			long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
+			energyStorage.drainOtherEnergyStorage(otherEnergyStorage, energyNeeded);
+		}
+		else if(SyncedConfig.dhd_holds_zpm.get())
+		{
+			long energyNeeded = energyStorage.getTrueMaxEnergyStored() - energyStorage.getTrueEnergyStored();
+			energyStorage.drainOtherEnergyStorage(zpmEnergy, energyNeeded);
 		}
 	}
 	
@@ -501,23 +539,19 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(Capabilities.EnergyStorage.ITEM);
-				
-				if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
-				{
-					long energySent = sgjourneyEnergy.extractLongEnergy(needed, false);
-					stargate.energyStorage.receiveLongEnergy(energySent, false);
-				}
-				else
-				{
-					int energySent = energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(needed), false);
-					stargate.energyStorage.receiveLongEnergy(energySent, false);
-				}
+				stargate.energyStorage.drainOtherEnergyStorage(energyStorage, needed);
 			}
+			else if(SyncedConfig.dhd_holds_zpm.get() && zpmEnergy.hasEnergy())
+				zpmEnergy.fillOtherEnergyStorage(stargate.energyStorage, needed);
 			// Uses energy from the DHD energy buffer
 			else
 			{
-				long energySent = energyStorage.depleteEnergy(needed, false);
-				stargate.energyStorage.receiveLongEnergy(energySent, false);
+				// Using depleteEnergy() here because extracting is disabled in order to avoid pull-based energy systems siphoning energy from the DHD
+				long simulatedOutputAmount = energyStorage.depleteEnergy(needed, true);
+				long simulatedReceiveAmount = stargate.energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
+				
+				energyStorage.depleteEnergy(simulatedReceiveAmount, false);
+				stargate.energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
 			}
 		}
 	}

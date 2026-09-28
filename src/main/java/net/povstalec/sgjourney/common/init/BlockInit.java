@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.common.init;
 
-import java.util.function.Supplier;
-import java.util.function.ToIntFunction;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.ColorRGBA;
@@ -22,7 +19,10 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.*;
-import net.povstalec.sgjourney.common.blocks.dhd.*;
+import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
@@ -32,11 +32,20 @@ import net.povstalec.sgjourney.common.blocks.tech_interface.CrystalInterfaceBloc
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.GoauldTransportRingsBlock;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMHolderBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMHubBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPlugBlock;
+import net.povstalec.sgjourney.common.blocks.zpm.ZPMPortBlock;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.items.blocks.*;
 
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
+
+
+//A class for initializing blocks
 public class BlockInit
 {
 	public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(StargateJourney.MODID);
@@ -100,15 +109,15 @@ public class BlockInit
 		() -> new UniverseDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 			.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final DeferredBlock<AbstractDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
+	public static final DeferredBlock<MilkyWayDHDBlock> MILKY_WAY_DHD = registerDHDBlock("milky_way_dhd",
 			() -> new MilkyWayDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final DeferredBlock<AbstractDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd",
+	public static final DeferredBlock<PegasusDHDBlock> PEGASUS_DHD = registerDHDBlock("pegasus_dhd",
 			() -> new PegasusDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
-	public static final DeferredBlock<AbstractDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd",
+	public static final DeferredBlock<ClassicDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd",
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
 	
@@ -548,33 +557,33 @@ public class BlockInit
 			.sound(SoundType.STONE), 15, ParticleTypes.FLAME));
 	
 	public static final DeferredBlock<Block> SANDSTONE_WITH_LAPIS = registerBlock("sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<RotatedPillarBlock> SANDSTONE_WITH_GOLD = registerBlock("sandstone_with_gold",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<RotatedPillarBlock> SANDSTONE_HIEROGLYPHS = registerBlock("sandstone_hieroglyphs",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch",
-			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	
 	public static final DeferredBlock<Block> RED_SANDSTONE_WITH_LAPIS = registerBlock("red_sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> RED_SANDSTONE_WITH_GOLD = registerBlock("red_sandstone_with_gold",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> RED_SANDSTONE_GLYPHS = registerBlock("red_sandstone_glyphs",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	// Cartouches
 	public static final DeferredBlock<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche",
-			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<CartoucheBlock> RED_SANDSTONE_CARTOUCHE = registerCartoucheBlock("red_sandstone_cartouche",
-			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<CartoucheBlock> STONE_CARTOUCHE = registerCartoucheBlock("stone_cartouche",
 			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Symbols
-	public static final DeferredBlock<SymbolBlock> SANDSTONE_SYMBOL = registerBlock("sandstone_symbol",
-			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<SymbolBlock> RED_SANDSTONE_SYMBOL = registerBlock("red_sandstone_symbol",
-			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(0.8F).requiresCorrectToolForDrops()));
-	public static final DeferredBlock<SymbolBlock> STONE_SYMBOL = registerBlock("stone_symbol",
+	public static final DeferredBlock<SymbolBlock> SANDSTONE_SYMBOL = registerSymbolBlock("sandstone_symbol",
+			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<SymbolBlock> RED_SANDSTONE_SYMBOL = registerSymbolBlock("red_sandstone_symbol",
+			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<SymbolBlock> STONE_SYMBOL = registerSymbolBlock("stone_symbol",
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Tech
 	public static final DeferredBlock<NaquadahReactorBlock> NAQUADAH_REACTOR = registerEnergyBlock("naquadah_reactor",
@@ -600,10 +609,14 @@ public class BlockInit
 	public static final DeferredBlock<ATAGeneDetectorBlock> ANCIENT_GENE_DETECTOR = registerBlock("ancient_gene_detector",
 			() -> new ATAGeneDetectorBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
 	
+	public static final DeferredBlock<ZPMHolderBlock> ZPM_HOLDER = registerBlock("zpm_holder",
+		() -> new ZPMHolderBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.COMMON, 1);
+	public static final DeferredBlock<ZPMPlugBlock> ZPM_PLUG = registerBlock("zpm_plug",
+		() -> new ZPMPlugBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.UNCOMMON, 1);
+	public static final DeferredBlock<ZPMPortBlock> ZPM_PORT = registerBlock("zpm_port",
+		() -> new ZPMPortBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion()), Rarity.RARE, 1);
 	public static final DeferredBlock<ZPMHubBlock> ZPM_HUB = registerBlock("zpm_hub",
-			() -> new ZPMHubBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), Rarity.RARE, 1);
-	//TODO ZPM Port
-	//TODO ZPM Plug
+			() -> new ZPMHubBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F).requiresCorrectToolForDrops()), Rarity.RARE, 1);
 	
 	public static final DeferredBlock<NaquadahLiquidizerBlock> NAQUADAH_LIQUIDIZER = registerBlock("naquadah_liquidizer",
 			() -> new NaquadahLiquidizerBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)), 1);
@@ -707,6 +720,15 @@ public class BlockInit
 		return toReturn;
 	}
 	
+	private static <T extends Block>DeferredBlock<T> registerSymbolBlock(String name, Supplier<T> block)
+	{
+		DeferredBlock<T> toReturn = BLOCKS.register(name, block);
+		
+		registerSymbolBlockItem(name, toReturn, 1);
+		
+		return toReturn;
+	}
+	
 	private static <T extends Block>DeferredBlock<T> registerEnergyBlock(String name, Supplier<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		DeferredBlock<T> toReturn = BLOCKS.register(name, block);
@@ -765,6 +787,11 @@ public class BlockInit
 		return ItemInit.ITEMS.register(name, () -> new CartoucheBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
 	}
 	
+	private static <T extends Block>DeferredItem<Item> registerSymbolBlockItem(String name, DeferredBlock<T> block, int stacksTo)
+	{
+		return ItemInit.ITEMS.register(name, () -> new SymbolBlockItem(block.get(), new Item.Properties().stacksTo(stacksTo)));
+	}
+	
 	private static <T extends Block>DeferredItem<Item> registerEnergyBlockItem(String name, DeferredBlock<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
 		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
@@ -772,7 +799,7 @@ public class BlockInit
 	
 	private static <T extends Block>DeferredItem<Item> registerInterfaceBlockItem(String name, DeferredBlock<T> block, EnergyBlockItem.CapacityGetter getter, Rarity rarity)
 	{
-		return ItemInit.ITEMS.register(name, () -> new EnergyBlockItem.Getter(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter, "tooltip.sgjourney.energy_buffer"));
+		return ItemInit.ITEMS.register(name, () -> new InterfaceBlockItem(block.get(), new Item.Properties().rarity(rarity).stacksTo(1), getter));
 	}
 	
 	public static void register(IEventBus eventBus)

@@ -9,11 +9,9 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.Conversion;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.SpawnerTimer;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -84,6 +82,34 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 		return this.address;
 	}
 	
+	public void encodeAddress(Address address)
+	{
+		this.address = new Address.Mutable(address);
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
+	{
+		encodeAddress(address);
+		return Dialing.dialStargate(getServer(), this, getAddress(), doKawoosh, true/*Only search for loaded Stargates*/, action);
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback)
+	{
+		//TODO Maybe check the side of the connection?
+		
+		return bypassDisconnect(feedback);
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback)
+	{
+		if(connectionID != null)
+			StargateNetwork.get(server).terminateConnection(connectionID, feedback);
+		return resetStargate(feedback);
+	}
+	
 	@Override
 	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
@@ -124,6 +150,12 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 		return Math.min(energy, getEnergyStored());
 	}
 	
+	@Override
+	public long receiveEnergy(long energy, boolean simulate)
+	{
+		return energy;
+	}
+	
 	// Stargate Connection
 	
 	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
@@ -138,11 +170,6 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	public int wormholeEstablishTime(boolean doKawoosh)
 	{
 		return 0;
-	}
-	
-	public void encodeAddress(Address address)
-	{
-		this.address = new Address.Mutable(address);
 	}
 	
 	@Override

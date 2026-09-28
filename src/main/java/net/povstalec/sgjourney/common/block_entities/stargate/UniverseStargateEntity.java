@@ -67,7 +67,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries)
+	public void loadAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries)
 	{
 		super.loadAdditional(tag, registries);
 		
@@ -77,7 +77,16 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
     }
 	
 	@Override
-	protected void saveAdditional(@NotNull CompoundTag tag, HolderLookup.Provider registries)
+	public void deserializeStargateInfo(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries, boolean isUpgraded)
+	{
+		//TODO For legacy reasons any symbols that can't be loaded are replaced by default symbols
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS, PointOfOrigin.defaultPointOfOrigin(), Symbols.defaultSymbols());
+		
+		super.deserializeStargateInfo(tag, registries, isUpgraded);
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries)
 	{
 		super.saveAdditional(tag, registries);
 		
@@ -87,7 +96,17 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider registries)
+	public CompoundTag serializeStargateInfo(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider registries)
+	{
+		super.serializeStargateInfo(tag, registries);
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		return tag;
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag(@NotNull HolderLookup.Provider registries)
 	{
 		CompoundTag tag = super.getUpdateTag(registries);
 		
@@ -95,11 +114,13 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
 		return tag;
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket packet, HolderLookup.@NotNull Provider registries)
 	{
 		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
@@ -108,6 +129,8 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			canEngage = tag.getBoolean(CAN_ENGAGE);
 			symbolBuffer = tag.getInt(ADDRESS_BUFFER);
 			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+			
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		}
 	}
 	
@@ -170,12 +193,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		symbolBuffer++;
 		waitTicks++;
 		
-		return super.encodeChevron(symbol, incoming, encode);
+		return super.encodeChevron(symbol, direction, sound);
 	}
 	
 	@Override
@@ -225,7 +248,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		{
 			if(!isRotating())
 				startRotation(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirection(address.getLength()));
+						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirectionClockwise(address.getLength()));
 			
 			if(rotation == desiredRotation)
 				super.directEngageSymbol(getCurrentSymbol(), canEngage);

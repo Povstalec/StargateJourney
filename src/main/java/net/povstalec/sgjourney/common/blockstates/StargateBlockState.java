@@ -8,7 +8,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
@@ -21,8 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.ItemAbility;
@@ -34,6 +37,7 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.StargateBlockCover;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -47,12 +51,12 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public float getDestroySpeed(BlockGetter reader, BlockPos pos)
+	public float getDestroySpeed(@NotNull BlockGetter reader, @NotNull BlockPos pos)
 	{
 		// Null checks here because ProjectMMO passes a null values in here https://github.com/Caltinor/Project-MMO-2.0/issues/706
 		if(reader != null && pos != null && this.getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(reader, pos, reader.getBlockState(pos));
 			if(stargate != null && !CommonStargateConfig.can_break_connected_stargate.get())
 			{
 				StargateConnection.State state = stargate.getConnectionState();
@@ -88,7 +92,7 @@ public class StargateBlockState extends BlockState
 	}
 	
 	@Override
-	public float getDestroyProgress(Player player, BlockGetter reader, BlockPos pos)
+	public float getDestroyProgress(@NotNull Player player, @NotNull BlockGetter reader, @NotNull BlockPos pos)
 	{
 		float destroySpeed = getDestroySpeed(reader, pos);
 		if(destroySpeed == -1.0F)
@@ -140,7 +144,7 @@ public class StargateBlockState extends BlockState
 	
 	// Adding this here because I now have trust issues with IForgeBlockState and whatever mixins can do to it
 	@Override
-	protected BlockState asState()
+	protected @NotNull BlockState asState()
 	{
 		return this;
 	}

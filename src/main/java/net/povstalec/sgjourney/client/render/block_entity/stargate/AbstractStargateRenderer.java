@@ -1,0 +1,112 @@
+package net.povstalec.sgjourney.client.render.block_entity.stargate;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.povstalec.sgjourney.client.models.block_entity.AbstractStargateModel;
+import net.povstalec.sgjourney.client.models.block_entity.IrisModel;
+import net.povstalec.sgjourney.client.models.block_entity.ShieldModel;
+import net.povstalec.sgjourney.client.models.block_entity.WormholeModel;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
+import net.povstalec.sgjourney.common.blockstates.StargatePart;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
+
+public abstract class AbstractStargateRenderer<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant<StargateEntity>,
+	StargateModel extends AbstractStargateModel<StargateEntity, Variant>> implements BlockEntityRenderer<StargateEntity>
+{
+	protected final BlockRenderDispatcher blockRenderDispatcher;
+	
+	protected final StargateModel stargateModel;
+	
+	protected final WormholeModel wormholeModel;
+	protected final ShieldModel shieldModel;
+	protected final IrisModel irisModel;
+	
+	private final RandomSource randomsource = RandomSource.create();
+	
+	public AbstractStargateRenderer(BlockEntityRendererProvider.Context context, StargateModel stargateModel,
+			float maxDefaultDistortion, boolean renderWhenOpen, float maxOpenIrisDegrees)
+	{
+		this.blockRenderDispatcher = context.getBlockRenderDispatcher();
+		
+		this.stargateModel = stargateModel;
+		
+		this.shieldModel = new ShieldModel();
+		this.irisModel = new IrisModel(renderWhenOpen, maxOpenIrisDegrees);
+		this.wormholeModel = new WormholeModel(maxDefaultDistortion);
+	}
+	
+	@Override
+	public int getViewDistance()
+	{
+		return 128;
+	}
+	
+	protected void renderWormhole(AbstractStargateEntity<?> stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	{
+		this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), combinedLight, combinedOverlay);
+	}
+	
+	protected void renderCover(AbstractStargateEntity<?> stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	{
+	    for(Map.Entry<StargatePart, BlockState> entry : stargate.blockCover.blockStates.entrySet())
+	    {
+	    	renderCoverBlock(stargate, entry.getValue(), entry.getKey(), stack, source, combinedOverlay);
+	    }
+	}
+	
+	protected void renderCoverBlock(AbstractStargateEntity<?> stargate, BlockState state, StargatePart part, PoseStack stack, MultiBufferSource source, int combinedOverlay)
+	{
+		Level level = stargate.getLevel();
+		Direction direction = stargate.getDirection();
+		Orientation orientation = stargate.getOrientation();
+		
+		if(direction != null && orientation != null)
+		{
+			Vec3 relativeBlockPos = part.getRelativeRingPos(stargate.getBlockPos(), direction, orientation);
+			BlockPos absolutePos = part.getRingPos(stargate.getBlockPos(), stargate.getDirection(), stargate.getOrientation());
+			
+			stack.pushPose();
+			
+			stack.translate(relativeBlockPos.x(), relativeBlockPos.y(), relativeBlockPos.z());
+			//dispatcher.renderSingleBlock(state, stack, source, LevelRenderer.getLightColor(level, absolutePos), combinedOverlay, ModelData.EMPTY, null);
+			
+			
+			BakedModel model = blockRenderDispatcher.getBlockModel(state);
+			for(RenderType renderType : model.getRenderTypes(state, randomsource, ModelData.EMPTY))
+			{
+				blockRenderDispatcher.renderBatched(state, absolutePos, level, stack, source.getBuffer(renderType), true, randomsource, model.getModelData(level, absolutePos, state, ModelData.EMPTY), null);
+			}
+			
+			stack.popPose();
+		}
+	}
+	
+	protected boolean canSink(AbstractStargateEntity<?> stargate)
+	{
+	    return stargate.blockCover.canSinkGate;
+	}
+	
+	@Override
+	public @NotNull AABB getRenderBoundingBox(StargateEntity stargate)
+	{
+		return new AABB(stargate.getCenterPos().getX() - 3, stargate.getCenterPos().getY() - 3, stargate.getCenterPos().getZ() - 3,
+				stargate.getCenterPos().getX() + 4, stargate.getCenterPos().getY() + 4, stargate.getCenterPos().getZ() + 4);
+	}
+}

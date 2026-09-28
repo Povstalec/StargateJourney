@@ -1,8 +1,9 @@
 package net.povstalec.sgjourney.common.init;
 
-import net.minecraft.tags.BannerPatternTags;
+import com.google.common.collect.Sets;
 import net.minecraft.world.item.*;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
@@ -14,6 +15,10 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.items.crystals.*;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.items.energy_cores.NaquadahGeneratorCoreItem;
+
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ItemInit
 {
@@ -97,6 +102,11 @@ public class ItemInit
 	// Useful Items
 	public static final DeferredItem<Item> SCHRODINGERS_MAP = ITEMS.register("schrodingers_map",
 		() -> new SchrodingersMapItem(new Item.Properties().stacksTo(1)));
+	
+	public static final DeferredItem<Item> CHARCOAL_STICK = ITEMS.register("charcoal_stick",
+		() -> new CharcoalStickItem(new Item.Properties().stacksTo(1)));
+	public static final DeferredItem<Item> SYMBOL_PAPER = ITEMS.register("symbol_paper",
+		() -> new SymbolPaperItem(new Item.Properties().stacksTo(1)));
 	
 	public static final DeferredItem<Item> LIQUID_NAQUADAH_BUCKET = ITEMS.register("liquid_naquadah_bucket",
 			() -> new BucketItem(FluidInit.LIQUID_NAQUADAH_SOURCE.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
@@ -281,8 +291,11 @@ public class ItemInit
 	public static final DeferredItem<GDOItem> GDO = ITEMS.register("gdo",
 			() -> new GDOItem(new Item.Properties().stacksTo(1)));
 	
-	/*public static final DeferredItem<AutoDialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
-			() -> new AutoDialerItem(new Item.Properties().stacksTo(1)));*/
+	public static final DeferredItem<AutoDialerItem> AUTO_DIALER = ITEMS.register("auto_dialer",
+		() -> new AutoDialerItem(new Item.Properties().rarity(Rarity.EPIC).stacksTo(1).fireResistant()));
+	
+	/*public static final RegistryObject<DialerItem> ANCIENT_REMOTE = ITEMS.register("ancient_remote",
+			() -> new DialerItem(new Item.Properties().stacksTo(1)));*/
 	
 	// Shielding
 	public static final DeferredItem<Item> STARGATE_SHIELDING_RING = ITEMS.register("stargate_shielding_ring",
@@ -343,5 +356,10 @@ public class ItemInit
 		ITEMS.addAlias(StargateJourney.sgjourneyLocation("naquadah_alloy_nugget"), StargateJourney.sgjourneyLocation("naquadah_iron_alloy_nugget"));
 		ITEMS.addAlias(StargateJourney.sgjourneyLocation("naquadah_alloy_iris"), StargateJourney.sgjourneyLocation("naquadah_iron_alloy_iris"));
 		ITEMS.addAlias(StargateJourney.sgjourneyLocation("ring_remote"), StargateJourney.sgjourneyLocation("goauld_ring_remote"));
+	}
+	
+	public static Set<ItemAbility> ofItemAbilities(ItemAbility... actions)
+	{
+		return Stream.of(actions).collect(Collectors.toCollection(Sets::newIdentityHashSet));
 	}
 }

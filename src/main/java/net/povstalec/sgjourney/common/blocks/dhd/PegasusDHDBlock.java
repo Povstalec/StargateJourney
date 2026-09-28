@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -34,15 +35,13 @@ import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
-import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
-import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.misc.NetworkUtils;
 
@@ -91,55 +90,60 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	}
 	
 	@Override
-	public void use(Level level, BlockPos pos, Player player, BlockHitResult hitResult)
+	public boolean use(Level level, BlockPos pos, Player player, BlockHitResult hitResult)
 	{
-        if(level.isClientSide())
-			return;
+		if(player.getItemInHand(InteractionHand.MAIN_HAND).is(TagInit.Items.STOPS_DHD_INTERACTION) ||
+			player.getItemInHand(InteractionHand.OFF_HAND).is(TagInit.Items.STOPS_DHD_INTERACTION))
+			return false;
 		
-		BlockEntity blockEntity = level.getBlockEntity(pos);
-		
-		if(blockEntity instanceof PegasusDHDEntity dhd)
+		if(!level.isClientSide())
 		{
-			if((hitResult.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+			BlockEntity blockEntity = level.getBlockEntity(pos);
+			
+			if(blockEntity instanceof PegasusDHDEntity dhd)
 			{
-				MenuProvider containerProvider = new MenuProvider()
+				if((hitResult.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
 				{
-					@Override
-					public Component getDisplayName()
+					MenuProvider containerProvider = new MenuProvider()
 					{
-						return Component.translatable("screen.sgjourney.dhd");
-					}
-					
-					@Override
-					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.Pegasus(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
+				else
+				{
+					MenuProvider containerProvider = new MenuProvider()
 					{
-						return new DHDCrystalMenu.Pegasus(windowId, playerInventory, dhd);
-					}
-				};
-				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new PegasusDHDMenu(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
 			}
 			else
-			{
-				MenuProvider containerProvider = new MenuProvider()
-				{
-					@Override
-					public Component getDisplayName()
-					{
-						return Component.translatable("screen.sgjourney.dhd");
-					}
-					
-					@Override
-					public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
-					{
-						return new PegasusDHDMenu(windowId, playerInventory, dhd);
-					}
-				};
-				NetworkUtils.openMenu((ServerPlayer) player, containerProvider, dhd.getBlockPos());
-			}
+				throw new IllegalStateException("Our named container provider is missing!");
 		}
-		else
-			throw new IllegalStateException("Our named container provider is missing!");
-    }
+		return true;
+	}
 
 	@Override
 	public Block getDHD()

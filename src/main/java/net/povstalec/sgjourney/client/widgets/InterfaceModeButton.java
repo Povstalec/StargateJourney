@@ -10,6 +10,7 @@ import net.minecraft.util.Mth;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.InterfaceScreen;
 import net.povstalec.sgjourney.common.blockstates.InterfaceMode;
+import org.jetbrains.annotations.NotNull;
 
 public class InterfaceModeButton extends SGJourneyButton
 {
@@ -35,7 +36,7 @@ public class InterfaceModeButton extends SGJourneyButton
 	}
 	
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
+	public void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
 	{
 		this.isHovered = isHovered(mouseX, mouseY);
 		

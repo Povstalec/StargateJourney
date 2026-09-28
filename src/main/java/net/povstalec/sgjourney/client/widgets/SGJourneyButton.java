@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SGJourneyButton extends Button
 {
@@ -52,7 +53,8 @@ public abstract class SGJourneyButton extends Button
 		return x >= this.getX() && y >= this.getY() && x < this.getX() + this.width && y < this.getY() + this.height;
 	}
 	
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
+	@Override
+	protected void renderWidget(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float pPartialTick)
 	{
 		this.isHovered = isHovered(mouseX, mouseY);
 		

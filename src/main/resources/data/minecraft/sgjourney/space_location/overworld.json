@@ -1,5 +1,6 @@
 {
 	"point_of_origin": "sgjourney:terra",
 	"symbols": "sgjourney:terra",
+	"point_of_origin_table": "sgjourney:overworld",
 	"address_region": "sgjourney:terra"
 }

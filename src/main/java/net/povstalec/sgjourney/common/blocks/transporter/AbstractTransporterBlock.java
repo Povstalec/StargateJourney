@@ -19,7 +19,6 @@ import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
@@ -120,26 +119,4 @@ public abstract class AbstractTransporterBlock extends BaseEntityBlock implement
 		
 		super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
-	
-	@Nullable
-	public ProtectedBlockEntity getProtectedBlockEntity(BlockGetter reader, BlockPos pos, BlockState state)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
-			return transporter;
-		
-		return null;
-	}
-	
-	@Override
-	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
-	{
-		BlockEntity blockEntity = reader.getBlockEntity(pos);
-		
-		if(blockEntity instanceof AbstractTransporterEntity<?> transporter)
-			return transporter.hasPermissions(player, sendMessage);
-		
-		return true;
-	}
 }

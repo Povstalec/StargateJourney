@@ -18,6 +18,7 @@ import java.util.*;
 public class ClientSymbols
 {
 	public static final ResourceLocation ERROR_LOCATION = StargateJourney.sgjourneyLocation("symbol/error");
+	public static final ResourceLocation EXTENDED_ERROR_LOCATION = StargateJourney.sgjourneyLocation("textures/symbol/error.png");
 	
 	public static final ResourceLocation SYMBOLS_LOCATION = StargateJourney.sgjourneyLocation("symbols");
 	public static final ResourceKey<Registry<ClientSymbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
@@ -122,7 +123,7 @@ public class ClientSymbols
 	public static ResourceLocation getDefaultExtendedSymbolTexture(int symbol)
 	{
 		if(symbol > DEFAULT_EXTENDED_TEXTURES.size() || symbol <= 0)
-			return ERROR_LOCATION;
+			return EXTENDED_ERROR_LOCATION;
 		
 		return DEFAULT_EXTENDED_TEXTURES.get(symbol - 1);
 	}
@@ -156,9 +157,15 @@ public class ClientSymbols
 		if(symbol > size())
 			return getDefaultExtendedSymbolTexture(symbol);
 		else if(symbol <= 0)
-			return ERROR_LOCATION;
+			return EXTENDED_ERROR_LOCATION;
 		
 		return extendedTextures.get(symbol - 1);
+	}
+	
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 	
 	public static List<ResourceLocation> createSpriteTexturesList(String prefix, int first, int last)

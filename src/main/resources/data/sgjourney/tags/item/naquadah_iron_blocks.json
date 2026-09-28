@@ -1,0 +1,25 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_iron_block",
+		"sgjourney:naquadah_iron_stairs",
+		"sgjourney:naquadah_iron_slab",
+		
+		"sgjourney:cut_naquadah_iron_block",
+		"sgjourney:cut_naquadah_iron_stairs",
+		"sgjourney:cut_naquadah_iron_slab",
+		
+		"sgjourney:naquadah_iron_pillar",
+		
+		"sgjourney:polished_naquadah_iron_block",
+		"sgjourney:polished_naquadah_iron_stairs",
+		"sgjourney:polished_naquadah_iron_slab",
+		
+		"sgjourney:chiseled_naquadah_iron_block",
+		
+		"sgjourney:smooth_naquadah_iron_block",
+		"sgjourney:smooth_naquadah_iron_stairs",
+		"sgjourney:smooth_naquadah_iron_slab"
+	]
+}

@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.common.packets;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -106,7 +105,7 @@ public abstract class ClientBoundSoundPackets
         }
     }
 
-    public record Chevron(BlockPos blockPos, short chevron, boolean incoming, boolean open, boolean encode) implements CustomPacketPayload
+    public record Chevron(BlockPos blockPos, short chevron, StargateInfo.ChevronSound sound) implements CustomPacketPayload
     {
 		public static final CustomPacketPayload.Type<Chevron> TYPE =
 				new CustomPacketPayload.Type<>(StargateJourney.sgjourneyLocation("s2c_stargate_chevron_sound"));
@@ -114,9 +113,7 @@ public abstract class ClientBoundSoundPackets
 		public static final StreamCodec<RegistryFriendlyByteBuf, Chevron> STREAM_CODEC = StreamCodec.composite(
 				BlockPos.STREAM_CODEC, Chevron::blockPos,
 				ByteBufCodecs.SHORT, Chevron::chevron,
-				ByteBufCodecs.BOOL, Chevron::incoming,
-				ByteBufCodecs.BOOL, Chevron::open,
-				ByteBufCodecs.BOOL, Chevron::encode,
+				NeoForgeStreamCodecs.enumCodec(StargateInfo.ChevronSound.class), Chevron::sound,
 				Chevron::new
 		);
 		
@@ -128,7 +125,7 @@ public abstract class ClientBoundSoundPackets
 		
 		public static void handle(Chevron packet, IPayloadContext ctx)
         {
-            ctx.enqueueWork(() -> SoundAccess.playChevronSound(packet.blockPos, packet.chevron, packet.incoming, packet.open, packet.encode));
+            ctx.enqueueWork(() -> SoundAccess.playChevronSound(packet.blockPos, packet.chevron, packet.sound));
         }
     }
 

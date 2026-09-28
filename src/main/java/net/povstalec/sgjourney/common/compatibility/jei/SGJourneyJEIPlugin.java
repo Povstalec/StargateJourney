@@ -2,6 +2,8 @@ package net.povstalec.sgjourney.common.compatibility.jei;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +13,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.TabInit;
 import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
 import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
 import org.jetbrains.annotations.NotNull;
@@ -86,6 +89,8 @@ public class SGJourneyJEIPlugin implements IModPlugin
 			advancedCrystallizerRecipes.add(holder.value());
 		}
 		registration.addRecipes(CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE, advancedCrystallizerRecipes);
+		
+		registration.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, TabInit.getHiddenItems());
 	}
 	
 	@Override
@@ -115,8 +120,33 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration)
 	{
-		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
-		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.StargateVariant.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.StargateUpgrade.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(ItemInit.VIAL.get(), SGJourneyItemSubtypeInterpreter.FluidHolder.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.NAQUADAH_POWER_CELL.get(), SGJourneyItemSubtypeInterpreter.FluidHolder.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.SANDSTONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.RED_SANDSTONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.STONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.SANDSTONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.RED_SANDSTONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.STONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.GOAULD_TRANSPORT_RINGS.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.GOAULD_RING_PANEL.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.UNIVERSE_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.UNIVERSE_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.TOLLAN_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 	}
 	
 	//TODO custom recipe transfer handlers

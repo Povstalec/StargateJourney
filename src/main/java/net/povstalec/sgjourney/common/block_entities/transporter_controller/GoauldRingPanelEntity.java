@@ -27,7 +27,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.SyncedConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.blocks.transporter_controller.GoauldRingPanelBlock;
@@ -99,7 +99,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
-			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyStorage.setEnergyNoUpdate(energyStorage.getTrueMaxEnergyStored());
 			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 		}
 	}
@@ -310,7 +310,7 @@ public class GoauldRingPanelEntity extends TransporterControllerEntity implement
 	@Override
 	public long getEnergyCapacity()
 	{
-		return SyncedConfig.goauld_ring_panel_energy_capacity;
+		return SyncedConfig.goauld_ring_panel_energy_capacity.get();
 	}
 	
 	@Override

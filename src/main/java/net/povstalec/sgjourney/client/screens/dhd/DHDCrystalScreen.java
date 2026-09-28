@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.client.screens.dhd;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -12,8 +10,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.SGJourneyContainerScreen;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
-import net.povstalec.sgjourney.common.menu.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
 
@@ -104,8 +103,16 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 		this.itemTooltip(graphics, mouseX, mouseY, 62, 35, 7, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		this.itemTooltip(graphics, mouseX, mouseY, 62, 17, 8, ComponentHelper.description("tooltip.sgjourney.dhd.crystal_slot.description"));
 		
-		this.itemTooltip(graphics, mouseX, mouseY, 134, 27, 9, ComponentHelper.description("tooltip.sgjourney.dhd.energy_slot.description"));
+		this.itemTooltip(graphics, mouseX, mouseY, 134, 27, 9, ComponentHelper.description(SyncedConfig.dhd_holds_zpm.get() ?
+			"tooltip.sgjourney.dhd.energy_slot.description.zpm" : "tooltip.sgjourney.dhd.energy_slot.description"));
 		this.itemTooltip(graphics, mouseX, mouseY, 134, 53, 10, ComponentHelper.description("tooltip.sgjourney.dhd.energy_fuel_slot.description"));
+    }
+    
+    @Override
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY)
+	{
+    	guiGraphics.drawString(this.font, this.title, this.titleLabelX, this.titleLabelY, 4210752);
+	    guiGraphics.drawString(this.font, this.playerInventoryTitle, this.inventoryLabelX, this.inventoryLabelY, 4210752);
     }
 	
 	@Override

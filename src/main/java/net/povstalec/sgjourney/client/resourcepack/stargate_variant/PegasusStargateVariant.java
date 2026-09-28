@@ -1,18 +1,18 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class PegasusStargateVariant extends GenericStargateVariant
+import java.util.Optional;
+
+public class PegasusStargateVariant extends GenericStargateVariant<PegasusStargateEntity>
 {
 	// Variant: Normal RGB - Shiny RGB
 	// Pegasus: 20 123 255 - 30 90 158

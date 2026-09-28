@@ -44,6 +44,8 @@ public class SoundInit
 	public static final DeferredHolder<SoundEvent, SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
 	public static final DeferredHolder<SoundEvent, SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
 	
+	public static final DeferredHolder<SoundEvent, SoundEvent> GRAVER_ENGRAVE = registerSoundEvent("graver_engrave");
+	
 	public static final DeferredHolder<SoundEvent, SoundEvent> EMPTY = registerSoundEvent("empty");
 	
 	

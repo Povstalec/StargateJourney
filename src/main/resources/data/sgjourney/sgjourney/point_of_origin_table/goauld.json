@@ -1,0 +1,8 @@
+{
+	"points_of_origin":
+	[
+		{ "point_of_origin": "sgjourney:apophis", "weight": 1 },
+		{ "point_of_origin": "sgjourney:eye_of_horus", "weight": 1 },
+		{ "point_of_origin": "sgjourney:eye_of_ra", "weight": 1 }
+	]
+}

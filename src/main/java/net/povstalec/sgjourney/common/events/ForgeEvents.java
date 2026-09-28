@@ -42,7 +42,6 @@ import net.neoforged.neoforge.event.tick.EntityTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.AdvancedCrystallizerEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.CrystallizerEntity;
@@ -56,6 +55,7 @@ import net.povstalec.sgjourney.common.capabilities.GoauldHost;
 import net.povstalec.sgjourney.common.capabilities.JaffaPouch;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.config.CommonGeneticConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.data.Factions;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
@@ -65,8 +65,10 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.init.VillagerInit;
+import net.povstalec.sgjourney.common.items.GraverItem;
 import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOriginTable;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 
 import java.util.ArrayList;
@@ -97,6 +99,7 @@ public class ForgeEvents
 		MinecraftServer server = event.getServer();
 		
 		SpaceLocation.registerSpaceLocations(server);
+		PointOfOriginTable.registerPointOfOriginTables(server);
 		
 		StargateNetwork.get(server).updateNetwork();
 		Universe.get(server).assignSpaceLocationsToAddressRegions();
@@ -406,6 +409,21 @@ public class ForgeEvents
 			}
 		}
 	}
+	
+	@SubscribeEvent
+	public static void onBlockModified(BlockEvent.BlockToolModificationEvent event)
+	{
+		if(GraverItem.DEFAULT_GRAVER_ACTIONS.contains(event.getItemAbility()))
+		{
+			Level level = event.getContext().getLevel();
+			BlockPos pos = event.getContext().getClickedPos();
+			BlockState state = level.getBlockState(pos);
+			
+			BlockState newState = GraverItem.DEFAULT_ENGRAVABLE.get(state.getBlock());
+			if(newState != null)
+				event.setFinalState(newState);
+		}
+	}
 
 	@SubscribeEvent
 	public static void onDetonate(ExplosionEvent.Detonate event)
@@ -448,6 +466,9 @@ public class ForgeEvents
 			if(newAtaGene != null)
 				newAtaGene.copyFrom(ataGene);
 		}
+		
+		if(!clone.level().isClientSide())
+			SpaceLocation.updatePlayerClientGravity((ServerPlayer) clone);
 	}
 	
 	private static void addCartographerTrades(VillagerTradesEvent event)

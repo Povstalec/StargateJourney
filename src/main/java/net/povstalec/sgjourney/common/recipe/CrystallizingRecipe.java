@@ -14,9 +14,13 @@ import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +104,35 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 	@Override
 	public @NotNull ItemStack assemble(@NotNull CrystallizingRecipeInput recipeInput, @NotNull HolderLookup.Provider provider)
 	{
-		return output.copy();
+		long energy = 0;
+		
+		for(int j = 0; j < recipeInput.size(); ++j)
+		{
+			ItemStack containerStack = recipeInput.getItem(j);
+			
+			// Retain Energy
+			IEnergyStorage energyStorage = containerStack.getCapability(Capabilities.EnergyStorage.ITEM);
+			
+			if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+				energy += sgjourneyEnergy.getTrueEnergyStored();
+			else if(energyStorage != null)
+				energy += energyStorage.getEnergyStored();
+		}
+		
+		// Result section
+		
+		ItemStack result = getResultItem(provider);
+		
+		// Retain Energy
+		final long totalEnergy = energy;
+		IEnergyStorage energyStorage = result.getCapability(Capabilities.EnergyStorage.ITEM);
+		
+		if(energyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.setEnergy(Math.min(totalEnergy, sgjourneyEnergy.getTrueMaxEnergyStored()));
+		else
+			energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(totalEnergy), false);
+		
+		return result;
 	}
 	
 	@Override
@@ -112,7 +144,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 	@Override
 	public @NotNull ItemStack getResultItem(@NotNull HolderLookup.Provider provider)
 	{
-		return output.copy();
+		return output;
 	}
 	
 	@Override
@@ -142,7 +174,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return CrystallizerSerializer.INSTANCE;
+			return RecipeTypeInit.CRYSTALLIZING_SERIALIZER.get();
 		}
 		
 		@Override
@@ -241,7 +273,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return AdvancedCrystallizerSerializer.INSTANCE;
+			return RecipeTypeInit.ADVANCED_CRYSTALLIZING_SERIALIZER.get();
 		}
 		
 		@Override

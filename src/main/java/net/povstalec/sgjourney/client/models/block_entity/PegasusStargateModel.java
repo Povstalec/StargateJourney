@@ -5,12 +5,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEntity, PegasusStargateVariant>
 {
@@ -27,7 +30,23 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	{
 		super((short) 36);
 	}
-
+	
+	@Override
+	public PegasusStargateVariant getClientVariant(PegasusStargateEntity stargate)
+	{
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant != null)
+		{
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getPegasusStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasPegasusStargateVariant(stargateVariant.clientVariant()));
+		}
+		
+		return ClientStargateVariants.getPegasusStargateVariant(stargate.defaultVariant());
+	}
+	
 	@Override
 	public void renderStargate(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, float partialTick, PoseStack stack, MultiBufferSource source, 
 			int combinedLight, int combinedOverlay)
@@ -37,7 +56,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 
 		this.renderSymbolRing(stargate, stargateVariant, stack, consumer, source, combinedLight, 0);
 
-		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isOculusLoaded());
 	}
 	
 	public void setCurrentSymbol(int currentSymbol)

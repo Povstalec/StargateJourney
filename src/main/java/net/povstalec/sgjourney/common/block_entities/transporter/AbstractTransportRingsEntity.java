@@ -38,8 +38,8 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.MemoryEntry;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.TransporterConnectionEntry;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.BlockEntityTransportRings;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -108,7 +108,7 @@ public abstract class AbstractTransportRingsEntity<TR extends BlockEntityTranspo
 		
 		if(!tag.contains(ENERGY_INVENTORY, CompoundTag.TAG_COMPOUND))
 		{
-			energyStorage.setEnergy(energyStorage.getTrueMaxEnergyStored());
+			energyStorage.setEnergyNoUpdate(energyStorage.getTrueMaxEnergyStored());
 			energyItemHandler.setStackInSlot(0, PowerCellItem.randomLiquidNaquadahSetup(CommonTechConfig.vial_capacity.get() / 3, CommonTechConfig.vial_capacity.get()));
 		}
 	}

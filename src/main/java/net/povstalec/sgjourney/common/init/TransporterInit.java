@@ -9,9 +9,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.transporter.AncientBlockEntityTransportRings;
-import net.povstalec.sgjourney.common.sgjourney.transporter.GoauldBlockEntityTransportRings;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.ancient.AncientBlockEntityTransportRings;
+import net.povstalec.sgjourney.common.sgjourney.transporter.transport_rings.goauld.GoauldBlockEntityTransportRings;
 
 public class TransporterInit
 {

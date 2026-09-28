@@ -1,12 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 import com.mojang.serialization.DataResult;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -22,19 +16,27 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
-	private ArrayList<StargatePart> parts;
+	private final AbstractStargateEntity<?> stargate;
+	private final ArrayList<StargatePart> parts;
 	
 	public boolean canSinkGate = false;
 	public HashMap<StargatePart, BlockState> blockStates = new HashMap<StargatePart, BlockState>();
 	
-	public StargateBlockCover(ArrayList<StargatePart> parts)
+	public StargateBlockCover(AbstractStargateEntity<?> stargate, ArrayList<StargatePart> parts)
 	{
+		this.stargate = stargate;
 		this.parts = parts;
 	}
 	
@@ -44,6 +46,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			return false;
 		
 		blockStates.put(part, state);
+		stargate.setChanged();
+		stargate.updateClient();
 		
 		return true;
 	}
@@ -61,6 +65,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		BlockState oldState = blockStates.get(part);
 		
 		blockStates.remove(part);
+		stargate.setChanged();
+		stargate.updateClient();
 		
 		return Optional.ofNullable(oldState);
 	}
@@ -104,7 +110,11 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		getBlockAt(part).ifPresent(coverBlockState ->
 		{
 			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
+			{
 				weatheringBlock.getNextState(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+				stargate.setChanged();
+				stargate.updateClient();
+			}
 		});
 	}
 	
@@ -117,6 +127,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			if(previousState.isPresent())
 			{
 				blockStates.put(part, previousState.get());
+				stargate.setChanged();
+				stargate.updateClient();
 				return true;
 			}
 		}
@@ -133,6 +145,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			if(waxedState.isPresent())
 			{
 				blockStates.put(part, waxedState.get());
+				stargate.setChanged();
+				stargate.updateClient();
 				return true;
 			}
 		}
@@ -149,6 +163,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			if(unwaxedState.isPresent())
 			{
 				blockStates.put(part, unwaxedState.get());
+				stargate.setChanged();
+				stargate.updateClient();
 				return true;
 			}
 		}
@@ -167,8 +183,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			
 			Optional<Tag> result = blockStateTag.result();
 			
-			if(result.isPresent())
-				tag.put(entry.getKey().getSerializedName(), result.get());
+			result.ifPresent(value -> tag.put(entry.getKey().getSerializedName(), value));
 		}
 		
 		return tag;
@@ -184,11 +199,10 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				DataResult<BlockState> stateResult = BlockState.CODEC.parse(NbtOps.INSTANCE, tag.get(part.getSerializedName()));
 				Optional<BlockState> result = stateResult.result();
 				
-				if(result.isPresent())
-					blockStates.put(part, result.get());
-			} else {
-				removeBlockAt(part);
+				result.ifPresent(state -> blockStates.put(part, state));
 			}
+			else
+				removeBlockAt(part);
 		}
 	}
 }

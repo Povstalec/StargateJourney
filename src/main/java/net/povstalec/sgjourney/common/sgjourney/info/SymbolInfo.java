@@ -28,6 +28,7 @@ public class SymbolInfo
 		this.pointOfOrigin = pointOfOrigin;
 	}
 	
+	@Nullable
 	public ResourceKey<PointOfOrigin> pointOfOrigin()
 	{
 		return this.pointOfOrigin;
@@ -42,6 +43,7 @@ public class SymbolInfo
 		this.symbols = symbols;
 	}
 	
+	@Nullable
 	public ResourceKey<Symbols> symbols()
 	{
 		return this.symbols;
@@ -71,15 +73,18 @@ public class SymbolInfo
 	 * @param tag Compound Tag to load all the info from
 	 * @param pointOfOriginName Name under which the Point of Origin info should be loaded, or null if it shouldn't be loaded
 	 * @param symbolsName Name under which the Symbol info should be loaded, or null if it shouldn't be loaded
+	 * @param defaultPointOfOrigin The Point of Origin that will be used if the tag does not contain a Point of Origin
+	 * @param defaultSymbols The Symbols that will be used if the tag does not contain a Symbols
 	 */
-	public void loadFromCompoundTag(CompoundTag tag, @Nullable String pointOfOriginName, @Nullable String symbolsName)
+	public void loadFromCompoundTag(CompoundTag tag, @Nullable String pointOfOriginName, @Nullable String symbolsName,
+									@Nullable ResourceKey<PointOfOrigin> defaultPointOfOrigin, @Nullable ResourceKey<Symbols> defaultSymbols)
 	{
 		if(pointOfOriginName != null)
 		{
 			if(tag.contains(pointOfOriginName))
 				pointOfOrigin = Conversion.stringToPointOfOrigin(tag.getString(pointOfOriginName));
 			else
-				pointOfOrigin = null;
+				pointOfOrigin = defaultPointOfOrigin;
 		}
 		
 		if(symbolsName != null)
@@ -87,8 +92,19 @@ public class SymbolInfo
 			if(tag.contains(symbolsName))
 				symbols = Conversion.stringToSymbols(tag.getString(symbolsName));
 			else
-				symbols = null;
+				symbols = defaultSymbols;
 		}
+	}
+	
+	/**
+	 * Loads the Symbol Info from a provided Compound Tag
+	 * @param tag Compound Tag to load all the info from
+	 * @param pointOfOriginName Name under which the Point of Origin info should be loaded, or null if it shouldn't be loaded
+	 * @param symbolsName Name under which the Symbol info should be loaded, or null if it shouldn't be loaded
+	 */
+	public void loadFromCompoundTag(CompoundTag tag, @Nullable String pointOfOriginName, @Nullable String symbolsName)
+	{
+		loadFromCompoundTag(tag, pointOfOriginName, symbolsName, null, null);
 	}
 	
 	

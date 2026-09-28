@@ -6,16 +6,13 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.*;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.UniverseDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
@@ -23,6 +20,10 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInter
 import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMHolderEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMHubEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPlugEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPortEntity;
 
 public class BlockEntityInit
 {
@@ -58,12 +59,12 @@ public class BlockEntityInit
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GoauldRingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("goauld_ring_panel",
             () -> BlockEntityType.Builder.of(GoauldRingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
 	
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
-			() -> BlockEntityType.Builder.of(CartoucheEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheBlockEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheBlockEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
+			() -> BlockEntityType.Builder.of(CartoucheBlockEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CartoucheBlockEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
 	
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SymbolBlockEntity.Stone>> STONE_SYMBOL = BLOCK_ENTITIES.register("stone_symbol",
             () -> BlockEntityType.Builder.of(SymbolBlockEntity.Stone::new, BlockInit.STONE_SYMBOL.get()).build(null));
@@ -85,7 +86,13 @@ public class BlockEntityInit
             () -> BlockEntityType.Builder.of(CrystalInterfaceEntity::new, BlockInit.CRYSTAL_INTERFACE.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AdvancedCrystalInterfaceEntity>> ADVANCED_CRYSTAL_INTERFACE = BLOCK_ENTITIES.register("advanced_crystal_interface",
             () -> BlockEntityType.Builder.of(AdvancedCrystalInterfaceEntity::new, BlockInit.ADVANCED_CRYSTAL_INTERFACE.get()).build(null));
-
+	
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ZPMHolderEntity>> ZPM_HOLDER = BLOCK_ENTITIES.register("zpm_holder",
+		() -> BlockEntityType.Builder.of(ZPMHolderEntity::new, BlockInit.ZPM_HOLDER.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ZPMPlugEntity>> ZPM_PLUG = BLOCK_ENTITIES.register("zpm_plug",
+		() -> BlockEntityType.Builder.of(ZPMPlugEntity::new, BlockInit.ZPM_PLUG.get()).build(null));
+	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ZPMPortEntity>> ZPM_PORT = BLOCK_ENTITIES.register("zpm_port",
+		() -> BlockEntityType.Builder.of(ZPMPortEntity::new, BlockInit.ZPM_PORT.get()).build(null));
 	public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ZPMHubEntity>> ZPM_HUB = BLOCK_ENTITIES.register("zpm_hub",
             () -> BlockEntityType.Builder.of(ZPMHubEntity::new, BlockInit.ZPM_HUB.get()).build(null));
 	

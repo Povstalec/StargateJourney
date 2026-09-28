@@ -334,14 +334,22 @@ public abstract class AbstractCrystallizerEntity<R extends CrystallizingRecipe> 
 	}
 	
 	@Override
-	public void createOutput(R recipe)
+	public boolean tryCreateOutput(R recipe)
 	{
 		ItemStack outputStack = outputHandler.getStackInSlot(0);
 		
 		if(outputStack.isEmpty())
-			outputHandler.setStackInSlot(0, recipe.getResultItem(level.registryAccess()));
-		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()))
+		{
+			outputHandler.setStackInSlot(0, recipe.assemble(recipeInput, level.registryAccess()));
+			return true;
+		}
+		else if(recipe.getResultItem(level.registryAccess()).is(outputStack.getItem()) && ItemStack.isSameItemSameComponents(recipe.assemble(recipeInput, level.registryAccess()), outputStack))
+		{
 			outputStack.grow(1);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, AbstractCrystallizerEntity<?> crystallizer)

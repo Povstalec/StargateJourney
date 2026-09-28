@@ -39,9 +39,14 @@ public final class PacketHandlerInit
 				ClientboundDialerOpenScreenPacket::handle);
 		
 		registrar.playToClient(
-				ClientboundGDOOpenScreenPacket.TYPE,
-				ClientboundGDOOpenScreenPacket.STREAM_CODEC,
-				ClientboundGDOOpenScreenPacket::handle);
+			ClientboundAutoDialerOpenScreenPacket.TYPE,
+			ClientboundAutoDialerOpenScreenPacket.STREAM_CODEC,
+			ClientboundAutoDialerOpenScreenPacket::handle);
+		
+		registrar.playToClient(
+			ClientboundGDOOpenScreenPacket.TYPE,
+			ClientboundGDOOpenScreenPacket.STREAM_CODEC,
+			ClientboundGDOOpenScreenPacket::handle);
 		
 		registrar.playToClient(
 				ClientboundCrystalComputerOpenMainScreenPacket.TYPE,
@@ -57,6 +62,11 @@ public final class PacketHandlerInit
 				ClientboundArcheologistNotebookOpenScreenPacket.TYPE,
 				ClientboundArcheologistNotebookOpenScreenPacket.STREAM_CODEC,
 				ClientboundArcheologistNotebookOpenScreenPacket::handle);
+		
+		registrar.playToClient(
+			ClientboundSymbolPaperOpenScreenPacket.TYPE,
+			ClientboundSymbolPaperOpenScreenPacket.STREAM_CODEC,
+			ClientboundSymbolPaperOpenScreenPacket::handle);
 		
 		// Alien Tech
 		
@@ -130,10 +140,21 @@ public final class PacketHandlerInit
 		//****************************************Server-bound****************************************
 		//============================================================================================
 		
+		
 		registrar.playToServer(
-				ServerboundDHDUpdatePacket.TYPE,
-				ServerboundDHDUpdatePacket.STREAM_CODEC,
-				ServerboundDHDUpdatePacket::handle);
+			ServerboundAutoDialerUpdatePacket.TYPE,
+			ServerboundAutoDialerUpdatePacket.STREAM_CODEC,
+			ServerboundAutoDialerUpdatePacket::handle);
+		
+		registrar.playToServer(
+			ServerboundEngravingUpdatePacket.TYPE,
+			ServerboundEngravingUpdatePacket.STREAM_CODEC,
+			ServerboundEngravingUpdatePacket::handle);
+		
+		registrar.playToServer(
+			ServerboundDHDUpdatePacket.TYPE,
+			ServerboundDHDUpdatePacket.STREAM_CODEC,
+			ServerboundDHDUpdatePacket::handle);
 		
 		registrar.playToServer(
 				ServerboundRingPanelUpdatePacket.TYPE,

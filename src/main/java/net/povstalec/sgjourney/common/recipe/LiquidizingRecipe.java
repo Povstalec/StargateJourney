@@ -1,12 +1,10 @@
 package net.povstalec.sgjourney.common.recipe;
 
-import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -19,8 +17,8 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.FluidInit;
+import net.povstalec.sgjourney.common.init.RecipeTypeInit;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class LiquidizingRecipe extends ProgressRecipe<LiquidizingRecipeInput>
 {
@@ -98,7 +96,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<LiquidizingRecipe
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return NaquadahLiquidizerSerializer.INSTANCE;
+			return RecipeTypeInit.LIQUIDIZING_SERIALIZER.get();
 		}
 		
 		@Override
@@ -177,7 +175,7 @@ public abstract class LiquidizingRecipe extends ProgressRecipe<LiquidizingRecipe
 		@Override
 		public @NotNull RecipeSerializer<?> getSerializer()
 		{
-			return HeavyNaquadahLiquidizerSerializer.INSTANCE;
+			return RecipeTypeInit.HEAVY_LIQUIDIZING_SERIALIZER.get();
 		}
 		
 		@Override

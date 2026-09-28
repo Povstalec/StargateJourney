@@ -9,7 +9,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
-import net.minecraft.world.level.block.entity.BannerPatterns;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.povstalec.sgjourney.StargateJourney;
 
@@ -19,6 +18,7 @@ public class TagInit
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
+		public static final TagKey<Item> STOPS_DHD_INTERACTION = tag("stops_dhd_interaction");
 		
 		private static TagKey<Item> tag(String name)
 		{
@@ -61,6 +61,10 @@ public class TagInit
 		
 		public static final TagKey<Block> INCORRECT_FOR_NAQUADAH_TOOL = tag("incorrect_for_naquadah_tool");
 		public static final TagKey<Block> INCORRECT_FOR_TRINIUM_TOOL = tag("incorrect_for_trinium_tool");
+		
+		public static final TagKey<Block> NEEDS_STONE_GRAVER = tag("engravable/needs_stone_graver");
+		public static final TagKey<Block> NEEDS_IRON_GRAVER = tag("engravable/needs_iron_graver");
+		public static final TagKey<Block> NEEDS_DIAMOND_GRAVER = tag("engravable/needs_diamond_graver");
 		
 		private static TagKey<Block> tag(String name)
 		{

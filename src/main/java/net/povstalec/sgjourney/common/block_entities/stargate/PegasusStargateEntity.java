@@ -138,7 +138,7 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet, HolderLookup.Provider registries)
+	public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket packet, HolderLookup.@NotNull Provider registries)
 	{
 		super.onDataPacket(net, packet, registries);
 		CompoundTag tag = packet.getTag();
@@ -258,14 +258,14 @@ public class PegasusStargateEntity extends IrisStargateEntity<PegasusBlockEntity
 	}
 	
 	@Override
-	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		symbolBuffer++;
 		passedOver = false;
 		
 		if(!this.level.isClientSide())
-			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(this.worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
-		StargateInfo.FeedbackMessage feedback = super.encodeChevron(symbol, incoming, encode);
+			PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) level, level.getChunkAt(worldPosition).getPos(), new ClientBoundSoundPackets.StargateRotation(worldPosition, true));
+		StargateInfo.FeedbackMessage feedback = super.encodeChevron(symbol, direction, sound);
 		
 		if(addressBuffer.getLength() > getAddress().getLength())
 		{

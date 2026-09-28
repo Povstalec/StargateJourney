@@ -5,9 +5,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.DataComponentInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 
@@ -23,7 +23,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	
 	private static boolean showEnergy()
 	{
-		return !StargateJourneyConfig.disable_energy_use.get() && !SyncedConfig.fusion_core_infinite_energy;
+		return !StargateJourneyConfig.disable_energy_use.get() && !SyncedConfig.fusion_core_infinite_energy.get();
 	}
 	
 	@Override
@@ -51,7 +51,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	
 	public static int getMaxFuel()
 	{
-		return SyncedConfig.fusion_core_fuel_capacity;
+		return SyncedConfig.fusion_core_fuel_capacity.get();
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class FusionCoreItem extends Item implements IEnergyCore
 	@Override
 	public long maxGeneratedEnergy(ItemStack energyCore, ItemStack input)
 	{
-		return SyncedConfig.fusion_core_energy_from_fuel;
+		return SyncedConfig.fusion_core_energy_from_fuel.get();
 	}
 	
 	@Override

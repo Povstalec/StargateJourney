@@ -13,10 +13,18 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrys
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.MilkyWayDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.UniverseDHDMenu;
+import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
+import net.povstalec.sgjourney.common.menu.graver.SymbolBlockEngravingMenu;
 
 public class MenuInit 
 {
-	public static DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(Registries.MENU, StargateJourney.MODID);
+	public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, StargateJourney.MODID);
 	
 	public static final DeferredHolder<MenuType<?>, MenuType<InterfaceMenu<BasicInterfaceEntity>>> BASIC_INTERFACE =
             registerMenuType(InterfaceMenu.Basic::new, "basic_interface");
@@ -56,9 +64,6 @@ public class MenuInit
 	public static final DeferredHolder<MenuType<?>, MenuType<NaquadahGeneratorMenu>> NAQUADAH_GENERATOR =
             registerMenuType(NaquadahGeneratorMenu::new, "naquadah_generator");
 	
-	public static final DeferredHolder<MenuType<?>, MenuType<ZPMHubMenu>> ZPM_HUB =
-            registerMenuType(ZPMHubMenu::new, "zpm_hub");
-	
 	public static final DeferredHolder<MenuType<?>, MenuType<CrystallizerMenu.Crystallizer>> CRYSTALLIZER =
             registerMenuType(CrystallizerMenu.Crystallizer::new, "crystallizer");
 	
@@ -76,18 +81,48 @@ public class MenuInit
 	
 	public static final DeferredHolder<MenuType<?>, MenuType<BatteryMenu>> NAQUADAH_BATTERY =
 			registerMenuType(BatteryMenu::new, "naquadah_battery");
+	
+	// Engraving
+	
+	public static final DeferredHolder<MenuType<?>, MenuType<CartoucheEngravingMenu.Stone>> ENGRAVING_STONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.Stone::new, "engraving_stone_cartouche");
+	public static final DeferredHolder<MenuType<?>, MenuType<CartoucheEngravingMenu.Sandstone>> ENGRAVING_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.Sandstone::new, "engraving_sandstone_cartouche");
+	public static final DeferredHolder<MenuType<?>, MenuType<CartoucheEngravingMenu.RedSandstone>> ENGRAVING_RED_SANDSTONE_CARTOUCHE =
+		registerMenuType(CartoucheEngravingMenu.RedSandstone::new, "engraving_red_sandstone_cartouche");
+	
+	public static final DeferredHolder<MenuType<?>, MenuType<SymbolBlockEngravingMenu.Stone>> ENGRAVING_STONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.Stone::new, "engraving_stone_symbol");
+	public static final DeferredHolder<MenuType<?>, MenuType<SymbolBlockEngravingMenu.Sandstone>> ENGRAVING_SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.Sandstone::new, "engraving_sandstone_symbol");
+	public static final DeferredHolder<MenuType<?>, MenuType<SymbolBlockEngravingMenu.RedSandstone>> ENGRAVING_RED_SANDSTONE_SYMBOL =
+		registerMenuType(SymbolBlockEngravingMenu.RedSandstone::new, "engraving_red_sandstone_symbol");
+	
+	public static final DeferredHolder<MenuType<?>, MenuType<StargateEngravingMenu.Universe>> ENGRAVING_UNIVERSE_STARGATE =
+		registerMenuType(StargateEngravingMenu.Universe::new, "engraving_universe_stargate");
+	public static final DeferredHolder<MenuType<?>, MenuType<StargateEngravingMenu.MilkyWay>> ENGRAVING_MILKY_WAY_STARGATE =
+		registerMenuType(StargateEngravingMenu.MilkyWay::new, "engraving_milky_way_stargate");
+	public static final DeferredHolder<MenuType<?>, MenuType<StargateEngravingMenu.Classic>> ENGRAVING_CLASSIC_STARGATE =
+		registerMenuType(StargateEngravingMenu.Classic::new, "engraving_classic_stargate");
+	
+	public static final DeferredHolder<MenuType<?>, MenuType<DHDEngravingMenu.Universe>> ENGRAVING_UNIVERSE_DHD =
+		registerMenuType(DHDEngravingMenu.Universe::new, "engraving_universe_dhd");
+	public static final DeferredHolder<MenuType<?>, MenuType<DHDEngravingMenu.MilkyWay>> ENGRAVING_MILKY_WAY_DHD =
+		registerMenuType(DHDEngravingMenu.MilkyWay::new, "engraving_milky_way_dhd");
+	public static final DeferredHolder<MenuType<?>, MenuType<DHDEngravingMenu.Classic>> ENGRAVING_CLASSIC_DHD =
+		registerMenuType(DHDEngravingMenu.Classic::new, "engraving_classic_dhd");
 
 
 
     private static <T extends AbstractContainerMenu> DeferredHolder<MenuType<?>, MenuType<T>> registerMenuType(IContainerFactory<T> factory, String name)
     {
-        return CONTAINERS.register(name, () -> IMenuTypeExtension.create(factory));
+        return MENUS.register(name, () -> IMenuTypeExtension.create(factory));
     }
 
 	
 	public static void register(IEventBus eventBus)
 	{
-        CONTAINERS.register(eventBus);
+        MENUS.register(eventBus);
     }
 
 }

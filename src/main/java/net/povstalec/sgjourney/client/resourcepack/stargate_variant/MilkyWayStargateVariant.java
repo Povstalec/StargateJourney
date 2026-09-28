@@ -1,18 +1,18 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class MilkyWayStargateVariant extends GenericStargateVariant
+import java.util.Optional;
+
+public class MilkyWayStargateVariant extends GenericStargateVariant<MilkyWayStargateEntity>
 {
 	// Variant: Normal RGB - Shiny RGB
 	// Milky Way: 25 55 255 - 31 39 101

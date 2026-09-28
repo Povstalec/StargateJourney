@@ -5,8 +5,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import net.povstalec.sgjourney.client.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.FluidInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import org.jetbrains.annotations.NotNull;
@@ -29,7 +29,7 @@ public class VialItem extends FluidItem
 	
 	public int getFluidCapacity(ItemStack stack)
 	{
-		return SyncedConfig.vial_capacity;
+		return SyncedConfig.vial_capacity.get();
 	}
 	
 	// Liquid Naquadah Vial

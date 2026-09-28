@@ -1,11 +1,13 @@
 package net.povstalec.sgjourney.common.capabilities;
 
 import net.minecraft.core.HolderLookup;
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializable<Tag>
 {
@@ -137,12 +139,25 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	{
 		return getTrueEnergyStored() >= energy;
 	}
-    
-    
+	
+	public boolean hasEnergy()
+	{
+		return this.energy > 0;
+	}
+	
+	
+	
+	public void setEnergyNoUpdate(long energy)
+	{
+		this.energy = energy;
+	}
 	
 	public long setEnergy(long energy)
 	{
+		long oldEnergy = this.energy;
 		this.energy = energy;
+		
+		onEnergyChanged(this.energy - oldEnergy, false);
 		
 		return energy;
 	}
@@ -164,21 +179,68 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	{
 		return this.maxExtract;
 	}
-
-    @Override
-    public Tag serializeNBT(HolderLookup.Provider provider)
-    {
-        return LongTag.valueOf(this.energy);
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, Tag nbt)
-    {
-    	if(!(nbt instanceof LongTag longTag))
-    		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-    	
-    	this.setEnergy(longTag.getAsLong());
-    }
+	
+	@Override
+	public Tag serializeNBT(HolderLookup.@NotNull Provider provider)
+	{
+		return LongTag.valueOf(this.energy);
+	}
+	
+	@Override
+	public void deserializeNBT(HolderLookup.@NotNull Provider provider, @NotNull Tag nbt)
+	{
+		if(nbt instanceof LongTag longTag)
+			this.setEnergyNoUpdate(longTag.getAsLong());
+		else if(nbt instanceof IntTag intTag)
+			this.setEnergyNoUpdate(intTag.getAsInt());
+		else
+			throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
+	}
+	
+	
+	
+	public void drainSimpleEnergyStorage(IEnergyStorage otherEnergyStorage, int amount)
+	{
+		int simulatedOutputAmount = otherEnergyStorage.extractEnergy(amount, true);
+		int simulatedReceiveAmount = this.receiveEnergy(simulatedOutputAmount, true);
+		
+		otherEnergyStorage.extractEnergy(simulatedReceiveAmount, false);
+		this.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void drainOtherEnergyStorage(IEnergyStorage otherEnergyStorage, long amount)
+	{
+		if(otherEnergyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.fillSGJourneyEnergyStorage(this, amount);
+		else
+			this.drainSimpleEnergyStorage(otherEnergyStorage, SGJourneyEnergy.regularEnergy(amount));
+	}
+	
+	public void fillSGJourneyEnergyStorage(SGJourneyEnergy sgjourneyEnergy, long amount)
+	{
+		long simulatedOutputAmount = this.extractLongEnergy(amount, true);
+		long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+		
+		this.extractLongEnergy(simulatedReceiveAmount, false);
+		sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void fillSimpleEnergyStorage(IEnergyStorage otherEnergyStorage, int amount)
+	{
+		int simulatedOutputAmount = this.extractEnergy(amount, true);
+		int simulatedReceiveAmount = otherEnergyStorage.receiveEnergy(simulatedOutputAmount, true);
+		
+		this.extractEnergy(simulatedReceiveAmount, false);
+		otherEnergyStorage.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void fillOtherEnergyStorage(IEnergyStorage otherEnergyStorage, long amount)
+	{
+		if(otherEnergyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			this.fillSGJourneyEnergyStorage(sgjourneyEnergy, amount);
+		else
+			this.fillSimpleEnergyStorage(otherEnergyStorage, SGJourneyEnergy.regularEnergy(amount));
+	}
     
  
 	

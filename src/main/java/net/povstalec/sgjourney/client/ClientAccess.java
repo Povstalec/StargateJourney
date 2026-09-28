@@ -1,18 +1,12 @@
 package net.povstalec.sgjourney.client;
 
-import java.util.*;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.client.screens.ArcheologistNotebookScreen;
-import net.povstalec.sgjourney.client.screens.DialerScreen;
-import net.povstalec.sgjourney.client.screens.GDOScreen;
-import net.povstalec.sgjourney.common.block_entities.stargate.*;
-import net.povstalec.sgjourney.common.block_entities.tech.*;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerMainScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerSaveScreen;
 import net.povstalec.sgjourney.client.screens.crystal_computer.PocketCrystalComputerScreen;
@@ -20,6 +14,8 @@ import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
+
+import java.util.Map;
 
 public class ClientAccess
 {
@@ -30,6 +26,11 @@ public class ClientAccess
 		SpaceLocation.currentGravity = gravity;
 	}
 	
+	public static void openSymbolPaperScreen(InteractionHand interactionHand)
+	{
+		minecraft.setScreen(new SymbolPaperScreen(interactionHand));
+	}
+	
 	public static void openArcheologistNotebookScreen(boolean mainHand, CompoundTag tag)
 	{
 		minecraft.setScreen(new ArcheologistNotebookScreen(mainHand, tag));
@@ -38,6 +39,11 @@ public class ClientAccess
 	public static void updateDialer()
 	{
 		minecraft.setScreen(new DialerScreen());
+	}
+	
+	public static void openAutoDialerScreen(InteractionHand interactionHand)
+	{
+		minecraft.setScreen(new AutoDialerScreen(interactionHand));
 	}
 	
 	public static void openGDOScreen(boolean mainHand, String idc, int frequency)

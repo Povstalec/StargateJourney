@@ -118,7 +118,7 @@ public class PDAItem extends Item implements AncientTech, GoauldTech
 	@Override
 	public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
 	{
-		tooltipComponents.add(Component.translatable("tooltip.sgjourney.pda.info").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.pda.info"));
 	}
 	
 	private void scanEntity(Player user, Entity target)
