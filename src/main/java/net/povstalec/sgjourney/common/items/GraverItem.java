@@ -108,7 +108,7 @@ public class GraverItem extends TieredItem implements Vanishable
 		else if(tier < 2 && state.is(TagInit.Blocks.NEEDS_IRON_GRAVER))
 			return false;
 		else
-			return tier >= 1 || !state.is(TagInit.Blocks.NEEDS_DIAMOND_GRAVER);
+			return tier >= 1 || !state.is(TagInit.Blocks.NEEDS_STONE_GRAVER);
 	}
 	
 	@Override
