@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -213,13 +214,13 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			return disconnectStargate(incompleteAddress());
 		
 		if(!addressBuffer.canBeDialed())
-			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 		
 		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
 		if(address.getLength() < addressBuffer.getLength())
 		{
 			if(canEngage) // Interrupt Stargate rotation
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 			else
 			{
 				canEngage = true;

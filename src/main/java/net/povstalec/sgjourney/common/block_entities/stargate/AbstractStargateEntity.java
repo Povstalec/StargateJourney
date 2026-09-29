@@ -648,9 +648,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	protected StargateInfo.FeedbackMessage incompleteAddress()
 	{
 		if(getAddress().getLength() < Address.MIN_DIALED_ADDRESS_LENGTH) // Address is too short
-			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.too_short"));
+			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.too_short"));
 		
-		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));
+		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));
 	}
 	
 	public StargateInfo.FeedbackMessage engageStargate()
