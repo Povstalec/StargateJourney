@@ -3,6 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -151,7 +152,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		
 		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
 		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
-			return disconnectStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo());
+			return disconnectStargate(incompleteAddress());
 		
 		canEngage = canEngageStargate;
 		
@@ -203,14 +204,22 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd)
 	{
+		// Special case where no symbols are encoded
+		if(addressBuffer.isEmpty())
+			return disconnectStargate(incompleteAddress());
+		
+		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
+			return disconnectStargate(incompleteAddress());
+		
 		if(!addressBuffer.canBeDialed())
-			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 		
 		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
 		if(address.getLength() < addressBuffer.getLength())
 		{
 			if(canEngage) // Interrupt Stargate rotation
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 			else
 			{
 				canEngage = true;
