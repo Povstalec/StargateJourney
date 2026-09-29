@@ -1,8 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.Bootstrap;
 import net.minecraft.world.level.Level;
 import net.neoforged.testframework.junit.EphemeralTestServerProvider;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +38,7 @@ class SpaceLocationTest
 				new SpaceLocation.TemplateInfo("minecraft:the_end", false, galaxies)
 			)
 			.sorted(comparator)
-			.map(info -> new SpaceLocation(info, false, 0f, false, false, null, null, null, false))
+			.map(info -> new SpaceLocation(info, false, 0f, false, null, null, null, null, false, false))
 			.forEach(SpaceLocation::registerTemplate);
 	}
 	

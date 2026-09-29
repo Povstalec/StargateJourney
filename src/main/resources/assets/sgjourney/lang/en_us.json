@@ -1152,7 +1152,7 @@
 	"tooltip.sgjourney.fusion_core.description": "Provides energy to the DHD",
 	
 	"tooltip.sgjourney.charcoal_stick.description": "Used to write down symbols on paper from blocks with symbols (like Cartouches and Stargates)",
-	"tooltip.sgjourney.graver.description": "Used to engrave symbols into blocks with symbols (like Cartouches and Stargates)",
+	"tooltip.sgjourney.graver.description": "Used to engrave symbols into some blocks (like Cartouches, Symbol Blocks, Stargates and DHDs)",
 	
 	
 	"argument.sgjourney.address.incomplete": "Incomplete Address",
@@ -1205,7 +1205,10 @@
 	"message.sgjourney.stargate.info.connection_established.interstellar": "Interstellar connection established",
 	"message.sgjourney.stargate.info.connection_established.intergalactic": "Intergalactic connection established",
 	
-	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address",
+	"message.sgjourney.stargate.error.incomplete_address": "Incomplete Address (%s)",
+	"message.sgjourney.stargate.error.incomplete_address.too_short": "Too short",
+	"message.sgjourney.stargate.error.incomplete_address.no_point_of_origin": "Missing Point of Origin",
+	"message.sgjourney.stargate.error.incomplete_address.dialing_aborted": "Dialing aborted",
 	"message.sgjourney.stargate.error.invalid_address": "Invalid Address",
 	"message.sgjourney.stargate.error.not_enough_power": "Not enough power (%s required)",
 	"message.sgjourney.stargate.error.self_obstructed": "Local Stargate is obstructed",
