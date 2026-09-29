@@ -629,7 +629,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh, Dialing.Action action)
 	{
 		if(!getAddress().canBeDialed()) // Address is too short or does not contain a Point of Origin
-			return resetStargate(makeDialAttempt(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo()));
+			return resetStargate(makeDialAttempt(incompleteAddress()));
 		else if(!isConnected())
 		{
 			if(!isObstructed())
@@ -642,6 +642,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		}
 		else
 			return disconnectStargate(makeDialAttempt(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()));
+	}
+	
+	protected StargateInfo.FeedbackMessage incompleteAddress()
+	{
+		if(getAddress().getLength() < Address.MIN_DIALED_ADDRESS_LENGTH) // Address is too short
+			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.too_short"));
+		
+		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));
 	}
 	
 	public StargateInfo.FeedbackMessage engageStargate()
