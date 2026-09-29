@@ -1149,7 +1149,7 @@
 	"tooltip.sgjourney.fusion_core.description": "Dodává energii ovládacímu panelu hvězdné brány",
 	
 	"tooltip.sgjourney.charcoal_stick.description": "Používaný pro zapsání symbolů z bloků se symboly (jako kartuší a hvězdných bran) na papír",
-	"tooltip.sgjourney.graver.description": "Používané pro vyrytí symbolů do bloků se symboly (jako kartuší a hvězdných bran)",
+	"tooltip.sgjourney.graver.description": "Používané pro vyrytí symbolů do některých bloků (jako kartuší, bloků se symboly, hvězdných bran a DHD)",
 	
 	
 	"argument.sgjourney.address.incomplete": "Neúplná adresa",
@@ -1202,6 +1202,9 @@
 	"message.sgjourney.stargate.info.connection_established.intergalactic": "Mezigalaktické spojení navázáno",
 	
 	"message.sgjourney.stargate.error.incomplete_address": "Neúplná adresa",
+	"message.sgjourney.stargate.error.incomplete_address.too_short": "Moc krátká",
+	"message.sgjourney.stargate.error.incomplete_address.no_point_of_origin": "Chybí výchozí bod",
+	"message.sgjourney.stargate.error.incomplete_address.dialing_aborted": "Vytáčení přerušeno",
 	"message.sgjourney.stargate.error.invalid_address": "Neplatná adresa",
 	"message.sgjourney.stargate.error.not_enough_power": "Nedostatek energie (je třeba %s)",
 	"message.sgjourney.stargate.error.self_obstructed": "Lokální hvězdná brána je blokována",

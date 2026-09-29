@@ -38,7 +38,7 @@ class SpaceLocationTest
                         new SpaceLocation.TemplateInfo("minecraft:the_end", false, galaxies)
                 )
                 .sorted(comparator)
-                .map(info -> new SpaceLocation(info, false, 0f, false, false, null, null, null, false))
+                .map(info -> new SpaceLocation(info, false, 0f, false, null, null, null, null, false, false))
                 .forEach(SpaceLocation::registerTemplate);
     }
 
