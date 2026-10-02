@@ -13,10 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrys
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
-import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.menu.dhd.MilkyWayDHDMenu;
-import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
-import net.povstalec.sgjourney.common.menu.dhd.UniverseDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.*;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
