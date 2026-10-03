@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -112,7 +113,7 @@ public class AndromedaStargateBlock extends RotatingStargateBaseBlock implements
 				@Override
 				public @NotNull Component getDisplayName()
 				{
-					return Component.empty();
+					return TextComponent.EMPTY;
 				}
 				
 				@Override
@@ -121,7 +122,7 @@ public class AndromedaStargateBlock extends RotatingStargateBaseBlock implements
 					return new StargateEngravingMenu.Andromeda(windowId, playerInventory, andromedaStargate, ContainerLevelAccess.create(level, pos));
 				}
 			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, andromedaStargate.getBlockPos());
+			NetworkHooks.openGui((ServerPlayer) player, containerProvider, andromedaStargate.getBlockPos());
 		}
 	}
 	

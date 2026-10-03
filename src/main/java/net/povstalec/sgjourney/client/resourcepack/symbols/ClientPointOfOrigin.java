@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
@@ -100,7 +101,7 @@ public class ClientPointOfOrigin
 	
 	public static MutableComponent translationComponent(@Nullable ResourceKey<PointOfOrigin> pointOfOriginKey, Component alternative)
 	{
-		MutableComponent component = Component.translatable("info.sgjourney.point_of_origin").append(": ");
+		MutableComponent component = new TranslatableComponent("info.sgjourney.point_of_origin").append(": ");
 		
 		if(pointOfOriginKey != null)
 		{
@@ -109,7 +110,7 @@ public class ClientPointOfOrigin
 			if(symbols == null)
 				component.append(alternative);
 			else
-				component.append(Component.translatable(symbols.translationName));
+				component.append(new TranslatableComponent(symbols.translationName));
 		}
 		
 		return component;

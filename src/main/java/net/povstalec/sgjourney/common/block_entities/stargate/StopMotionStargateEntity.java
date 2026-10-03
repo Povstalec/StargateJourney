@@ -3,7 +3,7 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -213,7 +213,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 		if(!addressBuffer.canBeDialed())
 		{
 			if(addressBuffer.getLength() > getAddress().getLength())
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 			else
 				return disconnectStargate(incompleteAddress());
 		}
@@ -222,7 +222,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 		if(address.getLength() < addressBuffer.getLength())
 		{
 			if(canEngage != CanEngage.NO) // Interrupt Stargate rotation
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
 			else
 			{
 				canEngage = CanEngage.READY;

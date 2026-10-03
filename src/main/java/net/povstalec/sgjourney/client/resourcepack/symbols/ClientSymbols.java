@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
@@ -227,7 +229,7 @@ public class ClientSymbols
 	
 	public static MutableComponent translationComponent(@Nullable ResourceKey<Symbols> symbolsKey, Component alternative)
 	{
-		MutableComponent component = Component.translatable("info.sgjourney.symbols").append(": ");
+		MutableComponent component = new TranslatableComponent("info.sgjourney.symbols").append(": ");
 		
 		if(symbolsKey != null)
 		{
@@ -237,10 +239,10 @@ public class ClientSymbols
 				component.append(alternative);
 			else
 			{
-				component.append(Component.translatable(symbols.translationName));
+				component.append(new TranslatableComponent(symbols.translationName));
 				
 				if(symbols.symbolSet != null)
-					component.append(Component.literal(" (").append(Component.translatable(symbols.symbolSet.name()))).append(")");
+					component.append(new TextComponent(" (").append(new TranslatableComponent(symbols.symbolSet.name()))).append(")");
 			}
 		}
 		

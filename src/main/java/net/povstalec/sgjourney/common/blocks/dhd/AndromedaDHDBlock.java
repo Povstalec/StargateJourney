@@ -5,6 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -110,7 +112,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
 						@Override
 						public Component getDisplayName()
 						{
-							return Component.translatable("screen.sgjourney.dhd");
+							return new TranslatableComponent("screen.sgjourney.dhd");
 						}
 						
 						@Override
@@ -119,7 +121,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
 							return new DHDCrystalMenu.Andromeda(windowId, playerInventory, dhd);
 						}
 					};
-					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+					NetworkHooks.openGui((ServerPlayer) player, containerProvider, dhd.getBlockPos());
 				}
 				else
         		{
@@ -128,7 +130,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
             			@Override
             			public Component getDisplayName() 
             			{
-            				return Component.translatable("screen.sgjourney.dhd");
+            				return new TranslatableComponent("screen.sgjourney.dhd");
             			}
             			
             			@Override
@@ -137,7 +139,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
             				return new AndromedaDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
-            		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
+            		NetworkHooks.openGui((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
         		}
         	}
         	else
@@ -170,7 +172,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
 				@Override
 				public @NotNull Component getDisplayName()
 				{
-					return Component.empty();
+					return TextComponent.EMPTY;
 				}
 				
 				@Override
@@ -179,7 +181,7 @@ public class AndromedaDHDBlock extends CrystalDHDBlock implements SimpleWaterlog
 					return new DHDEngravingMenu.Andromeda(windowId, playerInventory, andromedaDHD, ContainerLevelAccess.create(level, pos));
 				}
 			};
-			NetworkHooks.openScreen((ServerPlayer) player, containerProvider, andromedaDHD.getBlockPos());
+			NetworkHooks.openGui((ServerPlayer) player, containerProvider, andromedaDHD.getBlockPos());
 		}
 	}
 	
