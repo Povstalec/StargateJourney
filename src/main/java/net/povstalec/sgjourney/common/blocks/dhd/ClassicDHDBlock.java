@@ -39,7 +39,7 @@ import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;

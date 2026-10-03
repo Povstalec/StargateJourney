@@ -189,7 +189,7 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     public void appendHoverText(@NotNull ItemStack stack, @Nullable BlockGetter getter, @NotNull List<Component> tooltipComponents, @NotNull TooltipFlag isAdvanced)
     {
     	String dimensionString = null;
-    	String symbolsString = "";
+		ResourceKey<Symbols> symbols = null;
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
     	if(blockEntityTag != null)
@@ -208,12 +208,12 @@ public abstract class CartoucheBlock extends HorizontalDirectionalBlock implemen
     		}
     		
     		if(blockEntityTag.contains(CartoucheBlockEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(CartoucheBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
+				symbols = Conversion.stringToSymbols(blockEntityTag.getString(CartoucheBlockEntity.SYMBOLS));
     	}
     	
     	if(dimensionString != null)
 			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.dimension").append(new TextComponent(": " + dimensionString)).withStyle(ChatFormatting.GREEN));
-		tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(new TextComponent(": ")).append(new TranslatableComponent(symbolsString)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(ClientSymbols.translationComponent(symbols, ComponentHelper.ERROR).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		if(blockEntityTag != null)
 		{

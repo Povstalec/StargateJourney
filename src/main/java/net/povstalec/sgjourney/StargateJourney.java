@@ -270,6 +270,8 @@ public class StargateJourney
         	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
 			MenuScreens.register(MenuInit.CLASSIC_DHD_CRYSTAL.get(), DHDCrystalScreen.Classic::new);
         	MenuScreens.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
+			MenuScreens.register(MenuInit.ANDROMEDA_DHD_CRYSTAL.get(), DHDCrystalScreen.Andromeda::new);
+			MenuScreens.register(MenuInit.ANDROMEDA_DHD.get(), AndromedaDHDScreen::new);
 
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
@@ -293,10 +295,12 @@ public class StargateJourney
 			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
 			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
 			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
+			MenuScreens.register(MenuInit.ENGRAVING_ANDROMEDA_STARGATE.get(), StargateEngravingScreen.Andromeda::new);
 			
 			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
 			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
 			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
+			MenuScreens.register(MenuInit.ENGRAVING_ANDROMEDA_DHD.get(), DHDEngravingScreen.Andromeda::new);
         	
         	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
         	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
@@ -322,6 +326,7 @@ public class StargateJourney
         	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.ANDROMEDA_STARGATE.get(), AndromedaStargateRenderer::new);
         }
     	
     	@SubscribeEvent

@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.block_entities.stargate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
@@ -20,11 +19,8 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
@@ -45,11 +41,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	
 	public static final int MAX_WAIT_TICKS = 20;
 	
-	public int waitTicks = 1;
+	protected int waitTicks = 1;
 	
-	public Address.Mutable addressBuffer = new Address.Mutable();
+	protected Address.Mutable addressBuffer = new Address.Mutable();
+	protected int symbolBuffer = 0;
+	
 	protected boolean canEngage = false;
-	public int symbolBuffer = 0;
 	
 	protected int angle;
 	
@@ -139,6 +136,16 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	//*******************************************Other********************************************
 	//============================================================================================
 	
+	public Address getAddressBuffer()
+	{
+		return addressBuffer;
+	}
+	
+	public int getSymbolBuffer()
+	{
+		return symbolBuffer;
+	}
+	
 	@Override
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
@@ -214,7 +221,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			return disconnectStargate(incompleteAddress());
 		
 		if(!addressBuffer.canBeDialed())
-			return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+		{
+			if(addressBuffer.getLength() > getAddress().getLength())
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+			else
+				return disconnectStargate(incompleteAddress());
+		}
 		
 		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
 		if(address.getLength() < addressBuffer.getLength())

@@ -24,6 +24,10 @@
 
 		"sgjourney:tollan_stargate",
 		"sgjourney:tollan_ring",
+		
+		"sgjourney:andromeda_stargate",
+		"sgjourney:andromeda_ring",
+		"sgjourney:andromeda_dhd",
 
 		"sgjourney:goauld_transport_rings",
 		"sgjourney:zpm_hub"

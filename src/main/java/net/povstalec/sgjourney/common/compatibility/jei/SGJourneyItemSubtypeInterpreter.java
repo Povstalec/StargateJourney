@@ -7,14 +7,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
-import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
-import net.povstalec.sgjourney.common.sgjourney.Address;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -69,8 +68,8 @@ public class SGJourneyItemSubtypeInterpreter
 		public @NotNull String apply(@NotNull ItemStack ingredient, @NotNull UidContext context)
 		{
 			CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(ingredient);
-			if(blockEntityTag != null)
-				return AbstractStargateEntity.GENERATION_STEP + blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP);
+			if(blockEntityTag != null && blockEntityTag.contains(StructureGenEntity.GENERATION_STEP))
+				return StructureGenEntity.GENERATION_STEP + blockEntityTag.getByte(StructureGenEntity.GENERATION_STEP);
 			
 			return NONE;
 		}

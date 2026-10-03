@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.povstalec.sgjourney.client.screens.config.ConfigList.BooleanConfigEntry;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
@@ -47,6 +46,8 @@ public class ConfigScreenClientDHD extends Screen
 				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
 				new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(new TranslatableComponent("gui.sgjourney.andromeda_dhd_button_layout"), this.width, ClientDHDConfig.andromeda_dhd_canon_button_layout,
+			new TranslatableComponent("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), new TranslatableComponent("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		
 		this.addRenderableWidget(configList);
 

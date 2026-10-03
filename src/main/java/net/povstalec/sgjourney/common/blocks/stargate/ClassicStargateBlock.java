@@ -42,6 +42,7 @@ import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateUpgradeItem;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -201,20 +202,20 @@ public class ClassicStargateBlock extends RotatingStargateBaseBlock implements S
     {
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
-		String pointOfOrigin = "";
-		String symbols = "";
+		ResourceKey<PointOfOrigin> pointOfOrigin = null;
+		ResourceKey<Symbols> symbols = null;
 		
 		if(blockEntityTag != null)
 		{
 			if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
-				pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
+				pointOfOrigin = Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN));
 			
 			if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
-				symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "tooltip.sgjourney.error");
+				symbols = Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS));
 		}
 		
-		tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(new TextComponent(": ")).append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(new TextComponent(": ")).append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+		tooltipComponents.add(ClientPointOfOrigin.translationComponent(pointOfOrigin, ComponentHelper.ERROR).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipComponents.add(ClientSymbols.translationComponent(symbols, ComponentHelper.ERROR).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
         super.appendHoverText(stack, getter, tooltipComponents, isAdvanced);
     }

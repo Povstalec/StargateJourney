@@ -1,0 +1,116 @@
+package net.povstalec.sgjourney.common.block_entities.dhd;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
+import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.ItemInit;
+import net.povstalec.sgjourney.common.init.SoundInit;
+import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
+
+public class AndromedaDHDEntity extends CrystalDHDEntity
+{
+	public AndromedaDHDEntity(BlockPos pos, BlockState state)
+	{
+		super(BlockEntityInit.ANDROMEDA_DHD.get(), pos, state);
+	}
+	
+	@Override
+	public void load(CompoundTag tag)
+	{
+		super.load(tag);
+		
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+	}
+	
+	@Override
+	protected void saveAdditional(@NotNull CompoundTag tag)
+	{
+		super.saveAdditional(tag);
+		
+		symbolInfo.saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+	}
+	
+	protected long buttonPressEnergyCost()
+	{
+		return CommonDHDConfig.andromeda_dhd_button_press_energy_cost.get();
+	}
+	
+	@Override
+	public long getEnergyCapacity()
+	{
+		return SyncedConfig.andromeda_dhd_energy_buffer_capacity.get();
+	}
+	
+	@Override
+	public long getMaxEnergyReceive()
+	{
+		return CommonDHDConfig.andromeda_dhd_max_energy_receive.get();
+	}
+	
+	@Override
+	public long maxEnergyTransfer()
+	{
+		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.andromeda_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
+	}
+
+	@Override
+	protected SoundEvent getEnterSound()
+	{
+		return SoundInit.ANDROMEDA_DHD_ENTER.get();
+	}
+
+	@Override
+	protected SoundEvent getPressSound()
+	{
+		return SoundInit.ANDROMEDA_DHD_PRESS.get();
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	@Override
+	protected void generateEnergyCore()
+	{
+		energyItemHandler.setStackInSlot(0, FusionCoreItem.randomFusionCore(CommonTechConfig.fusion_core_fuel_capacity.get() / 3, CommonTechConfig.fusion_core_fuel_capacity.get()));
+	}
+	
+	@Override
+	public void generateAdditional(Step generationStep)
+	{
+		if(generationStep == Step.SETUP) // Set empty symbols before it's generated in a structure
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
+		}
+		else if(stargateCache.isPresent()) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
+		
+		crystalCache.recalculateCrystals();
+	}
+	
+	@Override
+	protected void generateCrystals()
+	{
+		crystalHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(1, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(2, new ItemStack(ItemInit.COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(3, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(5, new ItemStack(ItemInit.ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(7, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
+	}
+}

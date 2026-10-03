@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 

@@ -7,7 +7,9 @@ import net.minecraftforge.registries.RegistryBuilder;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.*;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
+import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaSpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicSpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
@@ -35,8 +37,11 @@ public class StargateInit
 			new StargateType<>(StargateInfo.Gen.GEN_3, PegasusBlockEntityStargate::new));
 	public static final RegistryObject<StargateType<TollanBlockEntityStargate>> TOLLAN = STARGATE_TYPES.register("tollan", () ->
 			new StargateType<>(StargateInfo.Gen.GEN_2, TollanBlockEntityStargate::new));
+	// Non-Canon
 	public static final RegistryObject<StargateType<ClassicBlockEntityStargate>> CLASSIC = STARGATE_TYPES.register("classic", () ->
 			new StargateType<>(StargateInfo.Gen.NONE, ClassicBlockEntityStargate::new));
+	public static final RegistryObject<StargateType<AndromedaBlockEntityStargate>> ANDROMEDA = STARGATE_TYPES.register("andromeda", () ->
+		new StargateType<>(StargateInfo.Gen.GEN_2, AndromedaBlockEntityStargate::new));
 	
 	// Spawner Stargates
 	public static final RegistryObject<StargateType<UniverseSpawnerStargate>> UNIVERSE_SPAWNER = STARGATE_TYPES.register("universe_spawner", () ->
@@ -47,8 +52,11 @@ public class StargateInit
 			new StargateType<>(StargateInfo.Gen.GEN_3, PegasusSpawnerStargate::new));
 	public static final RegistryObject<StargateType<TollanSpawnerStargate>> TOLLAN_SPAWNER = STARGATE_TYPES.register("tollan_spawner", () ->
 			new StargateType<>(StargateInfo.Gen.GEN_2, TollanSpawnerStargate::new));
+	// Non-Canon
 	public static final RegistryObject<StargateType<ClassicSpawnerStargate>> CLASSIC_SPAWNER = STARGATE_TYPES.register("classic_spawner", () ->
 			new StargateType<>(StargateInfo.Gen.NONE, ClassicSpawnerStargate::new));
+	public static final RegistryObject<StargateType<AndromedaSpawnerStargate>> ANDROMEDA_SPAWNER = STARGATE_TYPES.register("andromeda_spawner", () ->
+		new StargateType<>(StargateInfo.Gen.GEN_2, AndromedaSpawnerStargate::new));
 	
 	
 	

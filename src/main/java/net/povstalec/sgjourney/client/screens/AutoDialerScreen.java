@@ -114,6 +114,7 @@ public class AutoDialerScreen extends Screen
 		});
 		
 		this.addRenderableWidget(this.editBox);
+		this.setInitialFocus(this.editBox);
 	}
 	
 	public void save()

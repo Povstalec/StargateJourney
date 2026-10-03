@@ -3,7 +3,6 @@ package net.povstalec.sgjourney.common.items;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +16,7 @@ import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientboundSymbolPaperOpenScreenPacket;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -87,10 +87,10 @@ public class SymbolPaperItem extends Item
 	{
 		ResourceKey<PointOfOrigin> pointOfOrigin = getPointOfOrigin(stack);
 		if(pointOfOrigin != null)
-			tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(": ").append(new TranslatableComponent(ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(pointOfOrigin), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.DARK_PURPLE));
+			tooltipComponents.add(ClientPointOfOrigin.translationComponent(pointOfOrigin, ComponentHelper.ERROR).withStyle(ChatFormatting.DARK_PURPLE));
 		
 		ResourceKey<Symbols> symbols = getSymbols(stack);
 		if(symbols != null)
-			tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(": ").append(new TranslatableComponent(ClientSymbols.translationName(ClientSymbols.getSymbols(symbols), "tooltip.sgjourney.error"))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			tooltipComponents.add(ClientSymbols.translationComponent(symbols, ComponentHelper.ERROR).withStyle(ChatFormatting.LIGHT_PURPLE));
 	}
 }

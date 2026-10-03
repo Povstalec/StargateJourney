@@ -8,10 +8,7 @@ import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.UniverseDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.*;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
@@ -50,6 +47,11 @@ public class BlockEntityInit
 			() -> BlockEntityType.Builder.of(TollanStargateEntity::new, BlockInit.TOLLAN_STARGATE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ClassicDHDEntity>> CLASSIC_DHD = BLOCK_ENTITIES.register("classic_dhd",
             () -> BlockEntityType.Builder.of(ClassicDHDEntity::new, BlockInit.CLASSIC_DHD.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<AndromedaStargateEntity>> ANDROMEDA_STARGATE = BLOCK_ENTITIES.register("andromeda_stargate",
+		() -> BlockEntityType.Builder.of(AndromedaStargateEntity::new, BlockInit.ANDROMEDA_STARGATE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AndromedaDHDEntity>> ANDROMEDA_DHD = BLOCK_ENTITIES.register("andromeda_dhd",
+		() -> BlockEntityType.Builder.of(AndromedaDHDEntity::new, BlockInit.ANDROMEDA_DHD.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<AncientTransportRingsEntity>> ANCIENT_TRANSPORT_RINGS = BLOCK_ENTITIES.register("ancient_transport_rings",
 			() -> BlockEntityType.Builder.of(AncientTransportRingsEntity::new, BlockInit.ANCIENT_TRANSPORT_RINGS.get()).build(null));

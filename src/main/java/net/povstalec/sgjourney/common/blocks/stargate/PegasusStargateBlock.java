@@ -22,6 +22,7 @@ import net.povstalec.sgjourney.common.blocks.SpecialSymbolBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.AbstractShieldingBlock;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -83,16 +84,17 @@ public class PegasusStargateBlock extends AbstractStargateBaseBlock implements S
 				tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.dynamic_symbols").withStyle(ChatFormatting.DARK_AQUA));
 			else
 			{
-				String pointOfOrigin = "";
+				ResourceKey<PointOfOrigin> pointOfOrigin = null;
+				ResourceKey<Symbols> symbols = null;
+				
 				if(blockEntityTag.contains(AbstractStargateEntity.POINT_OF_ORIGIN))
-					pointOfOrigin = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN))), "tooltip.sgjourney.error");
+					pointOfOrigin = Conversion.stringToPointOfOrigin(blockEntityTag.getString(AbstractStargateEntity.POINT_OF_ORIGIN));
 				
-				String symbols = "";
 				if(blockEntityTag.contains(AbstractStargateEntity.SYMBOLS))
-					symbols = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS))), "tooltip.sgjourney.error");
+					symbols = Conversion.stringToSymbols(blockEntityTag.getString(AbstractStargateEntity.SYMBOLS));
 				
-		        tooltipComponents.add(new TranslatableComponent("tooltip.sgjourney.point_of_origin").append(": ").append(new TranslatableComponent(pointOfOrigin)).withStyle(ChatFormatting.DARK_PURPLE));
-		        tooltipComponents.add(new TranslatableComponent(ClientSymbols.symbolsOrSet()).append(": ").append(new TranslatableComponent(symbols)).withStyle(ChatFormatting.LIGHT_PURPLE));
+				tooltipComponents.add(ClientPointOfOrigin.translationComponent(pointOfOrigin, ComponentHelper.ERROR).withStyle(ChatFormatting.DARK_PURPLE));
+				tooltipComponents.add(ClientSymbols.translationComponent(symbols, ComponentHelper.ERROR).withStyle(ChatFormatting.LIGHT_PURPLE));
 			}
 		}
 		

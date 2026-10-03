@@ -168,4 +168,12 @@ public class DHDCrystalScreen<T extends DHDCrystalMenu<?>> extends SGJourneyCont
 			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/classic/classic_dhd_crystal_gui.png"));
 		}
 	}
+	
+	public static class Andromeda extends DHDCrystalScreen<DHDCrystalMenu.Andromeda>
+	{
+		public Andromeda(DHDCrystalMenu.Andromeda menu, Inventory playerInventory, Component title)
+		{
+			super(menu, playerInventory, title, StargateJourney.sgjourneyLocation("textures/gui/dhd/andromeda/andromeda_dhd_crystal_gui.png"));
+		}
+	}
 }
