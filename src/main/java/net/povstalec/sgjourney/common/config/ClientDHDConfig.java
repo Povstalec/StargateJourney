@@ -10,6 +10,7 @@ public class ClientDHDConfig
 	public static SGJourneyConfigValue.BooleanValue milky_way_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue pegasus_dhd_canon_button_layout;
 	public static SGJourneyConfigValue.BooleanValue classic_dhd_canon_button_layout;
+	public static SGJourneyConfigValue.BooleanValue andromeda_dhd_canon_button_layout;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
@@ -34,5 +35,9 @@ public class ClientDHDConfig
 		classic_dhd_canon_button_layout = new SGJourneyConfigValue.BooleanValue(client, "client.classic_dhd_canon_button_layout",
 				false,
 				"If true, Classic DHD symbol positions won't be ordered and instead be based on the canon symbol positions of the Milky Way DHD");
+		
+		andromeda_dhd_canon_button_layout = new SGJourneyConfigValue.BooleanValue(client, "client.andromeda_dhd_canon_button_layout",
+				false,
+				"If true, Andromeda DHD symbol positions won't be ordered and instead be based on their canon positions");
 	}
 }

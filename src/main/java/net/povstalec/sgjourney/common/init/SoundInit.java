@@ -31,6 +31,9 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
+	public static final RegistryObject<SoundEvent> ANDROMEDA_DHD_ENTER = registerSoundEvent("andromeda_dhd_enter");
+	public static final RegistryObject<SoundEvent> ANDROMEDA_DHD_PRESS = registerSoundEvent("andromeda_dhd_press");
+	
 	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
 	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
 	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");

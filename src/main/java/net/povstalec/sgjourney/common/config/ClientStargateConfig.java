@@ -19,13 +19,14 @@ public class ClientStargateConfig
 	public static SGJourneyConfigValue.BooleanValue universe_front_rotates;
 	public static SGJourneyConfigValue.BooleanValue milky_way_stargate_back_lights_up;
 	public static SGJourneyConfigValue.BooleanValue pegasus_stargate_back_lights_up;
+	public static SGJourneyConfigValue.BooleanValue andromeda_stargate_back_lights_up;
 
 	public static SGJourneyConfigValue.IntValue stargate_full_sound_distance;
 	public static SGJourneyConfigValue.IntValue stargate_max_sound_distance;
 	
 	public static void init(ForgeConfigSpec.Builder client)
 	{
-		render_amd = new SGJourneyConfigValue.EnumValue(client, "client.render_amd",
+		render_amd = new SGJourneyConfigValue.EnumValue<>(client, "client.render_amd",
 				RenderAMD.AUTO,
 				"If ENABLED, event horizons will render in a way that is compatible with AMD, if DISABLED they won't, AUTO detection by default");
 		
@@ -76,6 +77,10 @@ public class ClientStargateConfig
 		pegasus_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.pegasus_stargate_back_lights_up", 
 				true, 
 				"Decide if Chevrons on the back of Pegasus Stargate should light up");
+		
+		andromeda_stargate_back_lights_up = new SGJourneyConfigValue.BooleanValue(client, "client.andromeda_stargate_back_lights_up",
+				true,
+				"Decide if Chevrons on the back of Andromeda Stargate should light up");
 		
 		
 		

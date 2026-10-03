@@ -13,9 +13,13 @@ public class ColorUtil
 	public static final float MIN_FLOAT_VALUE = 0F;
 	
 	public static final String RED = "red";
+	public static final String R = "r";
 	public static final String GREEN = "green";
+	public static final String G = "g";
 	public static final String BLUE = "blue";
+	public static final String B = "b";
 	public static final String ALPHA = "alpha";
+	public static final String A = "a";
 	
 	public static int getTint(int red, int green, int blue, int alpha)
 	{
@@ -34,12 +38,21 @@ public class ColorUtil
 		protected final float blue;
 	    protected final float alpha;
 		
+		public static final Codec<RGBA> INT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(R).forGetter(rgba -> (int) (rgba.red * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(G).forGetter(rgba -> (int) (rgba.green * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(B).forGetter(rgba -> (int) (rgba.blue * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).optionalFieldOf(A, MAX_INT_VALUE).forGetter(rgba -> (int) (rgba.alpha * 255))
+		).apply(instance, RGBA::new));
+		
 		public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(GREEN).forGetter(RGBA::green),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(BLUE).forGetter(RGBA::blue),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(ALPHA).forGetter(RGBA::alpha)
-				).apply(instance, RGBA::new));
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(GREEN).forGetter(RGBA::green),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(BLUE).forGetter(RGBA::blue),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).optionalFieldOf(ALPHA, MAX_FLOAT_VALUE).forGetter(RGBA::alpha)
+		).apply(instance, RGBA::new));
+		
+		public static final ColorCodec<RGBA> COLOR_CODEC = new ColorCodec<>(INT_CODEC, CODEC);
 		
 		public RGBA(float red, float green, float blue, float alpha)
 		{

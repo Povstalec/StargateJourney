@@ -148,8 +148,8 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	int symbolNumber = 0;
-		String symbolString = "";
-    	String symbolsString = "";
+		ResourceKey<PointOfOrigin> pointOfOrigin = null;
+		ResourceKey<Symbols> symbols = null;
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
 		if(blockEntityTag != null)
@@ -158,18 +158,22 @@ public abstract class SymbolBlock extends DirectionalBlock implements EntityBloc
             	symbolNumber = blockEntityTag.getInt(SymbolBlockEntity.SYMBOL_NUMBER);
 
         	if(symbolNumber == 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOL))
-				symbolString = ClientPointOfOrigin.translationName(ClientPointOfOrigin.getPointOfOrigin(Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL))), "tooltip.sgjourney.error");
+				pointOfOrigin = Conversion.stringToPointOfOrigin(blockEntityTag.getString(SymbolBlockEntity.SYMBOL));
 
-        	if(symbolNumber != 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
-				symbolsString = ClientSymbols.translationName(ClientSymbols.getSymbols(Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS))), "tooltip.sgjourney.error");
+        	if(symbolNumber > 0 && blockEntityTag.contains(SymbolBlockEntity.SYMBOLS))
+				symbols = Conversion.stringToSymbols(blockEntityTag.getString(SymbolBlockEntity.SYMBOLS));
     	}
 		
-		if(symbolNumber == 0)
-			tooltipComponents.add(Component.translatable("info.sgjourney.symbol").append(Component.literal(": ").append(Component.translatable(symbolString))).withStyle(ChatFormatting.DARK_PURPLE));
+		if(symbolNumber < 0)
+			tooltipComponents.add(Component.translatable("info.sgjourney.symbol").append(Component.literal(":")).withStyle(ChatFormatting.DARK_PURPLE));
 		else
 		{
 			tooltipComponents.add(Component.translatable("info.sgjourney.symbol_number").append(Component.literal(": ").append("" + symbolNumber)).withStyle(ChatFormatting.YELLOW));
-			tooltipComponents.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": ").append(Component.translatable(symbolsString))).withStyle(ChatFormatting.LIGHT_PURPLE));
+			
+			if(symbolNumber == 0)
+				tooltipComponents.add(ClientPointOfOrigin.translationComponent(pointOfOrigin, ComponentHelper.ERROR).withStyle(ChatFormatting.DARK_PURPLE));
+			else
+				tooltipComponents.add(ClientSymbols.translationComponent(symbols, ComponentHelper.ERROR).withStyle(ChatFormatting.LIGHT_PURPLE));
 		}
 		
 		if(blockEntityTag != null)

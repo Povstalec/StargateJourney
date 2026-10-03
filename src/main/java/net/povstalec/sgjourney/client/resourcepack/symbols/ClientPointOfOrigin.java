@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
@@ -24,26 +26,26 @@ public class ClientPointOfOrigin
 	public static final Codec<ResourceKey<ClientPointOfOrigin>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
 	public static final Codec<ClientPointOfOrigin> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("name").forGetter(pointOfOrigin -> pointOfOrigin.name),
+			Codec.STRING.fieldOf("name").forGetter(pointOfOrigin -> pointOfOrigin.translationName),
 			ResourceLocation.CODEC.fieldOf("texture").forGetter(pointOfOrigin -> pointOfOrigin.spriteTexture)
 	).apply(instance, ClientPointOfOrigin::new));
 	
 	private static final Map<ResourceKey<PointOfOrigin>, ClientPointOfOrigin> POINTS_OF_ORIGIN = new HashMap<>();
 	
-	private final String name;
+	private final String translationName;
 	private final ResourceLocation spriteTexture; // Name used for looking up the texture in a TextureAtlas
 	private final ResourceLocation extendedTexture; // Full texture path inside assets folder
 	
-	public ClientPointOfOrigin(String name, ResourceLocation texture)
+	public ClientPointOfOrigin(String translationName, ResourceLocation texture)
 	{
-		this.name = name;
+		this.translationName = translationName;
 		this.spriteTexture = texture;
 		this.extendedTexture = new ResourceLocation(texture.getNamespace(), "textures/" + texture.getPath() + ".png");
 	}
 	
 	public String name()
 	{
-		return this.name;
+		return this.translationName;
 	}
 	
 	public ResourceLocation getSpriteTexture()
@@ -67,7 +69,7 @@ public class ClientPointOfOrigin
 	@Override
 	public String toString()
 	{
-		return name;
+		return translationName;
 	}
 	
 	
@@ -86,7 +88,7 @@ public class ClientPointOfOrigin
 	public static String translationName(@Nullable ClientPointOfOrigin pointOfOrigin, String alternative)
 	{
 		if(pointOfOrigin != null)
-			return pointOfOrigin.name;
+			return pointOfOrigin.translationName;
 		
 		return alternative;
 	}
@@ -94,5 +96,22 @@ public class ClientPointOfOrigin
 	public static void clearPointsOfOrigin()
 	{
 		POINTS_OF_ORIGIN.clear();
+	}
+	
+	public static MutableComponent translationComponent(@Nullable ResourceKey<PointOfOrigin> pointOfOriginKey, Component alternative)
+	{
+		MutableComponent component = Component.translatable("info.sgjourney.point_of_origin").append(": ");
+		
+		if(pointOfOriginKey != null)
+		{
+			ClientPointOfOrigin symbols = getPointOfOrigin(pointOfOriginKey);
+			
+			if(symbols == null)
+				component.append(alternative);
+			else
+				component.append(Component.translatable(symbols.translationName));
+		}
+		
+		return component;
 	}
 }

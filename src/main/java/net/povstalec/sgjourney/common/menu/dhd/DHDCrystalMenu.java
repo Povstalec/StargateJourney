@@ -196,4 +196,23 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_DHD.get());
 		}
 	}
+	
+	public static class Andromeda extends DHDCrystalMenu<AndromedaDHDEntity>
+	{
+		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		}
+		
+		public Andromeda(int containerId, Inventory inventory, AndromedaDHDEntity blockEntity)
+		{
+			super(MenuInit.ANDROMEDA_DHD_CRYSTAL.get(), containerId, inventory, blockEntity);
+		}
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ANDROMEDA_DHD.get());
+		}
+	}
 }
