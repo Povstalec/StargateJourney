@@ -4,6 +4,8 @@
 	[
 		"sgjourney:universe_dhd",
 		"sgjourney:milky_way_dhd",
-		"sgjourney:pegasus_dhd"
+		"sgjourney:pegasus_dhd",
+		
+		"sgjourney:andromeda_dhd"
 	]
 }

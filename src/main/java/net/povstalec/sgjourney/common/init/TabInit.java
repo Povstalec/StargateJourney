@@ -12,10 +12,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.blocks.CartoucheBlock;
 import net.povstalec.sgjourney.common.blocks.SymbolBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.PegasusStargateBlock;
 import net.povstalec.sgjourney.common.blocks.transporter.AncientTransportRingsBlock;
@@ -216,6 +213,9 @@ public class TabInit
 				items.accept(BlockInit.CLASSIC_STARGATE_RING_BLOCK.get());
 				items.accept(ClassicDHDBlock.classicCrystalSetup());
 				items.accept(BlockInit.TOLLAN_STARGATE.get());
+				items.accept(BlockInit.ANDROMEDA_STARGATE.get());
+				items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.ANDROMEDA_STARGATE.get())));
+				items.accept(AndromedaDHDBlock.andromedaCrystalSetup());
 				
 				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
@@ -252,6 +252,7 @@ public class TabInit
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
 					items.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+					items.accept(StargateUpgradeItem.stargateType(BlockInit.ANDROMEDA_STARGATE.get()));
 				}
 				if(CommonStargateConfig.enable_stargate_variants.get())
 				{
@@ -572,6 +573,8 @@ public class TabInit
 			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.CLASSIC_STARGATE.get()), StructureGenEntity.Step.SETUP));
 			hiddenItems.add(ClassicDHDBlock.generatedDHD());
 			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.TOLLAN_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.ANDROMEDA_STARGATE.get()), StructureGenEntity.Step.SETUP));
+			hiddenItems.add(AndromedaDHDBlock.generatedDHD());
 			
 			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.ANCIENT_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP));
 			hiddenItems.add(InventoryUtil.generationStep(new ItemStack(BlockInit.GOAULD_TRANSPORT_RINGS.get()), StructureGenEntity.Step.SETUP));

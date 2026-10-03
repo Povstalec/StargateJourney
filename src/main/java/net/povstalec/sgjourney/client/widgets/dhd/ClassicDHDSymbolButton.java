@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.screens.graver.DHDEngravingScreen;
 import net.povstalec.sgjourney.common.config.ClientDHDConfig;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.ClassicDHDMenu;
 import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.misc.ColorUtil;

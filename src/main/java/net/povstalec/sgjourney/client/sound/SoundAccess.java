@@ -98,8 +98,8 @@ public class SoundAccess
     		{
     			if(stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 					stargate.spinSound = new StargateSoundWrapper.RingRotation(rotatingStargate);
-    			else if(stargate instanceof PegasusStargateEntity pegasusStargate)
-    				stargate.spinSound = new StargateSoundWrapper.PegasusRingRotation(pegasusStargate);
+    			else if(stargate instanceof StopMotionStargateEntity<?> stopMotionStargate)
+    				stargate.spinSound = new StargateSoundWrapper.DigitalRingRotation(stopMotionStargate);
     		}
     		
     		if(stop)

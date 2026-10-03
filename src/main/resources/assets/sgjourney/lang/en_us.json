@@ -246,11 +246,15 @@
 	"block.sgjourney.classic_stargate_base_block": "Classic Stargate Base Block",
 	"block.sgjourney.classic_stargate_chevron_block": "Classic Stargate Chevron Block",
 	"block.sgjourney.classic_stargate_ring_block": "Classic Stargate Ring Block",
+	"block.sgjourney.andromeda_stargate": "Andromeda Stargate",
+	"block.sgjourney.andromeda_ring": "Andromeda Stargate",
+	"block.sgjourney.andromeda_shielding": "Andromeda Shielding",
 	
 	"block.sgjourney.universe_dhd": "Universe DHD",
 	"block.sgjourney.milky_way_dhd": "Milky Way DHD",
 	"block.sgjourney.pegasus_dhd": "Pegasus DHD",
 	"block.sgjourney.classic_dhd": "Classic DHD",
+	"block.sgjourney.andromeda_dhd": "Andromeda DHD",
 	
 	"block.sgjourney.stargate.not_enough_space": "Stargate does not have enough space",
 	"block.sgjourney.stargate.break_cover_blocks": "Must destroy Cover Blocks first",
@@ -1356,6 +1360,7 @@
 	"gui.sgjourney.alternate_movie_chevron_locking": "Alternate Movie Chevron locking",
 	"gui.sgjourney.milky_way_stargate_back_lights_up": "Milky Way Stargate Back",
 	"gui.sgjourney.pegasus_stargate_back_lights_up": "Pegasus Stargate Back",
+	"gui.sgjourney.andromeda_stargate_back_lights_up": "Andromeda Stargate Back",
 	"gui.sgjourney.shiny_event_horizons": "Shiny Event Horizons",
 	"gui.sgjourney.stargate_full_sound_distance": "Full Sound Distance",
 	"gui.sgjourney.stargate_max_sound_distance": "Max Sound Distance",
@@ -1368,6 +1373,7 @@
 	"gui.sgjourney.milky_way_dhd_button_layout": "Milky Way DHD Layout",
 	"gui.sgjourney.pegasus_dhd_button_layout": "Pegasus DHD Layout",
 	"gui.sgjourney.classic_dhd_button_layout": "Classic DHD Layout",
+	"gui.sgjourney.andromeda_dhd_button_layout": "Andromeda DHD Layout",
 	"gui.sgjourney.ascending": "Ascending",
 	"gui.sgjourney.canon": "Canon",
 	
