@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -26,6 +24,8 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+
+import javax.annotation.Nullable;
 
 public class StargateBlockItem extends BlockItem
 {
@@ -149,6 +149,10 @@ public class StargateBlockItem extends BlockItem
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+					
+					// Sets up symbols on the Andromeda Stargate
+				else if(stargate instanceof AndromedaStargateEntity andromedaStargate)
+					andromedaStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 				
 				return true;
 			}
