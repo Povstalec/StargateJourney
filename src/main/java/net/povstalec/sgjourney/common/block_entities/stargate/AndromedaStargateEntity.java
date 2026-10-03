@@ -6,6 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
@@ -145,9 +146,9 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	}
 	
 	@Override
-	public void generateAdditional(Step generationStep)
+	public void generateAdditional(StructureGenEntity.Step generationStep)
 	{
-		if(generationStep == Step.SETUP)
+		if(generationStep == StructureGenEntity.Step.SETUP)
 		{
 			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 				symbolInfo().setPointOfOrigin(null);
@@ -156,6 +157,17 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 				symbolInfo().setSymbols(null);
 		}
 		else
-			setLocalSymbols();
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+			{
+				if(localPointOfOrigin)
+					symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+				else
+					symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+			}
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
 	}
 }

@@ -150,6 +150,10 @@ public class StargateBlockItem extends BlockItem
 				// Sets up symbols on the Classic Stargate
 				else if(stargate instanceof ClassicStargateEntity classicStargate)
 					classicStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+					
+					// Sets up symbols on the Andromeda Stargate
+				else if(stargate instanceof AndromedaStargateEntity andromedaStargate)
+					andromedaStargate.symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
 				
 				return true;
 			}
