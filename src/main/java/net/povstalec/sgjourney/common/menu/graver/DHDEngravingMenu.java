@@ -163,7 +163,7 @@ public abstract class DHDEngravingMenu<S extends AbstractDHDEntity> extends Inve
 	{
 		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Andromeda(int containerId, Inventory inventory, AndromedaDHDEntity blockEntity, ContainerLevelAccess containerLevelAccess)
