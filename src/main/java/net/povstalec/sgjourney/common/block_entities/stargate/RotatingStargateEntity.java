@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
+import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
@@ -28,32 +29,6 @@ import java.util.Map;
 
 public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> extends IrisStargateEntity<SG>
 {
-	public enum RotationDirection
-	{
-		NONE(false, (byte) 0),
-		CLOCKWISE(true, (byte) -1),
-		ANTICLOCKWISE(true, (byte) 1);
-		
-		public final boolean isRotating;
-		public final byte value;
-		
-		RotationDirection(boolean isRotating, byte value)
-		{
-			this.isRotating = isRotating;
-			this.value = value;
-		}
-		
-		public static RotationDirection fromByte(byte value)
-		{
-			return switch(value)
-			{
-				case -1 -> CLOCKWISE;
-				case 1 -> ANTICLOCKWISE;
-				default -> NONE;
-			};
-		}
-	}
-	
 	public static final String ROTATION = "rotation";
 	public static final String OLD_ROTATION = "old_rotation";
 	public static final String SIGNAL_STRENGTH = "signal_strength";

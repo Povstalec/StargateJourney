@@ -244,6 +244,31 @@ public class CCTweakedCompatibility
 				filterMethods(peripheral);
 			}
 		}
+		
+		public static void registerAndromedaStargateMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
+		{
+			StargatePeripheral peripheral = wrapper.getPeripheral();
+			
+			AbstractInterfaceEntity.InterfaceType type = wrapper.getType();
+			
+			// Iris methods
+			irisMethods(peripheral);
+			// Misc Methods
+			genericBasicMethods(peripheral);
+			
+			if(type.hasCrystalMethods())
+			{
+				peripheral.registerMethod(new StargateMethods.SetChevronConfiguration());
+				genericCrystalMethods(peripheral);
+				networkRestrictionMethods(peripheral);
+			}
+			
+			if(type.hasAdvancedCrystalMethods())
+			{
+				genericAdvancedCrystalMethods(peripheral);
+				filterMethods(peripheral);
+			}
+		}
 	}
 	
 	//============================================================================================

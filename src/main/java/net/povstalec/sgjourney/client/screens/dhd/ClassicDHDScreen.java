@@ -6,7 +6,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.dhd.ClassicDHDBigButton;
 import net.povstalec.sgjourney.client.widgets.dhd.ClassicDHDSymbolButton;
 import net.povstalec.sgjourney.client.widgets.dhd.GenericDHDSymbolButton;
-import net.povstalec.sgjourney.common.menu.ClassicDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.ClassicDHDMenu;
 
 public class ClassicDHDScreen extends AbstractDHDScreen<ClassicDHDMenu>
 {

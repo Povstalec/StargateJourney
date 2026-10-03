@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.compatibility.computer_functions;
 
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class RotatingStargateFunctions
@@ -41,8 +42,8 @@ public class RotatingStargateFunctions
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		interfaceEntity.setStargateRotationDirection(RotatingStargateEntity.RotationDirection.CLOCKWISE);
-		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.CLOCKWISE).feedback();
+		interfaceEntity.setStargateRotationDirection(RotationDirection.CLOCKWISE);
+		return stargate.startRotation(desiredSymbol, RotationDirection.CLOCKWISE).feedback();
 	}
 	
 	public static StargateInfo.Feedback rotateAntiClockwise(AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, int desiredSymbol)
@@ -51,8 +52,8 @@ public class RotatingStargateFunctions
 		/*if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 			throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");*/
 		
-		interfaceEntity.setStargateRotationDirection(RotatingStargateEntity.RotationDirection.ANTICLOCKWISE);
-		return stargate.startRotation(desiredSymbol, RotatingStargateEntity.RotationDirection.ANTICLOCKWISE).feedback();
+		interfaceEntity.setStargateRotationDirection(RotationDirection.ANTICLOCKWISE);
+		return stargate.startRotation(desiredSymbol, RotationDirection.ANTICLOCKWISE).feedback();
 	}
 	
 	public static StargateInfo.Feedback endRotation(RotatingStargateEntity<?> stargate)

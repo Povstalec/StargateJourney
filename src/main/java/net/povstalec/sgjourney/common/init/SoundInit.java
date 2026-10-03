@@ -30,6 +30,9 @@ public class SoundInit
 	public static final DeferredHolder<SoundEvent, SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
 	public static final DeferredHolder<SoundEvent, SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
+	public static final DeferredHolder<SoundEvent, SoundEvent> ANDROMEDA_DHD_ENTER = registerSoundEvent("andromeda_dhd_enter");
+	public static final DeferredHolder<SoundEvent, SoundEvent> ANDROMEDA_DHD_PRESS = registerSoundEvent("andromeda_dhd_press");
+	
 	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
 	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
 	public static final DeferredHolder<SoundEvent, SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");

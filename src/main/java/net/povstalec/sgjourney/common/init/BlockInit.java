@@ -19,10 +19,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.blocks.*;
-import net.povstalec.sgjourney.common.blocks.dhd.ClassicDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.MilkyWayDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.PegasusDHDBlock;
-import net.povstalec.sgjourney.common.blocks.dhd.UniverseDHDBlock;
+import net.povstalec.sgjourney.common.blocks.dhd.*;
 import net.povstalec.sgjourney.common.blocks.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.shielding.GenericShieldingBlock;
 import net.povstalec.sgjourney.common.blocks.tech.*;
@@ -104,6 +101,15 @@ public class BlockInit
 			() -> new TollanStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
 					.sound(SoundType.METAL).noOcclusion()));
 	
+	public static final DeferredBlock<AndromedaStargateBlock> ANDROMEDA_STARGATE = registerStargateBlock("andromeda_stargate",
+		() -> new AndromedaStargateBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
+			.sound(SoundType.METAL).noOcclusion()), Rarity.EPIC);
+	public static final DeferredBlock<AndromedaStargateRingBlock> ANDROMEDA_RING = BLOCKS.register("andromeda_ring",
+		() -> new AndromedaStargateRingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(6.0F, 1200.0F)
+			.sound(SoundType.METAL).noOcclusion()));
+	public static final DeferredBlock<GenericShieldingBlock> ANDROMEDA_SHIELDING =  BLOCKS.register("andromeda_shielding",
+		() -> new GenericShieldingBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
+			.sound(SoundType.METAL).noOcclusion(), 7.0D, 1.0D));
 	// DHDs
 	public static final DeferredBlock<UniverseDHDBlock> UNIVERSE_DHD = registerDHDBlock("universe_dhd",
 		() -> new UniverseDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
@@ -120,6 +126,10 @@ public class BlockInit
 	public static final DeferredBlock<ClassicDHDBlock> CLASSIC_DHD = registerDHDBlock("classic_dhd",
 			() -> new ClassicDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 6.0F)
 					.sound(SoundType.METAL).noOcclusion()), Rarity.UNCOMMON);
+	
+	public static final DeferredBlock<AndromedaDHDBlock> ANDROMEDA_DHD = registerDHDBlock("andromeda_dhd",
+			() -> new AndromedaDHDBlock(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(5.0F, 9.0F)
+				.sound(SoundType.METAL).noOcclusion()), Rarity.RARE);
 	
 	public static final DeferredBlock<ChevronBlock> UNIVERSE_STARGATE_CHEVRON = registerBlock("universe_stargate_chevron",
 			() -> new ChevronBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0F)

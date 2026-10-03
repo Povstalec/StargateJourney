@@ -38,6 +38,7 @@ public class CommonStargateConfig
 	public static ModConfigSpec.EnumValue<ChevronLockSpeed> pegasus_chevron_lock_speed;
 	public static ModConfigSpec.EnumValue<ChevronLockSpeed> classic_chevron_lock_speed;
 	public static ModConfigSpec.EnumValue<ChevronLockSpeed> tollan_chevron_lock_speed;
+	public static ModConfigSpec.EnumValue<ChevronLockSpeed> andromeda_chevron_lock_speed;
 	
 	// Energy Related
 	public static ModConfigSpec.BooleanValue enable_energy_bypass;
@@ -175,6 +176,10 @@ public class CommonStargateConfig
 		tollan_chevron_lock_speed = server
 				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
 				.defineEnum("server.tollan_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
+		
+		andromeda_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.andromeda_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
 		
 		// Energy Related
 		enable_energy_bypass = server

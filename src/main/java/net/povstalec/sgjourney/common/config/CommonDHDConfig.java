@@ -24,6 +24,11 @@ public class CommonDHDConfig
 	public static ModConfigSpec.LongValue classic_dhd_max_energy_extract;
 	public static ModConfigSpec.LongValue classic_dhd_button_press_energy_cost;
 	
+	public static ModConfigSpec.LongValue andromeda_dhd_energy_buffer_capacity;
+	public static ModConfigSpec.LongValue andromeda_dhd_max_energy_receive;
+	public static ModConfigSpec.LongValue andromeda_dhd_max_energy_extract;
+	public static ModConfigSpec.LongValue andromeda_dhd_button_press_energy_cost;
+	
 	public static void init(ModConfigSpec.Builder server)
 	{
 		universe_dhd_energy_buffer_capacity = server
@@ -95,5 +100,23 @@ public class CommonDHDConfig
 		classic_dhd_button_press_energy_cost = server
 				.comment("Energy depleted by pressing a button on the Classic DHD")
 				.defineInRange("server.classic_dhd_button_press_energy_cost", 5_000L, 0L, Long.MAX_VALUE);
+		
+		
+		
+		andromeda_dhd_energy_buffer_capacity = server
+			.comment("Capacity of the energy buffer inside the Andromeda DHD")
+			.defineInRange("server.andromeda_dhd_energy_buffer_capacity", 300_000L, 0L, Long.MAX_VALUE);
+		
+		andromeda_dhd_max_energy_receive = server
+			.comment("Maximum amount of energy that can be transferred to the Andromeda DHD in one tick")
+			.defineInRange("server.andromeda_dhd_max_energy_receive", 100_000L, 0L, Long.MAX_VALUE);
+		
+		andromeda_dhd_max_energy_extract = server
+			.comment("Maximum amount of energy that can be transferred from the Andromeda DHD in one tick")
+			.defineInRange("server.andromeda_dhd_max_energy_extract", 10_000_000L, 0L, Long.MAX_VALUE);
+		
+		andromeda_dhd_button_press_energy_cost = server
+			.comment("Energy depleted by pressing a button on the Andromeda DHD")
+			.defineInRange("server.andromeda_dhd_button_press_energy_cost", 5_000L, 0L, Long.MAX_VALUE);
 	}
 }

@@ -24,6 +24,7 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.InterfacePeripheralWrapper;
 import net.povstalec.sgjourney.common.config.CommonInterfaceConfig;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
+import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
 import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +37,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 	public int signalStrength = 0;
 	
 	private int lastSymbol = 0;
-	private RotatingStargateEntity.RotationDirection rotationDirection = RotatingStargateEntity.RotationDirection.NONE;
+	private RotationDirection rotationDirection = RotationDirection.NONE;
 	
 	private IrisInfo.IrisMotion irisMotion = IrisInfo.IrisMotion.IDLE;
 	
@@ -205,7 +206,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 				irisStargate.irisInfo().setIrisMotion(IrisInfo.IrisMotion.IDLE);
 			
 			// Stops stargate from rotating when disconnected
-			if(rotationDirection != RotatingStargateEntity.RotationDirection.NONE && stargate instanceof RotatingStargateEntity<?> rotatingStargate)
+			if(rotationDirection != RotationDirection.NONE && stargate instanceof RotatingStargateEntity<?> rotatingStargate)
 				rotatingStargate.endRotation(true);
 		}
 		
@@ -361,7 +362,7 @@ public abstract class AbstractInterfaceEntity extends EnergySlotBlockEntity
 		}
 	}
 	
-	public boolean setStargateRotationDirection(RotatingStargateEntity.RotationDirection rotationDirection)
+	public boolean setStargateRotationDirection(RotationDirection rotationDirection)
 	{
 		if(this.rotationDirection == rotationDirection)
 			return false;

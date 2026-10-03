@@ -91,16 +91,22 @@ public class SGJourneyItemSubtypeInterpreter
 		public @Nullable Object getSubtypeData(@NotNull ItemStack ingredient, @NotNull UidContext context)
 		{
 			CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(ingredient);
-			if(blockEntityTag != null)
-				return StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP));
 			
-			return null;
+			return getStepSubtypeData(blockEntityTag);
 		}
 		
 		@Override
 		public @NotNull String getLegacyStringSubtypeInfo(@NotNull ItemStack ingredient, @NotNull UidContext context)
 		{
 			return "";
+		}
+		
+		protected Object getStepSubtypeData(@Nullable CompoundTag blockEntityTag)
+		{
+			if(blockEntityTag != null && blockEntityTag.contains(StructureGenEntity.GENERATION_STEP))
+				return StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP));
+			
+			return null;
 		}
 	}
 	
@@ -115,7 +121,7 @@ public class SGJourneyItemSubtypeInterpreter
 			if(blockEntityTag != null)
 			{
 				return List.of(
-					StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)),
+					getStepSubtypeData(blockEntityTag),
 					Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS))
 				);
 			}
@@ -135,7 +141,7 @@ public class SGJourneyItemSubtypeInterpreter
 			if(blockEntityTag != null)
 			{
 				return List.of(
-					StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)),
+					getStepSubtypeData(blockEntityTag),
 					blockEntityTag.getBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN),
 					blockEntityTag.getBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN)
 				);
@@ -156,7 +162,7 @@ public class SGJourneyItemSubtypeInterpreter
 			if(blockEntityTag != null)
 			{
 				return List.of(
-					StructureGenEntity.Step.fromByte(blockEntityTag.getByte(AbstractStargateEntity.GENERATION_STEP)),
+					getStepSubtypeData(blockEntityTag),
 					blockEntityTag.getBoolean(AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN),
 					blockEntityTag.getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS)
 				);

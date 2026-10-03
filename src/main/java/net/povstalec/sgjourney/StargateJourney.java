@@ -397,6 +397,7 @@ public class StargateJourney
 			BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ANDROMEDA_STARGATE.get(), AndromedaStargateRenderer::new);
 		}
 
 		@SubscribeEvent
@@ -447,6 +448,16 @@ public class StargateJourney
 			event.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
 			event.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
 			event.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
+			
+			event.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
+			event.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
+			event.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
+			event.register(MenuInit.ENGRAVING_ANDROMEDA_STARGATE.get(), StargateEngravingScreen.Andromeda::new);
+			
+			event.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
+			event.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
+			event.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
+			event.register(MenuInit.ENGRAVING_ANDROMEDA_DHD.get(), DHDEngravingScreen.Andromeda::new);
 		}
 
 		@SubscribeEvent

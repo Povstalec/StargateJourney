@@ -5,6 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
@@ -28,14 +30,14 @@ public class ClientSymbols
 	public static final List<ResourceLocation> DEFAULT_EXTENDED_TEXTURES = createExtendedTexturesList("universal/universal_", 1, 38);
 	
 	public static final Codec<ClientSymbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.STRING.fieldOf("name").forGetter(symbols -> symbols.name),
+			Codec.STRING.fieldOf("name").forGetter(symbols -> symbols.translationName),
 			SymbolSet.RESOURCE_KEY_CODEC.optionalFieldOf("symbol_set").forGetter(symbols -> Optional.ofNullable(symbols.symbolSetKey)),
 			ResourceLocation.CODEC.listOf().fieldOf("textures").forGetter(symbols -> symbols.spriteTextures)
 	).apply(instance, ClientSymbols::new));
 	
 	private static final Map<ResourceKey<Symbols>, ClientSymbols> SYMBOLS = new HashMap<>();
 	
-	private final String name;
+	private final String translationName;
 	@Nullable
 	private final ResourceKey<SymbolSet> symbolSetKey;
 	private final List<ResourceLocation> spriteTextures; // Names used for looking up the textures in a TextureAtlas
@@ -45,14 +47,14 @@ public class ClientSymbols
 	private SymbolSet symbolSet = null;
 	
 	// Constructor made specifically for the codec
-	private ClientSymbols(String name, Optional<ResourceKey<SymbolSet>> symbolSetKey, List<ResourceLocation> textures)
+	private ClientSymbols(String translationName, Optional<ResourceKey<SymbolSet>> symbolSetKey, List<ResourceLocation> textures)
 	{
-		this(name, symbolSetKey.orElse(null), textures);
+		this(translationName, symbolSetKey.orElse(null), textures);
 	}
 	
-	public ClientSymbols(String name, @Nullable ResourceKey<SymbolSet> symbolSetKey, List<ResourceLocation> textures)
+	public ClientSymbols(String translationName, @Nullable ResourceKey<SymbolSet> symbolSetKey, List<ResourceLocation> textures)
 	{
-		this.name = name;
+		this.translationName = translationName;
 		this.symbolSetKey = symbolSetKey;
 		this.spriteTextures = textures;
 		ResourceLocation[] extendedTextures = new ResourceLocation[textures.size()];
@@ -65,15 +67,12 @@ public class ClientSymbols
 	
 	public String name()
 	{
-		return this.name;
+		return this.translationName;
 	}
 	
 	public String getTranslationName()
 	{
-		if(useSymbolSet())
-			return this.symbolSet.name();
-		
-		return this.name;
+		return this.translationName;
 	}
 	
 	public ResourceKey<SymbolSet> symbolSetKey()
@@ -165,7 +164,7 @@ public class ClientSymbols
 	@Override
 	public String toString()
 	{
-		return name;
+		return translationName;
 	}
 	
 	public static List<ResourceLocation> createSpriteTexturesList(String prefix, int first, int last)
@@ -224,6 +223,28 @@ public class ClientSymbols
 			return symbols.getTranslationName();
 		
 		return alternative;
+	}
+	
+	public static MutableComponent translationComponent(@Nullable ResourceKey<Symbols> symbolsKey, Component alternative)
+	{
+		MutableComponent component = Component.translatable("info.sgjourney.symbols").append(": ");
+		
+		if(symbolsKey != null)
+		{
+			ClientSymbols symbols = getSymbols(symbolsKey);
+			
+			if(symbols == null)
+				component.append(alternative);
+			else
+			{
+				component.append(Component.translatable(symbols.translationName));
+				
+				if(symbols.symbolSet != null)
+					component.append(Component.literal(" (").append(Component.translatable(symbols.symbolSet.name()))).append(")");
+			}
+		}
+		
+		return component;
 	}
 	
 	public static void clearSymbols()

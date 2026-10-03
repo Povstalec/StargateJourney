@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.client.models.block_entity.TollanStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.TollanStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStargateEntity, TollanStargateVariant, TollanStargateModel>
@@ -33,7 +33,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
 		TollanStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
-		Direction facing = blockstate.getValue(TollanStargateBlock.FACING);
+		Direction facing = blockstate.getValue(AbstractStargateBlock.FACING);
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
 	    

@@ -23,6 +23,7 @@ public class SyncedConfig
 	public static SyncedValue<Long> milky_way_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.milky_way_dhd_energy_buffer_capacity.get());
 	public static SyncedValue<Long> pegasus_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get());
 	public static SyncedValue<Long> classic_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.classic_dhd_energy_buffer_capacity.get());
+	public static SyncedValue<Long> andromeda_dhd_energy_buffer_capacity = SYNCED_VALUES.create(CommonDHDConfig.andromeda_dhd_energy_buffer_capacity.get());
 	
 	// Transporter
 	public static SyncedValue<Long> ancient_transport_rings_energy_capacity = SYNCED_VALUES.create(CommonTransporterConfig.ancient_transport_rings_energy_capacity.get());

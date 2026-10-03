@@ -409,13 +409,13 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	@Override
 	protected boolean isPrimaryChevronEngaged(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant)
 	{
-		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+		return stargate.isConnected() || stargate.getAddressBuffer().getLength() > 0;
 	}
 	
 	@Override
 	protected boolean isChevronEngaged(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, int chevronNumber)
 	{
-		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+		return stargate.isConnected() || stargate.getAddressBuffer().getLength() > 0;
 	}
 
 	@Override

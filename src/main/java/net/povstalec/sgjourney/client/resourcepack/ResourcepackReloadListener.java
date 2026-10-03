@@ -1,8 +1,5 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -24,17 +21,14 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.PegasusStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.TollanStargateVariant;
-import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.*;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.resourcepack.symbols.SymbolSet;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+
+import java.util.Map;
 
 public class ResourcepackReloadListener
 {
@@ -49,7 +43,9 @@ public class ResourcepackReloadListener
 	public static final String MILKY_WAY = "milky_way";
 	public static final String PEGASUS = "pegasus";
 	public static final String TOLLAN = "tollan";
+	// Non-Canon
 	public static final String CLASSIC = "classic";
+	public static final String ANDROMEDA = "andromeda";
 	
 	@EventBusSubscriber(modid = StargateJourney.MODID, value = Dist.CLIENT)
 	public static class ReloadListener extends SimpleJsonResourceReloadListener
@@ -74,7 +70,7 @@ public class ResourcepackReloadListener
 	    		RegistryAccess registries = clientPacketListener.registryAccess();
 				Registry<StargateVariant> variantRegistry = registries.registryOrThrow(StargateVariant.REGISTRY_KEY);
 				
-				for(Entry<ResourceKey<StargateVariant>, StargateVariant> stargateVariantEntry : variantRegistry.entrySet())
+				for(Map.Entry<ResourceKey<StargateVariant>, StargateVariant> stargateVariantEntry : variantRegistry.entrySet())
 				{
 					stargateVariantEntry.getValue().resetMissing();
 				}
@@ -109,6 +105,9 @@ public class ResourcepackReloadListener
 					
 					else if(canShortenPath(location, CLASSIC))
 						addClassicStargateVariant(shortenPath(location, CLASSIC), element);
+					
+					else if(canShortenPath(location, ANDROMEDA))
+						addAndromedaStargateVariant(shortenPath(location, ANDROMEDA), element);
 				}
 			}
 			
@@ -191,6 +190,22 @@ public class ResourcepackReloadListener
 			catch(RuntimeException e)
 			{
 				StargateJourney.LOGGER.error("Could not load Classic Stargate Variant: {}", location.toString());
+				StargateJourney.LOGGER.error(e.getMessage());
+			}
+		}
+		
+		private static void addAndromedaStargateVariant(ResourceLocation location, JsonElement element)
+		{
+			try
+			{
+				JsonObject json = GsonHelper.convertToJsonObject(element, STARGATE_VARIANT);
+				AndromedaStargateVariant stargateVariant = AndromedaStargateVariant.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(msg -> new DecoderException("Failed to parse Andromeda Stargate Variant " + msg));
+				
+				ClientStargateVariants.addAndromedaStargateVariant(location, stargateVariant);
+			}
+			catch(RuntimeException e)
+			{
+				StargateJourney.LOGGER.error("Could not load Andromeda Stargate Variant: {}", location.toString());
 				StargateJourney.LOGGER.error(e.getMessage());
 			}
 		}
