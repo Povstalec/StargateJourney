@@ -1,6 +1,5 @@
 package net.povstalec.sgjourney.client.widgets.dhd;
 
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
@@ -30,7 +29,7 @@ public abstract class AndromedaDHDSymbolButton<M extends IDHDMenu> extends Gener
 		
 		this.canonSymbol = canonSymbol;
 		
-		setTooltip(Tooltip.create(symbolComponent()));
+		setTooltip(symbolComponent());
 	}
 	
 	public AndromedaDHDSymbolButton(int leftPos, int topPos, M menu, int screenWidth, int screenHeight, int symbol, int canonSymbol, DefaultButton defaultButton, OnPress onPress)

@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.client.render.block_entity.stargate;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.state.BlockState;
@@ -35,12 +35,12 @@ public class AndromedaStargateRenderer extends AbstractStargateRenderer<Andromed
 		
         stack.pushPose();
 		stack.translate(center.x(), center.y(), center.z());
-        stack.mulPose(Axis.YP.rotationDegrees(-facing));
+        stack.mulPose(Vector3f.YP.rotationDegrees(-facing));
         
         if(orientation == Orientation.UPWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(-90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(-90));
         else if(orientation == Orientation.DOWNWARD)
-            stack.mulPose(Axis.XP.rotationDegrees(90));
+            stack.mulPose(Vector3f.XP.rotationDegrees(90));
         
 		//stack.translate(0, -0.15, 0);
         
