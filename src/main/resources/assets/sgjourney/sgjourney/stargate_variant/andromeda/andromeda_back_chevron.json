@@ -166,7 +166,7 @@
 	"symbols":
 	{
 		"symbol_color": { "r": 10, "g": 77, "b": 15 },
-		"encoded_symbol_color": { "r": 125, "g": 255, "b": 0 },
+		"encoded_symbol_color": { "r": 200, "g": 255, "b": 0 },
 		"engaged_symbol_color": { "r": 125, "g": 255, "b": 0 },
 		
 		"symbols_glow": false,
