@@ -67,7 +67,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	protected void renderSpinningSymbol(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
 										TextureAtlasSprite sprite, float rotation)
 	{
-		if(!stargate.isConnected() && stargate.symbolBuffer < stargate.addressBuffer.getLength())
+		if(!stargate.isConnected() && stargate.getSymbolBuffer() < stargate.getAddressBuffer().getLength())
 	    {
 			for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
 	    	{
@@ -95,7 +95,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 	@Override
 	protected void renderSymbols(PegasusStargateEntity stargate, PegasusStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, float rotation)
 	{
-		int currentSymbol = stargate.getEncodedSymbols().symbolAt(stargate.symbolBuffer);
+		int currentSymbol = stargate.getEncodedSymbols().symbolAt(stargate.getSymbolBuffer());
 		
 		ClientPointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
@@ -103,11 +103,13 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 		{
 			// Point of Origin
 			if(stargate.getAddress().hasPointOfOrigin()) // Point of Origin is encoded
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, true));
-			else if(stargate.addressBuffer.getLength() > 0 && !stargate.isConnected() && currentSymbol == 0) // Point of Origin is spinning around the ring
-				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation);
-			else if(!stargate.isConnected() && stargate.addressBuffer.getLength() == 0) // Stargate is in its idle state
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, false));
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, true) ? MAX_LIGHT : combinedLight,
+					0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, true));
+			else if(stargate.getAddressBuffer().getLength() > 0 && !stargate.isConnected() && currentSymbol == 0) // Point of Origin is spinning around the ring
+				renderSpinningSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, true) ? MAX_LIGHT : combinedLight,
+					ClientPointOfOrigin.getSprite(pointOfOrigin), rotation);
+			else if(!stargate.isConnected() && stargate.getAddressBuffer().getLength() == 0) // Stargate is in its idle state
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, false) ? MAX_LIGHT : combinedLight, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, false));
 		}
 		
 		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
@@ -116,7 +118,7 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			return;
 		
 		// When a Stargate is dialing out or connected after dialing out
-		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.addressBuffer.getLength() > 0 && !stargate.isConnected()))
+		if((stargate.isDialingOut() && stargate.isConnected()) || (stargate.getAddressBuffer().getLength() > 0 && !stargate.isConnected()))
 		{
 			// Spinning Symbol
 			if(currentSymbol > 0)
@@ -126,11 +128,11 @@ public class PegasusStargateModel extends GenericStargateModel<PegasusStargateEn
 			for(int i = 0; i < stargate.getAddress().regularSymbolCount(); i++)
 			{
 				int symbolNumber = stargate.getChevronPosition(i + 1);
-				renderSymbol(stargate, stargateVariant, stack, consumer, source, MAX_LIGHT, symbolNumber,
+				renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, true) ? MAX_LIGHT : combinedLight, symbolNumber,
 						ClientSymbols.getSprite(symbols, stargate.getEncodedSymbols().symbolAt(i)), rotation, getSymbolColor(stargate, stargateVariant, true));
 			}
 		}
 		else
-			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), rotation, stargate.isConnected() ? stargate.getCurrentSymbol() + 1 : 36);
+			renderIdleSymbols(stargate, stargateVariant, stack, consumer, source, symbols, getSymbolColor(stargate, stargateVariant, stargate.isConnected()), rotation, stargate.isConnected() ? stargate.getCurrentSymbol() + 1 : numberOfSymbols);
 	}
 }

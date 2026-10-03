@@ -245,11 +245,15 @@
 	"block.sgjourney.classic_stargate_base_block": "Klasický základní blok brány",
 	"block.sgjourney.classic_stargate_chevron_block": "Klasický chevronový blok brány",
 	"block.sgjourney.classic_stargate_ring_block": "Klasický blok brány",
+	"block.sgjourney.andromeda_stargate": "Hvězdná brána z andromedy",
+	"block.sgjourney.andromeda_ring": "Hvězdná brána z andromedy",
+	"block.sgjourney.andromeda_shielding": "Ochrana hvězdné brány",
 	
 	"block.sgjourney.universe_dhd": "Ovládací panel 1. generace",
 	"block.sgjourney.milky_way_dhd": "Ovládací panel 2. generace",
 	"block.sgjourney.pegasus_dhd": "Ovládací panel 3. generace",
 	"block.sgjourney.classic_dhd": "Klasický ovládací panel",
+	"block.sgjourney.andromeda_dhd": "Ovládací panel z andromedy",
 	
 	"block.sgjourney.stargate.not_enough_space": "Hvězdná brána nemá dost místa",
 	"block.sgjourney.stargate.break_cover_blocks": "Nejprve znič krycí bloky",

@@ -8,10 +8,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.GraverItem;
@@ -161,4 +158,23 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 			return stargateStillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_STARGATE.get());
 		}
     }
+	
+	public static class Andromeda extends StargateEngravingMenu<AndromedaStargateEntity>
+	{
+		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (AndromedaStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+		}
+		
+		public Andromeda(int containerId, Inventory inventory, AndromedaStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)
+		{
+			super(MenuInit.ENGRAVING_ANDROMEDA_STARGATE.get(), containerId, inventory, blockEntity, containerLevelAccess);
+		}
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stargateStillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ANDROMEDA_STARGATE.get());
+		}
+	}
 }

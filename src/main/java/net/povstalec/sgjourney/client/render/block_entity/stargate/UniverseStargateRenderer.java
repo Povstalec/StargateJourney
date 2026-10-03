@@ -10,7 +10,7 @@ import net.povstalec.sgjourney.client.models.block_entity.UniverseStargateModel;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
-import net.povstalec.sgjourney.common.blocks.stargate.UniverseStargateBlock;
+import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 
 public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseStargateEntity, UniverseStargateVariant, UniverseStargateModel>
@@ -32,7 +32,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseS
 		UniverseStargateVariant stargateVariant = this.stargateModel.getClientVariant(stargate);
 		
 		BlockState blockstate = stargate.getBlockState();
-		float facing = blockstate.getValue(UniverseStargateBlock.FACING).toYRot();
+		float facing = blockstate.getValue(AbstractStargateBlock.FACING).toYRot();
 		Vec3 center = stargate.getRelativeCenter();
 		Orientation orientation = blockstate.getValue(AbstractStargateBaseBlock.ORIENTATION);
 	    
