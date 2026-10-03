@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -45,9 +46,9 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
     }
 	
 	@Override
-	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	public CompoundTag serializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries)
 	{
-		super.serializeStargateInfo(tag);
+		super.serializeStargateInfo(tag, registries);
 		
 		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
@@ -55,11 +56,11 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	}
 	
 	@Override
-	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	public void deserializeStargateInfo(CompoundTag tag, HolderLookup.Provider registries, boolean isUpgraded)
 	{
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
-		super.deserializeStargateInfo(tag, isUpgraded);
+		super.deserializeStargateInfo(tag, registries, isUpgraded);
 	}
 	
 	//============================================================================================

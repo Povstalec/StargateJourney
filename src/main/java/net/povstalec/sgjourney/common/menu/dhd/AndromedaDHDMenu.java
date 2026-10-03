@@ -13,7 +13,7 @@ public class AndromedaDHDMenu extends AbstractDHDMenu<AndromedaDHDEntity>
 	
 	public AndromedaDHDMenu(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 	{
-		super(MenuInit.ANDROMEDA_DHD.get(), containerId, inventory, (AndromedaDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+		super(MenuInit.ANDROMEDA_DHD.get(), containerId, inventory, (AndromedaDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 	}
 
     public AndromedaDHDMenu(int containerId, Inventory inventory, AndromedaDHDEntity dhd)

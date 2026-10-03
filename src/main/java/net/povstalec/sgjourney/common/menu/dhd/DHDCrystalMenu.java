@@ -201,7 +201,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	{
 		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()));
+			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()));
 		}
 		
 		public Andromeda(int containerId, Inventory inventory, AndromedaDHDEntity blockEntity)

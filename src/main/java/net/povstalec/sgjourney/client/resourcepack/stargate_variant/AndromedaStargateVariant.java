@@ -8,7 +8,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.block_entities.stargate.AndromedaStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 import java.util.Optional;
@@ -32,16 +31,16 @@ public class AndromedaStargateVariant extends GenericStargateVariant<AndromedaSt
 	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
 	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
-	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "andromeda_chevron_engage");
-	public static final ResourceLocation STARGATE_CHEVRON_INCOMING = new ResourceLocation(StargateJourney.MODID, "andromeda_chevron_incoming");
+	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = StargateJourney.sgjourneyLocation("andromeda_chevron_engage");
+	public static final ResourceLocation STARGATE_CHEVRON_INCOMING = StargateJourney.sgjourneyLocation("andromeda_chevron_incoming");
 
-	public static final ResourceLocation STARGATE_RING_SPIN = new ResourceLocation(StargateJourney.MODID, "andromeda_ring_spin");
+	public static final ResourceLocation STARGATE_RING_SPIN = StargateJourney.sgjourneyLocation("andromeda_ring_spin");
 
-	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = new ResourceLocation(StargateJourney.MODID, "andromeda_wormhole_open");
-	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = new ResourceLocation(StargateJourney.MODID, "andromeda_wormhole_idle");
-	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = new ResourceLocation(StargateJourney.MODID, "andromeda_wormhole_close");
+	public static final ResourceLocation STARGATE_WORMHOLE_OPEN = StargateJourney.sgjourneyLocation("andromeda_wormhole_open");
+	public static final ResourceLocation STARGATE_WORMHOLE_IDLE = StargateJourney.sgjourneyLocation("andromeda_wormhole_idle");
+	public static final ResourceLocation STARGATE_WORMHOLE_CLOSE = StargateJourney.sgjourneyLocation("andromeda_wormhole_close");
 
-	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "andromeda_dial_fail");
+	public static final ResourceLocation STARGATE_FAIL = StargateJourney.sgjourneyLocation("andromeda_dial_fail");
 	
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);

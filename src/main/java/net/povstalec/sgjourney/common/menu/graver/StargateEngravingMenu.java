@@ -163,7 +163,7 @@ public abstract class StargateEngravingMenu<S extends AbstractStargateEntity<?>>
 	{
 		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
 		{
-			this(containerId, inventory, (AndromedaStargateEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+			this(containerId, inventory, (AndromedaStargateEntity) inventory.player.level().getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
 		}
 		
 		public Andromeda(int containerId, Inventory inventory, AndromedaStargateEntity blockEntity, ContainerLevelAccess containerLevelAccess)

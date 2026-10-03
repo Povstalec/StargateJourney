@@ -7,7 +7,7 @@
 	"deplete_secondary": true,
 	"output":
 	{
-		"item": "sgjourney:stargate_upgrade_crystal",
+		"id": "sgjourney:stargate_upgrade_crystal",
 		"nbt": {"Type":"sgjourney:andromeda_stargate"}
 	},
 	"progress": 100,

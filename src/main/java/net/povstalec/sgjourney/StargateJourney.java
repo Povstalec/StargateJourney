@@ -421,6 +421,8 @@ public class StargateJourney
 			event.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
 			event.register(MenuInit.CLASSIC_DHD_CRYSTAL.get(), DHDCrystalScreen.Classic::new);
 			event.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
+			event.register(MenuInit.ANDROMEDA_DHD_CRYSTAL.get(), DHDCrystalScreen.Andromeda::new);
+			event.register(MenuInit.ANDROMEDA_DHD.get(), AndromedaDHDScreen::new);
 			
 			event.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 			
@@ -440,14 +442,6 @@ public class StargateJourney
 			event.register(MenuInit.ENGRAVING_STONE_SYMBOL.get(), SymbolBlockEngravingScreen.Stone::new);
 			event.register(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.Sandstone::new);
 			event.register(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.RedSandstone::new);
-			
-			event.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
-			event.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
-			event.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
-			
-			event.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
-			event.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
-			event.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
 			
 			event.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
 			event.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
