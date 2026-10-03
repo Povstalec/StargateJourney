@@ -380,6 +380,7 @@ public class TabInit
 							output.accept(StargateUpgradeItem.stargateType(BlockInit.MILKY_WAY_STARGATE.get()));
 							output.accept(StargateUpgradeItem.stargateType(BlockInit.PEGASUS_STARGATE.get()));
 							output.accept(StargateUpgradeItem.stargateType(BlockInit.TOLLAN_STARGATE.get()));
+							output.accept(StargateUpgradeItem.stargateType(BlockInit.ANDROMEDA_STARGATE.get()));
 						}
 						if(CommonStargateConfig.enable_stargate_variants.get())
 						{
