@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import java.util.Random;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -21,12 +19,15 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlockEntityStargate>
 {

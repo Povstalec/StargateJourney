@@ -7,10 +7,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.UniverseDHDEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.*;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.GraverItem;
@@ -161,4 +158,23 @@ public abstract class DHDEngravingMenu<S extends AbstractDHDEntity> extends Inve
 			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.CLASSIC_DHD.get());
 		}
     }
+	
+	public static class Andromeda extends DHDEngravingMenu<AndromedaDHDEntity>
+	{
+		public Andromeda(int containerId, Inventory inventory, FriendlyByteBuf extraData)
+		{
+			this(containerId, inventory, (AndromedaDHDEntity) inventory.player.level.getBlockEntity(extraData.readBlockPos()), ContainerLevelAccess.NULL);
+		}
+		
+		public Andromeda(int containerId, Inventory inventory, AndromedaDHDEntity blockEntity, ContainerLevelAccess containerLevelAccess)
+		{
+			super(MenuInit.ENGRAVING_ANDROMEDA_DHD.get(), containerId, inventory, blockEntity, containerLevelAccess);
+		}
+		
+		@Override
+		public boolean stillValid(@NotNull Player player)
+		{
+			return stillValid(ContainerLevelAccess.create(level, blockEntity.getBlockPos()), player, BlockInit.ANDROMEDA_DHD.get());
+		}
+	}
 }

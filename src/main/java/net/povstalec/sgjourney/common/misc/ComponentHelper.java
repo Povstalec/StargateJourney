@@ -12,6 +12,8 @@ import net.povstalec.sgjourney.common.init.FluidInit;
 
 public class ComponentHelper
 {
+	public static final Component ERROR = Component.translatable("tooltip.sgjourney.error").withStyle(ChatFormatting.DARK_RED);
+	
 	public static MutableComponent energy(String name, long energy, long maxEnergy)
 	{
 		return Component.translatable(name).append(": " + SGJourneyEnergy.energyToString(energy, maxEnergy)).withStyle(ChatFormatting.DARK_RED);

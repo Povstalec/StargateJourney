@@ -199,6 +199,8 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		RenderSystem.setShaderTexture(0, texture);
 		guiGraphics.blit(texture, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 		
+		this.itemHint(guiGraphics, texture, leftPos + 8, topPos + 108, 176, 0, 0);
+		
 		PoseStack stack = guiGraphics.pose();
 		stack.pushPose();
 		stack.translate(leftPos + imageWidth / 2F, topPos + 55, 0);
@@ -213,8 +215,6 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 		}
 		
 		stack.popPose();
-		
-		this.itemHint(guiGraphics, texture, leftPos + 8, topPos + 108, 176, 0, 0);
 	}
 	
 	@Override
@@ -311,6 +311,30 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 			{
 				defaultButton = GenericDHDSymbolButton.DefaultButton.values()[i];
 				addDHDRenderable(new ClassicDHDSymbolButton.Engraving(-dhdImageWidth / 2, -dhdImageHeight / 2, this, width, height, i, ClassicDHDSymbolButton.CANON_SYMBOLS[i], defaultButton, button -> {}));
+			}
+		}
+	}
+	
+	public static class Andromeda extends DHDEngravingScreen<DHDEngravingMenu.Andromeda>
+	{
+		public Andromeda(DHDEngravingMenu.Andromeda menu, Inventory playerInventory, Component title)
+		{
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/dhd/andromeda_dhd_engraving_gui.png"), playerInventory, title,
+				StargateJourney.sgjourneyLocation("textures/gui/dhd/andromeda/andromeda_dhd_background.png"), 192, 192);
+		}
+		
+		@Override
+		protected void init()
+		{
+			super.init();
+			
+			addDHDRenderable(new AndromedaDHDBigButton.Engraving(69 - dhdImageWidth / 2, 69 - dhdImageHeight / 2, menu, (n) -> {}));
+			
+			GenericDHDSymbolButton.DefaultButton defaultButton;
+			for(int i = 0; i < 39; i++)
+			{
+				defaultButton = GenericDHDSymbolButton.DefaultButton.values()[i];
+				addDHDRenderable(new AndromedaDHDSymbolButton.Engraving(-dhdImageWidth / 2, -dhdImageHeight / 2, this, width, height, i, AndromedaDHDSymbolButton.CANON_SYMBOLS[i], defaultButton, button -> {}));
 			}
 		}
 	}

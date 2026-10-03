@@ -3,12 +3,12 @@ package net.povstalec.sgjourney.client.sound;
 import net.minecraft.client.Minecraft;
 import net.povstalec.sgjourney.client.sound.sounds.RotatingStargateRingStartupSound;
 import net.povstalec.sgjourney.client.sound.sounds.RotatingStargateRingSound;
-import net.povstalec.sgjourney.client.sound.sounds.PegasusStargateRingSound;
+import net.povstalec.sgjourney.client.sound.sounds.DigitalRingSound;
 import net.povstalec.sgjourney.client.sound.sounds.StargateSound;
 import net.povstalec.sgjourney.client.sound.sounds.WormholeIdleSound;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 
-public abstract class StargateSoundWrapper<T extends AbstractStargateEntity> extends SoundWrapper
+public abstract class StargateSoundWrapper<T extends AbstractStargateEntity<?>> extends SoundWrapper
 {
 	protected static Minecraft minecraft = Minecraft.getInstance();
 
@@ -16,7 +16,7 @@ public abstract class StargateSoundWrapper<T extends AbstractStargateEntity> ext
 	protected StargateSound<?> sound;
 	protected boolean playingSound = false;
 
-	protected StargateSoundWrapper(T stargate, StargateSound sound)
+	protected StargateSoundWrapper(T stargate, StargateSound<?> sound)
 	{
 		this.stargate = stargate;
 		this.sound = sound;
@@ -56,17 +56,17 @@ public abstract class StargateSoundWrapper<T extends AbstractStargateEntity> ext
 	
 	
 
-	public static class WormholeIdle extends StargateSoundWrapper<AbstractStargateEntity>
+	public static class WormholeIdle extends StargateSoundWrapper<AbstractStargateEntity<?>>
 	{
-		public WormholeIdle(AbstractStargateEntity stargate, boolean incoming)
+		public WormholeIdle(AbstractStargateEntity<?> stargate, boolean incoming)
 		{
 			super(stargate, new WormholeIdleSound(stargate, SoundAccess.getWormholeIdleSound(stargate, incoming)));
 		}
 	}
 	
-	public static class RotationStartup extends StargateSoundWrapper<RotatingStargateEntity>
+	public static class RotationStartup extends StargateSoundWrapper<RotatingStargateEntity<?>>
 	{
-		public RotationStartup(RotatingStargateEntity stargate)
+		public RotationStartup(RotatingStargateEntity<?> stargate)
 		{
 			super(stargate, new RotatingStargateRingStartupSound(stargate, SoundAccess.getRotationStartupSound(stargate)));
 		}
@@ -83,25 +83,25 @@ public abstract class StargateSoundWrapper<T extends AbstractStargateEntity> ext
 		}
 	}
 	
-	public static class RingRotation extends StargateSoundWrapper<RotatingStargateEntity>
+	public static class RingRotation extends StargateSoundWrapper<RotatingStargateEntity<?>>
 	{
-		public RingRotation(RotatingStargateEntity stargate)
+		public RingRotation(RotatingStargateEntity<?> stargate)
 		{
 			super(stargate, new RotatingStargateRingSound(stargate, SoundAccess.getRotationSound(stargate)));
 		}
 	}
 	
-	public static class PegasusRingRotation extends StargateSoundWrapper<PegasusStargateEntity>
+	public static class DigitalRingRotation extends StargateSoundWrapper<StopMotionStargateEntity<?>>
 	{
-		public PegasusRingRotation(PegasusStargateEntity stargate)
+		public DigitalRingRotation(StopMotionStargateEntity<?> stargate)
 		{
-			super(stargate, new PegasusStargateRingSound(stargate, SoundAccess.getRotationSound(stargate)));
+			super(stargate, new DigitalRingSound(stargate, SoundAccess.getRotationSound(stargate)));
 		}
 		
 		@Override
 		public void playSound()
 		{
-			this.sound = new PegasusStargateRingSound(stargate, SoundAccess.getRotationSound(stargate));
+			this.sound = new DigitalRingSound(stargate, SoundAccess.getRotationSound(stargate));
 			minecraft.getSoundManager().play(sound);
 			this.playingSound = true;
 		}

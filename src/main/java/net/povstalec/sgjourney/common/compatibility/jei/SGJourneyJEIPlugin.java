@@ -122,12 +122,14 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.ANDROMEDA_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
 		
 		registration.registerSubtypeInterpreter(BlockInit.UNIVERSE_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.TOLLAN_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.ANDROMEDA_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 	}
 	
 	//TODO custom recipe transfer handlers

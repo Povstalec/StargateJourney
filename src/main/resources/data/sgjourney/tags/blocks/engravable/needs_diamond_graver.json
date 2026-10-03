@@ -12,6 +12,10 @@
 		
 		"sgjourney:classic_stargate",
 		"sgjourney:classic_ring",
-		"sgjourney:classic_dhd"
+		"sgjourney:classic_dhd",
+		
+		"sgjourney:andromeda_stargate",
+		"sgjourney:andromeda_ring",
+		"sgjourney:andromeda_dhd"
 	]
 }

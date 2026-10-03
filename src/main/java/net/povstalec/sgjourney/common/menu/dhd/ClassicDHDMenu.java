@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.menu;
+package net.povstalec.sgjourney.common.menu.dhd;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -7,7 +7,6 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
-import net.povstalec.sgjourney.common.menu.dhd.AbstractDHDMenu;
 
 public class ClassicDHDMenu extends AbstractDHDMenu<ClassicDHDEntity>
 {

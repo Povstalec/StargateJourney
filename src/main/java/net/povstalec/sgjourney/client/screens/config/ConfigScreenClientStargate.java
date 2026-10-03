@@ -47,6 +47,7 @@ public class ConfigScreenClientStargate extends Screen
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.alternate_movie_chevron_locking"), this.width, ClientStargateConfig.alternate_movie_chevron_locking));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.milky_way_stargate_back_lights_up"), this.width, ClientStargateConfig.milky_way_stargate_back_lights_up));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.pegasus_stargate_back_lights_up"), this.width, ClientStargateConfig.pegasus_stargate_back_lights_up));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.andromeda_stargate_back_lights_up"), this.width, ClientStargateConfig.andromeda_stargate_back_lights_up));
 		configList.add(new SliderConfigEntry(Component.translatable("gui.sgjourney.stargate_full_sound_distance").append(Component.literal(": ")), Component.empty(), this.width, ClientStargateConfig.stargate_full_sound_distance));
 		configList.add(new SliderConfigEntry(Component.translatable("gui.sgjourney.stargate_max_sound_distance").append(Component.literal(": ")), Component.empty(), this.width, ClientStargateConfig.stargate_max_sound_distance));
 		

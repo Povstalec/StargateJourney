@@ -47,6 +47,8 @@ public class ConfigScreenClientDHD extends Screen
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.classic_dhd_button_layout"), this.width, ClientDHDConfig.classic_dhd_canon_button_layout,
 				Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
+		configList.add(new BooleanConfigEntry(Component.translatable("gui.sgjourney.andromeda_dhd_button_layout"), this.width, ClientDHDConfig.andromeda_dhd_canon_button_layout,
+			Component.translatable("gui.sgjourney.canon").withStyle(ChatFormatting.AQUA), Component.translatable("gui.sgjourney.ascending").withStyle(ChatFormatting.GOLD)));
 		
 		this.addRenderableWidget(configList);
 

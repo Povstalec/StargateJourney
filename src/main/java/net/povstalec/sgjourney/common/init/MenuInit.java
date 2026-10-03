@@ -13,10 +13,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrys
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.menu.*;
-import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
-import net.povstalec.sgjourney.common.menu.dhd.MilkyWayDHDMenu;
-import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
-import net.povstalec.sgjourney.common.menu.dhd.UniverseDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.*;
 import net.povstalec.sgjourney.common.menu.graver.CartoucheEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.DHDEngravingMenu;
 import net.povstalec.sgjourney.common.menu.graver.StargateEngravingMenu;
@@ -61,6 +58,11 @@ public class MenuInit
 	public static final RegistryObject<MenuType<DHDCrystalMenu.Classic>> CLASSIC_DHD_CRYSTAL =
 			registerMenuType(DHDCrystalMenu.Classic::new, "classic_dhd_crystal");
 	
+	public static final RegistryObject<MenuType<AndromedaDHDMenu>> ANDROMEDA_DHD =
+		registerMenuType(AndromedaDHDMenu::new, "andromeda_dhd");
+	public static final RegistryObject<MenuType<DHDCrystalMenu.Andromeda>> ANDROMEDA_DHD_CRYSTAL =
+		registerMenuType(DHDCrystalMenu.Andromeda::new, "andromeda_dhd_crystal");
+	
 	public static final RegistryObject<MenuType<NaquadahGeneratorMenu>> NAQUADAH_GENERATOR =
             registerMenuType(NaquadahGeneratorMenu::new, "naquadah_generator");
 	
@@ -104,6 +106,8 @@ public class MenuInit
 		registerMenuType(StargateEngravingMenu.MilkyWay::new, "engraving_milky_way_stargate");
 	public static final RegistryObject<MenuType<StargateEngravingMenu.Classic>> ENGRAVING_CLASSIC_STARGATE =
 		registerMenuType(StargateEngravingMenu.Classic::new, "engraving_classic_stargate");
+	public static final RegistryObject<MenuType<StargateEngravingMenu.Andromeda>> ENGRAVING_ANDROMEDA_STARGATE =
+		registerMenuType(StargateEngravingMenu.Andromeda::new, "engraving_andromeda_stargate");
 	
 	public static final RegistryObject<MenuType<DHDEngravingMenu.Universe>> ENGRAVING_UNIVERSE_DHD =
 		registerMenuType(DHDEngravingMenu.Universe::new, "engraving_universe_dhd");
@@ -111,6 +115,8 @@ public class MenuInit
 		registerMenuType(DHDEngravingMenu.MilkyWay::new, "engraving_milky_way_dhd");
 	public static final RegistryObject<MenuType<DHDEngravingMenu.Classic>> ENGRAVING_CLASSIC_DHD =
 		registerMenuType(DHDEngravingMenu.Classic::new, "engraving_classic_dhd");
+	public static final RegistryObject<MenuType<DHDEngravingMenu.Andromeda>> ENGRAVING_ANDROMEDA_DHD =
+		registerMenuType(DHDEngravingMenu.Andromeda::new, "engraving_andromeda_dhd");
 
 
 

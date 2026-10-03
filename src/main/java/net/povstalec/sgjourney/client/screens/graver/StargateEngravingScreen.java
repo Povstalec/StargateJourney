@@ -18,16 +18,15 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.item.ItemStack;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.client.models.block_entity.AbstractStargateModel;
-import net.povstalec.sgjourney.client.models.block_entity.ClassicStargateModel;
-import net.povstalec.sgjourney.client.models.block_entity.MilkyWayStargateModel;
-import net.povstalec.sgjourney.client.models.block_entity.UniverseStargateModel;
+import net.povstalec.sgjourney.client.models.block_entity.*;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.AndromedaStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClassicStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.MilkyWayStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.client.widgets.SGJourneyCycleButton;
+import net.povstalec.sgjourney.common.block_entities.stargate.AndromedaStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
@@ -341,6 +340,45 @@ public abstract class StargateEngravingScreen<M extends StargateEngravingMenu<?>
 						return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
 					else
 						return ClientSymbols.getSymbols(Classic.this.getSymbols());
+				}
+			};
+		}
+		
+		@Override
+		public void renderStargate(PoseStack stack, MultiBufferSource source, int mouseX, int mouseY, float partialTick)
+		{
+			stargateModel.renderStargate(menu.blockEntity, stargateModel.getClientVariant(menu.blockEntity), partialTick, stack, source, MAX_LIGHT, OverlayTexture.NO_OVERLAY);
+		}
+	}
+	
+	public static class Andromeda extends StargateEngravingScreen<StargateEngravingMenu.Andromeda, AndromedaStargateModel>
+	{
+		public Andromeda(StargateEngravingMenu.Andromeda menu, Inventory playerInventory, Component title)
+		{
+			super(menu, StargateJourney.sgjourneyLocation("textures/gui/engraving/stargate/andromeda_stargate_engraving_gui.png"), playerInventory, title);
+		}
+		
+		@Override
+		protected AndromedaStargateModel createStargateModel()
+		{
+			return new AndromedaStargateModel()
+			{
+				@Override
+				protected @Nullable ClientPointOfOrigin getPointOfOrigin(AndromedaStargateEntity stargate, AndromedaStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
+						return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
+					else
+						return ClientPointOfOrigin.getPointOfOrigin(Andromeda.this.getPointOfOrigin());
+				}
+				
+				@Override
+				protected @Nullable ClientSymbols getSymbols(AndromedaStargateEntity stargate, AndromedaStargateVariant stargateVariant)
+				{
+					if(stargateVariant.symbols().permanentSymbols().isPresent())
+						return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
+					else
+						return ClientSymbols.getSymbols(Andromeda.this.getSymbols());
 				}
 			};
 		}

@@ -1,21 +1,18 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class ResourcepackModel
 {
@@ -40,7 +37,7 @@ public class ResourcepackModel
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(WormholeTexture::columns),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
+				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
 				).apply(instance, WormholeTexture::new));
 		
 		private final ResourceLocation texture;
@@ -375,9 +372,9 @@ public class ResourcepackModel
 		
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				// Symbol Colors
-				ColorUtil.RGBA.CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolColor)),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolColor)),
+				ColorUtil.RGBA.COLOR_CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
+				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolColor)),
+				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolColor)),
 				// Symbol glow
 				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW, false).forGetter(symbols -> symbols.symbolsGlow),
 				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.encodedSymbolsGlow),
