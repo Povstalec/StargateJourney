@@ -87,7 +87,7 @@ public class NBTRetainingShapedRecipe extends ShapedRecipe
 				interfaceBlockItem.setEnergyTarget(result, energyTarget);
 		}
 		
-		return result;
+		return result.copy();
 	}
 	
 	@Override
