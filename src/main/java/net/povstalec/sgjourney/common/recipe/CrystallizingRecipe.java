@@ -174,7 +174,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<SimpleFluidCont
 				energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(totalEnergy), false);
 		});
 		
-		return result;
+		return result.copy();
 	}
 	
 	@Override
