@@ -132,7 +132,7 @@ public abstract class CrystallizingRecipe extends ProgressRecipe<CrystallizingRe
 		else if(energyStorage != null)
 			energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(totalEnergy), false);
 		
-		return result;
+		return result.copy();
 	}
 	
 	@Override
