@@ -9,7 +9,6 @@ import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -52,11 +51,11 @@ public class UniverseStargateVariant extends RotatingStargateVariant<UniverseSta
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
+	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(21, 9, 0);
+	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(200, 220, 255, true);
+	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.RGBA(21, 9, 0, 255), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)),
-			false, true, true,
-			true, false,
-			Optional.empty(), Optional.empty());
+		IDLE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, null, null);
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(StargateJourney.EMPTY_LOCATION);

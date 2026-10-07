@@ -316,14 +316,27 @@ public class StargateInfo
 	public enum Direction
 	{
 		OUTGOING,
-		INCOMING
+		INCOMING;
+		
+		public boolean isOutgoing()
+		{
+			return this == OUTGOING;
+		}
+		
+		public boolean isIncoming()
+		{
+			return this == INCOMING;
+		}
 	}
 	
-	public enum ChevronState
+	public enum SymbolState
 	{
-		OFF,
+		IDLE,
+		ENCODING,
+		ENCODED,
+		ENCODED_INCOMING,
 		ENGAGED,
-		ENCODED
+		ENGAGED_INCOMING;
 	}
 	
 	public enum ChevronSound

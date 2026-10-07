@@ -44,7 +44,6 @@ public class AndromedaStargateRenderer extends AbstractStargateRenderer<Andromed
         
 		//stack.translate(0, -0.15, 0);
         
-        this.stargateModel.setCurrentSymbol(stargate.getCurrentSymbol());
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));

@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
@@ -53,6 +52,29 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
 		else
 			return ClientSymbols.getSymbols(stargate.symbolInfo().symbols());
+	}
+	
+	
+	public StargateInfo.SymbolState symbolState(StargateEntity stargate, Variant stargateVariant, int symbol)
+	{
+		if(stargate.isConnected())
+		{
+			if(stargate.getAddress().containsSymbol(symbol))
+			{
+				if(stargate.isDialingOut())
+					return StargateInfo.SymbolState.ENGAGED;
+			}
+			
+			if(!stargate.isDialingOut())
+				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
+		}
+		else
+		{
+			if(stargate.getAddress().containsSymbol(symbol))
+				return StargateInfo.SymbolState.ENCODED;
+		}
+		
+		return StargateInfo.SymbolState.IDLE;
 	}
 	
 	/**
@@ -174,29 +196,13 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	//******************************************Symbols*******************************************
 	//============================================================================================
 	
-	protected boolean symbolsGlow(StargateEntity stargate, Variant stargateVariant, boolean isEngaged)
+	public boolean symbolsGlow(StargateEntity stargate, Variant stargateVariant, StargateInfo.SymbolState state)
 	{
-		if(isEngaged)
-			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolsGlow() : stargateVariant.symbols().encodedSymbolsGlow();
-		else
-			return stargateVariant.symbols().symbolsGlow();
+		return stargateVariant.symbols().glowFromSymbolState(state);
 	}
 	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.ChevronState state, StargateInfo.Direction direction)
+	public ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.SymbolState state)
 	{
-		return switch(state)
-		{
-			case OFF -> stargateVariant.symbols().symbolColor();
-			case ENGAGED -> stargateVariant.symbols().engagedSymbolColor(); // TODO Split for incoming
-			case ENCODED -> stargateVariant.symbols().encodedSymbolColor(); // TODO Split for incoming
-		};
-	}
-	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, boolean isEngaged)
-	{
-		if(isEngaged)
-			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolColor() : stargateVariant.symbols().encodedSymbolColor();
-		else
-			return stargateVariant.symbols().symbolColor();
+		return stargateVariant.symbols().colorFromSymbolState(state);
 	}
 }

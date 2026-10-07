@@ -8,7 +8,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 import java.util.Optional;
 
@@ -55,7 +54,7 @@ public class MilkyWayStargateVariant extends GenericStargateVariant<MilkyWayStar
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
-	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(48, 49, 63, 255));
+	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ResourcepackModel.Symbol(48, 49, 63));
 	
 	public static final GenericStargateVariant.GenericStargateModel.MilkyWay GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel.MilkyWay(Optional.empty(), Optional.empty(), Optional.of(false));
 	public static final GenericStargateVariant.GenericStargateModel.MilkyWay GENERIC_MODEL_BACK_CHEVRON = new GenericStargateVariant.GenericStargateModel.MilkyWay(Optional.empty(), Optional.empty(), Optional.of(true));

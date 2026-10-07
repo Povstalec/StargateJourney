@@ -165,16 +165,8 @@
 	
 	"symbols":
 	{
-		"symbol_color": { "red": 0.0, "green": 0.392, "blue": 0.784, "alpha": 1.0 },
-		"encoded_symbol_color": { "red": 0.0, "green": 0.784, "blue": 1.0, "alpha": 1.0 },
-		"engaged_symbol_color": { "red": 0.0, "green": 0.784, "blue": 1.0, "alpha": 1.0 },
-		
-		"symbols_glow": true,
-		"encoded_symbols_glow": true,
-		"engaged_symbols_glow": true,
-		
-		"engage_encoded_symbols": true,
-		"engage_symbols_on_incoming": true,
+		"idle_symbols": { "color": {"r": 0, "g": 100, "b": 200}, "glow": true },
+		"engaged_symbols": { "color": {"r": 0, "g": 200, "b": 255}, "glow": true },
 
 		"permanent_point_of_origin": "sgjourney:subido",
 		"permanent_symbols": "sgjourney:galaxy_pegasus"

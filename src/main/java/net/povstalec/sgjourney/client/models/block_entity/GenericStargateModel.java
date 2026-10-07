@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
@@ -425,13 +426,10 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		
 		if(pointOfOrigin != null)
 		{
-			boolean pointOfOriginEngaged = false;
-			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-				pointOfOriginEngaged = stargate.getEncodedSymbols().hasPointOfOrigin();
-			else if(stargate.isConnected())
-				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, 0);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ? MAX_LIGHT : combinedLight,
+				0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 		
 		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
@@ -441,17 +439,10 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 		
 		for(int symbol = 1; symbol < this.numberOfSymbols; symbol++)
 		{
-			boolean symbolEngaged = false;
-			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-			{
-				if(stargate.isSymbolInAddress(symbol))
-					symbolEngaged = true;
-			}
-			else if(stargate.isConnected())
-				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, symbol);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, symbol, ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ?  MAX_LIGHT : combinedLight,
+				symbol, ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 	}
 	

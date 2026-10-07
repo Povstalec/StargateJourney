@@ -114,6 +114,12 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	//*******************************************Other********************************************
 	//============================================================================================
 	
+	@Override
+	public boolean isDialing()
+	{
+		return !address.isEmpty() || currentSymbol != 0 || !addressBuffer.isEmpty();
+	}
+	
 	public Address getAddressBuffer()
 	{
 		return addressBuffer;

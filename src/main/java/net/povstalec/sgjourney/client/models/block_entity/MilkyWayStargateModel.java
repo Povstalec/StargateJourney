@@ -12,6 +12,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
@@ -168,5 +169,31 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			return true;
 		
 		return false;
+	}
+	
+	@Override
+	public StargateInfo.SymbolState symbolState(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int symbol)
+	{
+		if(stargate.isConnected())
+		{
+			if(stargate.getAddress().containsSymbol(symbol))
+			{
+				if(stargate.isDialingOut())
+					return StargateInfo.SymbolState.ENGAGED;
+			}
+			
+			if(!stargate.isDialingOut())
+				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
+		}
+		else
+		{
+			if(stargate.isChevronOpen() && stargate.getCurrentSymbol() == symbol)
+				return StargateInfo.SymbolState.ENCODING;
+			
+			if(stargate.getAddress().containsSymbol(symbol))
+				return StargateInfo.SymbolState.ENCODED;
+		}
+		
+		return StargateInfo.SymbolState.IDLE;
 	}
 }

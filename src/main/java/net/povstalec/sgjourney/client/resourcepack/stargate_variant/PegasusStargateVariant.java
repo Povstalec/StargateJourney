@@ -8,7 +8,6 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 import java.util.Optional;
 
@@ -48,11 +47,11 @@ public class PegasusStargateVariant extends GenericStargateVariant<PegasusStarga
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
+	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(0, 100, 200);
+	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(0, 200, 255, true);
+	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.RGBA(0, 100, 200, 255), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)),
-			true, true, true,
-			true, true,
-			Optional.empty(), Optional.empty());
+		IDLE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, null, null);
 	
 	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
 	

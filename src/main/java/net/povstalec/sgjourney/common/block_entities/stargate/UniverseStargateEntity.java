@@ -136,6 +136,12 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	//*******************************************Other********************************************
 	//============================================================================================
 	
+	@Override
+	public boolean isDialing()
+	{
+		return !address.isEmpty() || !addressBuffer.isEmpty();
+	}
+	
 	public Address getAddressBuffer()
 	{
 		return addressBuffer;

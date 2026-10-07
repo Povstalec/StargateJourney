@@ -233,7 +233,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 			else
 				syncRotation();
 		}
-		else if(!isDialingOut() && getKawooshTickCount() <= 0 && this.rotationDirection.isRotating)
+		else if(!isDialingOut() && !isWormholeEstablished() && this.rotationDirection.isRotating)
 			rotateToTarget();
 		else
 			syncRotation();
@@ -432,9 +432,7 @@ public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> 
 	{
 		int symbolPosition = this.rotation + this.symbolAddition;
 		
-		int currentSymbol = (symbolPosition / stepsPerSymbol) % totalSymbols;
-		
-		return currentSymbol;
+		return (symbolPosition / stepsPerSymbol) % totalSymbols;
 	}
 	
 	protected void manualDialing()

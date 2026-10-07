@@ -8,13 +8,15 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
 import net.povstalec.sgjourney.common.block_entities.stargate.AndromedaStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 
 import java.util.Optional;
 
 public class AndromedaStargateVariant extends GenericStargateVariant<AndromedaStargateEntity>
 {
+	// Variant: Normal RGB - Shiny RGB
+	// Andromeda: 64 233 235 - 30 144 158
+	
 	public static final String STARGATE_TYPE = "andromeda";
 	
 	public static final ResourceLocation STARGATE_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate");
@@ -46,11 +48,15 @@ public class AndromedaStargateVariant extends GenericStargateVariant<AndromedaSt
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
+	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(10, 77, 15, false);
+	public static final ResourcepackModel.Symbol ENCODED_SYMBOLS = new ResourcepackModel.Symbol(125, 255, 0, false);
+	public static final ResourcepackModel.Symbol INCOMING_ENCODED_SYMBOLS = new ResourcepackModel.Symbol(125, 255, 0, false);
+	public static final ResourcepackModel.Symbol ENCODING_SYMBOL = new ResourcepackModel.Symbol(255, 255, 0, false);
+	public static final ResourcepackModel.Symbol ENGAGED_SYMBOLS = new ResourcepackModel.Symbol(0, 255, 200, false);
+	public static final ResourcepackModel.Symbol INCOMING_ENGAGED_SYMBOLS = new ResourcepackModel.Symbol(0, 255, 200, false);
+	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.RGBA(0, 100, 200, 255), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)),
-			true, true, true,
-			true, true,
-			Optional.empty(), Optional.empty());
+			IDLE_SYMBOLS, ENCODED_SYMBOLS, INCOMING_ENCODED_SYMBOLS, ENCODING_SYMBOL, ENGAGED_SYMBOLS, INCOMING_ENGAGED_SYMBOLS, null, null);
 	
 	public static final GenericStargateModel GENERIC_MODEL = new GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
 	
