@@ -53,22 +53,25 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 	{
 		if(stargate.isConnected())
 		{
-			if(stargate.getAddress().containsSymbol(symbol))
+			if(stargate.isDialingOut())
 			{
-				if(stargate.isDialingOut())
+				if(stargate.getAddress().containsSymbol(symbol))
 					return StargateInfo.SymbolState.ENGAGED;
+				else
+					return StargateInfo.SymbolState.UNENGAGED;
 			}
-			
-			if(!stargate.isDialingOut())
+			else
 				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
 		}
-		else
+		else if(stargate.isDialing())
 		{
 			if(stargate.isSymbolSpinning() && stargate.getCurrentSymbol() == symbol)
 				return StargateInfo.SymbolState.ENCODING;
 			
 			if(stargate.getAddress().containsSymbol(symbol))
 				return StargateInfo.SymbolState.ENCODED;
+			else
+				return StargateInfo.SymbolState.UNENCODED;
 		}
 		
 		return StargateInfo.SymbolState.IDLE;

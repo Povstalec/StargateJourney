@@ -56,7 +56,12 @@ public class AndromedaStargateVariant extends GenericStargateVariant<AndromedaSt
 	public static final ResourcepackModel.Symbol INCOMING_ENGAGED_SYMBOLS = new ResourcepackModel.Symbol(0, 255, 200, false);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			IDLE_SYMBOLS, ENCODED_SYMBOLS, INCOMING_ENCODED_SYMBOLS, ENCODING_SYMBOL, ENGAGED_SYMBOLS, INCOMING_ENGAGED_SYMBOLS, null, null);
+		IDLE_SYMBOLS,
+		ENCODED_SYMBOLS, INCOMING_ENCODED_SYMBOLS, ENCODING_SYMBOL,
+		IDLE_SYMBOLS, IDLE_SYMBOLS,
+		ENGAGED_SYMBOLS, INCOMING_ENGAGED_SYMBOLS,
+		IDLE_SYMBOLS,
+		null, null);
 	
 	public static final GenericStargateModel GENERIC_MODEL = new GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
 	

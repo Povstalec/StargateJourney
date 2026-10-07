@@ -935,7 +935,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? getAddress() : new Address.Mutable(), isConnected());
+		dhd.updateDHD(!isConnected() || isDialingOut() ? getAddress() : new Address.Mutable(), isConnected());
 	}
 	
 	//============================================================================================

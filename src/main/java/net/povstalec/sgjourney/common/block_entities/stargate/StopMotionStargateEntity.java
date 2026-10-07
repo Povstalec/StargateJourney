@@ -133,7 +133,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	@Override
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
+		dhd.updateDHD(!isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
 	}
 	
 	@Override

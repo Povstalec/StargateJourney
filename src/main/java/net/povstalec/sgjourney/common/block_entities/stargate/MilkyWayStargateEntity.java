@@ -177,6 +177,12 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		return setRecentFeedback(StargateInfo.Feedback.CHEVRON_ALREADY_CLOSED.withInfo());
 	}
 	
+	@Override
+	public boolean isDialing()
+	{
+		return !address.isEmpty() || isChevronOpen;
+	}
+	
 	//============================================================================================
 	//******************************************Rotation******************************************
 	//============================================================================================

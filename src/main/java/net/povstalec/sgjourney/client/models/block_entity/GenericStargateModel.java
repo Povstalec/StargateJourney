@@ -449,7 +449,7 @@ public abstract class GenericStargateModel<StargateEntity extends AbstractStarga
 	protected void renderSymbol(StargateEntity stargate, Variant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
 								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
-		if(symbolNumber >= this.numberOfSymbols)
+		if(symbolColor.alpha() <= 0 || symbolNumber >= this.numberOfSymbols)
 			return;
 		
 		stack.pushPose();

@@ -166,7 +166,12 @@
 	"symbols":
 	{
 		"idle_symbols": { "color": {"r": 0, "g": 100, "b": 200}, "glow": true },
-		"engaged_symbols": { "color": {"r": 0, "g": 200, "b": 255}, "glow": true }
+		
+		"unencoded_symbols": { "color": {"r": 0, "g": 0, "b": 0, "a": 0} },
+		"unencoded_symbols_incoming": { "color": {"r": 0, "g": 0, "b": 0, "a": 0} },
+		
+		"engaged_symbols": { "color": {"r": 0, "g": 200, "b": 255}, "glow": true },
+		"unengaged_symbols": { "color": {"r": 0, "g": 0, "b": 0, "a": 0} }
 	},
 	
 	"chevron_engaged_sounds":

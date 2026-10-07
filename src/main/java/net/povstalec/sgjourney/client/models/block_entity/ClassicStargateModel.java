@@ -326,7 +326,7 @@ public class ClassicStargateModel extends AbstractStargateModel<ClassicStargateE
 	protected void renderSymbol(ClassicStargateEntity stargate, ClassicStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
 								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
-		if(symbolNumber >= this.numberOfSymbols)
+		if(symbolColor.alpha() <= 0 || symbolNumber >= this.numberOfSymbols)
 			return;
 		
 		stack.pushPose();

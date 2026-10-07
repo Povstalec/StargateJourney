@@ -55,7 +55,12 @@ public class UniverseStargateVariant extends RotatingStargateVariant<UniverseSta
 	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(200, 220, 255, true);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-		IDLE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, null, null);
+		IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS, IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS,
+		null, null);
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(StargateJourney.EMPTY_LOCATION);
@@ -68,7 +73,7 @@ public class UniverseStargateVariant extends RotatingStargateVariant<UniverseSta
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS, STARGATE_DIAL_START, Optional.empty());
 	
-	private ResourceLocation dialStartSound;
+	private final ResourceLocation dialStartSound;
 	@Nullable
 	private Boolean onlyFrontRotates;
 	

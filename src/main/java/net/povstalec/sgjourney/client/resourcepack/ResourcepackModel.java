@@ -373,11 +373,16 @@ public class ResourcepackModel
 	public static class SymbolsModel
 	{
 		public static final String IDLE_SYMBOLS = "idle_symbols";
+		
 		public static final String ENCODED_SYMBOLS = "encoded_symbols";
 		public static final String ENCODED_SYMBOLS_INCOMING = "encoded_symbols_incoming";
 		public static final String ENCODING_SYMBOL = "encoding_symbol";
+		public static final String UNENCODED_SYMBOLS = "unencoded_symbols";
+		public static final String UNENCODED_SYMBOLS_INCOMING = "unencoded_symbols_incoming";
+		
 		public static final String ENGAGED_SYMBOLS = "engaged_symbols";
 		public static final String ENGAGED_SYMBOLS_INCOMING = "engaged_symbols_incoming";
+		public static final String UNENGAGED_SYMBOLS = "unengaged_symbols";
 
 		public static final String PERMANENT_POINT_OF_ORIGIN = "permanent_point_of_origin";
 		public static final String PERMANENT_SYMBOLS = "permanent_symbols";
@@ -388,9 +393,12 @@ public class ResourcepackModel
 		private final Symbol encodedSymbols;
 		private final Symbol encodedSymbolsIncoming;
 		private final Symbol encodingSymbol;
+		private final Symbol unencodedSymbols;
+		private final Symbol unencodedSymbolsIncoming;
 		
 		private final Symbol engagedSymbols;
 		private final Symbol engagedSymbolsIncoming;
+		private final Symbol unengagedSymbols;
 		
 		@Nullable
 		private final ResourceKey<PointOfOrigin> permanentPointOfOrigin;
@@ -398,47 +406,64 @@ public class ResourcepackModel
 		private final ResourceKey<Symbols> permanentSymbols;
 		
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			// Symbol colors and glow
+			// Symbols while idle
 			Symbol.CODEC.fieldOf(IDLE_SYMBOLS).forGetter(symbols -> symbols.idleSymbols),
+			// Symbols during encoding
 			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbols)),
 			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolsIncoming)),
 			Symbol.CODEC.optionalFieldOf(ENCODING_SYMBOL).forGetter(symbols -> Optional.ofNullable(symbols.encodingSymbol)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbols)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbolsIncoming)),
+			// Symbols during connection
 			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbols)),
 			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolsIncoming)),
+			Symbol.CODEC.optionalFieldOf(UNENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unengagedSymbols)),
 			// Permanent Symbols
 			ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
 			ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
 		).apply(instance, SymbolsModel::new));
 		
-		public SymbolsModel(Symbol idleSymbols, @Nullable Symbol encodedSymbols, @Nullable Symbol encodedSymbolsIncoming,
-		                    @Nullable Symbol encodingSymbol, @Nullable Symbol engagedSymbols, @Nullable Symbol engagedSymbolsIncoming,
+		public SymbolsModel(Symbol idleSymbols,
+							@Nullable Symbol encodedSymbols, @Nullable Symbol encodedSymbolsIncoming, @Nullable Symbol encodingSymbol,
+							@Nullable Symbol unencodedSymbols, @Nullable Symbol unencodedSymbolsIncoming,
+							@Nullable Symbol engagedSymbols, @Nullable Symbol engagedSymbolsIncoming,
+							@Nullable Symbol unengagedSymbols,
 		                    @Nullable ResourceKey<PointOfOrigin> permanentPointOfOrigin, @Nullable ResourceKey<Symbols> permanentSymbols)
 		{
 			this.idleSymbols = idleSymbols;
 			
 			this.engagedSymbols = engagedSymbols != null ? engagedSymbols : this.idleSymbols;
 			this.engagedSymbolsIncoming = engagedSymbolsIncoming != null ? engagedSymbolsIncoming : this.engagedSymbols;
+			this.unengagedSymbols = unengagedSymbols != null ? unengagedSymbols : this.idleSymbols;
 			
 			this.encodedSymbols = encodedSymbols != null ? encodedSymbols : this.engagedSymbols;
 			this.encodedSymbolsIncoming = encodedSymbolsIncoming != null ? encodedSymbolsIncoming : this.encodedSymbols;
 			this.encodingSymbol = encodingSymbol != null ? encodingSymbol : this.encodedSymbols;
+			this.unencodedSymbols = unencodedSymbols != null ? unencodedSymbols : this.idleSymbols;
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming != null ? unencodedSymbolsIncoming : this.unencodedSymbols;
 
 			this.permanentPointOfOrigin = permanentPointOfOrigin;
 			this.permanentSymbols = permanentSymbols;
 		}
 		
-		public SymbolsModel(Symbol idleSymbols, Optional<Symbol> encodedSymbols, Optional<Symbol> encodedSymbolsIncoming,
-		                    Optional<Symbol> encodingSymbol, Optional<Symbol> engagedSymbols, Optional<Symbol> engagedSymbolsIncoming,
+		public SymbolsModel(Symbol idleSymbols,
+							Optional<Symbol> encodedSymbols, Optional<Symbol> encodedSymbolsIncoming, Optional<Symbol> encodingSymbol,
+							Optional<Symbol> unencodedSymbols, Optional<Symbol> unencodedSymbolsIncoming,
+							Optional<Symbol> engagedSymbols, Optional<Symbol> engagedSymbolsIncoming,
+							Optional<Symbol> unengagedSymbols,
 		                    Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
 		{
 			this.idleSymbols = idleSymbols;
 			
 			this.engagedSymbols = engagedSymbols.orElse(this.idleSymbols);
 			this.engagedSymbolsIncoming = engagedSymbolsIncoming.orElse(this.engagedSymbols);
+			this.unengagedSymbols = unengagedSymbols.orElse(this.idleSymbols);
 			
 			this.encodedSymbols = encodedSymbols.orElse(this.engagedSymbols);
 			this.encodedSymbolsIncoming = encodedSymbolsIncoming.orElse(this.encodedSymbols);
 			this.encodingSymbol = encodingSymbol.orElse(this.encodedSymbols);
+			this.unencodedSymbols = unencodedSymbols.orElse(this.idleSymbols);
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming.orElse(this.unencodedSymbols);
 			
 			this.permanentPointOfOrigin = permanentPointOfOrigin.orElse(null);
 			this.permanentSymbols = permanentSymbols.orElse(null);
@@ -446,7 +471,7 @@ public class ResourcepackModel
 		
 		public SymbolsModel(Symbol symbolColor)
 		{
-			this(symbolColor, (Symbol) null, null, null, null, null, null, null);
+			this(symbolColor, (Symbol) null, null, null, null, null, null, null, null, null, null);
 		}
 		
 		public Symbol idleSymbols()
@@ -459,6 +484,11 @@ public class ResourcepackModel
 			return direction.isIncoming() ? encodedSymbolsIncoming : encodedSymbols;
 		}
 		
+		public Symbol unencodedSymbols(StargateInfo.Direction direction)
+		{
+			return direction.isIncoming() ? unencodedSymbolsIncoming : unencodedSymbols;
+		}
+		
 		public Symbol encodingSymbol()
 		{
 			return encodingSymbol;
@@ -469,6 +499,11 @@ public class ResourcepackModel
 			return direction.isIncoming() ? engagedSymbolsIncoming : engagedSymbols;
 		}
 		
+		public Symbol unengagedSymbols()
+		{
+			return unengagedSymbols;
+		}
+		
 		public boolean glowFromSymbolState(StargateInfo.SymbolState symbolState)
 		{
 			return switch(symbolState)
@@ -476,8 +511,13 @@ public class ResourcepackModel
 				case ENCODING -> encodingSymbol.glow;
 				case ENCODED -> encodedSymbols.glow;
 				case ENCODED_INCOMING -> encodedSymbolsIncoming.glow;
+				case UNENCODED -> unencodedSymbols.glow;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.glow;
+				
 				case ENGAGED -> engagedSymbols.glow;
 				case ENGAGED_INCOMING -> engagedSymbolsIncoming.glow;
+				case UNENGAGED -> unengagedSymbols.glow;
+				
 				default -> idleSymbols.glow;
 			};
 		}
@@ -489,8 +529,13 @@ public class ResourcepackModel
 				case ENCODING -> encodingSymbol.color;
 				case ENCODED -> encodedSymbols.color;
 				case ENCODED_INCOMING -> encodedSymbolsIncoming.color;
+				case UNENCODED -> unencodedSymbols.color;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.color;
+				
 				case ENGAGED -> engagedSymbols.color;
 				case ENGAGED_INCOMING -> engagedSymbolsIncoming.color;
+				case UNENGAGED -> unengagedSymbols.color;
+				
 				default -> idleSymbols.color;
 			};
 		}

@@ -155,7 +155,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	@Override
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
+		dhd.updateDHD(!isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage || isConnected());
 	}
 	
 	@Override

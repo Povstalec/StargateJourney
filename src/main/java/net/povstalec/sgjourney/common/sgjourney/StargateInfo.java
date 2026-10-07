@@ -315,6 +315,7 @@ public class StargateInfo
 	
 	public enum Direction
 	{
+		NONE,
 		OUTGOING,
 		INCOMING;
 		
@@ -332,11 +333,16 @@ public class StargateInfo
 	public enum SymbolState
 	{
 		IDLE,
+		
 		ENCODING,
 		ENCODED,
 		ENCODED_INCOMING,
+		UNENCODED,
+		UNENCODED_INCOMING,
+		
 		ENGAGED,
-		ENGAGED_INCOMING;
+		ENGAGED_INCOMING,
+		UNENGAGED
 	}
 	
 	public enum ChevronSound

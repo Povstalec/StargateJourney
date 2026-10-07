@@ -47,11 +47,17 @@ public class PegasusStargateVariant extends GenericStargateVariant<PegasusStarga
 	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
+	public static final ResourcepackModel.Symbol NO_SYMBOLS = new ResourcepackModel.Symbol(0, 0, 0, 0);
 	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(0, 100, 200);
 	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(0, 200, 255, true);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-		IDLE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, null, null);
+		IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS, NO_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS,
+		null, null);
 	
 	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
 	

@@ -166,11 +166,13 @@
 	"symbols":
 	{
 		"idle_symbols": { "color": {"r": 10, "g": 77, "b": 15} },
-		"engaged_symbols": { "color": {"r": 0, "g": 255, "b": 200}, "glow": true },
-		"engaged_symbols_incoming": { "color": {"r": 0, "g": 255, "b": 200}, "glow": true },
+		
 		"encoded_symbols": { "color": {"r": 125, "g": 255, "b": 0}, "glow": true },
 		"encoded_symbols_incoming": { "color": {"r": 125, "g": 255, "b": 0}, "glow": true },
-		"encoding_symbol": { "color": {"r": 255, "g": 255, "b": 0}, "glow": true }
+		"encoding_symbol": { "color": {"r": 255, "g": 255, "b": 0}, "glow": true },
+		
+		"engaged_symbols": { "color": {"r": 0, "g": 255, "b": 200}, "glow": true },
+		"engaged_symbols_incoming": { "color": {"r": 0, "g": 255, "b": 200}, "glow": true }
 	},
 	
 	"chevron_engaged_sounds":

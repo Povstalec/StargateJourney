@@ -355,6 +355,9 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderSymbol(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
 								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
+		if(symbolColor.alpha() <= 0)
+			return;
+		
 		stack.pushPose();
 		int symbolRow = symbolNumber / 4;
 		int symbolInRow = symbolNumber % 4;

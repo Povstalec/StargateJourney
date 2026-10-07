@@ -174,26 +174,9 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 	@Override
 	public StargateInfo.SymbolState symbolState(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int symbol)
 	{
-		if(stargate.isConnected())
-		{
-			if(stargate.getAddress().containsSymbol(symbol))
-			{
-				if(stargate.isDialingOut())
-					return StargateInfo.SymbolState.ENGAGED;
-			}
-			
-			if(!stargate.isDialingOut())
-				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
-		}
-		else
-		{
-			if(stargate.isChevronOpen() && stargate.getCurrentSymbol() == symbol)
-				return StargateInfo.SymbolState.ENCODING;
-			
-			if(stargate.getAddress().containsSymbol(symbol))
-				return StargateInfo.SymbolState.ENCODED;
-		}
+		if(stargate.isChevronOpen() && stargate.getCurrentSymbol() == symbol)
+			return StargateInfo.SymbolState.ENCODING;
 		
-		return StargateInfo.SymbolState.IDLE;
+		return super.symbolState(stargate, stargateVariant, symbol);
 	}
 }
