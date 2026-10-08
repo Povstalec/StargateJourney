@@ -2,5 +2,10 @@
 	"point_of_origin": "sgjourney:terra",
 	"symbols": "sgjourney:terra",
 	"point_of_origin_table": "sgjourney:overworld",
-	"address_region": "sgjourney:terra"
+	"address_region": "sgjourney:terra",
+	"preload_stargate_structures":
+	[
+		"sgjourney:buried_stargate",
+		"sgjourney:terra_stargate"
+	]
 }

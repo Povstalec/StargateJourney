@@ -28,7 +28,7 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	
 	public AndromedaStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.ANDROMEDA_STARGATE.get(), StargateInit.ANDROMEDA.get(), StargateJourney.sgjourneyLocation("andromeda"), pos, state, TOTAL_SYMBOLS, 3, 41);
+		super(BlockEntityInit.ANDROMEDA_STARGATE.get(), StargateInit.ANDROMEDA.get(), StargateJourney.sgjourneyLocation("andromeda"), pos, state, TOTAL_SYMBOLS, 4, 41);
 		this.setOpenSoundLead(13);
 	}
 	

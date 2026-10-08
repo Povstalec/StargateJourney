@@ -16,9 +16,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
 import net.povstalec.sgjourney.StargateJourney;
@@ -143,10 +145,14 @@ public final class StargateNetwork extends SavedData
 		for(ResourceKey<Level> dimension : server.levelKeys())
 		{
 			SpaceLocation spaceLocation = SpaceLocation.fromDimension(server, dimension);
-			if(spaceLocation.shouldPreLoadStargate() && getStargatesInDimension(dimension).isEmpty())
+			if(spaceLocation.shouldPreLoadStargateStructures() && getStargatesInDimension(dimension).isEmpty())
 			{
 				StargateJourney.LOGGER.debug("Attempting to preload Stargates in {}", dimension.location());
-				findStargatesInLevel(server.getLevel(dimension));
+				for(TagKey<Structure> structureTag : spaceLocation.preLoadStargateStructures())
+				{
+					StargateJourney.LOGGER.debug("Preloading Stargates for Structure Tag {}", structureTag.location());
+					findStargatesInLevel(server.getLevel(dimension), structureTag);
+				}
 			}
 		}
 	}
@@ -776,7 +782,7 @@ public final class StargateNetwork extends SavedData
 		}
 	}
 	
-	public static void findStargatesInLevel(ServerLevel level)
+	public static void findStargatesInLevel(ServerLevel level, TagKey<Structure> structureTag)
 	{
 		if(level == null)
 			return;
@@ -786,8 +792,7 @@ public final class StargateNetwork extends SavedData
 		int xOffset = CommonGenerationConfig.stargate_generation_center_x_chunk_offset.get();
 		int zOffset = CommonGenerationConfig.stargate_generation_center_z_chunk_offset.get();
 		// Nearest Structure that potentially has a Stargate
-		BlockPos blockpos = level.findNearestMapStructure(CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE,
-				new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
+		BlockPos blockpos = level.findNearestMapStructure(structureTag, new BlockPos(xOffset * 16, 0, zOffset * 16), 150, false);
 		if(blockpos == null)
 		{
 			StargateJourney.LOGGER.debug("Stargate Structure not found");
@@ -813,6 +818,11 @@ public final class StargateNetwork extends SavedData
 		{
 			stargate.onLoad();
 		}
+	}
+	
+	public static void findStargatesInLevel(ServerLevel level)
+	{
+		findStargatesInLevel(level, CommonGenerationConfig.common_stargate_search.get() ? TagInit.Structures.HAS_STARGATE : TagInit.Structures.NETWORK_STARGATE);
 	}
 	
 	//============================================================================================
