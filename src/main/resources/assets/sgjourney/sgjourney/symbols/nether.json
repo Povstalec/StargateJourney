@@ -40,6 +40,9 @@
 		"sgjourney:symbol/milky_way/cancer",
 		"sgjourney:symbol/milky_way/sextans",
 		"sgjourney:symbol/milky_way/leo_minor",
-		"sgjourney:symbol/milky_way/leo"
+		"sgjourney:symbol/milky_way/leo",
+		"sgjourney:symbol/milky_way/crux_c",
+		"sgjourney:symbol/milky_way/delphinus_c",
+		"sgjourney:symbol/milky_way/hercules_c"
 	]
 }

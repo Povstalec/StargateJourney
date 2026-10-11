@@ -128,7 +128,7 @@ public class WormholeModel
 	
 	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, AbstractStargateEntity<?> stargate, float wormholeDistortion, short irisProgress, boolean isUnstable)
 	{
-		if(stargate.getKawooshTickCount() > 0 || (stargate.getDisconnectTicks() > 0 && stargate.getDisconnectTicks() < wormhole.disconnectTicks().eventHorizonStopTicks))
+		if(stargate.isWormholeEstablished() || (stargate.getDisconnectTicks() > 0 && stargate.getDisconnectTicks() < wormhole.disconnectTicks().eventHorizonStopTicks))
 		{
 			WormholeTexture frontTexture = isUnstable ? wormhole.unstableEventHorizonTexture(ResourcepackModel.WormholeSide.FRONT) : wormhole.eventHorizonTexture(ResourcepackModel.WormholeSide.FRONT);
 			ResourcepackModel.WormholeTexture backTexture = isUnstable ? wormhole.unstableEventHorizonTexture(ResourcepackModel.WormholeSide.BACK) : wormhole.eventHorizonTexture(ResourcepackModel.WormholeSide.BACK);
