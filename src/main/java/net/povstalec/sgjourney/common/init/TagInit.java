@@ -109,9 +109,14 @@ public class TagInit
 			return TagKey.create(Registry.STRUCTURE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
 		}
 		
+		public static TagKey<Structure> createTag(ResourceLocation id)
+		{
+			return TagKey.create(Registry.STRUCTURE_REGISTRY, id);
+		}
+		
 		public static TagKey<Structure> createTag(String name)
 		{
-			return TagKey.create(Registry.STRUCTURE_REGISTRY, ResourceLocation.tryParse(name));
+			return createTag(ResourceLocation.tryParse(name));
 		}
 	}
 }

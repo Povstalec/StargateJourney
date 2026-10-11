@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargateEntity, MilkyWayStargateVariant>
@@ -170,5 +171,14 @@ public class MilkyWayStargateModel extends GenericStargateModel<MilkyWayStargate
 			return true;
 		
 		return false;
+	}
+	
+	@Override
+	public StargateInfo.SymbolState symbolState(MilkyWayStargateEntity stargate, MilkyWayStargateVariant stargateVariant, int symbol)
+	{
+		if(stargate.isChevronOpen() && stargate.getCurrentSymbol() == symbol)
+			return StargateInfo.SymbolState.ENCODING;
+		
+		return super.symbolState(stargate, stargateVariant, symbol);
 	}
 }
