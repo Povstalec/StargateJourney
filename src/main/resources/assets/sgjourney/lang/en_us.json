@@ -1289,7 +1289,7 @@
 	
 	"message.sgjourney.transporter.error.target_out_of_range": "Target Transporter is out of range",
 	"message.sgjourney.transporter.error.out_of_range_of_target": "Local Transporter is out of Target Transporter's range",
-	"message.sgjourney.transporter.error.self_no_interdimensional_transport": "Transporter cannot transport to other Dimensions",
+	"message.sgjourney.transporter.error.self_no_interdimensional_transport": "Local Transporter cannot transport to other Dimensions",
 	"message.sgjourney.transporter.error.target_no_interdimensional_transport": "Target Transporter cannot transport to other Dimensions",
 	"message.sgjourney.transporter.error.no_interstellar_transport": "Transporters do not support interstellar transport",
 	

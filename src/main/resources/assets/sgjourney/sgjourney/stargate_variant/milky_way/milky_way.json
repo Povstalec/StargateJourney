@@ -165,7 +165,7 @@
 	
 	"symbols":
 	{
-		"symbol_color": { "red": 0.188, "green": 0.192, "blue": 0.247, "alpha": 1.0 }
+		"idle_symbols": { "color": {"r": 48, "g": 49, "b": 63} }
 	},
 	
 	"stargate_model":

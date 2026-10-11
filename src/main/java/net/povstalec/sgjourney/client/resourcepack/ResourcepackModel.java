@@ -9,6 +9,7 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
@@ -337,137 +338,207 @@ public class ResourcepackModel
 		}
 	}
 	
+	public record Symbol(ColorUtil.RGBA color, boolean glow)
+	{
+		public static final String COLOR = "color";
+		public static final String GLOW = "glow";
+		
+		public static final Codec<Symbol> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			// Symbol Colors
+			ColorUtil.RGBA.COLOR_CODEC.fieldOf(COLOR).forGetter(symbol -> symbol.color),
+			Codec.BOOL.optionalFieldOf(GLOW, false).forGetter(symbol -> symbol.glow)
+		).apply(instance, Symbol::new));
+		
+		public Symbol(int red, int green, int blue, int alpha, boolean glow)
+		{
+			this(new ColorUtil.RGBA(red, green, blue, alpha), glow);
+		}
+		
+		public Symbol(int red, int green, int blue, boolean glow)
+		{
+			this(red, green, blue, 255, glow);
+		}
+		
+		public Symbol(int red, int green, int blue, int alpha)
+		{
+			this(red, green, blue, alpha, true);
+		}
+		
+		public Symbol(int red, int green, int blue)
+		{
+			this(red, green, blue, 255, true);
+		}
+	}
+	
 	public static class SymbolsModel
 	{
-		public static final String SYMBOL_COLOR = "symbol_color";
-		public static final String ENCODED_SYMBOL_COLOR = "encoded_symbol_color";
-		public static final String ENGAGED_SYMBOL_COLOR = "engaged_symbol_color";
-
-		public static final String SYMBOLS_GLOW = "symbols_glow";
-		public static final String ENCODED_SYMBOLS_GLOW = "encoded_symbols_glow";
-		public static final String ENGAGED_SYMBOLS_GLOW = "engaged_symbols_glow";
-
-		public static final String ENGAGE_ENCODED_SYMBOLS = "engage_encoded_symbols";
-		public static final String ENGAGE_SYMBOLS_ON_INCOMING = "engage_symbols_on_incoming";
+		public static final String IDLE_SYMBOLS = "idle_symbols";
+		
+		public static final String ENCODED_SYMBOLS = "encoded_symbols";
+		public static final String ENCODED_SYMBOLS_INCOMING = "encoded_symbols_incoming";
+		public static final String ENCODING_SYMBOL = "encoding_symbol";
+		public static final String UNENCODED_SYMBOLS = "unencoded_symbols";
+		public static final String UNENCODED_SYMBOLS_INCOMING = "unencoded_symbols_incoming";
+		
+		public static final String ENGAGED_SYMBOLS = "engaged_symbols";
+		public static final String ENGAGED_SYMBOLS_INCOMING = "engaged_symbols_incoming";
+		public static final String UNENGAGED_SYMBOLS = "unengaged_symbols";
 
 		public static final String PERMANENT_POINT_OF_ORIGIN = "permanent_point_of_origin";
 		public static final String PERMANENT_SYMBOLS = "permanent_symbols";
 		
 		//Symbol stuff
-		private final ColorUtil.RGBA symbolColor;
-		private final ColorUtil.RGBA encodedSymbolColor;
-		private final ColorUtil.RGBA engagedSymbolColor;
+		private final Symbol idleSymbols;
 		
-		private final boolean symbolsGlow;
-		private final boolean encodedSymbolsGlow;
-		private final boolean engagedSymbolsGlow;
+		private final Symbol encodedSymbols;
+		private final Symbol encodedSymbolsIncoming;
+		private final Symbol encodingSymbol;
+		private final Symbol unencodedSymbols;
+		private final Symbol unencodedSymbolsIncoming;
 		
-		private final boolean engageEncodedSymbols; //TODO Is this needed?
-		private final boolean engageSymbolsOnIncoming; //TODO Is this needed?
+		private final Symbol engagedSymbols;
+		private final Symbol engagedSymbolsIncoming;
+		private final Symbol unengagedSymbols;
 		
 		@Nullable
-		private ResourceKey<PointOfOrigin> permanentPointOfOrigin;
+		private final ResourceKey<PointOfOrigin> permanentPointOfOrigin;
 		@Nullable
-		private ResourceKey<Symbols> permanentSymbols;
+		private final ResourceKey<Symbols> permanentSymbols;
 		
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				// Symbol Colors
-				ColorUtil.RGBA.COLOR_CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
-				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolColor)),
-				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolColor)),
-				// Symbol glow
-				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW, false).forGetter(symbols -> symbols.symbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.encodedSymbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.engagedSymbolsGlow),
-				//TODO Split incoming and outgoing glows and colors
-				Codec.BOOL.optionalFieldOf(ENGAGE_ENCODED_SYMBOLS, false).forGetter(symbols -> symbols.engageEncodedSymbols),
-				Codec.BOOL.optionalFieldOf(ENGAGE_SYMBOLS_ON_INCOMING, false).forGetter(symbols -> symbols.engageSymbolsOnIncoming),
-				// Permanent Symbols
-				ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
-				ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
-				).apply(instance, SymbolsModel::new));
+			// Symbols while idle
+			Symbol.CODEC.fieldOf(IDLE_SYMBOLS).forGetter(symbols -> symbols.idleSymbols),
+			// Symbols during encoding
+			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbols)),
+			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolsIncoming)),
+			Symbol.CODEC.optionalFieldOf(ENCODING_SYMBOL).forGetter(symbols -> Optional.ofNullable(symbols.encodingSymbol)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbols)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbolsIncoming)),
+			// Symbols during connection
+			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbols)),
+			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolsIncoming)),
+			Symbol.CODEC.optionalFieldOf(UNENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unengagedSymbols)),
+			// Permanent Symbols
+			ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
+			ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
+		).apply(instance, SymbolsModel::new));
 		
-		public SymbolsModel(ColorUtil.RGBA symbolColor, Optional<ColorUtil.RGBA> encodedSymbolColor, Optional<ColorUtil.RGBA> engagedSymbolColor,
-				boolean symbolsGlow, boolean encodedSymbolsGlow, boolean engagedSymbolsGlow,
-				boolean engageEncodedSymbols, boolean engageSymbolsOnIncoming,
-				Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
+		public SymbolsModel(Symbol idleSymbols,
+							@Nullable Symbol encodedSymbols, @Nullable Symbol encodedSymbolsIncoming, @Nullable Symbol encodingSymbol,
+							@Nullable Symbol unencodedSymbols, @Nullable Symbol unencodedSymbolsIncoming,
+							@Nullable Symbol engagedSymbols, @Nullable Symbol engagedSymbolsIncoming,
+							@Nullable Symbol unengagedSymbols,
+		                    @Nullable ResourceKey<PointOfOrigin> permanentPointOfOrigin, @Nullable ResourceKey<Symbols> permanentSymbols)
 		{
-			this.symbolColor = symbolColor;
+			this.idleSymbols = idleSymbols;
 			
-			if(engagedSymbolColor.isPresent())
-				this.engagedSymbolColor = engagedSymbolColor.get();
-			else
-				this.engagedSymbolColor = symbolColor;
+			this.engagedSymbols = engagedSymbols != null ? engagedSymbols : this.idleSymbols;
+			this.engagedSymbolsIncoming = engagedSymbolsIncoming != null ? engagedSymbolsIncoming : this.engagedSymbols;
+			this.unengagedSymbols = unengagedSymbols != null ? unengagedSymbols : this.idleSymbols;
 			
-			// Encoded symbol color, if not specified, will be the same as engaged symbol color
-			if(encodedSymbolColor.isPresent())
-				this.encodedSymbolColor = encodedSymbolColor.get();
-			else
-				this.encodedSymbolColor = this.engagedSymbolColor;
-			
-			this.symbolsGlow = symbolsGlow;
-			this.encodedSymbolsGlow = encodedSymbolsGlow;
-			this.engagedSymbolsGlow = engagedSymbolsGlow;
-			
-			this.engageEncodedSymbols = engageEncodedSymbols;
-			this.engageSymbolsOnIncoming = engageSymbolsOnIncoming;
+			this.encodedSymbols = encodedSymbols != null ? encodedSymbols : this.engagedSymbols;
+			this.encodedSymbolsIncoming = encodedSymbolsIncoming != null ? encodedSymbolsIncoming : this.encodedSymbols;
+			this.encodingSymbol = encodingSymbol != null ? encodingSymbol : this.encodedSymbols;
+			this.unencodedSymbols = unencodedSymbols != null ? unencodedSymbols : this.idleSymbols;
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming != null ? unencodedSymbolsIncoming : this.unencodedSymbols;
 
-			if(permanentPointOfOrigin.isPresent())
-				this.permanentPointOfOrigin = permanentPointOfOrigin.get();
-			if(permanentSymbols.isPresent())
-				this.permanentSymbols = permanentSymbols.get();
+			this.permanentPointOfOrigin = permanentPointOfOrigin;
+			this.permanentSymbols = permanentSymbols;
 		}
 		
-		public SymbolsModel(ColorUtil.RGBA symbolColor)
+		public SymbolsModel(Symbol idleSymbols,
+							Optional<Symbol> encodedSymbols, Optional<Symbol> encodedSymbolsIncoming, Optional<Symbol> encodingSymbol,
+							Optional<Symbol> unencodedSymbols, Optional<Symbol> unencodedSymbolsIncoming,
+							Optional<Symbol> engagedSymbols, Optional<Symbol> engagedSymbolsIncoming,
+							Optional<Symbol> unengagedSymbols,
+		                    Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
 		{
-			this(symbolColor, Optional.empty(), Optional.empty(), false, false, false, false, false, Optional.empty(), Optional.empty());
+			this.idleSymbols = idleSymbols;
+			
+			this.engagedSymbols = engagedSymbols.orElse(this.idleSymbols);
+			this.engagedSymbolsIncoming = engagedSymbolsIncoming.orElse(this.engagedSymbols);
+			this.unengagedSymbols = unengagedSymbols.orElse(this.idleSymbols);
+			
+			this.encodedSymbols = encodedSymbols.orElse(this.engagedSymbols);
+			this.encodedSymbolsIncoming = encodedSymbolsIncoming.orElse(this.encodedSymbols);
+			this.encodingSymbol = encodingSymbol.orElse(this.encodedSymbols);
+			this.unencodedSymbols = unencodedSymbols.orElse(this.idleSymbols);
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming.orElse(this.unencodedSymbols);
+			
+			this.permanentPointOfOrigin = permanentPointOfOrigin.orElse(null);
+			this.permanentSymbols = permanentSymbols.orElse(null);
 		}
 		
-		public ColorUtil.RGBA symbolColor()
+		public SymbolsModel(Symbol symbolColor)
 		{
-			return symbolColor;
+			this(symbolColor, (Symbol) null, null, null, null, null, null, null, null, null, null);
 		}
 		
-		public ColorUtil.RGBA encodedSymbolColor()
+		public Symbol idleSymbols()
 		{
-			return encodedSymbolColor;
+			return idleSymbols;
 		}
 		
-		public ColorUtil.RGBA engagedSymbolColor()
+		public Symbol encodedSymbols(StargateInfo.Direction direction)
 		{
-			return engagedSymbolColor;
+			return direction.isIncoming() ? encodedSymbolsIncoming : encodedSymbols;
 		}
 		
-		
-		
-		public boolean symbolsGlow()
+		public Symbol unencodedSymbols(StargateInfo.Direction direction)
 		{
-			return symbolsGlow;
+			return direction.isIncoming() ? unencodedSymbolsIncoming : unencodedSymbols;
 		}
-
-		public boolean encodedSymbolsGlow()
+		
+		public Symbol encodingSymbol()
 		{
-			return encodedSymbolsGlow;
+			return encodingSymbol;
 		}
-
-		public boolean engagedSymbolsGlow()
+		
+		public Symbol engagedSymbols(StargateInfo.Direction direction)
 		{
-			return engagedSymbolsGlow;
+			return direction.isIncoming() ? engagedSymbolsIncoming : engagedSymbols;
 		}
 		
-		
-		
-		public boolean engageEncodedSymbols()
+		public Symbol unengagedSymbols()
 		{
-			return engageEncodedSymbols;
+			return unengagedSymbols;
 		}
 		
-		public boolean engageSymbolsOnIncoming()
+		public boolean glowFromSymbolState(StargateInfo.SymbolState symbolState)
 		{
-			return engageSymbolsOnIncoming;
+			return switch(symbolState)
+			{
+				case ENCODING -> encodingSymbol.glow;
+				case ENCODED -> encodedSymbols.glow;
+				case ENCODED_INCOMING -> encodedSymbolsIncoming.glow;
+				case UNENCODED -> unencodedSymbols.glow;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.glow;
+				
+				case ENGAGED -> engagedSymbols.glow;
+				case ENGAGED_INCOMING -> engagedSymbolsIncoming.glow;
+				case UNENGAGED -> unengagedSymbols.glow;
+				
+				default -> idleSymbols.glow;
+			};
 		}
 		
-		
+		public ColorUtil.RGBA colorFromSymbolState(StargateInfo.SymbolState symbolState)
+		{
+			return switch(symbolState)
+			{
+				case ENCODING -> encodingSymbol.color;
+				case ENCODED -> encodedSymbols.color;
+				case ENCODED_INCOMING -> encodedSymbolsIncoming.color;
+				case UNENCODED -> unencodedSymbols.color;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.color;
+				
+				case ENGAGED -> engagedSymbols.color;
+				case ENGAGED_INCOMING -> engagedSymbolsIncoming.color;
+				case UNENGAGED -> unengagedSymbols.color;
+				
+				default -> idleSymbols.color;
+			};
+		}
 		
 		public Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin()
 		{

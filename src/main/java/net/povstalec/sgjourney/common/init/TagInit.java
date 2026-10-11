@@ -110,9 +110,14 @@ public class TagInit
 			return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, new ResourceLocation(StargateJourney.MODID, name));
 		}
 		
+		public static TagKey<ConfiguredStructureFeature<?, ?>> createTag(ResourceLocation id)
+		{
+			return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, id);
+		}
+		
 		public static TagKey<ConfiguredStructureFeature<?, ?>> createTag(String name)
 		{
-			return TagKey.create(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY, ResourceLocation.tryParse(name));
+			return createTag(ResourceLocation.tryParse(name));
 		}
 	}
 }

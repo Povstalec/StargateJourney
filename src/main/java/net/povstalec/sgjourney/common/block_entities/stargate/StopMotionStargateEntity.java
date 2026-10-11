@@ -114,6 +114,12 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	//*******************************************Other********************************************
 	//============================================================================================
 	
+	@Override
+	public boolean isDialing()
+	{
+		return !address.isEmpty() || currentSymbol != 0 || !addressBuffer.isEmpty();
+	}
+	
 	public Address getAddressBuffer()
 	{
 		return addressBuffer;
@@ -127,7 +133,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	@Override
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
+		dhd.updateDHD(!isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
 	}
 	
 	@Override

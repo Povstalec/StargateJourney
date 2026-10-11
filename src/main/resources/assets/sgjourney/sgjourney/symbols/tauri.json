@@ -40,6 +40,9 @@
 		"sgjourney:symbol/milky_way/tauri/cancer",
 		"sgjourney:symbol/milky_way/tauri/sextans",
 		"sgjourney:symbol/milky_way/tauri/leo_minor",
-		"sgjourney:symbol/milky_way/tauri/leo"
+		"sgjourney:symbol/milky_way/tauri/leo",
+		"sgjourney:symbol/milky_way/tauri/crux_c",
+		"sgjourney:symbol/milky_way/tauri/delphinus_c",
+		"sgjourney:symbol/milky_way/tauri/hercules_c"
 	]
 }
