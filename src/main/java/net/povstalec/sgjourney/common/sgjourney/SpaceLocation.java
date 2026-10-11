@@ -12,7 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraft.world.level.levelgen.feature.ConfiguredStructureFeature;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
@@ -64,7 +64,7 @@ public class SpaceLocation extends ForgeRegistryEntry<SpaceLocation>
 		
 		//TODO Coordinates
 		AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
-		TagKey.codec(Registry.STRUCTURE_REGISTRY).listOf().optionalFieldOf(PRELOAD_STARGATE_STRUCTURES, List.of()).forGetter(spaceLocation -> spaceLocation.preloadStargateStructures),
+		TagKey.codec(Registry.CONFIGURED_STRUCTURE_FEATURE_REGISTRY).listOf().optionalFieldOf(PRELOAD_STARGATE_STRUCTURES, List.of()).forGetter(spaceLocation -> spaceLocation.preloadStargateStructures),
 		Codec.BOOL.optionalFieldOf(GENERATED_ADDRESS, false).forGetter(spaceLocation -> spaceLocation.generateInAddressTables)
 	).apply(instance, SpaceLocation::new));
 
@@ -107,18 +107,18 @@ public class SpaceLocation extends ForgeRegistryEntry<SpaceLocation>
 	@Nullable
 	private AddressRegion addressRegion = null;
 	/// If not empty and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures found using the listed Structure Tags during Stellar Update
-	private final List<TagKey<Structure>> preloadStargateStructures;
+	private final List<TagKey<ConfiguredStructureFeature<?, ?>>> preloadStargateStructures;
 	/// If true, dimension address will appear in Address Tables with generated addresses
 	private final boolean generateInAddressTables;
 	
 	public SpaceLocation(Optional<TemplateInfo> templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean unityCrystalsGrow,
-	                     Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<PointOfOriginTable>> pointOfOriginTable, Optional<ResourceKey<AddressRegion>> addressRegionKey, List<TagKey<Structure>> preloadStargateStructures, boolean generateInAddressTables)
+	                     Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<PointOfOriginTable>> pointOfOriginTable, Optional<ResourceKey<AddressRegion>> addressRegionKey, List<TagKey<ConfiguredStructureFeature<?, ?>>> preloadStargateStructures, boolean generateInAddressTables)
 	{
 		this(templateInfo.orElse(null), inStargateNetwork, parentGravity, /*allowFactionPresence, */unityCrystalsGrow, pointOfOrigin.orElse(null), symbols.orElse(null), pointOfOriginTable.orElse(null), addressRegionKey.orElse(null), preloadStargateStructures, generateInAddressTables);
 	}
 	
 	public SpaceLocation(@Nullable TemplateInfo templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean unityCrystalsGrow,
-	                     @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<PointOfOriginTable> pointOfOriginTable, @Nullable ResourceKey<AddressRegion> addressRegionKey, List<TagKey<Structure>> preloadStargateStructures, boolean generateInAddressTables)
+	                     @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<PointOfOriginTable> pointOfOriginTable, @Nullable ResourceKey<AddressRegion> addressRegionKey, List<TagKey<ConfiguredStructureFeature<?, ?>>> preloadStargateStructures, boolean generateInAddressTables)
 	{
 		this.templateInfo = templateInfo;
 		this.inStargateNetwork = inStargateNetwork;
@@ -223,7 +223,7 @@ public class SpaceLocation extends ForgeRegistryEntry<SpaceLocation>
 		return !preloadStargateStructures.isEmpty();
 	}
 	
-	public List<TagKey<Structure>> preLoadStargateStructures()
+	public List<TagKey<ConfiguredStructureFeature<?, ?>>> preLoadStargateStructures()
 	{
 		return preloadStargateStructures;
 	}
@@ -279,7 +279,7 @@ public class SpaceLocation extends ForgeRegistryEntry<SpaceLocation>
 		ResourceKey<AddressRegion> addressRegionKey = Conversion.stringToAddressRegionKey(spaceLocationTag.getString(ADDRESS_REGION));
 		
 		
-		List<TagKey<Structure>> preloadStargateStructures = new ArrayList<>();
+		List<TagKey<ConfiguredStructureFeature<?, ?>>> preloadStargateStructures = new ArrayList<>();
 		
 		ListTag listTag = spaceLocationTag.getList(PRELOAD_STARGATE_STRUCTURES, Tag.TAG_COMPOUND);
 		for(int i = 0; i < listTag.size(); i++)
