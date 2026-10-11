@@ -142,7 +142,7 @@ Some of the listed properties are optional, meaning they don't necessarily need 
 			}
 		},
 		
-		"disconnect_ticks": // Values defining the specific timings of the animation that's played while the Stargate is disconnecting
+		"disconnect_ticks": //REQUIRED Values defining the specific timings of the animation that's played while the Stargate is disconnecting
 		{
 			//REQUIRED How many ticks to wait before starting the animation
 			"wait_ticks": 16,
