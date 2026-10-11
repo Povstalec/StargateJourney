@@ -52,9 +52,9 @@ Resourcepack Stargate Variants for [Stargate Journey](https://github.com/Povstal
 
 {: .highlight }
 `// Blah blah blah` is considered a comment and is not a valid part of the json structure.  
-Some of the referenced textures or sounds are only used for the purposes of showcasing what can be used in the definitions, and as such, may not actually exist in the mod files.
-Note that this example shows the combined definitions of every property of every Stargate Variant combined to explain what they all do. If a property is limited to a certain type of Stargate, it will be noted in the comment.
-Some of the listed properties are optional, meaning they don't necessarily need to be defined for the Stargate Variant to work. This example will differentiate between them by prefixing comments with either REQUIRED or OPTIONAL
+Some of the referenced textures or sounds are only used for the purposes of showcasing what can be used in the definitions, and as such, may not actually exist in the mod files.  
+Note that this example shows the combined definitions of every property of every Stargate Variant combined to explain what they all do. If a property is limited to a certain type of Stargate, it will be noted in the comment.  
+Some of the listed properties are optional, meaning they don't necessarily need to be defined for the Stargate Variant to work. This example will differentiate between them by prefixing comments with either REQUIRED or OPTIONAL.
 
 ```json-doc
 {
@@ -264,9 +264,9 @@ Some of the listed properties are optional, meaning they don't necessarily need 
 		//OPTIONAL(same as "encoded_symbols" by default) When a MILKY WAY Stargate has its chevron open, the symbol that's being encoded is rendered like this
 		// When a PEGASUS/ANDROMEDA Stargate is dialing and the symbol is travelling around the ring, it's rendered like this
 		"encoding_symbol": { "color": {"r": 255, "g": 255, "b": 0}, "glow": true },
-		//OPTIONALsame as "idle_symbols" by default) When the Stargate is being dialed during an incoming connection, all of its symbols are rendered like this (except for the case of Pegasus Stargate, which has a booting-up animation for them)
+		//OPTIONAL(same as "idle_symbols" by default) When the Stargate is being dialed during an incoming connection, all of its symbols are rendered like this (except for the case of Pegasus Stargate, which has a booting-up animation for them)
 		"unencoded_symbols": { "color": {"r": 0, "g": 0, "b": 0, "a": 0} },
-		//OPTIONALsame as "unencoded_symbols" by default) When a PEGASUS Stargate is being dialed during an incoming connection, you know, the booting-up animation the symbols get, then any symbols the animation hasn't reached are rendered like this
+		//OPTIONAL(same as "unencoded_symbols" by default) When a PEGASUS Stargate is being dialed during an incoming connection, you know, the booting-up animation the symbols get, then any symbols the animation hasn't reached are rendered like this
 		"unencoded_symbols_incoming": { "color": {"r": 0, "g": 0, "b": 0, "a": 0} },
 		
 		//OPTIONAL(same as "idle_symbols" by default) When a Stargate finishes dialing out, any symbols in the dialed address are rendered like this during an outgoing connection
