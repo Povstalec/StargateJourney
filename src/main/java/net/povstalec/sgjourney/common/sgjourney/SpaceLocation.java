@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -64,7 +63,7 @@ public class SpaceLocation
 		
 		//TODO Coordinates
 		AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
-		TagKey.codec(Registries.STRUCTURE).listOf().optionalFieldOf(PRELOAD_STARGATE_STRUCTURES, List.of()).forGetter(spaceLocation -> spaceLocation.preloadStargateStructures),
+		TagKey.codec(Registry.STRUCTURE_REGISTRY).listOf().optionalFieldOf(PRELOAD_STARGATE_STRUCTURES, List.of()).forGetter(spaceLocation -> spaceLocation.preloadStargateStructures),
 		Codec.BOOL.optionalFieldOf(GENERATED_ADDRESS, false).forGetter(spaceLocation -> spaceLocation.generateInAddressTables)
 	).apply(instance, SpaceLocation::new));
 
