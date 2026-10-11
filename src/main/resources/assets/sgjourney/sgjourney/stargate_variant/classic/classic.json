@@ -165,7 +165,7 @@
 	
 	"symbols":
 	{
-		"symbol_color": { "red": 0.0, "green": 0.427, "blue": 0.474, "alpha": 1.0 }
+		"idle_symbols": { "color": {"r": 0, "g": 109, "b": 121} }
 	},
 	
 	"chevron_engaged_sounds":

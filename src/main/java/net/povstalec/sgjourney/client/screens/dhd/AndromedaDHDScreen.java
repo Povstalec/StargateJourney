@@ -25,10 +25,10 @@ public class AndromedaDHDScreen extends AbstractDHDScreen<AndromedaDHDMenu>
 			onClose();
 		}));
 		
-		DefaultButton defaultButton;
-		for(int i = 0; i < 39; i++)
+		AndromedaDHDSymbolButton.AndromedaButton defaultButton;
+		for(int i = 0; i < 42; i++)
 		{
-			defaultButton = DefaultButton.values()[i];
+			defaultButton = AndromedaDHDSymbolButton.AndromedaButton.values()[i];
 			addRenderableWidget(new AndromedaDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, AndromedaDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
 				button -> encodeSymbol(((AndromedaDHDSymbolButton.Dialing) button).getSymbol())));
 		}

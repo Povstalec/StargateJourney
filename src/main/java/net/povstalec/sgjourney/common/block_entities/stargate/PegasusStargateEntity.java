@@ -45,7 +45,10 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 		
 		// Update symbols when loading
 		if(generationStep == Step.GENERATED)
+		{
 			setLocalSymbols();
+			updateClient();
+		}
     }
 	
 	@Override

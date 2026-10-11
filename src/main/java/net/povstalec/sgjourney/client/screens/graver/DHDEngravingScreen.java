@@ -330,10 +330,10 @@ public abstract class DHDEngravingScreen<M extends DHDEngravingMenu<?>> extends 
 			
 			addDHDRenderable(new AndromedaDHDBigButton.Engraving(69 - dhdImageWidth / 2, 69 - dhdImageHeight / 2, menu, (n) -> {}));
 			
-			GenericDHDSymbolButton.DefaultButton defaultButton;
-			for(int i = 0; i < 39; i++)
+			AndromedaDHDSymbolButton.AndromedaButton defaultButton;
+			for(int i = 0; i < 42; i++)
 			{
-				defaultButton = GenericDHDSymbolButton.DefaultButton.values()[i];
+				defaultButton = AndromedaDHDSymbolButton.AndromedaButton.values()[i];
 				addDHDRenderable(new AndromedaDHDSymbolButton.Engraving(-dhdImageWidth / 2, -dhdImageHeight / 2, this, width, height, i, AndromedaDHDSymbolButton.CANON_SYMBOLS[i], defaultButton, button -> {}));
 			}
 		}
