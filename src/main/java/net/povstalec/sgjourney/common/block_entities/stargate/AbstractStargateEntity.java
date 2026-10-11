@@ -605,7 +605,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(sound != StargateInfo.ChevronSound.NONE)
 			chevronSound((short) getAddress().getLength(), sound);
 		
-		if(direction == StargateInfo.Direction.INCOMING)
+		if(direction.isIncoming())
 		{
 			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), true);
 			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), true);
@@ -935,7 +935,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public void updateDHD(AbstractDHDEntity dhd)
 	{
-		dhd.updateDHD(!isConnected() || (isConnected() && isDialingOut()) ? getAddress() : new Address.Mutable(), isConnected());
+		dhd.updateDHD(!isConnected() || isDialingOut() ? getAddress() : new Address.Mutable(), isConnected());
 	}
 	
 	//============================================================================================
@@ -1097,6 +1097,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public int getKawooshTickCount()
 	{
 		return this.kawooshTick;
+	}
+	
+	public boolean isWormholeEstablished()
+	{
+		return this.kawooshTick > 0;
 	}
 	
 	public void resetAnimationTicks()
@@ -1389,6 +1394,11 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public boolean isDialingOut()
 	{
 		return getConnectionState().isDialingOut();
+	}
+	
+	public boolean isDialing()
+	{
+		return !address.isEmpty();
 	}
 
 	protected int getMaxObstructiveBlocks()
