@@ -342,7 +342,7 @@ public class Universe extends SavedData
 	{
 		// Creates a number from the dimension name that works as a seed for the Address Region
 		long seed = randomAddressFromSeed() ? server.getWorldData().worldGenOptions().seed() : 0;
-		return seed + name.hashCode();
+		return Objects.hash(seed, name.hashCode());
 	}
 	
 	public Address.Immutable generateExtragalacticAddress(int prefix, long seed)

@@ -10,15 +10,14 @@ import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStarga
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
 import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AndromedaStargateEntity;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
 
 public class AndromedaStargateModel extends GenericStargateModel<AndromedaStargateEntity, AndromedaStargateVariant>
 {
-	protected int currentSymbol = 0;
-	
 	public AndromedaStargateModel()
 	{
-		super((short) 39);
+		super((short) 42);
 	}
 	
 	@Override
@@ -49,9 +48,33 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isIrisLoaded());
 	}
 	
-	public void setCurrentSymbol(int currentSymbol)
+	@Override
+	public StargateInfo.SymbolState symbolState(AndromedaStargateEntity stargate, AndromedaStargateVariant stargateVariant, int symbol)
 	{
-		this.currentSymbol = currentSymbol;
+		if(stargate.isConnected())
+		{
+			if(stargate.isDialingOut())
+			{
+				if(stargate.getAddress().containsSymbol(symbol))
+					return StargateInfo.SymbolState.ENGAGED;
+				else
+					return StargateInfo.SymbolState.UNENGAGED;
+			}
+			else
+				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
+		}
+		else if(stargate.isDialing())
+		{
+			if(stargate.isSymbolSpinning() && stargate.getCurrentSymbol() == symbol)
+				return StargateInfo.SymbolState.ENCODING;
+			
+			if(stargate.getAddress().containsSymbol(symbol))
+				return StargateInfo.SymbolState.ENCODED;
+			else
+				return StargateInfo.SymbolState.UNENCODED;
+		}
+		
+		return StargateInfo.SymbolState.IDLE;
 	}
 	
 	@Override
@@ -61,10 +84,10 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 		
 		if(pointOfOrigin != null)
 		{
-			boolean isEngaged = (!stargate.getAddressBuffer().isEmpty() && currentSymbol == 0) || stargate.getAddress().hasPointOfOrigin();
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, 0);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, isEngaged) ? MAX_LIGHT : combinedLight, 0,
-				ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, isEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ? MAX_LIGHT : combinedLight, 0,
+				ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 		
 		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
@@ -74,10 +97,10 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 		
 		for(int symbol = 1; symbol < numberOfSymbols; symbol++)
 		{
-			boolean isEngaged = (!stargate.isDialingOut() && stargate.isConnected()) || stargate.getAddress().containsSymbol(symbol) || currentSymbol == symbol;
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, symbol);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, isEngaged) ? MAX_LIGHT : combinedLight, symbol,
-				ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, isEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ? MAX_LIGHT : combinedLight, symbol,
+				ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 	}
 }

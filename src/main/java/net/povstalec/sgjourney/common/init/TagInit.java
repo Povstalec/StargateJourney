@@ -128,9 +128,14 @@ public class TagInit
 			return TagKey.create(Registries.STRUCTURE, StargateJourney.sgjourneyLocation(name));
 		}
 		
+		public static TagKey<Structure> createTag(ResourceLocation id)
+		{
+			return TagKey.create(Registries.STRUCTURE, id);
+		}
+		
 		public static TagKey<Structure> createTag(String name)
 		{
-			return TagKey.create(Registries.STRUCTURE, ResourceLocation.tryParse(name));
+			return createTag(ResourceLocation.tryParse(name));
 		}
 	}
 }

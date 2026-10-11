@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 
 public class ClientSymbols
 {
@@ -26,8 +27,8 @@ public class ClientSymbols
 	public static final ResourceKey<Registry<ClientSymbols>> REGISTRY_KEY = ResourceKey.createRegistryKey(SYMBOLS_LOCATION);
 	public static final Codec<ResourceKey<ClientSymbols>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
 	
-	public static final List<ResourceLocation> DEFAULT_SPRITE_TEXTURES = createSpriteTexturesList("universal/universal_", 1, 38);
-	public static final List<ResourceLocation> DEFAULT_EXTENDED_TEXTURES = createExtendedTexturesList("universal/universal_", 1, 38);
+	public static final List<ResourceLocation> DEFAULT_SPRITE_TEXTURES = createSpriteTexturesList(symbol -> "universal/universal_" + (symbol > 35 ? symbol + "_c" : symbol), 1, 41);
+	public static final List<ResourceLocation> DEFAULT_EXTENDED_TEXTURES = createExtendedTexturesList(symbol -> "universal/universal_" + (symbol > 35 ? symbol + "_c" : symbol), 1, 41);
 	
 	public static final Codec<ClientSymbols> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(symbols -> symbols.translationName),
@@ -167,23 +168,23 @@ public class ClientSymbols
 		return translationName;
 	}
 	
-	public static List<ResourceLocation> createSpriteTexturesList(String prefix, int first, int last)
+	public static List<ResourceLocation> createSpriteTexturesList(Function<Integer, String> nameMaker, int first, int last)
 	{
 		ResourceLocation[] textures = new ResourceLocation[last - first + 1];
 		for(int i = 0; i < textures.length; i++)
 		{
-			textures[i] = StargateJourney.sgjourneyLocation("symbol/" + prefix + (first + i));
+			textures[i] = StargateJourney.sgjourneyLocation("symbol/" + nameMaker.apply(first + i));
 		}
 		
 		return Arrays.asList(textures);
 	}
 	
-	public static List<ResourceLocation> createExtendedTexturesList(String prefix, int first, int last)
+	public static List<ResourceLocation> createExtendedTexturesList(Function<Integer, String> nameMaker, int first, int last)
 	{
 		ResourceLocation[] textures = new ResourceLocation[last - first + 1];
 		for(int i = 0; i < textures.length; i++)
 		{
-			textures[i] = StargateJourney.sgjourneyLocation("textures/symbol/" + prefix + (first + i) + ".png");
+			textures[i] = StargateJourney.sgjourneyLocation("textures/symbol/" + nameMaker.apply(first + i) + ".png");
 		}
 		
 		return Arrays.asList(textures);

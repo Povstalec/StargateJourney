@@ -539,9 +539,12 @@ public interface Stargate extends Comparable<Stargate>
 		}
 		
 		// Stargates with higher generation take precedence
-		int genRes = other.getGeneration().compareTo(this.getGeneration());
-		if(genRes != 0)
-			return genRes;
+		if(!CommonStargateNetworkConfig.disable_stargate_generation_preference.get())
+		{
+			int genRes = other.getGeneration().compareTo(this.getGeneration());
+			if(genRes != 0)
+				return genRes;
+		}
 		
 		// Stargates with more uses take precedence
 		int timesOpenedRes = Integer.compare(other.getTimesOpened(), this.getTimesOpened());
