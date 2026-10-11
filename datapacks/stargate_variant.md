@@ -141,12 +141,18 @@ Some of the listed properties are optional, meaning they don't necessarily need 
 				"rgba": { "red": 1.0, "blue": 1.0, "green": 1.0, "alpha": 1.0 }
 			}
 		},
-		// Values defining the specific timings of the animation that's played while the Stargate is disconnecting
-		//REQUIRED wait_ticks - How many ticks to wait before starting the animation
-		//REQUIRED fade_in_ticks - How many ticks it takes before the first frame of the animation fades in fully (once this number is reached, the original Event Horizon texture disappears)
-		//REQUIRED stable_ticks - How many ticks the animated texture should stay fully visible for
-		//REQUIRED fade_out_ticks - How many ticks it takes for the animated texture to fade out
-		"disconnect_ticks": { "wait_ticks": 16, "fade_in_ticks": 10, "stable_ticks": 0, "fade_out_ticks": 20 },
+		
+		"disconnect_ticks": // Values defining the specific timings of the animation that's played while the Stargate is disconnecting
+		{
+			//REQUIRED How many ticks to wait before starting the animation
+			"wait_ticks": 16,
+			//REQUIRED How many ticks it takes before the first frame of the animation fades in fully (once this number is reached, the original Event Horizon texture disappears)
+			"fade_in_ticks": 10,
+			//REQUIRED How many ticks the animated texture should stay fully visible for
+			"stable_ticks": 0,
+			//REQUIRED How many ticks it takes for the animated texture to fade out
+			"fade_out_ticks": 20
+		},
 		
 		"disconnect": //OPTIONAL Texture of the animation that will be overlayed over the event horizon while the Stargate is disconnecting, defintion is identical to "event_horizon"
 		{
