@@ -196,8 +196,8 @@ public class Dialing
 				StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, primaryStargate, addressType, doKawoosh, mustBeLoaded, action);
 				
 				// If Stargate isn't obstructed and its network isn't restricted, connect
-				if(!feedback.feedback().isSkippable() && !feedback.feedback().isError())
-					return feedback;
+				if(!feedback.feedback().isSkippable())
+					return feedback.feedback().isError() ? resetStargate(action, dialingStargate, feedback) : feedback;
 			}
 		}
 		
@@ -209,8 +209,8 @@ public class Dialing
 			feedback = attemptConnection(server, dialingStargate, targetStargate, addressType, doKawoosh, mustBeLoaded, action);
 			
 			// If Stargate isn't obstructed and its network isn't restricted, connect
-			if(!feedback.feedback().isSkippable() && !feedback.feedback().isError())
-				return feedback;
+			if(!feedback.feedback().isSkippable())
+				return feedback.feedback().isError() ? resetStargate(action, dialingStargate, feedback) : feedback;
 		}
 		
 		if(feedback.feedback() == StargateInfo.Feedback.UNKNOWN_ERROR)

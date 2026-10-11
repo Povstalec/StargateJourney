@@ -17,7 +17,7 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 {
 	public AndromedaStargateModel()
 	{
-		super((short) 39);
+		super((short) 42);
 	}
 	
 	@Override

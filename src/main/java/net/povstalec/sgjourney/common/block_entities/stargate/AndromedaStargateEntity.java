@@ -15,6 +15,7 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaBlockEntityStargate;
@@ -23,6 +24,10 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaStar
 public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaBlockEntityStargate>
 {
 	public static final int TOTAL_SYMBOLS = 42;
+	
+	public static final int MAX_WAIT_TICKS = 10;
+	
+	protected int waitTicks = 0;
 	
 	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("andromeda_back_chevron");
 	
@@ -68,9 +73,24 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	//============================================================================================
 	
 	@Override
+	protected void resetAddress()
+	{
+		waitTicks = 0;
+		super.resetAddress();
+	}
+	
+	@Override
 	public ResourceLocation defaultVariant()
 	{
 		return ClientStargateConfig.andromeda_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
+	}
+	
+	@Override
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
+	{
+		waitTicks++;
+		
+		return super.encodeChevron(symbol, direction, sound);
 	}
 	
 	@Override
@@ -82,6 +102,15 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 		
 		if(isSymbolSpinning())
 		{
+			if(waitTicks != 0)
+			{
+				if(waitTicks >= MAX_WAIT_TICKS)
+					waitTicks = 0;
+				else
+					waitTicks++;
+				return;
+			}
+			
 			int symbol = addressBuffer.symbolAt(symbolBuffer);
 			if(symbol == 0)
 			{
