@@ -10,14 +10,19 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.entity.PartEntity;
 import net.povstalec.sgjourney.common.advancements.TransporterTravelCriterion;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.events.custom.TransporterEvent;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Transporting
 {
@@ -74,7 +79,7 @@ public class Transporting
 	//*************************************Receive transport**************************************
 	//============================================================================================
 	
-	public static Entity transportEntity(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static Entity transportEntity(ServerLevel destinationLevel, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		if(traveler.getLevel() != destinationLevel)
 			traveler = traveler.changeDimension(destinationLevel, new Wormhole.WormholeTeleporter(destinationPosition, destinationMomentum,
@@ -86,12 +91,31 @@ public class Transporting
 		}
 		
 		if(traveler != null)
+		{
+			if(!traveler.isAddedToWorld())
+				destinationLevel.addFreshEntityWithPassengers(traveler);
+			
+			if(traveler.isMultipartEntity())
+			{
+				for(PartEntity<?> partEntity : traveler.getParts())
+				{
+					Vec3 relativePartPosition = sendingTransporter.toTransporterCoords(partEntity.position().subtract(sendingTransporter.getPosition()), true);
+					Vec3 relativePartLookAngle = sendingTransporter.toTransporterCoords(partEntity.getLookAngle(), false);
+					
+					Vec3 destinationPartPosition = receivingTransporter.fromTransporterCoords(relativePartPosition, true).add(receivingTransporter.getPosition());
+					Vec3 destinationPartLookAngle = receivingTransporter.fromTransporterCoords(relativePartLookAngle, false);
+					
+					partEntity.moveTo(destinationPartPosition.x(), destinationPartPosition.y(), destinationPartPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationPartLookAngle), traveler.getXRot());
+				}
+			}
+			
 			reconstructEvent(receivingTransporter, traveler);
+		}
 		
 		return traveler;
 	}
 	
-	private static void triggerDestinationGalaxyAdvancement(ServerPlayer player, TransporterConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, ResourceKey<AddressRegion> initialRegion, ResourceKey<Galaxy>  initialGalaxy, long distanceTraveled)
+	public static void triggerDestinationGalaxyAdvancement(ServerPlayer player, TransporterConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, ResourceKey<AddressRegion> initialRegion, ResourceKey<Galaxy>  initialGalaxy, long distanceTraveled)
 	{
 		SpaceLocation destinationLocation = SpaceLocation.fromDimension(destinationLevel.getServer(), destinationLevel.dimension());
 		AddressRegion destinationRegion = destinationLocation.getAddressRegion();
@@ -160,28 +184,33 @@ public class Transporting
 		return player;
 	}
 	
-	public static Entity recursivePassengerTeleport(TransporterConnection connection, ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static Entity recursivePassengerTeleport(TransporterConnection connection, ServerLevel destinationLevel, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		Level initialLevel = traveler.getLevel();
 		ArrayList<Entity> passengers = new ArrayList<>();
 		if(initialLevel != destinationLevel)
 		{
-			// Prepares passengers
+			// Prepare passengers
 			for(Entity passenger : traveler.getPassengers())
 			{
-				passengers.add(recursivePassengerTeleport(connection, destinationLevel, receivingTransporter, passenger, destinationPosition, destinationMomentum, destinationLookAngle));
+				passengers.add(recursivePassengerTeleport(connection, destinationLevel, sendingTransporter, receivingTransporter, passenger, destinationPosition, destinationMomentum, destinationLookAngle));
 			}
 		}
 		
-		// Teleports traveler
-		if(traveler instanceof ServerPlayer player)
+		// Teleport traveler
+		TransporterEvent.EntityTransport event = new TransporterEvent.EntityTransport(destinationLevel, connection, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		MinecraftForge.EVENT_BUS.post(event);
+		
+		if(event.isCanceled())
+			traveler = event.getTraveler();
+		else if(traveler instanceof ServerPlayer player)
 			traveler = transportPlayer(connection, destinationLevel, receivingTransporter, player, destinationPosition, destinationMomentum, destinationLookAngle);
-		else
-			traveler = transportEntity(destinationLevel, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		else if(!(traveler instanceof PartEntity<?>)) // Don't teleport entity parts
+			traveler = transportEntity(destinationLevel, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		
 		if(initialLevel != destinationLevel)
 		{
-			// Brings passengers
+			// Bring passengers
 			for(Entity passenger : passengers)
 			{
 				passenger.startRiding(traveler, true);
@@ -191,9 +220,9 @@ public class Transporting
 		return traveler;
 	}
 	
-	public static boolean receiveTraveler(TransporterConnection connection, ServerLevel level, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static boolean receiveTraveler(TransporterConnection connection, ServerLevel level, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		recursivePassengerTeleport(connection, level, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		recursivePassengerTeleport(connection, level, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		return true;
 	}
 	
