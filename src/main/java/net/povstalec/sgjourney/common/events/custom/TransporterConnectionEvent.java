@@ -27,7 +27,7 @@ public class TransporterConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right after a Transporter Connection is successfully established (not cancelable)
+	 * Fired right after a Transporter Connection is successfully established (not cancelable).
 	 * @author Povstalec
 	 *
 	 */
@@ -40,7 +40,7 @@ public class TransporterConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right before a Transporter Connection is successfully terminated (not cancelable)
+	 * Fired right before a Transporter Connection is successfully terminated (not cancelable).
 	 * @author Povstalec
 	 *
 	 */

@@ -1,7 +1,9 @@
 package net.povstalec.sgjourney.common.events.custom;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.Event;
 import net.neoforged.bus.api.ICancellableEvent;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -34,7 +36,10 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to dial a certain Address (cancelable)
+	 * Fired when a Stargate attempts to dial a certain Address (cancelable).
+	 * This event is {@linkplain ICancellableEvent cancellable}.
+	 * If this event is canceled, the Stargate does not dial.
+	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
 	 * @author Povstalec
 	 *
 	 */
@@ -44,9 +49,9 @@ public class StargateEvent extends Event
 		private final boolean doKawoosh;
 		private final Dialing.Action action;
 		
-		public Dial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh, Dialing.Action action)
+		public Dial(MinecraftServer server, Stargate dialingStargate, Address dialedAddress, boolean doKawoosh, Dialing.Action action)
 		{
-			super(server, stargate);
+			super(server, dialingStargate);
 			this.dialedAddress = dialedAddress.clone();
 			this.doKawoosh = doKawoosh;
 			this.action = action;
@@ -71,7 +76,9 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when a Stargate attempts to form a connection with another Stargate (cancelable)
+	 * Fired when a Stargate attempts to form a connection with another Stargate.
+	 * This event is {@linkplain ICancellableEvent cancellable}.
+	 * If this event is canceled, the does not form.
 	 * !!!NOTE That it does NOT reset the Stargate or actually change its feedback when canceled!!!
 	 * @author Povstalec
 	 *
@@ -84,9 +91,9 @@ public class StargateEvent extends Event
 		private final boolean doKawoosh;
 		private final Dialing.Action action;
 		
-		public Connect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
+		public Connect(MinecraftServer server, Stargate dialingStargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
 		{
-			super(server, stargate);
+			super(server, dialingStargate);
 
 			this.connectedStargate = connectedStargate;
 			this.connectionType = connectionType;
@@ -124,23 +131,32 @@ public class StargateEvent extends Event
 	
 	
 	/**
-	 * Fired when an Entity goes through the Wormhole (cancelable)
+	 * Fired when an Entity goes through the Wormhole, before the destination Stargate receives the traveller.
+	 * This event is {@linkplain ICancellableEvent cancellable}.
+	 * If this event is canceled, the Stargate does not transport the traveler Entity.
 	 * @author Povstalec
 	 *
 	 */
 	public static class WormholeTravel extends StargateEvent implements ICancellableEvent
 	{
+		private final StargateConnection connection;
 		private final Stargate destinationStargate;
 		private final Entity traveler;
 		private final StargateInfo.WormholeTravel wormholeTravel;
 
-		public WormholeTravel(MinecraftServer server, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
+		public WormholeTravel(MinecraftServer server, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
 		{
-			super(server, stargate);
+			super(server, initialStargate);
 			
+			this.connection = connection;
 			this.destinationStargate = destinationStargate;
 			this.traveler = traveler;
 			this.wormholeTravel = wormholeTravel;
+		}
+		
+		public StargateConnection getConnection()
+		{
+			return connection;
 		}
 		
 		public Stargate getDestinationStargate()
@@ -156,6 +172,82 @@ public class StargateEvent extends Event
 		public StargateInfo.WormholeTravel getWormholeTravel()
 		{
 			return this.wormholeTravel;
+		}
+	}
+	
+	
+	
+	/**
+	 * Fired when an Entity is being teleported after going through the wormhole.
+	 * This event is {@linkplain ICancellableEvent cancellable}.
+	 * If this event is canceled, the Stargate does not transport the traveler Entity.
+	 * <br>
+	 * This event is intended to be used in cases, where custom teleportation code is required to transport some traveler Entity.
+	 * @author Povstalec
+	 *
+	 */
+	public static class EntityTransport extends StargateEvent implements ICancellableEvent
+	{
+		private final ServerLevel destinationLevel;
+		private final StargateConnection connection;
+		private final Stargate destinationStargate;
+		private Entity traveler;
+		private final Vec3 destinationPosition;
+		private final Vec3 destinationMomentum;
+		private final Vec3 destinationLookAngle;
+		
+		public EntityTransport(ServerLevel destinationLevel, StargateConnection connection, Stargate initialStargate, Stargate destinationStargate, Entity traveler,
+		                       Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+		{
+			super(destinationLevel.getServer(), initialStargate);
+			
+			this.destinationLevel = destinationLevel;
+			this.connection = connection;
+			this.destinationStargate = destinationStargate;
+			this.traveler = traveler;
+			this.destinationPosition = destinationPosition;
+			this.destinationMomentum = destinationMomentum;
+			this.destinationLookAngle = destinationLookAngle;
+		}
+		
+		public ServerLevel getDestinationLevel()
+		{
+			return destinationLevel;
+		}
+		
+		public StargateConnection getConnection()
+		{
+			return connection;
+		}
+		
+		public Stargate getDestinationStargate()
+		{
+			return this.destinationStargate;
+		}
+		
+		public void setTraveler(Entity traveler)
+		{
+			this.traveler = traveler;
+		}
+		
+		public Entity getTraveler()
+		{
+			return this.traveler;
+		}
+		
+		public Vec3 getDestinationPosition()
+		{
+			return destinationPosition;
+		}
+		
+		public Vec3 getDestinationMomentum()
+		{
+			return destinationMomentum;
+		}
+		
+		public Vec3 getDestinationLookAngle()
+		{
+			return destinationLookAngle;
 		}
 	}
 }
