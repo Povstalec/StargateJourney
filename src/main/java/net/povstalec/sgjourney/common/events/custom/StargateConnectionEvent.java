@@ -27,7 +27,7 @@ public class StargateConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right after a Stargate Connection is successfully established (not cancelable)
+	 * Fired right after a Stargate Connection is successfully established (not cancelable).
 	 * @author Povstalec
 	 *
 	 */
@@ -40,7 +40,7 @@ public class StargateConnectionEvent extends Event
 	}
 	
 	/**
-	 * Fired right before a Stargate Connection is successfully terminated (not cancelable)
+	 * Fired right before a Stargate Connection is successfully terminated (not cancelable).
 	 * @author Povstalec
 	 *
 	 */
