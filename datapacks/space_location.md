@@ -36,7 +36,10 @@ and [Vanilla Minecraft Dimensions](https://github.com/Povstalec/StargateJourney/
 	
 	"generate_in_address_tables": false,
 	"address_region": "sgjourney:end",
-	"preload_stargate": false
+	"preload_stargate_structures":
+	[
+		"sgjourney:has_stargate"
+	]
 }
 ```
 ## Fields
@@ -50,8 +53,8 @@ and [Vanilla Minecraft Dimensions](https://github.com/Povstalec/StargateJourney/
 - `point_of_origin_table`: [Point of Origin Table]({{ site.baseurl }}datapacks/point_of_origin_table) specifying the Points of Origin Stargates and Symbol Blocks can receive at random when placed.
 
 - `address_region`: [Address Region]({{ site.baseurl }}datapacks/address_region) this Space Location will be a part of.
-- `preload_stargate`: If true, the Stargate Network will load the Preferred Stargate of this Space Location's Dimension when the world is first loaded. This mainly exists for Dimensions like `sgjourney:destiny`, which can only be dialed through a 9-Chevron Address of a Stargate, as 9-Chevron Addresses are only generated once the Stargate is loaded.
 - `generate_in_address_tables`: If true (and this Space Location has an [Address Region]({{ site.baseurl }}datapacks/address_region) tied to it, its Address will generate in all [Address Tables]({{ site.baseurl }}datapacks/address_table) that have the `include_generated_addresses` option set to true.
+- `preload_stargate_structures`: If not empty, the Stargate Network will search for the structures specified by the list of tags when the world is first loaded and load their Stargates. This mainly exists for Dimensions like `sgjourney:destiny`, which can only be dialed through a 9-Chevron Address of a Stargate, as 9-Chevron Addresses are only generated once the Stargate is loaded.
 
 
 # Space Location Templates
