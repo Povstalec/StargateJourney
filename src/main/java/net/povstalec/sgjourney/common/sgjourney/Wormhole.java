@@ -306,9 +306,13 @@ public class Wormhole
 			for(Entity passenger : passengers)
 			{
 				passenger.startRiding(traveler, true);
-				// Recursively notify passenger players about the vehicle being moved
-				recursivePassengerMoveVehicleUpdate(passenger, traveler);
 			}
+		}
+		
+		// Recursively notify passenger players about the vehicle being moved
+		for(Entity passenger : traveler.getPassengers())
+		{
+			recursivePassengerMoveVehicleUpdate(passenger, traveler);
 		}
 		
 		return traveler;
