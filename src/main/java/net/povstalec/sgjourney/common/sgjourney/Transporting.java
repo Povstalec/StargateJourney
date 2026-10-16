@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -185,6 +186,18 @@ public class Transporting
 		return player;
 	}
 	
+	public static void recursivePassengerMoveVehicleUpdate(Entity passengerToNotify, Entity updatedVehicle)
+	{
+		if(passengerToNotify instanceof ServerPlayer player)
+			player.connection.send(new ClientboundMoveVehiclePacket(updatedVehicle));
+		
+		// Bring passengers
+		for(Entity passenger : passengerToNotify.getPassengers())
+		{
+			recursivePassengerMoveVehicleUpdate(updatedVehicle, passenger);
+		}
+	}
+	
 	public static Entity recursivePassengerTeleport(TransporterConnection connection, ServerLevel destinationLevel, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		Level initialLevel = traveler.level();
@@ -215,6 +228,8 @@ public class Transporting
 			for(Entity passenger : passengers)
 			{
 				passenger.startRiding(traveler, true);
+				// Recursively notify passenger players about the vehicle being moved
+				recursivePassengerMoveVehicleUpdate(passenger, traveler);
 			}
 		}
 		
