@@ -48,12 +48,12 @@ and [Vanilla Minecraft Dimensions](https://github.com/Povstalec/StargateJourney/
 - `unity_crystals_grow`: If true, Budding Unity Blocks will be able to grow Unity Crystals in this Space Location's Dimension.
 
 
-- `point_of_origin`: Local [Point of Origin]({{ site.baseurl }}datapacks/point_of_origin) of this Address Region, any placed Stargates with the "Local Point of Origin" tooltip will default to it (Overrides the Point of Origin defined by [Address Region]({{ site.baseurl }}datapacks/address_region)).
-- `symbols`: Local [Symbols]({{ site.baseurl }}datapacks/symbols) of this Address Region, any placed Stargates will default to it (Overrides the Symbols defined by [Address Region]({{ site.baseurl }}datapacks/address_region)).
-- `point_of_origin_table`: [Point of Origin Table]({{ site.baseurl }}datapacks/point_of_origin_table) specifying the Points of Origin Stargates and Symbol Blocks can receive at random when placed.
+- `point_of_origin`: Local [Point of Origin]({{ site.baseurl }}/datapacks/point_of_origin) of this Address Region, any placed Stargates with the "Local Point of Origin" tooltip will default to it (Overrides the Point of Origin defined by [Address Region]({{ site.baseurl }}/datapacks/address_region)).
+- `symbols`: Local [Symbols]({{ site.baseurl }}/datapacks/symbols) of this Address Region, any placed Stargates will default to it (Overrides the Symbols defined by [Address Region]({{ site.baseurl }}/datapacks/address_region)).
+- `point_of_origin_table`: [Point of Origin Table]({{ site.baseurl }}/datapacks/point_of_origin_table) specifying the Points of Origin Stargates and Symbol Blocks can receive at random when placed.
 
-- `address_region`: [Address Region]({{ site.baseurl }}datapacks/address_region) this Space Location will be a part of.
-- `generate_in_address_tables`: If true (and this Space Location has an [Address Region]({{ site.baseurl }}datapacks/address_region) tied to it, its Address will generate in all [Address Tables]({{ site.baseurl }}datapacks/address_table) that have the `include_generated_addresses` option set to true.
+- `address_region`: [Address Region]({{ site.baseurl }}/datapacks/address_region) this Space Location will be a part of.
+- `generate_in_address_tables`: If true (and this Space Location has an [Address Region]({{ site.baseurl }}/datapacks/address_region) tied to it, its Address will generate in all [Address Tables]({{ site.baseurl }}/datapacks/address_table) that have the `include_generated_addresses` option set to true.
 - `preload_stargate_structures`: If not empty, the Stargate Network will search for the structures specified by the list of tags when the world is first loaded and load their Stargates. This mainly exists for Dimensions like `sgjourney:destiny`, which can only be dialed through a 9-Chevron Address of a Stargate, as 9-Chevron Addresses are only generated once the Stargate is loaded.
 
 

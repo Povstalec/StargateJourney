@@ -34,8 +34,8 @@ Address Regions for [Stargate Journey](https://github.com/Povstalec/StargateJour
 ## Fields
 - `name`: a translation key serving as the display name of the Address Region,
 the translation itself is defined inside [lang files](https://minecraft.wiki/w/Resource_pack#Language).
-- `point_of_origin`: Local [Point of Origin]({{ site.baseurl }}datapacks/point_of_origin) of this Address Region, any placed Stargates with the "Local Point of Origin" tooltip will default to it.
-- `symbols`: Local [Symbols]({{ site.baseurl }}datapacks/symbols) of this Address Region, any placed Stargates will default to it.
+- `point_of_origin`: Local [Point of Origin]({{ site.baseurl }}/datapacks/point_of_origin) of this Address Region, any placed Stargates with the "Local Point of Origin" tooltip will default to it.
+- `symbols`: Local [Symbols]({{ site.baseurl }}/datapacks/symbols) of this Address Region, any placed Stargates will default to it.
 - `symbol_prefix`: the symbol that will be used as the first symbol of the extragalactic address if the address is randomized.
-- `extragalactic_address`: a [datapack address]({{ site.baseurl }}datapacks/datapack_address) an integer array that forms the Address of the Address Region as well as whether its Address can be randomized (if the config allows it). Each number in the Address array must be unique. The integers forming an Address don't actually represent any physical location, they act sort of as a phone number.
+- `extragalactic_address`: a [datapack address]({{ site.baseurl }}/datapacks/datapack_address) an integer array that forms the Address of the Address Region as well as whether its Address can be randomized (if the config allows it). Each number in the Address array must be unique. The integers forming an Address don't actually represent any physical location, they act sort of as a phone number.
 - `galactic_addresses` a map of Addresses the Address Region has in different Galaxies and whether they are randomizable (if the config allows it).
