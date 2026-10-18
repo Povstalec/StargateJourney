@@ -18,11 +18,8 @@ import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +133,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(!level.isClientSide())
 			updateClient();
 		
-		return setRecentFeedback(encodeChevron(getCurrentSymbol(), StargateInfo.Direction.OUTGOING, StargateInfo.ChevronSound.ENCODE));
+		return setRecentFeedback(encodeChevron(getCurrentSymbol(), StargateConnection.Direction.OUTGOING, StargateInfo.ChevronSound.ENCODE));
 	}
 	
 	public StargateInfo.FeedbackMessage openChevron()

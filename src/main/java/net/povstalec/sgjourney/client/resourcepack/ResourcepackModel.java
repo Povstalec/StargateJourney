@@ -9,6 +9,7 @@ import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
@@ -479,12 +480,12 @@ public class ResourcepackModel
 			return idleSymbols;
 		}
 		
-		public Symbol encodedSymbols(StargateInfo.Direction direction)
+		public Symbol encodedSymbols(StargateConnection.Direction direction)
 		{
 			return direction.isIncoming() ? encodedSymbolsIncoming : encodedSymbols;
 		}
 		
-		public Symbol unencodedSymbols(StargateInfo.Direction direction)
+		public Symbol unencodedSymbols(StargateConnection.Direction direction)
 		{
 			return direction.isIncoming() ? unencodedSymbolsIncoming : unencodedSymbols;
 		}
@@ -494,7 +495,7 @@ public class ResourcepackModel
 			return encodingSymbol;
 		}
 		
-		public Symbol engagedSymbols(StargateInfo.Direction direction)
+		public Symbol engagedSymbols(StargateConnection.Direction direction)
 		{
 			return direction.isIncoming() ? engagedSymbolsIncoming : engagedSymbols;
 		}
