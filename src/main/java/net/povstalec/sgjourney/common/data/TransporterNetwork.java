@@ -36,7 +36,8 @@ public final class TransporterNetwork extends SavedData
 	private static final String VERSION = "version";
 	
 	private static final String CONNECTIONS = "connections";
-
+	
+	// Should increment every time there's a significant change done to the Transporter Network or the way Transporters work
 	private static final int UPDATE_VERSION = 3;
 	
 	private MinecraftServer server;

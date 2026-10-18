@@ -61,7 +61,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		{
 			if(stargate.isDialingOut())
 			{
-				if(stargate.getAddress().containsSymbol(symbol))
+				if(stargate.getEncodedSymbols().containsSymbol(symbol))
 					return StargateInfo.SymbolState.ENGAGED;
 				else
 					return StargateInfo.SymbolState.UNENGAGED;
@@ -71,7 +71,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		}
 		else if(stargate.isDialing())
 		{
-			if(stargate.getAddress().containsSymbol(symbol))
+			if(stargate.getEncodedSymbols().containsSymbol(symbol))
 				return StargateInfo.SymbolState.ENCODED;
 			else
 				return StargateInfo.SymbolState.UNENCODED;

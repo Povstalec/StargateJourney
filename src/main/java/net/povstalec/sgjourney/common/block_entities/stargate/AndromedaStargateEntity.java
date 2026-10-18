@@ -13,11 +13,8 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.Starga
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaStargate;
 
@@ -86,7 +83,7 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	}
 	
 	@Override
-	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateConnection.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		waitTicks++;
 		
@@ -123,7 +120,7 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 				else
 					moveSymbol();
 			}
-			else if(currentSymbol == symbolMap.getMappedSymbol(symbol))
+			else if(currentSymbol == symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)))
 			{
 				updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
 				if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)

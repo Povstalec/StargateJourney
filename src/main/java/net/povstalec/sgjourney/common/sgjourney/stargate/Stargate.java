@@ -12,7 +12,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -278,6 +276,16 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return True if this Stargate is currently connected, otherwise false
 	 */
 	boolean isConnected();
+	
+	/**
+	 * @return The dialing direction of the Stargate or NONE if the Stargate is idle
+	 */
+	StargateConnection.Direction getConnectionDirection();
+	
+	/**
+	 * @return True if the Stargate is connected and the kawoosh is done (or if the kawoosh never formed in the first place), otherwise false
+	 */
+	boolean isWormholeOpen();
 	
 	/**
 	 * @return True if this Stargate is currently obstructed, otherwise false
