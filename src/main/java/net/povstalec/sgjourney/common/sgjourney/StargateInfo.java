@@ -313,23 +313,6 @@ public class StargateInfo
 		}
 	}
 	
-	public enum Direction
-	{
-		NONE,
-		OUTGOING,
-		INCOMING;
-		
-		public boolean isOutgoing()
-		{
-			return this == OUTGOING;
-		}
-		
-		public boolean isIncoming()
-		{
-			return this == INCOMING;
-		}
-	}
-	
 	public enum SymbolState
 	{
 		IDLE,

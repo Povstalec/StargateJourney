@@ -188,7 +188,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	}
 	
 	@Override
-	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateConnection.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		symbolBuffer++;
 		

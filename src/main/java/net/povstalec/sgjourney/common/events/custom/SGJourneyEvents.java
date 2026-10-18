@@ -24,9 +24,9 @@ public class SGJourneyEvents
         return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType, addressType, doKawoosh, action));
     }
 	
-	public static boolean onWormholeTravel(MinecraftServer server, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
+	public static boolean onWormholeTravel(MinecraftServer server, StargateConnection connection, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, destinationStargate, traveler, wormholeTravel));
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, connection, stargate, destinationStargate, traveler, wormholeTravel));
     }
 	
 	// Stargate Connection
