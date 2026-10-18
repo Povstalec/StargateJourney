@@ -87,7 +87,7 @@ public class AutoDialerScreen extends Screen
 		this.editBox.setFilter(Address::canBeTransformedToAddress);
 		
 		this.editBox.setMaxLength(28);
-		this.editBox.setValue(address.toString());
+		this.editBox.setValue("");
 		this.editBox.setResponder(text ->
 		{
 			int[] addressArray = Address.addressStringToIntArray(text);

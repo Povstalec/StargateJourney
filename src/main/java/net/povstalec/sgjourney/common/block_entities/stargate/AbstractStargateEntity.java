@@ -586,7 +586,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
 		
-		StargateInfo.FeedbackMessage feedback = encodeChevron(symbol, StargateInfo.Direction.OUTGOING, chevronSound);
+		StargateInfo.FeedbackMessage feedback = encodeChevron(symbol, StargateConnection.Direction.OUTGOING, chevronSound);
 		
 		if(canEngageStargate && getAddress().hasPointOfOriginOrMaxLength() && !feedback.feedback().isError())
 			return engageStargate();
@@ -594,7 +594,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return setRecentFeedback(feedback);
 	}
 	
-	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateInfo.Direction direction, StargateInfo.ChevronSound sound)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateConnection.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		if(address.containsSymbol(symbol)) // Address already contains the encoded symbol
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
@@ -615,7 +615,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 			updateBasicInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), false, symbol);
 			updateCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), false, symbol);
 		}
-		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), direction == StargateInfo.Direction.INCOMING, symbol);
+		updateAdvancedCrystalInterfaceBlocks(EVENT_CHEVRON_ENGAGED, address.getLength(), symbol == 0 ? 0 : getChevron(this, address.getLength()), direction == StargateConnection.Direction.INCOMING, symbol);
 		this.setChanged();
 		
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
@@ -1673,7 +1673,7 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 				else if(connectionTime / chevronLockSpeed.getChevronWaitTicks() == 5 && dialingAddress.getType().compareTo(Address.Type.ADDRESS_9_CHEVRON) < 0)
 					return;
 				else
-					encodeChevron(dialingAddress.symbolAt(dialedAddressLength), StargateInfo.Direction.INCOMING, StargateInfo.ChevronSound.INCOMING);
+					encodeChevron(dialingAddress.symbolAt(dialedAddressLength), StargateConnection.Direction.INCOMING, StargateInfo.ChevronSound.INCOMING);
 			}
 		}
 	}
