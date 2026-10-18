@@ -297,7 +297,7 @@ public class SpaceLocation
 	
 	public static SpaceLocation defaultSpaceLocation(ResourceKey<Level> dimension)
 	{
-		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), true, 0.0, /*false, */true, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), List.of(), false);
+		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), true, 0.0, /*false, */true, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), List.of(), true);
 		spaceLocation.dimension = dimension;
 		return spaceLocation;
 	}
