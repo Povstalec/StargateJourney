@@ -127,6 +127,26 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	}
 	
 	@Override
+	public StargateConnection.Direction getConnectionDirection()
+	{
+		// It shouldn't be possible to dial this Stargate, so doing it like this should be fine
+		return isConnected() ? StargateConnection.Direction.OUTGOING : StargateConnection.Direction.NONE;
+	}
+	
+	@Override
+	public boolean isWormholeOpen()
+	{
+		if(isConnected())
+		{
+			StargateConnection connection = StargateNetwork.get(getServer()).getConnection(connectionID);
+			if(connection != null)
+				return connection.getOpenTime() > 0;
+		}
+		
+		return false;
+	}
+	
+	@Override
 	public float checkStargateShieldingState()
 	{
 		return 0;

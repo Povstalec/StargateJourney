@@ -167,24 +167,46 @@ public class StargateConnection
 		}
 	}
 	
+	public enum Direction
+	{
+		NONE,
+		OUTGOING,
+		INCOMING;
+		
+		public boolean isNone()
+		{
+			return this == NONE;
+		}
+		
+		public boolean isOutgoing()
+		{
+			return this == OUTGOING;
+		}
+		
+		public boolean isIncoming()
+		{
+			return this == INCOMING;
+		}
+	}
+	
 	public enum State implements StringRepresentable
 	{
-		IDLE("idle", (byte) 0, false, false),
+		IDLE("idle", (byte) 0, false, Direction.NONE),
 		
-		OUTGOING_CONNECTION("outgoing_connection", (byte) 1, true, true),
-		INCOMING_CONNECTION("incoming_connection", (byte) -1, true, false);
+		OUTGOING_CONNECTION("outgoing_connection", (byte) 1, true, Direction.OUTGOING),
+		INCOMING_CONNECTION("incoming_connection", (byte) -1, true, Direction.INCOMING);
 		
 		private final String name;
 		private final byte value;
 		private final boolean isConnected;
-		private final boolean isDialingOut;
+		private final Direction direction;
 		
-		State(String name, byte value, boolean isConnected, boolean isDialingOut)
+		State(String name, byte value, boolean isConnected, Direction direction)
 		{
 			this.name = name;
 			this.value = value;
 			this.isConnected = isConnected;
-			this.isDialingOut = isDialingOut;
+			this.direction = direction;
 		}
 
 		public byte byteValue()
@@ -197,9 +219,14 @@ public class StargateConnection
 			return this.isConnected;
 		}
 		
+		public Direction getDirection()
+		{
+			return this.direction;
+		}
+		
 		public boolean isDialingOut()
 		{
-			return this.isDialingOut;
+			return this.direction.isOutgoing();
 		}
 		
 		public static State fromByte(byte value)

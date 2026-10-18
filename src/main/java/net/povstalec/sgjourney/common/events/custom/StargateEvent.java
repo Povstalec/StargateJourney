@@ -225,6 +225,10 @@ public class StargateEvent extends Event
 			return this.destinationStargate;
 		}
 		
+		/**
+		 * Used to set the traveler (used in cases like interdimensional teleportation, where a new entity is created in the dimension as a copy of the original one)
+		 * @param traveler Entity to be set as the new traveler
+		 */
 		public void setTraveler(Entity traveler)
 		{
 			this.traveler = traveler;

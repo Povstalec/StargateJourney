@@ -285,6 +285,16 @@ public interface Stargate extends Comparable<Stargate>
 	boolean isConnected();
 	
 	/**
+	 * @return The dialing direction of the Stargate or NONE if the Stargate is idle
+	 */
+	StargateConnection.Direction getConnectionDirection();
+	
+	/**
+	 * @return True if the Stargate is connected and the kawoosh is done (or if the kawoosh never formed in the first place), otherwise false
+	 */
+	boolean isWormholeOpen();
+	
+	/**
 	 * @return True if this Stargate is currently obstructed, otherwise false
 	 */
 	boolean isObstructed();

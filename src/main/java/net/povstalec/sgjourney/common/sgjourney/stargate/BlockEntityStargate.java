@@ -132,6 +132,18 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	}
 	
 	@Override
+	default StargateConnection.Direction getConnectionDirection()
+	{
+		return stargateReturn(getServer(), stargate -> stargate.getConnectionState().getDirection(), StargateConnection.Direction.NONE);
+	}
+	
+	@Override
+	default boolean isWormholeOpen()
+	{
+		return stargateReturn(getServer(), stargate -> stargate.isWormholeOpen(), false);
+	}
+	
+	@Override
 	default boolean isObstructed()
 	{
 		return stargateReturn(getServer(), stargate -> stargate.isObstructed(), false);

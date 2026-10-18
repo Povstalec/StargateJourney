@@ -55,7 +55,7 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 		{
 			if(stargate.isDialingOut())
 			{
-				if(stargate.getAddress().containsSymbol(symbol))
+				if(stargate.getEncodedSymbols().containsSymbol(symbol, 0, stargate.getAddress().getLength()))
 					return StargateInfo.SymbolState.ENGAGED;
 				else
 					return StargateInfo.SymbolState.UNENGAGED;
@@ -68,7 +68,7 @@ public class AndromedaStargateModel extends GenericStargateModel<AndromedaStarga
 			if(stargate.isSymbolSpinning() && stargate.getCurrentSymbol() == symbol)
 				return StargateInfo.SymbolState.ENCODING;
 			
-			if(stargate.getAddress().containsSymbol(symbol))
+			if(stargate.getEncodedSymbols().containsSymbol(symbol, 0, stargate.getAddress().getLength()))
 				return StargateInfo.SymbolState.ENCODED;
 			else
 				return StargateInfo.SymbolState.UNENCODED;
