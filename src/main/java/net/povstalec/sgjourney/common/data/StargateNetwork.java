@@ -40,7 +40,7 @@ public final class StargateNetwork extends SavedData
 {
 	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
+	public static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
 	private static final String VERSION = "Version";
 
 	private static final String CONNECTIONS = "Connections";

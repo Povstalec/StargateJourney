@@ -26,7 +26,7 @@ import java.util.*;
  */
 public class ConduitNetworks extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-conduits";
+	public static final String FILE_NAME = StargateJourney.MODID + "-conduits";
 	
 	public static final String CABLES = "cables";
 	

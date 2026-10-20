@@ -33,8 +33,8 @@ import java.util.HashMap;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
-	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
+	public static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
+	public static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";

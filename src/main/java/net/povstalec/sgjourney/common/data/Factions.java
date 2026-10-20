@@ -16,7 +16,7 @@ import java.util.List;
 
 public final class Factions extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-factions";
+	public static final String FILE_NAME = StargateJourney.MODID + "-factions";
 	
 	private static final String GOAULD = "goauld";
 	

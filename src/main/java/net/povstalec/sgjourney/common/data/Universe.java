@@ -43,7 +43,7 @@ public class Universe extends SavedData
 	 * 
 	 */
 	
-	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
+	public static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
 	public static final String GALAXIES = "galaxies";
 	public static final String ADDRESS_REGIONS = "address_regions";
