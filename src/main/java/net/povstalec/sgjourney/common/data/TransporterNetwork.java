@@ -32,7 +32,7 @@ public final class TransporterNetwork extends SavedData
 {
 	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	private static final String FILE_NAME = StargateJourney.MODID + "-transporter_network";
+	public static final String FILE_NAME = StargateJourney.MODID + "-transporter_network";
 	private static final String VERSION = "version";
 	
 	private static final String CONNECTIONS = "connections";

@@ -35,7 +35,7 @@ import java.util.HashMap;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
+	public static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
 	
 	public static final String STARGATES = "stargates";
 	public static final String TRANSPORTERS = "transporters";

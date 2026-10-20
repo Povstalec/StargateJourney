@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class StargateNetworkSettings extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network_settings";
+	public static final String FILE_NAME = StargateJourney.MODID + "-stargate_network_settings";
 	
 	private static final String USE_DATAPACK_ADDRESSES = "use_datapack_addresses"; //TODO For legacy reasons
 	private static final String RANDOMIZE_ADDRESSES = "randomize_addresses";
