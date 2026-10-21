@@ -1,5 +1,6 @@
 package net.povstalec.sgjourney.common.events;
 
+import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -17,6 +18,7 @@ import net.povstalec.sgjourney.common.items.VialItem;
 import net.povstalec.sgjourney.common.misc.RegionUpdateHelper;
 
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class ModEvents
 {
@@ -26,22 +28,12 @@ public class ModEvents
 		/*@SubscribeEvent
 		public static void onVersionMismatch(ModMismatchEvent event)
 		{
-			event.getVersionDifference(StargateJourney.MODID).ifPresent(info ->
+			Optional<ModMismatchEvent.MismatchedVersionInfo> o = event.getVersionDifference(StargateJourney.MODID);
+			
+			o.ifPresent(info ->
 			{
-			/*if(info.oldVersion().getMajorVersion() == 0 &&
-				info.oldVersion().getMinorVersion() == 6 &&
-				info.oldVersion().getIncrementalVersion() < 49)
-			{*/
-				/*boolean resolved = true;
-				
-				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve("region"));
-				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve(Paths.get("documents", "DIM-1")));
-				resolved &= RegionUpdateHelper.updateRegionFiles(event.getLevelDirectory().path().resolve(Paths.get("documents", "DIM1")));
-				resolved &= RegionUpdateHelper.updateDimensions(event.getLevelDirectory().path().resolve("dimensions"));
-				
-				if(resolved)
-					event.markResolved(StargateJourney.MODID);
-				//}
+				if(RegionUpdateHelper.isVersionBelow(info, 0, 7, 0))
+					RegionUpdateHelper.needsUpdate = true;
 			});
 		}*/
 		
