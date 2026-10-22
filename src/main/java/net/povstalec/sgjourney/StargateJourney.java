@@ -66,7 +66,14 @@ import net.povstalec.sgjourney.client.screens.graver.CartoucheEngravingScreen;
 import net.povstalec.sgjourney.client.screens.graver.DHDEngravingScreen;
 import net.povstalec.sgjourney.client.screens.graver.StargateEngravingScreen;
 import net.povstalec.sgjourney.client.screens.graver.SymbolBlockEngravingScreen;
+import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractCrystallizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.AbstractLiquidizerEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.AbstractZPMEnergyExtractorEntity;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.GoauldHost;
@@ -205,9 +212,9 @@ public class StargateJourney
 		
 		// Fluids
 		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new StaffWeaponItem.FluidItemHandler(stack, DataComponents.CONTAINER), ItemInit.MATOK);
-		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new VialItem.FluidHandler(() -> DataComponentInit.FLUID.get(), stack), ItemInit.VIAL);
+		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new VialItem.FluidHandler(DataComponentInit.FLUID, stack), ItemInit.VIAL);
 		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new PowerCellItem.FluidItemHandler(stack, DataComponents.CONTAINER), ItemInit.NAQUADAH_POWER_CELL);
-		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new PersonalShieldItem.FluidHandler(() -> DataComponentInit.FLUID.get(), stack), ItemInit.PERSONAL_SHIELD_EMITTER);
+		event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new PersonalShieldItem.FluidHandler(DataComponentInit.FLUID, stack), ItemInit.PERSONAL_SHIELD_EMITTER);
 		
 		
 		
@@ -226,51 +233,53 @@ public class StargateJourney
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_RING.get());
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.UNIVERSE_DHD.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ANDROMEDA_DHD.get(), EnergyBlockEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.GOAULD_RING_PANEL.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.GOAULD_RING_PANEL.get(), EnergyBlockEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_I.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), EnergyBlockEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.BASIC_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.BASIC_INTERFACE.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTAL_INTERFACE.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTAL_INTERFACE.get(), EnergyBlockEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PLUG.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PORT.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_HUB.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PLUG.get(), AbstractZPMEnergyExtractorEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_PORT.get(), AbstractZPMEnergyExtractorEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ZPM_HUB.get(), AbstractZPMEnergyExtractorEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_WIRE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.SMALL_NAQUADAH_CABLE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MEDIUM_NAQUADAH_CABLE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.LARGE_NAQUADAH_CABLE.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_WIRE.get(), CableBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.SMALL_NAQUADAH_CABLE.get(), CableBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MEDIUM_NAQUADAH_CABLE.get(), CableBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.LARGE_NAQUADAH_CABLE.get(), CableBlockEntity::getEnergyHandler);
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.LARGE_NAQUADAH_BATTERY.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.LARGE_NAQUADAH_BATTERY.get(), EnergyBlockEntity::getEnergyHandler);
 		
 		
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
-		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getEnergyHandler(direction));
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), EnergyBlockEntity::getEnergyHandler);
+		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), EnergyBlockEntity::getEnergyHandler);
 		
 		// Items
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), CrystalDHDEntity::getItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), CrystalDHDEntity::getItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), CrystalDHDEntity::getItemHandler);
 		
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), AbstractCrystallizerEntity::getItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), AbstractCrystallizerEntity::getItemHandler);
 		
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getItemHandler(direction));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), AbstractLiquidizerEntity::getItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), AbstractLiquidizerEntity::getItemHandler);
 		
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getEnergyItemHandler(direction));
-		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getEnergyItemHandler(direction));
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), AbstractTransportRingsEntity::getEnergyItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), AbstractTransportRingsEntity::getEnergyItemHandler);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.GOAULD_RING_PANEL.get(), (blockEntity, direction) -> blockEntity.getEnergyItemHandler());
 		
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ZPM_HOLDER.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
@@ -282,11 +291,11 @@ public class StargateJourney
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.NAQUADAH_GENERATOR_MARK_II.get(), (blockEntity, direction) -> blockEntity.getItemHandler());
 		
 		// Fluids
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), AbstractCrystallizerEntity::getFluidHandler);
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), AbstractCrystallizerEntity::getFluidHandler);
 		
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
-		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), (blockEntity, direction) -> blockEntity.getFluidHandler(direction));
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.NAQUADAH_LIQUIDIZER.get(), AbstractLiquidizerEntity::getFluidHandler);
+		event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, BlockEntityInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), AbstractLiquidizerEntity::getFluidHandler);
 		
 		// ComputerCraft
 		if(ModList.get().isLoaded(COMPUTERCRAFT_MODID))
@@ -318,7 +327,7 @@ public class StargateJourney
 		event.registerEntity(JaffaPouch.JAFFA_POUCH_CAPABILITY, EntityType.PLAYER, (entity, context) -> new JaffaPouch(entity));
 	}
 	
-	public static <C> SGJourneyEnergy getStargateEnergy(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction)
+	public static SGJourneyEnergy getStargateEnergy(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, Direction direction)
 	{
 		if(level.getBlockState(pos).getBlock() instanceof AbstractStargateBlock stargateBlock)
 		{
@@ -381,8 +390,8 @@ public class StargateJourney
 			
 			EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
 			
-			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
-			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
+			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
 			
 			BlockEntityRenderers.register(BlockEntityInit.ZPM_HOLDER.get(), ZPMHolderRenderer::new);
 			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
