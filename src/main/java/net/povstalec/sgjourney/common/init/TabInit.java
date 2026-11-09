@@ -97,8 +97,6 @@ public class TabInit
 
 				items.accept(ItemInit.GDO.get());
 				
-				items.accept(ItemInit.AUTO_DIALER.get());
-				
 				//items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 				
 				items.accept(ItemInit.WOODEN_GRAVER.get());
@@ -216,6 +214,8 @@ public class TabInit
 				items.accept(BlockInit.ANDROMEDA_STARGATE.get());
 				items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.ANDROMEDA_STARGATE.get())));
 				items.accept(AndromedaDHDBlock.andromedaCrystalSetup());
+				
+				items.accept(ItemInit.AUTO_DIALER.get());
 				
 				items.accept(ItemInit.FUSION_CORE.get());
 				items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
