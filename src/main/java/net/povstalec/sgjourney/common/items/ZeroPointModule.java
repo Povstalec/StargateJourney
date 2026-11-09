@@ -92,7 +92,7 @@ public class ZeroPointModule extends Item
 	public static int getEntropy(ItemStack stack)
 	{
 		if(!stack.is(ItemInit.ZPM.get()))
-			return 0;
+			return SyncedConfig.zpm_max_entropy.get();
 		
 		if(stack.hasTag())
 		{
