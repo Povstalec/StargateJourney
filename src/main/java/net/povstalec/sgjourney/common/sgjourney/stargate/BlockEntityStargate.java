@@ -1,22 +1,29 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -195,7 +202,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void updateClient()
 	{
-		stargateRun(getServer(), stargate -> stargate.updateClient());
+		stargateRun(getServer(), EnergyBlockEntity::updateClient);
 	}
 	
 	@Override
@@ -340,6 +347,44 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		});
 	}
 	
+	default Vec3 adjustDestinationHeight(StargateEntity stargate, Entity traveler, Vec3 destinationPosition, boolean shouldTravelerStickToGround)
+	{
+		if(stargate.getOrientation() != Orientation.REGULAR)
+			return destinationPosition;
+		
+		ServerLevel level = (ServerLevel) stargate.getLevel();
+		
+		double bottomToCenterDist = traveler.getBoundingBox().getCenter().y() - traveler.getY();
+		AABB aabb = AABB.ofSize(destinationPosition.add(0, bottomToCenterDist, 0), traveler.getBoundingBox().getXsize(), traveler.getBoundingBox().getYsize(), traveler.getBoundingBox().getZsize())
+			.setMinY(stargate.getBlockPos().getY()); // Get all blocks under the traveler, but not those under the Stargate
+		
+		Optional<Double> maxY = BlockPos.betweenClosedStream(aabb).filter(pos ->
+		{
+			// Ignore blocks that on the same plane as the Stargate
+			if(stargate.getDirection().getAxis() == Direction.Axis.X)
+				return pos.getX() == stargate.getBlockPos().getX();
+			else
+				return pos.getZ() == stargate.getBlockPos().getZ();
+		}).map(pos ->
+		{
+			double y = level.getBlockState(pos).getCollisionShape(level, pos).max(Direction.Axis.Y);
+			return y + pos.getY();
+		}).filter(height -> !Double.isInfinite(height)).max(Comparator.naturalOrder());
+		
+		if(maxY.isPresent())
+		{
+			// Don't move the traveler, they've run into a wall
+			if(maxY.get() >= aabb.maxY)
+				return destinationPosition;
+			
+			// Move the traveler up or stick them to the ground
+			if(maxY.get() > destinationPosition.y() || shouldTravelerStickToGround)
+				return new Vec3(destinationPosition.x, maxY.get(), destinationPosition.z);
+		}
+		
+		return destinationPosition;
+	}
+	
 	@Override
 	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
@@ -354,10 +399,21 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 							return initialStargate.receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
 					}
 					
-					// TODO Tie this to Advanced Protocols
-					Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ? new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
+					Trinary shouldAdjustExitSpeed = shouldAdjustExitSpeed(traveler, true).or(initialStargate.shouldAdjustExitSpeed(traveler, false));
+					
+					// Push the traveler in some situations to help them
+					Vec3 tempMomentum = shouldAdjustExitSpeed.isTrue() && stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ?
+						new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 					
 					Vec3 destinationPosition = fromStargateCoords(relativePosition, true, true).add(stargate.getCenter());
+					// Adjust traveler height to try and prevent them from ending up inside the floor on the other side
+					Trinary shouldAdjustExitPos = shouldAdjustExitPos(traveler, true).or(initialStargate.shouldAdjustExitPos(traveler, false));
+					if(shouldAdjustExitPos.isTrue())
+					{
+						// Adjust traveler height to make them stick to the ground if they entered the gate while sticking to the ground
+						Trinary shouldTravelerStickToGround = shouldTravelerStickToGround(traveler, true).or(initialStargate.shouldTravelerStickToGround(traveler, false));
+						destinationPosition = adjustDestinationHeight(stargate, traveler, destinationPosition, shouldTravelerStickToGround.isTrue());
+					}
 					Vec3 destinationMomentum = fromStargateCoords(tempMomentum, false, true);
 					Vec3 destinationLookAngle = fromStargateCoords(relativeLookAngle, false, true);
 					
@@ -372,18 +428,46 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 				null);
 	}
 	
+	//============================================================================================
+	//*************************************Advanced protocols*************************************
+	//============================================================================================
+	
 	@Override
-	default boolean shouldAutoclose(StargateConnection connection)
+	default Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
 	{
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
 		return stargateReturn(getServer(), stargate ->
 		{
 			int autocloseTicks = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autocloseTicks, 0);
 			if(autocloseTicks <= 0)
-				return false;
+				return Trinary.DEFAULT;
 			
-			return connection.getTimeSinceLastTraveler() > autocloseTicks;
-		}, false);
+			return connection.getTimeSinceLastTraveler() > autocloseTicks ? Trinary.TRUE : Trinary.DEFAULT;
+		}, Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldAdjustExitSpeed(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(getServer(), stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldAdjustExitPos(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(getServer(), stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(getServer(), stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() && traveler.isOnGround() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
 	}
 	
 	//============================================================================================
@@ -395,9 +479,6 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	{
 		return stargateReturn(getServer(), stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
 	}
-	
-	@Override
-	default void tick() {}
 	
 	/**
 	 * Actions the Stargate will perform while its respective Block Entity is ticking

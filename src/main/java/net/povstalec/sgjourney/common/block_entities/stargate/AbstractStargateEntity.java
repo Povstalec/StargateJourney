@@ -125,6 +125,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	private final StargateType<SG> stargateType;
 	
+	protected boolean stargateCacheRequiresUpdate = true;
+	protected SG cachedStargate = null;
+	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
 	// Stargate destruction
@@ -445,7 +448,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
 			set9ChevronAddress(BlockEntityList.get(level).generate9ChevronAddress(level.getRandom()));
 		
-		StargateNetwork.get(level).addStargateEntity(this);
+		cacheStargate(BlockEntityList.get(level).addStargate(this));
+		StargateNetwork.get(level).addStargate(cachedStargate);
 		this.setChanged();
 	}
 	
@@ -473,10 +477,22 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
         return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
     }
 	
-	@Nullable
-	public Stargate getStargate()
+	protected void cacheStargate(SG stargate)
 	{
-		return BlockEntityList.get(level).getStargate(this.id9ChevronAddress);
+		this.stargateCacheRequiresUpdate = false;
+		this.cachedStargate = stargate;
+	}
+	
+	@Nullable
+	protected abstract SG fetchStargate();
+	
+	@Nullable
+	public SG getStargate()
+	{
+		if(stargateCacheRequiresUpdate)
+			cacheStargate(fetchStargate());
+		
+		return cachedStargate;
 	}
 	
 	//============================================================================================
@@ -1625,10 +1641,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean pushTraveler()
 	{
-		if(this.getOrientation() == Orientation.UPWARD)
-			return true;
-		
-		return SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity() > 0.0;
+		return switch(getOrientation())
+		{
+			// Traveler needs a little push so they don't fall right back into the gate instantly
+			case UPWARD -> true;
+			// Traveler needs a little push so they don't fall back into the gate instantly if a black hole pulls them in
+			case REGULAR -> SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity() > 0.0;
+			default -> false;
+		};
 	}
 	
 	public float getVerticalCenterHeight()
