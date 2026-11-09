@@ -646,8 +646,11 @@ public class Universe extends SavedData
 		{
 			AddressRegion addressRegion = AddressRegion.deserialize(server, tag.getCompound(addressRegionString));
 			
-			this.addressRegions.put(addressRegion.getExtragalacticAddress(), addressRegion);
-			this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
+			if(!addressRegion.isGenerated) // Don't use the generated Address Regions, since they need to be recreated anyway, they're only saved for easier debugging
+			{
+				this.addressRegions.put(addressRegion.getExtragalacticAddress(), addressRegion);
+				this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
+			}
 		});
 	}
 	
