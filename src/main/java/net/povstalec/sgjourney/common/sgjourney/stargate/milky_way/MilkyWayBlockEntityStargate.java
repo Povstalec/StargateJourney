@@ -10,19 +10,20 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.blockstates.Orientation;
-import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
 
 public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements BlockEntityStargate<MilkyWayStargateEntity>
 {
-	protected WeakReference<MilkyWayStargateEntity> stargate;
+	// Stargate BlockEntity cache
+	protected boolean stargateCacheRequiresUpdate = true;
+	protected MilkyWayStargateEntity cachedStargateEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -45,30 +46,50 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 		return this.blockPos;
 	}
 	
-	private MilkyWayStargateEntity cacheStargateEntity(MilkyWayStargateEntity stargate)
+	protected void cacheStargateEntity(@Nullable MilkyWayStargateEntity stargate)
 	{
-		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
-		
-		return stargate;
+		this.stargateCacheRequiresUpdate = false;
+		this.cachedStargateEntity = stargate;
 	}
 	
-	private @Nullable MilkyWayStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	public void invalidateCachedStargateEntity()
+	{
+		if(!this.stargateCacheRequiresUpdate)
+		{
+			this.stargateCacheRequiresUpdate = true;
+			this.cachedStargateEntity = null;
+		}
+	}
+	
+	protected @Nullable MilkyWayStargateEntity fetchStargateEntity()
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && level.getBlockEntity(blockPos) instanceof MilkyWayStargateEntity stargate)
-			return cacheStargateEntity(stargate);
+			return stargate;
 		
 		return null;
 	}
 	
 	@Override
-	public @Nullable MilkyWayStargateEntity getStargateEntity(MinecraftServer server)
+	public @Nullable MilkyWayStargateEntity getStargateEntity()
 	{
-		//if((this.stargate != null && this.stargate.get() != null) || server == null)
-		//	return this.stargate.get();
+		if(this.stargateCacheRequiresUpdate)
+			cacheStargateEntity(fetchStargateEntity());
 		
-		return tryCacheStargateEntity(server);
+		return this.cachedStargateEntity;
+	}
+	
+	@Override
+	public void onStargateEntityUnloaded()
+	{
+		invalidateCachedStargateEntity();
+	}
+	
+	@Override
+	public void onStargateEntityRemoved()
+	{
+		invalidateCachedStargateEntity();
 	}
 	
 	@Override
@@ -91,11 +112,18 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	//============================================================================================
 	
 	@Override
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
+	{
+		invalidateCachedStargateEntity();
+		return BlockEntityStargate.super.resetStargate(feedback);
+	}
+	
+	@Override
 	public @Nullable Vec3 getForward()
 	{
 		if(forward == null)
 		{
-			forward = stargateReturn(server, stargate ->
+			forward = stargateReturn(stargate ->
 			{
 				Direction direction = stargate.getDirection();
 				Orientation orientation = stargate.getOrientation();
@@ -112,7 +140,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	{
 		if(up == null)
 		{
-			up = stargateReturn(server, stargate ->
+			up = stargateReturn(stargate ->
 			{
 				Direction direction = stargate.getDirection();
 				Orientation orientation = stargate.getOrientation();
@@ -141,7 +169,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	@Override
 	public void update()
 	{
-		stargateRun(server, stargate ->
+		stargateRun(stargate ->
 		{
 			// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
 			this.hasDHD = stargate.dhdCache.isCached();

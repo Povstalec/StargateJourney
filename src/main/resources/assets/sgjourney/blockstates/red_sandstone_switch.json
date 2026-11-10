@@ -1,0 +1,12 @@
+{
+	"variants":
+	{
+		"axis=x,powered=false": { "model": "sgjourney:block/red_sandstone_glyphs", "x": 90, "y": 90 },
+		"axis=y,powered=false": { "model": "sgjourney:block/red_sandstone_glyphs" },
+		"axis=z,powered=false": { "model": "sgjourney:block/red_sandstone_glyphs", "x": 90 },
+		
+		"axis=x,powered=true": { "model": "sgjourney:block/red_sandstone_glyphs_powered", "x": 90, "y": 90 },
+		"axis=y,powered=true": { "model": "sgjourney:block/red_sandstone_glyphs_powered" },
+		"axis=z,powered=true": { "model": "sgjourney:block/red_sandstone_glyphs_powered", "x": 90 }
+	}
+}

@@ -1,22 +1,28 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -28,19 +34,23 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	
 	BlockPos getBlockPos();
 	
-	@Nullable StargateEntity getStargateEntity(MinecraftServer server);
+	@Nullable StargateEntity getStargateEntity();
 	
-	default void stargateRun(MinecraftServer server, Consumer<StargateEntity> consumer)
+	void onStargateEntityUnloaded();
+	
+	void onStargateEntityRemoved();
+	
+	default void stargateRun(Consumer<StargateEntity> consumer)
 	{
-		StargateEntity stargate = getStargateEntity(server);
+		StargateEntity stargate = getStargateEntity();
 		
 		if(stargate != null)
 			consumer.accept(stargate);
 	}
 	
-	default <T> T stargateReturn(MinecraftServer server, Function<StargateEntity, T> function, @Nullable T defaultValue)
+	default <T> T stargateReturn(Function<StargateEntity, T> function, @Nullable T defaultValue)
 	{
-		StargateEntity stargate = getStargateEntity(server);
+		StargateEntity stargate = getStargateEntity();
 		
 		if(stargate != null)
 			return function.apply(stargate);
@@ -48,9 +58,9 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		return defaultValue;
 	}
 	
-	default <T> T stargateReturnOrSupply(MinecraftServer server, Function<StargateEntity, T> function, @NotNull Supplier<T> supplier)
+	default <T> T stargateReturnOrSupply(Function<StargateEntity, T> function, @NotNull Supplier<T> supplier)
 	{
-		StargateEntity stargate = getStargateEntity(server);
+		StargateEntity stargate = getStargateEntity();
 		
 		if(stargate != null)
 			return function.apply(stargate);
@@ -83,39 +93,37 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default @Nullable Vec3 getPosition()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.getCenter(), null);
+		return stargateReturn(stargate -> stargate.getCenter(), null);
 	}
 	
 	@Override
 	default Address.Mutable getAddress()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.getAddress(), new Address.Mutable());
+		return stargateReturn(stargate -> stargate.getAddress(), new Address.Mutable());
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
 	{
-		return stargateReturnOrSupply(getServer(), stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(getServer(), stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(getServer(), stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
-		StargateEntity stargateEntity = getStargateEntity(getServer());
-		
-		//this.stargate = null; //TODO bring back once Stargates get cached
+		StargateEntity stargateEntity = getStargateEntity();
 		
 		if(stargateEntity != null)
 			return stargateEntity.resetStargate(feedback);
@@ -128,37 +136,37 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default boolean isConnected()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.isConnected(), false);
+		return stargateReturn(stargate -> stargate.isConnected(), false);
 	}
 	
 	@Override
 	default StargateConnection.Direction getConnectionDirection()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.getConnectionState().getDirection(), StargateConnection.Direction.NONE);
+		return stargateReturn(stargate -> stargate.getConnectionState().getDirection(), StargateConnection.Direction.NONE);
 	}
 	
 	@Override
 	default boolean isWormholeOpen()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.isWormholeOpen(), false);
+		return stargateReturn(stargate -> stargate.isWormholeOpen(), false);
 	}
 	
 	@Override
 	default boolean isObstructed()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.isObstructed(), false);
+		return stargateReturn(stargate -> stargate.isObstructed(), false);
 	}
 	
 	@Override
 	default boolean isPrimary()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.isPrimary(), false);
+		return stargateReturn(stargate -> stargate.isPrimary(), false);
 	}
 	
 	@Override
 	default boolean checkValidity()
 	{
-		StargateEntity stargate = getStargateEntity(getServer());
+		StargateEntity stargate = getStargateEntity();
 		
 		if(stargate == null)
 		{
@@ -182,7 +190,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void setChevronConfiguration(int[] chevronConfiguration)
 	{
-		stargateRun(getServer(), stargate -> stargate.setEngagedChevrons(chevronConfiguration));
+		stargateRun(stargate -> stargate.setEngagedChevrons(chevronConfiguration));
 	}
 	
 	// Updating
@@ -195,27 +203,27 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void updateClient()
 	{
-		stargateRun(getServer(), stargate -> stargate.updateClient());
+		stargateRun(EnergyBlockEntity::updateClient);
 	}
 	
 	@Override
 	default void updateInterfaceBlocks(@Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects)
 	{
-		stargateRun(getServer(), starghateEntity ->
+		stargateRun(stargate ->
 		{
 			if(type == null)
-				starghateEntity.updateInterfaceBlocks(eventName, objects);
+				stargate.updateInterfaceBlocks(eventName, objects);
 			else
 				switch(type)
 				{
 					case BASIC:
-						starghateEntity.updateBasicInterfaceBlocks(eventName, objects);
+						stargate.updateBasicInterfaceBlocks(eventName, objects);
 						break;
 					case CRYSTAL:
-						starghateEntity.updateCrystalInterfaceBlocks(eventName, objects);
+						stargate.updateCrystalInterfaceBlocks(eventName, objects);
 						break;
 					case ADVANCED_CRYSTAL:
-						starghateEntity.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
+						stargate.updateAdvancedCrystalInterfaceBlocks(eventName, objects);
 						break;
 				}
 		});
@@ -226,19 +234,19 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void receiveStargateMessage(String message)
 	{
-		stargateRun(getServer(), stargate -> stargate.receiveStargateMessage(message));
+		stargateRun(stargate -> stargate.receiveStargateMessage(message));
 	}
 	
 	@Override
 	default void forwardTransmission(int transmissionJumps, int frequency, String transmission)
 	{
-		stargateRun(getServer(), stargate -> stargate.forwardTransmission(transmissionJumps, frequency, transmission));
+		stargateRun(stargate -> stargate.forwardTransmission(transmissionJumps, frequency, transmission));
 	}
 	
 	@Override
 	default float checkStargateShieldingState()
 	{
-		return stargateReturn(getServer(), stargate -> stargate instanceof IrisStargateEntity<?> irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F, 0F);
+		return stargateReturn(stargate -> stargate instanceof IrisStargateEntity<?> irisStargate ? irisStargate.irisInfo().checkIrisState() : 0F, 0F);
 	}
 	
 	// Energy
@@ -246,25 +254,25 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default long getEnergyStored()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.energyStorage.getTrueEnergyStored(), 0L);
+		return stargateReturn(stargate -> stargate.energyStorage.getTrueEnergyStored(), 0L);
 	}
 	
 	@Override
 	default long getEnergyCapacity()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.energyStorage.getTrueMaxEnergyStored(), 0L);
+		return stargateReturn(stargate -> stargate.energyStorage.getTrueMaxEnergyStored(), 0L);
 	}
 	
 	@Override
 	default long extractEnergy(long energy, boolean simulate)
 	{
-		return stargateReturn(getServer(), stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
+		return stargateReturn(stargate -> stargate.energyStorage.depleteEnergy(energy, simulate), 0L);
 	}
 	
 	@Override
 	default long receiveEnergy(long energy, boolean simulate)
 	{
-		return stargateReturn(getServer(), stargate -> stargate.energyStorage.receiveLongEnergy(energy, simulate), 0L);
+		return stargateReturn(stargate -> stargate.energyStorage.receiveLongEnergy(energy, simulate), 0L);
 	}
 	
 	// Stargate Connection
@@ -272,7 +280,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void connectionUpdate(StargateConnection connection)
 	{
-		stargateRun(getServer(), stargate ->
+		stargateRun(stargate ->
 		{
 			stargate.setKawooshTickCount(connection.getKawooshTime());
 			stargate.setOpenTime(connection.getOpenTime());
@@ -284,36 +292,36 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default boolean callForward()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false), false);
+		return stargateReturn(stargate -> stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false), false);
 	}
 	
 	@Override
 	default void connectStargate(StargateConnection connection, StargateConnection.State connectionState)
 	{
-		stargateRun(getServer(), stargate -> stargate.connectStargate(connection.getID(), connectionState));
+		stargateRun(stargate -> stargate.connectStargate(connection.getID(), connectionState));
 	}
 	
 	@Override
 	default void doWhileConnecting(StargateConnection connection, boolean incoming, int kawooshStartTicks)
 	{
-		stargateRun(getServer(), stargate -> stargate.doWhileConnecting(incoming, connection.doKawoosh(), kawooshStartTicks, connection.getConnectionTime()));
+		stargateRun(stargate -> stargate.doWhileConnecting(incoming, connection.doKawoosh(), kawooshStartTicks, connection.getConnectionTime()));
 	}
 	
 	@Override
 	default void doWhileDialed(StargateConnection connection, Address connectedAddress, int kawooshStartTicks)
 	{
-		stargateRun(getServer(), stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, connection.doKawoosh(), connection.getConnectionTime()));
+		stargateRun(stargate -> stargate.doWhileDialed(connectedAddress, kawooshStartTicks, connection.doKawoosh(), connection.getConnectionTime()));
 	}
 	
 	@Override
 	default void doWhileConnected(StargateConnection connection, boolean incoming)
 	{
-		stargateRun(getServer(), stargate -> stargate.doWhileConnected(incoming, connection.getConnectionTime()));
+		stargateRun(stargate -> stargate.doWhileConnected(incoming, connection.getConnectionTime()));
 	}
 	
 	default void wormholeEntities(StargateConnection connection, Stargate destinationStargate, boolean incoming, StargateInfo.WormholeTravel wormholeTravel, List<Entity> wormholeCandidates)
 	{
-		stargateRun(getServer(), stargate ->
+		stargateRun(stargate ->
 		{
 			if(getWormhole().wormholeEntities(getServer(), connection, this, destinationStargate, wormholeTravel, wormholeCandidates))
 				connection.setUsed(true);
@@ -323,7 +331,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel)
 	{
-		stargateRun(getServer(), stargate ->
+		stargateRun(stargate ->
 		{
 			List<Entity> wormholeCandidates = stargate.findWormholeCandidates();
 			
@@ -340,10 +348,48 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 		});
 	}
 	
+	default Vec3 adjustDestinationHeight(StargateEntity stargate, Entity traveler, Vec3 destinationPosition, boolean shouldTravelerStickToGround)
+	{
+		if(stargate.getOrientation() != Orientation.REGULAR)
+			return destinationPosition;
+		
+		ServerLevel level = (ServerLevel) stargate.getLevel();
+		
+		double bottomToCenterDist = traveler.getBoundingBox().getCenter().y() - traveler.getY();
+		AABB aabb = AABB.ofSize(destinationPosition.add(0, bottomToCenterDist, 0), traveler.getBoundingBox().getXsize(), traveler.getBoundingBox().getYsize(), traveler.getBoundingBox().getZsize())
+			.setMinY(stargate.getBlockPos().getY()); // Get all blocks under the traveler, but not those under the Stargate
+		
+		Optional<Double> maxY = BlockPos.betweenClosedStream(aabb).filter(pos ->
+		{
+			// Ignore blocks that on the same plane as the Stargate
+			if(stargate.getDirection().getAxis() == Direction.Axis.X)
+				return pos.getX() == stargate.getBlockPos().getX();
+			else
+				return pos.getZ() == stargate.getBlockPos().getZ();
+		}).map(pos ->
+		{
+			double y = level.getBlockState(pos).getCollisionShape(level, pos).max(Direction.Axis.Y);
+			return y + pos.getY();
+		}).filter(height -> !Double.isInfinite(height)).max(Comparator.naturalOrder());
+		
+		if(maxY.isPresent())
+		{
+			// Don't move the traveler, they've run into a wall
+			if(maxY.get() >= aabb.maxY)
+				return destinationPosition;
+			
+			// Move the traveler up or stick them to the ground
+			if(maxY.get() > destinationPosition.y() || shouldTravelerStickToGround)
+				return new Vec3(destinationPosition.x, maxY.get(), destinationPosition.z);
+		}
+		
+		return destinationPosition;
+	}
+	
 	@Override
 	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)
 	{
-		return stargateReturn(getServer(), stargate ->
+		return stargateReturn(stargate ->
 				{
 					// Call Forwarding
 					if(stargate.dhdCache.returnOrDefault(AbstractDHDEntity::callForwardingEnabled, false) && callForwardDeny(traveler))
@@ -354,10 +400,21 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 							return initialStargate.receiveTraveler(connection, initialStargate, traveler, relativePosition, relativeMomentum, relativeLookAngle);
 					}
 					
-					// TODO Tie this to Advanced Protocols
-					Vec3 tempMomentum = stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ? new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
+					Trinary shouldAdjustExitSpeed = shouldAdjustExitSpeed(traveler, true).or(initialStargate.shouldAdjustExitSpeed(traveler, false));
+					
+					// Push the traveler in some situations to help them
+					Vec3 tempMomentum = shouldAdjustExitSpeed.isTrue() && stargate.pushTraveler() && relativeMomentum.x() > -SGJourneyStargate.MIN_TRAVELER_SPEED ?
+						new Vec3(-SGJourneyStargate.MIN_TRAVELER_SPEED, relativeMomentum.y(), relativeMomentum.z()) : relativeMomentum;
 					
 					Vec3 destinationPosition = fromStargateCoords(relativePosition, true, true).add(stargate.getCenter());
+					// Adjust traveler height to try and prevent them from ending up inside the floor on the other side
+					Trinary shouldAdjustExitPos = shouldAdjustExitPos(traveler, true).or(initialStargate.shouldAdjustExitPos(traveler, false));
+					if(shouldAdjustExitPos.isTrue())
+					{
+						// Adjust traveler height to make them stick to the ground if they entered the gate while sticking to the ground
+						Trinary shouldTravelerStickToGround = shouldTravelerStickToGround(traveler, true).or(initialStargate.shouldTravelerStickToGround(traveler, false));
+						destinationPosition = adjustDestinationHeight(stargate, traveler, destinationPosition, shouldTravelerStickToGround.isTrue());
+					}
 					Vec3 destinationMomentum = fromStargateCoords(tempMomentum, false, true);
 					Vec3 destinationLookAngle = fromStargateCoords(relativeLookAngle, false, true);
 					
@@ -372,18 +429,46 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 				null);
 	}
 	
+	//============================================================================================
+	//*************************************Advanced protocols*************************************
+	//============================================================================================
+	
 	@Override
-	default boolean shouldAutoclose(StargateConnection connection)
+	default Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
 	{
 		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
-		return stargateReturn(getServer(), stargate ->
+		return stargateReturn(stargate ->
 		{
 			int autocloseTicks = stargate.dhdCache.returnOrDefault(AbstractDHDEntity::autocloseTicks, 0);
 			if(autocloseTicks <= 0)
-				return false;
+				return Trinary.DEFAULT;
 			
-			return connection.getTimeSinceLastTraveler() > autocloseTicks;
-		}, false);
+			return connection.getTimeSinceLastTraveler() > autocloseTicks ? Trinary.TRUE : Trinary.DEFAULT;
+		}, Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldAdjustExitSpeed(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldAdjustExitPos(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
+	}
+	
+	@Override
+	default Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
+	{
+		return stargateReturn(stargate ->
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() && traveler.isOnGround() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
 	}
 	
 	//============================================================================================
@@ -393,11 +478,8 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	@Override
 	default AddressFilterInfo addressFilterInfo()
 	{
-		return stargateReturn(getServer(), stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
+		return stargateReturn(stargate -> stargate.addressFilterInfo(), new AddressFilterInfo());
 	}
-	
-	@Override
-	default void tick() {}
 	
 	/**
 	 * Actions the Stargate will perform while its respective Block Entity is ticking

@@ -65,6 +65,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
 		SymbolInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<AbstractDHDEntity, AbstractStargateEntity<?>>
@@ -122,6 +125,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	public static final long MIN_DHD_SEARCH_DISTANCE = 64;
 	
 	private final StargateType<SG> stargateType;
+	
+	protected boolean stargateCacheRequiresUpdate = true;
+	protected SG cachedStargate = null;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
@@ -445,7 +451,8 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		if(id9ChevronAddress.getType() != Address.Type.ADDRESS_9_CHEVRON || BlockEntityList.get(level).containsStargate(id9ChevronAddress))
 			set9ChevronAddress(BlockEntityList.get(level).generate9ChevronAddress(level.getRandom()));
 		
-		StargateNetwork.get(level).addStargateEntity(this);
+		cacheStargate(BlockEntityList.get(level).addStargate(this));
+		StargateNetwork.get(level).addStargate(cachedStargate);
 		this.setChanged();
 	}
 	
@@ -466,10 +473,64 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return id9ChevronAddress;
 	}
 	
-	@Nullable
-	public Stargate getStargate()
+	@Override
+	public void setRemoved()
 	{
-		return BlockEntityList.get(level).getStargate(this.id9ChevronAddress);
+		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		super.setRemoved();
+	}
+	
+	@Override
+	public void onChunkUnloaded()
+	{
+		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		super.onChunkUnloaded();
+	}
+	
+	protected void cacheStargate(SG stargate)
+	{
+		this.stargateCacheRequiresUpdate = false;
+		this.cachedStargate = stargate;
+	}
+	
+	@Nullable
+	protected abstract SG fetchStargate();
+	
+	@Nullable
+	public SG getStargate()
+	{
+		if(stargateCacheRequiresUpdate)
+			cacheStargate(fetchStargate());
+		
+		return cachedStargate;
+	}
+	
+	public void stargateRun(Consumer<SG> consumer)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			consumer.accept(stargate);
+	}
+	
+	public <T> T stargateReturn(Function<SG, T> function, @Nullable T defaultValue)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			return function.apply(stargate);
+		
+		return defaultValue;
+	}
+	
+	public <T> T stargateReturnOrSupply(Function<SG, T> function, @NotNull Supplier<T> supplier)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			return function.apply(stargate);
+		
+		return supplier.get();
 	}
 	
 	//============================================================================================
@@ -1595,10 +1656,14 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	
 	public boolean pushTraveler()
 	{
-		if(this.getOrientation() == Orientation.UPWARD)
-			return true;
-		
-		return SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity() > 0.0;
+		return switch(getOrientation())
+		{
+			// Traveler needs a little push so they don't fall right back into the gate instantly
+			case UPWARD -> true;
+			// Traveler needs a little push so they don't fall back into the gate instantly if a black hole pulls them in
+			case REGULAR -> SpaceLocation.fromDimension(level.getServer(), level.dimension()).getParentGravity() > 0.0;
+			default -> false;
+		};
 	}
 	
 	public float getVerticalCenterHeight()

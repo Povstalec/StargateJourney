@@ -71,6 +71,9 @@ public class ZeroPointModule extends Item
 		
 	public static int getEntropy(ItemStack stack)
 	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return SyncedConfig.zpm_max_entropy.get();
+		
 		return stack.getOrDefault(DataComponentInit.ENTROPY, 0);
 	}
 	
@@ -81,6 +84,9 @@ public class ZeroPointModule extends Item
 	
 	public static long getEnergy(ItemStack stack)
 	{
+		if(!stack.is(ItemInit.ZPM.get()))
+			return 0;
+		
 		return stack.getOrDefault(DataComponentInit.ENERGY, CommonZPMConfig.zpm_energy_per_entropy_level.get());
 	}
 	

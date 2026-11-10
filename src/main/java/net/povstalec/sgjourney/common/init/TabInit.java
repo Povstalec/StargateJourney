@@ -94,8 +94,6 @@ public class TabInit
 					
 					items.accept(ItemInit.GDO.get());
 					
-					items.accept(ItemInit.AUTO_DIALER.get());
-					
 					//items.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 					
 					items.accept(ItemInit.WOODEN_GRAVER.get());
@@ -214,6 +212,8 @@ public class TabInit
 					items.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.ANDROMEDA_STARGATE.get()), BlockEntityInit.ANDROMEDA_STARGATE.get()));
 					items.accept(AndromedaDHDBlock.andromedaCrystalSetup(parameters.holders()));
 					
+					items.accept(ItemInit.AUTO_DIALER.get());
+					
 					items.accept(ItemInit.FUSION_CORE.get());
 					items.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 					items.accept(NaquadahFuelRodItem.fuelRodSetup());
@@ -292,6 +292,7 @@ public class TabInit
 					items.accept(CartoucheBlock.localAddressSetup(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 					
 					items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+					items.accept(BlockInit.RED_SANDSTONE_SWITCH.get());
 					items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
 					items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
 					items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());

@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.misc.Conversion;
@@ -25,6 +26,8 @@ import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlockEntityStargate>
 {
@@ -131,6 +134,13 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		}
+	}
+	
+	@Override
+	@Nullable
+	protected UniverseBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
 	//============================================================================================
@@ -287,7 +297,15 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	{
 		if(stargate.dialFromBuffer() && !level.isClientSide())
 			stargate.bufferDialing();
+		
 		RotatingStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			UniverseBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 	
 	@Override

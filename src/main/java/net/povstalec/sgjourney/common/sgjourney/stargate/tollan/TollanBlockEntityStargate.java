@@ -13,15 +13,17 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
 
 public class TollanBlockEntityStargate extends TollanStargate implements BlockEntityStargate<TollanStargateEntity>
 {
-	protected WeakReference<TollanStargateEntity> stargate;
+	// Stargate BlockEntity cache
+	protected boolean stargateCacheRequiresUpdate = true;
+	protected TollanStargateEntity cachedStargateEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -44,30 +46,50 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 		return this.blockPos;
 	}
 	
-	private TollanStargateEntity cacheStargateEntity(TollanStargateEntity stargate)
+	protected void cacheStargateEntity(@Nullable TollanStargateEntity stargate)
 	{
-		//this.stargate = new WeakReference(stargate); //TODO Bring caching back once Stargates are more flexible
-		
-		return stargate;
+		this.stargateCacheRequiresUpdate = false;
+		this.cachedStargateEntity = stargate;
 	}
 	
-	private @Nullable TollanStargateEntity tryCacheStargateEntity(MinecraftServer server)
+	public void invalidateCachedStargateEntity()
+	{
+		if(!this.stargateCacheRequiresUpdate)
+		{
+			this.stargateCacheRequiresUpdate = true;
+			this.cachedStargateEntity = null;
+		}
+	}
+	
+	protected @Nullable TollanStargateEntity fetchStargateEntity()
 	{
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && level.getBlockEntity(blockPos) instanceof TollanStargateEntity stargate)
-			return cacheStargateEntity(stargate);
+			return stargate;
 		
 		return null;
 	}
 	
 	@Override
-	public @Nullable TollanStargateEntity getStargateEntity(MinecraftServer server)
+	public @Nullable TollanStargateEntity getStargateEntity()
 	{
-		//if((this.stargate != null && this.stargate.get() != null) || server == null)
-		//	return this.stargate.get();
+		if(this.stargateCacheRequiresUpdate)
+			cacheStargateEntity(fetchStargateEntity());
 		
-		return tryCacheStargateEntity(server);
+		return this.cachedStargateEntity;
+	}
+	
+	@Override
+	public void onStargateEntityUnloaded()
+	{
+		invalidateCachedStargateEntity();
+	}
+	
+	@Override
+	public void onStargateEntityRemoved()
+	{
+		invalidateCachedStargateEntity();
 	}
 	
 	@Override
@@ -90,11 +112,18 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	//============================================================================================
 	
 	@Override
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
+	{
+		invalidateCachedStargateEntity();
+		return BlockEntityStargate.super.resetStargate(feedback);
+	}
+	
+	@Override
 	public @Nullable Vec3 getForward()
 	{
 		if(forward == null)
 		{
-			forward = stargateReturn(server, stargate ->
+			forward = stargateReturn(stargate ->
 			{
 				Direction direction = stargate.getDirection();
 				Orientation orientation = stargate.getOrientation();
@@ -111,7 +140,7 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	{
 		if(up == null)
 		{
-			up = stargateReturn(server, stargate ->
+			up = stargateReturn(stargate ->
 			{
 				Direction direction = stargate.getDirection();
 				Orientation orientation = stargate.getOrientation();
@@ -140,7 +169,7 @@ public class TollanBlockEntityStargate extends TollanStargate implements BlockEn
 	@Override
 	public void update()
 	{
-		stargateRun(server, stargate ->
+		stargateRun(stargate ->
 		{
 			// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
 			this.hasDHD = stargate.dhdCache.isCached();

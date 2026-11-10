@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
@@ -25,6 +26,7 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayBlock
 import net.povstalec.sgjourney.common.sgjourney.stargate.milky_way.MilkyWayStargate;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlockEntityStargate>
@@ -105,6 +107,13 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		}
 		
 		return super.resetStargate(feedback);
+	}
+	
+	@Override
+	@Nullable
+	protected MilkyWayBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(MilkyWayBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
 	private short getCurrentChevron()
@@ -243,6 +252,13 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	public static void tick(Level level, BlockPos pos, BlockState state, MilkyWayStargateEntity stargate)
 	{
 		RotatingStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			MilkyWayBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 
 	@Override

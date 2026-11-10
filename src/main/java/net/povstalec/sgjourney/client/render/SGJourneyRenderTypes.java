@@ -26,6 +26,7 @@ public class SGJourneyRenderTypes extends RenderType
 						.setShaderState(RENDERTYPE_ITEM_ENTITY_TRANSLUCENT_CULL_SHADER)
 						.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setWriteMaskState(new RenderStateShard.WriteMaskStateShard(true, false))
 						.setOutputState(ITEM_ENTITY_TARGET)
 						.setLightmapState(LIGHTMAP)
 						.setOverlayState(OVERLAY)

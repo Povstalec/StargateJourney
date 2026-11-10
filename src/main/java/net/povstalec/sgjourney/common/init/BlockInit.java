@@ -581,6 +581,8 @@ public class BlockInit
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final DeferredBlock<Block> RED_SANDSTONE_GLYPHS = registerBlock("red_sandstone_glyphs",
 			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final DeferredBlock<SecretSwitchBlock> RED_SANDSTONE_SWITCH = registerBlock("red_sandstone_switch",
+		() -> new SecretSwitchBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	// Cartouches
 	public static final DeferredBlock<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche",
 			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of().mapColor(MapColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));

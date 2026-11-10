@@ -339,6 +339,14 @@ public class BlockEntityList extends SavedData
 	
 	// Stargates
 	
+	private <SG extends BlockEntityStargate<?>> SG constructAndLoadStargate(StargateType<SG> stargateType)
+	{
+		SG stargate = stargateType.constructStargate(server);
+		stargate.loadFromBlockEntity(stargate.getStargateEntity());
+		
+		return stargate;
+	}
+	
 	private void loadStargateFromBlockEntity(Address.Immutable address, CompoundTag stargateTag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(stargateTag.getString(Stargate.DIMENSION));
@@ -350,7 +358,7 @@ public class BlockEntityList extends SavedData
 			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends BlockEntityStargate<?>> stargateEntity)
 			{
 				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
-				stargate.loadFromBlockEntity((stargateEntity));
+				stargate.loadFromBlockEntity(stargateEntity);
 				this.stargateMap.put(address, stargate);
 				setDirty(); // A pretty important change happened
 			}
