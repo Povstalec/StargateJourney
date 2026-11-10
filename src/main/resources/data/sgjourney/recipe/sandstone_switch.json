@@ -4,7 +4,7 @@
 	"ingredients": 
 	[
 		{"item": "sgjourney:sandstone_hieroglyphs"},
-    		{"item": "minecraft:redstone"}
+		{"item": "minecraft:redstone"}
 	],
 	"result": { "id": "sgjourney:sandstone_switch", "count": 1 }
 }

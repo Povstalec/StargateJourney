@@ -467,7 +467,7 @@ public interface BlockEntityStargate<StargateEntity extends AbstractStargateEnti
 	default Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
 	{
 		return stargateReturn(stargate ->
-			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() && traveler.isOnGround() ?
+			stargate.dhdCache.returnOrDefault(dhd -> dhd.enableAdvancedProtocols() && traveler.onGround() ?
 				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT), Trinary.DEFAULT);
 	}
 	
