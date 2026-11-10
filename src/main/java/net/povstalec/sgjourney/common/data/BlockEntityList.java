@@ -33,8 +33,8 @@ import java.util.HashMap;
  */
 public class BlockEntityList extends SavedData
 {
-	private static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
-	private static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
+	public static final String FILE_NAME = StargateJourney.MODID + "-block_entities";
+	public static final String INCORRECT_FILE_NAME = StargateJourney.MODID + "-block_enties"; //I wish there was a way to replace this
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
@@ -339,6 +339,14 @@ public class BlockEntityList extends SavedData
 	
 	// Stargates
 	
+	private <SG extends BlockEntityStargate<?>> SG constructAndLoadStargate(StargateType<SG> stargateType)
+	{
+		SG stargate = stargateType.constructStargate(server);
+		stargate.loadFromBlockEntity(stargate.getStargateEntity());
+		
+		return stargate;
+	}
+	
 	private void loadStargateFromBlockEntity(Address.Immutable address, CompoundTag stargateTag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(stargateTag.getString(Stargate.DIMENSION));
@@ -350,7 +358,7 @@ public class BlockEntityList extends SavedData
 			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends BlockEntityStargate<?>> stargateEntity)
 			{
 				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
-				stargate.loadFromBlockEntity((stargateEntity));
+				stargate.loadFromBlockEntity(stargateEntity);
 				this.stargateMap.put(address, stargate);
 				setDirty(); // A pretty important change happened
 			}

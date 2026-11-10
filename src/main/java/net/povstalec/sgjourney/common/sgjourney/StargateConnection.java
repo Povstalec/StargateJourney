@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -439,16 +440,14 @@ public class StargateConnection
 	
 	private boolean shouldAutoclose()
 	{
-		if(this.dialingStargate.shouldAutoclose(this))
-			return true;
+		Trinary result = this.dialingStargate.shouldAutoclose(this, true);
 		
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			if(dialedStargate.shouldAutoclose(this))
-				return true;
+			result = result.or(dialedStargate.shouldAutoclose(this, false));
 		}
 		
-		return false;
+		return result.isTrue();
 	}
 	
 	private boolean hasInvalidStargate()
@@ -510,16 +509,31 @@ public class StargateConnection
 			dialedStargate.doWhileConnected(this, true);
 		}
 		
-		if(requiresEnergyBypass(this.openTime) && !ENERGY_BYPASS_ENABLED)
+		if(REQUIRE_ENERGY)
+		{
+			// Depletes energy over time
+			if(!depleteEnergy(getPowerDraw()))
+			{
+				// If the connection doesn't have enough energy and requires energy bypass at this point, it means it exceeded its max connection time
+				if(requiresEnergyBypass(this.openTime))
+					terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME.withInfo());
+				// The connection simply does not have enough energy
+				else
+					terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER.withInfo());
+				
+				return; // Not enough energy to keep the connection alive
+			}
+			// If the connection does have enough energy, but energy bypass isn't allowed, the connection must close
+			else if(!ENERGY_BYPASS_ENABLED && requiresEnergyBypass(this.openTime))
+			{
+				terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME.withInfo());
+				return;
+			}
+		}
+		// If the connection exceeded its max connection time
+		else if(!ENERGY_BYPASS_ENABLED && requiresEnergyBypass(this.openTime))
 		{
 			terminate(server, StargateInfo.Feedback.EXCEEDED_CONNECTION_TIME.withInfo());
-			return;
-		}
-		
-		// Depletes energy over time
-		if(REQUIRE_ENERGY && !depleteEnergy(getPowerDraw()))
-		{
-			terminate(server, StargateInfo.Feedback.RAN_OUT_OF_POWER.withInfo());
 			return;
 		}
 		

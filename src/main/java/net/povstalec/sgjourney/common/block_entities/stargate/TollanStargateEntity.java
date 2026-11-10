@@ -8,11 +8,14 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanStargate;
+
+import javax.annotation.Nullable;
 
 public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEntityStargate>
 {
@@ -52,8 +55,22 @@ public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEnti
 		CCTweakedCompatibility.Stargate.registerTollanStargateMethods(wrapper);
 	}
 	
+	@Override
+	@Nullable
+	protected TollanBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(TollanBlockEntityStargate.class, this.id9ChevronAddress);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
 	{
 		AbstractStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			TollanBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 }

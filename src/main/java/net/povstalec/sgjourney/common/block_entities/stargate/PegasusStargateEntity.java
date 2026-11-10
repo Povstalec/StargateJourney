@@ -12,12 +12,15 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.pegasus.PegasusStargate;
+
+import javax.annotation.Nullable;
 
 public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlockEntityStargate>
 {
@@ -73,6 +76,13 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	@Nullable
+	protected PegasusBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
 	//============================================================================================
@@ -184,6 +194,13 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 	public static void tick(Level level, BlockPos pos, BlockState state, PegasusStargateEntity stargate)
 	{
 		StopMotionStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			PegasusBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 	
 	@Override
