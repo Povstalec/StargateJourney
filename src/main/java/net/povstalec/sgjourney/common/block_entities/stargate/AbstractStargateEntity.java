@@ -71,6 +71,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> extends EnergyBlockEntity implements ITransmissionReceiver, StructureGenEntity,
 		SymbolInfo.Interface, AddressFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<AbstractDHDEntity, AbstractStargateEntity<?>>
@@ -477,6 +480,20 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
         return new AABB(getCenterPos().getX() - 3, getCenterPos().getY() - 3, getCenterPos().getZ() - 3, getCenterPos().getX() + 4, getCenterPos().getY() + 4, getCenterPos().getZ() + 4);
     }
 	
+	@Override
+	public void setRemoved()
+	{
+		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		super.setRemoved();
+	}
+	
+	@Override
+	public void onChunkUnloaded()
+	{
+		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		super.onChunkUnloaded();
+	}
+	
 	protected void cacheStargate(SG stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
@@ -495,13 +512,41 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return cachedStargate;
 	}
 	
+	public void stargateRun(Consumer<SG> consumer)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			consumer.accept(stargate);
+	}
+	
+	public <T> T stargateReturn(Function<SG, T> function, @Nullable T defaultValue)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			return function.apply(stargate);
+		
+		return defaultValue;
+	}
+	
+	public <T> T stargateReturnOrSupply(Function<SG, T> function, @NotNull Supplier<T> supplier)
+	{
+		SG stargate = getStargate();
+		
+		if(stargate != null)
+			return function.apply(stargate);
+		
+		return supplier.get();
+	}
+	
 	//============================================================================================
 	//****************************************Capabilities****************************************
 	//============================================================================================
 	
 	protected LazyOptional<Stargate> getStargateCapability()
 	{
-		Stargate stargate = getStargate();
+		SG stargate = getStargate();
 		
 		if(stargate == null)
 			return LazyOptional.empty();
