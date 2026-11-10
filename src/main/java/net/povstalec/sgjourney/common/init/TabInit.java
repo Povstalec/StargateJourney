@@ -294,6 +294,7 @@ public class TabInit
 				items.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 				
 				items.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+				items.accept(BlockInit.RED_SANDSTONE_SWITCH.get());
 				items.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
 				items.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
 				items.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
