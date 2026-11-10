@@ -66,6 +66,7 @@ public class TabInit
 						output.accept(CartoucheBlock.localAddressSetup(BlockInit.SANDSTONE_CARTOUCHE.get(), Address.Type.ADDRESS_9_CHEVRON), CreativeModeTab.TabVisibility.PARENT_TAB_ONLY);
 						
 						output.accept(BlockInit.RED_SANDSTONE_GLYPHS.get());
+						output.accept(BlockInit.RED_SANDSTONE_SWITCH.get());
 						output.accept(BlockInit.RED_SANDSTONE_WITH_LAPIS.get());
 						output.accept(BlockInit.RED_SANDSTONE_WITH_GOLD.get());
 						output.accept(BlockInit.RED_SANDSTONE_SYMBOL.get());
@@ -345,6 +346,8 @@ public class TabInit
 						output.accept(AbstractStargateBaseBlock.localPointOfOrigin(new ItemStack(BlockInit.ANDROMEDA_STARGATE.get())));
 						output.accept(AndromedaDHDBlock.andromedaCrystalSetup());
 						
+						output.accept(ItemInit.AUTO_DIALER.get());
+						
 						output.accept(ItemInit.FUSION_CORE.get());
 						output.accept(ItemInit.NAQUADAH_GENERATOR_CORE.get());
 						output.accept(NaquadahFuelRodItem.fuelRodSetup());
@@ -459,8 +462,6 @@ public class TabInit
 						//output.accept(ItemInit.ANCIENT_REMOTE.get());
 						
 						output.accept(ItemInit.GDO.get());
-						
-						output.accept(ItemInit.AUTO_DIALER.get());
 						
 						//output.accept(ItemInit.ARCHEOLOGIST_NOTEBOOK.get());
 						
