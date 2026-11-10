@@ -58,6 +58,8 @@ public class ControlCrystalItem extends AbstractCrystalItem
 		public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
 		{
 			tooltipComponents.add(ComponentHelper.tickTimer("tooltip.sgjourney.control_crystal_large.autoclose", AUTOCLOSE_TICKS, ChatFormatting.DARK_PURPLE));
+			//TODO Symbol Remapping
+			//TODO Stargate exit adjustments
 			tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.control_crystal_large.description"));
 			//TODO tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.control_crystal_large.crystal_computer"));
 		}

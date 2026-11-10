@@ -563,32 +563,34 @@ public class BlockInit
 			.sound(SoundType.STONE), 15, ParticleTypes.FLAME));
 	
 	public static final RegistryObject<Block> SANDSTONE_WITH_LAPIS = registerBlock("sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_WITH_GOLD = registerBlock("sandstone_with_gold", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<RotatedPillarBlock> SANDSTONE_HIEROGLYPHS = registerBlock("sandstone_hieroglyphs", 
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SecretSwitchBlock> SANDSTONE_SWITCH = registerBlock("sandstone_switch", 
-			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new SecretSwitchBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	
 	public static final RegistryObject<Block> RED_SANDSTONE_WITH_LAPIS = registerBlock("red_sandstone_with_lapis",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> RED_SANDSTONE_WITH_GOLD = registerBlock("red_sandstone_with_gold",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<Block> RED_SANDSTONE_GLYPHS = registerBlock("red_sandstone_glyphs",
-			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new RotatedPillarBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
+	public static final RegistryObject<SecretSwitchBlock> RED_SANDSTONE_SWITCH = registerBlock("red_sandstone_switch",
+		() -> new SecretSwitchBlock(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	// Cartouches
 	public static final RegistryObject<CartoucheBlock> SANDSTONE_CARTOUCHE = registerCartoucheBlock("sandstone_cartouche", 
-			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> RED_SANDSTONE_CARTOUCHE = registerCartoucheBlock("red_sandstone_cartouche",
-			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new CartoucheBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<CartoucheBlock> STONE_CARTOUCHE = registerCartoucheBlock("stone_cartouche", 
 			() -> new CartoucheBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Symbols
 	public static final RegistryObject<SymbolBlock> SANDSTONE_SYMBOL = registerSymbolBlock("sandstone_symbol",
-			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new SymbolBlock.Sandstone(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.SAND).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SymbolBlock> RED_SANDSTONE_SYMBOL = registerSymbolBlock("red_sandstone_symbol",
-			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE).strength(0.8F).requiresCorrectToolForDrops()));
+			() -> new SymbolBlock.RedSandstone(BlockBehaviour.Properties.of(Material.STONE, MaterialColor.COLOR_ORANGE).strength(0.8F).requiresCorrectToolForDrops()));
 	public static final RegistryObject<SymbolBlock> STONE_SYMBOL = registerSymbolBlock("stone_symbol",
 			() -> new SymbolBlock.Stone(BlockBehaviour.Properties.of(Material.STONE).strength(1.5F, 6.0F).requiresCorrectToolForDrops()));
 	// Tech

@@ -11,12 +11,15 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibi
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
 import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaStargate;
+
+import javax.annotation.Nullable;
 
 public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaBlockEntityStargate>
 {
@@ -63,6 +66,13 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 		
 		super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	@Nullable
+	protected AndromedaBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(AndromedaBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
 	//============================================================================================
@@ -136,6 +146,13 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	public static void tick(Level level, BlockPos pos, BlockState state, AndromedaStargateEntity stargate)
 	{
 		StopMotionStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			AndromedaBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 	
 	public RotationDirection bestRotationDirection(int desiredSymbol)

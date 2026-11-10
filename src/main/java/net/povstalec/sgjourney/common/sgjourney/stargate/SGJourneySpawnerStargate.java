@@ -198,6 +198,9 @@ public abstract class SGJourneySpawnerStargate implements SpawnerStargate
 	}
 	
 	@Override
+	public void tick() {}
+	
+	@Override
 	public void serializeNBT(CompoundTag tag)
 	{
 		//TODO
