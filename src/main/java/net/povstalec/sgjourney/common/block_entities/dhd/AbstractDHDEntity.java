@@ -62,9 +62,6 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	public static final String IS_CENTER_BUTTON_ENGAGED = "is_center_button_engaged";
 	public static final String ADDRESS = Address.ADDRESS;
 	
-	//TODO A temporary addition to make sure every DHD will update with symbols when the mod is updated
-	public static final String IS_NEW = "is_new";
-	
 	public static final String STARGATE_POS = "stargate_pos";
 	
 	public static final int DEFAULT_ENERGY_TARGET = 0;

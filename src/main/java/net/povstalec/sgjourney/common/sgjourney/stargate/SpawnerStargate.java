@@ -1,18 +1,15 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 /**
  * Represents a Stargate that doesn't physically exist anywhere in the world,
@@ -123,9 +120,9 @@ public interface SpawnerStargate extends Stargate
 	}
 	
 	@Override
-	default boolean shouldAutoclose(StargateConnection connection)
+	default Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
 	{
-		return connection.getOpenTime() > 200;
+		return connection.getOpenTime() > 200 ? Trinary.TRUE : Trinary.DEFAULT;
 	}
 	
 	@Override
@@ -139,9 +136,6 @@ public interface SpawnerStargate extends Stargate
 	{
 		return new AddressFilterInfo();
 	}
-	
-	@Override
-	default void tick() {}
 	
 	@Override
 	default @Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle)

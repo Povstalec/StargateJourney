@@ -38,13 +38,13 @@ public final class StargateNetwork extends SavedData
 {
 	private static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
 	
-	private static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
+	public static final String FILE_NAME = StargateJourney.MODID + "-stargate_network";
 	private static final String VERSION = "Version";
 
 	private static final String CONNECTIONS = "Connections";
 
 	// Should increment every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int UPDATE_VERSION = 20;
+	private static final int UPDATE_VERSION = 21;
 	
 	private MinecraftServer server;
 	private final Map<ResourceKey<Level>, List<Stargate>> dimensionStargates = new HashMap<>();
@@ -189,11 +189,6 @@ public final class StargateNetwork extends SavedData
 			else
 				BlockEntityList.get(server).removeStargate(address);
 		});
-	}
-	
-	public boolean addStargateEntity(AbstractStargateEntity<?> stargateEntity)
-	{
-		return addStargate(BlockEntityList.get(server).addStargate(stargateEntity));
 	}
 	
 	/**

@@ -29,7 +29,7 @@ public class CartoucheBakedModel extends SymbolBakedModel
 {
 	private static final FaceBakery FACE_BAKERY = new FaceBakery();
 	
-	public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("symbol_block_model");
+	public static final ResourceLocation ID = StargateJourney.sgjourneyLocation("cartouche_model");
 	
 	protected static final float MAX_WIDTH = 10F;
 	protected static final float MAX_HEIGHT = 26F;

@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInte
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
@@ -517,13 +518,6 @@ public interface Stargate extends Comparable<Stargate>
 	@Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
 	
 	/**
-	 * Checks if the current Stargate Connection should be automatically closed (for example, if the open time exceeds the maximum time allowed for the Stargate to be open)
-	 * @param connection Stargate Connection in question
-	 * @return True if the Stargate connection should be closed, otherwise false
-	 */
-	boolean shouldAutoclose(StargateConnection connection);
-	
-	/**
 	 * Checks if the current Stargate Connection has reached the point of energy bypass (like going past the canonical 38-minute mark)
 	 * @param openTime Time since the wormhole formed (after kawoosh ended)
 	 * @return True if the Stargate has reached a point where it requires extra energy to bypass the max wormhole open time, otherwise false
@@ -555,6 +549,66 @@ public interface Stargate extends Comparable<Stargate>
 			return timesOpenedRes;
 		
 		return other.get9ChevronAddress().compareTo(this.get9ChevronAddress());
+	}
+	
+	//============================================================================================
+	//*************************************Advanced protocols*************************************
+	//============================================================================================
+	
+	/**
+	 * Checks if the current Stargate Connection should be automatically closed (for example, if the open time exceeds the maximum time allowed for the Stargate to be open)
+	 * @param connection Stargate Connection in question
+	 * @param isDialingStargate True if this Stargate is the one that dialed and initiated the connection, otherwise false
+	 * @return TRUE if the Stargate Connection should close automatically.
+	 * FALSE if the Connection should not close even if the {@link shouldAutoclose} methods of other Stargates participating in the Connection are returning TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary)} returns TRUE, the traveler's exit speed will be adjusted in an attempt to prevent them from falling back inside the gate.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler's speed should be adjusted.
+	 * FALSE if it should not be adjusted even if the other Stargate's {@link shouldAdjustExitSpeed} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAdjustExitSpeed(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary)} returns TRUE, the traveler's position will be adjusted in an attempt
+	 * to prevent them from being materialized inside of blocks and immediately falling back inside the Stargate.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler's exit position should be adjusted.
+	 * FALSE if it should not be adjusted even if the other Stargate's {@link shouldAdjustExitPos} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAdjustExitPos(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary) operation} returns TRUE, the traveler's position will be adjusted to make them stick to the ground.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler should be made to stick to the ground upon exit.
+	 * FALSE if not, even if the other Stargate's {@link shouldTravelerStickToGround} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
 	}
 	
 	//============================================================================================

@@ -43,6 +43,16 @@ public enum Trinary
 		return this != DEFAULT;
 	}
 	
+	public Trinary or(Trinary other)
+	{
+		return switch(this)
+		{
+			case TRUE -> fromBoolean(other.isNotFalse());
+			case FALSE -> FALSE;
+			default -> other.isDefault() ? DEFAULT : fromBoolean(other.isNotFalse());
+		};
+	}
+	
 	public static Trinary fromInt(int value)
 	{
 		if(value > 0)

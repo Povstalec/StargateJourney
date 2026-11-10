@@ -11,6 +11,7 @@ import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
@@ -20,6 +21,7 @@ import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicBlockEnt
 import net.povstalec.sgjourney.common.sgjourney.stargate.classic.ClassicStargate;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nullable;
 import java.util.Random;
 
 public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEntityStargate>
@@ -79,9 +81,23 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
 	}
 	
+	@Override
+	@Nullable
+	protected ClassicBlockEntityStargate fetchStargate()
+	{
+		return BlockEntityList.get(level).getStargate(ClassicBlockEntityStargate.class, this.id9ChevronAddress);
+	}
+	
 	public static void tick(Level level, BlockPos pos, BlockState state, ClassicStargateEntity stargate)
 	{
 		RotatingStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			ClassicBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 
 	@Override

@@ -215,6 +215,7 @@
 	"block.sgjourney.red_sandstone_glyphs": "Red Sandstone with Glyphs",
 	"block.sgjourney.red_sandstone_with_lapis": "Red Sandstone with Lapis",
 	"block.sgjourney.red_sandstone_with_gold": "Red Sandstone with Gold",
+	"block.sgjourney.red_sandstone_switch": "Red Sandstone Switch",
 	"block.sgjourney.red_sandstone_symbol": "Red Sandstone Symbol",
 	"block.sgjourney.red_sandstone_cartouche": "Red Sandstone Cartouche",
 
@@ -1059,7 +1060,7 @@
 	"tooltip.sgjourney.dhd.crystal_menu": "Right-Click on the sides or Shift + Right-Click on the top to open crystal menu",
 	"tooltip.sgjourney.address_table": "Address Table",
 	"tooltip.sgjourney.dhd.advanced_protocols": "Advanced Protocols",
-	"tooltip.sgjourney.dhd.advanced_protocols.description": "Advanced Protocols will close the Stargate connection if there is no potential traveler nearby for 10 seconds and allow for automatic symbol remapping",
+	"tooltip.sgjourney.dhd.advanced_protocols.description": "Advanced Protocols will close the Stargate connection if there is no potential traveler nearby for 10 seconds, allow for automatic symbol remapping and adjust traveler exit position and speed as needed",
 	"tooltip.sgjourney.dhd.advanced_protocols.usage": "Place a Large Control Crystal in the middle crystal slot of the DHD to activate Advanced Protocols",
 	"tooltip.sgjourney.dhd.energy_target.description": "If the amount of energy in the Stargate is below the amount specified by the Energy Target, the DHD will attempt to transfer energy to the Stargate until the Energy Target is met",
 	"tooltip.sgjourney.dhd.energy_target.usage": "Place Energy Crystals in the crystal slots of the DHD to increase the Energy Target",

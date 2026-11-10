@@ -42,7 +42,7 @@ public class Universe extends SavedData
 	 * 
 	 */
 	
-	private static final String FILE_NAME = StargateJourney.MODID + "-universe";
+	public static final String FILE_NAME = StargateJourney.MODID + "-universe";
 	
 	public static final String GALAXIES = "galaxies";
 	public static final String ADDRESS_REGIONS = "address_regions";
@@ -645,8 +645,11 @@ public class Universe extends SavedData
 		{
 			AddressRegion addressRegion = AddressRegion.deserialize(server, tag.getCompound(addressRegionString));
 			
-			this.addressRegions.put(addressRegion.getExtragalacticAddress(), addressRegion);
-			this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
+			if(!addressRegion.isGenerated) // Don't use the generated Address Regions, since they need to be recreated anyway, they're only saved for easier debugging
+			{
+				this.addressRegions.put(addressRegion.getExtragalacticAddress(), addressRegion);
+				this.addressRegionKeys.put(addressRegion.getResourceKey(), addressRegion);
+			}
 		});
 	}
 	

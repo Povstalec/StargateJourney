@@ -55,6 +55,11 @@ public class GenericStargateFunctions
 		return stargate.getOpenTime();
 	}
 	
+	public static int getTimeSinceLastTraveler(AbstractStargateEntity<?> stargate)
+	{
+		return stargate.getTimeSinceLastTraveler();
+	}
+	
 	public static StargateInfo.Feedback engageStargate(AbstractStargateEntity<?> stargate)
 	{
 		return stargate.engageStargate().feedback();

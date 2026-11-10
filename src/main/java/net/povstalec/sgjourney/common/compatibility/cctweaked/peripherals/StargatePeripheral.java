@@ -113,6 +113,12 @@ public class StargatePeripheral extends InterfacePeripheral
 	}
 	
 	@LuaFunction
+	public final int getTimeSinceLastTraveler() throws LuaException
+	{
+		return GenericStargateFunctions.getTimeSinceLastTraveler(getStargateOrThrow());
+	}
+	
+	@LuaFunction
 	public final MethodResult disconnectStargate(ILuaContext context) throws LuaException
 	{
 		return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.disconnectStargate(getStargateOrThrow())});
