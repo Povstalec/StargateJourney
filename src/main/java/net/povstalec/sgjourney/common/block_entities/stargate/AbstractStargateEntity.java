@@ -506,6 +506,9 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 	@Nullable
 	public SG getStargate()
 	{
+		if(level == null || level.isClientSide())
+			return null;
+		
 		if(stargateCacheRequiresUpdate)
 			cacheStargate(fetchStargate());
 		

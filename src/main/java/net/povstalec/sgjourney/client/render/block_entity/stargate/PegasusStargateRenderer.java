@@ -53,7 +53,7 @@ public class PegasusStargateRenderer extends AbstractStargateRenderer<PegasusSta
 
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
 		
-        this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+        this.renderWormhole(stargate, stargateVariant, stack, source, partialTick, combinedLight, combinedOverlay);
 		
         //shieldModel.renderShield(stargate, stack, source, combinedLight, combinedOverlay); //TODO Check if these things render correctly with Oculus
 		
