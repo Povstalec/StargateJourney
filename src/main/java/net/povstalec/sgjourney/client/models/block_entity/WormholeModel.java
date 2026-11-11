@@ -74,7 +74,7 @@ public class WormholeModel
 		};
 	}
 	
-	public void renderWormhole(AbstractStargateEntity<?> stargate, PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, int combinedLight, int combinedOverlay)
+	public void renderWormhole(AbstractStargateEntity<?> stargate, PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float partialTick, int combinedLight, int combinedOverlay)
 	{
 		short irisProgress = stargate instanceof IrisStargateEntity<?> irisStargate ? irisStargate.irisInfo().getIrisProgress() : (short) 0;
 		float wormholeDistortion = getMaxDistortion(wormhole.distortion());
@@ -84,13 +84,13 @@ public class WormholeModel
 		int distortionTicks = getDistortionTicks(stargate);
 		
 		if(stargate.isConnected())
-			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
 		
-		this.renderEventHorizon(stack, source, wormhole, stargate, wormholeDistortion, irisProgress, stargate.showUnstableWormhole());
-		this.renderDisconnect(stack, source, wormhole, stargate, wormholeDistortion, wormhole.disconnectTicks().disconnectEndTicks, irisProgress);
+		this.renderEventHorizon(stack, source, wormhole, stargate, wormholeDistortion, partialTick, irisProgress, stargate.showUnstableWormhole());
+		this.renderDisconnect(stack, source, wormhole, stargate, wormholeDistortion, partialTick, wormhole.disconnectTicks().disconnectEndTicks, irisProgress);
 		
 		if(wormhole.hasStrudel())
-			this.renderStrudel(stack, source, wormhole, wormholeDistortion, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderStrudel(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
 	}
 	
 	private static float getDistortion(float wormholeDistortion, int maxTicks, int disconnectTicks)
@@ -126,18 +126,18 @@ public class WormholeModel
 			return stargate.getAnimationTicks();
 	}
 	
-	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, AbstractStargateEntity<?> stargate, float wormholeDistortion, short irisProgress, boolean isUnstable)
+	protected void renderEventHorizon(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, AbstractStargateEntity<?> stargate, float wormholeDistortion, float partialTick, short irisProgress, boolean isUnstable)
 	{
 		if(stargate.isWormholeEstablished() || (stargate.getDisconnectTicks() > 0 && stargate.getDisconnectTicks() < wormhole.disconnectTicks().eventHorizonStopTicks))
 		{
 			WormholeTexture frontTexture = isUnstable ? wormhole.unstableEventHorizonTexture(ResourcepackModel.WormholeSide.FRONT) : wormhole.eventHorizonTexture(ResourcepackModel.WormholeSide.FRONT);
 			ResourcepackModel.WormholeTexture backTexture = isUnstable ? wormhole.unstableEventHorizonTexture(ResourcepackModel.WormholeSide.BACK) : wormhole.eventHorizonTexture(ResourcepackModel.WormholeSide.BACK);
 			
-			renderPuddle(stack, source, frontTexture, backTexture, wormholeDistortion, stargate.getAnimationTicks(), getDistortionTicks(stargate), irisProgress, 1F);
+			renderPuddle(stack, source, frontTexture, backTexture, wormholeDistortion, partialTick, stargate.getAnimationTicks(), getDistortionTicks(stargate), irisProgress, 1F);
 		}
 	}
 	
-	protected void renderDisconnect(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, AbstractStargateEntity<?> stargate, float wormholeDistortion, int maxDisconnectTicks, short irisProgress)
+	protected void renderDisconnect(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, AbstractStargateEntity<?> stargate, float wormholeDistortion, float partialTick, int maxDisconnectTicks, short irisProgress)
 	{
 		if(stargate.getDisconnectTicks() > 0)
 		{
@@ -151,12 +151,12 @@ public class WormholeModel
 				int textureTicks = stargate.getDisconnectTicks() < wormhole.disconnectTicks().eventHorizonStopTicks ? 0 : stargate.getDisconnectTicks() - wormhole.disconnectTicks().eventHorizonStopTicks;
 				
 				renderPuddle(stack, source, wormhole.disconnectTexture(ResourcepackModel.WormholeSide.FRONT), wormhole.disconnectTexture(ResourcepackModel.WormholeSide.BACK),
-						wormholeDistortion, textureTicks, getDistortionTicks(stargate), irisProgress, disconnectOpacity(stargate.getDisconnectTicks(), wormhole.disconnectTicks()));
+						wormholeDistortion, partialTick, textureTicks, getDistortionTicks(stargate), irisProgress, disconnectOpacity(stargate.getDisconnectTicks(), wormhole.disconnectTicks()));
 			}
 		}
 	}
 	
-	protected void renderPuddle(PoseStack stack, MultiBufferSource source, WormholeTexture frontTexture, WormholeTexture backTexture, float wormholeDistortion, int textureTicks, int distortionTicks, short irisProgress, float opacity)
+	protected void renderPuddle(PoseStack stack, MultiBufferSource source, WormholeTexture frontTexture, WormholeTexture backTexture, float wormholeDistortion, float partialTick, int textureTicks, int distortionTicks, short irisProgress, float opacity)
 	{
 		if(opacity <= 0F)
 			return;
@@ -169,7 +169,7 @@ public class WormholeModel
 		int totalSides = coordinates[0].length;
 		
 		// Front
-		int frontFrame = frontTexture.frame(textureTicks);
+		int frontFrame = frontTexture.frame(textureTicks, partialTick);
 		float uFrontScale = frontTexture.uScale();
 		float vFrontScale = frontTexture.vScale();
 		
@@ -217,7 +217,7 @@ public class WormholeModel
 		}
 			
 		// Back
-		int backFrame = backTexture.frame(textureTicks);
+		int backFrame = backTexture.frame(textureTicks, partialTick);
 		float uBackScale = backTexture.uScale();
 		float vBackScale = backTexture.vScale();
 		
@@ -265,7 +265,7 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int textureTicks, int distortionTicks, int kawooshProgress, short irisProgress)
+	protected void renderKawoosh(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, float partialTick, int textureTicks, int distortionTicks, int kawooshProgress, short irisProgress)
 	{
 		if(kawooshProgress <= 0 || kawooshProgress >= StargateConnection.KAWOOSH_DURATION)
 			return;
@@ -279,7 +279,7 @@ public class WormholeModel
 		
 		// Front
 		WormholeTexture frontTexture = wormhole.kawooshTexture(ResourcepackModel.WormholeSide.FRONT);
-		int frontFrame = frontTexture.frame(textureTicks);
+		int frontFrame = frontTexture.frame(textureTicks, partialTick);
 		float uFrontScale = frontTexture.uScale();
 		float vFrontScale = frontTexture.vScale();
 		
@@ -327,7 +327,7 @@ public class WormholeModel
 		
 		// Back
 		ResourcepackModel.WormholeTexture backTexture = wormhole.kawooshTexture(ResourcepackModel.WormholeSide.BACK);
-		int backFrame = backTexture.frame(textureTicks);
+		int backFrame = backTexture.frame(textureTicks, partialTick);
 		float uBackScale = backTexture.uScale();
 		float vBackScale = backTexture.vScale();
 		
@@ -374,7 +374,7 @@ public class WormholeModel
 		}
 	}
 	
-	protected void renderStrudel(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, int textureTicks, int distortionTicks, int kawooshProgress, short irisProgress)
+	protected void renderStrudel(PoseStack stack, MultiBufferSource source, ResourcepackModel.Wormhole wormhole, float wormholeDistortion, float partialTick, int textureTicks, int distortionTicks, int kawooshProgress, short irisProgress)
 	{
 		if(kawooshProgress <= StargateConnection.KAWOOSH_DURATION)
 			return;
@@ -390,7 +390,7 @@ public class WormholeModel
 		
 		// Front
 		WormholeTexture frontTexture = wormhole.strudelTexture(ResourcepackModel.WormholeSide.FRONT);
-		int frontFrame = frontTexture.frame(textureTicks);
+		int frontFrame = frontTexture.frame(textureTicks, partialTick);
 		float uFrontScale = frontTexture.uScale();
 		float vFrontScale = frontTexture.vScale();
 		
@@ -438,7 +438,7 @@ public class WormholeModel
 		
 		// Back
 		WormholeTexture backTexture = wormhole.strudelTexture(ResourcepackModel.WormholeSide.BACK);
-		int backFrame = backTexture.frame(textureTicks);
+		int backFrame = backTexture.frame(textureTicks, partialTick);
 		float uBackScale = backTexture.uScale();
 		float vBackScale = backTexture.vScale();
 		
