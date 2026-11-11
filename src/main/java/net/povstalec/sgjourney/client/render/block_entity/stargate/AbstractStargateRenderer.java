@@ -56,9 +56,9 @@ public abstract class AbstractStargateRenderer<StargateEntity extends AbstractSt
 		return 128;
 	}
 	
-	protected void renderWormhole(AbstractStargateEntity<?> stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)
+	protected void renderWormhole(AbstractStargateEntity<?> stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, float partialTick, int combinedLight, int combinedOverlay)
 	{
-		this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), combinedLight, combinedOverlay);
+		this.wormholeModel.renderWormhole(stargate, stack, source, stargateVariant.getWormhole(), partialTick, combinedLight, combinedOverlay);
 	}
 	
 	protected void renderCover(AbstractStargateEntity<?> stargate, PoseStack stack, MultiBufferSource source, int combinedLight, int combinedOverlay)

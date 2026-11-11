@@ -55,7 +55,7 @@ public class UniverseStargateRenderer extends AbstractStargateRenderer<UniverseS
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
         stack.popPose();
 		
-        this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+        this.renderWormhole(stargate, stargateVariant, stack, source, partialTick, combinedLight, combinedOverlay);
 	    stack.popPose();
 	    
 	}

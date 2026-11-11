@@ -24,6 +24,44 @@ public class ResourcepackModel
 		BACK
 	}
 	
+	public static class Framerate
+	{
+		public static final String FRAMES = "frames";
+		public static final String TICKS = "ticks";
+		
+		public static final Framerate DEFAULT = new Framerate(1, 1);
+		
+		private final int frames;
+		private final int ticks;
+		
+		public static final Codec<Framerate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(Framerate::frames),
+			Codec.intRange(1, Integer.MAX_VALUE).fieldOf(TICKS).forGetter(Framerate::ticks)
+		).apply(instance, Framerate::new));
+		
+		public Framerate(int frames, int ticks)
+		{
+			if(frames <= 0)
+				throw(new IllegalArgumentException("Framerate value of frames outside of range [" + 1 + ':' + Integer.MAX_VALUE + ']'));
+			
+			if(ticks <= 0)
+				throw(new IllegalArgumentException("Framerate value of ticks outside of range [" + 1 + ':' + Integer.MAX_VALUE + ']'));
+			
+			this.frames = frames;
+			this.ticks = ticks;
+		}
+		
+		public int frames()
+		{
+			return frames;
+		}
+		
+		public int ticks()
+		{
+			return ticks;
+		}
+	}
+	
 	public static class WormholeTexture
 	{
 		public static final String TEXTURE = "texture";
@@ -31,6 +69,7 @@ public class ResourcepackModel
 		public static final String COLUMNS = "columns";
 		public static final String FRAMES = "frames";
 		public static final String RGBA = "rgba";
+		public static final String FRAMERATE = "framerate";
 
 		public static final RGBA DEFAULT_OPAQUE_RGBA = new RGBA(1F, 1F, 1F, 1F);
 		
@@ -39,6 +78,7 @@ public class ResourcepackModel
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(WormholeTexture::columns),
+				Framerate.CODEC.optionalFieldOf(FRAMERATE, Framerate.DEFAULT).forGetter(WormholeTexture::framerate),
 				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
 				).apply(instance, WormholeTexture::new));
 		
@@ -46,17 +86,19 @@ public class ResourcepackModel
 		private final int rows;
 		private final int columns;
 		private final int frames;
+		private final Framerate framerate;
 		private final ColorUtil.RGBA rgba;
 		
 		private final float uScale;
 		private final float vScale;
 		
-		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, ColorUtil.RGBA rgba)
+		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, Framerate framerate, ColorUtil.RGBA rgba)
 		{
 			this.texture = texture;
 			this.rows = rows;
 			this.columns = columns;
 			this.frames = frames;
+			this.framerate = framerate;
 			this.rgba = rgba;
 			
 			this.uScale = 1F / columns;
@@ -83,6 +125,11 @@ public class ResourcepackModel
 			return frames;
 		}
 		
+		public Framerate framerate()
+		{
+			return framerate;
+		}
+		
 		public ColorUtil.RGBA rgba()
 		{
 			return rgba;
@@ -100,9 +147,16 @@ public class ResourcepackModel
 			return vScale;
 		}
 		
-		public int frame(int tick)
+		public int frame(int tick, float partialTick)
 		{
-			return tick % frames;
+			//if(framerate.ticks == 1 && framerate.frames == 1)
+			//	return tick % frames;
+			
+			int extraTicks = tick % framerate.ticks;
+			float extraPartialTicks = extraTicks + partialTick;
+			float percentage = extraPartialTicks / framerate.ticks;
+			
+			return ((int) Math.floor(percentage * framerate.frames) + (tick / framerate.ticks)) % frames;
 		}
 		
 		public float uOffset(int frame)
@@ -321,8 +375,8 @@ public class ResourcepackModel
 		
 		public static Either<FrontBack, WormholeTexture> simpleWormholeEither(ResourceLocation texture, int rows, int columns, int frames, RGBA frontRGBA, RGBA backRGBA)
 		{
-			return Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, frontRGBA),
-					new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, backRGBA)));
+			return Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, Framerate.DEFAULT, frontRGBA),
+					new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, Framerate.DEFAULT, backRGBA)));
 		}
 		
 		public static Wormhole simpleWormhole(ResourceLocation eventHorizonTexture, ResourceLocation unstableEventHorizonTexture, ResourceLocation vortexTexture, ResourceLocation disconnectTexture, RGBA frontRGBA, RGBA backRGBA)
