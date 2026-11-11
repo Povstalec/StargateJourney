@@ -65,7 +65,7 @@ public class TollanStargateRenderer extends AbstractStargateRenderer<TollanStarg
         
         this.stargateModel.renderStargate(stargate, stargateVariant, partialTick, stack, source, combinedLight, combinedOverlay);
 		
-        this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+        this.renderWormhole(stargate, stargateVariant, stack, source, partialTick, combinedLight, combinedOverlay);
 		
 	    stack.popPose();
 	}

@@ -52,7 +52,7 @@ public class ClassicStargateRenderer extends AbstractStargateRenderer<ClassicSta
 
 		irisModel.renderIris(stargate, stack, source, combinedLight, combinedOverlay, stargate.irisInfo().getIrisProgress(partialTick));
 		
-	    this.renderWormhole(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+	    this.renderWormhole(stargate, stargateVariant, stack, source, partialTick, combinedLight, combinedOverlay);
 	    
 	    stack.popPose();
 	    
