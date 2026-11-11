@@ -2,10 +2,10 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:naquadah",
-		"sgjourney:naquadah_ingot",
-		"sgjourney:naquadah_copper_alloy",
-		"sgjourney:naquadah_iron_alloy",
-		"sgjourney:trinium_ingot"
+		"#forge:ingots/naquadah",
+		"#forge:ingots/naquadah_iron_alloy",
+		"#forge:ingots/naquadah_copper_alloy",
+		"#forge:ingots/refined_naquadah",
+		"#forge:ingots/trinium"
 	]
 }
