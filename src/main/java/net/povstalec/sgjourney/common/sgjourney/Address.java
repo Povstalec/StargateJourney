@@ -206,7 +206,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
 	{
 		if(symbol == 0)
-			return hasPointOfOrigin();
+		{
+			if(addressArray.length > fromInclusive && addressArray.length <= toExclusive)
+				return hasPointOfOrigin();
+			
+			return false;
+		}
 		
 		return containsRegularSymbol(symbol, fromInclusive, toExclusive);
 	}

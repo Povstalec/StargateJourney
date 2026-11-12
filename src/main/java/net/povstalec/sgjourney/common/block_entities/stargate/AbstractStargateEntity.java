@@ -1285,9 +1285,10 @@ public abstract class AbstractStargateEntity<SG extends BlockEntityStargate<?>> 
 		return this.encodedSymbols;
 	}
 	
-	public boolean isSymbolInAddress(int symbol)
+	public boolean isSymbolEncoded(int symbol)
 	{
-		return encodedSymbols.containsSymbol(symbol, 0, address.getLength()); // Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)
+		// Limiting it by the length of the address because we don't wanna check for symbols that aren't in the address (yet)
+		return encodedSymbols.containsSymbol(symbol, 0, address.getLength());
 	}
 	
 	public int getChevronsEngaged()
