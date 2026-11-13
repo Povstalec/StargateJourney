@@ -38,12 +38,12 @@ public class BlockEntityList extends SavedData
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
-	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
+	public static final String TRANSPORTERS = "Transporters";
 	
 	private MinecraftServer server;
 	
-	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
-	protected HashMap<TransporterID, Transporter> transporterMap = new HashMap<TransporterID, Transporter>();
+	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<>();
+	protected HashMap<TransporterID, Transporter> transporterMap = new HashMap<>();
 	
 	//============================================================================================
 	//******************************************Stargate******************************************

@@ -22,7 +22,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements SGJou
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected ClassicStargateEntity cachedStargateEntity = null;
+	protected ClassicStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -48,7 +48,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements SGJou
 	protected void cacheStargateEntity(@Nullable ClassicStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,7 +56,7 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements SGJou
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
@@ -71,22 +71,22 @@ public class ClassicBlockEntityStargate extends ClassicStargate implements SGJou
 	}
 	
 	@Override
-	public @Nullable ClassicStargateEntity getStargateEntity()
+	public @Nullable ClassicStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
 		invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
 		invalidateCachedStargateEntity();
 	}

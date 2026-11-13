@@ -22,7 +22,7 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements SGJou
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected PegasusStargateEntity cachedStargateEntity = null;
+	protected PegasusStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -48,7 +48,7 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements SGJou
 	protected void cacheStargateEntity(@Nullable PegasusStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,7 +56,7 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements SGJou
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
@@ -71,22 +71,22 @@ public class PegasusBlockEntityStargate extends PegasusStargate implements SGJou
 	}
 	
 	@Override
-	public @Nullable PegasusStargateEntity getStargateEntity()
+	public @Nullable PegasusStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
 		invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
 		invalidateCachedStargateEntity();
 	}

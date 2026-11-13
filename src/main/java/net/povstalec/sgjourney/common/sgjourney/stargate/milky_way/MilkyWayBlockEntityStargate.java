@@ -22,7 +22,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected MilkyWayStargateEntity cachedStargateEntity = null;
+	protected MilkyWayStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -48,7 +48,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 	protected void cacheStargateEntity(@Nullable MilkyWayStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,7 +56,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
@@ -71,22 +71,22 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 	}
 	
 	@Override
-	public @Nullable MilkyWayStargateEntity getStargateEntity()
+	public @Nullable MilkyWayStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
 		invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
 		invalidateCachedStargateEntity();
 	}

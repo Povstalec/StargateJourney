@@ -22,7 +22,7 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements SGJ
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected UniverseStargateEntity cachedStargateEntity = null;
+	protected UniverseStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -48,7 +48,7 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements SGJ
 	protected void cacheStargateEntity(@Nullable UniverseStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,7 +56,7 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements SGJ
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
@@ -71,22 +71,22 @@ public class UniverseBlockEntityStargate extends UniverseStargate implements SGJ
 	}
 	
 	@Override
-	public @Nullable UniverseStargateEntity getStargateEntity()
+	public @Nullable UniverseStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
 		invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
 		invalidateCachedStargateEntity();
 	}

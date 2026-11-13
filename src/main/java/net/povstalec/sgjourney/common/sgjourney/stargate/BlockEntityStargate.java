@@ -16,15 +16,21 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 {
 	// Basic Info
 	
+	/**
+	 * @return BlockPos this Stargate's BlockEntity is located at
+	 */
 	BlockPos getBlockPos();
 	
-	@Nullable StargateEntity getStargateEntity();
+	/**
+	 * @return BlockEntity of this Stargate, if it currently has one, otherwise null
+	 */
+	@Nullable StargateEntity getStargateBlockEntity();
 	
 	// Functional Interface stuff
 	
 	default void stargateRun(Consumer<StargateEntity> consumer)
 	{
-		StargateEntity stargate = getStargateEntity();
+		StargateEntity stargate = getStargateBlockEntity();
 		
 		if(stargate != null)
 			consumer.accept(stargate);
@@ -32,7 +38,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	
 	default <T> T stargateReturn(Function<StargateEntity, T> function, @Nullable T defaultValue)
 	{
-		StargateEntity stargate = getStargateEntity();
+		StargateEntity stargate = getStargateBlockEntity();
 		
 		if(stargate != null)
 			return function.apply(stargate);
@@ -42,7 +48,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	
 	default <T> T stargateReturnOrSupply(Function<StargateEntity, T> function, @NotNull Supplier<T> supplier)
 	{
-		StargateEntity stargate = getStargateEntity();
+		StargateEntity stargate = getStargateBlockEntity();
 		
 		if(stargate != null)
 			return function.apply(stargate);
@@ -50,9 +56,9 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 		return supplier.get();
 	}
 	
-	static StargateInfo.FeedbackMessage noStargateEntity()
+	static StargateInfo.FeedbackMessage noStargateBlockEntity()
 	{
-		StargateJourney.LOGGER.error("BlockEntityStargate.noStargateEntity: Stargate Entity could not be found");
+		StargateJourney.LOGGER.error("BlockEntityStargate.noStargateBlockEntity: Stargate Block Entity could not be found");
 		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
 	}
 	
@@ -68,7 +74,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 		return level.isLoaded(getBlockPos());
 	}
 	
-	void onStargateEntityUnloaded();
+	void onStargateBlockEntityUnloaded();
 	
-	void onStargateEntityRemoved();
+	void onStargateBlockEntityRemoved();
 }

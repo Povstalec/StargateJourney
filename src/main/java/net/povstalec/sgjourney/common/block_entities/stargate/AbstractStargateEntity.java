@@ -129,7 +129,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	private final StargateType<SG> stargateType;
 	
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected SG cachedStargate = null;
+	protected SG stargate = null;
 	
 	protected StructureGenEntity.Step generationStep = Step.GENERATED;
 	
@@ -168,8 +168,10 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	private final ResourceLocation defaultVariant;
 	
 	// Dialing and memory
-	protected Address.Mutable address = new Address.Mutable(); // Address used for dialing
-	protected Address.Mutable encodedSymbols = new Address.Mutable(); // Symbols that were actually physically encoded on the Stargate, mainly used for rendering
+	/// Address used for dialing
+	protected Address.Mutable address = new Address.Mutable();
+	/// Symbols that were actually physically encoded on the Stargate, mainly used for rendering
+	protected Address.Mutable encodedSymbols = new Address.Mutable();
 	@Nullable
 	protected UUID connectionID = null;
 	protected StargateConnection.State connectionState = StargateConnection.State.IDLE;
@@ -452,7 +454,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 			set9ChevronAddress(BlockEntityList.get(level).generate9ChevronAddress(level.getRandom()));
 		
 		cacheStargate(BlockEntityList.get(level).addStargate(this));
-		StargateNetwork.get(level).addStargate(cachedStargate);
+		StargateNetwork.get(level).addStargate(stargate);
 		this.setChanged();
 	}
 	
@@ -483,21 +485,21 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	@Override
 	public void setRemoved()
 	{
-		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		stargateRun(stargate -> stargate.onStargateBlockEntityUnloaded());
 		super.setRemoved();
 	}
 	
 	@Override
 	public void onChunkUnloaded()
 	{
-		stargateRun(stargate -> stargate.onStargateEntityUnloaded());
+		stargateRun(stargate -> stargate.onStargateBlockEntityUnloaded());
 		super.onChunkUnloaded();
 	}
 	
 	protected void cacheStargate(SG stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargate = stargate;
+		this.stargate = stargate;
 	}
 	
 	@Nullable
@@ -512,7 +514,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 		if(stargateCacheRequiresUpdate)
 			cacheStargate(fetchStargate());
 		
-		return cachedStargate;
+		return stargate;
 	}
 	
 	public void stargateRun(Consumer<SG> consumer)

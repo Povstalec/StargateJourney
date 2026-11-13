@@ -53,25 +53,25 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	@Override
 	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
 	{
-		return stargateReturnOrSupply(stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateBlockEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback)
 	{
-		return stargateReturnOrSupply(stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateEntity);
+		return stargateReturnOrSupply(stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
 	}
 	
 	@Override
 	default StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
-		StargateEntity stargateEntity = getStargateEntity();
+		StargateEntity stargateEntity = getStargateBlockEntity();
 		
 		if(stargateEntity != null)
 			return stargateEntity.resetStargate(feedback);
@@ -114,7 +114,7 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	@Override
 	default boolean checkValidity()
 	{
-		StargateEntity stargate = getStargateEntity();
+		StargateEntity stargate = getStargateBlockEntity();
 		
 		if(stargate == null)
 		{

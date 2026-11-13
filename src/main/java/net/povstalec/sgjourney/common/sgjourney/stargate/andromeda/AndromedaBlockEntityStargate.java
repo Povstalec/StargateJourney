@@ -22,7 +22,7 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements S
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected AndromedaStargateEntity cachedStargateEntity = null;
+	protected AndromedaStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -48,7 +48,7 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements S
 	protected void cacheStargateEntity(@Nullable AndromedaStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,7 +56,7 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements S
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
@@ -71,22 +71,22 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements S
 	}
 	
 	@Override
-	public @Nullable AndromedaStargateEntity getStargateEntity()
+	public @Nullable AndromedaStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
 		invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
 		invalidateCachedStargateEntity();
 	}
