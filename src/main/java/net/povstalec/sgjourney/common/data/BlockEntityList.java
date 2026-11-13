@@ -144,6 +144,9 @@ public class BlockEntityList extends SavedData
 	public <SG extends Stargate> SG getStargate(Class<SG> clazz, Address address)
 	{
 		Stargate stargate = getStargate(address);
+		if(stargate == null)
+			return null;
+		
 		if(clazz.isInstance(stargate))
 			return clazz.cast(stargate);
 		
