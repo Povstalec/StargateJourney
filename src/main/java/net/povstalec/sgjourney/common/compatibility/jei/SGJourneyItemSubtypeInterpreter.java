@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -120,10 +121,11 @@ public class SGJourneyItemSubtypeInterpreter
 			CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(ingredient);
 			if(blockEntityTag != null)
 			{
-				return List.of(
-					getStepSubtypeData(blockEntityTag),
-					Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS))
-				);
+				List<Object> list = new ArrayList<>();
+				list.add(getStepSubtypeData(blockEntityTag));
+				list.add(Address.Type.fromLength(blockEntityTag.getByte(CartoucheBlockEntity.LOCAL_ADDRESS)));
+				
+				return list;
 			}
 			
 			return null;
@@ -140,11 +142,12 @@ public class SGJourneyItemSubtypeInterpreter
 			CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(ingredient);
 			if(blockEntityTag != null)
 			{
-				return List.of(
-					getStepSubtypeData(blockEntityTag),
-					blockEntityTag.getBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN),
-					blockEntityTag.getBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN)
-				);
+				List<Object> list = new ArrayList<>();
+				list.add(getStepSubtypeData(blockEntityTag));
+				list.add(blockEntityTag.getBoolean(SymbolBlockEntity.LOCAL_POINT_OF_ORIGIN));
+				list.add(blockEntityTag.getBoolean(SymbolBlockEntity.RANDOM_POINT_OF_ORIGIN));
+				
+				return list;
 			}
 			
 			return null;
@@ -161,11 +164,12 @@ public class SGJourneyItemSubtypeInterpreter
 			CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(ingredient);
 			if(blockEntityTag != null)
 			{
-				return List.of(
-					getStepSubtypeData(blockEntityTag),
-					blockEntityTag.getBoolean(AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN),
-					blockEntityTag.getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS)
-				);
+				List<Object> list = new ArrayList<>();
+				list.add(getStepSubtypeData(blockEntityTag));
+				list.add(blockEntityTag.getBoolean(AbstractStargateEntity.LOCAL_POINT_OF_ORIGIN));
+				list.add(blockEntityTag.getBoolean(PegasusStargateEntity.DYNAMC_SYMBOLS));
+				
+				return list;
 			}
 			
 			return null;
