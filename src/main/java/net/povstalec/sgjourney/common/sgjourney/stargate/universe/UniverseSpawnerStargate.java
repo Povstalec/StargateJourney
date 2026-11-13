@@ -2,9 +2,12 @@ package net.povstalec.sgjourney.common.sgjourney.stargate.universe;
 
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneySpawnerStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SpawnerStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 public class UniverseSpawnerStargate extends SGJourneySpawnerStargate implements SpawnerStargate

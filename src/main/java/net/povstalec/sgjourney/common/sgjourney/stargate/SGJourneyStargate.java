@@ -10,8 +10,10 @@ import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -19,7 +21,7 @@ import java.util.*;
 /**
  * Default implementation for an abstract instance of Stargate used by Stargate Journey
  */
-public abstract class SGJourneyStargate implements Stargate
+public abstract class SGJourneyStargate implements DHDControlledStargate
 {
 	public static final double MIN_TRAVELER_SPEED = 0.4;
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
@@ -43,6 +45,8 @@ public abstract class SGJourneyStargate implements Stargate
 	protected Set<Integer> networks = new HashSet<>();
 	
 	protected Wormhole wormhole = new Wormhole();
+	
+	public final AutoCache.Controller<DHD, DHDControlledStargate> dhdCache = new AutoCache.Controller<>(this);
 	
 	public SGJourneyStargate(StargateType<?> type, MinecraftServer server)
 	{
@@ -84,6 +88,12 @@ public abstract class SGJourneyStargate implements Stargate
 	public Wormhole getWormhole()
 	{
 		return this.wormhole;
+	}
+	
+	@Override
+	public AutoCache.Controller<DHD, DHDControlledStargate> controllerCache()
+	{
+		return dhdCache;
 	}
 	
 	

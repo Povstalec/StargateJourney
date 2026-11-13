@@ -7,12 +7,13 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
 
 import javax.annotation.Nullable;
 
-public interface DHD/* extends AutoCache.IController<DHD, Stargate>*/
+public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 {
 	Capability<DHD> DHD_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 	
@@ -46,7 +47,10 @@ public interface DHD/* extends AutoCache.IController<DHD, Stargate>*/
 	boolean isLoaded();
 	
 	@Nullable
-	Stargate getStargate();
+	default DHDControlledStargate getStargate()
+	{
+		return receiverCache().get();
+	}
 	
 	double getMaxConnectionDistance();
 	

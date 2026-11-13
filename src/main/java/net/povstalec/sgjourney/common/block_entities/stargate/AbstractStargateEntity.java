@@ -63,10 +63,7 @@ import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPa
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
+import net.povstalec.sgjourney.common.sgjourney.stargate.*;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -562,7 +559,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	@Override
 	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
 	{
-		if(capability == Stargate.STARGATE_CAPABILITY)
+		if(capability == Stargate.STARGATE_CAPABILITY || capability == DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY)
 			return getStargateCapability().cast();
 		
 		return super.getCapability(capability, side);

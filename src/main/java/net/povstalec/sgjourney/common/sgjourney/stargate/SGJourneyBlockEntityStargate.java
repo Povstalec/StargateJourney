@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends BlockEntityStargate<StargateEntity>
+public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends BlockEntityStargate<StargateEntity>, DHDControlledStargate
 {
 	String COORDINATES = "Coordinates";
 	
