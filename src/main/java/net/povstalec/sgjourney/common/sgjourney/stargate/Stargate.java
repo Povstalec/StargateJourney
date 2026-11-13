@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public interface Stargate extends Comparable<Stargate>
+public interface Stargate extends Comparable<Stargate>/*, AutoCache.IReceiver<DHD, Stargate>*/
 {
 	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 	
@@ -159,6 +160,11 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return True if the Stargate is connected to a DHD, otherwise false
 	 */
 	boolean hasDHD();
+	
+	/**
+	 * @return DHD the Stargate is currently connected to, or null if it isn't connected to one
+	 */
+	//TODO @Nullable DHD getDHD();
 	
 	/**
 	 * @return Generation of the Stargate

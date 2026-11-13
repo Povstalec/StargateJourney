@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
@@ -55,7 +55,7 @@ public class BlockEntityList extends SavedData
 	 * @return Stargate that got added if successful, null if unsuccessful
 	 */
 	@Nullable
-	public <SG extends BlockEntityStargate<?>> SG addStargate(AbstractStargateEntity<SG> stargateEntity)
+	public <SG extends SGJourneyBlockEntityStargate<?>> SG addStargate(AbstractStargateEntity<SG> stargateEntity)
 	{
 		Address.Immutable address = stargateEntity.get9ChevronAddress();
 		
@@ -342,25 +342,17 @@ public class BlockEntityList extends SavedData
 	
 	// Stargates
 	
-	private <SG extends BlockEntityStargate<?>> SG constructAndLoadStargate(StargateType<SG> stargateType)
-	{
-		SG stargate = stargateType.constructStargate(server);
-		stargate.loadFromBlockEntity(stargate.getStargateEntity());
-		
-		return stargate;
-	}
-	
 	private void loadStargateFromBlockEntity(Address.Immutable address, CompoundTag stargateTag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(stargateTag.getString(Stargate.DIMENSION));
-		BlockPos blockPos = Conversion.intArrayToBlockPos(stargateTag.getIntArray(BlockEntityStargate.COORDINATES));
+		BlockPos blockPos = Conversion.intArrayToBlockPos(stargateTag.getIntArray(SGJourneyBlockEntityStargate.COORDINATES));
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)
 		{
-			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends BlockEntityStargate<?>> stargateEntity)
+			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends SGJourneyBlockEntityStargate<?>> stargateEntity)
 			{
-				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
+				SGJourneyBlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
 				stargate.loadFromBlockEntity(stargateEntity);
 				this.stargateMap.put(address, stargate);
 				setDirty(); // A pretty important change happened

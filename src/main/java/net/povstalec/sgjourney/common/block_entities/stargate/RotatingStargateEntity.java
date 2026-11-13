@@ -19,14 +19,14 @@ import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.RotationDirection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public abstract class RotatingStargateEntity<SG extends BlockEntityStargate<?>> extends IrisStargateEntity<SG>
+public abstract class RotatingStargateEntity<SG extends SGJourneyBlockEntityStargate<?>> extends IrisStargateEntity<SG>
 {
 	public static final String ROTATION = "rotation";
 	public static final String OLD_ROTATION = "old_rotation";

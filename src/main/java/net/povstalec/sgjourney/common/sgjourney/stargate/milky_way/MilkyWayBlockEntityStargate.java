@@ -13,12 +13,12 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
 
-public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements BlockEntityStargate<MilkyWayStargateEntity>
+public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJourneyBlockEntityStargate<MilkyWayStargateEntity>
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
@@ -114,7 +114,7 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements Blo
 	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
 		invalidateCachedStargateEntity();
-		return BlockEntityStargate.super.resetStargate(feedback);
+		return SGJourneyBlockEntityStargate.super.resetStargate(feedback);
 	}
 	
 	@Override
