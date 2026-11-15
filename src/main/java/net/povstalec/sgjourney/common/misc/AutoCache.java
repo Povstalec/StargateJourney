@@ -228,6 +228,36 @@ public class AutoCache<T>
 		return defaultValue;
 	}
 	
+	/**
+	 * If there is an Object cached, applies the specified function on it (attempts to fetch an Object if the cache is dirty)
+	 * @param function Function to apply on the Object
+	 * @param supplier Supplier to get a default value from if there is no cached Object
+	 * @return Result of the specified function, or the default value if there is no cached Object
+	 * @param <U> Type to return
+	 */
+	public <U> U returnOrSupplyDefault(Function<T, U> function, Supplier<U> supplier)
+	{
+		if(isPresent())
+			return function.apply(object);
+		
+		return supplier.get();
+	}
+	
+	/**
+	 * Like {@link #returnOrSupplyDefault(Function, Supplier)}, but doesn't attempt to fetch when no Object is found
+	 * @param function Function to apply on the Object
+	 * @param supplier Supplier to get a default value from if there is no cached Object
+	 * @return Result of the specified function, or the default value if there is no cached Object
+	 * @param <U> Type to return
+	 */
+	public <U> U returnCachedOrSupplyDefault(Function<T, U> function, Supplier<U> supplier)
+	{
+		if(isCached())
+			return function.apply(object);
+		
+		return supplier.get();
+	}
+	
 	public interface OldNewConsumer<T>
 	{
 		void accept(@Nullable T oldObject, @Nullable T newObject);

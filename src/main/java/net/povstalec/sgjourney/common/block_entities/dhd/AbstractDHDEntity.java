@@ -16,9 +16,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -27,7 +29,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.blocks.dhd.AbstractDHDBlock;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
@@ -41,7 +42,12 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
+import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -50,8 +56,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
-public abstract class AbstractDHDEntity extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IController<AbstractDHDEntity, AbstractStargateEntity<?>>
+public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> extends EnergyBlockEntity implements StructureGenEntity, SymbolInfo.Interface, ProtectedBlockEntity, PDAStatus
 {
 	public static final int DHD_INFO_DISTANCE = 5;
 	protected static final boolean REQUIRE_ENERGY = !StargateJourneyConfig.disable_energy_use.get();
@@ -77,8 +86,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	protected boolean isCenterButtonEngaged = false;
 	protected Address.Mutable address = new Address.Mutable();
 	
-	protected boolean enableAdvancedProtocols = false;
-	protected boolean enableCallForwarding = false;
+	protected boolean advancedProtocolsActive = false;
+	protected boolean doCallForwarding = false;
 	protected boolean hasNetworkRestrictions = false;
 	protected Set<Integer> networks = new TreeSet<>();
 	
@@ -97,7 +106,8 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	@Nullable
 	protected Vec3i stargateRelativePos = null;
-	public final AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> stargateCache = new AutoCache.Receiver<>(this);
+	
+	protected D dhd;
 	
 	public AbstractDHDEntity(BlockEntityType<?> blockEntity, BlockPos pos, BlockState state)
 	{
@@ -116,31 +126,47 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(getLevel().isClientSide())
 		{
-			// Revalidation
-			stargateCache.setRevalidate(() ->
+			dhdRun(dhd ->
 			{
-				if(stargateRelativePos == null)
+				AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache = dhd.receiverCache();
+				
+				// Revalidation
+				stargateCache.setRevalidate(() ->
+				{
+					if(stargateRelativePos == null)
+						return false;
+					
+					BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+					if(stargatePos != null)
+					{
+						BlockEntity blockEntity = level.getBlockEntity(stargatePos);
+						if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
+						{
+							// Check if the Stargate at the saved pos is the same Stargate
+							return stargateCache.getCached() == blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
+						}
+						
+					}
+					
 					return false;
-				
-				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
-					return stargateCache.getCached() == stargate; // Check if the Stargate at the saved pos is the same Stargate
-				
-				return false;
-			});
-			// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
-			stargateCache.setFetch(() ->
-			{
-				if(stargateRelativePos == null)
+				});
+				// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
+				stargateCache.setFetch(() ->
+				{
+					if(stargateRelativePos == null)
+						return null;
+					
+					BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+					if(stargatePos != null)
+					{
+						BlockEntity blockEntity = level.getBlockEntity(stargatePos);
+						if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
+							return blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
+					}
+					
 					return null;
-				
-				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-				if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
-					return stargate;
-				
-				return null;
+				});
 			});
-			
 		}
 		else
 		{
@@ -231,7 +257,7 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			stargateRelativePos = Conversion.intArrayToVec(tag.getIntArray(STARGATE_POS));
 		else
 			stargateRelativePos = null;
-		stargateCache.markDirty();
+		dhdRun(dhd -> dhd.receiverCache().markDirty());
 	}
 	
 	@Override
@@ -242,40 +268,47 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 			handleUpdateTag(tag);
 	}
 	
-	@Override
-	public AutoCache.Receiver<AbstractDHDEntity, AbstractStargateEntity<?>> receiverCache()
-	{
-		return stargateCache;
-	}
-	
 	public void setupServerAutoCache()
 	{
-		// Revalidation - check if it's not too far
-		stargateCache.setRevalidate(() ->
+		dhdRun(dhd ->
 		{
-			if(stargateRelativePos == null)
+			AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache = dhd.receiverCache();
+			
+			// Revalidation - check if it's not too far
+			stargateCache.setRevalidate(() ->
+			{
+				if(stargateRelativePos == null)
+					return false;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null)
+				{
+					BlockEntity blockEntity = level.getBlockEntity(stargatePos);
+					if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
+					{
+						DHDControlledStargate stargate = blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
+						// Check if the Stargate at the saved pos is the same Stargate
+						return stargateCache.getCached() == stargate && CoordinateHelper.Relative.distanceSqr(stargatePos, getBlockPos()) <= getMaxConnectionDistanceSqr();
+					}
+				}
+				
 				return false;
+			});
+			// Find nearest Stargate that isn't connected to a DHD
+			stargateCache.setFetch(() -> LocatorHelper.getNearestCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY, level, worldPosition, maxConnectionDistance,
+				stargate -> !stargate.controllerCache().isCached()));
 			
-			BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-			if(stargatePos != null && level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?> stargate)
-				return stargateCache.getCached() == stargate && CoordinateHelper.Relative.distanceSqr(stargatePos, getBlockPos()) <= getMaxConnectionDistanceSqr(); // Check if the Stargate at the saved pos is the same Stargate
-			
-			return false;
-		});
-		// Find nearest Stargate that isn't connected to a DHD
-		stargateCache.setFetch(() -> LocatorHelper.getNearestBlockEntityOfClass(AbstractStargateEntity.class, level, worldPosition, maxConnectionDistance,
-				stargate -> !stargate.dhdCache.isCached()));
-		
-		stargateCache.setOnChanged((oldStargate, newStargate) ->
-		{
-			if(newStargate != null)
-				stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), newStargate.getBlockPos());
-			else
-				stargateRelativePos = null;
-			
-			if(newStargate != null)
-				newStargate.updateDHD(this);
-			updateClient();
+			stargateCache.setOnChanged((oldStargate, newStargate) ->
+			{
+				if(newStargate instanceof BlockEntityStargate<?> blockEntityStargate)
+					stargateRelativePos = CoordinateHelper.Relative.getRelativeOffset(getDirection(), getBlockPos(), blockEntityStargate.getBlockPos());
+				else
+					stargateRelativePos = null;
+				
+				if(newStargate != null)
+					newStargate.updateDHD(dhd);
+				updateClient();
+			});
 		});
 	}
 	
@@ -345,12 +378,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	
 	
-	public int getMaxConnectionDistance()
+	public double getMaxConnectionDistance()
 	{
 		return maxConnectionDistance;
 	}
 	
-	public long getMaxConnectionDistanceSqr()
+	public double getMaxConnectionDistanceSqr()
 	{
 		return (long) maxConnectionDistance * maxConnectionDistance;
 	}
@@ -360,45 +393,45 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		return this.energyTarget < 0 ? CommonStargateConfig.stargate_energy_capacity.get() : this.energyTarget;
 	}
 	
-	public boolean enableAdvancedProtocols()
+	public boolean advancedProtocolsActive()
 	{
-		return this.enableAdvancedProtocols;
+		return this.advancedProtocolsActive;
 	}
 	
 	public int autocloseTicks()
 	{
-		return enableAdvancedProtocols() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
+		return advancedProtocolsActive() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
 	}
 	
 	public long getStargateEnergy()
 	{
-		return stargateCache.returnOrDefault(stargate -> stargate.energyStorage.getTrueEnergyStored(), -1L);
+		return stargateReturn(Stargate::getEnergyStored, -1L);
 	}
 	
 	public int getStargateOpenTime()
 	{
-		return stargateCache.returnOrDefault(AbstractStargateEntity::getOpenTime, 0);
+		return stargateReturn(Stargate::getOpenTime, 0);
 	}
 	
 	public int getStargateTimeSinceLastTraveler()
 	{
-		return stargateCache.returnOrDefault(AbstractStargateEntity::getTimeSinceLastTraveler, 0);
+		return stargateReturn(Stargate::getTimeSinceLastTraveler, 0);
 	}
 	
-	public void updateDHD(Address.Mutable address, boolean isCenterButtonEngaged)
+	public void updateDHD(DHDControlledStargate stargate, Address address, boolean shouldEngageCenterButton)
 	{
 		setAddress(address);
-		setCenterButtonEngaged(isCenterButtonEngaged);
+		setCenterButtonEngaged(shouldEngageCenterButton);
 		updateClient();
 		setChanged();
 	}
 	
-	public void setAddress(Address.Mutable address)
+	public void setAddress(Address address)
 	{
-		this.address = address;
+		this.address.fromAddress(address);
 	}
 	
-	public Address getAddress()
+	public Address.Mutable getAddress()
 	{
 		return this.address;
 	}
@@ -510,29 +543,32 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 	}
 	
-	private void tryPowerStargate(AbstractStargateEntity<?> stargate, ItemStack energyStack)
+	private void tryPowerStargate(DHDControlledStargate stargate, ItemStack energyStack)
 	{
-		if(stargate.energyStorage.getTrueEnergyStored() < getEnergyTarget())
+		if(stargate.getEnergyStored() < getEnergyTarget())
 		{
-			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.energyStorage.getTrueEnergyStored(), maxEnergyTransfer());
+			long needed = SGJourneyEnergy.energyToTarget(getEnergyTarget(), stargate.getEnergyStored(), maxEnergyTransfer());
 			
 			// Uses energy from an Energy Item if one is present
 			if(InventoryUtil.stackHasEnergy(energyStack))
 			{
 				IEnergyStorage energyStorage = energyStack.getCapability(ForgeCapabilities.ENERGY).resolve().get();
-				stargate.energyStorage.drainOtherEnergyStorage(energyStorage, needed);
+				IEnergyStorage stargateEnergy = stargate.getEnergyStorage();
+				
+				if(stargateEnergy != null)
+					SGJourneyEnergy.moveEnergy(energyStorage, stargateEnergy, needed);
 			}
 			else if(SyncedConfig.dhd_holds_zpm.get() && zpmEnergy.hasEnergy())
-				zpmEnergy.fillOtherEnergyStorage(stargate.energyStorage, needed);
+				zpmEnergy.fillOtherEnergyStorage(stargate.getEnergyStorage(), needed);
 			// Uses energy from the DHD energy buffer
 			else
 			{
 				// Using depleteEnergy() here because extracting is disabled in order to avoid pull-based energy systems siphoning energy from the DHD
 				long simulatedOutputAmount = energyStorage.depleteEnergy(needed, true);
-				long simulatedReceiveAmount = stargate.energyStorage.receiveLongEnergy(simulatedOutputAmount, true);
+				long simulatedReceiveAmount = stargate.receiveEnergy(simulatedOutputAmount, true);
 				
 				energyStorage.depleteEnergy(simulatedReceiveAmount, false);
-				stargate.energyStorage.receiveLongEnergy(simulatedReceiveAmount, false);
+				stargate.receiveEnergy(simulatedReceiveAmount, false);
 			}
 		}
 	}
@@ -556,17 +592,12 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		}
 		// Sends energy to the Stargate
 		else
-			stargateCache.ifPresent(stargate -> tryPowerStargate(stargate, energyStack));
+			stargateRun(stargate -> tryPowerStargate(stargate, energyStack));
 	}
 
-	public void setCallForwardingState(boolean enableCallForwarding)
+	public boolean doCallForwarding()
 	{
-		this.enableCallForwarding = enableCallForwarding;
-	}
-
-	public boolean callForwardingEnabled()
-	{
-		return this.enableCallForwarding;
+		return this.doCallForwarding;
 	}
 	
 	public boolean hasNetworkRestrictions()
@@ -604,71 +635,172 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	protected abstract SoundEvent getPressSound();
 	
+	// Do not confuse this with setRemoved()
+	public void removeDHD()
+	{
+		dhdRun(dhd -> dhd.receiverCache().clearTwoWays());
+	}
+	
+	@Override
+	public void setRemoved()
+	{
+		if(level != null && level.isClientSide())
+			dhdRun(dhd -> dhd.onDHDBlockEntityRemoved());
+		super.setRemoved();
+	}
+	
+	@Override
+	public void onChunkUnloaded()
+	{
+		if(level != null && level.isClientSide())
+			dhdRun(dhd -> dhd.onDHDBlockEntityUnloaded());
+		super.onChunkUnloaded();
+	}
+	
+	@Nullable
+	protected abstract D fetchDHD();
+	
+	@Nullable
+	public D getDHD()
+	{
+		if(dhd == null)
+			dhd = fetchDHD();
+		
+		return dhd;
+	}
+	
+	// Functional Interface stuff
+	
+	public void dhdRun(Consumer<D> consumer)
+	{
+		D dhd = getDHD();
+		
+		if(dhd != null)
+			consumer.accept(dhd);
+	}
+	
+	public void dhdRun(Consumer<D> consumer, Runnable defaultAction)
+	{
+		D dhd = getDHD();
+		
+		if(dhd != null)
+			consumer.accept(dhd);
+		else
+			defaultAction.run();
+	}
+	
+	public <T> T dhdReturn(Function<D, T> function, @Nullable T defaultValue)
+	{
+		D dhd = getDHD();
+		
+		if(dhd != null)
+			return function.apply(dhd);
+		
+		return defaultValue;
+	}
+	
+	public <T> T dhdReturnOrSupply(Function<D, T> function, @NotNull Supplier<T> supplier)
+	{
+		D dhd = getDHD();
+		
+		if(dhd != null)
+			return function.apply(dhd);
+		
+		return supplier.get();
+	}
+	
+	public boolean hasStargate()
+	{
+		return dhdReturn(dhd -> dhd.receiverCache().isPresent(), false);
+	}
+	
+	public void stargateRun(Consumer<DHDControlledStargate> consumer)
+	{
+		dhdRun(dhd -> dhd.receiverCache().ifPresent(consumer));
+	}
+	
+	public void stargateRun(Consumer<DHDControlledStargate> consumer, Runnable defaultAction)
+	{
+		dhdRun(dhd -> dhd.receiverCache().ifPresentOrElse(consumer, defaultAction), defaultAction);
+	}
+	
+	public <T> T stargateReturn(Function<DHDControlledStargate, T> function, @Nullable T defaultValue)
+	{
+		return dhdReturn(dhd -> dhd.receiverCache().returnCachedOrDefault(function, defaultValue), defaultValue);
+	}
+	
+	public <T> T stargateReturnOrSupply(Function<DHDControlledStargate, T> function, @NotNull Supplier<T> supplier)
+	{
+		return dhdReturnOrSupply(dhd -> dhd.receiverCache().returnCachedOrSupplyDefault(function, supplier), supplier);
+	}
+	
+	//============================================================================================
+	//****************************************Capabilities****************************************
+	//============================================================================================
+	
+	protected LazyOptional<DHD> getDHDCapability()
+	{
+		D dhd = getDHD();
+		
+		if(dhd == null)
+			return LazyOptional.empty();
+		
+		return LazyOptional.of(() -> dhd);
+	}
+	
+	@Override
+	public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction side)
+	{
+		if(capability == DHD.DHD_CAPABILITY)
+			return getDHDCapability().cast();
+		
+		return super.getCapability(capability, side);
+	}
+	
+	//============================================================================================
+	//******************************************Dialing*******************************************
+	//============================================================================================
+	
 	public abstract void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address);
 	
 	public void pressButton(int index)
 	{
 		if(index < 0)
-			engageStargate();
+		{
+			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
+				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+			else
+			{
+				level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
+				engageStargate();
+			}
+			
+			if(REQUIRE_ENERGY)
+				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
+		}
 		else
-			encodeSymbol(index);
+		{
+			if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
+				sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
+			else
+			{
+				level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
+				encodeSymbol(index);
+			}
+			
+			if(REQUIRE_ENERGY)
+				energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
+		}
 	}
 	
-	public void engageStargate()
+	public boolean engageStargate()
 	{
-		stargateCache.markDirtyTwoWays();
-		stargateCache.ifPresentOrElse(stargate ->
-				{
-					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
-					{
-						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
-						return;
-					}
-					
-					level.playSound(null, this.getBlockPos(), getEnterSound(), SoundSource.BLOCKS, 0.5F, 1F);
-					
-					if(stargate.isConnected())
-						stargate.dhdDisconnectStargate(this);
-					else
-						stargate.dhdEngageStargate(this);
-					stargate.updateDHD(this);
-					
-					if(REQUIRE_ENERGY)
-						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
-				},
-				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+		return dhdReturn(DHD::engageStargate, false);
 	}
 	
-	public void encodeSymbol(int symbol)
+	public boolean encodeSymbol(int symbol)
 	{
-		stargateCache.markDirtyTwoWays();
-		stargateCache.ifPresentOrElse(stargate ->
-				{
-					if(stargate.isConnected())
-					{
-						sendMessageToNearbyPlayers(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo().getMessageComponent(), DHD_INFO_DISTANCE);
-						return;
-					}
-					
-					if(REQUIRE_ENERGY && energyStorage.getTrueEnergyStored() < buttonPressEnergyCost())
-					{
-						sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_enough_energy").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE);
-						return;
-					}
-					
-					level.playSound(null, this.getBlockPos(), getPressSound(), SoundSource.BLOCKS, 0.5F, 1F);
-					
-					// Remap symbol if needed while Advanced Protocols are enabled
-					if(enableAdvancedProtocols() && !stargate.symbolMap.isSymbolMapped(symbol))
-						stargate.indirectEngageSymbol(stargate.symbolMap.remapToRandomSymbol(symbol, this.address.getArray()), false);
-					else
-						stargate.indirectEngageSymbol(symbol, false);
-					stargate.updateDHD(this);
-					
-					if(REQUIRE_ENERGY)
-						energyStorage.depleteEnergy(buttonPressEnergyCost(), false);
-				},
-				() -> sendMessageToNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED), DHD_INFO_DISTANCE));
+		return dhdReturn(dhd -> dhd.encodeSymbol(symbol), false);
 	}
 	
 	public boolean isSymbolEncoded(int symbol)
@@ -678,15 +810,15 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	
 	public boolean isSymbolRemapped(int symbol)
 	{
-		return stargateCache.returnOrDefault(stargate -> stargate.symbolMap.isReplacingSymbol(symbol), false);
+		return stargateReturn(stargate -> stargate.getSymbolMap().isReplacingSymbol(symbol), false);
 	}
 	
 	public int getRemappedOriginalSymbol(int symbol)
 	{
-		return stargateCache.returnOrDefault(stargate -> stargate.symbolMap.getOriginalSymbol(symbol), symbol);
+		return stargateReturn(stargate -> stargate.getSymbolMap().getOriginalSymbol(symbol), symbol);
 	}
 	
-	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity dhd)
+	public static void tick(Level level, BlockPos pos, BlockState state, AbstractDHDEntity<?> dhd)
     {
 		if(level.isClientSide())
 			return;
@@ -704,10 +836,9 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 		if(symbolInfo().symbols() != null)
 			status.add(Component.translatable("info.sgjourney.symbols").append(Component.literal(": " + symbolInfo().symbols().location())).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
-		if(stargateCache.isPresent())
-			status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(stargateCache.get().getBlockPos()))).withStyle(ChatFormatting.AQUA));
-		else
-			status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA));
+		stargateRun(stargate -> status.add(Component.translatable("info.sgjourney.stargate_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(stargate.getPosition())))),
+			// Else
+			() -> status.add(Component.translatable("info.sgjourney.no_stargate_connected").withStyle(ChatFormatting.AQUA)));
 		
 		return status;
 	}
@@ -725,18 +856,24 @@ public abstract class AbstractDHDEntity extends EnergyBlockEntity implements Str
 	{
 		if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
 		{
-			if(PointOfOrigin.isValid(level.getServer(), stargateCache.get().symbolInfo().pointOfOrigin()))
-				symbolInfo().setPointOfOrigin(stargateCache.get().symbolInfo().pointOfOrigin());
-			else // Use dimension Point of Origin if Stargate Point of Origin isn't valid
-				symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			stargateRun(stargate ->
+			{
+				if(PointOfOrigin.isValid(level.getServer(), stargate.pointOfOrigin()))
+					symbolInfo().setPointOfOrigin(stargate.pointOfOrigin());
+				else // Use dimension Point of Origin if Stargate Point of Origin isn't valid
+					symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+			});
 		}
 		
 		if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 		{
-			if(Symbols.isValid(level.getServer(), stargateCache.get().symbolInfo().symbols()))
-				symbolInfo().setSymbols(stargateCache.get().symbolInfo().symbols());
-			else
-				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+			stargateRun(stargate ->
+			{
+				if(Symbols.isValid(level.getServer(), stargate.symbols()))
+					symbolInfo().setSymbols(stargate.symbols());
+				else
+					symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+			});
 		}
 	}
 	

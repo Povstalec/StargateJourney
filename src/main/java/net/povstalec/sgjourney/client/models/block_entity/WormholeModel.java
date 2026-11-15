@@ -84,13 +84,13 @@ public class WormholeModel
 		int distortionTicks = getDistortionTicks(stargate);
 		
 		if(stargate.isConnected())
-			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTime(), irisProgress);
 		
 		this.renderEventHorizon(stack, source, wormhole, stargate, wormholeDistortion, partialTick, irisProgress, stargate.showUnstableWormhole());
 		this.renderDisconnect(stack, source, wormhole, stargate, wormholeDistortion, partialTick, wormhole.disconnectTicks().disconnectEndTicks, irisProgress);
 		
 		if(wormhole.hasStrudel())
-			this.renderStrudel(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderStrudel(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTime(), irisProgress);
 	}
 	
 	private static float getDistortion(float wormholeDistortion, int maxTicks, int disconnectTicks)

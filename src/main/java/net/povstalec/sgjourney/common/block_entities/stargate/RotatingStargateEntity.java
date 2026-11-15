@@ -415,7 +415,7 @@ public abstract class RotatingStargateEntity<SG extends SGJourneyBlockEntityStar
 		if(!level.isClientSide())
 			updateClient();
 		
-		return setRecentFeedback(directEngageSymbol(getCurrentSymbol(), true));
+		return setRecentFeedback(directEngageSymbol(getCurrentSymbol(), true, StargateInfo.ChevronSound.ENGAGE));
 	}
 	
 	public int getDesiredRotation(int desiredSymbol)
@@ -440,7 +440,7 @@ public abstract class RotatingStargateEntity<SG extends SGJourneyBlockEntityStar
 		if(this.signalStrength == 15 && this.previousSignalStrength != this.signalStrength)
 		{
 			if(!isConnected())
-				directEngageSymbol(getCurrentSymbol(), true);
+				directEngageSymbol(getCurrentSymbol(), true, StargateInfo.ChevronSound.ENGAGE);
 			else
 				disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_POINT_OF_ORIGIN.withInfo());
 		}

@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.dhd;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
@@ -36,6 +36,16 @@ public interface BlockEntityDHD<DHDEntity extends BlockEntity> extends DHD
 			consumer.accept(dhd);
 	}
 	
+	default void dhdRun(Consumer<DHDEntity> consumer, Runnable defaultAction)
+	{
+		DHDEntity dhd = getDHDBlockEntity();
+		
+		if(dhd != null)
+			consumer.accept(dhd);
+		else
+			defaultAction.run();
+	}
+	
 	default <T> T dhdReturn(Function<DHDEntity, T> function, @Nullable T defaultValue)
 	{
 		DHDEntity dhd = getDHDBlockEntity();
@@ -65,7 +75,7 @@ public interface BlockEntityDHD<DHDEntity extends BlockEntity> extends DHD
 	@Override
 	default boolean isLoaded()
 	{
-		ServerLevel level = getLevel();
+		Level level = getLevel();
 		if(level == null)
 			return false;
 		

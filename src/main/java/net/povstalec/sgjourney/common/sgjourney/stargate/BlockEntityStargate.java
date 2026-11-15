@@ -1,7 +1,7 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
@@ -26,6 +26,16 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	 */
 	@Nullable StargateEntity getStargateBlockEntity();
 	
+	void updateFromBlockEntity(StargateEntity stargateEntity);
+	
+	// Updating
+	
+	@Override
+	default void update()
+	{
+		stargateRun(this::updateFromBlockEntity);
+	}
+	
 	// Functional Interface stuff
 	
 	default void stargateRun(Consumer<StargateEntity> consumer)
@@ -34,6 +44,16 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 		
 		if(stargate != null)
 			consumer.accept(stargate);
+	}
+	
+	default void stargateRun(Consumer<StargateEntity> consumer, Runnable defaultAction)
+	{
+		StargateEntity stargate = getStargateBlockEntity();
+		
+		if(stargate != null)
+			consumer.accept(stargate);
+		else
+			defaultAction.run();
 	}
 	
 	default <T> T stargateReturn(Function<StargateEntity, T> function, @Nullable T defaultValue)
@@ -59,6 +79,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	static StargateInfo.FeedbackMessage noStargateBlockEntity()
 	{
 		StargateJourney.LOGGER.error("BlockEntityStargate.noStargateBlockEntity: Stargate Block Entity could not be found");
+		Thread.dumpStack();
 		return StargateInfo.Feedback.UNKNOWN_ERROR.withInfo();
 	}
 	
@@ -67,7 +88,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	@Override
 	default boolean isLoaded()
 	{
-		ServerLevel level = getLevel();
+		Level level = getLevel();
 		if(level == null)
 			return false;
 		

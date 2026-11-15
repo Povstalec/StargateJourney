@@ -42,7 +42,8 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	public static final int POINT_OF_ORIGIN = 0;
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
-	public static final int MAX_SYMBOL = 47;
+	public static final int TOTAL_SYMBOLS = 48; // Total symbols (including the Point of Origin)
+	public static final int MAX_SYMBOL = TOTAL_SYMBOLS - 1;
 	public static final int ADDRESS_GENERATION_SYMBOLS = 36; // Max symbol (exclusive) allowed for normal generation purposes
 	
 	protected int[] addressArray = new int[0];

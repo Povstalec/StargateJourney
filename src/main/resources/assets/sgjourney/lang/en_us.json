@@ -910,6 +910,7 @@
 	"info.sgjourney.transporter_id.symbol_out_of_bounds": "Transporter ID symbol %s out of bounds <1, 8>",
 	"info.sgjourney.dimension": "Dimension",
 	"info.sgjourney.recent_feedback": "Recent Feedback",
+	"info.sgjourney.is_primary": "Is Primary",
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Iris Texture",
 	"info.sgjourney.iris_durability": "Iris Durability",
