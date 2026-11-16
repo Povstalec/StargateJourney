@@ -1,11 +1,11 @@
-package net.povstalec.sgjourney.common.sgjourney.dhd;
+package net.povstalec.sgjourney.common.sgjourney.dhd.api;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

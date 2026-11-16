@@ -5,7 +5,8 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.dhd.api.BlockEntityDHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
 
 import javax.annotation.Nullable;
 import java.util.Set;
