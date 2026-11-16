@@ -1,0 +1,9 @@
+{
+	"parent": "minecraft:block/stairs",
+	"textures":
+	{
+		"bottom": "sgjourney:block/polished_trinium_block",
+		"side": "sgjourney:block/polished_trinium_block",
+		"top": "sgjourney:block/polished_trinium_block"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.rima",
+	"point_of_origin": "sgjourney:rima",
+	"symbols": "sgjourney:rima",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [1, 31, 21, 8, 19, 2, 9], "randomizable": true},
+	"galactic_addresses":
+	{
+		"sgjourney:milky_way": {"address": {"symbols": [33, 20, 10, 22, 3, 17], "randomizable": true}}
+	}
+}

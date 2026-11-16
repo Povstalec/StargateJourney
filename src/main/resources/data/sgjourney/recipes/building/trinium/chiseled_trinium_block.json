@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:polished_trinium_slab" }
+	},
+	"result": { "item": "sgjourney:chiseled_trinium_block" }
+}

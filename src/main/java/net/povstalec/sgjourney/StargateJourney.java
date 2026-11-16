@@ -1,18 +1,6 @@
 package net.povstalec.sgjourney;
 
-import java.util.function.BiFunction;
-
-import net.minecraftforge.client.event.ModelEvent;
-import net.povstalec.sgjourney.client.screens.*;
-import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.entities.Jaffa;
-import net.povstalec.sgjourney.common.init.*;
-import net.povstalec.sgjourney.common.misc.RenderAMD;
-import org.apache.commons.lang3.SystemUtils;
-import org.slf4j.Logger;
-
 import com.mojang.logging.LogUtils;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,6 +12,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterDimensionSpecialEffectsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -39,34 +28,40 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.povstalec.sgjourney.client.Layers;
 import net.povstalec.sgjourney.client.models.block.CableModelLoader;
-import net.povstalec.sgjourney.client.render.block_entity.CartoucheRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.ClassicStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.MilkyWayStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.PegasusStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.SymbolBlockRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TollanStargateRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.TransportRingsRenderer;
-import net.povstalec.sgjourney.client.render.block_entity.UniverseStargateRenderer;
-import net.povstalec.sgjourney.client.render.entity.GoauldRenderer;
-import net.povstalec.sgjourney.client.render.entity.AnthropoidRenderer;
-import net.povstalec.sgjourney.client.render.entity.PlasmaProjectileRenderer;
+import net.povstalec.sgjourney.client.models.block.CartoucheModelLoader;
+import net.povstalec.sgjourney.client.models.block.SymbolBlockModelLoader;
+import net.povstalec.sgjourney.client.render.block_entity.stargate.*;
+import net.povstalec.sgjourney.client.render.block_entity.transporter.TransportRingsRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHolderRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMHubRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPlugRenderer;
+import net.povstalec.sgjourney.client.render.block_entity.zpm.ZPMPortRenderer;
+import net.povstalec.sgjourney.client.render.entity.*;
 import net.povstalec.sgjourney.client.render.level.SGJourneyDimensionSpecialEffects;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackReloadListener;
+import net.povstalec.sgjourney.client.screens.*;
 import net.povstalec.sgjourney.client.screens.config.ConfigScreen;
+import net.povstalec.sgjourney.client.screens.dhd.*;
+import net.povstalec.sgjourney.client.screens.graver.CartoucheEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.DHDEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.StargateEngravingScreen;
+import net.povstalec.sgjourney.client.screens.graver.SymbolBlockEngravingScreen;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.entities.Human;
+import net.povstalec.sgjourney.common.init.*;
 import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
-import net.povstalec.sgjourney.common.sgjourney.AddressTable;
-import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.SolarSystem;
-import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
-import net.povstalec.sgjourney.common.sgjourney.SymbolSet;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.misc.RemappingHelper;
+import net.povstalec.sgjourney.common.misc.RenderAMD;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
+import org.apache.commons.lang3.SystemUtils;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
+import java.util.Calendar;
+import java.util.List;
+import java.util.function.BiFunction;
 
 @Mod(StargateJourney.MODID)
 public class StargateJourney
@@ -89,6 +84,8 @@ public class StargateJourney
     public StargateJourney()
     {
     	IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+		
+		RemappingHelper.setupRemapping();
     	
     	ItemInit.register(eventBus);
         BlockInit.register(eventBus);
@@ -106,19 +103,24 @@ public class StargateJourney
         RecipeTypeInit.register(eventBus);
         StatisticsInit.register(eventBus);
 		CommandInit.register(eventBus);
+		StructurePlacementInit.register(eventBus);
 
         GalaxyInit.register(eventBus);
+		StargateInit.register(eventBus);
+		TransporterInit.register(eventBus);
         
         AdvancementInit.register();
         
         eventBus.addListener((DataPackRegistryEvent.NewRegistry event) -> 
         {
-            event.dataPackRegistry(SymbolSet.REGISTRY_KEY, SymbolSet.CODEC, SymbolSet.CODEC);
             event.dataPackRegistry(Symbols.REGISTRY_KEY, Symbols.CODEC, Symbols.CODEC);
             event.dataPackRegistry(Galaxy.REGISTRY_KEY, Galaxy.CODEC, Galaxy.CODEC);
             event.dataPackRegistry(PointOfOrigin.REGISTRY_KEY, PointOfOrigin.CODEC, PointOfOrigin.CODEC);
-            event.dataPackRegistry(SolarSystem.REGISTRY_KEY, SolarSystem.CODEC, SolarSystem.CODEC);
+            event.dataPackRegistry(AddressRegion.REGISTRY_KEY, AddressRegion.CODEC, AddressRegion.CODEC);
+            event.dataPackRegistry(SpaceLocation.REGISTRY_KEY, SpaceLocation.CODEC, SpaceLocation.CODEC);
             event.dataPackRegistry(AddressTable.REGISTRY_KEY, AddressTable.CODEC, AddressTable.CODEC);
+            event.dataPackRegistry(SymbolTable.REGISTRY_KEY, SymbolTable.CODEC, SymbolTable.CODEC);
+            event.dataPackRegistry(PointOfOriginTable.REGISTRY_KEY, PointOfOriginTable.CODEC, PointOfOriginTable.CODEC);
             event.dataPackRegistry(StargateVariant.REGISTRY_KEY, StargateVariant.CODEC, StargateVariant.CODEC);
         });
         
@@ -128,10 +130,11 @@ public class StargateJourney
 		
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, StargateJourneyConfig.CLIENT_CONFIG, "sgjourney-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, StargateJourneyConfig.COMMON_CONFIG, "sgjourney-common.toml");
-		
-		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, 
+
+		ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class,
 				() -> new ConfigScreenHandler.ConfigScreenFactory(new BiFunction<Minecraft, Screen, Screen>()
 				{
+					// Not using lambda to prevent class loading issues on dedicated server
 					@Override
 					public Screen apply(Minecraft mc, Screen screen)
 					{
@@ -150,9 +153,6 @@ public class StargateJourney
             StatisticsInit.register();
             PacketHandlerInit.register();
     		//VillagerInit.registerPOIs();
-			
-			StargateInit.register();
-			TransporterInit.register();
     	});
     }
 	
@@ -199,48 +199,81 @@ public class StargateJourney
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_SOURCE.get(), RenderType.translucent());
             ItemBlockRenderTypes.setRenderLayer(FluidInit.HEAVY_LIQUID_NAQUADAH_FLOWING.get(), RenderType.translucent());
 
-        	MenuScreens.register(MenuInit.INTERFACE.get(), InterfaceScreen::new);
-            
-        	MenuScreens.register(MenuInit.RING_PANEL.get(), RingPanelScreen::new);
-
-        	MenuScreens.register(MenuInit.DHD_CRYSTAL.get(), DHDCrystalScreen::new);
+        	MenuScreens.register(MenuInit.BASIC_INTERFACE.get(), InterfaceScreen.Basic::new);
+        	MenuScreens.register(MenuInit.CRYSTAL_INTERFACE.get(), InterfaceScreen.Crystal::new);
+        	MenuScreens.register(MenuInit.ADVANCED_CRYSTAL_INTERFACE.get(), InterfaceScreen.AdvancedCrystal::new);
+			
+			MenuScreens.register(MenuInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsScreen.Ancient::new);
+			MenuScreens.register(MenuInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsScreen.Goauld::new);
+			
+        	MenuScreens.register(MenuInit.RING_PANEL_PROTECTED.get(), RingPanelScreen.Protected::new);
+        	MenuScreens.register(MenuInit.RING_PANEL_UNPROTECTED.get(), RingPanelScreen.Unprotected::new);
+			
+			MenuScreens.register(MenuInit.UNIVERSE_DHD_CRYSTAL.get(), DHDCrystalScreen.Universe::new);
+			MenuScreens.register(MenuInit.UNIVERSE_DHD.get(), UniverseDHDScreen::new);
+        	MenuScreens.register(MenuInit.MILKY_WAY_DHD_CRYSTAL.get(), DHDCrystalScreen.MilkyWay::new);
         	MenuScreens.register(MenuInit.MILKY_WAY_DHD.get(), MilkyWayDHDScreen::new);
+			MenuScreens.register(MenuInit.PEGASUS_DHD_CRYSTAL.get(), DHDCrystalScreen.Pegasus::new);
         	MenuScreens.register(MenuInit.PEGASUS_DHD.get(), PegasusDHDScreen::new);
+			MenuScreens.register(MenuInit.CLASSIC_DHD_CRYSTAL.get(), DHDCrystalScreen.Classic::new);
         	MenuScreens.register(MenuInit.CLASSIC_DHD.get(), ClassicDHDScreen::new);
+			MenuScreens.register(MenuInit.ANDROMEDA_DHD_CRYSTAL.get(), DHDCrystalScreen.Andromeda::new);
+			MenuScreens.register(MenuInit.ANDROMEDA_DHD.get(), AndromedaDHDScreen::new);
 
         	MenuScreens.register(MenuInit.NAQUADAH_GENERATOR.get(), NaquadahGeneratorScreen::new);
 
-        	MenuScreens.register(MenuInit.ZPM_HUB.get(), ZPMHubScreen::new);
-
         	MenuScreens.register(MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.LiquidNaquadah::new);
         	MenuScreens.register(MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizerScreen.HeavyLiquidNaquadah::new);
-        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen::new);
-        	
-        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
-
-        	MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
+        	MenuScreens.register(MenuInit.CRYSTALLIZER.get(), CrystallizerScreen.Crystallizer::new);
+        	MenuScreens.register(MenuInit.ADVANCED_CRYSTALLIZER.get(), CrystallizerScreen.AdvancedCrystallizer::new);
+			
+			MenuScreens.register(MenuInit.TRANSCEIVER.get(), TransceiverScreen::new);
 			
 			MenuScreens.register(MenuInit.NAQUADAH_BATTERY.get(), BatteryScreen::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_STONE_CARTOUCHE.get(), CartoucheEngravingScreen.Stone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.Sandstone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_RED_SANDSTONE_CARTOUCHE.get(), CartoucheEngravingScreen.RedSandstone::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_STONE_SYMBOL.get(), SymbolBlockEngravingScreen.Stone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.Sandstone::new);
+			MenuScreens.register(MenuInit.ENGRAVING_RED_SANDSTONE_SYMBOL.get(), SymbolBlockEngravingScreen.RedSandstone::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_STARGATE.get(), StargateEngravingScreen.Universe::new);
+			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_STARGATE.get(), StargateEngravingScreen.MilkyWay::new);
+			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_STARGATE.get(), StargateEngravingScreen.Classic::new);
+			MenuScreens.register(MenuInit.ENGRAVING_ANDROMEDA_STARGATE.get(), StargateEngravingScreen.Andromeda::new);
+			
+			MenuScreens.register(MenuInit.ENGRAVING_UNIVERSE_DHD.get(), DHDEngravingScreen.Universe::new);
+			MenuScreens.register(MenuInit.ENGRAVING_MILKY_WAY_DHD.get(), DHDEngravingScreen.MilkyWay::new);
+			MenuScreens.register(MenuInit.ENGRAVING_CLASSIC_DHD.get(), DHDEngravingScreen.Classic::new);
+			MenuScreens.register(MenuInit.ENGRAVING_ANDROMEDA_DHD.get(), DHDEngravingScreen.Andromeda::new);
+        	
+        	EntityRenderers.register(EntityInit.JAFFA_PLASMA.get(), PlasmaProjectileRenderer::new);
+        	EntityRenderers.register(EntityInit.TRINIUM_ARROW.get(), TriniumArrowRenderer::new);
+			
+			EntityRenderers.register(EntityInit.ABYDOS_LIZARD.get(), AbydosLizardRenderer::new);
+			EntityRenderers.register(EntityInit.MASTADGE.get(), MastadgeRenderer::new);
         	
         	EntityRenderers.register(EntityInit.GOAULD.get(), GoauldRenderer::new);
-			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer<Human>::new);
-			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer<Jaffa>::new);
+			
+			EntityRenderers.register(EntityInit.HUMAN.get(), AnthropoidRenderer::new);
+			EntityRenderers.register(EntityInit.JAFFA.get(), AnthropoidRenderer::new);
+			
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HOLDER.get(), ZPMHolderRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PLUG.get(), ZPMPlugRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_PORT.get(), ZPMPortRenderer::new);
+			BlockEntityRenderers.register(BlockEntityInit.ZPM_HUB.get(), ZPMHubRenderer::new);
         	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_CARTOUCHE.get(), CartoucheRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_CARTOUCHE.get(), CartoucheRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.Sandstone::new);
-			BlockEntityRenderers.register(BlockEntityInit.RED_SANDSTONE_SYMBOL.get(), SymbolBlockRenderer.RedSandstone::new);
-        	BlockEntityRenderers.register(BlockEntityInit.STONE_SYMBOL.get(), SymbolBlockRenderer.Stone::new);
-        	
-        	BlockEntityRenderers.register(BlockEntityInit.TRANSPORT_RINGS.get(), TransportRingsRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), TransportRingsRenderer.Ancient::new);
+        	BlockEntityRenderers.register(BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), TransportRingsRenderer.Goauld::new);
 
         	BlockEntityRenderers.register(BlockEntityInit.UNIVERSE_STARGATE.get(), UniverseStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.MILKY_WAY_STARGATE.get(), MilkyWayStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.PEGASUS_STARGATE.get(), PegasusStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.CLASSIC_STARGATE.get(), ClassicStargateRenderer::new);
         	BlockEntityRenderers.register(BlockEntityInit.TOLLAN_STARGATE.get(), TollanStargateRenderer::new);
+        	BlockEntityRenderers.register(BlockEntityInit.ANDROMEDA_STARGATE.get(), AndromedaStargateRenderer::new);
         }
         
         @SubscribeEvent
@@ -259,6 +292,34 @@ public class StargateJourney
 		public static void modelLoaderInit(ModelEvent.RegisterGeometryLoaders event)
 		{
 			CableModelLoader.register(event);
+			SymbolBlockModelLoader.register(event);
+			CartoucheModelLoader.register(event);
 		}
     }
+	
+	public static ResourceLocation sgjourneyLocation(String path)
+	{
+		return new ResourceLocation(StargateJourney.MODID, path);
+	}
+	
+	public static boolean isAprilFools()
+	{
+		Calendar calendar = Calendar.getInstance();
+		return calendar.get(Calendar.MONTH) + 1 == 4 && calendar.get(Calendar.DAY_OF_MONTH) == 1;
+	}
+	
+	/**
+	 * @return Default list of players (player names) who will get the Ancient Gene upon joining a world
+	 */
+	public static List<String> ancientGenePlayers()
+	{
+		return List.of(
+				"Dev", // Dev player, used for testing
+				"Woldericz_junior", // Creator of the mod
+				"cookta2012", // Contributor
+				"mistersecret312", // Contributor
+				"_MaGistR____", // Contributor
+				"Redangel121" // Contributor
+		);
+	}
 }

@@ -9,7 +9,7 @@
 			"weight": 1,
 			"element":
 			{
-				"location": "sgjourney:stargate/universe/pedestal/end/universe_stargate_pedestal_island_end_1_obstructed",
+				"location": "sgjourney:stargate/universe/pedestal/end/universe_stargate_pedestal_island_end_1",
 				"processors": "minecraft:empty",
 				"projection": "rigid",
 				"element_type": "minecraft:single_pool_element"

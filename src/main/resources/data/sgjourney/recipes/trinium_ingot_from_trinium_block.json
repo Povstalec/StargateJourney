@@ -1,0 +1,8 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"ingredients": 
+	[
+		{ "item": "sgjourney:trinium_block" }
+	],
+	"result": { "item": "sgjourney:trinium_ingot", "count": 9 }
+}

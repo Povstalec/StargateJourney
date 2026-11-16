@@ -10,14 +10,12 @@ import java.util.function.Supplier;
 
 public class ClientboundArcheologistNotebookOpenScreenPacket
 {
-    public final UUID playerId;
     public final boolean mainHand;
     
     public final CompoundTag tag;
 
-    public ClientboundArcheologistNotebookOpenScreenPacket(UUID playerId, boolean mainHand, CompoundTag tag)
+    public ClientboundArcheologistNotebookOpenScreenPacket(boolean mainHand, CompoundTag tag)
     {
-        this.playerId = playerId;
         this.mainHand = mainHand;
         
         this.tag = tag;
@@ -25,12 +23,11 @@ public class ClientboundArcheologistNotebookOpenScreenPacket
 
     public ClientboundArcheologistNotebookOpenScreenPacket(FriendlyByteBuf buffer)
     {
-        this(buffer.readUUID(), buffer.readBoolean(), buffer.readNbt());
+        this(buffer.readBoolean(), buffer.readNbt());
     }
 
     public void encode(FriendlyByteBuf buffer)
     {
-        buffer.writeUUID(playerId);
         buffer.writeBoolean(mainHand);
         
         buffer.writeNbt(tag);
@@ -38,7 +35,7 @@ public class ClientboundArcheologistNotebookOpenScreenPacket
 
     public boolean handle(Supplier<NetworkEvent.Context> ctx)
     {
-        ctx.get().enqueueWork(() -> ClientAccess.openArcheologistNotebookScreen(playerId, mainHand, tag));
+        ctx.get().enqueueWork(() -> ClientAccess.openArcheologistNotebookScreen(mainHand, tag));
         return true;
     }
 }

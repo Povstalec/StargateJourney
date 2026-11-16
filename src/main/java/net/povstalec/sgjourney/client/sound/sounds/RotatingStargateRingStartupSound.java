@@ -5,12 +5,12 @@ import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEn
 import net.povstalec.sgjourney.common.block_entities.stargate.RotatingStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public class RotatingStargateRingStartupSound extends StargateSound<RotatingStargateEntity>
+public class RotatingStargateRingStartupSound extends StargateSound<RotatingStargateEntity<?>>
 {
 	private static final float VOLUME_MIN = 0.0F;
 	private static final float VOLUME_MAX = 0.5F;
 	
-	public RotatingStargateRingStartupSound(RotatingStargateEntity stargate, SoundEvent soundEvent)
+	public RotatingStargateRingStartupSound(RotatingStargateEntity<?> stargate, SoundEvent soundEvent)
 	{
 		super(stargate, soundEvent);
         this.volume = VOLUME_MIN;
@@ -34,12 +34,6 @@ public class RotatingStargateRingStartupSound extends StargateSound<RotatingStar
 			this.stopSound();
 		
 		super.tick();
-	}
-	
-	@Override
-	public boolean canStartSilent()
-	{
-		return true;
 	}
 	
 	private void fadeIn()

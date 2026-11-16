@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.*;
 import net.minecraft.client.Minecraft;
@@ -17,20 +18,21 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
+import net.povstalec.sgjourney.common.init.TabInit;
 import net.povstalec.sgjourney.common.menu.CrystallizerMenu;
-import net.povstalec.sgjourney.common.recipe.AdvancedCrystallizerRecipe;
-import net.povstalec.sgjourney.common.recipe.CrystallizerRecipe;
+import net.povstalec.sgjourney.common.menu.LiquidizerMenu;
+import net.povstalec.sgjourney.common.recipe.CrystallizingRecipe;
+import net.povstalec.sgjourney.common.recipe.LiquidizingRecipe;
+import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
 public class SGJourneyJEIPlugin implements IModPlugin
 {
 	private static final ResourceLocation PLUGIN_LOCATION = new ResourceLocation(StargateJourney.MODID, "jei_plugin");
 	private static final int PLAYER_INVENTORY_SLOT_COUNT = 36;
-
-	private static Minecraft minecraft = Minecraft.getInstance();
 	
 	@Override
-	public ResourceLocation getPluginUid()
+	public @NotNull ResourceLocation getPluginUid()
 	{
 		return PLUGIN_LOCATION;
 	}
@@ -38,46 +40,99 @@ public class SGJourneyJEIPlugin implements IModPlugin
 	@Override
 	public void registerCategories(IRecipeCategoryRegistration registration)
 	{
-		registration.addRecipeCategories(new CrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
-		registration.addRecipeCategories(new AdvancedCrystallizerRecipeCategory(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new LiquidizingRecipeCategory.NaquadahLiquidizer(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new LiquidizingRecipeCategory.HeavyNaquadahLiquidizer(registration.getJeiHelpers().getGuiHelper()));
+		
+		registration.addRecipeCategories(new CrystallizingRecipeCategory.Crystallizer(registration.getJeiHelpers().getGuiHelper()));
+		registration.addRecipeCategories(new CrystallizingRecipeCategory.AdvancedCrystallizer(registration.getJeiHelpers().getGuiHelper()));
 	}
 	
 	@Override
 	public void registerRecipes(IRecipeRegistration registration)
 	{
-		RecipeManager recipeManager = Objects.requireNonNull(minecraft.level).getRecipeManager();
+		RecipeManager recipeManager = Objects.requireNonNull(Minecraft.getInstance().level).getRecipeManager();
 		
-		List<CrystallizerRecipe> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizerRecipe.Type.INSTANCE);
-		registration.addRecipes(new RecipeType<>(CrystallizerRecipeCategory.RECIPE_ID, CrystallizerRecipe.class), crystallizerRecipes);
+		List<LiquidizingRecipe.NaquadahLiquidizer> liquidizerRecipes = recipeManager.getAllRecipesFor(LiquidizingRecipe.NaquadahLiquidizer.TYPE);
+		registration.addRecipes(new RecipeType<>(LiquidizingRecipeCategory.NaquadahLiquidizer.RECIPE_ID, LiquidizingRecipe.NaquadahLiquidizer.class), liquidizerRecipes);
+		
+		List<LiquidizingRecipe.HeavyNaquadahLiquidizer> heavyLiquidizerRecipes = recipeManager.getAllRecipesFor(LiquidizingRecipe.HeavyNaquadahLiquidizer.TYPE);
+		registration.addRecipes(new RecipeType<>(LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.RECIPE_ID, LiquidizingRecipe.HeavyNaquadahLiquidizer.class), heavyLiquidizerRecipes);
+		
+		List<CrystallizingRecipe.Crystallizer> crystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizingRecipe.Crystallizer.TYPE);
+		registration.addRecipes(new RecipeType<>(CrystallizingRecipeCategory.Crystallizer.RECIPE_ID, CrystallizingRecipe.Crystallizer.class), crystallizerRecipes);
 
-		List<AdvancedCrystallizerRecipe> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(AdvancedCrystallizerRecipe.Type.INSTANCE);
-		registration.addRecipes(new RecipeType<>(AdvancedCrystallizerRecipeCategory.RECIPE_ID, AdvancedCrystallizerRecipe.class), advancedCrystallizerRecipes);
+		List<CrystallizingRecipe.AdvancedCrystallizer> advancedCrystallizerRecipes = recipeManager.getAllRecipesFor(CrystallizingRecipe.AdvancedCrystallizer.TYPE);
+		registration.addRecipes(new RecipeType<>(CrystallizingRecipeCategory.AdvancedCrystallizer.RECIPE_ID, CrystallizingRecipe.AdvancedCrystallizer.class), advancedCrystallizerRecipes);
+		
+		registration.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, TabInit.getHiddenItems());
 	}
 	@Override
 	public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration)
 	{
-		// Crystallizers
-		BlockInit.CRYSTALLIZER.ifPresent(crystallizerBlock -> {
-			var item = crystallizerBlock.asItem();
-			if (item != null) {
-				registration.addRecipeCatalyst(new ItemStack(item), CrystallizerRecipeCategory.CRYSTALLIZING_TYPE);
-			}
+		// Liquidizers
+		BlockInit.NAQUADAH_LIQUIDIZER.ifPresent(liquidizerBlock ->
+		{
+			var item = liquidizerBlock.asItem();
+			if(item != null)
+				registration.addRecipeCatalyst(new ItemStack(item), LiquidizingRecipeCategory.NaquadahLiquidizer.TYPE);
 		});
-		BlockInit.ADVANCED_CRYSTALLIZER.ifPresent(crystallizerBlock -> {
+		BlockInit.HEAVY_NAQUADAH_LIQUIDIZER.ifPresent(liquidizerBlock ->
+		{
+			var item = liquidizerBlock.asItem();
+			if(item != null)
+				registration.addRecipeCatalyst(new ItemStack(item), LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.TYPE);
+		});
+		
+		// Crystallizers
+		BlockInit.CRYSTALLIZER.ifPresent(crystallizerBlock ->
+		{
 			var item = crystallizerBlock.asItem();
-			if (item != null) {
-				registration.addRecipeCatalyst(new ItemStack(item), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE);
-			}
+			if(item != null)
+				registration.addRecipeCatalyst(new ItemStack(item), CrystallizingRecipeCategory.Crystallizer.TYPE);
+		});
+		BlockInit.ADVANCED_CRYSTALLIZER.ifPresent(crystallizerBlock ->
+		{
+			var item = crystallizerBlock.asItem();
+			if(item != null)
+				registration.addRecipeCatalyst(new ItemStack(item), CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE);
 		});
 	}
 	
 	@Override
 	public void registerItemSubtypes(ISubtypeRegistration registration)
 	{
-		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
-		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_VARIANT_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.StargateVariant.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.STARGATE_UPGRADE_CRYSTAL.get(), SGJourneyItemSubtypeInterpreter.StargateUpgrade.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(ItemInit.VIAL.get(), SGJourneyItemSubtypeInterpreter.FluidHolder.INSTANCE);
+		registration.registerSubtypeInterpreter(ItemInit.NAQUADAH_POWER_CELL.get(), SGJourneyItemSubtypeInterpreter.FluidHolder.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.SANDSTONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.RED_SANDSTONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.STONE_CARTOUCHE.get().asItem(), SGJourneyItemSubtypeInterpreter.Cartouche.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.SANDSTONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.RED_SANDSTONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.STONE_SYMBOL.get().asItem(), SGJourneyItemSubtypeInterpreter.SymbolBlock.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.GOAULD_TRANSPORT_RINGS.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.GOAULD_RING_PANEL.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.UNIVERSE_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.ANDROMEDA_DHD.get().asItem(), SGJourneyItemSubtypeInterpreter.GenerationStep.INSTANCE);
+		
+		registration.registerSubtypeInterpreter(BlockInit.UNIVERSE_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.MILKY_WAY_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.PEGASUS_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.TOLLAN_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.CLASSIC_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
+		registration.registerSubtypeInterpreter(BlockInit.ANDROMEDA_STARGATE.get().asItem(), SGJourneyItemSubtypeInterpreter.Stargate.INSTANCE);
 	}
-
+	
+	//TODO custom recipe transfer handlers
 	@Override
 	public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
 		/*
@@ -85,7 +140,10 @@ public class SGJourneyJEIPlugin implements IModPlugin
 		https://github.com/mezz/JustEnoughItems/issues/3146
 		Can be solved with own custom RecipeTransferHandler implementation
 		 */
-		registration.addRecipeTransferHandler(CrystallizerMenu.class, MenuInit.CRYSTALLIZER.get(), CrystallizerRecipeCategory.CRYSTALLIZING_TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
-		registration.addRecipeTransferHandler(CrystallizerMenu.class, MenuInit.CRYSTALLIZER.get(), AdvancedCrystallizerRecipeCategory.ADVANCED_CRYSTALLIZING_TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		/*registration.addRecipeTransferHandler(LiquidizerMenu.LiquidNaquadah.class, MenuInit.NAQUADAH_LIQUIDIZER.get(), LiquidizingRecipeCategory.NaquadahLiquidizer.TYPE, 36, 1, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		registration.addRecipeTransferHandler(LiquidizerMenu.HeavyLiquidNaquadah.class, MenuInit.HEAVY_NAQUADAH_LIQUIDIZER.get(), LiquidizingRecipeCategory.HeavyNaquadahLiquidizer.TYPE, 36, 1, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		
+		registration.addRecipeTransferHandler(CrystallizerMenu.Crystallizer.class, MenuInit.CRYSTALLIZER.get(), CrystallizingRecipeCategory.Crystallizer.TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);
+		registration.addRecipeTransferHandler(CrystallizerMenu.AdvancedCrystallizer.class, MenuInit.ADVANCED_CRYSTALLIZER.get(), CrystallizingRecipeCategory.AdvancedCrystallizer.TYPE, 36, 5, 0, PLAYER_INVENTORY_SLOT_COUNT);*/
 	}
 }

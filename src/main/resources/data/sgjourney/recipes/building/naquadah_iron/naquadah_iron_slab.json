@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III"
+	],
+	"key":
+	{
+		"I": {"item": "sgjourney:naquadah_iron_block"}
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_iron_slab", "count": 6
+	}
+}

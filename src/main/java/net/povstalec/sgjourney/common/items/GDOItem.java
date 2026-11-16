@@ -1,6 +1,7 @@
 package net.povstalec.sgjourney.common.items;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -59,21 +60,12 @@ public class GDOItem extends Item
 		}
 	}
 	
-	private static double distance2(BlockPos pos, BlockPos targetPos)
-	{
-		int x = Math.abs(targetPos.getX() - pos.getX());
-		int y = Math.abs(targetPos.getY() - pos.getY());
-		int z = Math.abs(targetPos.getZ() - pos.getZ());
-		
-		return x*x + y*y + z*z;
-	}
-	
 	private static void checkShieldingState(Level level, Player player)
 	{
 		int roundedRadius = (int) Math.ceil(transmissionRadius() / 16);
 		BlockPos playerPos = player.getOnPos().above();
 		
-		List<AbstractStargateEntity> stargates = new ArrayList<AbstractStargateEntity>();
+		List<AbstractStargateEntity<?>> stargates = new ArrayList<>();
 		
 		for(int x = -roundedRadius; x <= roundedRadius; x++)
 		{
@@ -84,25 +76,21 @@ public class GDOItem extends Item
 				
 				positions.stream().forEach(pos ->
 				{
-					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity stargate && distance2(playerPos, stargate.getBlockPos()) <= transmissionRadius2())
-					{
+					if(level.getBlockEntity(pos) instanceof AbstractStargateEntity<?> stargate && playerPos.distSqr(stargate.getBlockPos()) <= transmissionRadiusSqr())
 						stargates.add(stargate);
-					}
 				});
 			}
 		}
 		
-		if(stargates.size() == 0)
+		if(stargates.isEmpty())
 		{
 			player.displayClientMessage(Component.translatable("message.sgjourney.gdo.error.no_nearby_stargate").withStyle(ChatFormatting.RED), true);
 			return;
 		}
 		
-		stargates.sort((stargateA, stargateB) ->
-		Double.valueOf(distance2(playerPos, stargateA.getBlockPos()))
-		.compareTo(Double.valueOf(distance2(playerPos, stargateB.getBlockPos()))));
+		stargates.sort(Comparator.comparing(stargateA -> playerPos.distSqr(stargateA.getBlockPos())));
 		
-		AbstractStargateEntity stargate = stargates.get(0);
+		AbstractStargateEntity<?> stargate = stargates.get(0);
 		
 		if(!stargate.isConnected())
 		{
@@ -110,7 +98,7 @@ public class GDOItem extends Item
 			return;
 		}
 		
-		int shieldingProgress = (int) Math.round(stargate.checkConnectionShieldingState());
+		int shieldingProgress = Math.round(stargate.checkConnectionShieldingState());
 		
 		ChatFormatting formatting;
 		
@@ -141,7 +129,7 @@ public class GDOItem extends Item
 		// Open the GDO screen / Send IDC transmission
 		if(player.isShiftKeyDown())
 		{
-			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundGDOOpenScreenPacket(player.getUUID(), usedHand == InteractionHand.MAIN_HAND, getTransmissionMessage(stack), getFrequency(stack)));
+			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player), new ClientboundGDOOpenScreenPacket(usedHand == InteractionHand.MAIN_HAND, getTransmissionMessage(stack), getFrequency(stack)));
 			
 	        return super.use(level, player, usedHand);
 		}
@@ -180,7 +168,7 @@ public class GDOItem extends Item
 		return CommonTransmissionConfig.max_gdo_transmission_distance.get();
 	}
 	
-	public static float transmissionRadius2()
+	public static float transmissionRadiusSqr()
 	{
 		return transmissionRadius() * transmissionRadius();
 	}

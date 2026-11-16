@@ -1,24 +1,35 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
 
-public class TollanStargateVariant extends ClientStargateVariant
+import java.util.Optional;
+
+public class TollanStargateVariant extends ClientStargateVariant<TollanStargateEntity>
 {
-	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_stargate.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_stargate_engaged.png");
-
-	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon.png");
-	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/tollan/tollan_event_horizon_shiny.png");
+	// Variant: Normal RGB - Shiny RGB
+	// Tollan: 50 100 240 - 41 88 218
+	
+	public static final String STARGATE_TYPE = "tollan";
+	
+	public static final ResourceLocation STARGATE_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate_engaged");
+	
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon");
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION_UNSTABLE = simpleTexturePath(STARGATE_TYPE, "event_horizon_unstable");
+	public static final ResourceLocation STARGATE_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex");
+	
+	public static final ResourceLocation STARGATE_DISCONNECT_LOCATION = simpleTexturePath(STARGATE_TYPE, "disconnect");
+	
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny");
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
+	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "tollan_chevron_engage");
 
@@ -28,12 +39,10 @@ public class TollanStargateVariant extends ClientStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "tollan_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
 	
-	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ColorUtil.RGBA(255, 255, 255, 255));
+	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(new ResourcepackModel.Symbol(0, 0, 0, 0));
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
@@ -42,7 +51,7 @@ public class TollanStargateVariant extends ClientStargateVariant
 	public static final ResourcepackSounds.Fail STARGATE_FAIL_SOUNDS = new ResourcepackSounds.Fail(STARGATE_FAIL);
 	
 	public static final TollanStargateVariant DEFAULT_VARIANT = new TollanStargateVariant(STARGATE_TEXTURE, Optional.empty(),
-			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
+			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE),
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS);
 	
 	public static final Codec<TollanStargateVariant> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -53,8 +62,6 @@ public class TollanStargateVariant extends ClientStargateVariant
 			// Wormholes
 			ResourcepackModel.Wormhole.CODEC.fieldOf(WORMHOLE).forGetter(TollanStargateVariant::wormhole),
 			ResourcepackModel.Wormhole.CODEC.optionalFieldOf(SHINY_WORMHOLE).forGetter(TollanStargateVariant::shinyWormhole),
-			// Symbols
-			ResourcepackModel.SymbolsModel.CODEC.fieldOf(SYMBOLS).forGetter(TollanStargateVariant::symbols),
 			// Sounds
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_ENGAGED_SOUNDS).forGetter(TollanStargateVariant::chevronEngagedSounds),
 			ResourcepackSounds.Chevron.CODEC.fieldOf(CHEVRON_INCOMING_SOUNDS).forGetter(TollanStargateVariant::chevronIncomingSounds),
@@ -64,11 +71,11 @@ public class TollanStargateVariant extends ClientStargateVariant
 			).apply(instance, TollanStargateVariant::new));
 	
 	public TollanStargateVariant(ResourceLocation texture, Optional<ResourceLocation> encodedTexture, ResourceLocation engagedTexture,
-			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole, ResourcepackModel.SymbolsModel symbols,
+			ResourcepackModel.Wormhole wormhole, Optional<ResourcepackModel.Wormhole> shinyWormhole,
 			ResourcepackSounds.Chevron chevronEngagedSounds, ResourcepackSounds.Chevron chevronIncomingSounds,
 			ResourcepackSounds.Wormhole wormholeSounds, ResourcepackSounds.Fail failSounds)
 	{
-		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, symbols, chevronEngagedSounds,
+		super(texture, encodedTexture, engagedTexture, wormhole, shinyWormhole, STARGATE_SYMBOLS, chevronEngagedSounds,
 				chevronIncomingSounds, wormholeSounds, failSounds);
 	}
 	

@@ -6,7 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.network.NetworkEvent;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
 
 public class ServerboundRingPanelUpdatePacket
 {
@@ -34,10 +34,8 @@ public class ServerboundRingPanelUpdatePacket
     {
     	ctx.get().enqueueWork(() -> {
     		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
-    		if(blockEntity instanceof RingPanelEntity ringPanel)
-    		{
-    			ringPanel.activateRings(number);
-    		}
+    		if(blockEntity instanceof GoauldRingPanelEntity ringPanel)
+    			ringPanel.pressButton(number);
     	});
         return true;
     }

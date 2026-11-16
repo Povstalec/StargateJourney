@@ -1,49 +1,82 @@
 package net.povstalec.sgjourney.common.events.custom;
 
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
-import net.povstalec.sgjourney.common.sgjourney.Address;
-import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
+
+import javax.annotation.Nullable;
 
 public class SGJourneyEvents
 {
 	// Stargate
 	
-	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address.Immutable dialedAddress, boolean doKawoosh)
+	public static boolean onStargateDial(MinecraftServer server, Stargate stargate, Address dialedAddress, boolean doKawoosh, Dialing.Action action)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.Dial(server, stargate, dialedAddress, doKawoosh));
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.Dial(server, stargate, dialedAddress, doKawoosh, action));
     }
 	
-	public static boolean onStargateConnect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh)
+	public static boolean onStargateConnect(MinecraftServer server, Stargate stargate, Stargate connectedStargate, StargateConnection.Type connectionType, Address.Type addressType, boolean doKawoosh, Dialing.Action action)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType, addressType, doKawoosh));
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.Connect(server, stargate, connectedStargate, connectionType, addressType, doKawoosh, action));
     }
 	
-	public static boolean onWormholeTravel(MinecraftServer server, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
+	public static boolean onWormholeTravel(MinecraftServer server, StargateConnection connection, Stargate stargate, Stargate destinationStargate, Entity traveler, StargateInfo.WormholeTravel wormholeTravel)
     {
-        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, stargate, destinationStargate, traveler, wormholeTravel));
+        return MinecraftForge.EVENT_BUS.post(new StargateEvent.WormholeTravel(server, connection, stargate, destinationStargate, traveler, wormholeTravel));
     }
 	
 	// Stargate Connection
 	
-	public static boolean onConnectionEstablished(MinecraftServer server, StargateConnection stargateConnection)
+	public static void onStargateConnectionEstablished(MinecraftServer server, StargateConnection stargateConnection)
 	{
-		return MinecraftForge.EVENT_BUS.post(new ConnectionEvent.Establish(server, stargateConnection));
+		MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Establish(server, stargateConnection));
 	}
 	
-	public static boolean onConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection, StargateInfo.Feedback feedback)
+	public static void onStargateConnectionTerminated(MinecraftServer server, StargateConnection stargateConnection, StargateInfo.Feedback feedback)
 	{
-		return MinecraftForge.EVENT_BUS.post(new ConnectionEvent.Terminate(server, stargateConnection, feedback));
+		MinecraftForge.EVENT_BUS.post(new StargateConnectionEvent.Terminate(server, stargateConnection, feedback));
 	}
 	
 	// Transporter
 	
+	public static boolean onTransporterDialID(MinecraftServer server, Transporter transporter, TransporterID transporterID)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.DialID(server, transporter, transporterID));
+	}
 	
+	public static boolean onTransporterDialCoords(MinecraftServer server, Transporter transporter, Vec3i coords)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.DialCoords(server, transporter, coords));
+	}
+	
+	public static boolean onTransporterConnect(MinecraftServer server, Transporter transporter, Transporter connectedTransporter, @Nullable TransporterConnection.Type connectionType)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.Connect(server, transporter, connectedTransporter, connectionType));
+	}
+	
+	public static boolean onTransporterTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.TransporterTransport(server, transporter, destinationTransporter));
+	}
+	
+	public static boolean onTransporterTravellerTransport(MinecraftServer server, Transporter transporter, Transporter destinationTransporter, Entity traveler)
+	{
+		return MinecraftForge.EVENT_BUS.post(new TransporterEvent.TravellerTransport(server, transporter, destinationTransporter, traveler));
+	}
 	
 	// Transporter Connection
 	
+	public static void onTransporterConnectionEstablished(MinecraftServer server, TransporterConnection transporterConnection)
+	{
+		MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Establish(server, transporterConnection));
+	}
 	
+	public static void onTransporterConnectionTerminated(MinecraftServer server, TransporterConnection transporterConnection, TransporterInfo.Feedback feedback)
+	{
+		MinecraftForge.EVENT_BUS.post(new TransporterConnectionEvent.Terminate(server, transporterConnection, feedback));
+	}
 }

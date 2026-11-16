@@ -29,6 +29,7 @@
 		}
 	},
 	"terrain_adaptation": "beard_thin",
+	"rotation": "counterclockwise_90",
 	
 	"stargate_modifiers":
 	{

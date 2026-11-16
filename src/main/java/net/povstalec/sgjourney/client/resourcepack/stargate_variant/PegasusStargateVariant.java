@@ -1,26 +1,37 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
 
-public class PegasusStargateVariant extends GenericStargateVariant
+import java.util.Optional;
+
+public class PegasusStargateVariant extends GenericStargateVariant<PegasusStargateEntity>
 {
-	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate.png");
-	public static final ResourceLocation STARGATE_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_back_chevron.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_engaged.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_stargate_back_chevron_engaged.png");
-
-	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon.png");
-	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/pegasus/pegasus_event_horizon_shiny.png");
+	// Variant: Normal RGB - Shiny RGB
+	// Pegasus: 20 123 255 - 30 90 158
+	
+	public static final String STARGATE_TYPE = "pegasus";
+	
+	public static final ResourceLocation STARGATE_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate");
+	public static final ResourceLocation STARGATE_TEXTURE_BACK = simpleTexturePath(STARGATE_TYPE, "stargate_back_chevron");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate_engaged");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE_BACK = simpleTexturePath(STARGATE_TYPE, "stargate_back_chevron_engaged");
+	
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon");
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION_UNSTABLE = simpleTexturePath(STARGATE_TYPE, "event_horizon_unstable");
+	public static final ResourceLocation STARGATE_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex");
+	
+	public static final ResourceLocation STARGATE_DISCONNECT_LOCATION = simpleTexturePath(STARGATE_TYPE, "disconnect");
+	
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny");
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
+	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "pegasus_chevron_engage");
 	public static final ResourceLocation STARGATE_CHEVRON_INCOMING = new ResourceLocation(StargateJourney.MODID, "pegasus_chevron_incoming");
@@ -33,16 +44,20 @@ public class PegasusStargateVariant extends GenericStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "pegasus_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	
+	public static final ResourcepackModel.Symbol NO_SYMBOLS = new ResourcepackModel.Symbol(0, 0, 0, 0);
+	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(0, 100, 200);
+	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(0, 200, 255, true);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.RGBA(0, 100, 200, 255), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)), Optional.of(new ColorUtil.RGBA(0, 200, 255, 255)),
-			true, true, true,
-			true, true,
-			Optional.empty(), Optional.empty());
+		IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS, NO_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS,
+		null, null);
 	
 	public static final GenericStargateVariant.GenericStargateModel GENERIC_MODEL = new GenericStargateVariant.GenericStargateModel(Optional.of(false), Optional.of(false), Optional.of(false));
 	

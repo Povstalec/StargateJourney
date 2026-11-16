@@ -8,25 +8,26 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class SecretSwitchBlock extends Block
+public class SecretSwitchBlock extends RotatedPillarBlock
 {
 	public static final BooleanProperty POWERED = BooleanProperty.create("powered");
 
 	public SecretSwitchBlock(Properties properties)
 	{
 		super(properties);
-		this.registerDefaultState(this.stateDefinition.any().setValue(POWERED, Boolean.valueOf(false)));
+		this.registerDefaultState(this.defaultBlockState().setValue(AXIS, Direction.Axis.Y).setValue(POWERED, false));
 	}
 	
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(POWERED);
+		state.add(AXIS).add(POWERED);
 	}
 	
 	@Override

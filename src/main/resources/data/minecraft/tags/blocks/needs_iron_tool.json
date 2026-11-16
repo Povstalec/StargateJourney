@@ -2,22 +2,32 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:transport_rings",
-		"sgjourney:ring_panel",
+		"#sgjourney:naquadah_blocks",
+		"#sgjourney:naquadah_copper_blocks",
+		"#sgjourney:naquadah_iron_blocks",
+		"#sgjourney:trinium_blocks",
+		
+		
+		
+		"sgjourney:goauld_transport_rings",
+		"sgjourney:goauld_ring_panel",
 		
 		"sgjourney:naquadah_ore",
 		"sgjourney:nether_naquadah_ore",
 		"sgjourney:deepslate_naquadah_ore",
+		"sgjourney:naquadria_ore",
+		"sgjourney:nether_naquadria_ore",
+		"sgjourney:deepslate_naquadria_ore",
+		"sgjourney:trinium_ore",
+		"sgjourney:nether_trinium_ore",
+		"sgjourney:deepslate_trinium_ore",
 		
 		"sgjourney:raw_naquadah_block",
 		"sgjourney:pure_naquadah_block",
-		"sgjourney:naquadah_block",
-		"sgjourney:naquadah_stairs",
-		"sgjourney:naquadah_slab",
-		"sgjourney:cut_naquadah_block",
-		"sgjourney:cut_naquadah_stairs",
-		"sgjourney:cut_naquadah_slab",
+		"sgjourney:raw_naquadria_block",
+		"sgjourney:raw_trinium_block",
 		
+		"sgjourney:naquadah_reactor",
 		"sgjourney:naquadah_generator_mark_i",
 		"sgjourney:naquadah_generator_mark_ii",
 		
@@ -33,6 +43,9 @@
 		
 		"sgjourney:ancient_gene_detector",
 		
+		"sgjourney:zpm_holder",
+		"sgjourney:zpm_plug",
+		"sgjourney:zpm_port",
 		"sgjourney:zpm_hub",
 		
 		"sgjourney:small_naquadah_cable",

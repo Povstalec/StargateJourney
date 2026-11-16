@@ -1,6 +1,3 @@
 {
-	"name": "symbols.sgjourney.athos",
-	"symbol_set": "sgjourney:galaxy_pegasus",
-	"texture": "sgjourney:pegasus/athos.png",
-	"size": 38
+	"client_symbols": "sgjourney:athos"
 }

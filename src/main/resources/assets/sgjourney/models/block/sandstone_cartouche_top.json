@@ -1,12 +1,28 @@
 {
-    "parent": "block/cube",
-    "textures": {
+	"parent": "block/block",
+	"loader": "sgjourney:cartouche_loader",
+	"symbol_tint": -3756431,
+	"render_type": "solid",
+    "textures":
+	{
         "particle": "minecraft:block/sandstone",
-        "down": "minecraft:block/sandstone_top",
-        "up": "minecraft:block/sandstone_top",
-        "north": "sgjourney:block/sandstone_cartouche_top",
-        "east": "minecraft:block/sandstone_top",
-        "south": "minecraft:block/sandstone_top",
-        "west": "minecraft:block/sandstone_top"
-    }
+        "side": "minecraft:block/sandstone_top",
+        "front": "sgjourney:block/sandstone_cartouche_top"
+    },
+	"elements":
+	[
+		{  
+			"from": [ 0, 0, 0 ],
+			"to": [ 16, 16, 16 ],
+			"faces":
+			{
+				"down":  { "texture": "#side", "cullface": "down" },
+				"up":    { "texture": "#side", "cullface": "up" },
+				"north": { "texture": "#front", "cullface": "north" },
+				"south": { "texture": "#side", "cullface": "south" },
+				"west":  { "texture": "#side", "cullface": "west" },
+				"east":  { "texture": "#side", "cullface": "east" }
+			}
+		}
+	]
 }

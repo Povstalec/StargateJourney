@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"III",
+		"ISI",
+		"III"
+	],
+	"key":
+	{
+		"I": { "item": "sgjourney:naquadah_iron_alloy" },
+		"S": { "item": "sgjourney:stargate_shielding_ring" }
+	},
+	"result":
+	{
+		"item": "sgjourney:naquadah_iron_iris"
+	}
+}

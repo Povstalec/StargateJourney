@@ -3,9 +3,9 @@ package net.povstalec.sgjourney.client.sound.sounds;
 import net.minecraft.sounds.SoundEvent;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 
-public class GenericStargateSound extends StargateSound<AbstractStargateEntity>
+public class GenericStargateSound extends StargateSound<AbstractStargateEntity<?>>
 {
-	public GenericStargateSound(AbstractStargateEntity stargate, SoundEvent soundEvent, float volume)
+	public GenericStargateSound(AbstractStargateEntity<?> stargate, SoundEvent soundEvent, float volume)
 	{
 		super(stargate, soundEvent);
 		this.volume = volume;

@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values":
+	[
+		"#sgjourney:tools/gravers",
+		
+		"sgjourney:symbol_paper",
+		"sgjourney:charcoal_stick"
+	]
+}

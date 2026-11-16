@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadria_ore",
+		"sgjourney:deepslate_naquadria_ore",
+		"sgjourney:nether_naquadria_ore"
+	]
+}

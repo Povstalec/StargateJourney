@@ -1,0 +1,14 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"S",
+		"S"
+	],
+	"key":
+	{
+		"S": { "item": "sgjourney:oxidized_polished_naquadah_copper_slab" }
+	},
+	"result": { "item": "sgjourney:oxidized_chiseled_naquadah_copper_block" }
+}

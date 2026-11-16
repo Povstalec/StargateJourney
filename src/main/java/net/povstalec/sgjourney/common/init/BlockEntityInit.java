@@ -6,21 +6,21 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.*;
-import net.povstalec.sgjourney.common.block_entities.dhd.ClassicDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.MilkyWayDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.PegasusStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.TollanStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.CartoucheBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.SymbolBlockEntity;
+import net.povstalec.sgjourney.common.block_entities.dhd.*;
+import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.block_entities.tech.*;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AdvancedCrystalInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.BasicInterfaceEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.CrystalInterfaceEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.RingPanelEntity;
-import net.povstalec.sgjourney.common.block_entities.transporter.TransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.AncientTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter.GoauldTransportRingsEntity;
+import net.povstalec.sgjourney.common.block_entities.transporter_controller.GoauldRingPanelEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMHolderEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMHubEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPlugEntity;
+import net.povstalec.sgjourney.common.block_entities.zpm.ZPMPortEntity;
 
 public class BlockEntityInit
 {
@@ -28,6 +28,8 @@ public class BlockEntityInit
 	
 	public static final RegistryObject<BlockEntityType<UniverseStargateEntity>> UNIVERSE_STARGATE = BLOCK_ENTITIES.register("universe_stargate",
             () -> BlockEntityType.Builder.of(UniverseStargateEntity::new, BlockInit.UNIVERSE_STARGATE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<UniverseDHDEntity>> UNIVERSE_DHD = BLOCK_ENTITIES.register("universe_dhd",
+		() -> BlockEntityType.Builder.of(UniverseDHDEntity::new, BlockInit.UNIVERSE_DHD.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<MilkyWayStargateEntity>> MILKY_WAY_STARGATE = BLOCK_ENTITIES.register("milky_way_stargate",
             () -> BlockEntityType.Builder.of(MilkyWayStargateEntity::new, BlockInit.MILKY_WAY_STARGATE.get()).build(null));
@@ -46,18 +48,25 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<ClassicDHDEntity>> CLASSIC_DHD = BLOCK_ENTITIES.register("classic_dhd",
             () -> BlockEntityType.Builder.of(ClassicDHDEntity::new, BlockInit.CLASSIC_DHD.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<TransportRingsEntity>> TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings",
-            () -> BlockEntityType.Builder.of(TransportRingsEntity::new, BlockInit.TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AndromedaStargateEntity>> ANDROMEDA_STARGATE = BLOCK_ENTITIES.register("andromeda_stargate",
+		() -> BlockEntityType.Builder.of(AndromedaStargateEntity::new, BlockInit.ANDROMEDA_STARGATE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AndromedaDHDEntity>> ANDROMEDA_DHD = BLOCK_ENTITIES.register("andromeda_dhd",
+		() -> BlockEntityType.Builder.of(AndromedaDHDEntity::new, BlockInit.ANDROMEDA_DHD.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<RingPanelEntity>> RING_PANEL = BLOCK_ENTITIES.register("ring_panel",
-            () -> BlockEntityType.Builder.of(RingPanelEntity::new, BlockInit.RING_PANEL.get()).build(null));
+	public static final RegistryObject<BlockEntityType<AncientTransportRingsEntity>> ANCIENT_TRANSPORT_RINGS = BLOCK_ENTITIES.register("ancient_transport_rings",
+			() -> BlockEntityType.Builder.of(AncientTransportRingsEntity::new, BlockInit.ANCIENT_TRANSPORT_RINGS.get()).build(null));
+	public static final RegistryObject<BlockEntityType<GoauldTransportRingsEntity>> GOAULD_TRANSPORT_RINGS = BLOCK_ENTITIES.register("transport_rings", //TODO Rename to "goauld_transport_rings"
+            () -> BlockEntityType.Builder.of(GoauldTransportRingsEntity::new, BlockInit.GOAULD_TRANSPORT_RINGS.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
-			() -> BlockEntityType.Builder.of(CartoucheEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
-	public static final RegistryObject<BlockEntityType<CartoucheEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
-            () -> BlockEntityType.Builder.of(CartoucheEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<GoauldRingPanelEntity>> GOAULD_RING_PANEL = BLOCK_ENTITIES.register("ring_panel", //TODO Rename to "goauld_ring_panel"
+            () -> BlockEntityType.Builder.of(GoauldRingPanelEntity::new, BlockInit.GOAULD_RING_PANEL.get()).build(null));
+	
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.Sandstone>> SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("sandstone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Sandstone::new, BlockInit.SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.RedSandstone>> RED_SANDSTONE_CARTOUCHE = BLOCK_ENTITIES.register("red_sandstone_cartouche",
+			() -> BlockEntityType.Builder.of(CartoucheBlockEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_CARTOUCHE.get()).build(null));
+	public static final RegistryObject<BlockEntityType<CartoucheBlockEntity.Stone>> STONE_CARTOUCHE = BLOCK_ENTITIES.register("stone_cartouche",
+            () -> BlockEntityType.Builder.of(CartoucheBlockEntity.Stone::new, BlockInit.STONE_CARTOUCHE.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.Stone>> STONE_SYMBOL = BLOCK_ENTITIES.register("stone_symbol",
             () -> BlockEntityType.Builder.of(SymbolBlockEntity.Stone::new, BlockInit.STONE_SYMBOL.get()).build(null));
@@ -66,10 +75,12 @@ public class BlockEntityInit
 	public static final RegistryObject<BlockEntityType<SymbolBlockEntity.RedSandstone>> RED_SANDSTONE_SYMBOL = BLOCK_ENTITIES.register("red_sandstone_symbol",
 			() -> BlockEntityType.Builder.of(SymbolBlockEntity.RedSandstone::new, BlockInit.RED_SANDSTONE_SYMBOL.get()).build(null));
 	
-	public static final RegistryObject<BlockEntityType<NaquadahGeneratorMarkIEntity>> NAQUADAH_GENERATOR_MARK_I = BLOCK_ENTITIES.register("naquadah_generator_mark_i",
-            () -> BlockEntityType.Builder.of(NaquadahGeneratorMarkIEntity::new, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()).build(null));
-	public static final RegistryObject<BlockEntityType<NaquadahGeneratorMarkIIEntity>> NAQUADAH_GENERATOR_MARK_II = BLOCK_ENTITIES.register("naquadah_generator_mark_ii",
-            () -> BlockEntityType.Builder.of(NaquadahGeneratorMarkIIEntity::new, BlockInit.NAQUADAH_GENERATOR_MARK_II.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.Reactor>> NAQUADAH_REACTOR = BLOCK_ENTITIES.register("naquadah_reactor",
+			() -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.Reactor::new, BlockInit.NAQUADAH_REACTOR.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.MarkI>> NAQUADAH_GENERATOR_MARK_I = BLOCK_ENTITIES.register("naquadah_generator_mark_i",
+            () -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.MarkI::new, BlockInit.NAQUADAH_GENERATOR_MARK_I.get()).build(null));
+	public static final RegistryObject<BlockEntityType<NaquadahGeneratorEntity.MarkII>> NAQUADAH_GENERATOR_MARK_II = BLOCK_ENTITIES.register("naquadah_generator_mark_ii",
+            () -> BlockEntityType.Builder.of(NaquadahGeneratorEntity.MarkII::new, BlockInit.NAQUADAH_GENERATOR_MARK_II.get()).build(null));
 	
 	public static final RegistryObject<BlockEntityType<BasicInterfaceEntity>> BASIC_INTERFACE = BLOCK_ENTITIES.register("basic_interface",
             () -> BlockEntityType.Builder.of(BasicInterfaceEntity::new, BlockInit.BASIC_INTERFACE.get()).build(null));
@@ -77,7 +88,13 @@ public class BlockEntityInit
             () -> BlockEntityType.Builder.of(CrystalInterfaceEntity::new, BlockInit.CRYSTAL_INTERFACE.get()).build(null));
 	public static final RegistryObject<BlockEntityType<AdvancedCrystalInterfaceEntity>> ADVANCED_CRYSTAL_INTERFACE = BLOCK_ENTITIES.register("advanced_crystal_interface",
             () -> BlockEntityType.Builder.of(AdvancedCrystalInterfaceEntity::new, BlockInit.ADVANCED_CRYSTAL_INTERFACE.get()).build(null));
-
+	
+	public static final RegistryObject<BlockEntityType<ZPMHolderEntity>> ZPM_HOLDER = BLOCK_ENTITIES.register("zpm_holder",
+		() -> BlockEntityType.Builder.of(ZPMHolderEntity::new, BlockInit.ZPM_HOLDER.get()).build(null));
+	public static final RegistryObject<BlockEntityType<ZPMPlugEntity>> ZPM_PLUG = BLOCK_ENTITIES.register("zpm_plug",
+		() -> BlockEntityType.Builder.of(ZPMPlugEntity::new, BlockInit.ZPM_PLUG.get()).build(null));
+	public static final RegistryObject<BlockEntityType<ZPMPortEntity>> ZPM_PORT = BLOCK_ENTITIES.register("zpm_port",
+		() -> BlockEntityType.Builder.of(ZPMPortEntity::new, BlockInit.ZPM_PORT.get()).build(null));
 	public static final RegistryObject<BlockEntityType<ZPMHubEntity>> ZPM_HUB = BLOCK_ENTITIES.register("zpm_hub",
             () -> BlockEntityType.Builder.of(ZPMHubEntity::new, BlockInit.ZPM_HUB.get()).build(null));
 	

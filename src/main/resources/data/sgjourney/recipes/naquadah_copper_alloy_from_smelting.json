@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": { "item": "sgjourney:naquadah_copper_mixture" },
+	"result": { "item": "sgjourney:naquadah_copper_alloy" },
+	"experience": 1.0,
+	"cookingtime": 200
+}

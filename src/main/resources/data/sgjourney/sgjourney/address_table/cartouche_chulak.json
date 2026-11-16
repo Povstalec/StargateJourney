@@ -2,10 +2,10 @@
 	"include_generated_addresses": true,
 	"addresses":
 	[
-		{"address": "sgjourney:abydos", "weight": 1, "galaxy": "sgjourney:milky_way"},
-		{"address": "sgjourney:rima", "weight": 3, "galaxy": "sgjourney:milky_way"},
-		{"address": "minecraft:the_nether", "weight": 1, "galaxy": "sgjourney:milky_way"},
-		{"address": "minecraft:the_end", "weight": 1, "galaxy": "sgjourney:milky_way"},
-		{"address": "ad_astra:glacio", "weight": 1, "galaxy": "sgjourney:milky_way"}
+		{ "address": { "dimension": "sgjourney:abydos", "galaxy": "sgjourney:milky_way" }, "weight": 1 },
+		{ "address": { "dimension": "sgjourney:rima", "galaxy": "sgjourney:milky_way" }, "weight": 3 },
+		{ "address": { "dimension": "minecraft:the_nether", "galaxy": "sgjourney:milky_way" }, "weight": 1 },
+		{ "address": { "dimension": "minecraft:the_end", "galaxy": "sgjourney:milky_way" }, "weight": 1 },
+		{ "address": { "dimension": "ad_astra:glacio", "galaxy": "sgjourney:milky_way" }, "weight": 1 }
 	]
 }

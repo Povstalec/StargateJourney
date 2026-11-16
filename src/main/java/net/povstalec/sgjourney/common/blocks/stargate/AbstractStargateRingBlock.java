@@ -16,6 +16,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
@@ -58,18 +59,25 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 		{
 			BlockPos baseBlockPos = oldState.getValue(PART).getBaseBlockPos(pos, oldState.getValue(FACING), oldState.getValue(ORIENTATION));
 			
+			dropStargateItem(level, pos, oldState, null);
 			destroyStargate(level, baseBlockPos, getParts(false), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
 			
 	        super.onRemove(oldState, level, pos, newState, isMoving);
 		}
     }
 	
-	@Override
-	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	public BlockPos getBaseBlockPos(BlockPos pos, BlockState state)
 	{
-		BlockEntity blockentity = reader.getBlockEntity(state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION)));
+		return state.getValue(PART).getBaseBlockPos(pos, state.getValue(FACING), state.getValue(ORIENTATION));
+	}
+	
+	@Override
+	@Nullable
+	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	{
+		BlockEntity blockentity = reader.getBlockEntity(getBaseBlockPos(pos, state));
 		
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof AbstractStargateEntity<?> stargate)
 			return stargate;
 		
 		return null;

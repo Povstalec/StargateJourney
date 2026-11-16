@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:block/cube_all",
+	"textures":
+	{
+		"all": "sgjourney:block/smooth_naquadah_copper_block"
+	}
+}

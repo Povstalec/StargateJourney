@@ -1,0 +1,40 @@
+{
+	"parent": "sgjourney:adventure/zero_point_module",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:universe_stargate_chevron"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.intergalactic_travel.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.intergalactic_travel.description"
+		},
+		"frame": "challenge",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": true,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"used_stargate": 
+		{
+			"trigger": "sgjourney:stargate_wormhole_travel",
+			"conditions":
+			{
+				"connection_type": "intergalactic"
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"used_stargate"
+		]
+	]
+}

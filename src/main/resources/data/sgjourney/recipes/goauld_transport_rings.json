@@ -1,0 +1,19 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"TTT",
+		"TNT",
+		"EOC"
+	],
+	"key":
+	{
+		"T": { "item": "sgjourney:goauld_transport_ring" },
+		"N": { "tag": "sgjourney:naquadah_ingot" },
+		"E": { "item": "sgjourney:energy_crystal" },
+		"O": { "item": "sgjourney:control_crystal" },
+		"C": { "item": "sgjourney:communication_crystal" }
+	},
+	"result": { "item": "sgjourney:goauld_transport_rings" }
+}

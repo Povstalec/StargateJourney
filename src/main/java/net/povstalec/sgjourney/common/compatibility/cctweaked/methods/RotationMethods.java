@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.RotatingS
 
 public class RotationMethods
 {
-	public static class GetCurrentSymbol implements InterfaceMethod<RotatingStargateEntity>
+	public static class GetCurrentSymbol implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -20,13 +20,13 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(RotatingStargateFunctions.getCurrentSymbol(stargate));
 		}
 	}
 	
-	public static class IsCurrentSymbol implements InterfaceMethod<RotatingStargateEntity>
+	public static class IsCurrentSymbol implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -35,14 +35,14 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int symbol = arguments.getInt(0);
 			return MethodResult.of(RotatingStargateFunctions.isCurrentSymbol(stargate, symbol));
 		}
 	}
 	
-	public static class EncodeChevron implements InterfaceMethod<RotatingStargateEntity>
+	public static class EncodeChevron implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -51,13 +51,13 @@ public class RotationMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.encodeChevron(stargate)));
 		}
 	}
 	
-	public static class GetRotation implements InterfaceMethod<RotatingStargateEntity>
+	public static class GetRotation implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -66,13 +66,13 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(RotatingStargateFunctions.getRotation(stargate));
 		}
 	}
 	
-	public static class GetRotationDegrees implements InterfaceMethod<RotatingStargateEntity>
+	public static class GetRotationDegrees implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -81,13 +81,13 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return MethodResult.of(RotatingStargateFunctions.getRotationDegrees(stargate));
 		}
 	}
 	
-	public static class RotateClockwise implements InterfaceMethod<RotatingStargateEntity>
+	public static class RotateClockwise implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -96,23 +96,21 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			MethodResult result = context.executeMainThreadTask(() ->
+			return context.executeMainThreadTask(() ->
 			{
 				if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
-				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateClockwise(stargate, desiredSymbol));
+				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateClockwise(interfaceEntity, stargate, desiredSymbol));
 			});
-			
-			return result;
 		}
 	}
 	
-	public static class RotateAntiClockwise implements InterfaceMethod<RotatingStargateEntity>
+	public static class RotateAntiClockwise implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -121,23 +119,21 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			int desiredSymbol = arguments.getInt(0);
 			
-			MethodResult result = context.executeMainThreadTask(() ->
+			return context.executeMainThreadTask(() ->
 			{
 				if(desiredSymbol != -1 && stargate.isSymbolOutOfBounds(desiredSymbol))
 					throw new LuaException("Symbol out of bounds <-1, " + (stargate.totalSymbols() - 1) + ">");
 				
-				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateAntiClockwise(stargate, desiredSymbol));
+				return StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.rotateAntiClockwise(interfaceEntity, stargate, desiredSymbol));
 			});
-			
-			return result;
 		}
 	}
 	
-	public static class EndRotation implements InterfaceMethod<RotatingStargateEntity>
+	public static class EndRotation implements InterfaceMethod<RotatingStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -146,7 +142,7 @@ public class RotationMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, RotatingStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> StargateMethods.returnedFeedback(interfaceEntity, RotatingStargateFunctions.endRotation(stargate)));
 		}

@@ -1,0 +1,21 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"CZC",
+		"ITI",
+		"ILI"
+	],
+	
+	"key": 
+	{
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"T": { "item": "sgjourney:advanced_transfer_crystal" },
+		"C": { "item": "sgjourney:advanced_control_crystal" },
+		"L": { "item": "sgjourney:large_naquadah_cable" },
+		"Z": { "item": "sgjourney:zpm_holder" }
+	},
+	
+	"result": { "item": "sgjourney:zpm_port" }
+}

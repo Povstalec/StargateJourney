@@ -9,5 +9,7 @@
 	{
 		"item": "sgjourney:stargate_variant_crystal",
 		"nbt": {"Variant":"sgjourney:pegasus_atlantis"}
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

@@ -11,7 +11,7 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.IrisFunct
 
 public class IrisMethods
 {
-	public static class GetIris implements InterfaceMethod<IrisStargateEntity>
+	public static class GetIris implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -20,13 +20,13 @@ public class IrisMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.getIris(stargate)});
 		}
 	}
 	
-	public static class CloseIris implements InterfaceMethod<IrisStargateEntity>
+	public static class CloseIris implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -35,13 +35,13 @@ public class IrisMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.closeIris(interfaceEntity)});
+			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.closeIris(interfaceEntity, stargate)});
 		}
 	}
 	
-	public static class OpenIris implements InterfaceMethod<IrisStargateEntity>
+	public static class OpenIris implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -50,13 +50,13 @@ public class IrisMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.openIris(interfaceEntity)});
+			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.openIris(interfaceEntity, stargate)});
 		}
 	}
 	
-	public static class StopIris implements InterfaceMethod<IrisStargateEntity>
+	public static class StopIris implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -65,13 +65,13 @@ public class IrisMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.stopIris(interfaceEntity)});
+			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.stopIris(interfaceEntity, stargate)});
 		}
 	}
 	
-	public static class GetIrisProgress implements InterfaceMethod<IrisStargateEntity>
+	public static class GetIrisProgress implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -80,13 +80,13 @@ public class IrisMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.getIrisProgress(stargate)});
 		}
 	}
 	
-	public static class GetIrisProgressPercentage implements InterfaceMethod<IrisStargateEntity>
+	public static class GetIrisProgressPercentage implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -95,13 +95,13 @@ public class IrisMethods
 		}
 
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.getIrisProgressPercentage(stargate)});
 		}
 	}
 	
-	public static class GetIrisDurability implements InterfaceMethod<IrisStargateEntity>
+	public static class GetIrisDurability implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -110,13 +110,13 @@ public class IrisMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.getIrisDurability(stargate)});
 		}
 	}
 	
-	public static class GetIrisMaxDurability implements InterfaceMethod<IrisStargateEntity>
+	public static class GetIrisMaxDurability implements InterfaceMethod<IrisStargateEntity<?>>
 	{
 		@Override
 		public String getName()
@@ -125,7 +125,7 @@ public class IrisMethods
 		}
 		
 		@Override
-		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity stargate, IArguments arguments) throws LuaException
+		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, IrisStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
 			return context.executeMainThreadTask(() -> new Object[] {IrisFunctions.getIrisMaxDurability(stargate)});
 		}

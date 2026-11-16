@@ -1,0 +1,7 @@
+{
+	"include_generated_addresses": false,
+	"addresses":
+	[
+		{ "address": { "dimension": "sgjourney:lantea", "address_type": 8 }, "weight": 1 }
+	]
+}

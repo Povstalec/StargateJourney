@@ -1,0 +1,7 @@
+{
+	"symbols":
+	[
+		{ "symbol": "sgjourney:tauri", "weight": 1 },
+		{ "symbol": { "symbols": "sgjourney:tauri", "min_symbol": 1, "max_symbol": 38 }, "weight": 4 }
+	]
+}

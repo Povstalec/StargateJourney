@@ -88,10 +88,7 @@ public class NaquadahFuelRodItem extends Item
 		
 		tag.putInt(FUEL, fuel);
 		
-		if(fuel <= 0)
-			return false;
-		
-		return true;
+		return fuel > 0;
 	}
 	
 	public static int getMaxFuel()

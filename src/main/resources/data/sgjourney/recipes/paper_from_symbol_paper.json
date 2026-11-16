@@ -1,0 +1,9 @@
+{
+	"type": "minecraft:crafting_shapeless",
+	"category": "misc",
+	"ingredients":
+	[
+		{ "item": "sgjourney:symbol_paper" }
+	],
+	"result": { "item": "minecraft:paper", "count": 1 }
+}

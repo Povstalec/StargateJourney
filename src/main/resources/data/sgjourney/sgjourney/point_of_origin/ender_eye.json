@@ -1,8 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.ender_eye",
-	"texture": "sgjourney:milky_way/minecraft/ender_eye.png",
-	"generated_galaxies":
-	[
-		"sgjourney:milky_way"
-	]
+	"client_point_of_origin": "sgjourney:ender_eye"
 }

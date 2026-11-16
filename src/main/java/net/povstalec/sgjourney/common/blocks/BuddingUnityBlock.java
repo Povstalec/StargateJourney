@@ -11,6 +11,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
 import net.povstalec.sgjourney.common.init.BlockInit;
+import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
 
 public class BuddingUnityBlock extends Block
 {
@@ -25,6 +26,9 @@ public class BuddingUnityBlock extends Block
 	@Override
 	public void randomTick(BlockState state, ServerLevel level, BlockPos pos, RandomSource randomSource)
 	{
+		if(!SpaceLocation.fromDimension(level.getServer(), level.dimension()).unityCrystalsGrow())
+			return;
+		
 		if(randomSource.nextInt(GROWTH_CHANCE) == 0)
 		{
 			Direction direction = DIRECTIONS[randomSource.nextInt(DIRECTIONS.length)];

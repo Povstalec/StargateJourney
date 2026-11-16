@@ -28,7 +28,7 @@ public class ArcheologistNotebook extends Item
 			CompoundTag compoundtag = stack.hasTag() ? stack.getTag() : new CompoundTag();
 			
 			PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) player),
-					new ClientboundArcheologistNotebookOpenScreenPacket(player.getUUID(), usedHand == InteractionHand.MAIN_HAND, compoundtag));
+					new ClientboundArcheologistNotebookOpenScreenPacket(usedHand == InteractionHand.MAIN_HAND, compoundtag));
 		}
 		
 		return super.use(level, player, usedHand);

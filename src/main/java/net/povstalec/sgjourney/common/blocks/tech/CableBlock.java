@@ -12,10 +12,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.LightningRodBlock;
-import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -24,16 +21,17 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.tech.CableBlockEntity;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonCableConfig;
 import net.povstalec.sgjourney.common.data.ConduitNetworks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -63,6 +61,70 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
 		state.add(WATERLOGGED, NORTH, EAST, SOUTH, WEST, UP, DOWN);
+	}
+	
+	@Override
+	public @NotNull BlockState rotate(BlockState state, Rotation rotation)
+	{
+		if(rotation != Rotation.NONE)
+		{
+			ConnectorType north = state.getValue(NORTH);
+			ConnectorType east = state.getValue(EAST);
+			ConnectorType south = state.getValue(SOUTH);
+			ConnectorType west = state.getValue(WEST);
+			
+			switch(rotation)
+			{
+				case CLOCKWISE_90:
+					state.setValue(NORTH, west);
+					state.setValue(EAST, north);
+					state.setValue(SOUTH, east);
+					state.setValue(WEST, south);
+					break;
+				case CLOCKWISE_180:
+					state.setValue(NORTH, south);
+					state.setValue(EAST, west);
+					state.setValue(SOUTH, north);
+					state.setValue(WEST, east);
+					break;
+				case COUNTERCLOCKWISE_90:
+					state.setValue(NORTH, east);
+					state.setValue(EAST, south);
+					state.setValue(SOUTH, west);
+					state.setValue(WEST, north);
+					break;
+			}
+		}
+		
+		return state;
+	}
+	
+	@Override
+	public @NotNull BlockState mirror(BlockState state, Mirror mirror)
+	{
+		if(mirror != Mirror.NONE)
+		{
+			ConnectorType north = state.getValue(NORTH);
+			ConnectorType east = state.getValue(EAST);
+			ConnectorType south = state.getValue(SOUTH);
+			ConnectorType west = state.getValue(WEST);
+			
+			switch(mirror)
+			{
+				// Z-axis
+				case FRONT_BACK:
+					state.setValue(NORTH, south);
+					state.setValue(SOUTH, north);
+					break;
+				// X-axis
+				case LEFT_RIGHT:
+					state.setValue(EAST, west);
+					state.setValue(WEST, east);
+					break;
+			}
+		}
+		
+		return state;
 	}
 	
 	@Override
@@ -375,13 +437,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.naquadah_wire_max_transfer.get();
+			return SyncedConfig.naquadah_wire_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.naquadah_wire_transfers_zero_point_energy.get();
+			return SyncedConfig.naquadah_wire_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -402,13 +464,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.small_naquadah_cable_max_transfer.get();
+			return SyncedConfig.small_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.small_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.small_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -428,13 +490,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.medium_naquadah_cable_max_transfer.get();
+			return SyncedConfig.medium_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.medium_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	
@@ -454,13 +516,13 @@ public abstract class CableBlock extends Block implements SimpleWaterloggedBlock
 		@Override
 		public long energyTransfer()
 		{
-			return CommonCableConfig.large_naquadah_cable_max_transfer.get();
+			return SyncedConfig.large_naquadah_cable_max_transfer.get();
 		}
 		
 		@Override
 		public boolean transfersZeroPointEnergy()
 		{
-			return CommonCableConfig.large_naquadah_cable_transfers_zero_point_energy.get();
+			return SyncedConfig.large_naquadah_cable_transfers_zero_point_energy.get();
 		}
 	}
 	

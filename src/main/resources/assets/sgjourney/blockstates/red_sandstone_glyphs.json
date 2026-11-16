@@ -1,20 +1,8 @@
 {
 	"variants":
 	{
-		"axis=x":
-		{
-			"model": "sgjourney:block/red_sandstone_glyphs",
-			"x": 90,
-			"y": 90
-		},
-		"axis=y":
-		{
-			"model": "sgjourney:block/red_sandstone_glyphs"
-		},
-		"axis=z":
-		{
-			"model": "sgjourney:block/red_sandstone_glyphs",
-			"x": 90
-		}
+		"axis=x": { "model": "sgjourney:block/red_sandstone_glyphs", "x": 90, "y": 90 },
+		"axis=y": { "model": "sgjourney:block/red_sandstone_glyphs" },
+		"axis=z": { "model": "sgjourney:block/red_sandstone_glyphs", "x": 90 }
 	}
 }

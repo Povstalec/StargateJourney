@@ -10,16 +10,12 @@ public class ArrayHelper
 {
 	public static int[] growIntArray(int[] array, int x)
 	{
-		int[] newarray = new int[array.length + 1];
+		int[] newArray = new int[array.length + 1];
 		
-		for (int i = 0; i < array.length; i++)
-		{
-			newarray[i] = array[i];
-		}
+		System.arraycopy(array, 0, newArray, 0, array.length);
+		newArray[array.length] = x;
 		
-		newarray[array.length] = x;
-		
-		return newarray;
+		return newArray;
 	}
 	
 	public static int[] tableToArray(Map<Double, Double> table)
@@ -34,22 +30,21 @@ public class ArrayHelper
 		return addressArray;
 	}
 	
+	public static int[] integerListToArray(List<Integer> integerList)
+	{
+		return integerList.stream().mapToInt((integer) -> integer).toArray();
+	}
+	
+	public static List<Integer> arrayToIntegerList(int[] array)
+	{
+		return Arrays.stream(array).boxed().toList();
+	}
+	
 	public static boolean differentNumbers(int[] address)
 	{
 		List<Integer> arrayList = Arrays.stream(address).boxed().toList();
-		Set<Integer> arraySet = new HashSet<Integer>(arrayList);
+		Set<Integer> arraySet = new HashSet<>(arrayList);
 		return (arraySet.size() == address.length);
-	}
-	
-	public static boolean isArrayPositive(int[] array, boolean includeZero)
-	{
-		for(int i = 0; i < array.length; i++)
-		{
-			if(includeZero ? array[i] < 0 : array[i] <= 0)
-				return false;
-		}
-		
-		return true;
 	}
 	
 	public static boolean isArrayInBounds(int[] array, int lowestAllowed, int highestAllowed)
@@ -61,5 +56,24 @@ public class ArrayHelper
 		}
 		
 		return true;
+	}
+	
+	public static int zeroNumAt(int[] array, int index)
+	{
+		if(index < 0 || index >= array.length)
+			return 0;
+		
+		return array[index];
+	}
+	
+	public static boolean contains(int[] array, int number)
+	{
+		for(int i : array)
+		{
+			if(i == number)
+				return true;
+		}
+		
+		return false;
 	}
 }

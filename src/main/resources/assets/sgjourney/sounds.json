@@ -431,6 +431,80 @@
 		]
 	},
 	
+	
+	"andromeda_ring_spin":
+	{
+		"subtitle": "sounds.sgjourney.ring_spin",
+		"sounds":
+		[
+			"sgjourney:pegasus_ring_spin"
+		]
+	},
+	"andromeda_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_engage"
+		]
+	},
+	"andromeda_primary_chevron_engage":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_engage"
+		]
+	},
+	"andromeda_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_incoming"
+		]
+	},
+	"andromeda_primary_chevron_incoming":
+	{
+		"subtitle": "sounds.sgjourney.chevron_engage",
+		"sounds":
+		[
+			"sgjourney:pegasus_chevron_incoming"
+		]
+	},
+	"andromeda_dial_fail":
+	{
+		"subtitle": "sounds.sgjourney.dial_fail",
+		"sounds":
+		[
+			"sgjourney:pegasus_dial_fail"
+		]
+	},
+	"andromeda_wormhole_open":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_open",
+		"sounds":
+		[
+			"sgjourney:pegasus_wormhole_open"
+		]
+	},
+	"andromeda_wormhole_idle":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_idle",
+		"sounds":
+		[
+			"sgjourney:wormhole_idle"
+		]
+	},
+	"andromeda_wormhole_close":
+	{
+		"subtitle": "sounds.sgjourney.wormhole_close",
+		"sounds":
+		[
+			"sgjourney:wormhole_close"
+		]
+	},
+	
 	"wormhole_enter":
 	{
 		"subtitle": "sounds.sgjourney.wormhole_enter",
@@ -464,6 +538,25 @@
 	
 	
 	
+	
+	"universe_dhd_enter":
+	{
+		"subtitle": "sounds.sgjourney.dhd_enter",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_enter"
+		]
+	},
+	"universe_dhd_press":
+	{
+		"subtitle": "sounds.sgjourney.dhd_press",
+		"sounds":
+		[
+			"sgjourney:milky_way_dhd_press_1",
+			"sgjourney:milky_way_dhd_press_2",
+			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
 	
 	"milky_way_dhd_enter":
 	{
@@ -517,6 +610,57 @@
 			"sgjourney:milky_way_dhd_press_1",
 			"sgjourney:milky_way_dhd_press_2",
 			"sgjourney:milky_way_dhd_press_3"
+		]
+	},
+	
+	"andromeda_dhd_enter":
+	{
+		"subtitle": "sounds.sgjourney.dhd_enter",
+		"sounds":
+		[
+			"sgjourney:pegasus_dhd_enter"
+		]
+	},
+	"andromeda_dhd_press":
+	{
+		"subtitle": "sounds.sgjourney.dhd_press",
+		"sounds":
+		[
+			"sgjourney:pegasus_dhd_press"
+		]
+	},
+	
+	"transport_rings_transport":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport"
+		]
+	},
+	"transport_rings_transport_pre":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport_pre",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_pre"
+		]
+	},
+	"transport_rings_transport_post":
+	{
+		"subtitle": "sounds.sgjourney.transport_rings_transport_post",
+		"sounds":
+		[
+			"sgjourney:transport_rings_transport_post"
+		]
+	},
+	
+	"ring_panel_press":
+	{
+		"subtitle": "sounds.sgjourney.ring_panel_press",
+		"sounds":
+		[
+			"sgjourney:ring_panel_button_press"
 		]
 	},
 	
@@ -599,6 +743,28 @@
 			"minecraft:item/armor/equip_iron4",
 			"minecraft:item/armor/equip_iron5",
 			"minecraft:item/armor/equip_iron6"
+		]
+	},
+	"equip_trinium_armor":
+	{
+		"subtitle": "sounds.sgjourney.equip_trinium_armor",
+		"sounds":
+		[
+			"minecraft:item/armor/equip_iron1",
+			"minecraft:item/armor/equip_iron2",
+			"minecraft:item/armor/equip_iron3",
+			"minecraft:item/armor/equip_iron4",
+			"minecraft:item/armor/equip_iron5",
+			"minecraft:item/armor/equip_iron6"
+		]
+	},
+	"graver_engrave":
+	{
+		"subtitle": "sounds.sgjourney.graver_engrave",
+		"sounds":
+		[
+			"minecraft:ui/stonecutter/cut1",
+			"minecraft:ui/stonecutter/cut2"
 		]
 	},
 

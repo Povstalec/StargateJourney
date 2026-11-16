@@ -51,6 +51,10 @@ public class StargateJourneyConfig
 		CommonIrisConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
 		
+		COMMON_BUILDER.push("Transporter Config");
+		CommonTransporterConfig.init(COMMON_BUILDER);
+		COMMON_BUILDER.pop();
+		
 		COMMON_BUILDER.push("Transmission Config");
 		CommonTransmissionConfig.init(COMMON_BUILDER);
 		COMMON_BUILDER.pop();
@@ -87,7 +91,7 @@ public class StargateJourneyConfig
 		COMMON_CONFIG = COMMON_BUILDER.build();
 		
 		
-
+		
 		CLIENT_BUILDER.push("Stargate Journey Client Config");
 		
 		generalClientConfig(CLIENT_BUILDER);

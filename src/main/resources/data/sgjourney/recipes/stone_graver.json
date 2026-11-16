@@ -1,0 +1,16 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "equipment",
+	"key":
+	{
+		"#": { "tag": "minecraft:planks" },
+		"X": { "tag": "minecraft:stone_crafting_materials" }
+	},
+	"pattern":
+	[
+		" X",
+		"# "
+	],
+	"result": { "item": "sgjourney:stone_graver" },
+	"show_notification": true
+}

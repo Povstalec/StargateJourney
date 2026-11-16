@@ -1,0 +1,43 @@
+{
+	"parent": "sgjourney:adventure/use_stargate",
+	"display": 
+	{
+		"icon": 
+		{
+			"item": "sgjourney:zero_point_module"
+		},
+		"title": 
+		{
+			"translate": "advancements.sgjourney.adventure.zero_point_module.title"
+		},
+		"description": 
+		{
+			"translate": "advancements.sgjourney.adventure.zero_point_module.description"
+		},
+		"frame": "challenge",
+		"show_toast": false,
+		"announce_to_chat": true,
+		"hidden": false,
+		"background": "sgjourney:textures/gui/advancements/backgrounds/sandstone_hieroglyphs.png"
+	},
+	"criteria": 
+	{
+		"got_zero_point_module": 
+		{
+			"trigger": "minecraft:inventory_changed",
+			"conditions": 
+			{
+				"items":
+				[
+          			{"items":["sgjourney:zero_point_module"]}
+        		]
+			}
+		}
+	},
+	"requirements": 
+	[
+		[
+			"got_zero_point_module"
+		]
+	]
+}

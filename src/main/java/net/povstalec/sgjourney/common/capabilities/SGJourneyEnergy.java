@@ -1,11 +1,10 @@
 package net.povstalec.sgjourney.common.capabilities;
 
+import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.LongTag;
 import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.util.INBTSerializable;
-import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 
 public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializable<Tag>
 {
@@ -60,34 +59,58 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 		if(!canExtract())
             return 0;
 		
-		long energyExtracted = Math.min(energy, Math.min(maxExtract(), maxExtract));
-        if(!simulate)
-        	energy -= energyExtracted;
-        
-        if(energyExtracted != 0)
-			onEnergyChanged(energyExtracted, simulate);
-        
-        return energyExtracted;
+		return depleteEnergy(Math.min(maxExtract(), maxExtract), simulate);
 	}
 	
+	/**
+	 * Alternative to {@link #extractLongEnergy(long maxExtract, boolean simulate)} meant to be used in places where it is unacceptable for pull-based energy systems to extract energy.
+	 * Unlike the aforementioned method, this one ignores {@link #canExtract()} and {@link #maxExtract()}, allowing it to act for systems that normally have maxExtract set to 0
+	 * @param maxExtract Maximum amount of energy to be extracted
+	 * @param simulate Whether to simulate the extraction or not
+	 * @return Energy that was actually extracted
+	 */
+	public long depleteEnergy(long maxExtract, boolean simulate)
+	{
+		long energyExtracted = Math.min(energy, maxExtract);
+		if(!simulate)
+			energy -= energyExtracted;
+		
+		if(energyExtracted != 0)
+			onEnergyChanged(energyExtracted, simulate);
+		
+		return energyExtracted;
+	}
+	
+	/**
+	 * @return Energy currently stored by this Energy Storage, but limited by max int value
+	 */
 	@Override
     public int getEnergyStored()
     {
         return regularEnergy(getTrueEnergyStored());
     }
 	
+	/**
+	 * @return Real energy currently stored by this Energy Storage, not limited by max int value
+	 */
 	public long getTrueEnergyStored()
 	{
 		return this.energy;
 	}
-
+	
+	/**
+	 * @return Capacity of this Energy Storage, but limited by max int value
+	 */
     @Override
     public int getMaxEnergyStored()
     {
         return regularEnergy(getTrueMaxEnergyStored());
     }
-    
-    public long getTrueMaxEnergyStored()
+	
+	/**
+	 * @return Real capacity of this Energy Storage, not limited by max int value
+	 */
+	public long getTrueMaxEnergyStored()
     {
         return capacity;
     }
@@ -101,51 +124,143 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
     @Override
     public boolean canReceive()
     {
-        return maxReceive() > 0 && this.energy < getTrueMaxEnergyStored();
+        return maxReceive() > 0;
     }
     
     public boolean canReceive(long receivedEnergy)
 	{
 		return energy + receivedEnergy <= getTrueMaxEnergyStored();
 	}
-    
-    
+	
+	public boolean hasEnergy(long energy)
+	{
+		return getTrueEnergyStored() >= energy;
+	}
+	
+	public boolean hasEnergy()
+	{
+		return this.energy > 0;
+	}
+	
+	
+	
+	public void setEnergyNoUpdate(long energy)
+	{
+		this.energy = energy;
+	}
 	
 	public long setEnergy(long energy)
 	{
+		long oldEnergy = this.energy;
 		this.energy = energy;
+		
+		onEnergyChanged(this.energy - oldEnergy, false);
 		
 		return energy;
 	}
 	
 	public abstract void onEnergyChanged(long difference, boolean simulate);
 	
+	/**
+	 * @return The maximum amount of energy this Energy Storage can receive in a single tick from other Energy Storages
+	 */
 	public long maxReceive()
 	{
 		return this.maxReceive;
 	}
 	
+	/**
+	 * @return The maximum amount of energy that can be extracted from this Energy Storage in a single tick by other Energy Storages
+	 */
 	public long maxExtract()
 	{
 		return this.maxExtract;
 	}
-
-    @Override
-    public Tag serializeNBT()
-    {
-        return LongTag.valueOf(this.energy);
-    }
-
-    @Override
-    public void deserializeNBT(Tag nbt)
-    {
-    	if(!(nbt instanceof LongTag longTag))
-    		throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
-    	
-    	this.setEnergy(longTag.getAsLong());
-    }
+	
+	@Override
+	public Tag serializeNBT()
+	{
+		return LongTag.valueOf(this.energy);
+	}
+	
+	@Override
+	public void deserializeNBT(Tag nbt)
+	{
+		if(nbt instanceof LongTag longTag)
+			this.setEnergyNoUpdate(longTag.getAsLong());
+		else if(nbt instanceof IntTag intTag)
+			this.setEnergyNoUpdate(intTag.getAsInt());
+		else
+			throw new IllegalArgumentException("Can not deserialize to an instance that isn't the default implementation");
+	}
+	
+	
+	
+	public static void moveSimpleEnergy(IEnergyStorage from, IEnergyStorage to, int amount)
+	{
+		int simulatedOutputAmount = from.extractEnergy(amount, true);
+		int simulatedReceiveAmount = to.receiveEnergy(simulatedOutputAmount, true);
+		
+		from.extractEnergy(simulatedReceiveAmount, false);
+		to.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public static void moveEnergy(IEnergyStorage from, IEnergyStorage to, long amount)
+	{
+		if(from instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.fillOtherEnergyStorage(to, amount);
+		else if(to instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.drainOtherEnergyStorage(from, amount);
+		else
+			moveSimpleEnergy(from, to, SGJourneyEnergy.regularEnergy(amount));
+	}
+	
+	public void drainSimpleEnergyStorage(IEnergyStorage otherEnergyStorage, int amount)
+	{
+		int simulatedOutputAmount = otherEnergyStorage.extractEnergy(amount, true);
+		int simulatedReceiveAmount = this.receiveEnergy(simulatedOutputAmount, true);
+		
+		otherEnergyStorage.extractEnergy(simulatedReceiveAmount, false);
+		this.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void drainOtherEnergyStorage(IEnergyStorage otherEnergyStorage, long amount)
+	{
+		if(otherEnergyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.fillSGJourneyEnergyStorage(this, amount);
+		else
+			this.drainSimpleEnergyStorage(otherEnergyStorage, SGJourneyEnergy.regularEnergy(amount));
+	}
+	
+	public void fillSGJourneyEnergyStorage(SGJourneyEnergy sgjourneyEnergy, long amount)
+	{
+		long simulatedOutputAmount = this.extractLongEnergy(amount, true);
+		long simulatedReceiveAmount = sgjourneyEnergy.receiveLongEnergy(simulatedOutputAmount, true);
+		
+		this.extractLongEnergy(simulatedReceiveAmount, false);
+		sgjourneyEnergy.receiveLongEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void fillSimpleEnergyStorage(IEnergyStorage otherEnergyStorage, int amount)
+	{
+		int simulatedOutputAmount = this.extractEnergy(amount, true);
+		int simulatedReceiveAmount = otherEnergyStorage.receiveEnergy(simulatedOutputAmount, true);
+		
+		this.extractEnergy(simulatedReceiveAmount, false);
+		otherEnergyStorage.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public void fillOtherEnergyStorage(IEnergyStorage otherEnergyStorage, long amount)
+	{
+		if(otherEnergyStorage instanceof SGJourneyEnergy sgjourneyEnergy)
+			this.fillSGJourneyEnergyStorage(sgjourneyEnergy, amount);
+		else
+			this.fillSimpleEnergyStorage(otherEnergyStorage, SGJourneyEnergy.regularEnergy(amount));
+	}
     
-    public static int regularEnergy(long energy)
+ 
+	
+	public static int regularEnergy(long energy)
     {
     	return (int) Math.min(Integer.MAX_VALUE, energy);
     }

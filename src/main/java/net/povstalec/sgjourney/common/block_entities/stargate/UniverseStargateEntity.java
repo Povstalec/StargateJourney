@@ -1,30 +1,36 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
-import net.povstalec.sgjourney.common.sgjourney.info.DHDInfo;
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
-import net.povstalec.sgjourney.common.packets.ClientboundUniverseStargateUpdatePacket;
-import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseStargate;
+import org.jetbrains.annotations.NotNull;
 
-public class UniverseStargateEntity extends RotatingStargateEntity
+import javax.annotation.Nullable;
+
+public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlockEntityStargate>
 {
+	public static final String CAN_ENGAGE = "can_engage";
 	public static final String ADDRESS_BUFFER = "AddressBuffer"; //TODO Rename to "address_buffer"
 	public static final String SYMBOL_BUFFER = "SymbolBuffer"; //TODO Rename to "symbol_buffer"
 	
@@ -38,36 +44,24 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	
 	public static final int MAX_WAIT_TICKS = 20;
 	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.universe_chevron_lock_speed.get();
+	protected int waitTicks = 1;
 	
-	public int waitTicks = 1;
+	protected Address.Mutable addressBuffer = new Address.Mutable();
+	protected int symbolBuffer = 0;
 	
-	public Address addressBuffer = new Address(true);
-	public int symbolBuffer = 0;
+	protected boolean canEngage = false;
 	
 	protected int angle;
 	
 	public UniverseStargateEntity(BlockPos pos, BlockState state) 
 	{
-		super(BlockEntityInit.UNIVERSE_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "universe/universe"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_1, 1, MAX_ROTATION);
+		super(BlockEntityInit.UNIVERSE_STARGATE.get(), StargateInit.UNIVERSE.get(), StargateJourney.sgjourneyLocation("universe"), pos, state, TOTAL_SYMBOLS, 1, MAX_ROTATION);
 		this.setOpenSoundLead(8);
 		
 		this.angle = this.maxRotation / 54;
 		
-		symbolInfo.setPointOfOrigin(PointOfOrigin.UNIVERSAL_LOCATION);
-		symbolInfo.setSymbols(Symbols.UNIVERSAL_LOCATION);
-		
-		this.dhdInfo = new DHDInfo(this)
-		{
-			@Override
-			public void updateDHD()
-			{
-				if(hasDHD())
-					this.dhd.updateDHD(!stargate.isConnected() || (stargate.isConnected() && stargate.isDialingOut()) ?
-							addressBuffer : new Address(), addressBuffer.hasPointOfOrigin() || stargate.isConnected());
-			}
-		};
+		symbolInfo.setPointOfOrigin(Conversion.locationToPointOfOrigin(PointOfOrigin.UNIVERSAL_LOCATION));
+		symbolInfo.setSymbols(Conversion.locationToSymbols(Symbols.UNIVERSAL_LOCATION));
 		
 		this.oldRotation = RESET_DEGREES;
 		this.rotation = RESET_DEGREES;
@@ -77,70 +71,195 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	public void load(CompoundTag tag)
 	{
         super.load(tag);
-        
-        addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+		
+		canEngage = tag.getBoolean(CAN_ENGAGE);
+		addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
         symbolBuffer = tag.getInt(SYMBOL_BUFFER);
     }
+	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		//TODO For legacy reasons any symbols that can't be loaded are replaced by default symbols
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS, PointOfOrigin.defaultPointOfOrigin(), Symbols.defaultSymbols());
+		
+		super.deserializeStargateInfo(tag, isUpgraded);
+	}
 	
 	@Override
 	protected void saveAdditional(@NotNull CompoundTag tag)
 	{
 		super.saveAdditional(tag);
 		
-		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.toArray());
+		tag.putBoolean(CAN_ENGAGE, canEngage);
+		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
 		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
 	}
 	
 	@Override
-	public StargateInfo.Feedback dhdEngageSymbol(int symbol)
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
 	{
+		super.serializeStargateInfo(tag);
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		return tag;
+	}
+	
+	@Override
+	public @NotNull CompoundTag getUpdateTag()
+	{
+		CompoundTag tag = super.getUpdateTag();
+		
+		tag.putBoolean(CAN_ENGAGE, canEngage);
+		tag.putInt(SYMBOL_BUFFER, symbolBuffer);
+		tag.putIntArray(ADDRESS_BUFFER, addressBuffer.getArray());
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		return tag;
+	}
+	
+	@Override
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket packet)
+	{
+		super.onDataPacket(net, packet);
+		CompoundTag tag = packet.getTag();
+		if(tag != null)
+		{
+			canEngage = tag.getBoolean(CAN_ENGAGE);
+			symbolBuffer = tag.getInt(ADDRESS_BUFFER);
+			addressBuffer.fromArray(tag.getIntArray(ADDRESS_BUFFER));
+			
+			symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		}
+	}
+	
+	@Override
+	@Nullable
+	protected UniverseBlockEntityStargate fetchStargate()
+	{
+		if(level.isClientSide())
+			return new UniverseBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
+		return BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
+	}
+	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
+	
+	@Override
+	public boolean isDialing()
+	{
+		return !address.isEmpty() || !addressBuffer.isEmpty();
+	}
+	
+	public Address getAddressBuffer()
+	{
+		return addressBuffer;
+	}
+	
+	public int getSymbolBuffer()
+	{
+		return symbolBuffer;
+	}
+	
+	@Override
+	public void updateDHD(DHD dhd)
+	{
+		stargateRun(stargate -> dhd.updateFromStargate(stargate, !isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage || isConnected()));
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
+	{
+		if(level.isClientSide())
+			return StargateInfo.Feedback.NONE.withInfo();
+		
+		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
+			return disconnectStargate(incompleteAddress());
+		
+		canEngage = canEngageStargate;
+		
 		if(isSymbolOutOfBounds(symbol))
-			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS);
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_OUT_OF_BOUNDS.withInfo(symbol));
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() > 0)
-			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+			resetStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT);
 		
 		if(isConnected())
 		{
 			if(symbol == 0)
-				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT, true);
+				return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			else
-				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED);
+				return setRecentFeedback(StargateInfo.Feedback.ENCODE_WHEN_CONNECTED.withInfo());
 		}
-		else if(symbol == 0 && !isConnected() && addressBuffer.getLength() == 0)
-			return setRecentFeedback(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
 		
-		if(addressBuffer.containsSymbol(symbol))
-		{
-			if(symbol == 0)
-				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS);
-			else
-				return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS);
-		}
+		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
+		
+		if(addressBuffer.containsSymbol(mappedSymbol))
+			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(mappedSymbol));
 		
 		if(addressBuffer.getLength() == 0 && address.getLength() == 0)
 			startSound();
 		
-		addressBuffer.addSymbol(symbol);
-		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED);
+		addressBuffer.addSymbol(mappedSymbol);
+		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(mappedSymbol));
 	}
 	
 	@Override
-	public StargateInfo.Feedback engageSymbol(int symbol)
+	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
 	{
-		if(!addressBuffer.containsSymbol(symbol))
-			addressBuffer.addSymbol(symbol);
+		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
+		if(!addressBuffer.containsSymbol(mappedSymbol))
+			addressBuffer.addSymbol(mappedSymbol);
 		
-		return super.engageSymbol(symbol);
+		return super.directEngageSymbol(symbol, canEngageStargate, chevronSound);
 	}
 	
 	@Override
-	public StargateInfo.Feedback encodeChevron(int symbol, boolean incoming, boolean encode)
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateConnection.Direction direction, StargateInfo.ChevronSound sound)
 	{
 		symbolBuffer++;
 		waitTicks++;
 		
-		return super.encodeChevron(symbol, incoming, encode);
+		return super.encodeChevron(symbol, direction, sound);
+	}
+	
+	@Override
+	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd)
+	{
+		// Special case where no symbols are encoded
+		if(addressBuffer.isEmpty())
+			return disconnectStargate(incompleteAddress());
+		
+		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
+			return disconnectStargate(incompleteAddress());
+		
+		if(!addressBuffer.canBeDialed())
+		{
+			if(addressBuffer.getLength() > getAddress().getLength())
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+			else
+				return disconnectStargate(incompleteAddress());
+		}
+		
+		// Engages the Stargate if all chevrons are encoded, or informs it that it can engage automatically once the last chevron is encoded
+		if(address.getLength() < addressBuffer.getLength())
+		{
+			if(canEngage) // Interrupt Stargate rotation
+				return resetStargate(StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.dialing_aborted")));
+			else
+			{
+				canEngage = true;
+				return StargateInfo.Feedback.NONE.withInfo();
+			}
+		}
+		else
+			return super.dhdEngageStargate(dhd);
 	}
 	
 	public void startSound()
@@ -168,11 +287,11 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		if(!isConnected() && addressBuffer.getLength() > symbolBuffer)
 		{
 			if(!isRotating())
-				startRotation(addressBuffer.getSymbol(symbolBuffer), CommonStargateConfig.universe_best_direction.get() ?
-						bestSymbolDirection(addressBuffer.getSymbol(symbolBuffer)) : alternatingDirection(address.getLength()));
+				startRotation(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)), CommonStargateConfig.universe_best_direction.get() ?
+						bestSymbolDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))) : alternatingDirectionClockwise(address.getLength()));
 			
 			if(rotation == desiredRotation)
-				engageSymbol(getCurrentSymbol());
+				super.directEngageSymbol(getCurrentSymbol(), canEngage, StargateInfo.ChevronSound.ENGAGE);
 		}
 	}
 	
@@ -180,7 +299,15 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	{
 		if(stargate.dialFromBuffer() && !level.isClientSide())
 			stargate.bufferDialing();
+		
 		RotatingStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			UniverseBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 	
 	@Override
@@ -223,13 +350,13 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	@Override
 	protected int rotationStep()
 	{
-		return FAST_ROTATION ? (this.rotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
+		return FAST_ROTATION ? (this.rotationDirection.isRotating ? 3 : 2) : 2; // Only rotates fast during computer dialing or DHD dialing, not during redstone dialing
 	}
 	
 	@Override
-	public StargateInfo.Feedback resetStargate(StargateInfo.Feedback feedback, boolean updateInterfaces)
+	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
-		super.resetStargate(feedback, updateInterfaces);
+		super.resetStargate(feedback);
 		
 		if(this.rotation != RESET_DEGREES)
 			rotateTo(RESET_DEGREES, bestRotationDirection(RESET_DEGREES));
@@ -238,34 +365,25 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 	}
 
 	@Override
-	protected void resetAddress(boolean updateInterfaces)
+	protected void resetAddress()
 	{
 		waitTicks = 1;
 		symbolBuffer = 0;
 		addressBuffer.reset();
-		super.resetAddress(updateInterfaces);
-	}
-	
-	@Override
-	public boolean updateClient()
-	{
-		if(!super.updateClient())
-			return false;
-		
-		PacketHandlerInit.INSTANCE.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(this.worldPosition)), new ClientboundUniverseStargateUpdatePacket(this.worldPosition, this.symbolBuffer, this.addressBuffer.toArray()));
-		return true;
+		canEngage = false;
+		super.resetAddress();
 	}
 
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? UniverseStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerUniverseStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerUniverseStargateMethods(wrapper);
 	}
 	
 	@Override
@@ -279,7 +397,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity
 		if(connectionTime == 1)
 		{
 			startSound();
-			startRotation(-1, true);
+			startRotation(-1, RotationDirection.CLOCKWISE);
 		}
 		
 		StargateInfo.ChevronLockSpeed chevronLockSpeed = getChevronLockSpeed(doKawoosh);

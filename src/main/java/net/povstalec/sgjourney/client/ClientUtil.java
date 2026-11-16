@@ -1,19 +1,20 @@
 package net.povstalec.sgjourney.client;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
-import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.misc.ColorUtil;
+import org.joml.Matrix4f;
 
 public class ClientUtil
 {
@@ -21,30 +22,45 @@ public class ClientUtil
 	//******************************************Stargate******************************************
 	//============================================================================================
 	
-	public static PointOfOrigin getPointOfOrigin(ResourceLocation pointOfOrigin)
+	public static TextureAtlasSprite getTexture(ResourceLocation texture)
 	{
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> registry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
-		if(pointOfOrigin != null)
-			return registry.get(pointOfOrigin);
-		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(texture);
 	}
 	
-	public static Symbols getSymbols(ResourceLocation symbols)
+	public static void renderPointOfOrigin(Matrix4f matrix4f, float xStart, float yStart, float xEnd, float yEnd, ClientPointOfOrigin pointOfOrigin, ColorUtil.RGBA rgba)
 	{
-		Minecraft minecraft = Minecraft.getInstance();
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> registry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
+		RenderSystem.enableBlend();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
+		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
+		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
+		RenderSystem.setShaderTexture(0, pointOfOrigin.getExtendedTexture());
 		
-		if(symbols != null)
-			return registry.get(symbols);
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		BufferUploader.drawWithShader(bufferbuilder.end());
+	}
+	
+	public static void renderSymbol(Matrix4f matrix4f, float xStart, float yStart, float xEnd, float yEnd, ClientSymbols symbols, int symbol, ColorUtil.RGBA rgba)
+	{
+		RenderSystem.enableBlend();
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(rgba.red(), rgba.green(), rgba.blue(), rgba.alpha());
+		// Using extended texture instead of TextureAtlasSprite here because for some reason, it appears as though some GUI scales are unable to properly deal with 2:1 ratio atlases
+		// When 2:1 ratio atlas is used, something akin to floating point error seems to show up, rendering a small portion of the neighboring texture on the U-axis
+		RenderSystem.setShaderTexture(0, symbols.getExtendedSymbolTexture(symbol));
 		
-		return registry.get(new ResourceLocation(StargateJourney.MODID + ":universal"));
+		BufferBuilder bufferbuilder = Tesselator.getInstance().getBuilder();
+		bufferbuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferbuilder.vertex(matrix4f, xStart, yStart, 0F).uv(0F, 0F).endVertex();
+		bufferbuilder.vertex(matrix4f, xStart, yEnd, 0F).uv(0F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yEnd, 0F).uv(1F, 1F).endVertex();
+		bufferbuilder.vertex(matrix4f, xEnd, yStart, 0F).uv(1F, 0F).endVertex();
+		BufferUploader.drawWithShader(bufferbuilder.end());
 	}
 	
 	//============================================================================================
@@ -53,7 +69,7 @@ public class ClientUtil
 	
 	public static void addVertex(VertexConsumer consumer, TextureAtlasSprite sprite, Vec3 pos, Vec3 normal, float u, float v)
 	{
-		consumer.vertex(pos.x(), pos.y(), pos.z()) .uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
+		consumer.vertex(pos.x(), pos.y(), pos.z()).uv(sprite.getU(u), sprite.getV(v)).uv2(0, 0).color(1.0F, 1.0F, 1.0F, 1.0F).normal((float) normal.x(), (float) normal.y(), (float) normal.z()).endVertex();
 	}
 	
 	public static BakedQuad bakeQuad(TextureAtlasSprite sprite, Vec3 vec1, Vec3 vec2, Vec3 vec3, Vec3 vec4)

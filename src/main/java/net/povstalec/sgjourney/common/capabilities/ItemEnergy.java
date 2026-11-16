@@ -35,9 +35,9 @@ public abstract class ItemEnergy extends SGJourneyEnergy
 	}
 	
 	@Override
-	public long extractLongEnergy(long maxExtract, boolean simulate)
+	public long depleteEnergy(long maxExtract, boolean simulate)
 	{
 		reloadEnergy();
-		return super.extractLongEnergy(maxExtract, simulate);
+		return super.depleteEnergy(maxExtract, simulate);
 	}
 }

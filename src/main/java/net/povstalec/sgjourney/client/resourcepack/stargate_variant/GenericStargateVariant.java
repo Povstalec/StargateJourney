@@ -1,18 +1,17 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public abstract class GenericStargateVariant extends RotatingStargateVariant
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+public abstract class GenericStargateVariant<SG extends AbstractStargateEntity<?>> extends RotatingStargateVariant<SG>
 {
 	public static final String STARGATE_MODEL = "stargate_model";
 	
@@ -44,30 +43,27 @@ public abstract class GenericStargateVariant extends RotatingStargateVariant
 		public static final String RAISE_BACK_CHEVRONS = "raise_back_chevrons";
 		
 		@Nullable
-		protected Boolean movieChevronLocking;
+		protected final Boolean movieChevronLocking;
 		@Nullable
-		protected Boolean useMovieStargatePrimaryChevron;
+		protected final Boolean useMovieStargatePrimaryChevron;
 		@Nullable
-		protected Boolean raiseBackChevrons;
+		protected final Boolean raiseBackChevrons;
 		
 		public static final Codec<GenericStargateModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				// Gate and chevron textures
-				Codec.BOOL.optionalFieldOf(MOVIE_CHEVRON_LOCKING).forGetter(model -> Optional.of(model.movieChevronLocking)),
-				Codec.BOOL.optionalFieldOf(MOVIE_PRIMARY_CHEVRON).forGetter(model -> Optional.of(model.useMovieStargatePrimaryChevron)),
-				Codec.BOOL.optionalFieldOf(RAISE_BACK_CHEVRONS).forGetter(model -> Optional.of(model.raiseBackChevrons))
+				Codec.BOOL.optionalFieldOf(MOVIE_CHEVRON_LOCKING).forGetter(model -> Optional.ofNullable(model.movieChevronLocking)),
+				Codec.BOOL.optionalFieldOf(MOVIE_PRIMARY_CHEVRON).forGetter(model -> Optional.ofNullable(model.useMovieStargatePrimaryChevron)),
+				Codec.BOOL.optionalFieldOf(RAISE_BACK_CHEVRONS).forGetter(model -> Optional.ofNullable(model.raiseBackChevrons))
 				).apply(instance, GenericStargateModel::new));
 		
 		public GenericStargateModel(Optional<Boolean> movieChevronLocking, Optional<Boolean> useMovieStargatePrimaryChevron,
 				Optional<Boolean> raiseBackChevrons)
 		{
-			if(movieChevronLocking.isPresent())
-				this.movieChevronLocking = movieChevronLocking.get();
+			this.movieChevronLocking = movieChevronLocking.orElse(null);
 			
-			if(useMovieStargatePrimaryChevron.isPresent())
-				this.useMovieStargatePrimaryChevron = useMovieStargatePrimaryChevron.get();
+			this.useMovieStargatePrimaryChevron = useMovieStargatePrimaryChevron.orElse(null);
 			
-			if(raiseBackChevrons.isPresent())
-				this.raiseBackChevrons = raiseBackChevrons.get();
+			this.raiseBackChevrons = raiseBackChevrons.orElse(null);
 		}
 		
 		public boolean movieChevronLocking()
@@ -100,9 +96,9 @@ public abstract class GenericStargateVariant extends RotatingStargateVariant
 		{
 			public static final Codec<MilkyWay> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 					// Gate and chevron textures
-					Codec.BOOL.optionalFieldOf(MOVIE_CHEVRON_LOCKING).forGetter(model -> Optional.of(model.movieChevronLocking)),
-					Codec.BOOL.optionalFieldOf(MOVIE_PRIMARY_CHEVRON).forGetter(model -> Optional.of(model.useMovieStargatePrimaryChevron)),
-					Codec.BOOL.optionalFieldOf(RAISE_BACK_CHEVRONS).forGetter(model -> Optional.of(model.raiseBackChevrons))
+					Codec.BOOL.optionalFieldOf(MOVIE_CHEVRON_LOCKING).forGetter(model -> Optional.ofNullable(model.movieChevronLocking)),
+					Codec.BOOL.optionalFieldOf(MOVIE_PRIMARY_CHEVRON).forGetter(model -> Optional.ofNullable(model.useMovieStargatePrimaryChevron)),
+					Codec.BOOL.optionalFieldOf(RAISE_BACK_CHEVRONS).forGetter(model -> Optional.ofNullable(model.raiseBackChevrons))
 					).apply(instance, MilkyWay::new));
 			
 			public MilkyWay(Optional<Boolean> movieChevronLocking, Optional<Boolean> useMovieStargatePrimaryChevron,

@@ -11,11 +11,10 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 
-public abstract class StargateSound<T extends AbstractStargateEntity> extends AbstractTickableSoundInstance
+public abstract class StargateSound<T extends AbstractStargateEntity<?>> extends AbstractTickableSoundInstance
 {
 	protected T stargate;
 	protected BlockPos stargatePos;
-	protected Minecraft minecraft = Minecraft.getInstance();
 	
 	/**
 	 * 
@@ -31,13 +30,14 @@ public abstract class StargateSound<T extends AbstractStargateEntity> extends Ab
 		this.x = stargate.getCenterPos().getX();
 		this.y = stargate.getCenterPos().getY();
 		this.z = stargate.getCenterPos().getZ();
-		this.relative = true;
+		this.relative = false;
+		this.attenuation = SoundInstance.Attenuation.NONE;
 	}
 	
 	@Override
 	public void tick()
 	{
-		if(!(Minecraft.getInstance().level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity))
+		if(!(Minecraft.getInstance().level.getBlockEntity(stargatePos) instanceof AbstractStargateEntity<?>))
 			this.stop();
 	}
 	
@@ -59,11 +59,12 @@ public abstract class StargateSound<T extends AbstractStargateEntity> extends Ab
 	
 	public double getDistanceFromSource()
 	{
-		LocalPlayer player = minecraft.player;
+		LocalPlayer player = Minecraft.getInstance().player;
 		Vec3 playerPos = player.position();
 		return getPosition().distanceTo(playerPos);
 	}
 	
+	@Override
 	public float getVolume()
 	{
 		float localVolume = 0.0F;

@@ -11,6 +11,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -19,18 +21,22 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.util.INBTSerializable;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.blocks.SGJourneyWeatheringBlock;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBlock;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 
 public class StargateBlockCover implements INBTSerializable<CompoundTag>
 {
-	private ArrayList<StargatePart> parts;
+	private final AbstractStargateEntity<?> stargate;
+	private final ArrayList<StargatePart> parts;
 	
 	public boolean canSinkGate = false;
 	public HashMap<StargatePart, BlockState> blockStates = new HashMap<StargatePart, BlockState>();
 	
-	public StargateBlockCover(ArrayList<StargatePart> parts)
+	public StargateBlockCover(AbstractStargateEntity<?> stargate, ArrayList<StargatePart> parts)
 	{
+		this.stargate = stargate;
 		this.parts = parts;
 	}
 	
@@ -40,6 +46,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			return false;
 		
 		blockStates.put(part, state);
+		stargate.setChanged();
+		stargate.updateClient();
 		
 		return true;
 	}
@@ -57,6 +65,8 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		BlockState oldState = blockStates.get(part);
 		
 		blockStates.remove(part);
+		stargate.setChanged();
+		stargate.updateClient();
 		
 		return Optional.ofNullable(oldState);
 	}
@@ -95,6 +105,73 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 		return ItemStack.EMPTY;
 	}
 	
+	public void doWeatheringAt(StargatePart part, BlockPos pos, ServerLevel level, RandomSource randomSource)
+	{
+		getBlockAt(part).ifPresent(coverBlockState ->
+		{
+			if(coverBlockState.getBlock() instanceof SGJourneyWeatheringBlock weatheringBlock && weatheringBlock.passesProbability(randomSource))
+			{
+				weatheringBlock.getNextState(coverBlockState, level, pos, randomSource).ifPresent(newBlockState -> blockStates.put(part, newBlockState));
+				stargate.setChanged();
+				stargate.updateClient();
+			}
+		});
+	}
+	
+	public boolean undoWeatheringAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> previousState = SGJourneyWeatheringBlock.getPrevious(state.get());
+			if(previousState.isPresent())
+			{
+				blockStates.put(part, previousState.get());
+				stargate.setChanged();
+				stargate.updateClient();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean applyWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> waxedState = SGJourneyWeatheringBlock.getWaxed(state.get());
+			if(waxedState.isPresent())
+			{
+				blockStates.put(part, waxedState.get());
+				stargate.setChanged();
+				stargate.updateClient();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
+	public boolean removeWaxAt(StargatePart part)
+	{
+		Optional<BlockState> state = getBlockAt(part);
+		if(state.isPresent())
+		{
+			Optional<BlockState> unwaxedState = SGJourneyWeatheringBlock.getUnwaxed(state.get());
+			if(unwaxedState.isPresent())
+			{
+				blockStates.put(part, unwaxedState.get());
+				stargate.setChanged();
+				stargate.updateClient();
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	@Override
 	public CompoundTag serializeNBT()
 	{
@@ -106,8 +183,7 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 			
 			Optional<Tag> result = blockStateTag.result();
 			
-			if(result.isPresent())
-				tag.put(entry.getKey().getSerializedName(), result.get());
+			result.ifPresent(value -> tag.put(entry.getKey().getSerializedName(), value));
 		}
 		
 		return tag;
@@ -123,9 +199,10 @@ public class StargateBlockCover implements INBTSerializable<CompoundTag>
 				DataResult<BlockState> stateResult = BlockState.CODEC.parse(NbtOps.INSTANCE, tag.get(part.getSerializedName()));
 				Optional<BlockState> result = stateResult.result();
 				
-				if(result.isPresent())
-					blockStates.put(part, result.get());
+				result.ifPresent(state -> blockStates.put(part, state));
 			}
+			else
+				removeBlockAt(part);
 		}
 	}
 }

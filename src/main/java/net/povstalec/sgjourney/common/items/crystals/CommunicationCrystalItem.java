@@ -3,6 +3,8 @@ package net.povstalec.sgjourney.common.items.crystals;
 import java.util.List;
 import java.util.Optional;
 
+import net.povstalec.sgjourney.common.misc.ComponentHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.ChatFormatting;
@@ -15,29 +17,54 @@ import net.minecraft.world.level.Level;
 
 public class CommunicationCrystalItem extends AbstractCrystalItem
 {
-	public static final int DEFAULT_MAX_DISTANCE = 16;
-	public static final int ADVANCED_MAX_DISTANCE = 32;
+	public static final int DEFAULT_RANGE_INCREASE = 16;
+	public static final int ADVANCED_RANGE_INCREASE = 32;
 	
 	public static final int DEFAULT_FREQUENCY = 0;
 	
-	private static final String FREQUENCY = "Frequency";
+	public static final String FREQUENCY = "frequency";
 	
 	public CommunicationCrystalItem(Properties properties)
 	{
 		super(properties);
 	}
 	
-	public int getFrequency(ItemStack stack)
+	@Override
+	public final CrystalCache.Type getType()
 	{
-		int frequency;
-		CompoundTag tag = stack.getOrCreateTag();
+		return CrystalCache.Type.COMMUNICATION;
+	}
+	
+	public static boolean containsFrequency(@NotNull CompoundTag tag)
+	{
+		return tag.contains(FREQUENCY);
+	}
+	
+	public static boolean hasFrequency(ItemStack stack)
+	{
+		if(stack.hasTag())
+			return containsFrequency(stack.getTag());
 		
-		if(!tag.contains(FREQUENCY))
-			tag.putInt(FREQUENCY, DEFAULT_FREQUENCY);
+		return false;
+	}
+	
+	public static int getFrequency(ItemStack stack)
+	{
+		if(hasFrequency(stack))
+			return stack.getTag().getInt(FREQUENCY);
 		
-		frequency = tag.getInt(FREQUENCY);
-		
-		return frequency;
+		return DEFAULT_FREQUENCY;
+	}
+	
+	public static void setFrequency(ItemStack stack, int frequency)
+	{
+		stack.getOrCreateTag().putInt(FREQUENCY, frequency);
+	}
+	
+	public static void unsetFrequency(ItemStack stack)
+	{
+		if(stack.hasTag())
+			stack.getTag().remove(FREQUENCY);
 	}
 	
 	public static CompoundTag tagSetup(int frequency)
@@ -49,28 +76,26 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		return tag;
 	}
 	
-	public int getMaxDistance()
+	public int getRangeIncrease()
 	{
-		return DEFAULT_MAX_DISTANCE;
-	}
-
-	@Override
-	public Optional<Component> descriptionInDHD(ItemStack stack)
-	{
-		return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
+		return DEFAULT_RANGE_INCREASE;
 	}
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
-    	MutableComponent description = Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(Component.literal(": ")).withStyle(ChatFormatting.GRAY);
-        int frequency = getFrequency(stack);
-        if(frequency == DEFAULT_FREQUENCY)
-            tooltipComponents.add(description.append(Component.translatable("tooltip.sgjourney.crystal.none").withStyle(ChatFormatting.GRAY)));
+    	boolean hasFrequency = hasFrequency(stack);
+		
+        if(!hasFrequency)
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency_none").withStyle(ChatFormatting.GRAY));
         else
-        	tooltipComponents.add(description.append(Component.literal("" + frequency).withStyle(ChatFormatting.GRAY)));
-
-        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+			tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.frequency").append(": " + getFrequency(stack)).withStyle(ChatFormatting.GRAY));
+		
+		tooltipComponents.add(Component.translatable("tooltip.sgjourney.communication_crystal.communication_range_increase", !hasFrequency ? getRangeIncrease() : 0));
+		
+		
+		tooltipComponents.add(ComponentHelper.description("tooltip.sgjourney.communication_crystal.description"));
+		tooltipComponents.add(ComponentHelper.usage("tooltip.sgjourney.communication_crystal.crystal_computer"));
     }
     
     public static class Advanced extends CommunicationCrystalItem
@@ -81,21 +106,15 @@ public class CommunicationCrystalItem extends AbstractCrystalItem
 		}
 		
 		@Override
-		public int getMaxDistance()
+		public int getRangeIncrease()
 		{
-			return ADVANCED_MAX_DISTANCE;
+			return ADVANCED_RANGE_INCREASE;
 		}
 		
 		@Override
 		public boolean isAdvanced()
 		{
 			return true;
-		}
-
-		@Override
-		public Optional<Component> descriptionInDHD(ItemStack stack)
-		{
-			return Optional.of(Component.translatable("tooltip.sgjourney.crystal.in_dhd.communication.advanced").withStyle(ChatFormatting.GRAY).withStyle(ChatFormatting.ITALIC));
 		}
     }
 }

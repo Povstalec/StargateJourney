@@ -6,21 +6,40 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.LuaFunction;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
+import net.povstalec.sgjourney.common.block_entities.tech.EnergyBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
+
+import javax.annotation.Nullable;
 
 public class StargatePeripheral extends InterfacePeripheral
 {
-	protected AbstractStargateEntity stargate;
+	@Nullable
+	protected AbstractStargateEntity<?> stargate;
 	
-	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity stargate)
+	public StargatePeripheral(AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate)
 	{
-		super(interfaceEntity);
+		super(interfaceEntity, stargate);
 		this.stargate = stargate;
 		
-		stargate.registerInterfaceMethods(new StargatePeripheralWrapper(this, interfaceEntity.getInterfaceType()));
+		stargate.registerInterfaceMethods(new SGJourneyPeripheralWrapper<>(this, interfaceEntity.getInterfaceType()));
+	}
+	
+	@Override
+	public void markInvalid()
+	{
+		this.stargate = null;
+	}
+	
+	protected AbstractStargateEntity<?> getStargateOrThrow() throws LuaException
+	{
+		if(stargate == null)
+			throw new LuaException("Stargate Peripheral is no longer valid!");
+		
+		return stargate;
 	}
 
 	@Override
@@ -29,29 +48,16 @@ public class StargatePeripheral extends InterfacePeripheral
 	{
 		String methodName = getMethodNames()[method];
 		
-		return methods.get(methodName).use(computer, context, this.interfaceEntity, this.stargate, arguments);
+		return methods.get(methodName).use(computer, context, this.interfaceEntity, getStargateOrThrow(), arguments);
 	}
 	
-	//============================================================================================
-	//*************************************CC: Tweaked Events*************************************
-	//============================================================================================
-	
-	public void queueEvent(String eventName, Object... objects)
+	@Override
+	public boolean equals(IPeripheral other)
 	{
-		for(IComputerAccess computer : interfaceEntity.getPeripheralWrapper().computerList)
-		{
-			int length = objects.length + 1;
-			Object[] attachmentObjects = new Object[length];
-			
-			attachmentObjects[0] = computer.getAttachmentName();
-			
-			for(int i = 1; i < length; i++)
-			{
-				attachmentObjects[i] = objects[i - 1];
-			}
-			
-			computer.queueEvent(eventName, attachmentObjects);
-		}
+		if(!super.equals(other))
+			return false;
+		
+		return this.stargate == ((StargatePeripheral) other).stargate;
 	}
 	
 	//============================================================================================
@@ -59,56 +65,62 @@ public class StargatePeripheral extends InterfacePeripheral
 	//============================================================================================
 	
 	@LuaFunction
-	public final int getStargateGeneration()
+	public final int getStargateGeneration() throws LuaException
 	{
-		return GenericStargateFunctions.getStargateGeneration(stargate);
+		return GenericStargateFunctions.getStargateGeneration(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final String getStargateType()
+	public final String getStargateType() throws LuaException
 	{
-		return GenericStargateFunctions.getStargateType(stargate);
+		return GenericStargateFunctions.getStargateType(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final boolean isStargateConnected()
+	public final boolean isStargateConnected() throws LuaException
 	{
-		return GenericStargateFunctions.isStargateConnected(stargate);
+		return GenericStargateFunctions.isStargateConnected(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final boolean isStargateDialingOut()
+	public final boolean isStargateDialingOut() throws LuaException
 	{
-		return GenericStargateFunctions.isStargateDialingOut(stargate);
+		return GenericStargateFunctions.isStargateDialingOut(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final boolean isWormholeOpen()
+	public final boolean isWormholeOpen() throws LuaException
 	{
-		return GenericStargateFunctions.isWormholeOpen(stargate);
+		return GenericStargateFunctions.isWormholeOpen(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final long getStargateEnergy()
+	public final long getStargateEnergy() throws LuaException
 	{
-		return GenericStargateFunctions.getStargateEnergy(stargate);
+		return GenericStargateFunctions.getStargateEnergy(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final int getChevronsEngaged()
+	public final int getChevronsEngaged() throws LuaException
 	{
-		return GenericStargateFunctions.getChevronsEngaged(stargate);
+		return GenericStargateFunctions.getChevronsEngaged(getStargateOrThrow());
 	}
 	
 	@LuaFunction
-	public final int getOpenTime()
+	public final int getOpenTime() throws LuaException
 	{
-		return GenericStargateFunctions.getOpenTime(stargate);
+		return GenericStargateFunctions.getOpenTime(getStargateOrThrow());
+	}
+	
+	@LuaFunction
+	public final int getTimeSinceLastTraveler() throws LuaException
+	{
+		return GenericStargateFunctions.getTimeSinceLastTraveler(getStargateOrThrow());
 	}
 	
 	@LuaFunction
 	public final MethodResult disconnectStargate(ILuaContext context) throws LuaException
 	{
-		return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.disconnectStargate(stargate)});
+		return context.executeMainThreadTask(() -> new Object[] {GenericStargateFunctions.disconnectStargate(getStargateOrThrow())});
 	}
 }

@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:smelting",
+	"ingredient": { "item": "sgjourney:naquadah_iron_mixture" },
+	"result": { "item": "sgjourney:naquadah_iron_alloy" },
+	"experience": 1.0,
+	"cookingtime": 200
+}

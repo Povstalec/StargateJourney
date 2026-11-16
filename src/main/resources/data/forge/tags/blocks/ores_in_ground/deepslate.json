@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:deepslate_naquadah_ore",
+		"sgjourney:deepslate_naquadria_ore",
+		"sgjourney:deepslate_trinium_ore"
+	]
+}

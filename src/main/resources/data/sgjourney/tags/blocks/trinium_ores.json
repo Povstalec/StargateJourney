@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:trinium_ore",
+		"sgjourney:deepslate_trinium_ore",
+		"sgjourney:nether_trinium_ore"
+	]
+}

@@ -20,12 +20,17 @@ import net.povstalec.sgjourney.common.compatibility.computer_functions.Interface
 
 public class InterfacePeripheral implements IDynamicPeripheral
 {
-	protected AbstractInterfaceEntity interfaceEntity;
-	protected HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<String,InterfaceMethod<BlockEntity>>();
+	protected final AbstractInterfaceEntity interfaceEntity;
+	/**
+	 * The entity for which the peripheral was initialized
+	 */
+	protected final BlockEntity targetEntity;
+	protected final HashMap<String, InterfaceMethod<BlockEntity>> methods = new HashMap<>();
 	
-	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity)
+	public InterfacePeripheral(AbstractInterfaceEntity interfaceEntity, BlockEntity targetEntity)
 	{
 		this.interfaceEntity = interfaceEntity;
+		this.targetEntity = targetEntity;
 		
 		this.registerMethod(new InterfaceMethods.SetEnergyTarget());
 		this.registerMethod(new InterfaceMethods.AddressToString());
@@ -40,6 +45,8 @@ public class InterfacePeripheral implements IDynamicPeripheral
 			
 		}*/
 	}
+	
+	public void markInvalid() {}
 	
 	@Override
 	public String getType()
@@ -87,6 +94,28 @@ public class InterfacePeripheral implements IDynamicPeripheral
 	public <ConnectedBlockEntity extends BlockEntity> void registerMethod(InterfaceMethod<ConnectedBlockEntity> function)
 	{
 		methods.put(function.getName(), (InterfaceMethod<BlockEntity>) function);
+	}
+	
+	//============================================================================================
+	//*************************************CC: Tweaked Events*************************************
+	//============================================================================================
+	
+	public void queueEvent(String eventName, Object... objects)
+	{
+		for(IComputerAccess computer : interfaceEntity.getPeripheralWrapper().computerList)
+		{
+			int length = objects.length + 1;
+			Object[] attachmentObjects = new Object[length];
+			
+			attachmentObjects[0] = computer.getAttachmentName();
+			
+			for(int i = 1; i < length; i++)
+			{
+				attachmentObjects[i] = objects[i - 1];
+			}
+			
+			computer.queueEvent(eventName, attachmentObjects);
+		}
 	}
 	
 	//============================================================================================

@@ -1,0 +1,22 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "building",
+	"pattern":
+	[
+		"B  ",
+		"BB ",
+		"BBB"
+	],
+	"key":
+	{
+		"B":
+		{
+			"item": "sgjourney:smooth_naquadah_copper_block"
+		}
+	},
+	"result":
+	{
+		"count": 4,
+		"item": "sgjourney:smooth_naquadah_copper_stairs"
+	}
+}

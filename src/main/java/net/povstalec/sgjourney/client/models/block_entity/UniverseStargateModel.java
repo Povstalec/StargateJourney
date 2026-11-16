@@ -1,20 +1,22 @@
 package net.povstalec.sgjourney.client.models.block_entity;
 
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
-
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
+import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariants;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.UniverseStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.StargateVariant;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 
 public class UniverseStargateModel extends AbstractStargateModel<UniverseStargateEntity, UniverseStargateVariant>
 {
@@ -80,6 +82,22 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	public UniverseStargateModel()
 	{
 		super((short) 36);
+	}
+	
+	@Override
+	public UniverseStargateVariant getClientVariant(UniverseStargateEntity stargate)
+	{
+		StargateVariant stargateVariant = ClientStargateVariants.getVariant(stargate);
+		
+		if(stargateVariant != null)
+		{
+			if(stargateVariant.isFound())
+				return ClientStargateVariants.getUniverseStargateVariant(stargateVariant.clientVariant());
+			else if(!stargateVariant.isMissing())
+				stargateVariant.handleLocation(ClientStargateVariants.hasUniverseStargateVariant(stargateVariant.clientVariant()));
+		}
+		
+		return ClientStargateVariants.getUniverseStargateVariant(stargate.defaultVariant());
 	}
 	
 	public float getRotation(boolean shouldRotate)
@@ -310,50 +328,36 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	protected void renderSymbols(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer,
 			MultiBufferSource source, int combinedLight, float rotation)
 	{
-		PointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
+		ClientPointOfOrigin pointOfOrigin = getPointOfOrigin(stargate, stargateVariant);
 		
 		if(pointOfOrigin != null)
 		{
-			boolean pointOfOriginEngaged = false;
-			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-				pointOfOriginEngaged = stargate.isConnected();
-			else if(stargate.isConnected())
-				pointOfOriginEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, 0);
 			
-			consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getPointOfOriginTexture(pointOfOrigin)));
-			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, pointOfOriginEngaged) ? MAX_LIGHT : combinedLight, 0, 0.5F, 1, rotation, getSymbolColor(stargate, stargateVariant, pointOfOriginEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ? MAX_LIGHT : combinedLight,
+				0, ClientPointOfOrigin.getSprite(pointOfOrigin), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 		
-		Symbols symbols = getSymbols(stargate, stargateVariant);
+		ClientSymbols symbols = getSymbols(stargate, stargateVariant);
 		
 		if(symbols == null)
 			return;
-		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(getSymbolTexture(symbols)));
 		
-		for(int j = 1; j < this.numberOfSymbols; j++)
+		for(int symbol = 1; symbol < this.numberOfSymbols; symbol++)
 		{
-			boolean symbolEngaged = false;
-			if(stargateVariant.symbols().engageEncodedSymbols() && (!stargate.isConnected() || stargate.isDialingOut()))
-			{
-				for(int i = 0; i < stargate.getAddress().getLength(); i++)
-				{
-					int addressSymbol = stargate.getAddress().toArray()[i];
-					if(addressSymbol == j)
-						symbolEngaged = true;
-				}
-			}
-			else if(stargate.isConnected())
-				symbolEngaged = stargateVariant.symbols().engageSymbolsOnIncoming();
+			StargateInfo.SymbolState symbolState = symbolState(stargate, stargateVariant, symbol);
 			
-			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolEngaged) ? 
-					MAX_LIGHT : combinedLight, j, symbols.getTextureOffset(j), symbols.getSize(), rotation, getSymbolColor(stargate, stargateVariant, symbolEngaged));
+			renderSymbol(stargate, stargateVariant, stack, consumer, source, symbolsGlow(stargate, stargateVariant, symbolState) ? MAX_LIGHT : combinedLight,
+				symbol, ClientSymbols.getSprite(symbols, symbol), rotation, getSymbolColor(stargate, stargateVariant, symbolState));
 		}
 	}
 	
-	protected void renderSymbol(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight, 
-			int symbolNumber, float symbolOffset, int textureXSize, float rotation, ColorUtil.RGBA symbolColor)
+	protected void renderSymbol(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, PoseStack stack, VertexConsumer consumer, MultiBufferSource source, int combinedLight,
+								int symbolNumber, TextureAtlasSprite sprite, float rotation, ColorUtil.RGBA symbolColor)
 	{
+		if(symbolColor.alpha() <= 0)
+			return;
+		
 		stack.pushPose();
 		int symbolRow = symbolNumber / 4;
 		int symbolInRow = symbolNumber % 4;
@@ -361,27 +365,28 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 		Matrix4f matrix4 = stack.last().pose();
 		Matrix3f matrix3 = stack.last().normal();
 		
-		SGJourneyModel.createQuad(consumer, matrix4, matrix3, combinedLight, 0, 0, 1,
+		consumer = source.getBuffer(SGJourneyRenderTypes.stargateRing(sprite.atlasLocation()));
+		SGJourneyModel.createSpriteQuad(consumer, matrix4, matrix3, combinedLight, sprite, 0, 0, 1,
 				symbolColor.red(), symbolColor.green(), symbolColor.blue(), symbolColor.alpha(), 
 				-STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset - (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0,
+				8F - (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 ), 0,
 				
 				-STARGATE_SYMBOL_RING_INNER_CENTER, 
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset - (STARGATE_SYMBOL_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F - (STARGATE_SYMBOL_RING_INNER_CENTER * 32), 16,
 				
 				STARGATE_SYMBOL_RING_INNER_CENTER,
 				STARGATE_SYMBOL_RING_INNER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset + (STARGATE_SYMBOL_RING_INNER_CENTER * 32 / 16 / textureXSize), 1,
+				8F + (STARGATE_SYMBOL_RING_INNER_CENTER * 32), 16,
 				
 				STARGATE_SYMBOL_RING_OUTER_CENTER,
 				STARGATE_SYMBOL_RING_OUTER_HEIGHT,
 				SYMBOL_OFFSET,
-				symbolOffset + (STARGATE_SYMBOL_RING_OUTER_CENTER * 32 / 16 / textureXSize), 0);
+				8F + (STARGATE_SYMBOL_RING_OUTER_CENTER * 32), 0);
 		
 		stack.popPose();
 	}
@@ -398,13 +403,13 @@ public class UniverseStargateModel extends AbstractStargateModel<UniverseStargat
 	@Override
 	protected boolean isPrimaryChevronEngaged(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant)
 	{
-		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+		return stargate.isConnected() || stargate.getAddressBuffer().getLength() > 0;
 	}
 	
 	@Override
 	protected boolean isChevronEngaged(UniverseStargateEntity stargate, UniverseStargateVariant stargateVariant, int chevronNumber)
 	{
-		return stargate.isConnected() || stargate.addressBuffer.getLength() > 0;
+		return stargate.isConnected() || stargate.getAddressBuffer().getLength() > 0;
 	}
 
 	@Override

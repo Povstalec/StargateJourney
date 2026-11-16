@@ -1,0 +1,556 @@
+package net.povstalec.sgjourney.common.sgjourney;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.Structure;
+import net.minecraftforge.network.PacketDistributor;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.init.PacketHandlerInit;
+import net.povstalec.sgjourney.common.init.TagInit;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.packets.ClientboundUpdatePlayerGravityPacket;
+
+import javax.annotation.Nullable;
+import java.util.*;
+
+/**
+ * Class that is intended to represent a single Minecraft Dimension's attributes that Stargate Journey can work with
+ */
+public class SpaceLocation
+{
+	public static final ResourceKey<Registry<SpaceLocation>> REGISTRY_KEY = ResourceKey.createRegistryKey(StargateJourney.sgjourneyLocation("space_location"));
+	public static final Codec<ResourceKey<SpaceLocation>> RESOURCE_KEY_CODEC = ResourceKey.codec(REGISTRY_KEY);
+	
+	public static final String TEMLPATE_INFO = "template_info";
+	public static final String IN_STARGATE_NETWORK = "in_stargate_network";
+	public static final String PARENT_GRAVITY = "parent_gravity";
+	//public static final String ALLOW_FACTION_PRESENCE = "allow_faction_presence";
+	public static final String UNITY_CRYSTALS_GROW = "unity_crystals_grow";
+	
+	public static final String POINT_OF_ORIGIN = "point_of_origin";
+	public static final String SYMBOLS = "symbols";
+	public static final String GENERATED_ADDRESS = "generate_in_address_tables";
+	public static final String POINT_OF_ORIGIN_TABLE = "point_of_origin_table";
+	
+	public static final String ADDRESS_REGION = "address_region";
+	public static final String PRELOAD_STARGATE_STRUCTURES = "preload_stargate_structures";
+	
+	public static final String STRUCTURE_TAG = "structure_tag";
+	
+	public static final String DIMENSION = "dimension";
+	
+	public static final Codec<SpaceLocation> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		TemplateInfo.CODEC.optionalFieldOf(TEMLPATE_INFO).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.templateInfo)),
+		Codec.BOOL.optionalFieldOf(IN_STARGATE_NETWORK, true).forGetter(spaceLocation -> spaceLocation.inStargateNetwork),
+		Codec.doubleRange(0.0, Double.MAX_VALUE).optionalFieldOf(PARENT_GRAVITY, 0.0).forGetter(spaceLocation -> spaceLocation.parentGravity),
+		//Codec.BOOL.optionalFieldOf(ALLOW_FACTION_PRESENCE, false).forGetter(spaceLocation -> spaceLocation.allowFactionPresence), //TODO Maybe change this to a codec for a faction info class
+		Codec.BOOL.optionalFieldOf(UNITY_CRYSTALS_GROW, false).forGetter(spaceLocation -> spaceLocation.unityCrystalsGrow),
+		
+		PointOfOrigin.RESOURCE_KEY_CODEC.optionalFieldOf(POINT_OF_ORIGIN).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.pointOfOrigin)),
+		Symbols.RESOURCE_KEY_CODEC.optionalFieldOf(SYMBOLS).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.symbols)),
+		PointOfOriginTable.RESOURCE_KEY_CODEC.optionalFieldOf(POINT_OF_ORIGIN_TABLE).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.pointOfOriginTable)),
+		
+		//TODO Coordinates
+		AddressRegion.RESOURCE_KEY_CODEC.optionalFieldOf(ADDRESS_REGION).forGetter(spaceLocation -> Optional.ofNullable(spaceLocation.addressRegionKey)),
+		TagKey.codec(Registries.STRUCTURE).listOf().optionalFieldOf(PRELOAD_STARGATE_STRUCTURES, List.of()).forGetter(spaceLocation -> spaceLocation.preloadStargateStructures),
+		Codec.BOOL.optionalFieldOf(GENERATED_ADDRESS, false).forGetter(spaceLocation -> spaceLocation.generateInAddressTables)
+	).apply(instance, SpaceLocation::new));
+
+	/// Templates for how to create a Space Location for a Dimension based on its prefix
+	private static final TreeMap<String, SpaceLocation> TEMPLATES = new TreeMap<>();
+	/// Map of Dimensions with Space Locations assigned to them
+	private static final Map<ResourceKey<Level>, SpaceLocation> DIMENSION_SPACE_LOCATIONS = new HashMap<>();
+	/// List of Dimensions that allow their Addresses to be found on Cartouches
+	private static final List<SpaceLocation> ADDED_TO_ADDRESS_TABLES = new ArrayList<>();
+
+	/// For controlling gravity on the Client side
+	public static double currentGravity = 0;
+
+	/// If not null, this Space Location can be used as a template for Space Locations (for example, ones added at runtime)
+	@Nullable
+	private final TemplateInfo templateInfo;
+	/// If false, any Stargate located in this location will not be able to establish any sort of connection
+	private final boolean inStargateNetwork;
+	/// Gravity of the parent body this location might be orbiting - 0.07 for Cavum Tenebrae
+	private final double parentGravity;
+	//private boolean allowFactionPresence; // If true, factions will be able to appear in this Dimension
+	/// If true, Unity Crystals can grow in this location
+	private final boolean unityCrystalsGrow;
+
+	/// Point of Origin any Stargates generated in this Space Location will use
+	@Nullable
+	private final ResourceKey<PointOfOrigin> pointOfOrigin;
+	/// Symbols any Stargates generated in this Space Location will use
+	@Nullable
+	private final ResourceKey<Symbols> symbols;
+	/// Symbol Table used to generate a random Symbol for any Symbol Block placed in this Dimension
+	@Nullable
+	private final ResourceKey<PointOfOriginTable> pointOfOriginTable;
+
+	/// Dimension this Space Location represents
+	private ResourceKey<Level> dimension;
+	/// Address Region this Space Location is a part of
+	@Nullable
+	private final ResourceKey<AddressRegion> addressRegionKey;
+	@Nullable
+	private AddressRegion addressRegion = null;
+	/// If not empty and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures found using the listed Structure Tags during Stellar Update
+	private final List<TagKey<Structure>> preloadStargateStructures;
+	/// If true, dimension address will appear in Address Tables with generated addresses
+	private final boolean generateInAddressTables;
+	
+	public SpaceLocation(Optional<TemplateInfo> templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean unityCrystalsGrow,
+	                     Optional<ResourceKey<PointOfOrigin>> pointOfOrigin, Optional<ResourceKey<Symbols>> symbols, Optional<ResourceKey<PointOfOriginTable>> pointOfOriginTable, Optional<ResourceKey<AddressRegion>> addressRegionKey, List<TagKey<Structure>> preloadStargateStructures, boolean generateInAddressTables)
+	{
+		this(templateInfo.orElse(null), inStargateNetwork, parentGravity, /*allowFactionPresence, */unityCrystalsGrow, pointOfOrigin.orElse(null), symbols.orElse(null), pointOfOriginTable.orElse(null), addressRegionKey.orElse(null), preloadStargateStructures, generateInAddressTables);
+	}
+	
+	public SpaceLocation(@Nullable TemplateInfo templateInfo, boolean inStargateNetwork, double parentGravity, /*boolean allowFactionPresence, */boolean unityCrystalsGrow,
+	                     @Nullable ResourceKey<PointOfOrigin> pointOfOrigin, @Nullable ResourceKey<Symbols> symbols, @Nullable ResourceKey<PointOfOriginTable> pointOfOriginTable, @Nullable ResourceKey<AddressRegion> addressRegionKey, List<TagKey<Structure>> preloadStargateStructures, boolean generateInAddressTables)
+	{
+		this.templateInfo = templateInfo;
+		this.inStargateNetwork = inStargateNetwork;
+		this.parentGravity = parentGravity;
+		//this.allowFactionPresence = allowFactionPresence;
+		this.unityCrystalsGrow = unityCrystalsGrow;
+		
+		this.pointOfOrigin = pointOfOrigin;
+		this.symbols = symbols;
+		this.pointOfOriginTable = pointOfOriginTable;
+		
+		this.addressRegionKey = addressRegionKey;
+		this.preloadStargateStructures = preloadStargateStructures;
+		this.generateInAddressTables = generateInAddressTables;
+	}
+	
+	public SpaceLocation copy()
+	{
+		return new SpaceLocation(this.templateInfo, this.inStargateNetwork, this.parentGravity, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.pointOfOriginTable, this.addressRegionKey, this.preloadStargateStructures, this.generateInAddressTables);
+	}
+	
+	public SpaceLocation copyWithoutTemplateInfo()
+	{
+		return new SpaceLocation(null, this.inStargateNetwork, this.parentGravity, this.unityCrystalsGrow, this.pointOfOrigin, this.symbols, this.pointOfOriginTable, this.addressRegionKey, this.preloadStargateStructures, this.generateInAddressTables);
+	}
+	
+	@Nullable
+	public TemplateInfo getTemplateInfo()
+	{
+		return this.templateInfo;
+	}
+	
+	public boolean isInStargateNetwork()
+	{
+		return this.inStargateNetwork;
+	}
+	
+	public double getParentGravity()
+	{
+		return this.parentGravity;
+	}
+	
+	/*public boolean allowFactionPresence()
+	{
+		return this.allowFactionPresence;
+	}*/
+	
+	public boolean generateInAddressTables()
+	{
+		return this.generateInAddressTables;
+	}
+	
+	public boolean unityCrystalsGrow()
+	{
+		return this.unityCrystalsGrow;
+	}
+	
+	@Nullable
+	public ResourceKey<PointOfOrigin> getPointOfOrigin()
+	{
+		return pointOfOrigin;
+	}
+	
+	@Nullable
+	public ResourceKey<Symbols> getSymbols()
+	{
+		return symbols;
+	}
+	
+	@Nullable
+	public ResourceKey<PointOfOriginTable> getPointOfOriginTable()
+	{
+		return pointOfOriginTable;
+	}
+	
+	public ResourceKey<Level> getDimension()
+	{
+		return dimension;
+	}
+	
+	@Nullable
+	public ResourceKey<AddressRegion> getAddressRegionKey()
+	{
+		return this.addressRegionKey;
+	}
+	
+	public void setAddressRegion(AddressRegion addressRegion)
+	{
+		if(addressRegion != null)
+			addressRegion.addSpaceLocation(this);
+		this.addressRegion = addressRegion;
+	}
+	
+	@Nullable
+	public AddressRegion getAddressRegion()
+	{
+		return this.addressRegion;
+	}
+	
+	public boolean shouldPreLoadStargateStructures()
+	{
+		return !preloadStargateStructures.isEmpty();
+	}
+	
+	public List<TagKey<Structure>> preLoadStargateStructures()
+	{
+		return preloadStargateStructures;
+	}
+	
+	
+	
+	public CompoundTag serialize()
+	{
+		CompoundTag spaceLocationTag = new CompoundTag();
+		
+		spaceLocationTag.putBoolean(IN_STARGATE_NETWORK, this.inStargateNetwork);
+		spaceLocationTag.putDouble(PARENT_GRAVITY, this.parentGravity);
+		//spaceLocationTag.putBoolean(ALLOW_FACTION_PRESENCE, this.allowFactionPresence);
+		spaceLocationTag.putBoolean(GENERATED_ADDRESS, this.generateInAddressTables);
+		spaceLocationTag.putBoolean(UNITY_CRYSTALS_GROW, this.unityCrystalsGrow);
+		
+		if(this.pointOfOrigin != null)
+			spaceLocationTag.putString(POINT_OF_ORIGIN, this.pointOfOrigin.location().toString());
+		if(this.symbols != null)
+			spaceLocationTag.putString(SYMBOLS, this.symbols.location().toString());
+		if(this.pointOfOriginTable != null)
+			spaceLocationTag.putString(POINT_OF_ORIGIN_TABLE, this.pointOfOriginTable.location().toString());
+		
+		spaceLocationTag.putString(DIMENSION, this.dimension.location().toString());
+		if(this.addressRegionKey != null)
+			spaceLocationTag.putString(ADDRESS_REGION, this.addressRegionKey.location().toString());
+		
+		ListTag listTag = new ListTag();
+		for(int i = 0; i < preloadStargateStructures.size(); i++)
+		{
+			CompoundTag structureTag = new CompoundTag();
+			structureTag.putString("structure_tag", preloadStargateStructures.get(i).location().toString());
+			
+			listTag.add(structureTag);
+		}
+		spaceLocationTag.put(PRELOAD_STARGATE_STRUCTURES, listTag);
+		
+		return spaceLocationTag;
+	}
+	
+	public static SpaceLocation deserialize(CompoundTag spaceLocationTag)
+	{
+		boolean inStargateNetwork = spaceLocationTag.getBoolean(IN_STARGATE_NETWORK);
+		double parentGravity = spaceLocationTag.getDouble(PARENT_GRAVITY);
+		//boolean allowFactionPresence = spaceLocationTag.getBoolean(ALLOW_FACTION_PRESENCE);
+		boolean appearAmongGeneratedAddresses = spaceLocationTag.getBoolean(GENERATED_ADDRESS);
+		boolean unityCrystalsGrow = spaceLocationTag.getBoolean(UNITY_CRYSTALS_GROW);
+		
+		ResourceKey<PointOfOrigin> pointOfOrigin = Conversion.stringToPointOfOrigin(spaceLocationTag.getString(POINT_OF_ORIGIN));
+		ResourceKey<Symbols> symbols = Conversion.stringToSymbols(spaceLocationTag.getString(SYMBOLS));
+		ResourceKey<PointOfOriginTable> symbolTable = Conversion.stringToPointOfOriginTableKey(spaceLocationTag.getString(POINT_OF_ORIGIN_TABLE));
+		
+		ResourceKey<AddressRegion> addressRegionKey = Conversion.stringToAddressRegionKey(spaceLocationTag.getString(ADDRESS_REGION));
+		
+		
+		List<TagKey<Structure>> preloadStargateStructures = new ArrayList<>();
+		
+		ListTag listTag = spaceLocationTag.getList(PRELOAD_STARGATE_STRUCTURES, Tag.TAG_COMPOUND);
+		for(int i = 0; i < listTag.size(); i++)
+		{
+			preloadStargateStructures.add(TagInit.Structures.createTag(listTag.getCompound(i).getString(STRUCTURE_TAG)));
+		}
+		
+		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), inStargateNetwork, parentGravity, /*allowFactionPresence, */unityCrystalsGrow,
+			Optional.ofNullable(pointOfOrigin), Optional.ofNullable(symbols), Optional.ofNullable(symbolTable), Optional.ofNullable(addressRegionKey), preloadStargateStructures, appearAmongGeneratedAddresses);
+		spaceLocation.dimension = Conversion.stringToDimension(spaceLocationTag.getString(DIMENSION));
+		return spaceLocation;
+	}
+	
+	
+	
+	public static SpaceLocation defaultSpaceLocation(ResourceKey<Level> dimension)
+	{
+		SpaceLocation spaceLocation = new SpaceLocation(Optional.empty(), true, 0.0, /*false, */true, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), List.of(), true);
+		spaceLocation.dimension = dimension;
+		return spaceLocation;
+	}
+	
+	public static Map<ResourceKey<Level>, SpaceLocation> getDimensionSpaceLocations()
+	{
+		return DIMENSION_SPACE_LOCATIONS;
+	}
+	
+	public static boolean contains(ResourceKey<Level> dimension)
+	{
+		return DIMENSION_SPACE_LOCATIONS.containsKey(dimension);
+	}
+	
+	/**
+	 * @param dimension Dimension the corresponding Space Location of which is being searched for
+	 * @return Space Location if Dimension is tied to any or null
+	 */
+	@Nullable
+	public static SpaceLocation fromDimensionNullable(ResourceKey<Level> dimension)
+	{
+		return DIMENSION_SPACE_LOCATIONS.get(dimension);
+	}
+	
+	/**
+	 * If no Space Location is registered for the provided Dimension yet, it registers one
+	 * @param server Current Minecraft Server
+	 * @param dimension Dimension the corresponding Space Location of which is being searched for
+	 * @return Space Location tied to the provided Dimension
+	 */
+	public static SpaceLocation fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
+	{
+		return DIMENSION_SPACE_LOCATIONS.computeIfAbsent(dimension, dimensionKey -> prepareSpaceLocation(dimensionKey, createNewSpaceLocation(server, dimensionKey)));
+	}
+
+    /**
+     * Searches registered location {@link #TEMPLATES} and returns the space location
+     * with most specific (longest) matching prefix if any.
+     *
+     * @param dimension The dimension to match against the template prefix
+     * @return Space location template with most specific matching prefix or {@code null}
+     */
+    @Nullable
+    static SpaceLocation findSpaceLocationTemplate(ResourceKey<Level> dimension)
+    {
+        final String dimLocation = dimension.location().toString();
+        SpaceLocation bestTemplate = null;
+
+        for (Map.Entry<String, SpaceLocation> templateEntry : TEMPLATES.subMap("", true, dimLocation, true).entrySet()) // <- Submap so we're only searching through possible prefixes
+        {
+            final String prefix = templateEntry.getKey();
+            final SpaceLocation locationTemplate = templateEntry.getValue();
+
+            Objects.requireNonNull(locationTemplate.templateInfo, "TemplateInfo of a registered SpaceLocation template cannot be null!");
+            final boolean isMoreSpecific = bestTemplate == null || bestTemplate.templateInfo.prefix.length() < prefix.length();
+
+            if (dimLocation.startsWith(prefix) && isMoreSpecific)
+            {
+                bestTemplate = templateEntry.getValue(); // Update with template that fits the prefix the best
+            }
+        }
+        return bestTemplate;
+    }
+
+    /**
+     * Generates address region from the given {@code template}.
+     * <p>
+     * The address region is registered in respective galaxies.
+     *
+     * @param templateInfo The {@link TemplateInfo} to use for region generation
+     * @param dimension    dimension for which the address region is being created
+     */
+    private static AddressRegion generateAddressRegion(SpaceLocation.TemplateInfo templateInfo, MinecraftServer server, ResourceKey<Level> dimension)
+    {
+        // Assign Space Location to a Galaxy if possible
+        // The only case in which it doesn't get assigned to at least one Galaxy is when the provided list of galaxies is empty
+        if (templateInfo.galaxies != null)
+        {
+            List<Galaxy> galaxyList = new ArrayList<>();
+            for (ResourceKey<Galaxy> galaxyKey : templateInfo.galaxies)
+            {
+                Galaxy galaxy = Universe.get(server).getGalaxy(galaxyKey);
+                if (galaxy != null)
+                    galaxyList.add(galaxy);
+                else
+                    StargateJourney.LOGGER.error("Could not assign Space Location {} to Galaxy {} because the Galaxy is not registered!", dimension.location(), galaxyKey.location());
+            }
+
+            return Universe.get(server).generateNewAddressRegion(dimension, galaxyList);
+        }
+        else
+        {
+            return Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+        }
+    }
+
+    private static SpaceLocation createFromTemplate(SpaceLocation template, MinecraftServer server, ResourceKey<Level> dimension)
+    {
+        Objects.requireNonNull(template.templateInfo, "TemplateInfo cannot be null for SpaceLocation template!");
+        // Create a new Space Location based on an existing template
+        SpaceLocation spaceLocation = template.copyWithoutTemplateInfo();
+        // Generate a new Address Region for the Space Location
+        if (template.templateInfo.generateAddressRegion && Universe.get(server).generateRandomAddressRegions())
+        {
+            AddressRegion region = generateAddressRegion(template.templateInfo, server, dimension);
+            spaceLocation.setAddressRegion(region);
+        }
+        // Assign Space Location to an existing Address Region
+        else if (spaceLocation.addressRegionKey != null)
+        {
+            AddressRegion addressRegion = Universe.get(server).getAddressRegionFromKey(spaceLocation.addressRegionKey);
+            if (addressRegion != null)
+                spaceLocation.setAddressRegion(addressRegion);
+            else
+                StargateJourney.LOGGER.error("Could not assign Space Location {} to Address Region {} because it is not a registered Address Region", dimension.location(), spaceLocation.addressRegionKey.location());
+        }
+        return spaceLocation;
+    }
+	
+	public static SpaceLocation createNewSpaceLocation(MinecraftServer server, ResourceKey<Level> dimension)
+	{
+		// Try finding a template for this Space Location
+        SpaceLocation template = findSpaceLocationTemplate(dimension);
+		
+		SpaceLocation spaceLocation;
+        if (template != null)
+        {
+            spaceLocation = createFromTemplate(template, server, dimension);
+		}
+		else
+		{
+			// Create a default Space Location
+			spaceLocation = defaultSpaceLocation(dimension);
+			AddressRegion addressRegion = Universe.get(server).generateNewAddressRegion(dimension, Universe.get(server).getGalaxiesWithGeneratedRegions());
+			spaceLocation.setAddressRegion(addressRegion);
+		}
+		
+		return spaceLocation;
+	}
+	
+	public static void clear()
+	{
+		TEMPLATES.clear();
+		DIMENSION_SPACE_LOCATIONS.clear();
+		ADDED_TO_ADDRESS_TABLES.clear();
+	}
+	
+	public static void printSpaceLocations()
+	{
+		System.out.println("[Space Location - AddressRegion]");
+		
+		for(Map.Entry<ResourceKey<Level>, SpaceLocation> spaceLocationEntry : DIMENSION_SPACE_LOCATIONS.entrySet())
+		{
+			System.out.println("- |" + spaceLocationEntry.getKey().location() + "|");
+			if(spaceLocationEntry.getValue().addressRegion != null)
+				System.out.print(" = |" + spaceLocationEntry.getValue().addressRegion.getName() + "|");
+		}
+	}
+	
+	public static List<SpaceLocation> getSpaceLocationsAdddedToAddressTables()
+	{
+		return ADDED_TO_ADDRESS_TABLES;
+	}
+	
+	@Override
+	public String toString()
+	{
+		if(dimension != null)
+			return dimension.location().toString();
+		
+		return super.toString();
+	}
+	
+	//============================================================================================
+	//********************************Registering Space Locations*********************************
+	//============================================================================================
+	
+	private static SpaceLocation prepareSpaceLocation(ResourceKey<Level> dimension, SpaceLocation spaceLocation)
+	{
+		// Assign Space Location to Dimension
+		spaceLocation.dimension = dimension;
+		
+		if(spaceLocation.generateInAddressTables())
+			ADDED_TO_ADDRESS_TABLES.add(spaceLocation);
+		
+		return spaceLocation;
+	}
+	
+	public static SpaceLocation addSpaceLocation(ResourceKey<Level> dimension, SpaceLocation spaceLocation)
+	{
+		DIMENSION_SPACE_LOCATIONS.put(dimension, prepareSpaceLocation(dimension, spaceLocation));
+		
+		return spaceLocation;
+	}
+	
+	public static void registerTemplate(SpaceLocation spaceLocation)
+	{
+		if(spaceLocation.templateInfo != null)
+			TEMPLATES.put(spaceLocation.templateInfo.prefix, spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
+		else
+			StargateJourney.LOGGER.error("Can't register a Space Location Template without Template Info");
+	}
+	
+	public static void registerSpaceLocation(ResourceKey<SpaceLocation> key, SpaceLocation spaceLocation)
+	{
+		ResourceKey<Level> dimension = Conversion.locationToDimension(key.location());
+		
+		if(spaceLocation.templateInfo != null)
+			registerTemplate(spaceLocation); // Separated from addSpaceLocation() because we don't want a generated Space Location to be a template
+		
+		addSpaceLocation(dimension, spaceLocation);
+	}
+	
+	public static void registerSpaceLocations(MinecraftServer server)
+	{
+		final RegistryAccess registries = server.registryAccess();
+		final Registry<SpaceLocation> spaceLocationRegistry = registries.registryOrThrow(SpaceLocation.REGISTRY_KEY);
+		
+		Set<Map.Entry<ResourceKey<SpaceLocation>, SpaceLocation>> spaceLocationSet = spaceLocationRegistry.entrySet();
+		spaceLocationSet.forEach((spaceLocationEntry) ->
+				SpaceLocation.registerSpaceLocation(spaceLocationEntry.getKey(), spaceLocationEntry.getValue().copy()));
+		StargateJourney.LOGGER.info("Space Locations registered");
+	}
+	
+	
+	
+	public static void updatePlayerClientGravity(ServerPlayer player)
+	{
+		// Updates player gravity on the client
+		PacketHandlerInit.INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new ClientboundUpdatePlayerGravityPacket(SpaceLocation.fromDimension(player.getServer(), player.level().dimension()).getParentGravity()));
+	}
+	
+	
+	/**
+	 * @param prefix                Space Location for any Dimension that wasn't defined by a datapack containing this prefix will be made using this Space Location as a template
+	 * @param generateAddressRegion If true, the Space Location will generate a new Address Region when being dynamically assigned
+	 * @param galaxies              Galaxies this Dimension will be located in (in the case that it has an Address Region); if the list is null, default set of galaxies will be used instead
+	 */
+	public record TemplateInfo(String prefix, boolean generateAddressRegion, @Nullable List<ResourceKey<Galaxy>> galaxies)
+	{
+		public static final String PREFIX = "prefix";
+		public static final String GENERATE_ADDERSS_REGION = "generate_address_region";
+		public static final String GALAXIES = "galaxies";
+		
+		public static final Codec<TemplateInfo> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.STRING.fieldOf(PREFIX).forGetter(templateInfo -> templateInfo.prefix),
+				Codec.BOOL.fieldOf(GENERATE_ADDERSS_REGION).forGetter(templateInfo -> templateInfo.generateAddressRegion),
+				Galaxy.RESOURCE_KEY_CODEC.listOf().optionalFieldOf(GALAXIES).forGetter(templateInfo -> Optional.ofNullable(templateInfo.galaxies))
+		).apply(instance, TemplateInfo::new));
+		
+		public TemplateInfo(String prefix, boolean generateAddressRegion, Optional<List<ResourceKey<Galaxy>>> galaxies)
+		{
+			this(prefix, generateAddressRegion, galaxies.orElse(null));
+		}
+	}
+}

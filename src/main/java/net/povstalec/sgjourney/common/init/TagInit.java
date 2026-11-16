@@ -13,15 +13,21 @@ import net.povstalec.sgjourney.StargateJourney;
 
 public class TagInit
 {
-	public class Items
+	public static class Items
 	{
 		public static final TagKey<Item> REACTION_HEATER = tag("reaction_heater");
 		public static final TagKey<Item> RAW_NAQUADAH = tag("raw_naquadah");
+		public static final TagKey<Item> STOPS_DHD_INTERACTION = tag("stops_dhd_interaction");
 		
 		private static TagKey<Item> tag(String name)
 		{
             return ItemTags.create(new ResourceLocation(StargateJourney.MODID, name));
         }
+		
+		public static TagKey<Item> createTag(String name)
+		{
+			return ItemTags.create(ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<Item> forgeTag(String name)
         {
@@ -29,17 +35,27 @@ public class TagInit
         }*/
 	}
 	
-	public class Blocks
+	public static class Blocks
 	{
 		public static final TagKey<Block> IRIS_RESISTANT = tag("iris_resistant");
 		public static final TagKey<Block> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<Block> PLASMA_FLAMMABLE = tag("plasma_flammable");
 		public static final TagKey<Block> STONE_SPIRE_PROTRUDES_THROUGH = tag("stone_spire_protrudes_through");
+		public static final TagKey<Block> TRINIUM_ARROW_CAN_BREAK = tag("trinium_arrow_can_break");
+		
+		public static final TagKey<Block> NEEDS_STONE_GRAVER = tag("engravable/needs_stone_graver");
+		public static final TagKey<Block> NEEDS_IRON_GRAVER = tag("engravable/needs_iron_graver");
+		public static final TagKey<Block> NEEDS_DIAMOND_GRAVER = tag("engravable/needs_diamond_graver");
 		
 		private static TagKey<Block> tag(String name)
 		{
             return BlockTags.create(new ResourceLocation(StargateJourney.MODID, name));
         }
+		
+		public static TagKey<Block> createTag(String name)
+		{
+			return BlockTags.create(ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<Block> forgeTag(String name)
         {
@@ -47,16 +63,25 @@ public class TagInit
         }*/
 	}
 	
-	public class Entities
+	public static class Entities
 	{
 		public static final TagKey<EntityType<?>> KAWOOSH_IMMUNE = tag("kawoosh_immune");
 		public static final TagKey<EntityType<?>> WORMHOLE_IGNORES = tag("wormhole_ignores");
+		public static final TagKey<EntityType<?>> REVERSE_WORMHOLE_IGNORES = tag("reverse_wormhole_ignores");
 		public static final TagKey<EntityType<?>> WORMHOLE_CANNOT_TELEPORT = tag("wormhole_cannot_teleport");
+		public static final TagKey<EntityType<?>> NO_IRIS_DAMAGE = tag("no_iris_damage");
+		
+		public static final TagKey<EntityType<?>> TRANSPORTER_CANNOT_TELEPORT = tag("transporter_cannot_teleport");
 		
 		private static TagKey<EntityType<?>> tag(String name)
 		{
             return TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation(StargateJourney.MODID, name));
         }
+		
+		public static TagKey<EntityType<?>> createTag(String name)
+		{
+			return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.tryParse(name));
+		}
 
         /*private static TagKey<EntityType<?>> forgeTag(String name)
         {
@@ -64,7 +89,7 @@ public class TagInit
         }*/
 	}
 	
-	public class Structures
+	public static class Structures
 	{
 		public static final TagKey<Structure> STARGATE_MAP = tag("stargate_map");
 		public static final TagKey<Structure> NETWORK_STARGATE = tag("network_stargate");
@@ -82,6 +107,16 @@ public class TagInit
 		private static TagKey<Structure> tag(String name)
 		{
 			return TagKey.create(Registries.STRUCTURE, new ResourceLocation(StargateJourney.MODID, name));
+		}
+		
+		public static TagKey<Structure> createTag(ResourceLocation id)
+		{
+			return TagKey.create(Registries.STRUCTURE, id);
+		}
+		
+		public static TagKey<Structure> createTag(String name)
+		{
+			return createTag(ResourceLocation.tryParse(name));
 		}
 	}
 }

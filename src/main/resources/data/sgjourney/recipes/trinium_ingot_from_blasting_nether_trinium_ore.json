@@ -1,0 +1,7 @@
+{
+	"type": "minecraft:blasting",
+	"ingredient": { "item": "sgjourney:nether_trinium_ore" },
+	"result": { "item": "sgjourney:trinium_ingot" },
+	"experience": 1.0,
+	"cookingtime": 100
+}

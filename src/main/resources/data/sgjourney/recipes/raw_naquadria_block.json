@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern": [
+    "TTT",
+    "TIT",
+    "TTT"
+  ],
+  "key": {
+    "I": {"item": "sgjourney:raw_naquadria"},
+    "T": {"tag": "sgjourney:raw_naquadria"}
+  },
+  "result": {
+    "item": "sgjourney:raw_naquadria_block"
+  }
+}

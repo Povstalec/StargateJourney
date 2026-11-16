@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.misc;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.FastColor;
 
 public class ColorUtil
 {
@@ -12,9 +13,23 @@ public class ColorUtil
 	public static final float MIN_FLOAT_VALUE = 0F;
 	
 	public static final String RED = "red";
+	public static final String R = "r";
 	public static final String GREEN = "green";
+	public static final String G = "g";
 	public static final String BLUE = "blue";
+	public static final String B = "b";
 	public static final String ALPHA = "alpha";
+	public static final String A = "a";
+	
+	public static int getTint(int red, int green, int blue, int alpha)
+	{
+		int tint = (alpha & 255) << 24;
+		tint += (red & 255) << 16;
+		tint += (green & 255) << 8;
+		tint += blue & 255;
+		
+		return tint;
+	}
 	
 	public static class RGBA
 	{
@@ -23,12 +38,21 @@ public class ColorUtil
 		protected final float blue;
 	    protected final float alpha;
 		
+		public static final Codec<RGBA> INT_CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(R).forGetter(rgba -> (int) (rgba.red * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(G).forGetter(rgba -> (int) (rgba.green * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).fieldOf(B).forGetter(rgba -> (int) (rgba.blue * 255)),
+			Codec.intRange(MIN_INT_VALUE, MAX_INT_VALUE).optionalFieldOf(A, MAX_INT_VALUE).forGetter(rgba -> (int) (rgba.alpha * 255))
+		).apply(instance, RGBA::new));
+		
 		public static final Codec<RGBA> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(GREEN).forGetter(RGBA::green),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(BLUE).forGetter(RGBA::blue),
-				Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(ALPHA).forGetter(RGBA::alpha)
-				).apply(instance, RGBA::new));
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(RED).forGetter(RGBA::red),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(GREEN).forGetter(RGBA::green),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).fieldOf(BLUE).forGetter(RGBA::blue),
+			Codec.floatRange(MIN_FLOAT_VALUE, MAX_FLOAT_VALUE).optionalFieldOf(ALPHA, MAX_FLOAT_VALUE).forGetter(RGBA::alpha)
+		).apply(instance, RGBA::new));
+		
+		public static final ColorCodec<RGBA> COLOR_CODEC = new ColorCodec<>(INT_CODEC, CODEC);
 		
 		public RGBA(float red, float green, float blue, float alpha)
 		{
@@ -43,6 +67,11 @@ public class ColorUtil
 			this.alpha = alpha;
 		}
 		
+		public RGBA(float red, float green, float blue)
+		{
+			this(red, green, blue, 1F);
+		}
+		
 		public RGBA(int red, int green, int blue, int alpha)
 		{
 			if(red > MAX_INT_VALUE || green > MAX_INT_VALUE || blue > MAX_INT_VALUE || alpha > MAX_INT_VALUE)
@@ -54,6 +83,19 @@ public class ColorUtil
 			this.green = green / 255F;
 			this.blue = blue / 255F;
 			this.alpha = alpha / 255F;
+		}
+		
+		public RGBA(int red, int green, int blue)
+		{
+			this(red, green, blue, 255);
+		}
+		
+		public RGBA(int argb)
+		{
+			this.red = FastColor.ARGB32.red(argb) / 255F;
+			this.green = FastColor.ARGB32.green(argb) / 255F;
+			this.blue = FastColor.ARGB32.blue(argb) / 255F;
+			this.alpha = FastColor.ARGB32.alpha(argb) / 255F;
 		}
 		
 		public float red()

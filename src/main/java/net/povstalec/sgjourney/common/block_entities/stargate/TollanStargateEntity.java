@@ -1,19 +1,23 @@
 package net.povstalec.sgjourney.common.block_entities.stargate;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
-import net.povstalec.sgjourney.common.compatibility.cctweaked.StargatePeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
-import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.tollan.TollanStargate;
 
-public class TollanStargateEntity extends AbstractStargateEntity
+import javax.annotation.Nullable;
+
+public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEntityStargate>
 {
 	public static final int TOTAL_SYMBOLS = 48;
 	
@@ -21,12 +25,10 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	public static final float VERTICAL_CENTER_TOLLAN_HEIGHT = 0F;
 	public static final float HORIZONTAL_CENTER_TOLLAN_HEIGHT = (TOLLAN_THICKNESS / 2) / 16;
 	
-	public static final ChevronLockSpeed CHEVRON_LOCK_SPEED = CommonStargateConfig.tollan_chevron_lock_speed.get();
-	
 	public TollanStargateEntity(BlockPos pos, BlockState state)
 	{
-		super(BlockEntityInit.TOLLAN_STARGATE.get(), new ResourceLocation(StargateJourney.MODID, "tollan/tollan"), pos, state,
-				TOTAL_SYMBOLS, StargateInfo.Gen.GEN_2, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
+		super(BlockEntityInit.TOLLAN_STARGATE.get(), StargateInit.TOLLAN.get(), StargateJourney.sgjourneyLocation("tollan"), pos, state,
+				TOTAL_SYMBOLS, 2, VERTICAL_CENTER_TOLLAN_HEIGHT, HORIZONTAL_CENTER_TOLLAN_HEIGHT);
 	}
 
 	@Override
@@ -44,17 +46,34 @@ public class TollanStargateEntity extends AbstractStargateEntity
 	@Override
 	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
 	{
-		return doKawoosh ? CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+		return doKawoosh ? TollanStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
 	}
 
 	@Override
-	public void registerInterfaceMethods(StargatePeripheralWrapper wrapper)
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
 	{
-		CCTweakedCompatibility.registerTollanStargateMethods(wrapper);
+		CCTweakedCompatibility.Stargate.registerTollanStargateMethods(wrapper);
+	}
+	
+	@Override
+	@Nullable
+	protected TollanBlockEntityStargate fetchStargate()
+	{
+		if(level.isClientSide())
+			return new TollanBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
+		return BlockEntityList.get(level).getStargate(TollanBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, TollanStargateEntity stargate)
 	{
 		AbstractStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			TollanBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
 	}
 }

@@ -1,33 +1,46 @@
 package net.povstalec.sgjourney.common.block_entities.dhd;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
-import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
-import net.povstalec.sgjourney.common.items.crystals.AbstractCrystalItem;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.milky_way.MilkyWayBlockEntityDHD;
+import net.povstalec.sgjourney.common.sgjourney.dhd.pegasus.PegasusBlockEntityDHD;
 
-public class PegasusDHDEntity extends CrystalDHDEntity
+public class PegasusDHDEntity extends CrystalDHDEntity<PegasusBlockEntityDHD>
 {
 	public PegasusDHDEntity(BlockPos pos, BlockState state)
 	{
 		super(BlockEntityInit.PEGASUS_DHD.get(), pos, state);
 	}
 	
+	//TODO Dynamic symbols and static symbols
 	@Override
-	public void load(CompoundTag nbt)
+	public void onLoad()
 	{
-		super.load(nbt);
-		addTransferCrystals(itemHandler);
+		super.onLoad();
+		
+		if(this.level.isClientSide())
+			return;
+		
+		// Update symbols when loading
+		if(generationStep == Step.GENERATED)
+		{
+			if(hasStargate()) // Copy from connected Stargate
+				setSymbolsFromStargate();
+			else // Generate from Dimension
+				setLocalSymbols();
+		}
 	}
 	
 	protected long buttonPressEnergyCost()
@@ -36,19 +49,19 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
-	protected long capacity()
+	public long getEnergyCapacity()
 	{
-		return CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get();
+		return SyncedConfig.pegasus_dhd_energy_buffer_capacity.get();
 	}
 	
 	@Override
-	protected long maxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonDHDConfig.pegasus_dhd_max_energy_receive.get();
 	}
 	
 	@Override
-	public long maxEnergyDeplete()
+	public long maxEnergyTransfer()
 	{
 		return this.maxEnergyTransfer < 0 ? CommonDHDConfig.pegasus_dhd_max_energy_extract.get() : this.maxEnergyTransfer;
 	}
@@ -65,25 +78,20 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		return SoundInit.PEGASUS_DHD_PRESS.get();
 	}
 	
-
-	// TODO Temporary function for replacing old Energy Crystals with new Transfer Crystals
-	public static void addTransferCrystals(ItemStackHandler itemHandler)
+	@Override
+	protected PegasusBlockEntityDHD fetchDHD()
 	{
-		int slots = itemHandler.getSlots();
-		
-		for(int i = 0; i < slots; i++)
-		{
-			ItemStack stack = itemHandler.getStackInSlot(i);
-			
-			if(stack.is(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()) && stack.hasTag())
-			{
-				if(stack.getTag().getString(CRYSTAL_MODE).equals(ENERGY_TRANSFER))
-				{
-					itemHandler.setStackInSlot(i, new ItemStack(ItemInit.TRANSFER_CRYSTAL.get()));
-					StargateJourney.LOGGER.info("Replaced Transfer Crystal");
-				}
-			}
-		}
+		return new PegasusBlockEntityDHD(this);
+	}
+	
+	//============================================================================================
+	//*****************************************Generation*****************************************
+	//============================================================================================
+	
+	public void clearSymbols()
+	{
+		symbolInfo().setPointOfOrigin(null);
+		symbolInfo().setSymbols(null);
 	}
 	
 	@Override
@@ -93,14 +101,33 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 	}
 	
 	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP) // Set empty symbols before it's generated in a structure
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
+		}
+		else if(hasStargate()) // Copy from connected Stargate
+			setSymbolsFromStargate();
+		else // Generate from Dimension
+			setLocalSymbols();
+		
+		crystalCache.recalculateCrystals();
+	}
+	
+	@Override
 	protected void generateCrystals()
 	{
-		itemHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
-		itemHandler.setStackInSlot(1, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(2, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
-		itemHandler.setStackInSlot(3, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
-		itemHandler.setStackInSlot(6, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
-		itemHandler.setStackInSlot(7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(0, new ItemStack(ItemInit.LARGE_CONTROL_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(1, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(2, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(3, new ItemStack(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(6, new ItemStack(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()));
+		crystalHandler.setStackInSlot(7, new ItemStack(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()));
 	}
 
 }

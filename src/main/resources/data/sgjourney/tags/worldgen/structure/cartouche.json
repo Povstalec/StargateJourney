@@ -7,6 +7,6 @@
 		"sgjourney:cartouche/sandstone_cartouche_monument",
 		"sgjourney:cartouche/red_sandstone_cartouche_monument",
 		
-		{id: "#common_stargates:cartouche", required: false}
+		{"id": "#common_stargates:cartouche", "required": false}
 	]
 }

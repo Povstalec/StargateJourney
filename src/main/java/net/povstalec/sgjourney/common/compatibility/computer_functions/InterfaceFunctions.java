@@ -16,12 +16,12 @@ public class InterfaceFunctions
 	
 	public static long getEnergy(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.getEnergyStored();
+		return interfaceEntity.energyStorage.getTrueEnergyStored();
 	}
 	
 	public static long getEnergyCapacity(AbstractInterfaceEntity interfaceEntity)
 	{
-		return interfaceEntity.getEnergyCapacity();
+		return interfaceEntity.energyStorage.getTrueMaxEnergyStored();
 	}
 	
 	public static long getEnergyTarget(AbstractInterfaceEntity interfaceEntity)
@@ -36,6 +36,6 @@ public class InterfaceFunctions
 	
 	public static String addressToString(Map<Double, Double> addressTable)
 	{
-		return new Address(addressTable).toString();
+		return new Address.Immutable(addressTable).toString();
 	}
 }

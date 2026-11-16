@@ -1,0 +1,11 @@
+{
+	"variants":
+	{
+		"axis=x,lit=false": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_x" },
+		"axis=x,lit=true": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_x_on" },
+		"axis=y,lit=false": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_y" },
+		"axis=y,lit=true": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_y_on" },
+		"axis=z,lit=false": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_z" },
+		"axis=z,lit=true": { "model": "sgjourney:block/weathered_naquadah_copper_lamp_z_on" }
+	}
+}

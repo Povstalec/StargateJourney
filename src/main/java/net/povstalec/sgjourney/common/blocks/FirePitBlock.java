@@ -29,9 +29,9 @@ public class FirePitBlock extends Block
 	protected final ParticleOptions flameParticle;
 	public static final BooleanProperty LIT = BooleanProperty.create("lit");
 	
-	public FirePitBlock(Properties properties, ParticleOptions particle)
+	public FirePitBlock(Properties properties, int lightLevel, ParticleOptions particle)
 	{
-		super(properties);
+		super(properties.lightLevel((state) -> state.getValue(FirePitBlock.LIT) ? lightLevel : 0));
 		this.flameParticle = particle;
 	}
 	

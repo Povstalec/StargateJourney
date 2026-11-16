@@ -9,5 +9,7 @@
 	{
 		"item": "sgjourney:stargate_upgrade_crystal",
 		"nbt": {"Type":"sgjourney:milky_way_stargate"}
-	}
+	},
+	"progress": 100,
+	"input_fluid": { "id": "sgjourney:liquid_naquadah", "amount": 100 }
 }

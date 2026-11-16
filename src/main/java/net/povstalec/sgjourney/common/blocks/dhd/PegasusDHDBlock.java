@@ -36,13 +36,15 @@ import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.CrystalDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
 import net.povstalec.sgjourney.common.config.CommonCrystalConfig;
+import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
-import net.povstalec.sgjourney.common.items.crystals.CommunicationCrystalItem;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.items.crystals.EnergyCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.TransferCrystalItem;
-import net.povstalec.sgjourney.common.menu.PegasusDHDMenu;
+import net.povstalec.sgjourney.common.menu.dhd.DHDCrystalMenu;
+import net.povstalec.sgjourney.common.menu.dhd.PegasusDHDMenu;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
 
 public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterloggedBlock
@@ -84,17 +86,35 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 	@Override
 	public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult trace) 
 	{
-        if(!level.isClientSide()) 
+		if(player.getItemInHand(InteractionHand.MAIN_HAND).is(TagInit.Items.STOPS_DHD_INTERACTION) ||
+			player.getItemInHand(InteractionHand.OFF_HAND).is(TagInit.Items.STOPS_DHD_INTERACTION))
+			return InteractionResult.FAIL;
+		
+		if(!level.isClientSide())
         {
         	BlockEntity blockEntity = level.getBlockEntity(pos);
 			
         	if(blockEntity instanceof PegasusDHDEntity dhd)
         	{
-        		dhd.setStargate();
-        		
-        		if(trace.getDirection() != Direction.UP || player.isShiftKeyDown())
-        			this.openCrystalMenu(player, dhd);
-        		else
+				if((trace.getDirection() != Direction.UP || player.isShiftKeyDown()) && dhd.hasPermissions(player, true))
+				{
+					MenuProvider containerProvider = new MenuProvider()
+					{
+						@Override
+						public Component getDisplayName()
+						{
+							return Component.translatable("screen.sgjourney.dhd");
+						}
+						
+						@Override
+						public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity)
+						{
+							return new DHDCrystalMenu.Pegasus(windowId, playerInventory, dhd);
+						}
+					};
+					NetworkHooks.openScreen((ServerPlayer) player, containerProvider, dhd.getBlockPos());
+				}
+				else
         		{
         			MenuProvider containerProvider = new MenuProvider() 
             		{
@@ -107,7 +127,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
             			@Override
             			public AbstractContainerMenu createMenu(int windowId, Inventory playerInventory, Player playerEntity) 
             			{
-            				return new PegasusDHDMenu(windowId, playerInventory, blockEntity);
+            				return new PegasusDHDMenu(windowId, playerInventory, dhd);
             			}
             		};
             		NetworkHooks.openScreen((ServerPlayer) player, containerProvider, blockEntity.getBlockPos());
@@ -154,7 +174,7 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
         CompoundTag blockEntityTag = new CompoundTag();
         
         blockEntityTag.putString("id", "sgjourney:pegasus_dhd");
-        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, 0);
+        blockEntityTag.putLong(EnergyBlockEntity.ENERGY, CommonDHDConfig.pegasus_dhd_energy_buffer_capacity.get());
 		
 		CompoundTag crystalInventory = new CompoundTag();
 		crystalInventory.putInt("Size", 9);
@@ -186,9 +206,9 @@ public class PegasusDHDBlock extends CrystalDHDBlock implements SimpleWaterlogge
 		
 		nbtTagList.add(InventoryUtil.addItem(0, InventoryUtil.itemName(ItemInit.LARGE_CONTROL_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(1, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(2, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(3, InventoryUtil.itemName(ItemInit.ADVANCED_ENERGY_CRYSTAL.get()), 1, EnergyCrystalItem.tagSetup(0)));
-		nbtTagList.add(InventoryUtil.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, CommunicationCrystalItem.tagSetup(0)));
+		nbtTagList.add(InventoryUtil.addItem(6, InventoryUtil.itemName(ItemInit.ADVANCED_COMMUNICATION_CRYSTAL.get()), 1, null));
 		nbtTagList.add(InventoryUtil.addItem(7, InventoryUtil.itemName(ItemInit.ADVANCED_TRANSFER_CRYSTAL.get()), 1, TransferCrystalItem.tagSetup(CommonCrystalConfig.advanced_transfer_crystal_max_transfer.get())));
 		
 		return nbtTagList;

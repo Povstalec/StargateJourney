@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class GoauldHostProvider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 {
-	public static Capability<GoauldHost> GOAULD_HOST = CapabilityManager.get(new CapabilityToken<GoauldHost>() {});
+	public static final Capability<GoauldHost> GOAULD_HOST = CapabilityManager.get(new CapabilityToken<GoauldHost>() {});
 	private GoauldHost goauldHost = null;
 	private final LazyOptional<GoauldHost> optional = LazyOptional.of(this::getOrCreateGoauldHost);
 	

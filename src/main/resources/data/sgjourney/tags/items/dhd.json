@@ -2,8 +2,11 @@
 	"replace": false,
 	"values":
 	[
+		"sgjourney:universe_dhd",
 		"sgjourney:milky_way_dhd",
 		"sgjourney:pegasus_dhd",
-		"sgjourney:classic_dhd"
+		
+		"sgjourney:classic_dhd",
+		"sgjourney:andromeda_dhd"
 	]
 }

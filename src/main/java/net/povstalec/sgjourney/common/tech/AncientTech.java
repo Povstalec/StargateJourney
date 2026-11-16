@@ -3,38 +3,28 @@ package net.povstalec.sgjourney.common.tech;
 import java.util.Optional;
 
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
 import net.povstalec.sgjourney.common.capabilities.AncientGeneProvider;
 
 public interface AncientTech
 {
-	default boolean canUseAncientTech(Entity user)
-	{
-		Optional<Boolean> canUse = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(cap -> cap.canUseAncientTechnology());
-		
-		if(canUse.isPresent())
-			return canUse.get();
-		return false;
-	}
-	
 	/**
-	 * 
-	 * @param requirementsDisabled Whether or not the requirements for having Ancient Gene to use this have been disabled
-	 * @param user
-	 * @return
+	 * @param user LivingEntity attempting to use this technology
+	 * @return True of the user can use this technology, otherwise false
 	 */
-	default boolean canUseAncientTech(boolean requirementsDisabled, Entity user)
+	default boolean canUseAncientTech(LivingEntity user)
 	{
-		return requirementsDisabled ? true : canUseAncientTech(user);
+		Optional<Boolean> canUse = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(AncientGene::canUseAncientTechnology);
+		
+		return canUse.orElse(false);
 	}
 	
 	default AncientGene.ATAGene getGeneType(Entity user)
 	{
-		Optional<AncientGene.ATAGene> geneType = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(cap -> cap.getGeneType());
+		Optional<AncientGene.ATAGene> geneType = user.getCapability(AncientGeneProvider.ANCIENT_GENE).map(AncientGene::getGeneType);
 		
-		if(geneType.isPresent())
-			return geneType.get();
-		return AncientGene.ATAGene.NONE;
+		return geneType.orElse(AncientGene.ATAGene.NONE);
 	}
 	
 }

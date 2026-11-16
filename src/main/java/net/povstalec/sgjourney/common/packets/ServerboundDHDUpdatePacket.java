@@ -35,9 +35,7 @@ public class ServerboundDHDUpdatePacket
     	ctx.get().enqueueWork(() -> {
     		final BlockEntity blockEntity = ctx.get().getSender().level().getBlockEntity(blockPos);
     		if(blockEntity instanceof AbstractDHDEntity dhd)
-    		{
-    			dhd.engageChevron(this.symbol);
-    		}
+    			dhd.pressButton(this.symbol);
     	});
         return true;
     }

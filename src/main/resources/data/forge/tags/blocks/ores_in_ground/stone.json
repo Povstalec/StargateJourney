@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"sgjourney:naquadah_ore",
+		"sgjourney:naquadria_ore",
+		"sgjourney:trinium_ore"
+	]
+}

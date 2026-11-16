@@ -1,10 +1,10 @@
 {
-	"parent": "sgjourney:adventure/use_stargate",
+	"parent": "sgjourney:adventure/visit_pegasus",
 	"display": 
 	{
 		"icon": 
 		{
-			"item": "sgjourney:pegasus_stargate"
+			"item": "sgjourney:polished_naquadah_iron_block"
 		},
 		"title": 
 		{
@@ -14,7 +14,7 @@
 		{
 			"translate": "advancements.sgjourney.adventure.visit_lantea.description"
 		},
-		"frame": "challenge",
+		"frame": "goal",
 		"show_toast": false,
 		"announce_to_chat": true,
 		"hidden": true,

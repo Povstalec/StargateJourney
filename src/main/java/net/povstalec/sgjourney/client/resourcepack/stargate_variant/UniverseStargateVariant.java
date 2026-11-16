@@ -1,30 +1,40 @@
 package net.povstalec.sgjourney.client.resourcepack.stargate_variant;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackModel;
 import net.povstalec.sgjourney.client.resourcepack.ResourcepackSounds;
+import net.povstalec.sgjourney.common.block_entities.stargate.UniverseStargateEntity;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
-import net.povstalec.sgjourney.common.misc.ColorUtil;
 
-public class UniverseStargateVariant extends RotatingStargateVariant
+import javax.annotation.Nullable;
+import java.util.Optional;
+
+public class UniverseStargateVariant extends RotatingStargateVariant<UniverseStargateEntity>
 {
+	// Variant: Normal RGB - Shiny RGB
+	// Universe: 148 186 254 - 73 89 120
+	
 	public static final String DIAL_START_SOUND = "dial_start_sound";
 	public static final String ONLY_FRONT_ROTATES = "only_front_rotates";
 	
-	public static final ResourceLocation STARGATE_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_stargate.png");
-	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_stargate_engaged.png");
-
-	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_event_horizon.png");
-	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/entity/stargate/universe/universe_event_horizon_shiny.png");
+	public static final String STARGATE_TYPE = "milky_way";
+	
+	public static final ResourceLocation STARGATE_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate");
+	public static final ResourceLocation STARGATE_ENGAGED_TEXTURE = simpleTexturePath(STARGATE_TYPE, "stargate_engaged");
+	
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon");
+	public static final ResourceLocation STARGATE_WORMHOLE_LOCATION_UNSTABLE = simpleTexturePath(STARGATE_TYPE, "event_horizon_unstable");
+	public static final ResourceLocation STARGATE_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex");
+	
+	public static final ResourceLocation STARGATE_DISCONNECT_LOCATION = simpleTexturePath(STARGATE_TYPE, "disconnect");
+	
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny");
+	public static final ResourceLocation STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION = simpleTexturePath(STARGATE_TYPE, "event_horizon_shiny_unstable");
+	public static final ResourceLocation STARGATE_SHINY_VORTEX_LOCATION = simpleTexturePath(STARGATE_TYPE, "vortex_shiny");
 
 	public static final ResourceLocation STARGATE_CHEVRON_ENGAGE = new ResourceLocation(StargateJourney.MODID, "universe_chevron_engage");
 
@@ -38,16 +48,19 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 
 	public static final ResourceLocation STARGATE_FAIL = new ResourceLocation(StargateJourney.MODID, "universe_dial_fail");
 	
-	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
-	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = new ResourcepackModel.Wormhole(Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_OPAQUE_RGBA),
-			new ResourcepackModel.WormholeTexture(STARGATE_SHINY_WORMHOLE_LOCATION, 32, 1, 32, DEFAULT_TRANSLUCENT_RGBA))));
+	public static final ResourcepackModel.Wormhole STARGATE_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_WORMHOLE_LOCATION, STARGATE_WORMHOLE_LOCATION_UNSTABLE, STARGATE_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	public static final ResourcepackModel.Wormhole STARGATE_SHINY_WORMHOLE_TEXTURE = ResourcepackModel.Wormhole.simpleWormhole(STARGATE_SHINY_WORMHOLE_LOCATION, STARGATE_SHINY_WORMHOLE_UNSTABLE_LOCATION, STARGATE_SHINY_VORTEX_LOCATION, STARGATE_DISCONNECT_LOCATION, DEFAULT_OPAQUE_RGBA, DEFAULT_TRANSLUCENT_RGBA);
+	
+	public static final ResourcepackModel.Symbol IDLE_SYMBOLS = new ResourcepackModel.Symbol(21, 9, 0);
+	public static final ResourcepackModel.Symbol ACTIVE_SYMBOLS = new ResourcepackModel.Symbol(200, 220, 255, true);
 	
 	public static final ResourcepackModel.SymbolsModel STARGATE_SYMBOLS = new ResourcepackModel.SymbolsModel(
-			new ColorUtil.RGBA(21, 9, 0, 255), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)), Optional.of(new ColorUtil.RGBA(200, 220, 255, 255)),
-			false, true, true,
-			true, false,
-			Optional.empty(), Optional.empty());
+		IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS, IDLE_SYMBOLS,
+		ACTIVE_SYMBOLS, ACTIVE_SYMBOLS,
+		IDLE_SYMBOLS,
+		null, null);
 	
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_ENGAGED_SOUNDS = new ResourcepackSounds.Chevron(STARGATE_CHEVRON_ENGAGE);
 	public static final ResourcepackSounds.Chevron STARGATE_CHEVRON_INCOMING_SOUNDS = new ResourcepackSounds.Chevron(StargateJourney.EMPTY_LOCATION);
@@ -60,7 +73,7 @@ public class UniverseStargateVariant extends RotatingStargateVariant
 			STARGATE_ENGAGED_TEXTURE, STARGATE_WORMHOLE_TEXTURE, Optional.of(STARGATE_SHINY_WORMHOLE_TEXTURE), STARGATE_SYMBOLS,
 			STARGATE_CHEVRON_ENGAGED_SOUNDS, STARGATE_CHEVRON_INCOMING_SOUNDS, STARGATE_ROTATION_SOUNDS, STARGATE_WROMHOLE_SOUNDS, STARGATE_FAIL_SOUNDS, STARGATE_DIAL_START, Optional.empty());
 	
-	private ResourceLocation dialStartSound;
+	private final ResourceLocation dialStartSound;
 	@Nullable
 	private Boolean onlyFrontRotates;
 	

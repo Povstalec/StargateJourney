@@ -1,0 +1,219 @@
+package net.povstalec.sgjourney.common.block_entities.stargate;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
+import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
+import net.povstalec.sgjourney.common.config.ClientStargateConfig;
+import net.povstalec.sgjourney.common.data.BlockEntityList;
+import net.povstalec.sgjourney.common.init.BlockEntityInit;
+import net.povstalec.sgjourney.common.init.StargateInit;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
+import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.andromeda.AndromedaStargate;
+
+import javax.annotation.Nullable;
+
+public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaBlockEntityStargate>
+{
+	public static final int TOTAL_SYMBOLS = 42;
+	
+	public static final int MAX_WAIT_TICKS = 10;
+	
+	protected int waitTicks = 0;
+	
+	private final ResourceLocation backVariant = StargateJourney.sgjourneyLocation("andromeda_back_chevron");
+	
+	public AndromedaStargateEntity(BlockPos pos, BlockState state)
+	{
+		super(BlockEntityInit.ANDROMEDA_STARGATE.get(), StargateInit.ANDROMEDA.get(), StargateJourney.sgjourneyLocation("andromeda"), pos, state, TOTAL_SYMBOLS, 4, 41);
+		this.setOpenSoundLead(13);
+	}
+	
+	@Override
+    public void onLoad()
+	{
+        super.onLoad();
+
+        if(this.level.isClientSide())
+        	return;
+		
+		// Update symbols when loading
+		if(generationStep == Step.GENERATED)
+			setLocalSymbols();
+    }
+	
+	@Override
+	public CompoundTag serializeStargateInfo(CompoundTag tag)
+	{
+		super.serializeStargateInfo(tag);
+		
+		symbolInfo().saveToCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		return tag;
+	}
+	
+	@Override
+	public void deserializeStargateInfo(CompoundTag tag, boolean isUpgraded)
+	{
+		symbolInfo().loadFromCompoundTag(tag, POINT_OF_ORIGIN, SYMBOLS);
+		
+		super.deserializeStargateInfo(tag, isUpgraded);
+	}
+	
+	@Override
+	@Nullable
+	protected AndromedaBlockEntityStargate fetchStargate()
+	{
+		if(level.isClientSide())
+			return new AndromedaBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
+		return BlockEntityList.get(level).getStargate(AndromedaBlockEntityStargate.class, this.id9ChevronAddress);
+	}
+	
+	//============================================================================================
+	//*******************************************Other********************************************
+	//============================================================================================
+	
+	@Override
+	protected void resetAddress()
+	{
+		waitTicks = 0;
+		super.resetAddress();
+	}
+	
+	@Override
+	public ResourceLocation defaultVariant()
+	{
+		return ClientStargateConfig.andromeda_stargate_back_lights_up.get() ? backVariant : super.defaultVariant();
+	}
+	
+	@Override
+	protected StargateInfo.FeedbackMessage encodeChevron(int symbol, StargateConnection.Direction direction, StargateInfo.ChevronSound sound)
+	{
+		waitTicks++;
+		
+		return super.encodeChevron(symbol, direction, sound);
+	}
+	
+	@Override
+	protected void animateSpin()
+	{
+		// Delay the opening of the gate to the tick after all symbols are encoded
+		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
+			engageStargate();
+		
+		if(isSymbolSpinning())
+		{
+			if(waitTicks != 0)
+			{
+				if(waitTicks >= MAX_WAIT_TICKS)
+					waitTicks = 0;
+				else
+					waitTicks++;
+				return;
+			}
+			
+			int symbol = addressBuffer.symbolAt(symbolBuffer);
+			if(symbol == 0)
+			{
+				if(currentSymbol == symbol)
+				{
+					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
+					if(!super.directEngageSymbol(symbol, false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+						canEngage = CanEngage.YES; // Stargate is ready to engage
+				}
+				else
+					moveSymbol();
+			}
+			else if(currentSymbol == symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer)))
+			{
+				updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
+				if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+					canEngage = CanEngage.YES; // Stargate is ready to engage
+			}
+			else
+				moveSymbol();
+			
+			updateClient();
+		}
+	}
+	
+	public static void tick(Level level, BlockPos pos, BlockState state, AndromedaStargateEntity stargate)
+	{
+		StopMotionStargateEntity.tick(level, pos, state, stargate);
+		
+		if(!level.isClientSide())
+		{
+			AndromedaBlockEntityStargate blockEntityStargate = stargate.getStargate();
+			if(blockEntityStargate != null)
+				blockEntityStargate.tick(stargate);
+		}
+	}
+	
+	public RotationDirection bestRotationDirection(int desiredSymbol)
+	{
+		int start = getAddress().lastSymbol();
+		
+		if(desiredSymbol < start)
+			desiredSymbol += maxSymbolIndex;
+		
+		int difference = desiredSymbol - start;
+		
+		if(difference >= maxSymbolIndex / 2)
+			return RotationDirection.ANTICLOCKWISE;
+		else
+			return RotationDirection.CLOCKWISE;
+	}
+	
+	@Override
+	protected RotationDirection spinDirection()
+	{
+		return bestRotationDirection(symbolMap.getOriginalSymbol(addressBuffer.symbolAt(symbolBuffer))).opposite();
+	}
+
+	@Override
+	public ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh)
+	{
+		return doKawoosh ? AndromedaStargate.CHEVRON_LOCK_SPEED : ChevronLockSpeed.FAST;
+	}
+
+	@Override
+	public void registerInterfaceMethods(SGJourneyPeripheralWrapper<StargatePeripheral> wrapper)
+	{
+		CCTweakedCompatibility.Stargate.registerAndromedaStargateMethods(wrapper);
+	}
+	
+	@Override
+	public void generateAdditional(StructureGenEntity.Step generationStep)
+	{
+		if(generationStep == StructureGenEntity.Step.SETUP)
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+				symbolInfo().setPointOfOrigin(null);
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(null);
+		}
+		else
+		{
+			if(!PointOfOrigin.isValid(level.getServer(), symbolInfo().pointOfOrigin()))
+			{
+				if(localPointOfOrigin)
+					symbolInfo().setPointOfOrigin(PointOfOrigin.fromDimension(level.getServer(), level.dimension()));
+				else
+					symbolInfo().setPointOfOrigin(PointOfOrigin.randomPointOfOrigin(level.getServer(), level.dimension()));
+			}
+			
+			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
+				symbolInfo().setSymbols(Symbols.fromDimension(level.getServer(), level.dimension()));
+		}
+	}
+}

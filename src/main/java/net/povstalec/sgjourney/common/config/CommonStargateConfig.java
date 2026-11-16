@@ -38,10 +38,13 @@ public class CommonStargateConfig
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> pegasus_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> classic_chevron_lock_speed;
 	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> tollan_chevron_lock_speed;
+	public static ForgeConfigSpec.EnumValue<ChevronLockSpeed> andromeda_chevron_lock_speed;
 	
 	// Energy Related
 	public static ForgeConfigSpec.BooleanValue enable_energy_bypass;
 	public static ForgeConfigSpec.BooleanValue can_draw_power_from_both_ends;
+	
+	public static ForgeConfigSpec.LongValue min_stable_wormhole_energy;
 	
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_cost;
 	public static ForgeConfigSpec.LongValue system_wide_connection_energy_draw;
@@ -107,7 +110,7 @@ public class CommonStargateConfig
 				.define("server.allow_interstellar_8_chevron_addresses", false);
 				
 		allow_system_wide_connections = server
-				.comment("Decides if two Stargates from the same Solar System should be able to connect")
+				.comment("Decides if two Stargates from the same Solar System should be able to connect when a 9-chevron address is used")
 				.define("server.allow_system_wide_connections", true);
 		
 		
@@ -174,6 +177,10 @@ public class CommonStargateConfig
 				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
 				.defineEnum("server.tollan_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
 		
+		andromeda_chevron_lock_speed = server
+				.comment("FAST - Incoming Chevrons take 4 Ticks to lock; MEDIUM - Incoming Chevrons take 8 Ticks to lock; SLOW - Incoming Chevrons take 12 Ticks to lock")
+				.defineEnum("server.andromeda_chevron_lock_speed", ChevronLockSpeed.MEDIUM);
+		
 		// Energy Related
 		enable_energy_bypass = server
 				.comment("The maximum connection time can be extended by increasing the energy input")
@@ -185,9 +192,15 @@ public class CommonStargateConfig
 		
 		
 		
+		min_stable_wormhole_energy = server
+			.comment("The minimum amount of energy the Stargate needs to have stored for its side of the connection to be considered stable (this type of unstable wormhole is purely a visual indicator of low power)")
+			.defineInRange("server.min_stable_wormhole_energy", 10_000L, 0L, Long.MAX_VALUE);
+		
+		
+		
 		system_wide_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection inside a solar system")
-				.defineInRange("server.system_wide_connection_energy_cost", 50000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.system_wide_connection_energy_cost", 50_000L, 0L, Long.MAX_VALUE);
 		
 		system_wide_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for system-wide connections")
@@ -195,13 +208,13 @@ public class CommonStargateConfig
 		
 		system_wide_connection_bypass_energy_draw = server
 				.comment("The amount of energy required to establish a connection inside a solar system after exceeding the maximum open time")
-				.defineInRange("server.system_wide_connection_bypass_energy_draw", 50000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.system_wide_connection_bypass_energy_draw", 50_000L, 0L, Long.MAX_VALUE);
 		
 		
 		
 		interstellar_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection inside the galaxy")
-				.defineInRange("server.interstellar_connection_energy_cost", 100000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.interstellar_connection_energy_cost", 100_000L, 0L, Long.MAX_VALUE);
 		
 		interstellar_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections")
@@ -209,31 +222,31 @@ public class CommonStargateConfig
 		
 		interstellar_connection_bypass_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for interstellar connections after exceeding the maximum open time")
-				.defineInRange("server.interstellar_connection_bypass_energy_draw", 5000000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.interstellar_connection_bypass_energy_draw", 5_000_000L, 0, Long.MAX_VALUE);
 		
 		
 		
 		intergalactic_connection_energy_cost = server
 				.comment("The amount of energy required to establish a connection outside the galaxy")
-				.defineInRange("server.intergalactic_connection_energy_cost", 100000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_energy_cost", 100_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		intergalactic_connection_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections")
-				.defineInRange("server.intergalactic_connection_energy_draw", 50000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_energy_draw", 50_000L, 0, Long.MAX_VALUE);
 		
 		intergalactic_connection_bypass_energy_draw = server
 				.comment("The amount of energy cost of keeping the wormhole open each tick for intergalactic connections after exceeding the maximum open time")
-				.defineInRange("server.intergalactic_connection_bypass_energy_draw", 5000000000L, 0, Long.MAX_VALUE);
+				.defineInRange("server.intergalactic_connection_bypass_energy_draw", 5_000_000_000L, 0, Long.MAX_VALUE);
 		
 		
 		
 		stargate_energy_capacity = server
 				.comment("The maximum amount of energy the Stargate can hold")
-				.defineInRange("server.stargate_energy_capacity", 1000000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.stargate_energy_capacity", 1_000_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		stargate_energy_max_receive = server
 				.comment("The maximum amount of energy the Stargate can receive at once")
-				.defineInRange("server.stargate_energy_max_receive", 100000000000000000L, 0L, Long.MAX_VALUE);
+				.defineInRange("server.stargate_energy_max_receive", 100_000_000_000_000_000L, 0L, Long.MAX_VALUE);
 		
 		
 	}

@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.abydos",
-	"texture": "sgjourney:milky_way/points_of_origin/abydos.png"
+	"client_point_of_origin": "sgjourney:abydos"
 }

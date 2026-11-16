@@ -1,0 +1,36 @@
+{
+	"variants":
+	{
+		"orientation=down_north,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 180, "y": 180 },
+		"orientation=down_south,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 180 },
+		"orientation=down_east,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 180, "y": 270 },
+		"orientation=down_west,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 180, "y": 90 },
+
+		"orientation=north_up,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 270, "y": 180 },
+		"orientation=south_up,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 270 },
+		"orientation=east_up,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 270, "y": 270 },
+		"orientation=west_up,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "x": 270, "y": 90 },
+
+		"orientation=up_north,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "y": 180 },
+		"orientation=up_south,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive" },
+		"orientation=up_east,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "y": 270 },
+		"orientation=up_west,active=false": { "model": "sgjourney:block/naquadah_reactor_inactive", "y": 90 },
+		
+		
+		
+		"orientation=down_north,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 180, "y": 180 },
+		"orientation=down_south,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 180 },
+		"orientation=down_east,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 180, "y": 270 },
+		"orientation=down_west,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 180, "y": 90 },
+
+		"orientation=north_up,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 270, "y": 180 },
+		"orientation=south_up,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 270 },
+		"orientation=east_up,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 270, "y": 270 },
+		"orientation=west_up,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "x": 270, "y": 90 },
+
+		"orientation=up_north,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "y": 180 },
+		"orientation=up_south,active=true": { "model": "sgjourney:block/naquadah_reactor_active" },
+		"orientation=up_east,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "y": 270 },
+		"orientation=up_west,active=true": { "model": "sgjourney:block/naquadah_reactor_active", "y": 90 }
+	}
+}

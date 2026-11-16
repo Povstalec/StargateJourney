@@ -2,7 +2,7 @@
 	"parent": "minecraft:recipes/root",
 	"criteria":
 	{
-		"has_naquadah_alloy":
+		"has_naquadah_ingot":
 		{
 			"conditions":
 			{
@@ -11,7 +11,7 @@
 					{
 						"items":
 						[
-							"sgjourney:naquadah_alloy"
+							"sgjourney:naquadah_ingot"
 						]
 					}
 				]
@@ -30,7 +30,7 @@
 	"requirements":
 	[
 		[
-			"has_naquadah_alloy",
+			"has_naquadah_ingot",
 			"has_the_recipe"
 		]
 	],

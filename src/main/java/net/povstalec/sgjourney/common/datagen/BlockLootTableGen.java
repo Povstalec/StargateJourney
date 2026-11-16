@@ -18,7 +18,7 @@ public class BlockLootTableGen extends BlockLootSubProvider
 	@Override
 	protected void generate()
 	{
-		this.dropSelf(BlockInit.NAQUADAH_BLOCK.get());
+		this.dropSelf(BlockInit.NAQUADAH_IRON_BLOCK.get());
 	}
 
 	@Override

@@ -1,0 +1,20 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"category": "misc",
+	"pattern":
+	[
+		"IZI",
+		"CTC",
+		"ICI"
+	],
+	
+	"key": 
+	{
+		"I": { "tag": "sgjourney:naquadah_ingot" },
+		"T": { "item": "sgjourney:transfer_crystal" },
+		"C": { "item": "sgjourney:medium_naquadah_cable" },
+		"Z": { "item": "sgjourney:zpm_holder" }
+	},
+	
+	"result": { "item": "sgjourney:zpm_plug" }
+}

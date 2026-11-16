@@ -1,0 +1,44 @@
+{
+	"parent": "minecraft:recipes/root",
+	"criteria":
+	{
+		"has_naquadah_copper_alloy":
+		{
+			"conditions":
+			{
+				"items":
+				[
+					{
+						"items":
+						[
+							"sgjourney:naquadah_copper_alloy"
+						]
+					}
+				]
+			},
+			"trigger": "minecraft:inventory_changed"
+		},
+		"has_the_recipe":
+		{
+			"conditions":
+			{
+				"recipe": "sgjourney:naquadah_copper_block"
+			},
+			"trigger": "minecraft:recipe_unlocked"
+		}
+	},
+	"requirements":
+	[
+		[
+			"has_naquadah_copper_alloy",
+			"has_the_recipe"
+		]
+	],
+	"rewards":
+	{
+		"recipes":
+		[
+			"sgjourney:naquadah_copper_block"
+		]
+	}
+}

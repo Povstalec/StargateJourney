@@ -1,47 +1,58 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.phys.Vec3;
-import net.povstalec.sgjourney.common.advancements.WormholeTravelCriterion;
-import net.povstalec.sgjourney.common.data.TransporterNetwork;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.entity.PartEntity;
+import net.povstalec.sgjourney.common.advancements.TransporterTravelCriterion;
+import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
+import net.povstalec.sgjourney.common.events.custom.TransporterEvent;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
+import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Transporting
 {
-	public static void startTransport(MinecraftServer server, Transporter initialTransporter, UUID targetUUID)
-	{
-		Transporter targetTransporter = TransporterNetwork.get(server).getTransporter(targetUUID);
-		
-		TransporterNetwork.get(server).createConnection(server, initialTransporter, targetTransporter);
-	}
+	public static final String EVENT_DECONSTRUCTING_ENTITY = "transporter_deconstructing_entity";
+	public static final String EVENT_RECONSTRUCTING_ENTITY = "transporter_reconstructing_entity";
 	
 	//============================================================================================
 	//***************************************Transport out****************************************
 	//============================================================================================
 	
+	public static boolean shouldTransport(Entity traveler, Vec3 relativePosition, double innerRadius)
+	{
+		if(traveler.isPassenger() || traveler.getType().is(TagInit.Entities.TRANSPORTER_CANNOT_TELEPORT))
+			return false;
+		
+		return relativePosition.x() * relativePosition.z() <= innerRadius * innerRadius;
+	}
+	
 	public static boolean transportTraveler(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, Entity traveler)
 	{
-		Vec3 relativePosition = initialTransporter.toTransporterCoords(server,traveler.position().subtract(initialTransporter.transportPos(server)), true);
-		Vec3 relativeMomentum = initialTransporter.toTransporterCoords(server, traveler.getDeltaMovement(), false);
-		Vec3 relativeLookAngle = initialTransporter.toTransporterCoords(server, traveler.getLookAngle(), false);
+		Vec3 relativePosition = initialTransporter.toTransporterCoords(traveler.position().subtract(initialTransporter.transportPos()), true);
+		Vec3 relativeMomentum = initialTransporter.toTransporterCoords(traveler.getDeltaMovement(), false);
+		Vec3 relativeLookAngle = initialTransporter.toTransporterCoords(traveler.getLookAngle(), false);
 		
-		if(relativePosition.lengthSqr() <= initialTransporter.getInnerRadius() * initialTransporter.getInnerRadius())
+		if(shouldTransport(traveler, relativePosition, initialTransporter.getInnerRadius()))
 		{
-			//TODO Transporter Event
-			if(receivingTransporter.receiveTraveler(server, connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
+			if(!SGJourneyEvents.onTransporterTravellerTransport(server, initialTransporter, receivingTransporter, traveler) && receivingTransporter.receiveTraveler(connection, initialTransporter, traveler, relativePosition, relativeMomentum, relativeLookAngle))
 			{
-				//TODO CC:Tweaked deconstruction event
+				deconstructEvent(initialTransporter, traveler, false);
 				return true;
 			}
 		}
@@ -51,6 +62,9 @@ public class Transporting
 	
 	public static boolean transportTravelers(MinecraftServer server, TransporterConnection connection, Transporter initialTransporter, Transporter receivingTransporter, List<Entity> travelers)
 	{
+		if(SGJourneyEvents.onTransporterTransport(server, initialTransporter, receivingTransporter))
+			return false;
+			
 		boolean used = false;
 		
 		for(Entity traveler : travelers)
@@ -66,7 +80,7 @@ public class Transporting
 	//*************************************Receive transport**************************************
 	//============================================================================================
 	
-	public static Entity transportEntity(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static Entity transportEntity(ServerLevel destinationLevel, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		if(traveler.level() != destinationLevel)
 			traveler = traveler.changeDimension(destinationLevel, new Wormhole.WormholeTeleporter(destinationPosition, destinationMomentum,
@@ -77,69 +91,179 @@ public class Transporting
 			traveler.setDeltaMovement(destinationMomentum);
 		}
 		
-		//if(traveler != null)
-		//	reconstructEvent(destinationLevel.getServer(), receivingTransporter, traveler); //TODO CC:Tweaked reconstruction event
+		if(traveler != null)
+		{
+			if(!traveler.isAddedToWorld())
+				destinationLevel.addFreshEntityWithPassengers(traveler);
+			
+			if(traveler.isMultipartEntity())
+			{
+				for(PartEntity<?> partEntity : traveler.getParts())
+				{
+					Vec3 relativePartPosition = sendingTransporter.toTransporterCoords(partEntity.position().subtract(sendingTransporter.getPosition()), true);
+					Vec3 relativePartLookAngle = sendingTransporter.toTransporterCoords(partEntity.getLookAngle(), false);
+					
+					Vec3 destinationPartPosition = receivingTransporter.fromTransporterCoords(relativePartPosition, true).add(receivingTransporter.getPosition());
+					Vec3 destinationPartLookAngle = receivingTransporter.fromTransporterCoords(relativePartLookAngle, false);
+					
+					partEntity.moveTo(destinationPartPosition.x(), destinationPartPosition.y(), destinationPartPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationPartLookAngle), traveler.getXRot());
+				}
+			}
+			
+			reconstructEvent(receivingTransporter, traveler);
+		}
 		
 		return traveler;
 	}
 	
-	public static Entity transportPlayer(ServerLevel destinationLevel, Transporter receivingTransporter, ServerPlayer player, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static void triggerDestinationGalaxyAdvancement(ServerPlayer player, TransporterConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, ResourceKey<AddressRegion> initialRegion, ResourceKey<Galaxy>  initialGalaxy, long distanceTraveled)
 	{
-		//Level initialLevel = player.getLevel();
-		//Vec3 initialPos = player.position();
+		SpaceLocation destinationLocation = SpaceLocation.fromDimension(destinationLevel.getServer(), destinationLevel.dimension());
+		AddressRegion destinationRegion = destinationLocation.getAddressRegion();
+		
+		if(destinationRegion != null)
+		{
+			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = destinationRegion.getGalacticAddresses();
+			if(destinationGalaxyMap == null || destinationGalaxyMap.isEmpty()) // Destination Region but no Galaxies
+				TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+						initialRegion, destinationRegion.getResourceKey(), initialGalaxy, null, distanceTraveled);
+			else // Destination Region with Galaxies
+			{
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyEntry : destinationGalaxyMap.entrySet())
+				{
+					TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+							initialRegion, destinationRegion.getResourceKey(), initialGalaxy, destinationGalaxyEntry.getKey(), distanceTraveled);
+				}
+			}
+		}
+		else // No destination Region
+		{
+			TransporterTravelCriterion.INSTANCE.trigger(player, connection.getConnectionType(), initialLevel.dimension(), destinationLevel.dimension(),
+					initialRegion, null, initialGalaxy, null, distanceTraveled);
+		}
+	}
+	
+	public static void triggerAdvancement(ServerPlayer player, TransporterConnection connection, ServerLevel initialLevel, ServerLevel destinationLevel, long distanceTraveled)
+	{
+		SpaceLocation initialLocation = SpaceLocation.fromDimension(destinationLevel.getServer(), destinationLevel.dimension());
+		AddressRegion initialRegion = initialLocation.getAddressRegion();
+		
+		if(initialRegion != null)
+		{
+			Map<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> destinationGalaxyMap = initialRegion.getGalacticAddresses();
+			if(destinationGalaxyMap == null || destinationGalaxyMap.isEmpty()) // Initial Region but no Galaxies
+				triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, initialRegion.getResourceKey(), null, distanceTraveled);
+			else // Initial Region with Galaxies
+			{
+				for(Map.Entry<ResourceKey<Galaxy>, Address.Randomizable<Address.Immutable>> initialGalaxyEntry : destinationGalaxyMap.entrySet())
+				{
+					triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, initialRegion.getResourceKey(), initialGalaxyEntry.getKey(), distanceTraveled);
+				}
+			}
+		}
+		else // No initial Region
+			triggerDestinationGalaxyAdvancement(player, connection, initialLevel, destinationLevel, null, null, distanceTraveled);
+	}
+	
+	public static Entity transportPlayer(TransporterConnection connection, ServerLevel destinationLevel, Transporter receivingTransporter, ServerPlayer player, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	{
+		ServerLevel initialLevel = (ServerLevel) player.level();
+		Vec3 initialPos = player.position();
 		
 		player.teleportTo(destinationLevel, destinationPosition.x(), destinationPosition.y(), destinationPosition.z(), CoordinateHelper.CoordinateSystems.lookAngleY(destinationLookAngle), player.getXRot());
 		player.setDeltaMovement(destinationMomentum);
 		player.connection.send(new ClientboundSetEntityMotionPacket(player));
 		
-		//reconstructEvent(destinationLevel.getServer(), receivingTransporter, player); //TODO CC:Tweaked reconstruction event
+		reconstructEvent(receivingTransporter, player);
 		
-		//ResourceLocation initialDimension = initialLevel.dimension().location();
-		//ResourceLocation targetDimension = destinationLevel.dimension().location();
-		//long distanceTraveled = Math.round(DimensionType.getTeleportationScale(initialLevel.dimensionType(), destinationLevel.dimensionType()) * Math.sqrt(initialPos.distanceTo(player.position())));
+		long distanceTraveled = Math.round(CoordinateHelper.distanceAcrossDimensions(initialLevel.dimensionType(), initialPos, destinationLevel.dimensionType(), destinationPosition));
 		
-		//TODO Add Advancements and Statistics
-		//player.awardStat(StatisticsInit.TIMES_USED_WORMHOLE.get());
-		//player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_STARGATE.get(), (int) distanceTraveled * 100);
-		//WormholeTravelCriterion.INSTANCE.trigger(player, initialDimension, targetDimension, distanceTraveled);
+		player.awardStat(StatisticsInit.TIMES_USED_TRANSPORTER.get());
+		player.awardStat(StatisticsInit.DISTANCE_TRAVELED_BY_TRANSPORTER.get(), (int) distanceTraveled * 100);
+		triggerAdvancement(player, connection, initialLevel, destinationLevel, distanceTraveled);
 		
 		return player;
 	}
 	
-	public static Entity recursivePassengerTeleport(ServerLevel destinationLevel, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static void recursivePassengerMoveVehicleUpdate(Entity passengerToNotify, Entity updatedVehicle)
+	{
+		if(passengerToNotify instanceof ServerPlayer player)
+			player.connection.send(new ClientboundMoveVehiclePacket(updatedVehicle));
+		
+		// Bring passengers
+		for(Entity passenger : passengerToNotify.getPassengers())
+		{
+			recursivePassengerMoveVehicleUpdate(updatedVehicle, passenger);
+		}
+	}
+	
+	public static Entity recursivePassengerTeleport(TransporterConnection connection, ServerLevel destinationLevel, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
 		Level initialLevel = traveler.level();
 		ArrayList<Entity> passengers = new ArrayList<>();
 		if(initialLevel != destinationLevel)
 		{
-			// Prepares passengers
+			// Prepare passengers
 			for(Entity passenger : traveler.getPassengers())
 			{
-				passengers.add(recursivePassengerTeleport(destinationLevel, receivingTransporter, passenger, destinationPosition, destinationMomentum, destinationLookAngle));
+				passengers.add(recursivePassengerTeleport(connection, destinationLevel, sendingTransporter, receivingTransporter, passenger, destinationPosition, destinationMomentum, destinationLookAngle));
 			}
 		}
 		
-		// Teleports traveler
-		if(traveler instanceof ServerPlayer player)
-			traveler = transportPlayer(destinationLevel, receivingTransporter, player, destinationPosition, destinationMomentum, destinationLookAngle);
-		else
-			traveler = transportEntity(destinationLevel, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		// Teleport traveler
+		TransporterEvent.EntityTransport event = new TransporterEvent.EntityTransport(destinationLevel, connection, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		MinecraftForge.EVENT_BUS.post(event);
+		
+		if(event.isCanceled())
+			traveler = event.getTraveler();
+		else if(traveler instanceof ServerPlayer player)
+			traveler = transportPlayer(connection, destinationLevel, receivingTransporter, player, destinationPosition, destinationMomentum, destinationLookAngle);
+		else if(!(traveler instanceof PartEntity<?>)) // Don't teleport entity parts
+			traveler = transportEntity(destinationLevel, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		
 		if(initialLevel != destinationLevel)
 		{
-			// Brings passengers
+			// Bring passengers
 			for(Entity passenger : passengers)
 			{
 				passenger.startRiding(traveler, true);
 			}
 		}
 		
+		// Recursively notify passenger players about the vehicle being moved
+		for(Entity passenger : traveler.getPassengers())
+		{
+			recursivePassengerMoveVehicleUpdate(passenger, traveler);
+		}
+		
 		return traveler;
 	}
 	
-	public static boolean receiveTraveler(ServerLevel level, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
+	public static boolean receiveTraveler(TransporterConnection connection, ServerLevel level, Transporter sendingTransporter, Transporter receivingTransporter, Entity traveler, Vec3 destinationPosition, Vec3 destinationMomentum, Vec3 destinationLookAngle)
 	{
-		recursivePassengerTeleport(level, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
+		recursivePassengerTeleport(connection, level, sendingTransporter, receivingTransporter, traveler, destinationPosition, destinationMomentum, destinationLookAngle);
 		return true;
+	}
+	
+	//============================================================================================
+	//*******************************************Events*******************************************
+	//============================================================================================
+	
+	public static void deconstructEvent(Transporter initialTransporter, Entity traveler, boolean disintegrated)
+	{
+		String travelerType = EntityType.getKey(traveler.getType()).toString();
+		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+		String uuid = traveler.getUUID().toString();
+		
+		initialTransporter.updateInterfaceBlocks(null, EVENT_DECONSTRUCTING_ENTITY, travelerType, displayName, uuid, disintegrated);
+	}
+	
+	public static void reconstructEvent(Transporter receivingTransporter, Entity traveler)
+	{
+		String travelerType = EntityType.getKey(traveler.getType()).toString();
+		String displayName = traveler instanceof Player player ? player.getGameProfile().getName() : traveler.getName().getString();
+		String uuid = traveler.getUUID().toString();
+		
+		receivingTransporter.updateInterfaceBlocks(null, EVENT_RECONSTRUCTING_ENTITY, travelerType, displayName, uuid);
 	}
 }

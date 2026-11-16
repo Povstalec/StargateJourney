@@ -1,23 +1,67 @@
 package net.povstalec.sgjourney.client.resourcepack;
 
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
 import net.povstalec.sgjourney.common.misc.ColorUtil.RGBA;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
+import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+
+import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class ResourcepackModel
 {
+	public enum WormholeSide
+	{
+		FRONT,
+		BACK
+	}
+	
+	public static class Framerate
+	{
+		public static final String FRAMES = "frames";
+		public static final String TICKS = "ticks";
+		
+		public static final Framerate DEFAULT = new Framerate(1, 1);
+		
+		private final int frames;
+		private final int ticks;
+		
+		public static final Codec<Framerate> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(Framerate::frames),
+			Codec.intRange(1, Integer.MAX_VALUE).fieldOf(TICKS).forGetter(Framerate::ticks)
+		).apply(instance, Framerate::new));
+		
+		public Framerate(int frames, int ticks)
+		{
+			if(frames <= 0)
+				throw(new IllegalArgumentException("Framerate value of frames outside of range [" + 1 + ':' + Integer.MAX_VALUE + ']'));
+			
+			if(ticks <= 0)
+				throw(new IllegalArgumentException("Framerate value of ticks outside of range [" + 1 + ':' + Integer.MAX_VALUE + ']'));
+			
+			this.frames = frames;
+			this.ticks = ticks;
+		}
+		
+		public int frames()
+		{
+			return frames;
+		}
+		
+		public int ticks()
+		{
+			return ticks;
+		}
+	}
+	
 	public static class WormholeTexture
 	{
 		public static final String TEXTURE = "texture";
@@ -25,6 +69,7 @@ public class ResourcepackModel
 		public static final String COLUMNS = "columns";
 		public static final String FRAMES = "frames";
 		public static final String RGBA = "rgba";
+		public static final String FRAMERATE = "framerate";
 
 		public static final RGBA DEFAULT_OPAQUE_RGBA = new RGBA(1F, 1F, 1F, 1F);
 		
@@ -33,24 +78,27 @@ public class ResourcepackModel
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(ROWS).forGetter(WormholeTexture::rows),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(COLUMNS).forGetter(WormholeTexture::columns),
 				Codec.intRange(1, Integer.MAX_VALUE).fieldOf(FRAMES).forGetter(WormholeTexture::columns),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
+				Framerate.CODEC.optionalFieldOf(FRAMERATE, Framerate.DEFAULT).forGetter(WormholeTexture::framerate),
+				ColorUtil.RGBA.COLOR_CODEC.optionalFieldOf(RGBA, DEFAULT_OPAQUE_RGBA).forGetter(WormholeTexture::rgba)
 				).apply(instance, WormholeTexture::new));
 		
 		private final ResourceLocation texture;
 		private final int rows;
 		private final int columns;
 		private final int frames;
+		private final Framerate framerate;
 		private final ColorUtil.RGBA rgba;
 		
 		private final float uScale;
 		private final float vScale;
 		
-		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, ColorUtil.RGBA rgba)
+		public WormholeTexture(ResourceLocation texture, int rows, int columns, int frames, Framerate framerate, ColorUtil.RGBA rgba)
 		{
 			this.texture = texture;
 			this.rows = rows;
 			this.columns = columns;
 			this.frames = frames;
+			this.framerate = framerate;
 			this.rgba = rgba;
 			
 			this.uScale = 1F / columns;
@@ -77,6 +125,11 @@ public class ResourcepackModel
 			return frames;
 		}
 		
+		public Framerate framerate()
+		{
+			return framerate;
+		}
+		
 		public ColorUtil.RGBA rgba()
 		{
 			return rgba;
@@ -94,9 +147,16 @@ public class ResourcepackModel
 			return vScale;
 		}
 		
-		public int frame(int tick)
+		public int frame(int tick, float partialTick)
 		{
-			return tick % frames;
+			//if(framerate.ticks == 1 && framerate.frames == 1)
+			//	return tick % frames;
+			
+			int extraTicks = tick % framerate.ticks;
+			float extraPartialTicks = extraTicks + partialTick;
+			float percentage = extraPartialTicks / framerate.ticks;
+			
+			return ((int) Math.floor(percentage * framerate.frames) + (tick / framerate.ticks) * framerate.frames) % frames;
 		}
 		
 		public float uOffset(int frame)
@@ -142,64 +202,95 @@ public class ResourcepackModel
 		}
 	}
 	
+	public static class DisconnectTicks
+	{
+		public static final String WAIT_TICKS = "wait_ticks";
+		public static final String FADE_IN_TICKS = "fade_in_ticks";
+		public static final String STABLE_TICKS = "stable_ticks";
+		public static final String FADE_OUT_TICKS = "fade_out_ticks";
+		
+		public static final DisconnectTicks DEFAULT = new DisconnectTicks(16, 10, 0, 20);
+		
+		public static final Codec<DisconnectTicks> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(WAIT_TICKS).forGetter(disconnectTicks -> disconnectTicks.waitTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(FADE_IN_TICKS).forGetter(disconnectTicks -> disconnectTicks.fadeInTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(STABLE_TICKS).forGetter(disconnectTicks -> disconnectTicks.stableTicks),
+				Codec.intRange(0, Integer.MAX_VALUE).fieldOf(FADE_OUT_TICKS).forGetter(disconnectTicks -> disconnectTicks.fadeOutTicks)
+				
+		).apply(instance, DisconnectTicks::new));
+		
+		public final int waitTicks; // Wait this many ticks before you start the animation (does not affect the wormhole wiggling that's there as an indicator that you can't go through the gate anymore)
+		public final int fadeInTicks; // How many ticks it takes for the texture to fully fade in after
+		public final int stableTicks; // How many ticks the texture remains fully visible
+		public final int fadeOutTicks; // How many ticks it takes for the texture to fade out, after which the animation is considered finished
+		
+		public final int eventHorizonStopTicks;
+		public final int disconnectEndTicks;
+		
+		public DisconnectTicks(int waitTicks, int fadeInTicks, int stableTicks, int fadeOutTicks)
+		{
+			this.waitTicks = waitTicks;
+			this.fadeInTicks = fadeInTicks;
+			this.stableTicks = stableTicks;
+			this.fadeOutTicks = fadeOutTicks;
+			
+			this.eventHorizonStopTicks = waitTicks + fadeInTicks;
+			this.disconnectEndTicks = waitTicks + fadeInTicks + stableTicks + fadeOutTicks;
+		}
+	}
+	
 	public static class Wormhole
 	{
-		
 		public static final String DISTORTION = "distortion";
 		public static final String HAS_STRUDEL = "has_strudel";
+		public static final String DISCONNECT_TICKS = "disconnect_ticks";
+		
 		public static final String EVENT_HORIZON = "event_horizon";
 		public static final String KAWOOSH = "kawoosh";
 		public static final String STRUDEL = "strudel";
+		public static final String UNSTABLE = "event_horizon_unstable";
+		public static final String DISCONNECT = "disconnect";
 		
 		@Nullable
 		private final Integer distortion;
 		@Nullable
 		private final Boolean hasStrudel;
+		private final DisconnectTicks disconnectTicks;
+		
 		private final Either<FrontBack, WormholeTexture> eventHorizon;
+		@Nullable
+		private final Either<FrontBack, WormholeTexture> unstableEventHorizon;
 		@Nullable
 		private final Either<FrontBack, WormholeTexture> kawoosh;
 		@Nullable
 		private final Either<FrontBack, WormholeTexture> strudel;
 		
+		private final Either<FrontBack, WormholeTexture> disconnect;
+		
 		public static final Codec<Wormhole> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.intRange(0, 25).optionalFieldOf(DISTORTION).forGetter(wormhole -> Optional.ofNullable(wormhole.distortion)),
 				Codec.BOOL.optionalFieldOf(HAS_STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.hasStrudel)),
+				DisconnectTicks.CODEC.optionalFieldOf(DISCONNECT_TICKS, new DisconnectTicks(0, 0, 0, 0)).forGetter(wormhole -> wormhole.disconnectTicks),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).fieldOf(EVENT_HORIZON).forGetter(Wormhole::eventHorizon),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(UNSTABLE).forGetter(wormhole -> Optional.ofNullable(wormhole.unstableEventHorizon)),
 				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(KAWOOSH).forGetter(wormhole -> Optional.ofNullable(wormhole.kawoosh)),
-				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel))
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(STRUDEL).forGetter(wormhole -> Optional.ofNullable(wormhole.strudel)),
+				Codec.either(FrontBack.CODEC, WormholeTexture.CODEC).optionalFieldOf(DISCONNECT).forGetter(wormhole -> Optional.ofNullable(wormhole.disconnect))
 				).apply(instance, Wormhole::new));
 		
-		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel,
-				Either<FrontBack, WormholeTexture> eventHorizon,
-				Optional<Either<FrontBack, WormholeTexture>> kawoosh,
-				Optional<Either<FrontBack, WormholeTexture>> strudel)
+		public Wormhole(Optional<Integer> distortion, Optional<Boolean> hasStrudel, DisconnectTicks disconnectTicks,
+						Either<FrontBack, WormholeTexture> eventHorizon, Optional<Either<FrontBack, WormholeTexture>> unstableEventHorizon, Optional<Either<FrontBack, WormholeTexture>> kawoosh,
+				Optional<Either<FrontBack, WormholeTexture>> strudel, Optional<Either<FrontBack, WormholeTexture>> disconnect)
 		{
-			if(distortion.isPresent())
-				this.distortion = distortion.get();
-			else
-				this.distortion = null;
-			
-			if(hasStrudel.isPresent())
-				this.hasStrudel = hasStrudel.get();
-			else
-				this.hasStrudel = null;
+			this.distortion = distortion.orElse(null);
+			this.hasStrudel = hasStrudel.orElse(null);
+			this.disconnectTicks = disconnectTicks;
 			
 			this.eventHorizon = eventHorizon;
-
-			if(kawoosh.isPresent())
-				this.kawoosh = kawoosh.get();
-			else
-				this.kawoosh = null;
-
-			if(strudel.isPresent())
-				this.strudel = strudel.get();
-			else
-				this.strudel = null;
-		}
-		
-		public Wormhole(Either<FrontBack, WormholeTexture> eventHorizon)
-		{
-			this(Optional.empty(), Optional.empty(), eventHorizon, Optional.empty(), Optional.empty());
+			this.unstableEventHorizon = unstableEventHorizon.orElse(null);
+			this.kawoosh = kawoosh.orElse(null);
+			this.strudel = strudel.orElse(null);
+			this.disconnect = disconnect.orElse(null);
 		}
 		
 		public int distortion()
@@ -218,9 +309,19 @@ public class ResourcepackModel
 			return ClientStargateConfig.enable_vortex.get();
 		}
 		
+		public DisconnectTicks disconnectTicks()
+		{
+			return disconnectTicks;
+		}
+		
 		public Either<FrontBack, WormholeTexture> eventHorizon()
 		{
 			return eventHorizon;
+		}
+		
+		public Either<FrontBack, WormholeTexture> unstableEventHorizon()
+		{
+			return unstableEventHorizon != null ? unstableEventHorizon : eventHorizon;
 		}
 		
 		public Either<FrontBack, WormholeTexture> kawoosh()
@@ -233,161 +334,266 @@ public class ResourcepackModel
 			return strudel != null ? strudel : eventHorizon;
 		}
 		
-		private static WormholeTexture getWormholeTexture(Either<FrontBack, WormholeTexture> eventHorizon, boolean front)
+		@Nullable
+		public Either<FrontBack, WormholeTexture> disconnect()
+		{
+			return disconnect;
+		}
+		
+		private static WormholeTexture getWormholeTexture(Either<FrontBack, WormholeTexture> eventHorizon, WormholeSide side)
 		{
 			if(eventHorizon.left().isPresent())
-				return front ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
+				return side == WormholeSide.FRONT ? eventHorizon.left().get().front() : eventHorizon.left().get().back();
 			
 			return eventHorizon.right().get();
 		}
 		
-		public WormholeTexture eventHorizonTexture(boolean front)
+		public WormholeTexture eventHorizonTexture(WormholeSide side)
 		{
-			return getWormholeTexture(eventHorizon(), front);
+			return getWormholeTexture(eventHorizon(), side);
 		}
 		
-		public WormholeTexture kawooshTexture(boolean front)
+		public WormholeTexture unstableEventHorizonTexture(WormholeSide side)
 		{
-			return getWormholeTexture(kawoosh(), front);
+			return getWormholeTexture(unstableEventHorizon(), side);
 		}
 		
-		public WormholeTexture strudelTexture(boolean front)
+		public WormholeTexture kawooshTexture(WormholeSide side)
 		{
-			return getWormholeTexture(strudel(), front);
+			return getWormholeTexture(kawoosh(), side);
+		}
+		
+		public WormholeTexture strudelTexture(WormholeSide side)
+		{
+			return getWormholeTexture(strudel(), side);
+		}
+		
+		public WormholeTexture disconnectTexture(WormholeSide side)
+		{
+			return getWormholeTexture(disconnect(), side);
+		}
+		
+		public static Either<FrontBack, WormholeTexture> simpleWormholeEither(ResourceLocation texture, int rows, int columns, int frames, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return Either.left(new ResourcepackModel.FrontBack(new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, Framerate.DEFAULT, frontRGBA),
+					new ResourcepackModel.WormholeTexture(texture, rows, columns, frames, Framerate.DEFAULT, backRGBA)));
+		}
+		
+		public static Wormhole simpleWormhole(ResourceLocation eventHorizonTexture, ResourceLocation unstableEventHorizonTexture, ResourceLocation vortexTexture, ResourceLocation disconnectTexture, RGBA frontRGBA, RGBA backRGBA)
+		{
+			return new Wormhole(
+					Optional.empty(),
+					Optional.empty(),
+					DisconnectTicks.DEFAULT,
+					simpleWormholeEither(eventHorizonTexture, 32, 1, 32, frontRGBA, backRGBA),
+					Optional.of(simpleWormholeEither(unstableEventHorizonTexture, 32, 1, 32, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)),
+					Optional.empty(),
+					Optional.of(simpleWormholeEither(vortexTexture, 32, 5, 160, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)),
+					Optional.of(simpleWormholeEither(disconnectTexture, 20, 1, 20, WormholeTexture.DEFAULT_OPAQUE_RGBA, WormholeTexture.DEFAULT_OPAQUE_RGBA)));
+		}
+	}
+	
+	public record Symbol(ColorUtil.RGBA color, boolean glow)
+	{
+		public static final String COLOR = "color";
+		public static final String GLOW = "glow";
+		
+		public static final Codec<Symbol> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+			// Symbol Colors
+			ColorUtil.RGBA.COLOR_CODEC.fieldOf(COLOR).forGetter(symbol -> symbol.color),
+			Codec.BOOL.optionalFieldOf(GLOW, false).forGetter(symbol -> symbol.glow)
+		).apply(instance, Symbol::new));
+		
+		public Symbol(int red, int green, int blue, int alpha, boolean glow)
+		{
+			this(new ColorUtil.RGBA(red, green, blue, alpha), glow);
+		}
+		
+		public Symbol(int red, int green, int blue, boolean glow)
+		{
+			this(red, green, blue, 255, glow);
+		}
+		
+		public Symbol(int red, int green, int blue, int alpha)
+		{
+			this(red, green, blue, alpha, true);
+		}
+		
+		public Symbol(int red, int green, int blue)
+		{
+			this(red, green, blue, 255, true);
 		}
 	}
 	
 	public static class SymbolsModel
 	{
-		public static final String SYMBOL_COLOR = "symbol_color";
-		public static final String ENCODED_SYMBOL_COLOR = "encoded_symbol_color";
-		public static final String ENGAGED_SYMBOL_COLOR = "engaged_symbol_color";
-
-		public static final String SYMBOLS_GLOW = "symbols_glow";
-		public static final String ENCODED_SYMBOLS_GLOW = "encoded_symbols_glow";
-		public static final String ENGAGED_SYMBOLS_GLOW = "engaged_symbols_glow";
-
-		public static final String ENGAGE_ENCODED_SYMBOLS = "engage_encoded_symbols";
-		public static final String ENGAGE_SYMBOLS_ON_INCOMING = "engage_symbols_on_incoming";
+		public static final String IDLE_SYMBOLS = "idle_symbols";
+		
+		public static final String ENCODED_SYMBOLS = "encoded_symbols";
+		public static final String ENCODED_SYMBOLS_INCOMING = "encoded_symbols_incoming";
+		public static final String ENCODING_SYMBOL = "encoding_symbol";
+		public static final String UNENCODED_SYMBOLS = "unencoded_symbols";
+		public static final String UNENCODED_SYMBOLS_INCOMING = "unencoded_symbols_incoming";
+		
+		public static final String ENGAGED_SYMBOLS = "engaged_symbols";
+		public static final String ENGAGED_SYMBOLS_INCOMING = "engaged_symbols_incoming";
+		public static final String UNENGAGED_SYMBOLS = "unengaged_symbols";
 
 		public static final String PERMANENT_POINT_OF_ORIGIN = "permanent_point_of_origin";
 		public static final String PERMANENT_SYMBOLS = "permanent_symbols";
 		
 		//Symbol stuff
-		private final ColorUtil.RGBA symbolColor;
-		private final ColorUtil.RGBA encodedSymbolColor;
-		private final ColorUtil.RGBA engagedSymbolColor;
+		private final Symbol idleSymbols;
 		
-		private final boolean symbolsGlow;
-		private final boolean encodedSymbolsGlow;
-		private final boolean engagedSymbolsGlow;
+		private final Symbol encodedSymbols;
+		private final Symbol encodedSymbolsIncoming;
+		private final Symbol encodingSymbol;
+		private final Symbol unencodedSymbols;
+		private final Symbol unencodedSymbolsIncoming;
 		
-		private final boolean engageEncodedSymbols; //TODO Is this needed?
-		private final boolean engageSymbolsOnIncoming; //TODO Is this needed?
+		private final Symbol engagedSymbols;
+		private final Symbol engagedSymbolsIncoming;
+		private final Symbol unengagedSymbols;
 		
 		@Nullable
-		private ResourceKey<PointOfOrigin> permanentPointOfOrigin;
+		private final ResourceKey<PointOfOrigin> permanentPointOfOrigin;
 		@Nullable
-		private ResourceKey<Symbols> permanentSymbols;
+		private final ResourceKey<Symbols> permanentSymbols;
 		
 		public static final Codec<SymbolsModel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				// Symbol Colors
-				ColorUtil.RGBA.CODEC.fieldOf(SYMBOL_COLOR).forGetter(SymbolsModel::symbolColor),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENCODED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolColor)),
-				ColorUtil.RGBA.CODEC.optionalFieldOf(ENGAGED_SYMBOL_COLOR).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolColor)),
-				// Symbol glow
-				Codec.BOOL.optionalFieldOf(SYMBOLS_GLOW, false).forGetter(symbols -> symbols.symbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENCODED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.encodedSymbolsGlow),
-				Codec.BOOL.optionalFieldOf(ENGAGED_SYMBOLS_GLOW, false).forGetter(symbols -> symbols.engagedSymbolsGlow),
-				//TODO Split incoming and outgoing glows and colors
-				Codec.BOOL.optionalFieldOf(ENGAGE_ENCODED_SYMBOLS, false).forGetter(symbols -> symbols.engageEncodedSymbols),
-				Codec.BOOL.optionalFieldOf(ENGAGE_SYMBOLS_ON_INCOMING, false).forGetter(symbols -> symbols.engageSymbolsOnIncoming),
-				// Permanent Symbols
-				ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
-				ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
-				).apply(instance, SymbolsModel::new));
+			// Symbols while idle
+			Symbol.CODEC.fieldOf(IDLE_SYMBOLS).forGetter(symbols -> symbols.idleSymbols),
+			// Symbols during encoding
+			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbols)),
+			Symbol.CODEC.optionalFieldOf(ENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.encodedSymbolsIncoming)),
+			Symbol.CODEC.optionalFieldOf(ENCODING_SYMBOL).forGetter(symbols -> Optional.ofNullable(symbols.encodingSymbol)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbols)),
+			Symbol.CODEC.optionalFieldOf(UNENCODED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.unencodedSymbolsIncoming)),
+			// Symbols during connection
+			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbols)),
+			Symbol.CODEC.optionalFieldOf(ENGAGED_SYMBOLS_INCOMING).forGetter(symbols -> Optional.ofNullable(symbols.engagedSymbolsIncoming)),
+			Symbol.CODEC.optionalFieldOf(UNENGAGED_SYMBOLS).forGetter(symbols -> Optional.ofNullable(symbols.unengagedSymbols)),
+			// Permanent Symbols
+			ResourceKey.codec(PointOfOrigin.REGISTRY_KEY).optionalFieldOf(PERMANENT_POINT_OF_ORIGIN).forGetter(SymbolsModel::permanentPointOfOrigin),
+			ResourceKey.codec(Symbols.REGISTRY_KEY).optionalFieldOf(PERMANENT_SYMBOLS).forGetter(SymbolsModel::permanentSymbols)
+		).apply(instance, SymbolsModel::new));
 		
-		public SymbolsModel(ColorUtil.RGBA symbolColor, Optional<ColorUtil.RGBA> encodedSymbolColor, Optional<ColorUtil.RGBA> engagedSymbolColor,
-				boolean symbolsGlow, boolean encodedSymbolsGlow, boolean engagedSymbolsGlow,
-				boolean engageEncodedSymbols, boolean engageSymbolsOnIncoming,
-				Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
+		public SymbolsModel(Symbol idleSymbols,
+							@Nullable Symbol encodedSymbols, @Nullable Symbol encodedSymbolsIncoming, @Nullable Symbol encodingSymbol,
+							@Nullable Symbol unencodedSymbols, @Nullable Symbol unencodedSymbolsIncoming,
+							@Nullable Symbol engagedSymbols, @Nullable Symbol engagedSymbolsIncoming,
+							@Nullable Symbol unengagedSymbols,
+		                    @Nullable ResourceKey<PointOfOrigin> permanentPointOfOrigin, @Nullable ResourceKey<Symbols> permanentSymbols)
 		{
-			this.symbolColor = symbolColor;
+			this.idleSymbols = idleSymbols;
 			
-			if(engagedSymbolColor.isPresent())
-				this.engagedSymbolColor = engagedSymbolColor.get();
-			else
-				this.engagedSymbolColor = symbolColor;
+			this.engagedSymbols = engagedSymbols != null ? engagedSymbols : this.idleSymbols;
+			this.engagedSymbolsIncoming = engagedSymbolsIncoming != null ? engagedSymbolsIncoming : this.engagedSymbols;
+			this.unengagedSymbols = unengagedSymbols != null ? unengagedSymbols : this.idleSymbols;
 			
-			// Encoded symbol color, if not specified, will be the same as engaged symbol color
-			if(encodedSymbolColor.isPresent())
-				this.encodedSymbolColor = encodedSymbolColor.get();
-			else
-				this.encodedSymbolColor = this.engagedSymbolColor;
-			
-			this.symbolsGlow = symbolsGlow;
-			this.encodedSymbolsGlow = encodedSymbolsGlow;
-			this.engagedSymbolsGlow = engagedSymbolsGlow;
-			
-			this.engageEncodedSymbols = engageEncodedSymbols;
-			this.engageSymbolsOnIncoming = engageSymbolsOnIncoming;
+			this.encodedSymbols = encodedSymbols != null ? encodedSymbols : this.engagedSymbols;
+			this.encodedSymbolsIncoming = encodedSymbolsIncoming != null ? encodedSymbolsIncoming : this.encodedSymbols;
+			this.encodingSymbol = encodingSymbol != null ? encodingSymbol : this.encodedSymbols;
+			this.unencodedSymbols = unencodedSymbols != null ? unencodedSymbols : this.idleSymbols;
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming != null ? unencodedSymbolsIncoming : this.unencodedSymbols;
 
-			if(permanentPointOfOrigin.isPresent())
-				this.permanentPointOfOrigin = permanentPointOfOrigin.get();
-			if(permanentSymbols.isPresent())
-				this.permanentSymbols = permanentSymbols.get();
+			this.permanentPointOfOrigin = permanentPointOfOrigin;
+			this.permanentSymbols = permanentSymbols;
 		}
 		
-		public SymbolsModel(ColorUtil.RGBA symbolColor)
+		public SymbolsModel(Symbol idleSymbols,
+							Optional<Symbol> encodedSymbols, Optional<Symbol> encodedSymbolsIncoming, Optional<Symbol> encodingSymbol,
+							Optional<Symbol> unencodedSymbols, Optional<Symbol> unencodedSymbolsIncoming,
+							Optional<Symbol> engagedSymbols, Optional<Symbol> engagedSymbolsIncoming,
+							Optional<Symbol> unengagedSymbols,
+		                    Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin, Optional<ResourceKey<Symbols>> permanentSymbols)
 		{
-			this(symbolColor, Optional.empty(), Optional.empty(), false, false, false, false, false, Optional.empty(), Optional.empty());
+			this.idleSymbols = idleSymbols;
+			
+			this.engagedSymbols = engagedSymbols.orElse(this.idleSymbols);
+			this.engagedSymbolsIncoming = engagedSymbolsIncoming.orElse(this.engagedSymbols);
+			this.unengagedSymbols = unengagedSymbols.orElse(this.idleSymbols);
+			
+			this.encodedSymbols = encodedSymbols.orElse(this.engagedSymbols);
+			this.encodedSymbolsIncoming = encodedSymbolsIncoming.orElse(this.encodedSymbols);
+			this.encodingSymbol = encodingSymbol.orElse(this.encodedSymbols);
+			this.unencodedSymbols = unencodedSymbols.orElse(this.idleSymbols);
+			this.unencodedSymbolsIncoming = unencodedSymbolsIncoming.orElse(this.unencodedSymbols);
+			
+			this.permanentPointOfOrigin = permanentPointOfOrigin.orElse(null);
+			this.permanentSymbols = permanentSymbols.orElse(null);
 		}
 		
-		public ColorUtil.RGBA symbolColor()
+		public SymbolsModel(Symbol symbolColor)
 		{
-			return symbolColor;
+			this(symbolColor, (Symbol) null, null, null, null, null, null, null, null, null, null);
 		}
 		
-		public ColorUtil.RGBA encodedSymbolColor()
+		public Symbol idleSymbols()
 		{
-			return encodedSymbolColor;
+			return idleSymbols;
 		}
 		
-		public ColorUtil.RGBA engagedSymbolColor()
+		public Symbol encodedSymbols(StargateConnection.Direction direction)
 		{
-			return engagedSymbolColor;
+			return direction.isIncoming() ? encodedSymbolsIncoming : encodedSymbols;
 		}
 		
-		
-		
-		public boolean symbolsGlow()
+		public Symbol unencodedSymbols(StargateConnection.Direction direction)
 		{
-			return symbolsGlow;
+			return direction.isIncoming() ? unencodedSymbolsIncoming : unencodedSymbols;
 		}
-
-		public boolean encodedSymbolsGlow()
+		
+		public Symbol encodingSymbol()
 		{
-			return encodedSymbolsGlow;
+			return encodingSymbol;
 		}
-
-		public boolean engagedSymbolsGlow()
+		
+		public Symbol engagedSymbols(StargateConnection.Direction direction)
 		{
-			return engagedSymbolsGlow;
+			return direction.isIncoming() ? engagedSymbolsIncoming : engagedSymbols;
 		}
 		
-		
-		
-		public boolean engageEncodedSymbols()
+		public Symbol unengagedSymbols()
 		{
-			return engageEncodedSymbols;
+			return unengagedSymbols;
 		}
 		
-		public boolean engageSymbolsOnIncoming()
+		public boolean glowFromSymbolState(StargateInfo.SymbolState symbolState)
 		{
-			return engageSymbolsOnIncoming;
+			return switch(symbolState)
+			{
+				case ENCODING -> encodingSymbol.glow;
+				case ENCODED -> encodedSymbols.glow;
+				case ENCODED_INCOMING -> encodedSymbolsIncoming.glow;
+				case UNENCODED -> unencodedSymbols.glow;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.glow;
+				
+				case ENGAGED -> engagedSymbols.glow;
+				case ENGAGED_INCOMING -> engagedSymbolsIncoming.glow;
+				case UNENGAGED -> unengagedSymbols.glow;
+				
+				default -> idleSymbols.glow;
+			};
 		}
 		
-		
+		public ColorUtil.RGBA colorFromSymbolState(StargateInfo.SymbolState symbolState)
+		{
+			return switch(symbolState)
+			{
+				case ENCODING -> encodingSymbol.color;
+				case ENCODED -> encodedSymbols.color;
+				case ENCODED_INCOMING -> encodedSymbolsIncoming.color;
+				case UNENCODED -> unencodedSymbols.color;
+				case UNENCODED_INCOMING -> unencodedSymbolsIncoming.color;
+				
+				case ENGAGED -> engagedSymbols.color;
+				case ENGAGED_INCOMING -> engagedSymbolsIncoming.color;
+				case UNENGAGED -> unengagedSymbols.color;
+				
+				default -> idleSymbols.color;
+			};
+		}
 		
 		public Optional<ResourceKey<PointOfOrigin>> permanentPointOfOrigin()
 		{

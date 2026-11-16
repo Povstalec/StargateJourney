@@ -2,25 +2,19 @@ package net.povstalec.sgjourney.client.models.block_entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.render.SGJourneyRenderTypes;
 import net.povstalec.sgjourney.client.resourcepack.stargate_variant.ClientStargateVariant;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.misc.ColorUtil;
-import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.Symbols;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity, Variant extends ClientStargateVariant>
+public abstract class AbstractStargateModel<StargateEntity extends AbstractStargateEntity<?>, Variant extends ClientStargateVariant<StargateEntity>>
 {
 	protected static final float DEFAULT_RADIUS = 3.5F;
 	protected static final int DEFAULT_SIDES = 36;
@@ -35,12 +29,6 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected static final int DEFAULT_TEXTURE_SIZE = 64;
 	
-	public static final ResourceLocation ERROR_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/error.png");
-	public static final ResourceLocation EMPTY_LOCATION = new ResourceLocation(StargateJourney.MODID, "textures/symbols/empty.png");
-	public static final String EMPTY = StargateJourney.EMPTY;
-	
-	private static Minecraft minecraft = Minecraft.getInstance();
-	
 	protected final short numberOfSymbols;
 	
 	public AbstractStargateModel(short numberOfSymbols)
@@ -49,46 +37,55 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	}
 	
 	@Nullable
-	protected PointOfOrigin getPointOfOrigin(AbstractStargateEntity stargate, Variant stargateVariant)
+	protected ClientPointOfOrigin getPointOfOrigin(StargateEntity stargate, Variant stargateVariant)
 	{
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<PointOfOrigin> pointOfOriginRegistry = registries.registryOrThrow(PointOfOrigin.REGISTRY_KEY);
-		
 		if(stargateVariant.symbols().permanentPointOfOrigin().isPresent())
-			return pointOfOriginRegistry.get(stargateVariant.symbols().permanentPointOfOrigin().get());
+			return ClientPointOfOrigin.getPointOfOrigin(stargateVariant.symbols().permanentPointOfOrigin().get());
 		else
-			return pointOfOriginRegistry.get(stargate.symbolInfo().pointOfOrigin());
-	}
-	
-	protected ResourceLocation getPointOfOriginTexture(@Nullable PointOfOrigin pointOfOrigin)
-	{
-		if(pointOfOrigin != null)
-			return pointOfOrigin.texture();
-		
-		return EMPTY_LOCATION;
+			return ClientPointOfOrigin.getPointOfOrigin(stargate.symbolInfo().pointOfOrigin());
 	}
 	
 	@Nullable
-	protected Symbols getSymbols(AbstractStargateEntity stargate, Variant stargateVariant)
+	protected ClientSymbols getSymbols(StargateEntity stargate, Variant stargateVariant)
 	{
-		ClientPacketListener clientPacketListener = minecraft.getConnection();
-		RegistryAccess registries = clientPacketListener.registryAccess();
-		Registry<Symbols> symbolRegistry = registries.registryOrThrow(Symbols.REGISTRY_KEY);
-		
 		if(stargateVariant.symbols().permanentSymbols().isPresent())
-			return symbolRegistry.get(stargateVariant.symbols().permanentSymbols().get());
+			return ClientSymbols.getSymbols(stargateVariant.symbols().permanentSymbols().get());
 		else
-			return symbolRegistry.get(stargate.symbolInfo().symbols());
+			return ClientSymbols.getSymbols(stargate.symbolInfo().symbols());
 	}
 	
-	protected ResourceLocation getSymbolTexture(@Nullable Symbols symbols)
+	
+	public StargateInfo.SymbolState symbolState(StargateEntity stargate, Variant stargateVariant, int symbol)
 	{
-		if(symbols != null)
-			return symbols.getSymbolTexture();
+		if(stargate.isConnected())
+		{
+			if(stargate.isDialingOut())
+			{
+				if(stargate.getEncodedSymbols().containsSymbol(symbol))
+					return StargateInfo.SymbolState.ENGAGED;
+				else
+					return StargateInfo.SymbolState.UNENGAGED;
+			}
+			else
+				return stargate.isWormholeEstablished() ? StargateInfo.SymbolState.ENGAGED_INCOMING : StargateInfo.SymbolState.ENCODED_INCOMING;
+		}
+		else if(stargate.isDialing())
+		{
+			if(stargate.getEncodedSymbols().containsSymbol(symbol))
+				return StargateInfo.SymbolState.ENCODED;
+			else
+				return StargateInfo.SymbolState.UNENCODED;
+		}
 		
-		return EMPTY_LOCATION;
+		return StargateInfo.SymbolState.IDLE;
 	}
+	
+	/**
+	 * Method for getting the client variant of the Stargate
+	 * @param stargate
+	 * @return
+	 */
+	public abstract Variant getClientVariant(StargateEntity stargate);
 	
 	//============================================================================================
 	//******************************************Rendering*****************************************
@@ -109,7 +106,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 		VertexConsumer consumer = source.getBuffer(SGJourneyRenderTypes.stargate(stargateVariant.texture()));
 		this.renderRing(stargate, stargateVariant, partialTick, stack, consumer, source, combinedLight, combinedOverlay);
 
-		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay);
+		this.renderChevrons(stargate, stargateVariant, stack, source, combinedLight, combinedOverlay, StargateJourney.isOculusLoaded());
 	}
 
 	public abstract void renderRing(StargateEntity stargate, Variant stargateVariant, float partialTick, PoseStack stack, VertexConsumer consumer,
@@ -119,7 +116,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	//******************************************Chevrons******************************************
 	//============================================================================================
 	
-	protected boolean isPrimaryChevronRaised(StargateEntity stargate, Variant stargateVariant)
+	protected boolean isPrimaryChevronOpen(StargateEntity stargate, Variant stargateVariant)
 	{
 		return false;
 	}
@@ -131,18 +128,15 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	
 	protected boolean isPrimaryChevronEngaged(StargateEntity stargate, Variant stargateVariant)
 	{
-		if(stargate.isConnected())
-			return stargate.isDialingOut() || stargate.getKawooshTickCount() > 0;
-		
-		return false;
+		return stargate.getAddress().hasPointOfOriginOrMaxLength();
 	}
 	
-	protected boolean isChevronRaised(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
+	protected boolean isChevronOpen(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
 	{
 		return false;
 	}
 	
-	protected boolean isChevronLowered(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
+	protected boolean isChevronClosed(StargateEntity stargate, Variant stargateVariant, int chevronNumber)
 	{
 		return false;
 	}
@@ -159,16 +153,14 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			MultiBufferSource source, int combinedLight, int chevronNumber, boolean chevronEngaged);
 	
 	protected void renderChevrons(StargateEntity stargate, Variant stargateVariant, PoseStack stack, MultiBufferSource source, 
-			int combinedLight, int combinedOverlay)
+			int combinedLight, int combinedOverlay, boolean invertRenderingOrder)
 	{
 		VertexConsumer consumer;
-
-		//TODO Encoded texture
 		
-		if(StargateJourney.isOculusLoaded())
+		if(invertRenderingOrder)
 		{
 			// Renders lit up parts of Chevrons
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
 			
 			if(isPrimaryChevronEngaged(stargate, stargateVariant))
 				renderPrimaryChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, true);
@@ -178,6 +170,7 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 					renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, true);
 			}
 		}
+		
 		// Renders Chevrons
 		consumer = source.getBuffer(SGJourneyRenderTypes.chevron(stargateVariant.texture()));
 				
@@ -187,10 +180,10 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 			renderChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, chevronNumber, false);
 		}
 		
-		if(!StargateJourney.isOculusLoaded())
+		if(!invertRenderingOrder)
 		{
 			// Renders lit up parts of Chevrons
-			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.engagedTexture()));
+			consumer = source.getBuffer(SGJourneyRenderTypes.engagedChevron(stargateVariant.getOverlayTexture(stargate.isConnected())));
 			
 			if(isPrimaryChevronEngaged(stargate, stargateVariant))
 				renderPrimaryChevron(stargate, stargateVariant, stack, consumer, source, combinedLight, true);
@@ -206,29 +199,13 @@ public abstract class AbstractStargateModel<StargateEntity extends AbstractStarg
 	//******************************************Symbols*******************************************
 	//============================================================================================
 	
-	protected boolean symbolsGlow(StargateEntity stargate, Variant stargateVariant, boolean isEngaged)
+	public boolean symbolsGlow(StargateEntity stargate, Variant stargateVariant, StargateInfo.SymbolState state)
 	{
-		if(isEngaged)
-			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolsGlow() : stargateVariant.symbols().encodedSymbolsGlow();
-		else
-			return stargateVariant.symbols().symbolsGlow();
+		return stargateVariant.symbols().glowFromSymbolState(state);
 	}
 	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.ChevronSymbolState state, boolean incoming)
+	public ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, StargateInfo.SymbolState state)
 	{
-		if(state == StargateInfo.ChevronSymbolState.OFF)
-			return stargateVariant.symbols().symbolColor();
-		else if(state == StargateInfo.ChevronSymbolState.ENGAGED)
-			return stargateVariant.symbols().engagedSymbolColor(); // TODO Split for incoming
-		else
-			return stargateVariant.symbols().encodedSymbolColor(); // TODO Split for incoming
-	}
-	
-	protected ColorUtil.RGBA getSymbolColor(StargateEntity stargate, Variant stargateVariant, boolean isEngaged)
-	{
-		if(isEngaged)
-			return stargate.isConnected() ? stargateVariant.symbols().engagedSymbolColor() : stargateVariant.symbols().encodedSymbolColor();
-		else
-			return stargateVariant.symbols().symbolColor();
+		return stargateVariant.symbols().colorFromSymbolState(state);
 	}
 }

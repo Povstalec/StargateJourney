@@ -1,4 +1,3 @@
 {
-	"name": "point_of_origin.sgjourney.rima",
-	"texture": "sgjourney:milky_way/points_of_origin/rima.png"
+	"client_point_of_origin": "sgjourney:rima"
 }

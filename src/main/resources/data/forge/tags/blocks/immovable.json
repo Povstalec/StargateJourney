@@ -5,6 +5,7 @@
 		"sgjourney:universe_stargate",
 		"sgjourney:universe_ring",
 		"sgjourney:universe_shielding",
+		"sgjourney:universe_dhd",
 
 		"sgjourney:milky_way_stargate",
 		"sgjourney:milky_way_ring",
@@ -23,8 +24,12 @@
 
 		"sgjourney:tollan_stargate",
 		"sgjourney:tollan_ring",
+		
+		"sgjourney:andromeda_stargate",
+		"sgjourney:andromeda_ring",
+		"sgjourney:andromeda_dhd",
 
-		"sgjourney:transport_rings",
+		"sgjourney:goauld_transport_rings",
 		"sgjourney:zpm_hub"
 	]
 }

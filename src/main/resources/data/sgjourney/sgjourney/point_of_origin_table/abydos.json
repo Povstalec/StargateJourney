@@ -1,0 +1,8 @@
+{
+	"copy_from": "sgjourney:galaxy_milky_way",
+	"points_of_origin":
+	[
+		{ "point_of_origin": "sgjourney:kaliem", "weight": 2 },
+		{ "point_of_origin": "sgjourney:pyramid", "weight": 1 }
+	]
+}

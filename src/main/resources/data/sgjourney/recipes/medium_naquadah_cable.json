@@ -4,14 +4,14 @@
 	"pattern":
 	[
 		"CCC",
-		"NGN",
+		"GEG",
 		"CCC"
 	],
 	
 	"key": 
 	{
-		"N": { "tag": "sgjourney:refined_naquadah" },
 		"G": { "item": "minecraft:gold_ingot" },
+		"E": { "item": "sgjourney:energy_crystal" },
 		"C": { "item": "sgjourney:small_naquadah_cable" }
 	},
 	

@@ -23,19 +23,25 @@ public class AdvancedCrystalInterfaceEntity extends AbstractInterfaceEntity
 	//============================================================================================
 	
 	@Override
-	public long capacity()
+	public long getEnergyCapacity()
 	{
 		return CommonInterfaceConfig.advanced_crystal_interface_capacity.get();
 	}
 
 	@Override
-	public long maxReceive()
+	public long getMaxEnergyReceive()
 	{
 		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}
-
+	
 	@Override
-	public long maxExtract()
+	public long getMaxEnergyExtract()
+	{
+		return 0;
+	}
+	
+	@Override
+	public long getMaxEnergyDeplete()
 	{
 		return CommonInterfaceConfig.advanced_crystal_interface_max_transfer.get();
 	}

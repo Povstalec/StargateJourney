@@ -18,6 +18,9 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> WORMHOLE_IDLE = registerSoundEvent("wormhole_idle");
 
 	public static final RegistryObject<SoundEvent> IRIS_THUD = registerSoundEvent("iris_thud");
+	
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_ENTER = registerSoundEvent("universe_dhd_enter");
+	public static final RegistryObject<SoundEvent> UNIVERSE_DHD_PRESS = registerSoundEvent("universe_dhd_press");
 
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_ENTER = registerSoundEvent("milky_way_dhd_enter");
 	public static final RegistryObject<SoundEvent> MILKY_WAY_DHD_PRESS = registerSoundEvent("milky_way_dhd_press");
@@ -28,12 +31,24 @@ public class SoundInit
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_ENTER = registerSoundEvent("classic_dhd_enter");
 	public static final RegistryObject<SoundEvent> CLASSIC_DHD_PRESS = registerSoundEvent("classic_dhd_press");
 	
+	public static final RegistryObject<SoundEvent> ANDROMEDA_DHD_ENTER = registerSoundEvent("andromeda_dhd_enter");
+	public static final RegistryObject<SoundEvent> ANDROMEDA_DHD_PRESS = registerSoundEvent("andromeda_dhd_press");
+	
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT = registerSoundEvent("transport_rings_transport");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_PRE = registerSoundEvent("transport_rings_transport_pre");
+	public static final RegistryObject<SoundEvent> TRANSPORT_RINGS_TRANSPORT_POST = registerSoundEvent("transport_rings_transport_post");
+	
+	public static final RegistryObject<SoundEvent> RING_PANEL_PRESS = registerSoundEvent("ring_panel_press");
+	
 	public static final RegistryObject<SoundEvent> MATOK_FIRE = registerSoundEvent("matok_fire");
 	public static final RegistryObject<SoundEvent> MATOK_ATTACK = registerSoundEvent("matok_attack");
 	public static final RegistryObject<SoundEvent> MATOK_OPEN = registerSoundEvent("matok_open");
 	public static final RegistryObject<SoundEvent> MATOK_CLOSE = registerSoundEvent("matok_close");
 
 	public static final RegistryObject<SoundEvent> EQUIP_NAQUADAH_ARMOR = registerSoundEvent("equip_naquadah_armor");
+	public static final RegistryObject<SoundEvent> EQUIP_TRINIUM_ARMOR = registerSoundEvent("equip_trinium_armor");
+	
+	public static final RegistryObject<SoundEvent> GRAVER_ENGRAVE = registerSoundEvent("graver_engrave");
 	
 	public static final RegistryObject<SoundEvent> EMPTY = registerSoundEvent("empty");
 	

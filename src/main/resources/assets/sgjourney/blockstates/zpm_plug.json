@@ -1,0 +1,10 @@
+{
+	"variants": 
+	{
+		"facing=north": { "model": "sgjourney:block/zpm_plug", "y": 90},
+		"facing=south": { "model": "sgjourney:block/zpm_plug", "y": 270 },
+		"facing=west": { "model": "sgjourney:block/zpm_plug" },
+		"facing=east": { "model": "sgjourney:block/zpm_plug", "y": 180 }
+	}
+}
+

@@ -1,0 +1,799 @@
+package net.povstalec.sgjourney.common.sgjourney.stargate.api;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.energy.IEnergyStorage;
+import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
+import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
+import net.povstalec.sgjourney.common.misc.Trinary;
+import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+public interface Stargate extends Comparable<Stargate>
+{
+	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	
+	String DIMENSION = "Dimension";
+	
+	String HAS_DHD = "HasDHD";
+	String TIMES_OPENED = "TimesOpened";
+	
+	String NETWORK_RESTRICTIONS = "network_restrictions";
+	String NETWORKS = "networks";
+	
+	// Basic Info
+	
+	StargateType<?> getStargateType();
+	
+	/**
+	 * @return Current Minecraft Server
+	 */
+	@Nullable
+	MinecraftServer getServer();
+	
+	/**
+	 * @return 9-Chevron Address of the Stargate
+	 */
+	Address.Immutable get9ChevronAddress();
+	
+	/**
+	 * @return Dimension the Stargate is located in or null if it's not located in any Dimension
+	 */
+	@Nullable
+	ResourceKey<Level> getDimension();
+	
+	/**
+	 * @return Level the Stargate is currently located in, null if it's not located in any Level
+	 */
+	@Nullable
+	default Level getLevel()
+	{
+		ResourceKey<Level> dimension = getDimension();
+		if(dimension == null)
+			return null;
+		
+		return getServer().getLevel(dimension);
+	}
+	
+	/**
+	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
+	 */
+	@Nullable
+	default AddressRegion getAddressRegion()
+	{
+		return Universe.get(getServer()).getAddressRegionFromDimension(getDimension());
+	}
+	
+	/**
+	 * @return Resource Key of the Address Region the Stargate is located in or null if it's not located in any Address Region
+	 */
+	@Nullable
+	default ResourceKey<AddressRegion> getAddressRegionKey()
+	{
+		AddressRegion addressRegion = getAddressRegion();
+		if(addressRegion == null)
+			return null;
+		
+		return addressRegion.getResourceKey();
+	}
+	
+	/**
+	 * @return Position vector of the Stargate's center or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getPosition();
+	
+	/**
+	 * @return Unit Vector with the direction the Stargate is facing or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getForward();
+	
+	/**
+	 * @return Unit Vector with the direction the Stargate considers up or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getUp();
+	
+	/**
+	 * @return Unit Vector with the direction the Stargate considers right or null if it doesn't have a position
+	 */
+	@Nullable
+	Vec3 getRight();
+	
+	/**
+	 * @return Inner Radius of the Stargate or {@literal <= 0} if the Stargate doesn't have a real form
+	 */
+	double getInnerRadius();
+	
+	/**
+	 * Transforms the vector from an absolute coordinate system to a coordinate system relative to Stargate, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @return A new vector with the coordinates of the original vector, but transformed to Stargate's relative coordinate system
+	 */
+	default Vec3 toStargateCoords(Vec3 vector, boolean scaleWithStargate)
+	{
+		Vec3 result = CoordinateHelper.Relative.fromOrthogonalBasis(vector, getForward(), getUp(), getRight());
+		
+		if(scaleWithStargate)
+			return new Vec3(result.x(), result.y() / getInnerRadius(), result.z() / getInnerRadius());
+		
+		return result;
+	}
+	
+	/**
+	 * Transforms the vector from a Stargate's relative coordinate system, where X is the direction which the Stargate is facing, Y is Stargate's up direction and Z is Stargate's right direction,
+	 * with the Y and Z vectors being a percentage of the Stargate's radius, to a vector in the absolute coordinate system
+	 * @param vector Vector to be transformed
+	 * @param scaleWithStargate Whether the coordinates should scale with the Stargate (for example, relative position within the Stargate should be scaled with it, but momentum should not)
+	 * @param mirror Whether the coordinates should be mirrored, for example when a traveler is exiting the Stargate
+	 * @return A new vector with the coordinates of the original vector, but transformed to absolute coordinate system
+	 */
+	default Vec3 fromStargateCoords(Vec3 vector, boolean scaleWithStargate, boolean mirror)
+	{
+		if(scaleWithStargate)
+			vector = new Vec3(vector.x(), vector.y() * getInnerRadius(), vector.z() * getInnerRadius());
+		
+		return mirror ? CoordinateHelper.Relative.toOrthogonalBasis(vector, CoordinateHelper.Relative.mirrorVector(getForward()), getUp(), CoordinateHelper.Relative.mirrorVector(getRight())) :
+				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(), getUp(), getRight());
+	}
+	
+	@Nullable
+	default ResourceKey<PointOfOrigin> pointOfOrigin()
+	{
+		return null;
+	}
+	
+	@Nullable
+	default ResourceKey<Symbols> symbols()
+	{
+		return null;
+	}
+	
+	/**
+	 * This method is primarily intended to be used by the Stargate Network when deciding Stargate priority.
+	 * Unless you implement {@link DHDControlledStargate}, this method should only return false (if you do implement, it's free to return true or false based on actually being connected to a DHD).
+	 * @return True if the Stargate is connected to a DHD, otherwise false
+	 */
+	boolean hasDHD();
+	
+	/**
+	 * @return Generation of the Stargate
+	 */
+	default StargateInfo.Gen getGeneration()
+	{
+		return getStargateType().getGeneration();
+	}
+	
+	/**
+	 * @return Number of times the Stargate was opened
+	 */
+	int getTimesOpened();
+	
+	/**
+	 * @return Set of networks this Stargate is a part of
+	 */
+	default Set<Integer> getNetworks()
+	{
+		return Set.of();
+	}
+	
+	/**
+	 * @return True if this Stargate has network restrictions active
+	 */
+	boolean hasNetworkRestrictions();
+	
+	/**
+	 * @param networks Network IDs to test
+	 * @return False if the provided networks pass the restriction check successfully, otherwise true
+	 */
+	default boolean isNetworkRestricted(Collection<Integer> networks)
+	{
+		return false;
+	}
+	
+	/**
+	 * @param network Network ID to test
+	 * @return False if the provided network passes the restriction check successfully, otherwise true
+	 */
+	default boolean isNetworkRestricted(int network)
+	{
+		return isNetworkRestricted(List.of(network));
+	}
+	
+	/**
+	 * @return Address currently encoded in this Stargate
+	 */
+	Address getAddress();
+	
+	/**
+	 * @param addressRegion Address Region requesting this Stargate's connection Address, can be null
+	 * @param addressType Type of the requested Address
+	 * @return The Address which this Stargate will provide to the Stargate Network during connections
+	 * (For example, during an interstellar connection, the Stargate will provide the 7-Chevron Address of its Solar System instead of its 9-Chevron Address)
+	 */
+	default Address.Immutable getConnectionAddress(@Nullable AddressRegion addressRegion, Address.Type addressType)
+	{
+		AddressRegion localAddressRegion = getAddressRegion();
+		if(localAddressRegion != null)
+		{
+			if(addressType == Address.Type.ADDRESS_7_CHEVRON)
+			{
+				Galaxy galaxy = localAddressRegion.findCommonGalaxy(getServer(), addressRegion);
+				if(galaxy != null)
+				{
+					Address.Immutable address = localAddressRegion.getAddressInGalaxy(galaxy.getResourceKey());
+					if(address != null)
+						return address;
+				}
+			}
+			else if(addressType == Address.Type.ADDRESS_8_CHEVRON)
+				return localAddressRegion.getExtragalacticAddress();
+		}
+		
+		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
+		return get9ChevronAddress();
+	}
+	
+	/**
+	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
+	 * @param feedback FeedbackMessage with information regarding why this Stargate was reset and any additional info
+	 * @return Feedback with information regarding how this Stargate's reset attempt went
+	 */
+	StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback);
+	
+	/**
+	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
+	 * @param feedback Feedback with information regarding why this Stargate was reset
+	 * @param additionalInfo Additional info to go along with the feedback (like how much energy is needed to dial when dialing fails due to having enough power)
+	 * @return Feedback with information regarding how this Stargate's reset attempt went
+	 */
+	default StargateInfo.FeedbackMessage resetStargate(StargateInfo.Feedback feedback, Object... additionalInfo)
+	{
+		return resetStargate(feedback.withInfo(additionalInfo));
+	}
+	
+	/**
+	 * @return True if this Stargate is currently connected, otherwise false
+	 */
+	boolean isConnected();
+	
+	/**
+	 * @return The dialing direction of the Stargate or NONE if the Stargate is idle
+	 */
+	StargateConnection.Direction getConnectionDirection();
+	
+	/**
+	 * @return True if the Stargate is connected and the kawoosh is done (or if the kawoosh never formed in the first place), otherwise false
+	 */
+	boolean isWormholeOpen();
+	
+	/**
+	 * @return True if this Stargate is currently obstructed, otherwise false
+	 */
+	boolean isObstructed();
+	
+	/**
+	 * @return True if this Stargate is the Primary Stargate of the Solar System it's located in, otherwise false
+	 */
+	default boolean isPrimary()
+	{
+		return false;
+	}
+	
+	/**
+	 * @return Returns true if this Stargate is valid (for example, in the case of BlockEntity-based Stargates, if the Block Entity can still be found in the world and if its address is the same as the Stargate object's)
+	 */
+	boolean checkValidity();
+	
+	/**
+	 * @return Returns true if this Stargate is loaded (for example, in the case of Stargates placed in the world, if the Chunk the Stargate is located in is loaded)
+	 */
+	boolean isLoaded();
+	
+	/**
+	 * Sets the order in which the Stargate's chevrons should engage
+	 * @param chevronConfiguration Integer array representing the order in which this Stargate's chevrons engage
+	 */
+	default void setChevronConfiguration(int[] chevronConfiguration) {}
+	
+	// Updating
+	
+	/**
+	 * Updates this Stargate, typically used whenever the Stargate needs updating, like when a Stargate
+	 * is added to/removed from the Stargate Network and the Stargate priority list needs to be recalculated
+	 */
+	default void update() {}
+	
+	/**
+	 * Updates this Stargate's information on the client-side
+	 */
+	default void updateClient() {}
+	
+	@Nullable
+	default CompoundTag getClientUpdateTag()
+	{
+		return null;
+	}
+	
+	default void onClientUpdate(@Nullable CompoundTag tag) {}
+	
+	/**
+	 * Update all Tech Interfaces that are currently connected to the Stargate
+	 * @param type Type of Interfaces that should be updated, null will update all types
+	 * @param eventName Name of the event with which to update the Interfaces, leave as null if there is none
+	 * @param objects Objects that can be sent along with the event to update Interfaces
+	 */
+	default void updateInterfaceBlocks(@Nullable AbstractInterfaceEntity.InterfaceType type, @Nullable String eventName, Object... objects) {}
+	
+	// Communication
+	
+	/**
+	 * Receives a Stargate message in the form of a String
+	 * @param message Message that was received
+	 */
+	default void receiveStargateMessage(String message) {}
+	
+	/**
+	 * Receives a radio transmission from a GDO or a Transceiver and forwards it further
+	 * @param transmissionJumps Current count of transmission jumps
+	 * @param frequency Radio frequency at which the transmission was sent
+	 * @param transmission Transmission contents in the form of a String
+	 */
+	default void forwardTransmission(int transmissionJumps, int frequency, String transmission) {}
+	
+	/**
+	 * @return Percentage of how much the Stargate's iris/shield is closed, with 0 being open and 1 being fully closed
+	 */
+	float checkStargateShieldingState();
+	
+	// Energy
+	
+	/**
+	 * @return Stargate's Energy Storage
+	 */
+	@Nullable
+	IEnergyStorage getEnergyStorage();
+	
+	/**
+	 * @return Energy currently stored in the Stargate's energy buffer
+	 */
+	default long getEnergyStored()
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.getTrueEnergyStored();
+		else
+			return energyStorage.getEnergyStored();
+	}
+	
+	/**
+	 * @return Max amount of energy that can be stored in the Stargate's energy buffer
+	 */
+	default long getEnergyCapacity()
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.getTrueMaxEnergyStored();
+		else
+			return energyStorage.getMaxEnergyStored();
+	}
+	
+	/**
+	 * @return True if this Stargate can supply energy to the connection even if it did not initiate the connection
+	 */
+	boolean canPowerFromOtherSide();
+	
+	/**
+	 * Extracts energy from the Stargate's energy buffer (used mainly for drawing energy to establish and then feed a Stargate Connection)
+	 * @param energy Amount of energy to be depleted
+	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is extracted from the energy buffer
+	 * @return Amount of energy that was actually depleted
+	 */
+	default long extractEnergy(long energy, boolean simulate)
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.depleteEnergy(energy, simulate);
+		else
+			return energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(energy), simulate);
+	}
+	
+	/**
+	 * Checks if the Stargate can extract the specified amount of energy
+	 * @param energyExtracted Amount of energy to be extracted
+	 * @return True if the Stargate can extract the specified amount of energy, otherwise false
+	 */
+	default boolean canExtract(long energyExtracted)
+	{
+		return extractEnergy(energyExtracted, true) >= energyExtracted;
+	}
+	
+	/**
+	 * Funnels energy into the Stargate's energy buffer
+	 * @param energy Amount of energy to receive
+	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is received by the energy buffer
+	 * @return Amount of energy that was actually received
+	 */
+	default long receiveEnergy(long energy, boolean simulate)
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.receiveLongEnergy(energy, simulate);
+		else
+			return energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(energy), simulate);
+	}
+	
+	//============================================================================================
+	//******************************************Dialing*******************************************
+	//============================================================================================
+	
+	/**
+	 * @return Symbol Map responsible for remapping symbols that are engaged by this Stargate
+	 */
+	default SymbolMap getSymbolMap()
+	{
+		// By default, Stargates aren't expected to support symbol remapping, which is why an immutable Symbol Map is returned here
+		return SymbolMap.Immutable.SYMBOL_MAP;
+	}
+	
+	/**
+	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before encoding the symbols fully
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
+	 * @return Feedback from encoding the symbol
+	 */
+	default StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
+	{
+		return directEngageSymbol(symbol, canEngageStargate, chevronSound);
+	}
+	
+	/**
+	 * Method to engage symbols that doesn't allow the Stargate to do any extra stuff
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
+	 * @return Feedback from encoding the symbol
+	 */
+	StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound);
+	
+	/**
+	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before engaging it
+	 * @return Feedback from engaging the Stargate
+	 */
+	default StargateInfo.FeedbackMessage indirectEngageStargate(boolean doKawoosh, Dialing.Action action)
+	{
+		return engageStargate(doKawoosh, action);
+	}
+	
+	/**
+	 * Method to engage the Stargate that doesn't allow the Stargate to do any extra stuff
+	 * @return Feedback from engaging the Stargate
+	 */
+	StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh, Dialing.Action action);
+	
+	/**
+	 * Instantly dials a specified Address
+	 * @param address Address to dial
+	 * @param action If action.simulate() is true, the dialing attempt will only be simulated (won't actually create a connection or reset any Stargates)
+	 * @return Feedback with information regarding how this Stargate's dialing attempt went
+	 */
+	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action);
+	
+	/**
+	 * Disconnects the Stargate (respects disconnect side, so it will not disconnect the Stargate if it did not initiate the connection)
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback);
+	
+	/**
+	 * Disconnects the Stargate regardless of which Stargate initiated the connection
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage bypassDisconnectStargate(StargateInfo.FeedbackMessage feedback);
+	
+	//============================================================================================
+	//************************************Stargate Connection*************************************
+	//============================================================================================
+	
+	/**
+	 * @return Time (in ticks) since the connection was established (Right after dialing Stargate finished dialing)
+	 */
+	int getConnectionTime();
+	
+	/**
+	 * @return Time (in ticks) since the kawoosh started
+	 */
+	int getKawooshTime();
+	
+	/**
+	 * @return Time (in ticks) since wormhole formed (after kawoosh ended)
+	 */
+	int getOpenTime();
+	
+	/**
+	 * @return Time (in ticks) since a traveler has last appeared near any of the connected Stargates
+	 */
+	int getTimeSinceLastTraveler();
+	
+	/**
+	 * Updates Stargate with current information about the Stargate Connection
+	 * @param connection Stargate Connection that connects the two Stargates
+	 */
+	default void updateFromConnection(StargateConnection connection) {}
+	
+	/**
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to engage its Chevrons and start establishing a wormhole (kawoosh is not included in this)
+	 */
+	int dialedEngageTime(boolean doKawoosh); //TODO Make the network wait
+	
+	/**
+	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
+	 * @return Time (in ticks) it takes the Stargate to establish wormhole (basically, how long before kawoosh is over and the Stargate can be safely used)
+	 */
+	int wormholeEstablishTime(boolean doKawoosh); //TODO Make the network wait
+	
+	/**
+	 * Checks if this Stargate can connect to the dialing Stargate and creates a Stargate Connection
+	 * (Note that there is no need to reset the Stargate, as that's handled further down the line)
+	 * @param dialingStargate Stargate that dialed this Stargate
+	 * @param addressType Address type that was used to dial this Stargate
+	 * @param doKawoosh Whether kawoosh should form when the connection is established
+	 * @param action If action.simulate() is true, the connection attempt will only be simulated (won't actually create a connection or reset any Stargates)
+	 * @return Stargate Feedback describing how successful the formation of the connection was (for example, throw an error when this Stargate is already connected)
+	 */
+	StargateInfo.FeedbackMessage tryConnect(Stargate dialingStargate, Address.Type addressType, boolean doKawoosh, Dialing.Action action);
+	
+	/**
+	 * @return True if the Stargate can call forward, otherwise false
+	 */
+	default boolean doCallForwarding()
+	{
+		return false;
+	}
+	
+	/**
+	 * Checks which Stargates actually get dialed when this Stargate is dialed (mainly matters in the case of Call Forwarding)
+	 * @param dialingStargate The Stargate that is attempting to dial this Stargate
+	 * @param connectionType The type of the connection to be created between the dialingStargate and this Stargate
+	 * @return List of Stargates the dialingStargate will be connected to, first Stargate on this list will be considered the "main" Stargate of the connection (because Stargate connections are still primarily 1:1)
+	 */
+	default List<Stargate> getDialedStargates(Stargate dialingStargate, StargateConnection.Type connectionType)
+	{
+		return List.of(this);
+	}
+	
+	/**
+	 * Sets the Stargate to a connected state and updates it accordingly
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param connectionState State of the connection in relation to this Stargate (incoming or outgoing connection)
+	 */
+	void connectStargate(StargateConnection connection, StargateConnection.State connectionState);
+	
+	/**
+	 * Performs whatever the Stargate needs to do while connecting (for example, playing the kawoosh sound and handling the kawoosh itself) - happens on both sides of the connection
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
+	 * @param kawooshStartTicks Time of connection (in ticks) at which the kawoosh is scheduled to start
+	 */
+	default void doWhileConnecting(StargateConnection connection, boolean incoming, int kawooshStartTicks) {}
+	
+	/**
+	 * Performs whatever the Stargate needs to do while being dialed (for example, engage chevrons, display symbols or start rotating) - happens only on the receiving side of the connection
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param dialingAddress The connection Address of the dialing Stargate in relation to this connection
+	 * @param kawooshStartTicks Time of connection (in ticks) at which the kawoosh is scheduled to start
+	 */
+	default void doWhileDialed(StargateConnection connection, Address dialingAddress, int kawooshStartTicks) {}
+	
+	/**
+	 * Performs whatever the Stargate needs to do while it's connected after the kawoosh (for example play idle wormhole sounds)
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
+	 */
+	default void doWhileConnected(StargateConnection connection, boolean incoming) {}
+	
+	/**
+	 * Performs whatever the Stargate needs for its wormhole to try sending travelers to the connected Stargate
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param incoming Whether the Stargate is on the incoming side or outgoing side of the connection
+	 * @param wormholeTravel Specifies if outgoing travel from this Stargate is allowed
+	 */
+	void doWormhole(StargateConnection connection, boolean incoming, StargateInfo.WormholeTravel wormholeTravel);
+	
+	/**
+	 * Redirects incoming travelers using Call Forwarding
+	 * @param traveler Incoming traveler
+	 * @return True if the incoming traveler should be denied entry and sent elsewhere through Call Forwarding, otherwise false
+	 */
+	default boolean callForwardDeny(Entity traveler)
+	{
+		if(traveler instanceof Player player && player.isSpectator())
+			return false; // Spectators can pass through Call Forwarding just fine
+		
+		return traveler instanceof LivingEntity; //TODO Let players specify what can pass through
+	}
+	
+	/**
+	 * Receives information about incoming traveler and teleports the traveler to the Stargate's position
+	 * @param connection Stargate Connection that connects the two Stargates
+	 * @param initialStargate Stargate from which the traveler is being sent
+	 * @param traveler The traveler Entity which is being received
+	 * @param relativePosition Traveler's position vector relative to the initial Stargate, with X direction being the direction the initial Stargate was facing,
+	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction. Y and Z are scaled to be percentages (from 0 to 1) of the initial Stargate's inner radius
+	 * @param relativeMomentum Traveler's momentum vector relative to the initial Stargate, with X direction being the direction the initial Stargate was facing,
+	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction.
+	 * @param relativeLookAngle Traveler's look angle turned into a vector relative to the initial Stargate, with X direction being the direction the initial Stargate was facing,
+	 * Y being the initial Stargate's up and Z being the initial Stargate's right direction.
+	 * @return Traveler entity (that may have been created on the other side) if the traveler was accepted and transported to this Stargate, otherwise null
+	 */
+	@Nullable Entity receiveTraveler(StargateConnection connection, Stargate initialStargate, Entity traveler, Vec3 relativePosition, Vec3 relativeMomentum, Vec3 relativeLookAngle);
+	
+	/**
+	 * Checks if the current Stargate Connection has reached the point of energy bypass (like going past the canonical 38-minute mark)
+	 * @param openTime Time since the wormhole formed (after kawoosh ended)
+	 * @return True if the Stargate has reached a point where it requires extra energy to bypass the max wormhole open time, otherwise false
+	 */
+	boolean requiresEnergyBypass(int openTime);
+	
+	@Override
+	default int compareTo(@NotNull Stargate other)
+	{
+		// Stargates with a DHD take precedence
+		if(!CommonStargateNetworkConfig.disable_dhd_preference.get())
+		{
+			int dhdRes = Boolean.compare(other.hasDHD(), this.hasDHD());
+			if(dhdRes != 0)
+				return dhdRes;
+		}
+		
+		// Stargates with higher generation take precedence
+		if(!CommonStargateNetworkConfig.disable_stargate_generation_preference.get())
+		{
+			int genRes = other.getGeneration().compareTo(this.getGeneration());
+			if(genRes != 0)
+				return genRes;
+		}
+		
+		// Stargates with more uses take precedence
+		int timesOpenedRes = Integer.compare(other.getTimesOpened(), this.getTimesOpened());
+		if(timesOpenedRes != 0)
+			return timesOpenedRes;
+		
+		return other.get9ChevronAddress().compareTo(this.get9ChevronAddress());
+	}
+	
+	//============================================================================================
+	//*************************************Advanced protocols*************************************
+	//============================================================================================
+	
+	/**
+	 * Checks if the current Stargate Connection should be automatically closed (for example, if the open time exceeds the maximum time allowed for the Stargate to be open)
+	 * @param connection Stargate Connection in question
+	 * @param isDialingStargate True if this Stargate is the one that dialed and initiated the connection, otherwise false
+	 * @return TRUE if the Stargate Connection should close automatically.
+	 * FALSE if the Connection should not close even if the {@link shouldAutoclose} methods of other Stargates participating in the Connection are returning TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary)} returns TRUE, the traveler's exit speed will be adjusted in an attempt to prevent them from falling back inside the gate.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler's speed should be adjusted.
+	 * FALSE if it should not be adjusted even if the other Stargate's {@link shouldAdjustExitSpeed} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAdjustExitSpeed(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary)} returns TRUE, the traveler's position will be adjusted in an attempt
+	 * to prevent them from being materialized inside of blocks and immediately falling back inside the Stargate.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler's exit position should be adjusted.
+	 * FALSE if it should not be adjusted even if the other Stargate's {@link shouldAdjustExitPos} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldAdjustExitPos(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	/**
+	 * The result of this method from both the sending and receiving Stargate is checked when a traveler is being received by the Stargate.
+	 * If their {@link Trinary#or(Trinary) operation} returns TRUE, the traveler's position will be adjusted to make them stick to the ground.
+	 * @param traveler The traveler Entity which is being received by the receiving gate
+	 * @param isTravelerReceived True if this is the gate receiving the traveler, false if this is the gate sending the traveler
+	 * @return TRUE if the traveler should be made to stick to the ground upon exit.
+	 * FALSE if not, even if the other Stargate's {@link shouldTravelerStickToGround} returns TRUE.
+	 * Otherwise, DEFAULT.
+	 */
+	default Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
+	{
+		return Trinary.DEFAULT;
+	}
+	
+	//============================================================================================
+	//**********************************Additional functionality**********************************
+	//============================================================================================
+	
+	/**
+	 * @return Address Filter Info used to decide which connections the Stargate will decline
+	 */
+	AddressFilterInfo addressFilterInfo();
+	
+	//============================================================================================
+	//******************************************Ticking*******************************************
+	//============================================================================================
+	
+	/**
+	 * Actions the Stargate will perform while ticking
+	 * <p>
+	 * Doesn't tick on its own, ticking must be handled from the outside
+	 * (for example, by having a Block Entity call this method while it's ticking)
+	 */
+	void tick();
+	
+	//============================================================================================
+	//*************************************Saving and Loading*************************************
+	//============================================================================================
+	
+	/**
+	 * Serializes Stargate info into a tag
+	 * @param tag CompoundTag that will store the serialized information
+	 */
+	void serializeNBT(CompoundTag tag);
+	
+	/**
+	 * Deserializes the Stargate info
+	 * @param id9ChevronAddress 9-Chevron Address of the Stargate
+	 * @param tag CompoundTag containing information to be deserialized
+	 */
+	void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag);
+}

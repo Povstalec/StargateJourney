@@ -178,7 +178,7 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 	@Override
 	public boolean hasPermissions(BlockGetter reader, BlockPos pos, BlockState state, Player player, boolean sendMessage)
 	{
-		AbstractStargateEntity stargate = getStargate(reader, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(reader, pos, state);
 		
 		if(stargate != null)
 			return stargate.hasPermissions(player, sendMessage);
@@ -195,8 +195,8 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 		
 		if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 		{
-			AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
-			if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+			AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
+			if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			{
 				ItemStack irisStack = irisStargate.irisInfo().getIris();
 				
@@ -230,9 +230,11 @@ public abstract class AbstractShieldingBlock extends Block implements SimpleWate
 			
 			if(stargateState.getBlock() instanceof AbstractStargateBaseBlock stargateBlock)
 			{
-				AbstractStargateEntity stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
-				if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+				AbstractStargateEntity<?> stargate = stargateBlock.getStargate(level, baseBlockPos, stargateState);
+				if(stargate instanceof IrisStargateEntity<?> irisStargate)
 				{
+					// This check here makes sure the iris doesn't destroy itself when it's opening and blocks are getting removed
+					// Check if the blockstate change was caused by the iris opening and break the rest of the iris if it wasn't
 					if(shieldingPart.shieldingState().isBefore(irisStargate.irisInfo().getIrisProgress()))
 					{
 						AbstractShieldingBlock.destroyShielding(level, baseBlockPos, getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION));

@@ -1,0 +1,294 @@
+package net.povstalec.sgjourney.client.widgets.dhd;
+
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientPointOfOrigin;
+import net.povstalec.sgjourney.client.resourcepack.symbols.ClientSymbols;
+import net.povstalec.sgjourney.common.menu.dhd.IDHDMenu;
+import net.povstalec.sgjourney.common.misc.ColorUtil;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper.CoordinateSystems;
+import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
+import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import org.jetbrains.annotations.NotNull;
+
+public abstract class GenericDHDSymbolButton<M extends IDHDMenu> extends DHDSymbolButton<M>
+{
+	public static final int OUTER_BUTTON_Y_OFFSET_1 = 0;
+	public static final int OUTER_BUTTON_Y_OFFSET_2 = 33;
+	public static final int OUTER_BUTTON_Y_OFFSET_3 = 65;
+	
+	public static final int INNER_BUTTON_Y_OFFSET_1 = 98;
+	public static final int INNER_BUTTON_Y_OFFSET_2 = 128;
+	public static final int INNER_BUTTON_Y_OFFSET_3 = 158;
+	
+	public interface Position
+	{
+		int totalButtons();
+		
+		double angle();
+		
+		int symbolSize();
+		
+		int innerRadiusSqr();
+		
+		int outerRadiusSqr();
+		
+		double symbolAngle(int symbol);
+	}
+	
+	public enum GenericPosition implements Position
+	{
+		INNER(19, 12, 33, 61),
+		OUTER(20, 16, 63, 88);
+		
+		public final int totalButtons;
+		public final double angle;
+		public final int symbolSize;
+		public final int innerRadiusSqr;
+		public final int outerRadiusSqr;
+		
+		GenericPosition(int totalButtons, int symbolSize, int innerRadius, int outerRadius)
+		{
+			this.totalButtons = totalButtons;
+			this.angle = 360.0 / this.totalButtons;
+			this.symbolSize = symbolSize;
+			this.innerRadiusSqr = innerRadius * innerRadius;
+			this.outerRadiusSqr = outerRadius * outerRadius;
+		}
+		
+		@Override
+		public int totalButtons()
+		{
+			return totalButtons;
+		}
+		
+		@Override
+		public double angle()
+		{
+			return angle;
+		}
+		
+		@Override
+		public int symbolSize()
+		{
+			return symbolSize;
+		}
+		
+		@Override
+		public int innerRadiusSqr()
+		{
+			return innerRadiusSqr;
+		}
+		
+		@Override
+		public int outerRadiusSqr()
+		{
+			return outerRadiusSqr;
+		}
+		
+		@Override
+		public double symbolAngle(int symbol)
+		{
+			if(this == INNER)
+				return ((symbol - 5) % totalButtons) * angle + 90; // "It just works" (Take the old DHD screen, go back 5 symbols and rotate them all 90 degrees, you get the new one)
+			
+			return (symbol % totalButtons) * angle;
+		}
+	}
+	
+	public enum DefaultButton
+	{
+		// Outer Buttons
+		BUTTON_0(0, OUTER_BUTTON_Y_OFFSET_1, 25, 26, 0F, 0F, GenericPosition.OUTER, 8, 83),
+		BUTTON_1(BUTTON_0.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 29, 27, 0F, 2F, GenericPosition.OUTER, 10, 58),
+		BUTTON_2(BUTTON_1.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 32, 1F, 1F, GenericPosition.OUTER, 18, 35),
+		BUTTON_3(BUTTON_2.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, 1F, 1F, GenericPosition.OUTER, 34, 18),
+		BUTTON_4(BUTTON_3.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, 2F, 0F, GenericPosition.OUTER, 57, 10),
+		BUTTON_5(BUTTON_4.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 26, 25, 0F, 0F, GenericPosition.OUTER, 83, 8),
+		BUTTON_6(BUTTON_5.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 28, 29, -2F, 0F, GenericPosition.OUTER, 107, 10),
+		BUTTON_7(BUTTON_6.xEnd(), OUTER_BUTTON_Y_OFFSET_1, 32, 33, -1F, 1F, GenericPosition.OUTER, 126, 18),
+		
+		BUTTON_8(0, OUTER_BUTTON_Y_OFFSET_2, 32, 32, -1F, 1F, GenericPosition.OUTER, 142, 35),
+		BUTTON_9(BUTTON_8.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, 0F, 2F, GenericPosition.OUTER, 153, 58),
+		BUTTON_10(BUTTON_9.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 25, 26, 0F, 0F, GenericPosition.OUTER, 159, 83),
+		BUTTON_11(BUTTON_10.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 29, 27, 0F, -1F, GenericPosition.OUTER, 153, 107),
+		BUTTON_12(BUTTON_11.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 32, -1F, -1F, GenericPosition.OUTER, 142, 125),
+		BUTTON_13(BUTTON_12.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 32, 33, -1F, 0F, GenericPosition.OUTER, 126, 141),
+		BUTTON_14(BUTTON_13.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 28, 29, -2F, 1F, GenericPosition.OUTER, 107, 153),
+		BUTTON_15(BUTTON_14.xEnd(), OUTER_BUTTON_Y_OFFSET_2, 26, 25, 0F, 0F, GenericPosition.OUTER, 83, 159),
+		
+		BUTTON_16(0, OUTER_BUTTON_Y_OFFSET_3, 28, 29, 2F, 1F, GenericPosition.OUTER, 57, 153),
+		BUTTON_17(BUTTON_16.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 33, 1F, 0F, GenericPosition.OUTER, 34, 141),
+		BUTTON_18(BUTTON_17.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 32, 32, 1F, -1F, GenericPosition.OUTER, 18, 125),
+		BUTTON_19(BUTTON_18.xEnd(), OUTER_BUTTON_Y_OFFSET_3, 29, 27, 0F, -1F, GenericPosition.OUTER, 10, 107),
+		// Inner Buttons
+		BUTTON_20(0, INNER_BUTTON_Y_OFFSET_1, 30, 20, 0F, 2F, GenericPosition.INNER, 35, 73),
+		BUTTON_21(BUTTON_20.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 27, 0F, 1F, GenericPosition.INNER, 41, 55),
+		BUTTON_22(BUTTON_21.xEnd(), INNER_BUTTON_Y_OFFSET_1, 27, 30, 1F, 0F, GenericPosition.INNER, 52, 43),
+		BUTTON_23(BUTTON_22.xEnd(), INNER_BUTTON_Y_OFFSET_1, 22, 30, 2F, 0F, GenericPosition.INNER, 68, 36),
+		BUTTON_24(BUTTON_23.xEnd(), INNER_BUTTON_Y_OFFSET_1, 18, 28, 0F, 0F, GenericPosition.INNER, 87, 35),
+		BUTTON_25(BUTTON_24.xEnd(), INNER_BUTTON_Y_OFFSET_1, 22, 30, -2F, 0F, GenericPosition.INNER, 102, 36),
+		BUTTON_26(BUTTON_25.xEnd(), INNER_BUTTON_Y_OFFSET_1, 27, 30, -1F, 0F, GenericPosition.INNER, 113, 43),
+		BUTTON_27(BUTTON_26.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 27, 0F, 1F, GenericPosition.INNER, 121, 55),
+		BUTTON_28(BUTTON_27.xEnd(), INNER_BUTTON_Y_OFFSET_1, 30, 20, 0F, 2F, GenericPosition.INNER, 127, 73),
+		
+		BUTTON_29(0, INNER_BUTTON_Y_OFFSET_2, 29, 18, 0F, -1F, GenericPosition.INNER, 128, 92),
+		BUTTON_30(BUTTON_29.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 22, 0F, -2F, GenericPosition.INNER, 124, 106),
+		BUTTON_31(BUTTON_30.xEnd(), INNER_BUTTON_Y_OFFSET_2, 29, 29, 1F, 0F, GenericPosition.INNER, 117, 115),
+		BUTTON_32(BUTTON_31.xEnd(), INNER_BUTTON_Y_OFFSET_2, 25, 31, -1F, 0F, GenericPosition.INNER, 108, 123),
+		BUTTON_33(BUTTON_32.xEnd(), INNER_BUTTON_Y_OFFSET_2, 18, 29, -2F, 0F, GenericPosition.INNER, 97, 128),
+		BUTTON_34(BUTTON_33.xEnd(), INNER_BUTTON_Y_OFFSET_2, 18, 29, 2F, 0F, GenericPosition.INNER, 77, 128),
+		BUTTON_35(BUTTON_34.xEnd(), INNER_BUTTON_Y_OFFSET_2, 25, 31, 1F, 0F, GenericPosition.INNER, 59, 123),
+		BUTTON_36(BUTTON_35.xEnd(), INNER_BUTTON_Y_OFFSET_2, 29, 29, -1F, 0F, GenericPosition.INNER, 46, 115),
+		BUTTON_37(BUTTON_36.xEnd(), INNER_BUTTON_Y_OFFSET_2, 30, 23, 0F, -2F, GenericPosition.INNER, 38, 106),
+		
+		BUTTON_38(0, INNER_BUTTON_Y_OFFSET_3, 29, 18, 0F, -1F, GenericPosition.INNER, 35, 92);
+		
+		public final int textureX;
+		public final int textureY;
+		public final int width;
+		public final int height;
+		public final float symbolOffsetX;
+		public final float symbolOffsetY;
+		public final GenericPosition position;
+		public final int xPos;
+		public final int yPos;
+		
+		DefaultButton(int textureX, int textureY, int width, int height, float symbolOffsetX, float symbolOffsetY, GenericPosition position, int xPos, int yPos)
+		{
+			this.textureX = textureX;
+			this.textureY = textureY;
+			this.width = width;
+			this.height = height;
+			this.symbolOffsetX = symbolOffsetX;
+			this.symbolOffsetY = symbolOffsetY;
+			this.position = position;
+			this.xPos = xPos;
+			this.yPos = yPos;
+		}
+		
+		public int xEnd()
+		{
+			return textureX + width;
+		}
+	}
+	
+	protected final int screenCenterX;
+	protected final int screenCenterY;
+	
+	protected final float xCenter;
+	protected final float yCenter;
+	protected final double buttonAngle;
+	
+	public final Position position;
+
+	public GenericDHDSymbolButton(int x, int y, int width, int height, M menu, int symbol, int screenWidth, int screenHeight,
+								  ResourceLocation widgets, ResourceLocation overlay, float xCenter, float yCenter, int textureX, int textureY, Position position,
+								  ColorUtil.RGBA hoverColor, ColorUtil.RGBA disengagedColor, ColorUtil.RGBA engagedColor, Button.OnPress onPress)
+	{
+		super(x, y, width, height, menu, symbol, widgets, overlay, hoverColor, disengagedColor, engagedColor, onPress);
+		
+		this.screenCenterX = screenWidth / 2;
+		this.screenCenterY = screenHeight / 2;
+		
+    	this.xCenter = xCenter;
+    	this.yCenter = yCenter;
+    	this.buttonAngle = position.symbolAngle(this.symbol);
+    	
+    	this.textureX = textureX;
+    	this.textureY = textureY;
+		
+		this.position = position;
+	}
+	
+	private static boolean isAngleInBounds(double lowerAngleBound, double angle, double upperAngleBound)
+	{
+		if(lowerAngleBound < 0)
+			lowerAngleBound += 360;
+		else
+			lowerAngleBound %= 360;
+		angle %= 360;
+		upperAngleBound %= 360;
+		
+		return lowerAngleBound > upperAngleBound ?
+				angle >= lowerAngleBound || angle <= upperAngleBound :
+				angle > lowerAngleBound && angle < upperAngleBound;
+	}
+	
+	public boolean isOverButton(double mouseX, double mouseY)
+	{
+		if((mouseX - screenCenterX) == 0 && (mouseY - screenCenterY) == 0)
+			return false;
+		
+		float phi = CoordinateSystems.cartesianToPolarPhi((float) (mouseX - screenCenterX), (float) (mouseY - screenCenterY)) + 180;
+		
+		double xDist = mouseX - screenCenterX;
+		double yDist = mouseY - screenCenterY;
+		double distFromCenterSqr = xDist * xDist + yDist * yDist;
+		
+		return isAngleInBounds(this.buttonAngle - this.position.angle() / 2, phi, this.buttonAngle + this.position.angle() / 2) &&
+				distFromCenterSqr > this.position.innerRadiusSqr() && distFromCenterSqr < this.position.outerRadiusSqr();
+	}
+	
+	@Override
+	public boolean isMouseOver(double mouseX, double mouseY)
+	{
+		return this.active && this.visible && isOverButton(mouseX, mouseY);
+	}
+
+	@Override
+	protected boolean clicked(double mouseX, double mouseY)
+	{
+		return this.active && this.visible && isOverButton(mouseX, mouseY);
+	}
+	
+	@Override
+	public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick)
+	{
+		if(this.visible)
+		{
+			updateRemapping();
+			this.isHovered = isOverButton(mouseX, mouseY);
+			this.renderWidget(graphics, mouseX, mouseY, partialTick);
+			updateTooltip();
+		}
+	}
+	
+	public abstract ResourceKey<PointOfOrigin> getPointOfOrigin();
+	
+	public abstract ResourceKey<Symbols> getSymbols();
+	
+	@Override
+	public void renderSymbol(GuiGraphics graphics)
+	{
+		if(getSymbol() == 0)
+		{
+			ClientPointOfOrigin pointOfOrigin = ClientPointOfOrigin.getPointOfOrigin(getPointOfOrigin());
+			if(pointOfOrigin != null)
+			{
+				
+				if(isEngaged())
+					renderPointOfOrigin(graphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+							this.position.symbolSize(), this.position.symbolSize(), pointOfOrigin, this.engagedColor);
+				else
+					renderPointOfOrigin(graphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+							this.position.symbolSize(), this.position.symbolSize(), pointOfOrigin, this.disengagedColor);
+			}
+		}
+		else
+		{
+			ClientSymbols symbols = ClientSymbols.getSymbols(getSymbols());
+			if(symbols != null)
+			{
+				if(isEngaged())
+					renderSymbol(graphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+							this.position.symbolSize(), this.position.symbolSize(), symbols, getSymbol(), this.engagedColor);
+				else
+					renderSymbol(graphics.pose().last().pose(), this.getX() + this.xCenter, this.getY() + this.yCenter,
+							this.position.symbolSize(), this.position.symbolSize(), symbols, getSymbol(), this.disengagedColor);
+			}
+		}
+	}
+}

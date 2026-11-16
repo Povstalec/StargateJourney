@@ -1,0 +1,11 @@
+{
+	"name": "solar_system.sgjourney.nether",
+	"point_of_origin": "sgjourney:wither",
+	"symbols": "sgjourney:nether",
+	"symbol_prefix": 1,
+	"extragalactic_address": {"symbols": [1, 35, 6, 31, 15, 28, 32], "randomizable": true},
+	"galactic_addresses":
+	{
+		"sgjourney:milky_way": {"address": {"symbols": [27, 23, 4, 34, 12, 28], "randomizable": true}}
+	}
+}

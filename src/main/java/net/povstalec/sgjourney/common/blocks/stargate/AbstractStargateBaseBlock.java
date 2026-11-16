@@ -41,6 +41,7 @@ import net.povstalec.sgjourney.common.blockstates.ShieldingState;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
+import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.items.StargateVariantItem;
 import net.povstalec.sgjourney.common.misc.InventoryUtil;
@@ -73,7 +74,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			if(!stack.hasTag())
 			{
 				BlockEntity blockEntity = level.getBlockEntity(pos);
-				if(blockEntity instanceof AbstractStargateEntity stargate)
+				if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 				{
 					if(!stargate.hasPermissions(player, true))
 						return false;
@@ -101,7 +102,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 				
 				BlockEntity blockEntity = level.getBlockEntity(pos);
 				
-				if(blockEntity instanceof AbstractStargateEntity stargate)
+				if(blockEntity instanceof AbstractStargateEntity<?> stargate)
 				{
 					if(!stargate.hasPermissions(player, true))
 						return false;
@@ -116,7 +117,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			        
 			        Optional<StargateVariant> stargateVariant = Optional.ofNullable(variantRegistry.get(variant));
 					
-					if(stargateVariant.isPresent() && !stargateVariant.get().getBaseStargate().equals(BlockEntityType.getKey(stargate.getType())))
+					if(stargateVariant.isPresent() && !stargate.canApplyVariant(stargateVariant.get()))
 					{
 						player.displayClientMessage(Component.translatable("block.sgjourney.stargate.incorrect_stargate_type"), true);
 						return true;
@@ -186,9 +187,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			}
 		}
 		
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
-		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			updateIris(level, pos, state, irisStargate.irisInfo().getShieldingState());
 	}
 	
@@ -197,14 +198,11 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	{
 		if(oldState.getBlock() != newState.getBlock())
         {
-    		BlockEntity blockentity = level.getBlockEntity(pos);
-    		if(blockentity instanceof AbstractStargateEntity stargate)
-    		{
-    			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED, false);
-    			stargate.dhdInfo().unsetDHD(true);
-    			stargate.removeStargateFromNetwork();
-    		}
+			AbstractStargateEntity<?> stargate = getStargate(level, pos, oldState);
+    		if(stargate != null)
+    			stargate.removeStargate();
     		
+			dropStargateItem(level, pos, oldState, null);
     		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
     		
             super.onRemove(oldState, level, pos, newState, isMoving);
@@ -224,14 +222,15 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			if(!part.equals(StargatePart.BASE))
 			{
 				BlockPos ringPos = part.getRingPos(pos,  direction, orientation);
-				if(level.getBlockState(ringPos).getBlock() instanceof AbstractStargateBlock)
+				BlockState ringState = level.getBlockState(ringPos);
+				if(ringState.getBlock() instanceof AbstractStargateBlock)
 				{
 					level.setBlock(part.getRingPos(pos,  direction, orientation), 
 							ringState()
-							.setValue(AbstractStargateRingBlock.PART, part)
-							.setValue(AbstractStargateRingBlock.FACING, level.getBlockState(pos).getValue(FACING))
-							.setValue(AbstractStargateRingBlock.ORIENTATION, level.getBlockState(pos).getValue(ORIENTATION))
-							.setValue(AbstractStargateRingBlock.WATERLOGGED,  Boolean.valueOf(level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER)), 3);
+							.setValue(PART, part)
+							.setValue(FACING, ringState.getValue(FACING))
+							.setValue(ORIENTATION, ringState.getValue(ORIENTATION))
+							.setValue(WATERLOGGED, level.getFluidState(part.getRingPos(pos, state.getValue(FACING), state.getValue(ORIENTATION))).getType() == Fluids.WATER), 3);
 				}
 			}
 		}
@@ -239,9 +238,9 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	
 	public void unsetIris(BlockState state, Level level, BlockPos pos)
 	{
-		AbstractStargateEntity stargate = getStargate(level, pos, state);
+		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
 		
-		if(stargate != null && stargate instanceof IrisStargateEntity irisStargate)
+		if(stargate instanceof IrisStargateEntity<?> irisStargate)
 			irisStargate.irisInfo().removeIris();
 		
 		updateStargate(level, pos, state, ShieldingState.OPEN);
@@ -262,7 +261,6 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter getter, List<Component> tooltipComponents, TooltipFlag isAdvanced)
     {
     	long energy = 0;
-        String id = "";
 		
 		CompoundTag blockEntityTag = InventoryUtil.getBlockEntityTag(stack);
 		
@@ -287,15 +285,15 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
         	if((blockEntityTag.contains(AbstractStargateEntity.DISPLAY_ID) && blockEntityTag.getBoolean(AbstractStargateEntity.DISPLAY_ID)) || CommonStargateConfig.always_display_stargate_id.get())
         	{
-        		if(blockEntityTag.contains(AbstractStargateEntity.ID))
+				String id;
+        		if(blockEntityTag.contains(AbstractStargateEntity.ID)) //TODO Remove this
         		{
         			id = blockEntityTag.getString(AbstractStargateEntity.ID);
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         		}
         		else if(blockEntityTag.contains(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS))
         		{
-
-        			id = new Address(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS)).toString();
+        			id = Address.addressIntArrayToString(blockEntityTag.getIntArray(AbstractStargateEntity.ID_9_CHEVRON_ADDRESS));
                 	tooltipComponents.add(Component.translatable("tooltip.sgjourney.9_chevron_address").append(Component.literal(": " + id)).withStyle(ChatFormatting.AQUA));
         		}
             	
@@ -310,7 +308,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 			if(blockEntityTag.contains(AbstractStargateEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(stack.getTag().getCompound("BlockEntityTag").getByte(AbstractStargateEntity.GENERATION_STEP)))
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.generates_inside_structure").withStyle(ChatFormatting.YELLOW));
 			
-			if(blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY))
+			if(blockEntityTag.getBoolean(AbstractStargateEntity.PRIMARY) && CommonStargateNetworkConfig.primary_stargate.get())
 				tooltipComponents.add(Component.translatable("tooltip.sgjourney.is_primary").withStyle(ChatFormatting.DARK_GREEN));
 		}
         
@@ -327,11 +325,12 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
-	public AbstractStargateEntity getStargate(BlockGetter reader, BlockPos pos, BlockState state)
+	@Nullable
+	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(pos);
 		
-		if(blockentity instanceof AbstractStargateEntity stargate)
+		if(blockentity instanceof AbstractStargateEntity<?> stargate)
 			return stargate;
 		
 		return null;

@@ -1,0 +1,9 @@
+{
+	"replace": false,
+	"values":
+	[
+		"#forge:raw_materials/naquadah",
+		"#forge:raw_materials/naquadria",
+		"#forge:raw_materials/trinium"
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"type": "minecraft:stonecutting",
+	"count": 2,
+	
+	"ingredient":
+	{
+		"item": "sgjourney:trinium_block"
+	},
+	"result": "sgjourney:trinium_slab"
+}

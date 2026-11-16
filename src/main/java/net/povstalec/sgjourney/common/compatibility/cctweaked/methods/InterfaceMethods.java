@@ -8,6 +8,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.lua.MethodResult;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.compatibility.computer_functions.InterfaceFunctions;
 
@@ -46,7 +47,7 @@ public class InterfaceMethods
 		{
 			Map<Double, Double> addressTable = (Map<Double, Double>) arguments.getTable(0);
 			
-			return MethodResult.of(InterfaceFunctions.addressToString(addressTable).toString());
+			return MethodResult.of(InterfaceFunctions.addressToString(addressTable));
 		}
 	}
 	

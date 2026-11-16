@@ -1,210 +1,119 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.mojang.brigadier.StringReader;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.ClickEvent;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.HoverEvent;
-import net.minecraft.network.chat.Style;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
+import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.common.data.StargateNetwork;
+import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
+import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.ParsingResult;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
+import java.util.*;
 
-public final class Address
+public abstract class Address implements Cloneable, Comparable<Address>
 {
+	public static final String ADDRESS = "address";
+	public static final String SYMBOLS = "symbols";
+	
+	public static final String ADDRESS_TYPE = "address_type";
+	public static final String GALAXY = "galaxy";
+	public static final String DIMENSION = "dimension";
+	
 	public static final String ADDRESS_DIVIDER = "-";
-	public static final int MIN_ADDRESS_LENGTH = 6;
+	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
 	public static final int MAX_ADDRESS_LENGTH = 9;
+	public static final int POINT_OF_ORIGIN = 0;
+	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
+	public static final int TOTAL_SYMBOLS = 48; // Total symbols (including the Point of Origin)
+	public static final int MAX_SYMBOL = TOTAL_SYMBOLS - 1;
+	public static final int ADDRESS_GENERATION_SYMBOLS = 36; // Max symbol (exclusive) allowed for normal generation purposes
 	
-	private int[] addressArray = new int[0];
-	private boolean isBuffer = false;
-	@Nullable
-	private ResourceKey<Level> dimension;
+	protected int[] addressArray = new int[0];
 	
-	public static final Codec<Address> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			Codec.INT.listOf().fieldOf("symbols").forGetter(address -> Arrays.stream(address.addressArray).boxed().collect(Collectors.toList()))
-	).apply(instance, Address::new));
+	public Address() {}
 	
-	public Address(boolean isBuffer)
+	public Address(int... addressArray) throws IllegalArgumentException
 	{
-		this.isBuffer = isBuffer;
+		try
+		{
+			throwIfInvalid(addressArray);
+			this.addressArray = addressArray;
+		}
+		catch(IllegalArgumentException e)
+		{
+			StargateJourney.LOGGER.error("Error parsing address {}", addressIntArrayToString(addressArray), e);
+		}
 	}
 	
-	public Address()
+	public Address(Address other)
 	{
-		this(false);
-	}
-	
-	public Address(int... addressArray)
-	{
-		fromArray(addressArray);
+		this(other.addressArray);
 	}
 	
 	public Address(String addressString)
 	{
-		fromString(addressString);
+		this(addressStringToIntArray(addressString));
 	}
 	
 	public Address(Map<Double, Double> addressTable)
 	{
-		fromTable(addressTable);
+		this(ArrayHelper.tableToArray(addressTable));
 	}
 	
 	public Address(List<Integer> addressList)
 	{
-		fromIntegerList(addressList);
+		this(ArrayHelper.integerListToArray(addressList));
 	}
 	
-	public Address(MinecraftServer server, ResourceKey<Level> dimension)
-	{
-		fromDimension(server, dimension);
-	}
 	
-	public enum Type
+	public static ParsingResult intArrayParsingResult(int[] addressArray)
 	{
-		ADDRESS_INVALID((byte) 0),
-		ADDRESS_9_CHEVRON((byte) 8),
-		ADDRESS_8_CHEVRON((byte) 7),
-		ADDRESS_7_CHEVRON((byte) 6);
+		if(addressArray.length > MAX_ADDRESS_LENGTH)
+			return ParsingResult.failure(Component.translatable("info.sgjourney.address.too_long"), () -> { throw new IllegalArgumentException("Address is too long <0, 9>"); });
 		
-		private byte value;
+		if(!ArrayHelper.differentNumbers(addressArray))
+			return ParsingResult.failure(Component.translatable("info.sgjourney.address.duplicate_symbols"), () -> { throw new IllegalArgumentException("Address contains duplicate symbols"); });
 		
-		Type(byte value)
+		for(int i = 0; i < addressArray.length; i++)
 		{
-			this.value = value;
-		}
-		
-		public byte byteValue()
-		{
-			return value;
-		}
-		
-		public static final Address.Type fromInt(int addressLength)
-		{
-			switch(addressLength)
+			if(addressArray[i] < MIN_SYMBOL || addressArray[i] > MAX_SYMBOL)
 			{
-			case 6:
-				return ADDRESS_7_CHEVRON;
-			case 7:
-				return ADDRESS_8_CHEVRON;
-			case 8:
-				return ADDRESS_9_CHEVRON;
-			default:
-				return ADDRESS_INVALID;
+				final int symbol = addressArray[i];
+				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbol_out_of_bounds"), () -> { throw new IllegalArgumentException("Address symbol " + symbol + " out of bounds <0, 47>"); });
 			}
-		}
-	}
-	
-	public Address addSymbol(int symbol)
-	{
-		// Can't grow if it contains 0
-		if(hasPointOfOrigin())
-			return this;
-		
-		if(symbol < 0)
-			return this;
-		
-		if(symbol == 0 && !this.isBuffer)
-			return this;
-		
-		if(!canGrow())
-			return this;
-		
-		this.addressArray = ArrayHelper.growIntArray(this.addressArray, symbol);
-		
-		return this;
-	}
-	
-	public Address fromArray(int[] addressArray)
-	{
-		this.dimension = null;
-		
-		if(addressArray.length < getMaxAddressLength() &&
-				ArrayHelper.differentNumbers(addressArray) &&
-				ArrayHelper.isArrayPositive(addressArray, this.isBuffer))
-			this.addressArray = addressArray;
-		
-		return this;
-	}
-	
-	public Address fromString(String addressString)
-	{
-		this.dimension = null;
-		
-		int[] addressArray = addressStringToIntArray(addressString);
-		
-		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
-			this.addressArray = addressArray;
-		
-		return this;
-	}
-	
-	public Address fromTable(Map<Double, Double> addressTable)
-	{
-		this.dimension = null;
-		
-		int[] addressArray = ArrayHelper.tableToArray(addressTable);
-		
-		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
-			this.addressArray = addressArray;
-		
-		return this;
-	}
-	
-	public Address fromIntegerList(List<Integer> integerList)
-	{
-		this.dimension = null;
-		
-		int[] addressArray = integerListToArray(integerList);
-		
-		if(addressArray.length < getMaxAddressLength() && ArrayHelper.differentNumbers(addressArray))
-			this.addressArray = addressArray;
-		
-		return this;
-	}
-	
-	public Address fromDimensionAndGalaxy(MinecraftServer server, ResourceKey<Level> dimension, Galaxy.Serializable galaxy)
-	{
-		Address.Immutable address = Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getKey().location(), dimension);
-		
-		if(address != null)
-		{
-			//TODO Would be nice to use copy here
-			fromArray(address.toArray());
-			this.dimension = dimension;
+			else if(addressArray[i] == POINT_OF_ORIGIN && i != addressArray.length - 1)
+				return ParsingResult.failure(Component.translatable("info.sgjourney.address.symbols_after_point_of_origin"), () -> { throw new IllegalArgumentException("No symbols allowed in Address after Point of Origin"); });
 		}
 		
-		return this;
+		return ParsingResult.success();
 	}
 	
-	public Address fromDimension(MinecraftServer server, ResourceKey<Level> dimension)
+	/**
+	 * Verifies the validity of the provided Address array
+	 * @param addressArray Integer Array representing the Address
+	 * @throws IllegalArgumentException Throws an exception if the provided array is not a valid Address array
+	 */
+	public static void throwIfInvalid(int[] addressArray) throws IllegalArgumentException
 	{
-		Galaxy.Serializable galaxy = Universe.get(server).getGalaxyFromDimension(dimension);
-		
-		if(galaxy != null)
-			fromDimensionAndGalaxy(server, dimension, galaxy);
-		
-		return this;
-	}
-	
-	public int[] toArray()
-	{
-		return this.addressArray;
-	}
-	
-	public List<Integer> toList()
-	{
-		return Arrays.stream(toArray()).boxed().toList();
+		intArrayParsingResult(addressArray).doThrow();
 	}
 	
 	public int getLength()
@@ -212,58 +121,139 @@ public final class Address
 		return addressArray.length;
 	}
 	
-	public int getSymbol(int number)
+	/**
+	 * @param index Index of the symbol we're looking at
+	 * @return The symbol at the specified index or 0 if there is no symbol there
+	 */
+	public int symbolAt(int index)
 	{
-		if(number < 0 || number >= getLength())
+		return ArrayHelper.zeroNumAt(addressArray, index);
+	}
+	
+	public int lastSymbol()
+	{
+		if(addressArray.length == 0)
 			return 0;
 		
-		return addressArray[number];
+		return addressArray[addressArray.length - 1];
 	}
 	
 	public boolean isEmpty()
 	{
-		return getLength() <= 0;
-	}
-	
-	public boolean isComplete()
-	{
-		return getLength() >= MIN_ADDRESS_LENGTH;
-	}
-	
-	public int getMaxAddressLength()
-	{
-		return this.isBuffer ? MAX_ADDRESS_LENGTH + 1 : MAX_ADDRESS_LENGTH;
-	}
-	
-	public boolean canGrow()
-	{
-		return getLength() < getMaxAddressLength() - 1;
+		return addressArray.length == 0;
 	}
 	
 	public boolean hasPointOfOrigin()
 	{
-		return this.containsSymbol(0);
+		return addressArray.length > 0 && lastSymbol() == POINT_OF_ORIGIN; // Point of Origin is guaranteed to be the last
 	}
 	
-	public boolean isBuffer()
+	/**
+	 * @return Number of symbols in the address, excluding the Point of Origin
+	 */
+	public int regularSymbolCount()
 	{
-		return this.isBuffer;
-	}
-	
-	public boolean isFromDimension()
-	{
-		return this.dimension != null;
-	}
-	
-	@Nullable
-	public ResourceKey<Level> getDimension()
-	{
-		return this.dimension;
+		if(hasPointOfOrigin())
+			return addressArray.length - 1;
+		else
+			return addressArray.length;
 	}
 	
 	public Address.Type getType()
 	{
-		return Address.Type.fromInt(this.getLength());
+		if(hasPointOfOrigin())
+			return Address.Type.fromLength(addressArray.length);
+		else if(addressArray.length == MAX_ADDRESS_LENGTH)
+			return Address.Type.fromLength(MAX_ADDRESS_LENGTH);
+		else
+			return Address.Type.fromLength(addressArray.length + 1);
+	}
+	
+	public ChatFormatting getChatFormatting()
+	{
+		return getType().getChatFormatting();
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard, ChatFormatting chatFormatting)
+	{
+		Style style = Style.EMPTY;
+		if(copyToClipboard)
+		{
+			style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.click_to_copy.address")));
+			style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
+		}
+		
+		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+	}
+	
+	public MutableComponent toComponent(boolean copyToClipboard)
+	{
+		return toComponent(copyToClipboard, getChatFormatting());
+	}
+	
+	protected boolean containsRegularSymbol(int symbol, int fromInclusive, int toExclusive)
+	{
+		toExclusive = Math.min(toExclusive, regularSymbolCount());
+		
+		for(int i = fromInclusive; i < toExclusive; i++)
+		{
+			if(symbolAt(i) == symbol)
+				return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
+	{
+		if(symbol == 0)
+		{
+			if(addressArray.length > fromInclusive && addressArray.length <= toExclusive)
+				return hasPointOfOrigin();
+			
+			return false;
+		}
+		
+		return containsRegularSymbol(symbol, fromInclusive, toExclusive);
+	}
+	
+	public boolean containsSymbol(int symbol)
+	{
+		if(symbol == 0)
+			return hasPointOfOrigin();
+		
+		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
+	}
+	
+	public boolean canBeDialed()
+	{
+		if(hasPointOfOrigin())
+			return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+		
+		return addressArray.length == MAX_ADDRESS_LENGTH;
+	}
+	
+	public boolean hasPointOfOriginOrMaxLength()
+	{
+		return hasPointOfOrigin() || addressArray.length == MAX_ADDRESS_LENGTH;
+	}
+	
+	public void saveToCompoundTag(CompoundTag tag, String addressKey)
+	{
+		tag.putIntArray(addressKey, addressArray);
+	}
+	
+	/**
+	 * @return Copy of the address array
+	 */
+	public int[] toArray()
+	{
+		return this.addressArray.clone();
+	}
+	
+	public List<Integer> toList()
+	{
+		return Arrays.stream(this.addressArray).boxed().toList();
 	}
 	
 	@Override
@@ -272,58 +262,127 @@ public final class Address
 		return addressIntArrayToString(this.addressArray);
 	}
 	
-	public Component toComponent(boolean copyToClipboard)
+	@Override
+	public Address clone()
 	{
-		ChatFormatting chatFormatting;
-		
-		switch(this.getType())
+		try
 		{
-		case ADDRESS_7_CHEVRON:
-			chatFormatting = ChatFormatting.GOLD;
-			break;
-		case ADDRESS_8_CHEVRON:
-			chatFormatting = ChatFormatting.LIGHT_PURPLE;
-			break;
-		case ADDRESS_9_CHEVRON:
-			chatFormatting = ChatFormatting.AQUA;
-			break;
-		default:
-			chatFormatting = ChatFormatting.GRAY;
+			Address address = (Address) super.clone();
+			address.addressArray = this.addressArray.clone();
+			return address;
 		}
-		
-		Style style = Style.EMPTY;
-		style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-		style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
-		
-		return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
-	}
-	
-	public Address reset()
-	{
-		addressArray = new int[0];
-		
-		return this;
-	}
-	
-	public boolean containsSymbol(int symbol)
-	{
-		for(int i = 0; i < getLength(); i++)
+		catch(CloneNotSupportedException e)
 		{
-			if(addressArray[i] == symbol)
-				return true;
+			StargateJourney.LOGGER.error("Could not clone Address {}", String.valueOf(e));
+			return null;
+		}
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		if(this == object)
+			return true;
+		else if(object instanceof Address address)
+		{
+			int length = Math.max(this.getLength(), address.getLength());
+			for(int i = 0; i < length; i++)
+			{
+				if(this.symbolAt(i) != address.symbolAt(i))
+					return false;
+			}
+			
+			return true;
+		}
+		else if(object instanceof AddressFilterInfo.HiddenAddress hiddenAddress)
+			return equals(hiddenAddress.address());
+		else if(object instanceof int[] array)
+		{
+			int length = Math.max(this.getLength(), array.length);
+			for(int i = 0; i < length; i++)
+			{
+				if(this.symbolAt(i) != ArrayHelper.zeroNumAt(array, i))
+					return false;
+			}
+			
+			return true;
 		}
 		
 		return false;
 	}
 	
-	public Address randomAddress(int size, int limit, long seed)
+	@Override
+	public int hashCode()
 	{
-		return randomAddress(0, size, limit, seed);
+		return Objects.hash(symbolAt(0), symbolAt(1), symbolAt(2), symbolAt(3), symbolAt(4), symbolAt(5), symbolAt(6), symbolAt(7), symbolAt(8));
 	}
 	
-	public Address randomAddress(int prefix, int size, int limit, long seed)
+	@Override
+	public int compareTo(@NotNull Address other)
 	{
-		size = size > MAX_ADDRESS_LENGTH ? MAX_ADDRESS_LENGTH : size;
+		return Arrays.compare(this.addressArray, other.addressArray);
+	}
+	
+	// Static functions
+	
+	public static boolean isAllowedInAddress(char character)
+	{
+		return character == '-' || Character.isDigit(character);
+	}
+	
+	public static boolean canBeTransformedToAddress(String addressString)
+	{
+		String[] segments = addressString.split(ADDRESS_DIVIDER);
+		
+		boolean hasLeadingDash = addressString.startsWith(ADDRESS_DIVIDER);
+		// We don't require a leading '-', but if there is one, there should be nothing before it
+		if(hasLeadingDash && segments.length > 0 && !segments[0].isEmpty())
+			return false;
+		
+		for(int i = hasLeadingDash ? 1 : 0; i < segments.length; ++i)
+		{
+			for(int j = 0; j < segments[i].length(); ++j)
+			{
+				if(!isAllowedInAddress(segments[i].charAt(j)))
+					return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static int[] addressStringToIntArray(String addressString)
+	{
+		if(addressString == null || !canBeTransformedToAddress(addressString))
+			return new int[0];
+		
+		String[] segments = addressString.split(ADDRESS_DIVIDER);
+		int[] intArray = new int[0];
+		
+		for(int i = addressString.startsWith(ADDRESS_DIVIDER) ? 1 : 0; i < segments.length; i++)
+		{
+			if(!segments[i].isEmpty())
+				intArray = ArrayHelper.growIntArray(intArray, Integer.parseInt(segments[i]));
+		}
+		
+		return intArray;
+	}
+	
+	public static String addressIntArrayToString(int[] array)
+	{
+		StringBuilder address = new StringBuilder(ADDRESS_DIVIDER);
+		
+		for(int symbol : array)
+		{
+			address.append(symbol).append(ADDRESS_DIVIDER);
+		}
+		return address.toString();
+	}
+	
+	public static int[] randomAddressArray(int prefix, int size, int limit, long seed)
+	{
+		if(size > MAX_ADDRESS_LENGTH)
+			throw new IllegalArgumentException("Address is too long <0, 9>");
 		
 		Random random = new Random(seed);
 		int[] addressArray = new int[size];
@@ -342,244 +401,617 @@ public final class Address
 				isValid = true;
 		}
 		
-		this.addressArray = addressArray;
+		return addressArray;
+	}
+	
+	public abstract void write(FriendlyByteBuf buffer);
+	
+	protected abstract byte bufferId();
+	
+	public static void write(FriendlyByteBuf buffer, Address address)
+	{
+		buffer.writeByte(address.bufferId());
+		address.write(buffer);
+	}
+	
+	public static Address read(FriendlyByteBuf buffer)
+	{
+		return switch(buffer.readByte())
+		{
+			case 0 -> Address.Immutable.read(buffer);
+			case 1 -> Address.Mutable.read(buffer);
+			case 2 -> Address.Dimension.read(buffer);
+			default -> throw new RuntimeException("Received byte does not correspond to any valid Address Type!");
+		};
+	}
+	
+	
+	
+	public enum Type implements Comparable<Address.Type>
+	{
+		ADDRESS_INVALID((byte) 0, ChatFormatting.GRAY),
+		ADDRESS_7_CHEVRON((byte) 7, ChatFormatting.GOLD),
+		ADDRESS_8_CHEVRON((byte) 8, ChatFormatting.LIGHT_PURPLE),
+		ADDRESS_9_CHEVRON((byte) 9, ChatFormatting.AQUA);
 		
-		return this;
-	}
-	
-	public Address copy()
-	{
-		Address copyAddress = new Address(this.isBuffer).fromArray(addressArray);
-		copyAddress.dimension = this.dimension;
-		return copyAddress;
-	}
-	
-	@Override
-	public boolean equals(Object object)
-	{
-		if(object instanceof Address address)
-			return Arrays.equals(this.addressArray, address.addressArray);
-		else if(object instanceof Address.Immutable address)
-				return Arrays.equals(this.addressArray, address.addressArray);
-		else if(object instanceof AddressFilterInfo.HiddenAddress hiddenAddress)
-			return Arrays.equals(this.addressArray, hiddenAddress.address().addressArray);
+		private final byte value;
+		private final ChatFormatting chatFormatting;
 		
-		return false;
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
-				this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
-				this.getSymbol(6), this.getSymbol(7));
-	}
-	
-	public Address.Immutable immutable()
-	{
-		return new Address.Immutable(this);
+		Type(byte value, ChatFormatting chatFormatting)
+		{
+			this.value = value;
+			this.chatFormatting = chatFormatting;
+		}
+		
+		public byte byteValue()
+		{
+			return value;
+		}
+		
+		public ChatFormatting getChatFormatting()
+		{
+			return chatFormatting;
+		}
+		
+		public static Address.Type fromLength(int addressLength)
+		{
+			return switch(addressLength)
+			{
+				case 7 -> ADDRESS_7_CHEVRON;
+				case 8 -> ADDRESS_8_CHEVRON;
+				case 9 -> ADDRESS_9_CHEVRON;
+				default -> ADDRESS_INVALID;
+			};
+		}
 	}
 	
 	//============================================================================================
-	//*******************************************Static*******************************************
+	//*************************************Immutable Address**************************************
 	//============================================================================================
 	
-	private static boolean isAllowedInAddress(char character)
+	public static final class Immutable extends Address
 	{
-		return character == '-' || (character >= '0' && character <= '9');
-	}
-	
-	public static Address.Immutable read(StringReader reader)
-	{
-		int i = reader.getCursor();
+		public static final Address.Immutable EMPTY = new Address.Immutable();
 		
-		while(reader.canRead() && isAllowedInAddress(reader.peek()))
-		{
-			reader.skip();
-		}
+		public static final Codec<Address.Immutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
+		).apply(instance, Address.Immutable::fromCodecList));
 		
-		String string = reader.getString().substring(i, reader.getCursor());
-		
-		return new Address.Immutable(string);
-	}
-	
-	public static boolean canBeTransformedToAddress(String addressString)
-	{
-		for(int i = 0; i < addressString.length(); i++)
-		{
-			char character = addressString.charAt(i);
-			
-			if(!Character.isDigit(character) && character != '-')
-				return false;
-		}
-		
-		return true;
-	}
-	
-	public static int[] addressStringToIntArray(String addressString)
-	{
-		if(addressString == null || !canBeTransformedToAddress(addressString))
-			return new int[0];
-		
-		String[] stringArray = addressString.split(ADDRESS_DIVIDER);
-		int[] intArray = new int[0];
-		
-		for(int i = 1; i < stringArray.length; i++)
-		{
-			int number = Character.getNumericValue(stringArray[i].charAt(0));
-			int length = stringArray[i].length();
-			if(length > 1)
-				number = number * 10 + Character.getNumericValue(stringArray[i].charAt(1));
-			
-			intArray = ArrayHelper.growIntArray(intArray, number);
-		}
-		
-		return intArray;
-	}
-	
-	public static String addressIntArrayToString(int[] array)
-	{
-		String address = ADDRESS_DIVIDER;
-		
-		for(int i = 0; i < array.length; i++)
-		{
-			address = address + array[i] + ADDRESS_DIVIDER;
-		}
-		return address;
-	}
-	
-	public static int[] integerListToArray(List<Integer> integerList)
-	{
-		return integerList.stream().mapToInt((integer) -> integer).toArray();
-	}
-	
-	
-	
-	public static final class Immutable
-	{
-		private final int[] addressArray;
-		
-		public Immutable(String addressString)
-		{
-			this.addressArray = new Address(addressString).toArray();
-		}
+		public Immutable() {}
 		
 		public Immutable(int... addressArray)
 		{
-			this.addressArray = new Address(addressArray).toArray();
+			super(addressArray);
 		}
 		
-		public Immutable(Address address)
+		public Immutable(Address other)
 		{
-			this.addressArray = address.toArray();
+			super(other.addressArray);
 		}
 		
-		public final int getLength()
+		public Immutable(String addressString)
 		{
-			return addressArray.length;
+			super(addressString);
 		}
 		
-		public final int getSymbol(int number)
+		public Immutable(Map<Double, Double> addressTable)
 		{
-			if(number < 0 || number >= getLength())
-				return 0;
+			super(addressTable);
+		}
+		
+		public Immutable(List<Integer> addressList)
+		{
+			super(addressList);
+		}
+		
+		@Override
+		public Immutable clone()
+		{
+			return (Immutable) super.clone();
+		}
+		
+		// Static functions
+		
+		public static Immutable randomAddress(int size, int limit, long seed)
+		{
+			return randomAddress(0, size, limit, seed);
+		}
+		
+		public static Immutable randomAddress(int prefix, int size, int limit, long seed)
+		{
+			return new Immutable(randomAddressArray(prefix, size, limit, seed));
+		}
+		
+		public static Address.Immutable fromCodecList(List<Integer> addressList)
+		{
+			int[] addressArray = ArrayHelper.integerListToArray(addressList);
+			throwIfInvalid(addressArray);
+			return new Address.Immutable(addressArray);
+		}
+		
+		public static Immutable read(StringReader reader)
+		{
+			int i = reader.getCursor();
 			
-			return addressArray[number];
+			while(reader.canRead() && isAllowedInAddress(reader.peek()))
+			{
+				reader.skip();
+			}
+			
+			String string = reader.getString().substring(i, reader.getCursor());
+			
+			return new Immutable(string);
 		}
 		
-		public final int[] toArray()
+		/**
+		 * Extends any non-empty address with a Point of Origin, or leaves it as it is if it already has one
+		 * @param address Original address
+		 * @return Address with point of origin
+		 */
+		public static Address.Immutable extendWithPointOfOrigin(Address.Immutable address)
+		{
+			// The second check is here in case the last symbol is not the usual Point of Origin
+			if(!address.hasPointOfOrigin() && !address.isEmpty() && address.addressArray.length < MAX_ADDRESS_LENGTH)
+				return new Immutable(ArrayHelper.growIntArray(address.addressArray, POINT_OF_ORIGIN));
+			
+			return address;
+		}
+		
+		@Nullable
+		public static Address.Immutable loadFromCompoundTag(CompoundTag tag, String addressKey)
+		{
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Immutable(tag.getIntArray(addressKey));
+			
+			return null;
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 0;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeVarIntArray(addressArray);
+		}
+		
+		public static Address.Immutable read(FriendlyByteBuf buffer)
+		{
+			return new Address.Immutable(buffer.readVarIntArray());
+		}
+	}
+	
+	//============================================================================================
+	//**************************************Mutable Address***************************************
+	//============================================================================================
+	
+	public static final class Mutable extends Address
+	{
+		public static final Codec<Mutable> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.INT.listOf().fieldOf(SYMBOLS).forGetter(address -> ArrayHelper.arrayToIntegerList(address.addressArray))
+		).apply(instance, Mutable::fromCodecList));
+		
+		public Mutable() {}
+		
+		public Mutable(int... addressArray)
+		{
+			super(addressArray);
+		}
+		
+		public Mutable(Address otherAddress)
+		{
+			super(otherAddress.addressArray);
+		}
+		
+		public Mutable(String addressString)
+		{
+			super(addressString);
+		}
+		
+		public Mutable(Map<Double, Double> addressTable)
+		{
+			super(addressTable);
+		}
+		
+		public Mutable(List<Integer> addressList)
+		{
+			super(addressList);
+		}
+		
+		public Mutable reset()
+		{
+			addressArray = new int[0];
+			return this;
+		}
+		
+		/**
+		 * @return Raw address array
+		 */
+		public int[] getArray()
 		{
 			return addressArray;
 		}
 		
-		public final List<Integer> toList()
+		public boolean addSymbol(int symbol)
 		{
-			return Arrays.stream(toArray()).boxed().toList();
+			// Can't grow if it contains 0
+			if(!canGrow())
+				return false;
+			
+			if(symbol < 0)
+				return false;
+			
+			this.addressArray = ArrayHelper.growIntArray(this.addressArray, symbol);
+			return true;
+		}
+		
+		public boolean canGrow()
+		{
+			if(hasPointOfOrigin())
+				return false;
+			
+			return addressArray.length < MAX_ADDRESS_LENGTH;
+		}
+		
+		public Mutable fromArray(int... addressArray)
+		{
+			try
+			{
+				throwIfInvalid(addressArray);
+				this.addressArray = addressArray;
+			}
+			catch(IllegalArgumentException e)
+			{
+				StargateJourney.LOGGER.error("Error parsing address {}", addressIntArrayToString(addressArray), e);
+			}
+			
+			return this;
+		}
+		
+		public Mutable fromAddress(Address otherAddress)
+		{
+			return fromArray(otherAddress.addressArray);
+		}
+		
+		public Mutable fromString(String addressString)
+		{
+			return fromArray(addressStringToIntArray(addressString));
+		}
+		
+		public Mutable fromTable(Map<Double, Double> addressTable)
+		{
+			return fromArray(ArrayHelper.tableToArray(addressTable));
+		}
+		
+		public Mutable fromIntegerList(List<Integer> integerList)
+		{
+			return fromArray(ArrayHelper.integerListToArray(integerList));
 		}
 		
 		@Override
-		public final String toString()
+		public Mutable clone()
 		{
-			return addressIntArrayToString(this.addressArray);
+			return (Mutable) super.clone();
 		}
 		
-		public final Address.Type getType()
+		// Static functions
+		
+		public static Mutable randomAddress(int size, int limit, long seed)
 		{
-			return Address.Type.fromInt(this.getLength());
+			return randomAddress(0, size, limit, seed);
 		}
 		
-		public final Component toComponent(boolean copyToClipboard)
+		public static Mutable randomAddress(int prefix, int size, int limit, long seed)
 		{
-			ChatFormatting chatFormatting;
+			return new Mutable(randomAddressArray(prefix, size, limit, seed));
+		}
+		
+		public static Address.Mutable fromCodecList(List<Integer> addressList)
+		{
+			int[] addressArray = ArrayHelper.integerListToArray(addressList);
+			throwIfInvalid(addressArray);
+			return new Address.Mutable(addressArray);
+		}
+		
+		public static Mutable read(StringReader reader)
+		{
+			int i = reader.getCursor();
 			
-			switch(this.getType())
+			while(reader.canRead() && isAllowedInAddress(reader.peek()))
 			{
-			case ADDRESS_7_CHEVRON:
-				chatFormatting = ChatFormatting.GOLD;
-				break;
-			case ADDRESS_8_CHEVRON:
-				chatFormatting = ChatFormatting.LIGHT_PURPLE;
-				break;
-			case ADDRESS_9_CHEVRON:
-				chatFormatting = ChatFormatting.AQUA;
-				break;
-			default:
-				chatFormatting = ChatFormatting.GRAY;
+				reader.skip();
 			}
 			
-			Style style = Style.EMPTY;
+			String string = reader.getString().substring(i, reader.getCursor());
 			
-			if(copyToClipboard)
-			{
-				style = style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.translatable("message.sgjourney.command.click_to_copy.address")));
-				style = style.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, this.toString()));
-			}
-			
-			return Component.literal(addressIntArrayToString(this.addressArray)).setStyle(style.applyFormat(chatFormatting));
+			return new Mutable(string);
 		}
 		
-		public final boolean containsSymbol(int symbol)
+		@Nullable
+		public static Address.Mutable loadFromCompoundTag(CompoundTag tag, String addressKey)
 		{
-			for(int i = 0; i < getLength(); i++)
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Mutable(tag.getIntArray(addressKey));
+			
+			return null;
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 1;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeVarIntArray(addressArray);
+		}
+		
+		public static Address.Mutable read(FriendlyByteBuf buffer)
+		{
+			return new Address.Mutable(buffer.readVarIntArray());
+		}
+	}
+	
+	//============================================================================================
+	//*************************************Dimension Address**************************************
+	//============================================================================================
+	
+	public static final class Dimension extends Address
+	{
+		public static final Codec<Dimension> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Level.RESOURCE_KEY_CODEC.fieldOf("dimension").forGetter(address -> address.dimension),
+				Galaxy.RESOURCE_KEY_CODEC.optionalFieldOf("galaxy").forGetter(address -> Optional.ofNullable(address.galaxyKey)),
+				Codec.intRange(7, 9).optionalFieldOf("address_type", 7).forGetter(address -> (int) address.addressType.value)
+		).apply(instance, Dimension::new));
+		
+		private ResourceKey<Level> dimension;
+		@Nullable
+		private ResourceKey<Galaxy> galaxyKey;
+		private Address.Type addressType;
+		
+		public Dimension() {}
+		
+		public Dimension(ResourceKey<Level> dimension)
+		{
+			this(dimension, Optional.empty(), Type.ADDRESS_7_CHEVRON);
+		}
+		
+		private Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, int addressType)
+		{
+			this(dimension, galaxyKey, Address.Type.fromLength(addressType));
+		}
+		
+		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, Address.Type addressType)
+		{
+			this.dimension = dimension;
+			this.galaxyKey = galaxyKey.orElse(null);
+			this.addressType = addressType;
+		}
+		
+		public Dimension(ResourceKey<Level> dimension, Optional<ResourceKey<Galaxy>> galaxyKey, int... addressArray)
+		{
+			super(addressArray);
+			
+			this.dimension = dimension;
+			this.galaxyKey = galaxyKey.orElse(null);
+			this.addressType = super.getType();
+		}
+		
+		public ResourceKey<Level> getDimension()
+		{
+			return this.dimension;
+		}
+		
+		public ResourceKey<Galaxy> getGalaxy()
+		{
+			return this.galaxyKey;
+		}
+		
+		@Nullable
+		private Address.Immutable generate7ChevronAddress(MinecraftServer server)
+		{
+			if(this.galaxyKey != null)
+				return Universe.get(server).getAddressInGalaxyFromDimension(this.galaxyKey, this.dimension);
+			else
 			{
-				if(addressArray[i] == symbol)
-					return true;
+				Galaxy galaxy = Universe.get(server).getGalaxyFromDimension(this.dimension);
+				if(galaxy != null)
+					return Universe.get(server).getAddressInGalaxyFromDimension(galaxy.getResourceKey(), this.dimension);
+				else
+					return null;
+			}
+		}
+		
+		@Nullable
+		private Address.Immutable generate8ChevronAddress(MinecraftServer server)
+		{
+			return Universe.get(server).getExtragalacticAddressFromDimension(this.dimension);
+		}
+		
+		@Nullable
+		private Address.Immutable generate9ChevronAddress(MinecraftServer server)
+		{
+			// Primary Stargate
+			if(StargateNetworkSettings.get(server).prioritizePrimaryStargates())
+			{
+				Stargate primaryStargate = StargateNetwork.get(server).getPrimaryStargateInDimension(this.dimension);
+				if(primaryStargate != null)
+					return primaryStargate.get9ChevronAddress();
+			}
+			
+			List<Stargate> stargatesInDimension = StargateNetwork.get(server).getStargatesInDimension(this.dimension);
+			
+			if(stargatesInDimension.isEmpty())
+				return null;
+			
+			return stargatesInDimension.get(0).get9ChevronAddress();
+		}
+		
+		@Nullable
+		private Address.Immutable generateAddress(MinecraftServer server)
+		{
+			return switch(this.addressType)
+			{
+				case ADDRESS_8_CHEVRON -> generate8ChevronAddress(server);
+				case ADDRESS_9_CHEVRON -> generate9ChevronAddress(server);
+				default -> generate7ChevronAddress(server);
+			};
+		}
+		
+		public boolean generate(MinecraftServer server)
+		{
+			Address address = generateAddress(server);
+			
+			if(address != null && !Arrays.equals(this.addressArray, address.addressArray))
+			{
+				this.addressArray = address.addressArray.clone();
+				return true;
 			}
 			
 			return false;
 		}
 		
-		public final Address.Immutable copy()
+		@Override
+		public Address.Dimension clone()
 		{
-			Address.Immutable copyAddress = new Address(true).fromArray(addressArray).immutable();
-			
-			return copyAddress;
+			Dimension address = (Dimension) super.clone();
+			address.dimension = this.dimension; // Shallow copy
+			return address;
 		}
 		
 		@Override
-		public final boolean equals(Object object)
+		public void saveToCompoundTag(CompoundTag tag, String addressKey)
 		{
-			if(object instanceof Address.Immutable address)
-				return Arrays.equals(this.addressArray, address.addressArray);
-			else if(object instanceof Address address)
-				return Arrays.equals(this.addressArray, address.addressArray);
-			else if(object instanceof AddressFilterInfo.HiddenAddress hiddenAddress)
-				return Arrays.equals(this.addressArray, hiddenAddress.address().addressArray);
+			CompoundTag addressTag = new CompoundTag();
+			
+			if(this.addressArray.length > 0)
+				addressTag.putIntArray(ADDRESS, this.addressArray);
+			addressTag.putString(DIMENSION, this.dimension.location().toString());
+			addressTag.putByte(ADDRESS_TYPE, this.addressType.byteValue());
+			
+			if(this.galaxyKey != null)
+				addressTag.putString(GALAXY, this.galaxyKey.location().toString());
+			
+			tag.put(addressKey, addressTag);
+		}
+		
+		public static Address.Dimension loadFromCompoundTag(CompoundTag tag, String addressKey, String dimensionKey, String galaxyKey) //TODO For legacy reasons
+		{
+			int[] addressArray = tag.getIntArray(addressKey);
+			ResourceKey<Level> dimension = Conversion.stringToDimension(tag.getString(dimensionKey));
+			ResourceKey<Galaxy> galaxy = Conversion.stringToGalaxyKey(tag.getString(galaxyKey));
+			Address.Type type = tag.contains(ADDRESS_TYPE, Tag.TAG_BYTE) ? Address.Type.fromLength(tag.getByte(ADDRESS_TYPE)) : Address.Type.ADDRESS_7_CHEVRON;
+			
+			
+			if(tag.contains(addressKey, Tag.TAG_INT_ARRAY))
+				return new Address.Dimension(dimension, Optional.ofNullable(galaxy), addressArray);
+			else
+				return new Address.Dimension(dimension, Optional.ofNullable(galaxy), type);
+		}
+		
+		@Nullable
+		public static Address.Dimension loadFromCompoundTag(CompoundTag tag, String addressKey)
+		{
+			if(!tag.contains(addressKey, Tag.TAG_COMPOUND))
+				return null;
+			
+			return loadFromCompoundTag(tag.getCompound(addressKey), ADDRESS, DIMENSION, GALAXY);
+		}
+		
+		@Override
+		protected byte bufferId()
+		{
+			return 2;
+		}
+		
+		@Override
+		public void write(FriendlyByteBuf buffer)
+		{
+			buffer.writeUtf(dimension.location().toString());
+			buffer.writeUtf(galaxyKey != null ? galaxyKey.location().toString() : "");
+			buffer.writeByte(addressType.value);
+		}
+		
+		public static Address.Dimension read(FriendlyByteBuf buffer)
+		{
+			ResourceKey<Level> dimension = Conversion.stringToDimension(buffer.readUtf());
+			String galaxyString = buffer.readUtf();
+			ResourceKey<Galaxy> galaxyKey = galaxyString.isEmpty() ? null : Conversion.stringToGalaxyKey(buffer.readUtf());
+			byte addressType = buffer.readByte();
+			
+			return new Address.Dimension(dimension, Optional.ofNullable(galaxyKey), addressType);
+		}
+	}
+	
+	//============================================================================================
+	//************************************Randomizable Address************************************
+	//============================================================================================
+	
+	public record Randomizable<A extends Address>(A address, boolean isRandomizable)
+	{
+		public Randomizable(A address)
+		{
+			this(address, false);
+		}
+		
+		public static <A extends Address> RandomizableCodec<A> codec(Codec<A> addressCodec)
+		{
+			return new RandomizableCodec<>(addressCodec);
+		}
+	}
+	
+	public static final class RandomizableCodec<A extends Address> implements Codec<Randomizable<A>>
+	{
+		private final Codec<A> addressCodec;
+		
+		private RandomizableCodec(Codec<A> addressCodec)
+		{
+			this.addressCodec = addressCodec;
+		}
+		
+		@Override
+		public <T> DataResult<Pair<Randomizable<A>, T>> decode(final DynamicOps<T> ops, final T input)
+		{
+			return addressCodec.decode(ops, input).flatMap(addressPair ->
+					Codec.BOOL.fieldOf("randomizable").codec().decode(ops, addressPair.getSecond()).map(boolPair ->
+							Pair.of(new Randomizable<>(addressPair.getFirst(), boolPair.getFirst()), boolPair.getSecond())
+					)
+			);
+		}
+		
+		@Override
+		public <T> DataResult<T> encode(final Randomizable<A> input, final DynamicOps<T> ops, final T prefix)
+		{
+			return Codec.BOOL.fieldOf("randomizable").codec().encode(input.isRandomizable(), ops, prefix).flatMap(f -> addressCodec.encode(input.address(), ops, f));
+		}
+		
+		@Override
+		public boolean equals(final Object other)
+		{
+			if(this == other)
+				return true;
+			
+			if(other instanceof RandomizableCodec<?> otherAddress)
+				return Objects.equals(this.addressCodec, otherAddress.addressCodec);
 			
 			return false;
 		}
 		
 		@Override
-		public final int hashCode()
+		public int hashCode()
 		{
-			return Objects.hash(this.getSymbol(0), this.getSymbol(1), this.getSymbol(2),
-					this.getSymbol(3), this.getSymbol(4), this.getSymbol(5),
-					this.getSymbol(6), this.getSymbol(7));
+			return Objects.hash(this.addressCodec);
 		}
 		
-		public final Address mutable()
+		@Override
+		public @NotNull String toString()
 		{
-			return new Address(addressArray);
+			return "Address.RandomizableCodec[" + this.addressCodec + ']';
 		}
 	}
 }

@@ -1,0 +1,12 @@
+{
+	"copy_from": "sgjourney:galaxy_milky_way",
+	"points_of_origin":
+	[
+		{ "point_of_origin": "sgjourney:giza", "weight": 2 },
+		{ "point_of_origin": "sgjourney:pyramid", "weight": 1 },
+		
+		{ "point_of_origin": "sgjourney:creeper", "weight": 1 },
+		{ "point_of_origin": "sgjourney:ender_eye", "weight": 1 },
+		{ "point_of_origin": "sgjourney:wither", "weight": 1 }
+	]
+}
