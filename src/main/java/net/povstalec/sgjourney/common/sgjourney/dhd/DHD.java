@@ -1,15 +1,15 @@
 package net.povstalec.sgjourney.common.sgjourney.dhd;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Address;
@@ -22,7 +22,12 @@ import java.util.Set;
 
 public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 {
-	Capability<DHD> DHD_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	String DHD = "dhd";
+	
+	BlockCapability<DHD, Direction> DHD_CAPABILITY_BLOCK = BlockCapability.create(
+		StargateJourney.sgjourneyLocation(DHD), DHD.class, Direction.class);
+	EntityCapability<DHD, Void> DHD_CAPABILITY_ENTITY = EntityCapability.createVoid(
+		StargateJourney.sgjourneyLocation(DHD), DHD.class);
 	
 	/**
 	 * @return Current Minecraft Server

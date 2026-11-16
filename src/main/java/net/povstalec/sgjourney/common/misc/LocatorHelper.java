@@ -1,22 +1,24 @@
 package net.povstalec.sgjourney.common.misc;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.capabilities.Capability;
+import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class LocatorHelper
@@ -127,7 +129,7 @@ public class LocatorHelper
 	}*/
 	
 	@Nullable
-	public static <T> T getNearestCapability(@NotNull final Capability<T> cap, Level level, BlockPos centerPos, double maxDistance, Predicate<T> filter)
+	public static <T> T getNearestCapability(BlockCapability<T, @Nullable Direction> cap, Level level, BlockPos centerPos, double maxDistance, Predicate<T> filter)
 	{
 		double bestDistance = Double.POSITIVE_INFINITY;
 		T closest = null;
@@ -143,13 +145,12 @@ public class LocatorHelper
 				ChunkAccess chunk = level.getChunk(x, z);
 				for(BlockPos pos : chunk.getBlockEntitiesPos())
 				{
-					BlockEntity blockEntity = level.getBlockEntity(pos);
-					if(blockEntity != null)
+					T t = level.getCapability(cap, pos, null);
+					if(t != null)
 					{
-						double distanceSqr = CoordinateHelper.Relative.distanceSqr(centerPos, blockEntity.getBlockPos());
-						if(distanceSqr < bestDistance && blockEntity.getCapability(cap).isPresent())
+						double distanceSqr = CoordinateHelper.Relative.distanceSqr(centerPos, pos);
+						if(distanceSqr < bestDistance)
 						{
-							T t = blockEntity.getCapability(cap).resolve().get();
 							if(filter.test(t))
 							{
 								bestDistance = distanceSqr;

@@ -82,8 +82,6 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.config.ClientStargateConfig;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
-import net.povstalec.sgjourney.common.entities.Human;
-import net.povstalec.sgjourney.common.entities.Jaffa;
 import net.povstalec.sgjourney.common.fluids.HeavyNaquadahFluidType;
 import net.povstalec.sgjourney.common.fluids.NaquadahFluidType;
 import net.povstalec.sgjourney.common.init.*;
@@ -94,6 +92,8 @@ import net.povstalec.sgjourney.common.items.properties.FluidPropertyFunction;
 import net.povstalec.sgjourney.common.items.properties.WeaponStatePropertyFunction;
 import net.povstalec.sgjourney.common.misc.RenderAMD;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 import net.povstalec.sgjourney.common.world.biomemod.BiomeModifiers;
@@ -224,14 +224,21 @@ public class StargateJourney
 		// Energy
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.UNIVERSE_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.UNIVERSE_RING.get());
+		
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.MILKY_WAY_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.MILKY_WAY_RING.get());
+		
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.PEGASUS_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.PEGASUS_RING.get());
+		
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.TOLLAN_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.TOLLAN_RING.get());
+		
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_STARGATE.get());
 		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.CLASSIC_RING.get());
+		
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.ANDROMEDA_STARGATE.get());
+		event.registerBlock(Capabilities.EnergyStorage.BLOCK, StargateJourney::getStargateEnergy, BlockInit.ANDROMEDA_RING.get());
 		
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.UNIVERSE_DHD.get(), EnergyBlockEntity::getEnergyHandler);
 		event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), EnergyBlockEntity::getEnergyHandler);
@@ -271,6 +278,7 @@ public class StargateJourney
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CLASSIC_DHD.get(), CrystalDHDEntity::getItemHandler);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(), CrystalDHDEntity::getItemHandler);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.PEGASUS_DHD.get(), CrystalDHDEntity::getItemHandler);
+		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ANDROMEDA_DHD.get(), CrystalDHDEntity::getItemHandler);
 		
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.CRYSTALLIZER.get(), AbstractCrystallizerEntity::getItemHandler);
 		event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, BlockEntityInit.ADVANCED_CRYSTALLIZER.get(), AbstractCrystallizerEntity::getItemHandler);
@@ -302,15 +310,58 @@ public class StargateJourney
 			CCTweakedCompatibility.registerPeripherals(event);
 		
 		// Stargate
-		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.UNIVERSE_STARGATE.get(), (blockEntity, direction) -> blockEntity.getStargate());
-		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.MILKY_WAY_STARGATE.get(), (blockEntity, direction) -> blockEntity.getStargate());
-		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.PEGASUS_STARGATE.get(), (blockEntity, direction) -> blockEntity.getStargate());
-		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.TOLLAN_STARGATE.get(), (blockEntity, direction) -> blockEntity.getStargate());
-		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.CLASSIC_STARGATE.get(), (blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.UNIVERSE_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.UNIVERSE_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.MILKY_WAY_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.MILKY_WAY_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.PEGASUS_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.PEGASUS_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.TOLLAN_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.TOLLAN_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.CLASSIC_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.CLASSIC_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		event.registerBlockEntity(Stargate.STARGATE_CAPABILITY_BLOCK, BlockEntityInit.ANDROMEDA_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		event.registerBlockEntity(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, BlockEntityInit.ANDROMEDA_STARGATE.get(),
+			(blockEntity, direction) -> blockEntity.getStargate());
+		
+		// DHD
+		
+		event.registerBlockEntity(DHD.DHD_CAPABILITY_BLOCK, BlockEntityInit.UNIVERSE_DHD.get(),
+			(blockEntity, direction) -> blockEntity.getDHD());
+		
+		event.registerBlockEntity(DHD.DHD_CAPABILITY_BLOCK, BlockEntityInit.MILKY_WAY_DHD.get(),
+			(blockEntity, direction) -> blockEntity.getDHD());
+		
+		event.registerBlockEntity(DHD.DHD_CAPABILITY_BLOCK, BlockEntityInit.PEGASUS_DHD.get(),
+			(blockEntity, direction) -> blockEntity.getDHD());
+		
+		event.registerBlockEntity(DHD.DHD_CAPABILITY_BLOCK, BlockEntityInit.CLASSIC_DHD.get(),
+			(blockEntity, direction) -> blockEntity.getDHD());
+		
+		event.registerBlockEntity(DHD.DHD_CAPABILITY_BLOCK, BlockEntityInit.ANDROMEDA_DHD.get(),
+			(blockEntity, direction) -> blockEntity.getDHD());
 		
 		// Transporter
-		event.registerBlockEntity(Transporter.TRANSPORTER_CAPABILITY_BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getTransporter());
-		event.registerBlockEntity(Transporter.TRANSPORTER_CAPABILITY_BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(), (blockEntity, direction) -> blockEntity.getTransporter());
+		event.registerBlockEntity(Transporter.TRANSPORTER_CAPABILITY_BLOCK, BlockEntityInit.ANCIENT_TRANSPORT_RINGS.get(),
+			(blockEntity, direction) -> blockEntity.getTransporter());
+		event.registerBlockEntity(Transporter.TRANSPORTER_CAPABILITY_BLOCK, BlockEntityInit.GOAULD_TRANSPORT_RINGS.get(),
+			(blockEntity, direction) -> blockEntity.getTransporter());
 		
 		
 		

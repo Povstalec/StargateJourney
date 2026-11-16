@@ -16,9 +16,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.povstalec.sgjourney.StargateJourney;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.ClassicStargateEntity;
-import net.povstalec.sgjourney.common.block_entities.stargate.MilkyWayStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.*;
 import net.povstalec.sgjourney.common.blocks.stargate.AbstractStargateBaseBlock;
@@ -138,7 +135,6 @@ public class StargateBlockItem extends BlockItem
 			
 			if(baseEntity instanceof AbstractStargateEntity<?> stargate)
 			{
-				stargate.setupServerAutoCache();
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.READY);
 				
@@ -174,7 +170,6 @@ public class StargateBlockItem extends BlockItem
 			
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 			{
-				stargate.setupServerAutoCache();
 				// Registers it as one of the Block Entities in the list
 				stargate.addStargateToNetwork();
 				stargate.generateAdditional(StructureGenEntity.Step.GENERATED);

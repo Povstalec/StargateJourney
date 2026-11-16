@@ -1,11 +1,11 @@
 package net.povstalec.sgjourney.common.sgjourney.stargate;
 
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.AutoCache;
-import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
@@ -14,7 +14,12 @@ import javax.annotation.Nullable;
 
 public interface DHDControlledStargate extends Stargate, AutoCache.IReceiver<DHD, DHDControlledStargate>
 {
-	Capability<DHDControlledStargate> DHD_CONTROLLED_STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
+	String DHD_CONTROLLED_STARGATE = "dhd_controlled_stargate";
+	
+	BlockCapability<DHDControlledStargate, Direction> DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK = BlockCapability.create(
+		StargateJourney.sgjourneyLocation(DHD_CONTROLLED_STARGATE), DHDControlledStargate.class, Direction.class);
+	EntityCapability<DHDControlledStargate, Void> DHD_CONTROLLED_STARGATE_CAPABILITY_ENTITY = EntityCapability.createVoid(
+		StargateJourney.sgjourneyLocation(DHD_CONTROLLED_STARGATE), DHDControlledStargate.class);
 	
 	/**
 	 * @return DHD the Stargate is currently connected to, or null if it isn't connected to one

@@ -236,7 +236,7 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
 				if(stargatePos != null)
 				{
-					DHDControlledStargate stargate = level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY, stargatePos);
+					DHDControlledStargate stargate = level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, stargatePos, null);
 					if(stargate != null)
 					{
 						// Check if the Stargate at the saved pos is the same Stargate
@@ -255,7 +255,7 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 				
 				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
 				if(stargatePos != null)
-					return level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY, stargatePos);
+					return level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, stargatePos, null);
 				
 				return null;
 			});
@@ -272,7 +272,7 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
 				if(stargatePos != null)
 				{
-					DHDControlledStargate stargate = level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY, stargatePos);
+					DHDControlledStargate stargate = level.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, stargatePos, null);
 					if(stargate != null)
 					{
 						// Check if the Stargate at the saved pos is the same Stargate
@@ -283,7 +283,7 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 				return false;
 			});
 			// Find nearest Stargate that isn't connected to a DHD
-			stargateCache.setFetch(() -> LocatorHelper.getNearestCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY, level, worldPosition, maxConnectionDistance,
+			stargateCache.setFetch(() -> LocatorHelper.getNearestCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK, level, worldPosition, maxConnectionDistance,
 				stargate -> !stargate.controllerCache().isCached()));
 			
 			stargateCache.setOnChanged((oldStargate, newStargate) ->

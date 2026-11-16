@@ -1,7 +1,5 @@
 package net.povstalec.sgjourney.common.items.blocks;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +14,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.block_entities.dhd.PegasusDHDEntity;
+
+import javax.annotation.Nullable;
 
 public class DHDItem extends BlockItem
 {
@@ -63,10 +63,7 @@ public class DHDItem extends BlockItem
 		{
 			BlockEntity baseEntity = level.getBlockEntity(pos);
 			if(baseEntity instanceof AbstractDHDEntity dhd)
-			{
-				dhd.setupServerAutoCache();
 				dhd.generateAdditional(StructureGenEntity.Step.READY);
-			}
 		}
 		
 		return false;
@@ -86,7 +83,6 @@ public class DHDItem extends BlockItem
 			if(info.contains(AbstractDHDEntity.GENERATION_STEP, CompoundTag.TAG_BYTE) && StructureGenEntity.Step.SETUP == StructureGenEntity.Step.fromByte(info.getByte(AbstractDHDEntity.GENERATION_STEP)))
 				dhd.setToGenerate();
 			
-			dhd.setupServerAutoCache();
 			if(generationStep == StructureGenEntity.Step.GENERATED)
 				dhd.generateAdditional(StructureGenEntity.Step.GENERATED);
 			else

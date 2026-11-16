@@ -1034,7 +1034,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 				BlockPos dhdPos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), dhdRelativePos);
 				if(dhdPos != null)
 				{
-					DHD dhd = level.getCapability(DHD.DHD_CAPABILITY, dhdPos);
+					DHD dhd = level.getCapability(DHD.DHD_CAPABILITY_BLOCK, dhdPos, null);
 					if(dhd != null)
 					{
 						// Check if the DHD at the saved pos is the same DHD
@@ -1044,7 +1044,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 				
 				return false;
 			});
-			dhdCache.setFetch(() -> LocatorHelper.getNearestCapability(DHD.DHD_CAPABILITY, level, worldPosition, dhdSearchDistance,
+			dhdCache.setFetch(() -> LocatorHelper.getNearestCapability(DHD.DHD_CAPABILITY_BLOCK, level, worldPosition, dhdSearchDistance,
 				dhd -> !dhd.receiverCache().isCached()));
 			
 			dhdCache.setOnChanged((oldDHD, newDHD) ->

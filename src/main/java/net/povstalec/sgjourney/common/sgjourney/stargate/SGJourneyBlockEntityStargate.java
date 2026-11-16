@@ -403,7 +403,7 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 					
 					if(stargate instanceof IrisStargateEntity<?> irisStargate && !getWormhole().checkShielding(irisStargate, destinationPosition, destinationMomentum, traveler))
 					{
-						getWormhole().handleShielding(irisStargate, traveler);
+						getWormhole().handleShielding(getServer(), irisStargate, traveler);
 						return traveler;
 					}
 					
