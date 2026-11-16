@@ -5,13 +5,17 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 import net.povstalec.sgjourney.common.config.CommonStargateConfig;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.misc.Conversion;
+import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -19,7 +23,7 @@ import java.util.*;
 /**
  * Default implementation for an abstract instance of Stargate used by Stargate Journey
  */
-public abstract class SGJourneyStargate implements Stargate
+public abstract class SGJourneyStargate implements DHDControlledStargate
 {
 	public static final double MIN_TRAVELER_SPEED = 0.4;
 	public static final double INNER_RADIUS = Wormhole.INNER_RADIUS;
@@ -29,7 +33,9 @@ public abstract class SGJourneyStargate implements Stargate
 	public static final int MAX_OPEN_TIME = CommonStargateConfig.max_wormhole_open_time.get() * 20;
 	
 	protected final StargateType<?> type;
+	@Nullable
 	protected final MinecraftServer server;
+	protected Level level = null;
 	
 	protected Address.Immutable id9ChevronAddress;
 	
@@ -42,9 +48,17 @@ public abstract class SGJourneyStargate implements Stargate
 	protected boolean hasNetworkRestrictions = false;
 	protected Set<Integer> networks = new HashSet<>();
 	
+	// Connection stuff
+	protected int connectionTime = 0;
+	protected int kawooshTime = 0;
+	protected int openTime = 0;
+	protected int timeSinceLastTraveler = 0;
+	
 	protected Wormhole wormhole = new Wormhole();
 	
-	public SGJourneyStargate(StargateType<?> type, MinecraftServer server)
+	public final AutoCache.Controller<DHD, DHDControlledStargate> dhdCache = new AutoCache.Controller<>(this);
+	
+	public SGJourneyStargate(StargateType<?> type, @Nullable MinecraftServer server)
 	{
 		this.type = type;
 		this.server = server;
@@ -57,7 +71,7 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
-	public MinecraftServer getServer()
+	public @Nullable MinecraftServer getServer()
 	{
 		return this.server;
 	}
@@ -76,6 +90,21 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public Level getLevel()
+	{
+		if(this.level == null)
+		{
+			ResourceKey<Level> dimension = getDimension();
+			if(dimension == null)
+				return null;
+			
+			return getServer().getLevel(dimension);
+		}
+		
+		return this.level;
+	}
+	
+	@Override
 	public double getInnerRadius()
 	{
 		return INNER_RADIUS;
@@ -84,6 +113,12 @@ public abstract class SGJourneyStargate implements Stargate
 	public Wormhole getWormhole()
 	{
 		return this.wormhole;
+	}
+	
+	@Override
+	public AutoCache.Controller<DHD, DHDControlledStargate> controllerCache()
+	{
+		return dhdCache;
 	}
 	
 	
@@ -107,6 +142,12 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public boolean hasNetworkRestrictions()
+	{
+		return this.hasNetworkRestrictions;
+	}
+	
+	@Override
 	public boolean isNetworkRestricted(Collection<Integer> testedNetworks)
 	{
 		// If Stargate has network restrictions turned on, check if the tested network matches any of the networks Stargate is in
@@ -124,9 +165,80 @@ public abstract class SGJourneyStargate implements Stargate
 		return CommonStargateConfig.can_draw_power_from_both_ends.get();
 	}
 	
-	// Stargate Connection
+	//============================================================================================
+	//************************************Stargate Connection*************************************
+	//============================================================================================
 	
 	public abstract StargateInfo.ChevronLockSpeed getChevronLockSpeed(boolean doKawoosh);
+	
+	@Override
+	public int getConnectionTime()
+	{
+		return connectionTime;
+	}
+	
+	@Override
+	public int getKawooshTime()
+	{
+		return kawooshTime;
+	}
+	
+	@Override
+	public int getOpenTime()
+	{
+		return openTime;
+	}
+	
+	@Override
+	public int getTimeSinceLastTraveler()
+	{
+		return timeSinceLastTraveler;
+	}
+	
+	@Nullable
+	public CompoundTag getClientUpdateTag()
+	{
+		CompoundTag tag = new CompoundTag();
+		
+		// Ticks
+		tag.putInt(StargateConnection.CONNECTION_TIME, connectionTime);
+		tag.putInt(StargateConnection.KAWOOSH_TICKS, kawooshTime);
+		tag.putInt(StargateConnection.OPEN_TIME, openTime);
+		tag.putInt(StargateConnection.TIME_SINCE_LAST_TRAVELER, timeSinceLastTraveler);
+		
+		tag.putInt(TIMES_OPENED, timesOpened);
+		
+		tag.putBoolean(NETWORK_RESTRICTIONS, hasNetworkRestrictions);
+		if(!networks.isEmpty())
+			tag.putIntArray(NETWORKS, networks.stream().toList());
+		
+		return tag;
+	}
+	
+	@Override
+	public void onClientUpdate(@Nullable CompoundTag tag)
+	{
+		if(tag != null)
+		{
+			// Ticks
+			connectionTime = tag.getInt(StargateConnection.CONNECTION_TIME);
+			kawooshTime = tag.getInt(StargateConnection.KAWOOSH_TICKS);
+			openTime = tag.getInt(StargateConnection.OPEN_TIME);
+			timeSinceLastTraveler = tag.getInt(StargateConnection.TIME_SINCE_LAST_TRAVELER);
+			
+			hasNetworkRestrictions = tag.getBoolean(NETWORK_RESTRICTIONS);
+			networks = new TreeSet<>(Arrays.stream(tag.getIntArray(NETWORKS)).boxed().toList());
+		}
+	}
+	
+	@Override
+	public void updateFromConnection(StargateConnection connection)
+	{
+		connectionTime = connection.getConnectionTime();
+		kawooshTime = connection.getKawooshTime();
+		openTime = connection.getOpenTime();
+		timeSinceLastTraveler = connection.getTimeSinceLastTraveler();
+	}
 	
 	@Override
 	public int dialedEngageTime(boolean doKawoosh)
@@ -159,9 +271,15 @@ public abstract class SGJourneyStargate implements Stargate
 	}
 	
 	@Override
+	public boolean doCallForwarding()
+	{
+		return controllerCache().returnOrDefault(DHD::doCallForwarding, false);
+	}
+	
+	@Override
 	public List<Stargate> getDialedStargates(Stargate dialingStargate, StargateConnection.Type connectionType)
 	{
-		if(!callForward())
+		if(!doCallForwarding())
 			return List.of(this);
 		
 		// Chooses a random Stargate to connect to
@@ -177,7 +295,7 @@ public abstract class SGJourneyStargate implements Stargate
 		{
 			for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(addressRegion.getResourceKey(), randomSource))
 			{
-				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
+				if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.doCallForwarding())
 					return List.of(this, reroutedStargate);
 			}
 		}
@@ -193,7 +311,7 @@ public abstract class SGJourneyStargate implements Stargate
 					{
 						for(Stargate reroutedStargate : stargateNetwork.getShuffledStargatesInRegion(randomAddressRegion.getResourceKey(), randomSource))
 						{
-							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.callForward())
+							if(reroutedStargate != null && reroutedStargate != this && reroutedStargate != dialingStargate && !reroutedStargate.isConnected() && !reroutedStargate.doCallForwarding())
 								return List.of(this, reroutedStargate);
 						}
 					}
@@ -209,6 +327,47 @@ public abstract class SGJourneyStargate implements Stargate
 	{
 		return openTime > MAX_OPEN_TIME;
 	}
+	
+	//============================================================================================
+	//*************************************Advanced protocols*************************************
+	//============================================================================================
+	
+	@Override
+	public Trinary shouldAutoclose(StargateConnection connection, boolean isDialingStargate)
+	{
+		// Ends the connection automatically once at least one traveler has traveled through the Stargate and a certain amount of time has passed
+		
+		int autocloseTicks = controllerCache().returnOrDefault(DHD::autocloseTicks, 0);
+		if(autocloseTicks <= 0)
+			return Trinary.DEFAULT;
+		
+		return connection.getTimeSinceLastTraveler() > autocloseTicks ? Trinary.TRUE : Trinary.DEFAULT;
+	}
+	
+	@Override
+	public Trinary shouldAdjustExitSpeed(Entity traveler, boolean isTravelerReceived)
+	{
+		return controllerCache().returnOrDefault(dhd -> dhd.advancedProtocolsActive() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT);
+	}
+	
+	@Override
+	public Trinary shouldAdjustExitPos(Entity traveler, boolean isTravelerReceived)
+	{
+		return controllerCache().returnOrDefault(dhd -> dhd.advancedProtocolsActive() ?
+				Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT);
+	}
+	
+	@Override
+	public Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
+	{
+		return controllerCache().returnOrDefault(dhd -> dhd.advancedProtocolsActive() && traveler.isOnGround() ?
+			Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT);
+	}
+	
+	//============================================================================================
+	//******************************************Ticking*******************************************
+	//============================================================================================
 	
 	@Override
 	public void tick() {}

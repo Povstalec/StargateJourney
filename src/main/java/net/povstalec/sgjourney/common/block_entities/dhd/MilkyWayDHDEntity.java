@@ -5,19 +5,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.milky_way.MilkyWayBlockEntityDHD;
 import org.jetbrains.annotations.NotNull;
 
-public class MilkyWayDHDEntity extends CrystalDHDEntity
+public class MilkyWayDHDEntity extends CrystalDHDEntity<MilkyWayBlockEntityDHD>
 {
 	public MilkyWayDHDEntity(BlockPos pos, BlockState state)
 	{
@@ -75,6 +76,12 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 		return SoundInit.MILKY_WAY_DHD_PRESS.get();
 	}
 	
+	@Override
+	protected MilkyWayBlockEntityDHD fetchDHD()
+	{
+		return new MilkyWayBlockEntityDHD(this);
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -96,7 +103,7 @@ public class MilkyWayDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(stargateCache.isPresent()) // Copy from connected Stargate
+		else if(hasStargate()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

@@ -12,14 +12,14 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.common.items.StargateIrisItem;
 import net.povstalec.sgjourney.common.sgjourney.info.IrisInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class IrisStargateEntity<SG extends BlockEntityStargate<?>> extends AbstractStargateEntity<SG> implements IrisInfo.Interface
+public abstract class IrisStargateEntity<SG extends SGJourneyBlockEntityStargate<?>> extends AbstractStargateEntity<SG> implements IrisInfo.Interface
 {
 	protected IrisInfo irisInfo;
 	

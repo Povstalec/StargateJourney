@@ -224,4 +224,28 @@ public class SymbolMap
 		
 		return new Address.Mutable(addressArray);
 	}
+	
+	
+	
+	public static class Immutable extends SymbolMap
+	{
+		public static final SymbolMap.Immutable SYMBOL_MAP = new SymbolMap.Immutable(Address.MAX_SYMBOL);
+		
+		public Immutable(int totalSymbols)
+		{
+			super(totalSymbols);
+		}
+		
+		@Override
+		public boolean remapSymbol(int originalSymbol, int newSymbol)
+		{
+			return false;
+		}
+		
+		@Override
+		public int remapToRandomSymbol(int symbol, int... avoidedSymbols)
+		{
+			return symbol;
+		}
+	}
 }

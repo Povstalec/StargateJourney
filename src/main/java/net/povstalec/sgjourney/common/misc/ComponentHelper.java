@@ -10,6 +10,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.init.FluidInit;
 
+import javax.annotation.Nullable;
+
 public class ComponentHelper
 {
 	public static final Component ERROR = Component.translatable("tooltip.sgjourney.error").withStyle(ChatFormatting.DARK_RED);
@@ -121,8 +123,11 @@ public class ComponentHelper
 		return Component.literal("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
 	}
 	
-	public static Component coordinate(Vec3 vec)
+	public static Component coordinate(@Nullable Vec3 vec)
 	{
+		if(vec == null)
+			return Component.literal("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
+		
 		return coordinate(vec.x(), vec.y(), vec.z());
 	}
 	
@@ -131,8 +136,11 @@ public class ComponentHelper
 		return Component.literal("[X: " + x + " Y: " + y + " Z: " + z + ']').withStyle(ChatFormatting.YELLOW);
 	}
 	
-	public static Component coordinate(Vec3i vec)
+	public static Component coordinate(@Nullable Vec3i vec)
 	{
+		if(vec == null)
+			return Component.literal("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
+		
 		return coordinate(vec.getX(), vec.getY(), vec.getZ());
 	}
 }

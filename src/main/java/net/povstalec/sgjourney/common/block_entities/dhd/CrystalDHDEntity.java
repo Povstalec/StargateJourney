@@ -12,23 +12,26 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.items.CallForwardingDevice;
 import net.povstalec.sgjourney.common.items.crystals.*;
+import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
+import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
+import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 
-public abstract class CrystalDHDEntity extends AbstractDHDEntity implements CrystalCache.Interface<CrystalDHDEntity>
+public abstract class CrystalDHDEntity<D extends SGJourneyBlockEntityDHD<?>> extends AbstractDHDEntity<D> implements CrystalCache.Interface<CrystalDHDEntity<D>>
 {
 	public static final String CRYSTAL_INVENTORY = "Inventory"; // TODO Rename this to "crystal_inventory" in the future
 	
-	public final CrystalCache<CrystalDHDEntity> crystalCache = createCrystalCache();
+	public final CrystalCache<CrystalDHDEntity<D>> crystalCache = createCrystalCache();
 	
 	public final ItemStackHandler crystalHandler = createCrystalHandler();
 	protected final LazyOptional<IItemHandler> lazyCrystalHandler = LazyOptional.of(() -> crystalHandler);
@@ -133,26 +136,26 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 	}
 	
 	@Override
-	public CrystalCache<CrystalDHDEntity> getCrystalCache()
+	public CrystalCache<CrystalDHDEntity<D>> getCrystalCache()
 	{
 		return crystalCache;
 	}
 	
-	protected CrystalCache<CrystalDHDEntity> createCrystalCache()
+	protected CrystalCache<CrystalDHDEntity<D>> createCrystalCache()
 	{
 		return new CrystalCache.Generic9<>(this, CrystalCache.Type.CONTROL, CrystalCache.Type.MEMORY, CrystalCache.Type.ENERGY, CrystalCache.Type.TRANSFER, CrystalCache.Type.COMMUNICATION)
 		{
 			@Override
 			protected void onReset()
 			{
-				enableAdvancedProtocols = false;
+				advancedProtocolsActive = false;
 				
 				hasNetworkRestrictions = false;
 				networks.clear();
 				
 				energyTarget = 0;
 				maxEnergyTransfer = 0;
-				enableCallForwarding = false;
+				doCallForwarding = false;
 				maxConnectionDistance = DEFAULT_CONNECTION_DISTANCE;
 			}
 			
@@ -167,7 +170,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 					if(item instanceof AbstractCrystalItem crystal)
 						crystalCache.addCrystal(i, crystal);
 					else if(item instanceof CallForwardingDevice)
-						enableCallForwarding = true;
+						doCallForwarding = true;
 				}
 			}
 			
@@ -175,7 +178,7 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 			protected void updateFromCrystals()
 			{
 				// Check if the DHD has a Control Crystal
-				enableAdvancedProtocols = !crystalHandler.getStackInSlot(0).isEmpty();
+				advancedProtocolsActive = !crystalHandler.getStackInSlot(0).isEmpty();
 				
 				// If there are 4 regular crystals or 3 advanced crystals
 				if(crystalCache.energyCrystals().count(false) >= 4 || crystalCache.energyCrystals().count(true) >= 3)
@@ -205,8 +208,12 @@ public abstract class CrystalDHDEntity extends AbstractDHDEntity implements Crys
 						maxConnectionDistance += slot.crystal.getRangeIncrease();
 				});
 				
-				stargateCache.markDirtyTwoWays();
-				stargateCache.ifPresent(AbstractStargateEntity::updateStargate);
+				dhdRun(dhd ->
+				{
+					AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache = dhd.receiverCache();
+					stargateCache.markDirtyTwoWays();
+					stargateCache.ifPresent(stargate -> stargate.updateFromDHD(dhd));
+				});
 			}
 		};
 	}

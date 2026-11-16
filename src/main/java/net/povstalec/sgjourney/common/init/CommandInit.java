@@ -343,8 +343,8 @@ public class CommandInit
 		if(stargate != null)
 		{
 			StargateInfo.FeedbackMessage feedback = bypass ?
-				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
-				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+				stargate.bypassDisconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
+				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			
 			context.getSource().sendSuccess(() -> Component.translatable("info.sgjourney.recent_feedback")
 				.append(Component.literal(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);
