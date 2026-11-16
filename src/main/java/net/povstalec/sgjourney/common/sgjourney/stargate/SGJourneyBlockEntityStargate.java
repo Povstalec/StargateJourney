@@ -15,8 +15,11 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
+import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -26,8 +29,6 @@ import java.util.Random;
 
 public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends BlockEntityStargate<StargateEntity>, DHDControlledStargate
 {
-	String COORDINATES = "Coordinates";
-	
 	// Basic Info
 	
 	Wormhole getWormhole();
@@ -39,12 +40,19 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 		stargate.setupAutoCache(controllerCache());
 	}
 	
-	
+	// Updating
 	
 	@Override
 	default void updateDHD(DHD dhd)
 	{
 		stargateRun(stargate -> stargate.updateDHD(dhd));
+	}
+	
+	@Override
+	default void update()
+	{
+		BlockEntityStargate.super.update();
+		DHDControlledStargate.super.update();
 	}
 	
 	
