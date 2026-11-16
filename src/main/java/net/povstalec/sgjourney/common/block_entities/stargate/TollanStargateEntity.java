@@ -59,6 +59,9 @@ public class TollanStargateEntity extends AbstractStargateEntity<TollanBlockEnti
 	@Nullable
 	protected TollanBlockEntityStargate fetchStargate()
 	{
+		if(level.isClientSide())
+			return new TollanBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
 		return BlockEntityList.get(level).getStargate(TollanBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	

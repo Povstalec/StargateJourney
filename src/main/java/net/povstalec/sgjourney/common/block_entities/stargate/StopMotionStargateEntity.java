@@ -10,15 +10,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.network.PacketDistributor;
-import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.init.PacketHandlerInit;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>> extends IrisStargateEntity<SG>
+public abstract class StopMotionStargateEntity<SG extends SGJourneyBlockEntityStargate<?>> extends IrisStargateEntity<SG>
 {
 	public static final String CAN_ENGAGE = "can_engage";
 	public static final String ADDRESS_BUFFER = "AddressBuffer";
@@ -131,13 +131,13 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	}
 	
 	@Override
-	public void updateDHD(AbstractDHDEntity dhd)
+	public void updateDHD(DHD dhd)
 	{
-		dhd.updateDHD(!isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected());
+		stargateRun(stargate -> dhd.updateFromStargate(stargate, !isConnected() || isDialingOut() ? addressBuffer : new Address.Mutable(), canEngage != CanEngage.NO || isConnected()));
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
 	{
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
@@ -178,13 +178,13 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate)
+	public StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
 	{
 		int mappedSymbol = symbolMap.getMappedSymbol(symbol);
 		if(!addressBuffer.containsSymbol(mappedSymbol))
 			addressBuffer.addSymbol(mappedSymbol);
 		
-		return super.directEngageSymbol(symbol, canEngageStargate);
+		return super.directEngageSymbol(symbol, canEngageStargate, chevronSound);
 	}
 	
 	@Override
@@ -206,7 +206,7 @@ public abstract class StopMotionStargateEntity<SG extends BlockEntityStargate<?>
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage dhdEngageStargate(AbstractDHDEntity dhd)
+	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd)
 	{
 		// Special case where no symbols are encoded
 		if(addressBuffer.isEmpty())

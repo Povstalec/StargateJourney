@@ -92,9 +92,9 @@ public interface SpawnerStargate extends Stargate
 		if(getSpawnerTimer().shouldSpawn())
 		{
 			Stargate connectedStargate = incoming ? connection.getDialingStargate() : connection.getDialedStargate();
-			if(connectedStargate != null)
+			if(connectedStargate != null && getServer() != null)
 			{
-				ServerLevel level = connectedStargate.getLevel();
+				ServerLevel level = (ServerLevel) connectedStargate.getLevel();
 				
 				if(level != null)
 				{

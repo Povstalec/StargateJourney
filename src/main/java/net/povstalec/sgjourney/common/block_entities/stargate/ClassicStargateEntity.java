@@ -85,6 +85,9 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 	@Nullable
 	protected ClassicBlockEntityStargate fetchStargate()
 	{
+		if(level.isClientSide())
+			return new ClassicBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
 		return BlockEntityList.get(level).getStargate(ClassicBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
