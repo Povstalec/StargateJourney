@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -230,7 +231,10 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 	@Override
 	public void deserializeNBT(Address.Immutable id9ChevronAddress, CompoundTag tag, HolderLookup.Provider registries)
 	{
-		blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+		if(tag.contains(COORDINATES, Tag.TAG_INT_ARRAY))
+			blockPos = Conversion.intArrayToBlockPos(tag.getIntArray(COORDINATES));
+		else if(tag.contains("Coordinates", Tag.TAG_INT_ARRAY)) //TODO Keeping this here for the time being for legacy reasons
+			blockPos = Conversion.intArrayToBlockPos(tag.getIntArray("Coordinates"));
 		
 		super.deserializeNBT(id9ChevronAddress, tag, registries);
 		

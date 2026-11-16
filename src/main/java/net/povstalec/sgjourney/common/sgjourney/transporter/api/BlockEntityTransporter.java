@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 public interface BlockEntityTransporter<TransporterEntity extends BlockEntity> extends Transporter
 {
-	String COORDINATES = "Coordinates"; //TODO Change this to "coordinates"
+	String COORDINATES = "coordinates";
 	
 	BlockPos getBlockPos();
 	

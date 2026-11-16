@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends Stargate
 {
-	String COORDINATES = "Coordinates";
+	String COORDINATES = "coordinates";
 	
 	// Basic Info
 	
