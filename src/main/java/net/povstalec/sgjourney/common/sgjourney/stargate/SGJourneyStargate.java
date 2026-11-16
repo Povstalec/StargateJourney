@@ -361,7 +361,7 @@ public abstract class SGJourneyStargate implements DHDControlledStargate
 	@Override
 	public Trinary shouldTravelerStickToGround(Entity traveler, boolean isTravelerReceived)
 	{
-		return controllerCache().returnOrDefault(dhd -> dhd.advancedProtocolsActive() && traveler.isOnGround() ?
+		return controllerCache().returnOrDefault(dhd -> dhd.advancedProtocolsActive() && traveler.onGround() ?
 			Trinary.TRUE : Trinary.DEFAULT, Trinary.DEFAULT);
 	}
 	
