@@ -786,14 +786,14 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 		}
 	}
 	
-	public boolean engageStargate()
+	public StargateInfo.FeedbackMessage engageStargate()
 	{
-		return dhdReturn(DHD::engageStargate, false);
+		return dhdReturn(DHD::engageStargate, StargateInfo.Feedback.NONE.withInfo());
 	}
 	
-	public boolean encodeSymbol(int symbol)
+	public StargateInfo.FeedbackMessage encodeSymbol(int symbol)
 	{
-		return dhdReturn(dhd -> dhd.encodeSymbol(symbol), false);
+		return dhdReturn(dhd -> dhd.encodeSymbol(symbol), StargateInfo.Feedback.NONE.withInfo());
 	}
 	
 	public boolean isSymbolEncoded(int symbol)

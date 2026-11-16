@@ -26,8 +26,6 @@ import java.util.Random;
 
 public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractStargateEntity<?>> extends BlockEntityStargate<StargateEntity>, DHDControlledStargate
 {
-	String COORDINATES = "Coordinates";
-	
 	// Basic Info
 	
 	Wormhole getWormhole();
@@ -39,12 +37,19 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 		stargate.setupAutoCache(controllerCache());
 	}
 	
-	
+	// Updating
 	
 	@Override
 	default void updateDHD(DHD dhd)
 	{
 		stargateRun(stargate -> stargate.updateDHD(dhd));
+	}
+	
+	@Override
+	default void update()
+	{
+		BlockEntityStargate.super.update();
+		DHDControlledStargate.super.update();
 	}
 	
 	

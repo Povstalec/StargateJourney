@@ -5,7 +5,6 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.AutoCache;
-import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
@@ -25,12 +24,32 @@ public interface DHDControlledStargate extends Stargate, AutoCache.IReceiver<DHD
 		return controllerCache().get();
 	}
 	
+	// Updating
+	
+	/**
+	 * Runs when a DHD requires an update (typically this would be the DHD connected to this Stargate)
+	 * @param dhd DHD to update
+	 */
 	void updateDHD(DHD dhd);
 	
+	/**
+	 * Updates this Stargate with information from the provided DHD
+	 * @param dhd DHD to update from
+	 */
 	default void updateFromDHD(DHD dhd)
 	{
 		if(getServer() != null)
 			StargateNetwork.get(getServer()).updateStargateInNetwork(this);
+	}
+	
+	/**
+	 * Updates this Stargate, typically used whenever the Stargate needs updating, like when a Stargate
+	 * is added to/removed from the Stargate Network and the Stargate priority list needs to be recalculated
+	 */
+	@Override
+	default void update()
+	{
+		controllerCache().ifPresent(DHD::update);
 	}
 	
 	//============================================================================================

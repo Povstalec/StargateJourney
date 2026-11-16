@@ -320,7 +320,8 @@ public interface Stargate extends Comparable<Stargate>
 	// Updating
 	
 	/**
-	 * Updates this Stargate
+	 * Updates this Stargate, typically used whenever the Stargate needs updating, like when a Stargate
+	 * is added to/removed from the Stargate Network and the Stargate priority list needs to be recalculated
 	 */
 	default void update() {}
 	

@@ -43,4 +43,7 @@ public class UniverseBlockEntityDHD extends UniverseDHD implements SGJourneyBloc
 	{
 		return dhd.getLevel().dimension();
 	}
+	
+	@Override
+	public void updateFromBlockEntity(UniverseDHDEntity stargateEntity) {}
 }

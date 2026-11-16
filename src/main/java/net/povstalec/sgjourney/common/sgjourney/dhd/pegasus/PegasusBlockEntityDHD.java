@@ -43,4 +43,7 @@ public class PegasusBlockEntityDHD extends PegasusDHD implements SGJourneyBlockE
 	{
 		return dhd.getLevel().dimension();
 	}
+	
+	@Override
+	public void updateFromBlockEntity(PegasusDHDEntity stargateEntity) {}
 }

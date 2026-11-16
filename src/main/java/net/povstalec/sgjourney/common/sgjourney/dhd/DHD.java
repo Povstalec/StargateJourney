@@ -4,7 +4,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -60,97 +59,159 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 	 */
 	boolean isLoaded();
 	
+	/**
+	 * @return Stargate the DHD is currently connected to, or null if it isn't connected to one
+	 */
 	@Nullable
 	default DHDControlledStargate getStargate()
 	{
 		return receiverCache().get();
 	}
 	
+	/**
+	 * @return Maximum distance from which this DHD can connect to a Stargate
+	 */
 	double getMaxConnectionDistance();
 	
+	/**
+	 * @return Maximum distance (squared) from which this DHD can connect to a Stargate
+	 */
 	default double getMaxConnectionDistanceSqr()
 	{
 		return getMaxConnectionDistance() * getMaxConnectionDistance();
 	}
 	
-	long getEnergyTarget();
+	// Updating
 	
+	/**
+	 * Updates this DHD, typically runs as a result of {@link DHDControlledStargate#update()} being run
+	 */
+	default void update() {}
+	
+	/**
+	 * Updates this DHD with information from the Stargate it's connected to
+	 * @param stargate Stargate that initiated the update
+	 * @param address Address the Stargate is requesting the DHD to display
+	 * @param isCenterButtonEngaged Whether the Stargate is requesting the DHD to engage its center button
+	 */
 	void updateFromStargate(DHDControlledStargate stargate, Address address, boolean isCenterButtonEngaged);
 	
 	//============================================================================================
 	//*************************************Advanced protocols*************************************
 	//============================================================================================
 	
+	/**
+	 * Advanced Protocols are a way to
+	 * @return True if the DHD has Advanced Protocols active, otherwise false
+	 */
 	boolean advancedProtocolsActive();
 	
+	/**
+	 * @return The number of ticks the Stargate should wait before automatically closing after the last traveler left its vicinity
+	 * (note that this method is ignored until at least one traveler has traveled through the Stargate)
+	 */
 	default int autocloseTicks()
 	{
 		return advancedProtocolsActive() ? ControlCrystalItem.AUTOCLOSE_TICKS : 0;
-	}
-	
-	default boolean remapSymbols()
-	{
-		return advancedProtocolsActive();
 	}
 	
 	//============================================================================================
 	//******************************************Dialing*******************************************
 	//============================================================================================
 	
+	/**
+	 * @return The Address currently encoded in the DHD
+	 */
 	Address getAddress();
 	
+	/**
+	 * @return True if this DHD enables the Stargate to do Call Forwarding, otherwise false
+	 */
 	boolean doCallForwarding();
 	
+	/**
+	 * @return True if this DHD activates the Stargate's Network Restrictions, otherwise false
+	 * (can be overridden by the Stargate's internal Network Restriction handling)
+	 */
 	boolean hasNetworkRestrictions();
 	
+	/**
+	 * @return Set of networks this DHD allows the Stargate to be a part of
+	 * (combines with the Stargate's internal set of networks it's a part of)
+	 */
 	Set<Integer> getNetworks();
 	
-	default boolean engageStargate()
+	/**
+	 * Attempts to engage the Stargate
+	 * @return Feedback from attempting to engage the Stargate
+	 */
+	default StargateInfo.FeedbackMessage engageStargate()
 	{
 		receiverCache().markDirtyTwoWays();
 		return receiverCache().returnOrSupplyDefault(stargate ->
 			{
+				StargateInfo.FeedbackMessage feedback;
 				if(stargate.isConnected())
-					stargate.dhdDisconnectStargate(this, StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+					feedback = stargate.dhdDisconnectStargate(this, StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 				else
-					stargate.dhdEngageStargate(this, true/*Do kawoosh*/, Dialing.Action.EXECUTE);
+					feedback = stargate.dhdEngageStargate(this, true/*Do kawoosh*/, Dialing.Action.EXECUTE);
 				stargate.updateDHD(this);
-				return true;
+				return feedback;
 			},
 			() ->
 			{
 				messageNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
-				return false;
+				return StargateInfo.Feedback.NONE.withInfo();
 			});
 	}
 	
-	default boolean encodeSymbol(int symbol)
+	/**
+	 * Attempts to encode a symbol the into Stargate
+	 * @return Feedback from attempting to encode a symbol into the Stargate
+	 */
+	default StargateInfo.FeedbackMessage encodeSymbol(int symbol)
 	{
 		receiverCache().markDirtyTwoWays();
 		return receiverCache().returnOrSupplyDefault(stargate ->
 			{
+				StargateInfo.FeedbackMessage feedback;
 				// Remap symbol if needed while Advanced Protocols are enabled
 				if(advancedProtocolsActive() && !stargate.getSymbolMap().isSymbolMapped(symbol))
-					stargate.dhdEngageSymbol(this, stargate.getSymbolMap().remapToRandomSymbol(symbol, stargate.getAddress().toArray()), false, StargateInfo.ChevronSound.ENGAGE);
+					feedback = stargate.dhdEngageSymbol(this, stargate.getSymbolMap().remapToRandomSymbol(symbol, stargate.getAddress().toArray()), false, StargateInfo.ChevronSound.ENGAGE);
 				else
-					stargate.dhdEngageSymbol(this, symbol, false, StargateInfo.ChevronSound.ENGAGE);
+					feedback = stargate.dhdEngageSymbol(this, symbol, false, StargateInfo.ChevronSound.ENGAGE);
 				stargate.updateDHD(this);
-				return true;
+				return feedback;
 			},
 			() ->
 			{
 				messageNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
-				return false;
+				return StargateInfo.Feedback.NONE.withInfo();
 			});
 	}
 	
+	/**
+	 * This method typically runs when an attempt to dial the Stargate is made
+	 * @param feedback Feedback from attempting to dial the Stargate
+	 * @param address Address the Stargate attempted to dial
+	 */
 	void onDialAttempt(StargateInfo.FeedbackMessage feedback, Address address);
 	
+	/**
+	 * This method typically runs when a Stargate's recent feedback needs to be propagated to the DHD,
+	 * allowing the DHD to display the message to nearby players, for example
+	 * @param feedback Stargate's feedback
+	 */
 	default void receiveStargateFeedback(StargateInfo.FeedbackMessage feedback)
 	{
 		if(feedback.feedback().isError())
 			messageNearbyPlayers(feedback.getMessageComponent());
 	}
 	
+	/**
+	 * This method typically runs when there is an attempt to display a message to players near the DHD
+	 * (This method does not necessarily need to be overridden, the DHD can simply not to display any messages)
+	 * @param message Message to display
+	 */
 	default void messageNearbyPlayers(Component message) {}
 }

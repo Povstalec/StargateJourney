@@ -26,12 +26,6 @@ public interface SGJourneyBlockEntityDHD<DHDEntity extends AbstractDHDEntity<?>>
 	}
 	
 	@Override
-	default void onDHDBlockEntityUnloaded() {}
-	
-	@Override
-	default void onDHDBlockEntityRemoved() {}
-	
-	@Override
 	default Address getAddress()
 	{
 		return dhdReturnOrSupply(AbstractDHDEntity::getAddress, Address.Mutable::new);
@@ -41,12 +35,6 @@ public interface SGJourneyBlockEntityDHD<DHDEntity extends AbstractDHDEntity<?>>
 	default double getMaxConnectionDistance()
 	{
 		return dhdReturn(AbstractDHDEntity::getMaxConnectionDistance, 0D);
-	}
-	
-	@Override
-	default long getEnergyTarget()
-	{
-		return dhdReturn(AbstractDHDEntity::getEnergyTarget, 0L);
 	}
 	
 	@Override
