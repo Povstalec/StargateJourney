@@ -1,9 +1,8 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.common.sgjourney.stargate.api;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +20,7 @@ import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -320,7 +320,8 @@ public interface Stargate extends Comparable<Stargate>
 	// Updating
 	
 	/**
-	 * Updates this Stargate
+	 * Updates this Stargate, typically used whenever the Stargate needs updating, like when a Stargate
+	 * is added to/removed from the Stargate Network and the Stargate priority list needs to be recalculated
 	 */
 	default void update() {}
 	

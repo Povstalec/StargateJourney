@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.TransporterInit;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
 
 import java.util.Optional;
 

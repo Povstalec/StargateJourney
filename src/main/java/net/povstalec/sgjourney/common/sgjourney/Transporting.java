@@ -19,7 +19,7 @@ import net.povstalec.sgjourney.common.events.custom.TransporterEvent;
 import net.povstalec.sgjourney.common.init.StatisticsInit;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
 
 import java.util.ArrayList;
 import java.util.List;

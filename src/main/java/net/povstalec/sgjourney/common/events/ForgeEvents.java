@@ -74,9 +74,9 @@ import net.povstalec.sgjourney.common.misc.RemappingHelper;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOriginTable;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
-import net.povstalec.sgjourney.common.sgjourney.dhd.DHD;
-import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
 
 import java.util.ArrayList;
 import java.util.HashSet;

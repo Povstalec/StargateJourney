@@ -43,4 +43,7 @@ public class ClassicBlockEntityDHD extends ClassicDHD implements SGJourneyBlockE
 	{
 		return dhd.getLevel().dimension();
 	}
+	
+	@Override
+	public void updateFromBlockEntity(ClassicDHDEntity stargateEntity) {}
 }
