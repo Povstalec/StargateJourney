@@ -325,6 +325,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
+	@Nullable
 	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(pos);
