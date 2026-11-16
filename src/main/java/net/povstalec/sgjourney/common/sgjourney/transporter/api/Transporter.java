@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.transporter;
+package net.povstalec.sgjourney.common.sgjourney.transporter.api;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -20,6 +20,7 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

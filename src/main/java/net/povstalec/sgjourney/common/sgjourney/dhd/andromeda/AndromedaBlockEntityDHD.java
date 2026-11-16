@@ -49,4 +49,7 @@ public class AndromedaBlockEntityDHD extends AndromedaDHD implements SGJourneyBl
 	{
 		return dhd.getLevel();
 	}
+	
+	@Override
+	public void updateFromBlockEntity(AndromedaDHDEntity stargateEntity) {}
 }

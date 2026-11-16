@@ -19,8 +19,8 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -251,7 +251,7 @@ public final class TransporterNetwork extends SavedData
 			StargateJourney.LOGGER.debug("Removed {} from Stargate Network", transporter.getID().toString());
 		}
 		
-		if(transporter instanceof BlockEntityTransporter<?>) // Attempt to remove it from the Block Entity List
+		if(transporter instanceof SGJourneyBlockEntityTransporter<?>) // Attempt to remove it from the Block Entity List
 			removed |= BlockEntityList.get(server).removeTransporter(transporter.getID());
 		
 		return removed;

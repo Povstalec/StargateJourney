@@ -9,7 +9,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.SlotItemHandler;
 import net.povstalec.sgjourney.common.block_entities.dhd.*;
-import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.init.BlockInit;
 import net.povstalec.sgjourney.common.init.MenuInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
@@ -17,8 +16,8 @@ import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.menu.InventoryMenu;
 import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
-import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

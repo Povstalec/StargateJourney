@@ -18,11 +18,11 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
+import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -184,7 +184,7 @@ public class BlockEntityList extends SavedData
 	 * @param transporterEntity Transporter Block Entity to add to the Transporter Network
 	 * @return Transporter that got added if successful, null if unsuccessful
 	 */
-	public <T extends BlockEntityTransporter<?>> T addTransporter(AbstractTransporterEntity<T> transporterEntity)
+	public <T extends SGJourneyBlockEntityTransporter<?>> T addTransporter(AbstractTransporterEntity<T> transporterEntity)
 	{
 		if(!transporterEntity.getID().isValid())
 			transporterEntity.setID(generateTransporterID(transporterEntity.getLevel().getRandom()));
@@ -400,20 +400,20 @@ public class BlockEntityList extends SavedData
 			Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION)) :
 			Conversion.stringToDimension(transporterTag.getString("Dimension")); //TODO For legacy reasons
 		
-		BlockPos blockPos = transporterTag.contains(BlockEntityTransporter.COORDINATES, Tag.TAG_INT_ARRAY) ?
-			Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES)) :
+		BlockPos blockPos = transporterTag.contains(SGJourneyBlockEntityTransporter.COORDINATES, Tag.TAG_INT_ARRAY) ?
+			Conversion.intArrayToBlockPos(transporterTag.getIntArray(SGJourneyBlockEntityTransporter.COORDINATES)) :
 			Conversion.intArrayToBlockPos(transporterTag.getIntArray("Coordinates")); //TODO For legacy reasons
 		
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)
 		{
-			if(level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity<? extends BlockEntityTransporter<?>> transporterEntity)
+			if(level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity<? extends SGJourneyBlockEntityTransporter<?>> transporterEntity)
 			{
 				if(setEntityID)
 					transporterEntity.setID(transporterID);
 				
-				BlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter(server);
+				SGJourneyBlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter(server);
 				transporter.loadFromBlockEntity(transporterEntity);
 				this.transporterMap.put(transporterID, transporter);
 				setDirty(); // A pretty important change happened

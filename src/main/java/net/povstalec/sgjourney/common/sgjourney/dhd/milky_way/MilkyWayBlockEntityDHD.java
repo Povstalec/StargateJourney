@@ -43,4 +43,7 @@ public class MilkyWayBlockEntityDHD extends MilkyWayDHD implements SGJourneyBloc
 	{
 		return dhd.getLevel().dimension();
 	}
+	
+	@Override
+	public void updateFromBlockEntity(MilkyWayDHDEntity stargateEntity) {}
 }
