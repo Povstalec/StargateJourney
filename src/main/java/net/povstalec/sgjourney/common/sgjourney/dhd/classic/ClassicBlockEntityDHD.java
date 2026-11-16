@@ -16,6 +16,7 @@ public class ClassicBlockEntityDHD extends ClassicDHD implements SGJourneyBlockE
 	public ClassicBlockEntityDHD(ClassicDHDEntity dhd)
 	{
 		this.dhd = dhd;
+		loadFromBlockEntity(dhd);
 	}
 	
 	@Override

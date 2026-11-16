@@ -16,6 +16,7 @@ public class PegasusBlockEntityDHD extends PegasusDHD implements SGJourneyBlockE
 	public PegasusBlockEntityDHD(PegasusDHDEntity dhd)
 	{
 		this.dhd = dhd;
+		loadFromBlockEntity(dhd);
 	}
 	
 	@Override

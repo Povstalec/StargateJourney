@@ -235,18 +235,9 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 		{
 			// Cache a Stargate that's gonna be used for as long as this AbstractStargateEntity exists on the client
 			cacheStargate(fetchStargate());
-			// Anything goes, DHD is responsible for taking care of everything on client
-			stargateRun(stargate ->
-			{
-				AutoCache.Controller<DHD, DHDControlledStargate> dhdCache = stargate.controllerCache();
-				dhdCache.setRevalidate(() -> true);
-				dhdCache.setFetch(dhdCache::getCached);
-			});
 		}
 		else
 		{
-			setupServerAutoCache();
-			
 			checkStargate();
 			
 			if(generationStep == Step.READY)
@@ -1053,11 +1044,18 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	//********************************************Info********************************************
 	//============================================================================================
 	
-	public void setupServerAutoCache()
+	public void setupAutoCache(AutoCache.Controller<DHD, DHDControlledStargate> dhdCache)
 	{
-		stargateRun(stargate ->
+		// Client
+		if(level.isClientSide())
 		{
-			AutoCache.Controller<DHD, DHDControlledStargate> dhdCache = stargate.controllerCache();
+			// Anything goes, DHD is responsible for taking care of everything on client
+			dhdCache.setRevalidate(() -> true);
+			dhdCache.setFetch(dhdCache::getCached);
+		}
+		// Server
+		else
+		{
 			dhdCache.setRevalidate(() ->
 			{
 				if(dhdRelativePos == null)
@@ -1096,7 +1094,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 				updateStargate();
 				updateClient();
 			});
-		});
+		}
 	}
 	
 	@Override
@@ -1687,7 +1685,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 			status.add(Component.translatable("info.sgjourney.symbols").append(": " + symbolInfo().symbols().location()).withStyle(ChatFormatting.LIGHT_PURPLE));
 		
 		status.add(Component.translatable("info.sgjourney.times_opened").append(": " + timesOpened).withStyle(ChatFormatting.BLUE));
-		dhdRun(dhd -> Component.translatable("info.sgjourney.dhd_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(dhd.getPosition()))),
+		dhdRun(dhd -> status.add(Component.translatable("info.sgjourney.dhd_connected").append(Component.literal(": ").append(ComponentHelper.coordinate(dhd.getPosition())))),
 			// Else
 			() -> status.add(Component.translatable("info.sgjourney.no_dhd_connected").withStyle(ChatFormatting.GOLD)));
 		status.add(Component.translatable("info.sgjourney.autoclose").append(": " + Conversion.ticksToString(dhdReturn(DHD::autocloseTicks, 0))).withStyle(ChatFormatting.RED));

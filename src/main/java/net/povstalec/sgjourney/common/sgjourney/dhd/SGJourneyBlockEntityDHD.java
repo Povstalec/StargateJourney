@@ -12,6 +12,13 @@ import java.util.Set;
 
 public interface SGJourneyBlockEntityDHD<DHDEntity extends AbstractDHDEntity<?>> extends BlockEntityDHD<DHDEntity>
 {
+	// Stuff for handling Block Entities
+	
+	default void loadFromBlockEntity(AbstractDHDEntity<?> dhd)
+	{
+		dhd.setupAutoCache(receiverCache());
+	}
+	
 	@Override
 	default @Nullable Vec3 getPosition()
 	{

@@ -16,6 +16,7 @@ public class MilkyWayBlockEntityDHD extends MilkyWayDHD implements SGJourneyBloc
 	public MilkyWayBlockEntityDHD(MilkyWayDHDEntity dhd)
 	{
 		this.dhd = dhd;
+		loadFromBlockEntity(dhd);
 	}
 	
 	@Override

@@ -16,6 +16,7 @@ public class UniverseBlockEntityDHD extends UniverseDHD implements SGJourneyBloc
 	public UniverseBlockEntityDHD(UniverseDHDEntity dhd)
 	{
 		this.dhd = dhd;
+		loadFromBlockEntity(dhd);
 	}
 	
 	@Override

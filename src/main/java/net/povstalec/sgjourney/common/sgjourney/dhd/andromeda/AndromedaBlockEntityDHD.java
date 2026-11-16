@@ -16,6 +16,7 @@ public class AndromedaBlockEntityDHD extends AndromedaDHD implements SGJourneyBl
 	public AndromedaBlockEntityDHD(AndromedaDHDEntity dhd)
 	{
 		this.dhd = dhd;
+		loadFromBlockEntity(dhd);
 	}
 	
 	@Override

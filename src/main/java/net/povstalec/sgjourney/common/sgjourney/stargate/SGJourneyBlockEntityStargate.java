@@ -34,7 +34,10 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	
 	// Stuff for handling Block Entities
 	
-	void loadFromBlockEntity(AbstractStargateEntity<?> stargate);
+	default void loadFromBlockEntity(AbstractStargateEntity<?> stargate)
+	{
+		stargate.setupAutoCache(controllerCache());
+	}
 	
 	
 	

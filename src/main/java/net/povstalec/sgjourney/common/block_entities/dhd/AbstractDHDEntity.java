@@ -124,54 +124,8 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 	@Override
 	public void onLoad()
 	{
-		if(getLevel().isClientSide())
+		if(!level.isClientSide())
 		{
-			dhdRun(dhd ->
-			{
-				AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache = dhd.receiverCache();
-				
-				// Revalidation
-				stargateCache.setRevalidate(() ->
-				{
-					if(stargateRelativePos == null)
-						return false;
-					
-					BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-					if(stargatePos != null)
-					{
-						BlockEntity blockEntity = level.getBlockEntity(stargatePos);
-						if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
-						{
-							// Check if the Stargate at the saved pos is the same Stargate
-							return stargateCache.getCached() == blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
-						}
-						
-					}
-					
-					return false;
-				});
-				// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
-				stargateCache.setFetch(() ->
-				{
-					if(stargateRelativePos == null)
-						return null;
-					
-					BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
-					if(stargatePos != null)
-					{
-						BlockEntity blockEntity = level.getBlockEntity(stargatePos);
-						if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
-							return blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
-					}
-					
-					return null;
-				});
-			});
-		}
-		else
-		{
-			setupServerAutoCache();
-			
 			if(generationStep == StructureGenEntity.Step.READY)
 				generate(); //TODO Logic of loading the DHD Symbols after Stargate, but finding Stargate after generating inventory (do this once there's a loot table for the DHD inventory, don't forget generateAdditional is fired by DHDItem)
 			
@@ -268,12 +222,51 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 			handleUpdateTag(tag);
 	}
 	
-	public void setupServerAutoCache()
+	public void setupAutoCache(AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache)
 	{
-		dhdRun(dhd ->
+		// Client
+		if(level.isClientSide())
 		{
-			AutoCache.Receiver<DHD, DHDControlledStargate> stargateCache = dhd.receiverCache();
-			
+			// Revalidation
+			stargateCache.setRevalidate(() ->
+			{
+				if(stargateRelativePos == null)
+					return false;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null)
+				{
+					BlockEntity blockEntity = level.getBlockEntity(stargatePos);
+					if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
+					{
+						// Check if the Stargate at the saved pos is the same Stargate
+						return stargateCache.getCached() == blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
+					}
+					
+				}
+				
+				return false;
+			});
+			// Client will only ever attempt to fetch Stargate from the relative pos provided by syncing
+			stargateCache.setFetch(() ->
+			{
+				if(stargateRelativePos == null)
+					return null;
+				
+				BlockPos stargatePos = CoordinateHelper.Relative.getOffsetPos(getDirection(), getBlockPos(), stargateRelativePos);
+				if(stargatePos != null)
+				{
+					BlockEntity blockEntity = level.getBlockEntity(stargatePos);
+					if(blockEntity != null && blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).isPresent())
+						return blockEntity.getCapability(DHDControlledStargate.DHD_CONTROLLED_STARGATE_CAPABILITY).resolve().get();
+				}
+				
+				return null;
+			});
+		}
+		// Server
+		else
+		{
 			// Revalidation - check if it's not too far
 			stargateCache.setRevalidate(() ->
 			{
@@ -309,7 +302,7 @@ public abstract class AbstractDHDEntity<D extends SGJourneyBlockEntityDHD<?>> ex
 					newStargate.updateDHD(dhd);
 				updateClient();
 			});
-		});
+		}
 	}
 	
 	@Override

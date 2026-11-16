@@ -102,6 +102,8 @@ public class MilkyWayBlockEntityStargate extends MilkyWayStargate implements SGJ
 	@Override
 	public void loadFromBlockEntity(AbstractStargateEntity<?> stargate)
 	{
+		SGJourneyBlockEntityStargate.super.loadFromBlockEntity(stargate);
+		
 		this.id9ChevronAddress = stargate.get9ChevronAddress();
 		
 		this.level = stargate.getLevel();

@@ -107,6 +107,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 	
 	default boolean engageStargate()
 	{
+		receiverCache().markDirtyTwoWays();
 		return receiverCache().returnOrSupplyDefault(stargate ->
 			{
 				if(stargate.isConnected())
@@ -125,6 +126,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 	
 	default boolean encodeSymbol(int symbol)
 	{
+		receiverCache().markDirtyTwoWays();
 		return receiverCache().returnOrSupplyDefault(stargate ->
 			{
 				// Remap symbol if needed while Advanced Protocols are enabled
