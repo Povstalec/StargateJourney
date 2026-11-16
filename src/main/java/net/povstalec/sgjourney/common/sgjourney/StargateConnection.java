@@ -311,11 +311,11 @@ public class StargateConnection
 				dialedStargate.connectStargate(stargateConnection, StargateConnection.State.INCOMING_CONNECTION);
 			}
 			
-			dialingStargate.connectionUpdate(stargateConnection);
+			dialingStargate.updateFromConnection(stargateConnection);
 			dialingStargate.updateClient();
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.connectionUpdate(stargateConnection);
+				dialedStargate.updateFromConnection(stargateConnection);
 				dialedStargate.updateClient();
 			}
 			
@@ -527,11 +527,11 @@ public class StargateConnection
 		
 		this.increaseTicks(maxKawooshTicks);
 		
-		this.dialingStargate.connectionUpdate(this);
+		this.dialingStargate.updateFromConnection(this);
 		this.dialingStargate.updateClient();
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.connectionUpdate(this);
+			dialedStargate.updateFromConnection(this);
 			dialedStargate.updateClient();
 		}
 		

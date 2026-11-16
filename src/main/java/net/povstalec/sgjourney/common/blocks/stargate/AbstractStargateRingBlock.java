@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.blockstates.StargatePart;
 import net.povstalec.sgjourney.common.misc.VoxelShapeProvider;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 {
@@ -74,6 +75,7 @@ public abstract class AbstractStargateRingBlock extends AbstractStargateBlock
 	}
 	
 	@Override
+	@Nullable
 	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(getBaseBlockPos(pos, state));

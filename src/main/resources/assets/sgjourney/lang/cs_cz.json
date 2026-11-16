@@ -908,6 +908,7 @@
 	"info.sgjourney.transporter_id.symbol_out_of_bounds": "Symbol ID transportéru %s je mimo meze <1, 8>",
 	"info.sgjourney.dimension": "Dimenze",
 	"info.sgjourney.recent_feedback": "Poslední zpětná vazba",
+	"info.sgjourney.is_primary": "Je primární",
 	"info.sgjourney.iris": "Iris",
 	"info.sgjourney.iris_texture": "Textura iris",
 	"info.sgjourney.iris_durability": "Výdrž iris",

@@ -156,7 +156,7 @@ public class ResourcepackModel
 			float extraPartialTicks = extraTicks + partialTick;
 			float percentage = extraPartialTicks / framerate.ticks;
 			
-			return ((int) Math.floor(percentage * framerate.frames) + (tick / framerate.ticks)) % frames;
+			return ((int) Math.floor(percentage * framerate.frames) + (tick / framerate.ticks) * framerate.frames) % frames;
 		}
 		
 		public float uOffset(int frame)

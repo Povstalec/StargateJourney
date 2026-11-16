@@ -15,9 +15,10 @@ import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.andromeda.AndromedaBlockEntityDHD;
 import org.jetbrains.annotations.NotNull;
 
-public class AndromedaDHDEntity extends CrystalDHDEntity
+public class AndromedaDHDEntity extends CrystalDHDEntity<AndromedaBlockEntityDHD>
 {
 	public AndromedaDHDEntity(BlockPos pos, BlockState state)
 	{
@@ -75,6 +76,12 @@ public class AndromedaDHDEntity extends CrystalDHDEntity
 		return SoundInit.ANDROMEDA_DHD_PRESS.get();
 	}
 	
+	@Override
+	protected AndromedaBlockEntityDHD fetchDHD()
+	{
+		return new AndromedaBlockEntityDHD(this);
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -96,7 +103,7 @@ public class AndromedaDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(stargateCache.isPresent()) // Copy from connected Stargate
+		else if(hasStargate()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

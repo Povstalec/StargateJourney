@@ -83,6 +83,9 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 	@Nullable
 	protected PegasusBlockEntityStargate fetchStargate()
 	{
+		if(level.isClientSide())
+			return new PegasusBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
 		return BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
 	}
 	
@@ -165,7 +168,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+					if(!super.directEngageSymbol(symbol, false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 				else
@@ -181,7 +184,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 			}

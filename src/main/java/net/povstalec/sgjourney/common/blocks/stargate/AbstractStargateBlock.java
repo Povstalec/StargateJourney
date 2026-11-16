@@ -254,6 +254,7 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		return RenderShape.MODEL;
 	}
 	
+	@Nullable
 	public abstract AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state);
 	
 	@Override
@@ -377,7 +378,8 @@ public abstract class AbstractStargateBlock extends Block implements SimpleWater
 		
 		ItemStack stack = super.getCloneItemStack(state, target, level, pos, player);
 		AbstractStargateEntity<?> stargate = getStargate(level, pos, state);
-		stargate.saveToItem(stack, level.registryAccess());
+		if(stargate != null)
+			stargate.saveToItem(stack, level.registryAccess());
 		
         return stack;
 	}

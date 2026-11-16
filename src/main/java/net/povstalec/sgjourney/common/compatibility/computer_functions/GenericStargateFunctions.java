@@ -113,7 +113,7 @@ public class GenericStargateFunctions
 	{
 		boolean canEngage = canEngageStargate && (desiredSymbol == 0 || stargate.getAddress().getLength() == 8); // Only try engaging the Stargate if the address can be dialed (This makes sure the DHD center button doesn't light up when used on Universe and Pegasus gates)
 		
-		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngage).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngage).feedback();
+		return interfaceEntity.getInterfaceType().hasAdvancedCrystalMethods() && engageDirectly ? stargate.directEngageSymbol(desiredSymbol, canEngage, StargateInfo.ChevronSound.ENGAGE).feedback() : stargate.indirectEngageSymbol(desiredSymbol, canEngage, StargateInfo.ChevronSound.ENGAGE).feedback();
 	}
 	
 	public static Address.Mutable getDialedAddress(AbstractStargateEntity<?> stargate)
@@ -159,7 +159,7 @@ public class GenericStargateFunctions
 	
 	public static boolean hasDHD(AbstractStargateEntity<?> stargate)
 	{
-		return stargate.dhdCache.isPresent();
+		return stargate.hasDHD();
 	}
 	
 	/**

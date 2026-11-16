@@ -4,18 +4,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.milky_way.MilkyWayBlockEntityDHD;
+import net.povstalec.sgjourney.common.sgjourney.dhd.pegasus.PegasusBlockEntityDHD;
 
-public class PegasusDHDEntity extends CrystalDHDEntity
+public class PegasusDHDEntity extends CrystalDHDEntity<PegasusBlockEntityDHD>
 {
 	public PegasusDHDEntity(BlockPos pos, BlockState state)
 	{
@@ -34,7 +36,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		// Update symbols when loading
 		if(generationStep == Step.GENERATED)
 		{
-			if(stargateCache.isPresent()) // Copy from connected Stargate
+			if(hasStargate()) // Copy from connected Stargate
 				setSymbolsFromStargate();
 			else // Generate from Dimension
 				setLocalSymbols();
@@ -76,6 +78,12 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 		return SoundInit.PEGASUS_DHD_PRESS.get();
 	}
 	
+	@Override
+	protected PegasusBlockEntityDHD fetchDHD()
+	{
+		return new PegasusBlockEntityDHD(this);
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -103,7 +111,7 @@ public class PegasusDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(stargateCache.isPresent()) // Copy from connected Stargate
+		else if(hasStargate()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

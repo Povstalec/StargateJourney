@@ -83,13 +83,13 @@ public class WormholeModel
 		int distortionTicks = getDistortionTicks(stargate);
 		
 		if(stargate.isConnected())
-			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderKawoosh(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTime(), irisProgress);
 		
 		this.renderEventHorizon(stack, source, wormhole, stargate, wormholeDistortion, partialTick, irisProgress, stargate.showUnstableWormhole());
 		this.renderDisconnect(stack, source, wormhole, stargate, wormholeDistortion, partialTick, wormhole.disconnectTicks().disconnectEndTicks, irisProgress);
 		
 		if(wormhole.hasStrudel())
-			this.renderStrudel(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTickCount(), irisProgress);
+			this.renderStrudel(stack, source, wormhole, wormholeDistortion, partialTick, stargate.getAnimationTicks(), distortionTicks, stargate.getKawooshTime(), irisProgress);
 	}
 	
 	private static float getDistortion(float wormholeDistortion, int maxTicks, int disconnectTicks)
@@ -596,26 +596,35 @@ public class WormholeModel
 		float uHalfOffset = 0.5F * uScale;
 		float vHalfOffset = 0.5F * vScale;
 		
+		float u1 = x1 * uScale / 5 + uHalfOffset + uOffset;
+		float v1 = -y1 * vScale / 5 + vHalfOffset + vOffset;
+		
+		float u2 = x2 * uScale / 5 + uHalfOffset + uOffset;
+		float v2 = -y2 * vScale / 5 + vHalfOffset + vOffset;
+		
+		float u3 = x3 * uScale / 5 + uHalfOffset + uOffset;
+		float v3 = -y3 * vScale / 5 + vHalfOffset + vOffset;
+		
 		if(StargateJourney.shouldRenderAMD())
 		{
-			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(u1, v1)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
 			
-			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
 			
-			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(u3, v3)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 0, 0, 0);
 		}
 		else
 		{
-			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(x1 * uScale / 5 + uHalfOffset + uOffset, y1 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x1, y1, z1).setColor(red, green, blue, alpha).setUv(u1, v1)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
 			
-			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(x2 * uScale / 5 + uHalfOffset + uOffset, y2 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x2, y2, z2).setColor(red, green, blue, alpha).setUv(u2, v2)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
 			
-			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(x3 * uScale / 5 + uHalfOffset + uOffset, y3 * vScale / 5 + vHalfOffset + vOffset)
+			consumer.addVertex(matrix4, x3, y3, z3).setColor(red, green, blue, alpha).setUv(u3, v3)
 					.setOverlay(OverlayTexture.NO_OVERLAY).setUv2(MAX_LIGHT, MAX_LIGHT >> 16).setNormal(pose, 1, 1, 1);
 		}
 	}

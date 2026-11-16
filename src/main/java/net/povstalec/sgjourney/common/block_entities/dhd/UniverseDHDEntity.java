@@ -6,18 +6,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonTechConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.energy_cores.FusionCoreItem;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.universe.UniverseBlockEntityDHD;
 import org.jetbrains.annotations.NotNull;
 
-public class UniverseDHDEntity extends CrystalDHDEntity
+public class UniverseDHDEntity extends CrystalDHDEntity<UniverseBlockEntityDHD>
 {
 	public UniverseDHDEntity(BlockPos pos, BlockState state)
 	{
@@ -75,6 +76,12 @@ public class UniverseDHDEntity extends CrystalDHDEntity
 		return SoundInit.UNIVERSE_DHD_PRESS.get();
 	}
 	
+	@Override
+	protected UniverseBlockEntityDHD fetchDHD()
+	{
+		return new UniverseBlockEntityDHD(this);
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -96,7 +103,7 @@ public class UniverseDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(stargateCache.isPresent()) // Copy from connected Stargate
+		else if(hasStargate()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();

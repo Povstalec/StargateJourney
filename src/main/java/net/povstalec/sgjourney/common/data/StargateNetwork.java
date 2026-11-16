@@ -33,7 +33,7 @@ import net.povstalec.sgjourney.common.config.StargateJourneyConfig;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.init.TagInit;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
@@ -288,7 +288,7 @@ public final class StargateNetwork extends SavedData
 			StargateJourney.LOGGER.debug("Removed {} from Stargate Network", stargate.get9ChevronAddress().toString());
 		}
 		
-		if(stargate instanceof BlockEntityStargate<?>) // Attempt to remove it from the Block Entity List
+		if(stargate instanceof SGJourneyBlockEntityStargate<?>) // Attempt to remove it from the Block Entity List
 			removed |= BlockEntityList.get(server).removeStargate(stargate.get9ChevronAddress());
 		
 		return removed;

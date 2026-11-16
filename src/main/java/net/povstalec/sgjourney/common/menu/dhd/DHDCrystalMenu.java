@@ -16,12 +16,15 @@ import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.menu.InventoryMenu;
+import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.Set;
 
-public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends InventoryMenu<T>
+public abstract class DHDCrystalMenu<T extends CrystalDHDEntity<? extends SGJourneyBlockEntityDHD<?>>> extends InventoryMenu<T>
 {
 	protected int largeControlCrystalIndex;
 	protected int[] crystalSlotIndex = new int[8];
@@ -78,7 +81,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	
 	public boolean enableAdvancedProtocols()
 	{
-		return this.blockEntity.enableAdvancedProtocols();
+		return this.blockEntity.advancedProtocolsActive();
 	}
 	
 	public long getEnergyTarget()
@@ -91,7 +94,7 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 		return this.blockEntity.maxEnergyTransfer();
 	}
 	
-	public int getMaxDistance()
+	public double getMaxDistance()
 	{
 		return this.blockEntity.getMaxConnectionDistance();
 	}
@@ -111,12 +114,12 @@ public abstract class DHDCrystalMenu<T extends CrystalDHDEntity> extends Invento
 	
 	public Set<Integer> getNetworks()
 	{
-		return this.blockEntity.stargateCache.returnCachedOrDefault(AbstractStargateEntity::getCachedNetworks, this.blockEntity.getNetworks());
+		return this.blockEntity.stargateReturn(Stargate::getNetworks, this.blockEntity.getNetworks());
 	}
 	
 	public boolean hasNetworkRestrictions()
 	{
-		return this.blockEntity.stargateCache.returnCachedOrDefault(AbstractStargateEntity::hasNetworkRestrictions, false);
+		return this.blockEntity.stargateReturn(DHDControlledStargate::hasNetworkRestrictions, false);
 	}
 	
 	

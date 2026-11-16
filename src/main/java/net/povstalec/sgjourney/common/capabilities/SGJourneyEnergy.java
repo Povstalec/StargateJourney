@@ -199,6 +199,25 @@ public abstract class SGJourneyEnergy implements IEnergyStorage, INBTSerializabl
 	
 	
 	
+	public static void moveSimpleEnergy(IEnergyStorage from, IEnergyStorage to, int amount)
+	{
+		int simulatedOutputAmount = from.extractEnergy(amount, true);
+		int simulatedReceiveAmount = to.receiveEnergy(simulatedOutputAmount, true);
+		
+		from.extractEnergy(simulatedReceiveAmount, false);
+		to.receiveEnergy(simulatedReceiveAmount, false);
+	}
+	
+	public static void moveEnergy(IEnergyStorage from, IEnergyStorage to, long amount)
+	{
+		if(from instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.fillOtherEnergyStorage(to, amount);
+		else if(to instanceof SGJourneyEnergy sgjourneyEnergy)
+			sgjourneyEnergy.drainOtherEnergyStorage(from, amount);
+		else
+			moveSimpleEnergy(from, to, SGJourneyEnergy.regularEnergy(amount));
+	}
+	
 	public void drainSimpleEnergyStorage(IEnergyStorage otherEnergyStorage, int amount)
 	{
 		int simulatedOutputAmount = otherEnergyStorage.extractEnergy(amount, true);

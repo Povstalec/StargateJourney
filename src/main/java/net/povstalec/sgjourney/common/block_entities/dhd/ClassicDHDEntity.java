@@ -6,19 +6,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
 import net.povstalec.sgjourney.common.config.CommonDHDConfig;
 import net.povstalec.sgjourney.common.config.CommonNaquadahGeneratorConfig;
+import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.init.BlockEntityInit;
 import net.povstalec.sgjourney.common.init.ItemInit;
 import net.povstalec.sgjourney.common.init.SoundInit;
 import net.povstalec.sgjourney.common.items.NaquadahFuelRodItem;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOrigin;
 import net.povstalec.sgjourney.common.sgjourney.Symbols;
+import net.povstalec.sgjourney.common.sgjourney.dhd.classic.ClassicBlockEntityDHD;
 import org.jetbrains.annotations.NotNull;
 
-public class ClassicDHDEntity extends CrystalDHDEntity
+public class ClassicDHDEntity extends CrystalDHDEntity<ClassicBlockEntityDHD>
 {
 	public ClassicDHDEntity(BlockPos pos, BlockState state)
 	{
@@ -83,6 +84,12 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 		energyItemHandler.setStackInSlot(1, NaquadahFuelRodItem.randomFuelRod(CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get() / 2, CommonNaquadahGeneratorConfig.naquadah_rod_max_fuel.get()));
 	}
 	
+	@Override
+	protected ClassicBlockEntityDHD fetchDHD()
+	{
+		return new ClassicBlockEntityDHD(this);
+	}
+	
 	//============================================================================================
 	//*****************************************Generation*****************************************
 	//============================================================================================
@@ -98,7 +105,7 @@ public class ClassicDHDEntity extends CrystalDHDEntity
 			if(!Symbols.isValid(level.getServer(), symbolInfo().symbols()))
 				symbolInfo().setSymbols(null);
 		}
-		else if(stargateCache.isPresent()) // Copy from connected Stargate
+		else if(hasStargate()) // Copy from connected Stargate
 			setSymbolsFromStargate();
 		else // Generate from Dimension
 			setLocalSymbols();
