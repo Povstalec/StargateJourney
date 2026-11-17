@@ -214,7 +214,7 @@ public class AutoCache<T>
 	}
 	
 	/**
-	 * Like {@link #returnOrDefault(Function, U)}, but doesn't attempt to fetch when no Object is found
+	 * Like {@link #returnOrDefault(Function, Object)}, but doesn't attempt to fetch when no Object is found
 	 * @param function Function to apply on the Object
 	 * @param defaultValue Default value to return if there is no cached Object
 	 * @return Result of the specified function, or the default value if there is no cached Object
