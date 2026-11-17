@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.transporter.api;
+package net.povstalec.sgjourney.api.transporter;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;

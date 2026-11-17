@@ -17,8 +17,8 @@ import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
+import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 public class Dialing
 {

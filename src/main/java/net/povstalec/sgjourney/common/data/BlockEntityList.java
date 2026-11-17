@@ -16,10 +16,10 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 import javax.annotation.Nonnull;
