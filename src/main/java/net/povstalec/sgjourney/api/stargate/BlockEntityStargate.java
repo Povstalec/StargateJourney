@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.api;
+package net.povstalec.sgjourney.api.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

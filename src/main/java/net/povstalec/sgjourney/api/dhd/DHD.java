@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.dhd.api;
+package net.povstalec.sgjourney.api.dhd;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -16,7 +16,7 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 
 import javax.annotation.Nullable;
 import java.util.Set;
