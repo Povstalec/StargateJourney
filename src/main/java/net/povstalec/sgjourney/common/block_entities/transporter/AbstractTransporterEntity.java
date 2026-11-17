@@ -34,7 +34,7 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 

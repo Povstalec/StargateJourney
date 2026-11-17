@@ -12,8 +12,8 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.transporter.api.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.api.Transporter;
+import net.povstalec.sgjourney.api.transporter.BlockEntityTransporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import javax.annotation.Nullable;
 import java.util.List;

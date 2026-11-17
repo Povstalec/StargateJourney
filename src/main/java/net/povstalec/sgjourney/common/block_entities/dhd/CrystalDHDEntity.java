@@ -19,10 +19,10 @@ import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
 import net.povstalec.sgjourney.common.sgjourney.memory_entry.StargateConnectionEntry;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

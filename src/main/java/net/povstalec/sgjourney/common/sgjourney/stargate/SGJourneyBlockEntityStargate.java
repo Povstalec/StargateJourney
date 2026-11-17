@@ -15,11 +15,11 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.BlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.api.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;

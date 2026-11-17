@@ -9,7 +9,7 @@ import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import org.jetbrains.annotations.Nullable;
 
 /**

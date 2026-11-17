@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.api;
+package net.povstalec.sgjourney.api.stargate;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -8,7 +8,7 @@ import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 
 import javax.annotation.Nullable;
