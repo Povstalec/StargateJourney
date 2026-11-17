@@ -28,6 +28,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Interface representing a Stargate capable of connecting to other Stargates
+ */
 public interface Stargate extends Comparable<Stargate>
 {
 	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
