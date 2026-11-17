@@ -54,13 +54,13 @@ import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.BlockEntityDHD;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
+import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
 import net.povstalec.sgjourney.common.sgjourney.stargate.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

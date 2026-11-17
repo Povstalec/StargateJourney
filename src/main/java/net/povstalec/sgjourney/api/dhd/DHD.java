@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.dhd.api;
+package net.povstalec.sgjourney.api.dhd;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -10,16 +10,32 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
+import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
 
 import javax.annotation.Nullable;
 import java.util.Set;
 
+/**
+ * Interface representing a Dial Home Device, which is intended to connect to a {@link DHDControlledStargate}.
+ * <p>
+ *     The implementation of {@link AutoCache.IController#receiverCache()} is expected to be fully capable of recognizing nearby instances of {@link DHDControlledStargate}
+ *     and choosing one to connect to, as well as maintaining this connection across multiple game sessions.
+ * </p>
+ * <p>
+ *     Recognizing nearby instances of {@link DHDControlledStargate} is done by searching for the {@link DHDControlledStargate#DHD_CONTROLLED_STARGATE_CAPABILITY_BLOCK}
+ *     or {@link DHDControlledStargate#DHD_CONTROLLED_STARGATE_CAPABILITY_ENTITY}.
+ * </p>
+ * <p>
+ *     For an example of how to make the AutoCache work, see {@link SGJourneyBlockEntityDHD#loadFromBlockEntity(AbstractDHDEntity)}.
+ * </p>
+ */
 public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 {
 	String DHD = "dhd";

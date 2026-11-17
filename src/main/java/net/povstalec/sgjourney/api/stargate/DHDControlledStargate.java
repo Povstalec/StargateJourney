@@ -1,17 +1,32 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.api;
+package net.povstalec.sgjourney.api.stargate;
 
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.dhd.DHD;
+import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.misc.AutoCache;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.dhd.api.DHD;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 
 import javax.annotation.Nullable;
 
+/**
+ * Interface representing a Stargate, which is intended to connect to a {@link DHD}.
+ * <p>
+ *     The implementation of {@link AutoCache.IReceiver#controllerCache()} is expected to be fully capable of recognizing nearby instances of {@link DHD}
+ *     and choosing one to connect to, as well as maintaining this connection across multiple game sessions.
+ * </p>
+ * <p>
+ *     Recognizing nearby instances of {@link DHD} is done by searching for the {@link DHD#DHD_CAPABILITY_BLOCK} or {@link DHD#DHD_CAPABILITY_ENTITY}.
+ * </p>
+ * <p>
+ *     For an example of how to make the AutoCache work, see {@link SGJourneyBlockEntityStargate#loadFromBlockEntity(AbstractStargateEntity)}.
+ * </p>
+ */
 public interface DHDControlledStargate extends Stargate, AutoCache.IReceiver<DHD, DHDControlledStargate>
 {
 	String DHD_CONTROLLED_STARGATE = "dhd_controlled_stargate";

@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate.api;
+package net.povstalec.sgjourney.api.stargate;
 
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -30,6 +30,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Interface representing a Stargate capable of connecting to other Stargates
+ */
 public interface Stargate extends Comparable<Stargate>
 {
 	String STARGATE = "stargate";

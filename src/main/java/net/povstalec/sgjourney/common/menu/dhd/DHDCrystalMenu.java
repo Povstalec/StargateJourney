@@ -16,8 +16,8 @@ import net.povstalec.sgjourney.common.items.ZeroPointModule;
 import net.povstalec.sgjourney.common.items.energy_cores.IEnergyCore;
 import net.povstalec.sgjourney.common.menu.InventoryMenu;
 import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.DHDControlledStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.api.Stargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
