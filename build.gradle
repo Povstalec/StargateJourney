@@ -264,3 +264,17 @@ idea {
         downloadJavadoc = true
     }
 }
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			artifactId = mod_id
+			from components.java
+		}
+	}
+}
