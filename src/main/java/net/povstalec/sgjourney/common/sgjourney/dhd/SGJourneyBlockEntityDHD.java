@@ -2,11 +2,11 @@ package net.povstalec.sgjourney.common.sgjourney.dhd;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.Vec3;
+import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
-import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 
 import javax.annotation.Nullable;
 import java.util.Set;

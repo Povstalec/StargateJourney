@@ -9,6 +9,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
 import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.misc.AutoCache;
@@ -16,7 +17,6 @@ import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 import net.povstalec.sgjourney.common.sgjourney.dhd.SGJourneyBlockEntityDHD;
-import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -54,14 +54,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 	 * @return Level the DHD is currently located in, null if it's not located in any Level
 	 */
 	@Nullable
-	default Level getLevel()
-	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return getServer().getLevel(dimension);
-	}
+	Level getLevel();
 	
 	/**
 	 * @return Position vector of the DHD's center or null if it doesn't have a position
