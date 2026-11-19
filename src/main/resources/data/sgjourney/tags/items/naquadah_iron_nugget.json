@@ -3,6 +3,6 @@
 	"values":
 	[
 		"sgjourney:naquadah_iron_nugget",
-		{"id": "#forge:nuggets/naquadah_alloy", "required": false}
+		{"id": "#forge:nuggets/naquadah_iron_alloy", "required": false}
 	]
 }

@@ -1,0 +1,10 @@
+{
+	"replace": false,
+	"values":
+	[
+		"#forge:nuggets/naquadah",
+		"#forge:nuggets/naquadah_iron_alloy",
+		"#forge:nuggets/naquadah_copper_alloy",
+		"#forge:nuggets/trinium"
+	]
+}
