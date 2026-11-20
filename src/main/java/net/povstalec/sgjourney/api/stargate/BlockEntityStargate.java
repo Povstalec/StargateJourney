@@ -44,6 +44,7 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	default void update()
 	{
 		stargateRun(this::updateFromBlockEntity);
+		updateClient();
 	}
 	
 	@Override
