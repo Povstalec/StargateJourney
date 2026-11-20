@@ -5,6 +5,7 @@ import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEn
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 import java.util.Set;
@@ -60,9 +61,9 @@ public class GenericStargateFunctions
 		return stargate.getTimeSinceLastTraveler();
 	}
 	
-	public static StargateInfo.Feedback engageStargate(AbstractStargateEntity<?> stargate)
+	public static StargateInfo.Feedback engageStargate(AbstractStargateEntity<?> stargate, boolean doKawoosh, Dialing.Action action)
 	{
-		return stargate.engageStargate().feedback();
+		return stargate.engageStargate(doKawoosh, action).feedback();
 	}
 	
 	// Returns true if Stargate was connected and then got disconnected, otherwise returns false

@@ -32,6 +32,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
+import net.povstalec.sgjourney.api.dhd.DHD;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import net.povstalec.sgjourney.client.sound.SoundWrapper;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.block_entities.StructureGenEntity;
@@ -60,13 +64,11 @@ import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.packets.ClientboundStargateParticleSpawnPacket;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
-import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.SymbolInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.*;
-import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
-import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -636,9 +638,22 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	}
 	
 	/**
+	 * Method to {@link AbstractStargateEntity#indirectEngageSymbol(int, boolean, StargateInfo.ChevronSound) indirectly engage symbols} using a DHD
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
+	 * @return Feedback from encoding the symbol
+	 */
+	public StargateInfo.FeedbackMessage dhdEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
+	{
+		return indirectEngageSymbol(symbol, canEngageStargate, chevronSound);
+	}
+	
+	/**
 	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before encoding the symbols fully
 	 * @param symbol Symbol to be encoded
 	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
 	 * @return Feedback from encoding the symbol
 	 */
 	public StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
@@ -673,6 +688,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	 * Method to encode symbols and handle edge cases involving Point of Origin
 	 * @param symbol Symbol to be encoded
 	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
 	 * @return Feedback from encoding the symbol
 	 */
 	protected StargateInfo.FeedbackMessage encodeSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
@@ -688,7 +704,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 		StargateInfo.FeedbackMessage feedback = encodeChevron(symbol, StargateConnection.Direction.OUTGOING, chevronSound);
 		
 		if(canEngageStargate && getAddress().hasPointOfOriginOrMaxLength() && !feedback.feedback().isError())
-			return engageStargate();
+			return engageStargate(true, Dialing.Action.EXECUTE);
 		
 		return setRecentFeedback(feedback);
 	}
@@ -720,9 +736,9 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 		return setRecentFeedback(StargateInfo.Feedback.SYMBOL_ENCODED.withInfo(symbol));
 	}
 	
-	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd) // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
+	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd, boolean doKawoosh, Dialing.Action action) // Engages the Stargate if all chevrons are encoded, or informs it that it can engage once the last chevron is encoded
 	{
-		return engageStargate();
+		return engageStargate(doKawoosh, action);
 	}
 	
 	public StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh, Dialing.Action action)
@@ -749,11 +765,6 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.too_short"));
 		
 		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));
-	}
-	
-	public StargateInfo.FeedbackMessage engageStargate()
-	{
-		return engageStargate(true, Dialing.Action.EXECUTE);
 	}
 	
 	public StargateInfo.FeedbackMessage makeDialAttempt(StargateInfo.FeedbackMessage feedback)
@@ -985,9 +996,9 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 		return resetStargate(feedback.withInfo(additionalInfo));
 	}
 	
-	public StargateInfo.FeedbackMessage dhdDisconnectStargate(DHD dhd)
+	public StargateInfo.FeedbackMessage dhdDisconnectStargate(DHD dhd, StargateInfo.FeedbackMessage feedback)
 	{
-		return disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+		return disconnectStargate(feedback);
 	}
 	
 	public StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback)

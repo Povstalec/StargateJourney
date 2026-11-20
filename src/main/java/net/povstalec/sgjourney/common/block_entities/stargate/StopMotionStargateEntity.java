@@ -206,7 +206,7 @@ public abstract class StopMotionStargateEntity<SG extends SGJourneyBlockEntitySt
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd)
+	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd, boolean doKawoosh, Dialing.Action action)
 	{
 		// Special case where no symbols are encoded
 		if(addressBuffer.isEmpty())
@@ -236,7 +236,7 @@ public abstract class StopMotionStargateEntity<SG extends SGJourneyBlockEntitySt
 			}
 		}
 		else
-			return super.dhdEngageStargate(dhd);
+			return super.dhdEngageStargate(dhd, doKawoosh, action);
 	}
 	
 	public int getCurrentSymbol()

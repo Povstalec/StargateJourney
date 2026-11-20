@@ -108,7 +108,7 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	{
 		// Delay the opening of the gate to the tick after all symbols are encoded
 		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
-			engageStargate();
+			engageStargate(true, Dialing.Action.EXECUTE);
 		
 		if(isSymbolSpinning())
 		{
