@@ -30,7 +30,12 @@ public class UniverseDHDScreen extends AbstractDHDScreen<UniverseDHDMenu>
 		{
 			defaultButton = DefaultButton.values()[i];
 			addRenderableWidget(new UniverseDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, UniverseDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
-				button -> encodeSymbol(((UniverseDHDSymbolButton.Dialing) button).getSymbol())));
+				button ->
+				{
+					encodeSymbol(((UniverseDHDSymbolButton.Dialing) button).getSymbol());
+					if(!menu.getDHD().getAddress().canGrow())
+						onClose();
+				}));
 		}
 	}
 }

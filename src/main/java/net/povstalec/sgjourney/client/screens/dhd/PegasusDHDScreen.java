@@ -30,7 +30,12 @@ public class PegasusDHDScreen extends AbstractDHDScreen<PegasusDHDMenu>
 		{
 			defaultButton = GenericDHDSymbolButton.DefaultButton.values()[i];
 			addRenderableWidget(new PegasusDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, PegasusDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
-				button -> encodeSymbol(((PegasusDHDSymbolButton.Dialing) button).getSymbol())));
+				button ->
+				{
+					encodeSymbol(((PegasusDHDSymbolButton.Dialing) button).getSymbol());
+					if(!menu.getDHD().getAddress().canGrow())
+						onClose();
+				}));
 		}
 	}
 }
