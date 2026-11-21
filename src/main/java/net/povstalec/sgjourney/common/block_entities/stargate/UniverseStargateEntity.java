@@ -181,9 +181,29 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
 		
-		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
-		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
-			return disconnectStargate(incompleteAddress());
+		if(!addressBuffer.canGrow())
+		{
+			if(!canEngage)
+			{
+				// Attempting to encode symbols after Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+				if(addressBuffer.hasPointOfOrigin())
+				{
+					// Address is too long
+					if(addressBuffer.hasMinValidLength())
+						return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.symbols_after_point_of_origin")));
+						// Address is too short
+					else
+						return disconnectStargate(incompleteAddress());
+				}
+				// Attempting to encode symbols after the 9-th symbol is encoded
+				else
+					return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.too_long")));
+			}
+			// Stargate is ready to be engaged and is ignoring new symbol input (dialing can only be canceled by pressing the big center button)
+			else
+				return StargateInfo.Feedback.NONE.withInfo();
+			
+		}
 		
 		canEngage = canEngageStargate;
 		

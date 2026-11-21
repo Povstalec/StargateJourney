@@ -715,7 +715,12 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 			return setRecentFeedback(StargateInfo.Feedback.SYMBOL_IN_ADDRESS.withInfo(symbol));
 		
 		if(!growAddress(symbol)) // Trying to encode 10th symbol (impossible)
-			return resetStargate(StargateInfo.Feedback.INVALID_ADDRESS);
+		{
+			if(getAddress().hasPointOfOrigin())
+				return resetStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.symbols_after_point_of_origin")));
+			else
+				return resetStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.too_long")));
+		}
 		
 		if(sound != StargateInfo.ChevronSound.NONE)
 			chevronSound((short) getAddress().getLength(), sound);
@@ -761,7 +766,7 @@ public abstract class AbstractStargateEntity<SG extends SGJourneyBlockEntityStar
 	
 	protected StargateInfo.FeedbackMessage incompleteAddress()
 	{
-		if(getAddress().getLength() < Address.MIN_DIALED_ADDRESS_LENGTH) // Address is too short
+		if(!getAddress().hasMinValidLength()) // Address is too short
 			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.too_short"));
 		
 		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));

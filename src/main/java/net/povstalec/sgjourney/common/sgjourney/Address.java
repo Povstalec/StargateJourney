@@ -38,7 +38,7 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final String DIMENSION = "dimension";
 	
 	public static final String ADDRESS_DIVIDER = "-";
-	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
+	public static final int MIN_DIALED_ADDRESS_LENGTH = 7;
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	public static final int POINT_OF_ORIGIN = 0;
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
@@ -225,10 +225,15 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
+	public boolean hasMinValidLength()
+	{
+		return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+	}
+	
 	public boolean canBeDialed()
 	{
 		if(hasPointOfOrigin())
-			return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+			return hasMinValidLength();
 		
 		return addressArray.length == MAX_ADDRESS_LENGTH;
 	}
