@@ -115,7 +115,11 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 		if(level.isClientSide())
 			return new MilkyWayBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(MilkyWayBlockEntityStargate.class, this.id9ChevronAddress);
+		MilkyWayBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(MilkyWayBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	private short getCurrentChevron()

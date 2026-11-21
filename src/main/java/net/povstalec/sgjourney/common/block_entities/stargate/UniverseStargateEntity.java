@@ -142,7 +142,11 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(level.isClientSide())
 			return new UniverseBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
+		UniverseBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	//============================================================================================
