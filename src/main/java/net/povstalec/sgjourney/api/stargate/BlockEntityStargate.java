@@ -44,6 +44,13 @@ public interface BlockEntityStargate<StargateEntity extends BlockEntity> extends
 	default void update()
 	{
 		stargateRun(this::updateFromBlockEntity);
+		updateClient();
+	}
+	
+	@Override
+	@Nullable default Level getLevel()
+	{
+		return stargateReturn(BlockEntity::getLevel, null);
 	}
 	
 	// Functional Interface stuff

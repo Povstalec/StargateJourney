@@ -75,14 +75,7 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return Level the Stargate is currently located in, null if it's not located in any Level
 	 */
 	@Nullable
-	default Level getLevel()
-	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return getServer().getLevel(dimension);
-	}
+	Level getLevel();
 	
 	/**
 	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region

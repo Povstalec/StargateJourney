@@ -117,7 +117,7 @@ public class StargateInfo
 		CONNECTION_ESTABLISHED_INTERSTELLAR(3, FeedbackType.INFO, "connection_established.interstellar"), // Interstellar connection was established successfully
 		CONNECTION_ESTABLISHED_INTERGALACTIC(4, FeedbackType.INFO, "connection_established.intergalactic"),// Intergalactic connection was established successfully
 		
-		INCOMPLETE_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "incomplete_address"), // Trying to dial an incomplete address (only encoded less than 6 symbols)
+		INCOMPLETE_ADDRESS(-5, FeedbackType.MAJOR_ERROR, "incomplete_address"), // Trying to dial an incomplete address (only encoded less than 6 symbols or the dialing process was aborted)
 		INVALID_ADDRESS(-6, FeedbackType.MAJOR_ERROR, "invalid_address"), // Dialed address is invalid because there is no dimension or Stargate with that address
 		NOT_ENOUGH_POWER(-7, FeedbackType.MAJOR_ERROR, "not_enough_power"), // Dialing when the Stargate doesn't have enough power
 		SELF_OBSTRUCTED(-8, FeedbackType.MAJOR_ERROR, "self_obstructed"), // The dialing Stargate is obstructed

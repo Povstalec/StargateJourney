@@ -7,6 +7,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.dhd.DHD;
+import net.povstalec.sgjourney.api.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.IrisStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
@@ -15,11 +19,7 @@ import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.api.stargate.BlockEntityStargate;
-import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
-import net.povstalec.sgjourney.api.stargate.Stargate;
 
 import javax.annotation.Nullable;
 import java.util.Comparator;
@@ -73,24 +73,6 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	default SymbolMap getSymbolMap()
 	{
 		return stargateReturn(stargate -> stargate.symbolMap, SymbolMap.Immutable.SYMBOL_MAP);
-	}
-	
-	@Override
-	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
-	{
-		return stargateReturnOrSupply(stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateBlockEntity);
-	}
-	
-	@Override
-	default StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback)
-	{
-		return stargateReturnOrSupply(stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
-	}
-	
-	@Override
-	default StargateInfo.FeedbackMessage bypassDisconnectStargate(StargateInfo.FeedbackMessage feedback)
-	{
-		return stargateReturnOrSupply(stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
 	}
 	
 	@Override
@@ -279,7 +261,42 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	@Override
 	default StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh, Dialing.Action action)
 	{
-		return stargateReturnOrSupply(stargate -> stargate.engageStargate(), BlockEntityStargate::noStargateBlockEntity);
+		return stargateReturnOrSupply(stargate -> stargate.engageStargate(doKawoosh, action), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage dhdEngageSymbol(DHD dhd, int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.dhdEngageSymbol(symbol, canEngageStargate, chevronSound), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd, boolean doKawoosh, Dialing.Action action)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.dhdEngageStargate(dhd, doKawoosh, action), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.instaDial(address, doKawoosh, action), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.disconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	@Override
+	default StargateInfo.FeedbackMessage bypassDisconnectStargate(StargateInfo.FeedbackMessage feedback)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.bypassDisconnectStargate(feedback), BlockEntityStargate::noStargateBlockEntity);
+	}
+	
+	default StargateInfo.FeedbackMessage dhdDisconnectStargate(DHD dhd, StargateInfo.FeedbackMessage feedback)
+	{
+		return stargateReturnOrSupply(stargate -> stargate.dhdDisconnectStargate(dhd, feedback), BlockEntityStargate::noStargateBlockEntity);
 	}
 	
 	//============================================================================================

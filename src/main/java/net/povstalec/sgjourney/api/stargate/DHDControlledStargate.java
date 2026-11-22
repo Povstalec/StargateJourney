@@ -71,6 +71,7 @@ public interface DHDControlledStargate extends Stargate, AutoCache.IReceiver<DHD
 	default void update()
 	{
 		controllerCache().ifPresent(DHD::update);
+		updateClient();
 	}
 	
 	//============================================================================================

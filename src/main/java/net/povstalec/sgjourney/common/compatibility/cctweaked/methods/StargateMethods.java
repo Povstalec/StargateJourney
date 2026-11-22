@@ -14,6 +14,7 @@ import net.povstalec.sgjourney.common.compatibility.cctweaked.IllegalLuaArgument
 import net.povstalec.sgjourney.common.compatibility.computer_functions.GenericStargateFunctions;
 import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Trinary;
+import net.povstalec.sgjourney.common.sgjourney.Dialing;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
 public class StargateMethods
@@ -114,7 +115,7 @@ public class StargateMethods
 		@Override
 		public MethodResult use(IComputerAccess computer, ILuaContext context, AbstractInterfaceEntity interfaceEntity, AbstractStargateEntity<?> stargate, IArguments arguments) throws LuaException
 		{
-			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageStargate(stargate)));
+			return context.executeMainThreadTask(() -> returnedFeedback(interfaceEntity, GenericStargateFunctions.engageStargate(stargate, true, Dialing.Action.EXECUTE)));
 		}
 	}
 	

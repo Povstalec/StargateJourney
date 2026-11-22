@@ -30,7 +30,12 @@ public class ClassicDHDScreen extends AbstractDHDScreen<ClassicDHDMenu>
 		{
 			defaultButton = GenericDHDSymbolButton.DefaultButton.values()[i];
 			addRenderableWidget(new ClassicDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, ClassicDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
-				button -> encodeSymbol(((ClassicDHDSymbolButton.Dialing) button).getSymbol())));
+				button ->
+				{
+					encodeSymbol(((ClassicDHDSymbolButton.Dialing) button).getSymbol());
+					if(!menu.getDHD().getAddress().canGrow())
+						onClose();
+				}));
 		}
 	}
 }

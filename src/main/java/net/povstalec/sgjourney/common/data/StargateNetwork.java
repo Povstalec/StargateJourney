@@ -47,7 +47,7 @@ public final class StargateNetwork extends SavedData
 	private static final String CONNECTIONS = "connections";
 
 	// Should increment every time there's a significant change done to the Stargate Network or the way Stargates work
-	private static final int UPDATE_VERSION = 21;
+	private static final int UPDATE_VERSION = 22;
 	
 	private MinecraftServer server;
 	private final Map<ResourceKey<Level>, List<Stargate>> dimensionStargates = new HashMap<>();

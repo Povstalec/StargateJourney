@@ -61,14 +61,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 	 * @return Level the DHD is currently located in, null if it's not located in any Level
 	 */
 	@Nullable
-	default Level getLevel()
-	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return getServer().getLevel(dimension);
-	}
+	Level getLevel();
 	
 	/**
 	 * @return Position vector of the DHD's center or null if it doesn't have a position

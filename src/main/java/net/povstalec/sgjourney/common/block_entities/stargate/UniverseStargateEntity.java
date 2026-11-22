@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.CCTweakedCompatibility;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.SGJourneyPeripheralWrapper;
 import net.povstalec.sgjourney.common.compatibility.cctweaked.peripherals.StargatePeripheral;
@@ -22,7 +23,6 @@ import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.packets.ClientBoundSoundPackets;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo.ChevronLockSpeed;
-import net.povstalec.sgjourney.api.dhd.DHD;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.universe.UniverseStargate;
 import org.jetbrains.annotations.NotNull;
@@ -143,7 +143,11 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(level.isClientSide())
 			return new UniverseBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
+		UniverseBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(UniverseBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	//============================================================================================
@@ -178,9 +182,29 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 		if(level.isClientSide())
 			return StargateInfo.Feedback.NONE.withInfo();
 		
-		// Special case where only the Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
-		if(addressBuffer.getLength() == 1 && addressBuffer.hasPointOfOrigin())
-			return disconnectStargate(incompleteAddress());
+		if(!addressBuffer.canGrow())
+		{
+			if(!canEngage)
+			{
+				// Attempting to encode symbols after Point of Origin is encoded (attempting to encode any symbols after it should reset the Stargate)
+				if(addressBuffer.hasPointOfOrigin())
+				{
+					// Address is too long
+					if(addressBuffer.hasMinValidLength())
+						return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.symbols_after_point_of_origin")));
+						// Address is too short
+					else
+						return disconnectStargate(incompleteAddress());
+				}
+				// Attempting to encode symbols after the 9-th symbol is encoded
+				else
+					return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.too_long")));
+			}
+			// Stargate is ready to be engaged and is ignoring new symbol input (dialing can only be canceled by pressing the big center button)
+			else
+				return StargateInfo.Feedback.NONE.withInfo();
+			
+		}
 		
 		canEngage = canEngageStargate;
 		
@@ -230,7 +254,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 	}
 	
 	@Override
-	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd)
+	public StargateInfo.FeedbackMessage dhdEngageStargate(DHD dhd, boolean doKawoosh, Dialing.Action action)
 	{
 		// Special case where no symbols are encoded
 		if(addressBuffer.isEmpty())
@@ -260,7 +284,7 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 			}
 		}
 		else
-			return super.dhdEngageStargate(dhd);
+			return super.dhdEngageStargate(dhd, doKawoosh, action);
 	}
 	
 	public void startSound()
