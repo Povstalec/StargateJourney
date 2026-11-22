@@ -12,7 +12,7 @@ import net.povstalec.sgjourney.common.items.crystals.ControlCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MaterializationCrystalItem;
 import net.povstalec.sgjourney.common.items.crystals.MemoryCrystalItem;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;

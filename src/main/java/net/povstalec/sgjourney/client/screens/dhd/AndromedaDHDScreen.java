@@ -5,7 +5,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.client.widgets.dhd.AndromedaDHDBigButton;
 import net.povstalec.sgjourney.client.widgets.dhd.AndromedaDHDSymbolButton;
-import net.povstalec.sgjourney.client.widgets.dhd.GenericDHDSymbolButton.DefaultButton;
 import net.povstalec.sgjourney.common.menu.dhd.AndromedaDHDMenu;
 
 public class AndromedaDHDScreen extends AbstractDHDScreen<AndromedaDHDMenu>
@@ -30,7 +29,12 @@ public class AndromedaDHDScreen extends AbstractDHDScreen<AndromedaDHDMenu>
 		{
 			defaultButton = AndromedaDHDSymbolButton.AndromedaButton.values()[i];
 			addRenderableWidget(new AndromedaDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, AndromedaDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
-				button -> encodeSymbol(((AndromedaDHDSymbolButton.Dialing) button).getSymbol())));
+				button ->
+				{
+					encodeSymbol(((AndromedaDHDSymbolButton.Dialing) button).getSymbol());
+					if(!menu.getDHD().getAddress().canGrow())
+						onClose();
+				}));
 		}
 	}
 }

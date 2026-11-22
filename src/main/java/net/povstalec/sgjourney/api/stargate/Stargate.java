@@ -1,9 +1,8 @@
-package net.povstalec.sgjourney.common.sgjourney.stargate;
+package net.povstalec.sgjourney.api.stargate;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -12,13 +11,16 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.block_entities.tech_interface.AbstractInterfaceEntity;
+import net.povstalec.sgjourney.common.capabilities.SGJourneyEnergy;
 import net.povstalec.sgjourney.common.config.CommonStargateNetworkConfig;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.misc.Trinary;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -26,6 +28,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Interface representing a Stargate capable of connecting to other Stargates
+ */
 public interface Stargate extends Comparable<Stargate>
 {
 	Capability<Stargate> STARGATE_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
@@ -45,6 +50,7 @@ public interface Stargate extends Comparable<Stargate>
 	/**
 	 * @return Current Minecraft Server
 	 */
+	@Nullable
 	MinecraftServer getServer();
 	
 	/**
@@ -62,14 +68,7 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return Level the Stargate is currently located in, null if it's not located in any Level
 	 */
 	@Nullable
-	default ServerLevel getLevel()
-	{
-		ResourceKey<Level> dimension = getDimension();
-		if(dimension == null)
-			return null;
-		
-		return getServer().getLevel(dimension);
-	}
+	Level getLevel();
 	
 	/**
 	 * @return Address Region the Stargate is located in or null if it's not located in any Address Region
@@ -155,7 +154,21 @@ public interface Stargate extends Comparable<Stargate>
 				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(), getUp(), getRight());
 	}
 	
+	@Nullable
+	default ResourceKey<PointOfOrigin> pointOfOrigin()
+	{
+		return null;
+	}
+	
+	@Nullable
+	default ResourceKey<Symbols> symbols()
+	{
+		return null;
+	}
+	
 	/**
+	 * This method is primarily intended to be used by the Stargate Network when deciding Stargate priority.
+	 * Unless you implement {@link DHDControlledStargate}, this method should only return false (if you do implement, it's free to return true or false based on actually being connected to a DHD).
 	 * @return True if the Stargate is connected to a DHD, otherwise false
 	 */
 	boolean hasDHD();
@@ -182,6 +195,11 @@ public interface Stargate extends Comparable<Stargate>
 	}
 	
 	/**
+	 * @return True if this Stargate has network restrictions active
+	 */
+	boolean hasNetworkRestrictions();
+	
+	/**
 	 * @param networks Network IDs to test
 	 * @return False if the provided networks pass the restriction check successfully, otherwise true
 	 */
@@ -202,7 +220,7 @@ public interface Stargate extends Comparable<Stargate>
 	/**
 	 * @return Address currently encoded in this Stargate
 	 */
-	Address.Mutable getAddress();
+	Address getAddress();
 	
 	/**
 	 * @param addressRegion Address Region requesting this Stargate's connection Address, can be null
@@ -232,28 +250,6 @@ public interface Stargate extends Comparable<Stargate>
 		// This setup basically means that a 9-chevron Address is returned for a Connection when a Stargate isn't in any Solar System
 		return get9ChevronAddress();
 	}
-	
-	/**
-	 * Instantly dials a specified Address
-	 * @param address Address to dial
-	 * @param action If action.simulate() is true, the dialing attempt will only be simulated (won't actually create a connection or reset any Stargates)
-	 * @return Feedback with information regarding how this Stargate's dialing attempt went
-	 */
-	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action);
-	
-	/**
-	 * Disconnects the Stargate (respects disconnect side, so it will not disconnect the Stargate if it did not initiate the connection)
-	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
-	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
-	 */
-	StargateInfo.FeedbackMessage disconnect(StargateInfo.FeedbackMessage feedback);
-	
-	/**
-	 * Disconnects the Stargate regardless of which Stargate initiated the connection
-	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
-	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
-	 */
-	StargateInfo.FeedbackMessage bypassDisconnect(StargateInfo.FeedbackMessage feedback);
 	
 	/**
 	 * Resets this Stargate (Disconnects it, wipes the currently encoded Address, revalidates, ...)
@@ -320,7 +316,8 @@ public interface Stargate extends Comparable<Stargate>
 	// Updating
 	
 	/**
-	 * Updates this Stargate
+	 * Updates this Stargate, typically used whenever the Stargate needs updating, like when a Stargate
+	 * is added to/removed from the Stargate Network and the Stargate priority list needs to be recalculated
 	 */
 	default void update() {}
 	
@@ -328,6 +325,14 @@ public interface Stargate extends Comparable<Stargate>
 	 * Updates this Stargate's information on the client-side
 	 */
 	default void updateClient() {}
+	
+	@Nullable
+	default CompoundTag getClientUpdateTag()
+	{
+		return null;
+	}
+	
+	default void onClientUpdate(@Nullable CompoundTag tag) {}
 	
 	/**
 	 * Update all Tech Interfaces that are currently connected to the Stargate
@@ -361,14 +366,40 @@ public interface Stargate extends Comparable<Stargate>
 	// Energy
 	
 	/**
+	 * @return Stargate's Energy Storage
+	 */
+	@Nullable
+	IEnergyStorage getEnergyStorage();
+	
+	/**
 	 * @return Energy currently stored in the Stargate's energy buffer
 	 */
-	long getEnergyStored();
+	default long getEnergyStored()
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.getTrueEnergyStored();
+		else
+			return energyStorage.getEnergyStored();
+	}
 	
 	/**
 	 * @return Max amount of energy that can be stored in the Stargate's energy buffer
 	 */
-	long getEnergyCapacity();
+	default long getEnergyCapacity()
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.getTrueMaxEnergyStored();
+		else
+			return energyStorage.getMaxEnergyStored();
+	}
 	
 	/**
 	 * @return True if this Stargate can supply energy to the connection even if it did not initiate the connection
@@ -381,7 +412,17 @@ public interface Stargate extends Comparable<Stargate>
 	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is extracted from the energy buffer
 	 * @return Amount of energy that was actually depleted
 	 */
-	long extractEnergy(long energy, boolean simulate);
+	default long extractEnergy(long energy, boolean simulate)
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.depleteEnergy(energy, simulate);
+		else
+			return energyStorage.extractEnergy(SGJourneyEnergy.regularEnergy(energy), simulate);
+	}
 	
 	/**
 	 * Checks if the Stargate can extract the specified amount of energy
@@ -399,15 +440,118 @@ public interface Stargate extends Comparable<Stargate>
 	 * @param simulate True if the depletion will only be simulated and the amount of energy in the Stargate's energy buffer will stay the same, if false, the energy is received by the energy buffer
 	 * @return Amount of energy that was actually received
 	 */
-	long receiveEnergy(long energy, boolean simulate);
+	default long receiveEnergy(long energy, boolean simulate)
+	{
+		IEnergyStorage energyStorage = getEnergyStorage();
+		if(energyStorage == null)
+			return 0L;
+		
+		if(energyStorage instanceof SGJourneyEnergy sgJourneyEnergy)
+			return sgJourneyEnergy.receiveLongEnergy(energy, simulate);
+		else
+			return energyStorage.receiveEnergy(SGJourneyEnergy.regularEnergy(energy), simulate);
+	}
 	
-	// Stargate Connection
+	//============================================================================================
+	//******************************************Dialing*******************************************
+	//============================================================================================
+	
+	/**
+	 * @return Symbol Map responsible for remapping symbols that are engaged by this Stargate
+	 */
+	default SymbolMap getSymbolMap()
+	{
+		// By default, Stargates aren't expected to support symbol remapping, which is why an immutable Symbol Map is returned here
+		return SymbolMap.Immutable.SYMBOL_MAP;
+	}
+	
+	/**
+	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before encoding the symbols fully
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
+	 * @return Feedback from encoding the symbol
+	 */
+	default StargateInfo.FeedbackMessage indirectEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound)
+	{
+		return directEngageSymbol(symbol, canEngageStargate, chevronSound);
+	}
+	
+	/**
+	 * Method to engage symbols that doesn't allow the Stargate to do any extra stuff
+	 * @param symbol Symbol to be encoded
+	 * @param canEngageStargate If true, encoding the Point of Origin will automatically engage the Stargate
+	 * @param chevronSound Type of chevron sound to play
+	 * @return Feedback from encoding the symbol
+	 */
+	StargateInfo.FeedbackMessage directEngageSymbol(int symbol, boolean canEngageStargate, StargateInfo.ChevronSound chevronSound);
+	
+	/**
+	 * Method to engage symbols that also allows the Stargate to do extra stuff, like rotate before engaging it
+	 * @return Feedback from engaging the Stargate
+	 */
+	default StargateInfo.FeedbackMessage indirectEngageStargate(boolean doKawoosh, Dialing.Action action)
+	{
+		return engageStargate(doKawoosh, action);
+	}
+	
+	/**
+	 * Method to engage the Stargate that doesn't allow the Stargate to do any extra stuff
+	 * @return Feedback from engaging the Stargate
+	 */
+	StargateInfo.FeedbackMessage engageStargate(boolean doKawoosh, Dialing.Action action);
+	
+	/**
+	 * Instantly dials a specified Address
+	 * @param address Address to dial
+	 * @param action If action.simulate() is true, the dialing attempt will only be simulated (won't actually create a connection or reset any Stargates)
+	 * @return Feedback with information regarding how this Stargate's dialing attempt went
+	 */
+	StargateInfo.FeedbackMessage instaDial(Address address, boolean doKawoosh, Dialing.Action action);
+	
+	/**
+	 * Disconnects the Stargate (respects disconnect side, so it will not disconnect the Stargate if it did not initiate the connection)
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage disconnectStargate(StargateInfo.FeedbackMessage feedback);
+	
+	/**
+	 * Disconnects the Stargate regardless of which Stargate initiated the connection
+	 * @param feedback Feedback Message containing the reason for disconnecting the Stargate
+	 * @return Feedback with information regarding how this Stargate's disconnect attempt went
+	 */
+	StargateInfo.FeedbackMessage bypassDisconnectStargate(StargateInfo.FeedbackMessage feedback);
+	
+	//============================================================================================
+	//************************************Stargate Connection*************************************
+	//============================================================================================
+	
+	/**
+	 * @return Time (in ticks) since the connection was established (Right after dialing Stargate finished dialing)
+	 */
+	int getConnectionTime();
+	
+	/**
+	 * @return Time (in ticks) since the kawoosh started
+	 */
+	int getKawooshTime();
+	
+	/**
+	 * @return Time (in ticks) since wormhole formed (after kawoosh ended)
+	 */
+	int getOpenTime();
+	
+	/**
+	 * @return Time (in ticks) since a traveler has last appeared near any of the connected Stargates
+	 */
+	int getTimeSinceLastTraveler();
 	
 	/**
 	 * Updates Stargate with current information about the Stargate Connection
 	 * @param connection Stargate Connection that connects the two Stargates
 	 */
-	default void connectionUpdate(StargateConnection connection) {}
+	default void updateFromConnection(StargateConnection connection) {}
 	
 	/**
 	 * @param doKawoosh Whether kawoosh should form when the connection is established (for instance, when Nox open the Stargate)
@@ -435,13 +579,13 @@ public interface Stargate extends Comparable<Stargate>
 	/**
 	 * @return True if the Stargate can call forward, otherwise false
 	 */
-	default boolean callForward()
+	default boolean doCallForwarding()
 	{
 		return false;
 	}
 	
 	/**
-	 * Checks which Stargates actually get dialed when this Stargate is dialed (mainly matters in case of Call Forwarding)
+	 * Checks which Stargates actually get dialed when this Stargate is dialed (mainly matters in the case of Call Forwarding)
 	 * @param dialingStargate The Stargate that is attempting to dial this Stargate
 	 * @param connectionType The type of the connection to be created between the dialingStargate and this Stargate
 	 * @return List of Stargates the dialingStargate will be connected to, first Stargate on this list will be considered the "main" Stargate of the connection (because Stargate connections are still primarily 1:1)
@@ -619,6 +763,10 @@ public interface Stargate extends Comparable<Stargate>
 	 * @return Address Filter Info used to decide which connections the Stargate will decline
 	 */
 	AddressFilterInfo addressFilterInfo();
+	
+	//============================================================================================
+	//******************************************Ticking*******************************************
+	//============================================================================================
 	
 	/**
 	 * Actions the Stargate will perform while ticking

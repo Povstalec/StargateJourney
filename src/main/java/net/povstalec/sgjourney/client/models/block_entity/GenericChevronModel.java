@@ -356,22 +356,22 @@ public class GenericChevronModel
 					-CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					-CHEVRON_LIGHT_Z_OFFSET,
-					47F/64, 4F/64,
+					48F/64, 4F/64,
 					
 					-CHEVRON_LIGHT_BOTTOM_CENTER,
 					-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					-CHEVRON_LIGHT_Z_OFFSET,
-					48.5F/64, 11F/64,
+					49.5F/64, 11F/64,
 					
 					CHEVRON_LIGHT_BOTTOM_CENTER,
 					-CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					-CHEVRON_LIGHT_Z_OFFSET,
-					51.5F/64, 11F/64,
+					52.5F/64, 11F/64,
 					
 					CHEVRON_LIGHT_TOP_CENTER,
 					CHEVRON_LIGHT_HEIGHT_CENTER + yOffset,
 					-CHEVRON_LIGHT_Z_OFFSET,
-					53F/64, 4F/64);
+					54F/64, 4F/64);
 		}
 
 		//Light Left

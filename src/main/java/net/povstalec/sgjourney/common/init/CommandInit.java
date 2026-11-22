@@ -42,8 +42,8 @@ import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.Galaxy;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 public class CommandInit
 {
@@ -345,8 +345,8 @@ public class CommandInit
 		if(stargate != null)
 		{
 			StargateInfo.FeedbackMessage feedback = bypass ?
-				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
-				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+				stargate.bypassDisconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
+				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			
 			context.getSource().sendSuccess(Component.translatable("info.sgjourney.recent_feedback")
 				.append(Component.literal(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);

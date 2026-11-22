@@ -112,7 +112,14 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 	@Nullable
 	protected MilkyWayBlockEntityStargate fetchStargate()
 	{
-		return BlockEntityList.get(level).getStargate(MilkyWayBlockEntityStargate.class, this.id9ChevronAddress);
+		if(level.isClientSide())
+			return new MilkyWayBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
+		MilkyWayBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(MilkyWayBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	private short getCurrentChevron()
@@ -171,7 +178,7 @@ public class MilkyWayStargateEntity extends RotatingStargateEntity<MilkyWayBlock
 			this.isChevronOpen = false;
 			updateClient();
 			
-			StargateInfo.FeedbackMessage feedback = directEngageSymbol(getCurrentSymbol(), true);
+			StargateInfo.FeedbackMessage feedback = directEngageSymbol(getCurrentSymbol(), true, StargateInfo.ChevronSound.ENGAGE);
 			
 			// This is a dumb way to make sure the sound plays even after the chevron is engaged 
 			if(feedback.feedback() == StargateInfo.Feedback.SYMBOL_IN_ADDRESS)

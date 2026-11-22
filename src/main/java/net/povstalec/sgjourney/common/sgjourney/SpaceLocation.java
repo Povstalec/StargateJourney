@@ -100,9 +100,10 @@ public class SpaceLocation
 
 	/// Dimension this Space Location represents
 	private ResourceKey<Level> dimension;
-	/// Address Region this Space Location is a part of
+	/// Resource Key of the Address Region this Space Location is a part of
 	@Nullable
-	private final ResourceKey<AddressRegion> addressRegionKey;
+	private ResourceKey<AddressRegion> addressRegionKey;
+	/// Address Region this Space Location is a part of
 	@Nullable
 	private AddressRegion addressRegion = null;
 	/// If not empty and the Stargate Network does not locate any Stargates in this location, it will attempt to locate and load them from Structures found using the listed Structure Tags during Stellar Update
@@ -208,6 +209,7 @@ public class SpaceLocation
 	{
 		if(addressRegion != null)
 			addressRegion.addSpaceLocation(this);
+		this.addressRegionKey = addressRegion.getResourceKey();
 		this.addressRegion = addressRegion;
 	}
 	
