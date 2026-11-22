@@ -85,7 +85,11 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 		if(level.isClientSide())
 			return new PegasusBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
+		PegasusBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	//============================================================================================
@@ -157,7 +161,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 	{
 		// Delay the opening of the gate to the tick after all symbols are encoded
 		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
-			engageStargate();
+			engageStargate(true, Dialing.Action.EXECUTE);
 		
 		if(isSymbolSpinning())
 		{

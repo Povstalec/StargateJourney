@@ -44,6 +44,12 @@ public interface BlockEntityDHD<DHDEntity extends BlockEntity> extends DHD
 		dhdRun(this::updateFromBlockEntity);
 	}
 	
+	@Override
+	@Nullable default Level getLevel()
+	{
+		return dhdReturn(BlockEntity::getLevel, null);
+	}
+	
 	// Functional Interface stuff
 	
 	/**

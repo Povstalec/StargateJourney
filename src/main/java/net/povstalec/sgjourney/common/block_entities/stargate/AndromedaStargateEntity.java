@@ -75,7 +75,11 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 		if(level.isClientSide())
 			return new AndromedaBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(AndromedaBlockEntityStargate.class, this.id9ChevronAddress);
+		AndromedaBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(AndromedaBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	//============================================================================================
@@ -108,7 +112,7 @@ public class AndromedaStargateEntity extends StopMotionStargateEntity<AndromedaB
 	{
 		// Delay the opening of the gate to the tick after all symbols are encoded
 		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
-			engageStargate();
+			engageStargate(true, Dialing.Action.EXECUTE);
 		
 		if(isSymbolSpinning())
 		{

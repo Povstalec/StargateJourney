@@ -88,7 +88,11 @@ public class ClassicStargateEntity extends RotatingStargateEntity<ClassicBlockEn
 		if(level.isClientSide())
 			return new ClassicBlockEntityStargate(getStargateType(), level.getServer(), this);
 		
-		return BlockEntityList.get(level).getStargate(ClassicBlockEntityStargate.class, this.id9ChevronAddress);
+		ClassicBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(ClassicBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	public static void tick(Level level, BlockPos pos, BlockState state, ClassicStargateEntity stargate)
