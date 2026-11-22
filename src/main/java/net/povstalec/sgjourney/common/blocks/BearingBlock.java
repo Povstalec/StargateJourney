@@ -2,7 +2,6 @@ package net.povstalec.sgjourney.common.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.FrontAndTop;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,16 +14,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.NotNull;
 
 public class BearingBlock extends Block implements SimpleWaterloggedBlock
 {
 	public static final BooleanProperty POWERED = BlockStateProperties.POWERED;
-	public static final EnumProperty<FrontAndTop> ORIENTATION = BlockStateProperties.ORIENTATION;
+	public static final DirectionProperty FACING = BlockStateProperties.FACING;
 	public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
 	private static final VoxelShape TOP = Block.box(0.0D, 15.0D, 0.0D, 16.0D, 16.0D, 16.0D);
@@ -39,7 +39,7 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 	{
 		super(properties);
 		this.registerDefaultState(this.stateDefinition.any()
-				.setValue(ORIENTATION, FrontAndTop.UP_NORTH)
+				.setValue(FACING, Direction.UP)
 				.setValue(POWERED, Boolean.FALSE)
 				.setValue(WATERLOGGED, false));
 	}
@@ -47,21 +47,21 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 	@Override
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> state)
 	{
-		state.add(ORIENTATION).add(POWERED).add(WATERLOGGED);
+		state.add(FACING).add(POWERED).add(WATERLOGGED);
 	}
 	
-	public BlockState rotate(BlockState state, Rotation rotation)
+	public @NotNull BlockState rotate(BlockState state, Rotation rotation)
 	{
-		return state.setValue(ORIENTATION, rotation.rotation().rotate(state.getValue(ORIENTATION)));
+		return state.setValue(FACING, rotation.rotation().rotate(state.getValue(FACING)));
 	}
 	
-	public BlockState mirror(BlockState rotation, Mirror mirror)
+	public @NotNull BlockState mirror(BlockState rotation, Mirror mirror)
 	{
-		return rotation.setValue(ORIENTATION, mirror.rotation().rotate(rotation.getValue(ORIENTATION)));
+		return rotation.setValue(FACING, mirror.rotation().rotate(rotation.getValue(FACING)));
 	}
 	
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos) 
+	public boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos)
 	{
 		return true;
 	}
@@ -69,17 +69,9 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 	@Override
 	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
-		Direction direction = context.getClickedFace();
-		Direction direction1;
-		
-		if(direction.getAxis() == Direction.Axis.Y)
-			direction1 = context.getHorizontalDirection().getOpposite();
-		else
-			direction1 = Direction.UP;
-
 		FluidState fluidstate = context.getLevel().getFluidState(context.getClickedPos());
 		return this.defaultBlockState()
-				.setValue(ORIENTATION, FrontAndTop.fromFrontAndTop(direction, direction1))
+				.setValue(FACING, context.getClickedFace())
 				.setValue(WATERLOGGED, fluidstate.getType() == Fluids.WATER);
 	}
 
@@ -117,21 +109,15 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext collision)
 	{
-		FrontAndTop orientation = state.getValue(ORIENTATION);
-		
-		if(orientation == FrontAndTop.NORTH_UP)
-			return NORTH;
-		else if(orientation == FrontAndTop.EAST_UP)
-			return EAST;
-		else if(orientation == FrontAndTop.SOUTH_UP)
-			return SOUTH;
-		else if(orientation == FrontAndTop.WEST_UP)
-			return WEST;
-		
-		else if(orientation.front() == Direction.DOWN)
-			return TOP;
-			
-		return BOTTOM;
+		return switch(state.getValue(FACING))
+		{
+			case DOWN -> TOP;
+			case NORTH -> NORTH;
+			case EAST -> EAST;
+			case SOUTH -> SOUTH;
+			case WEST -> WEST;
+			default -> BOTTOM;
+		};
 	}
 	
 	private boolean canSupport(BlockState state, LevelReader levelReader, BlockPos pos, Direction direction)
@@ -140,26 +126,6 @@ public class BearingBlock extends Block implements SimpleWaterloggedBlock
 		BlockState blockstate = levelReader.getBlockState(blockPos);
 		
 		return blockstate.isFaceSturdy(levelReader, pos, direction);
-	}
-	
-	@Override
-	public boolean canSurvive(BlockState state, LevelReader levelReader, BlockPos pos)
-	{
-		FrontAndTop orientation = state.getValue(ORIENTATION);
-		
-		if(orientation == FrontAndTop.NORTH_UP)
-			return canSupport(state, levelReader, pos, Direction.NORTH);
-		else if(orientation == FrontAndTop.EAST_UP)
-			return canSupport(state, levelReader, pos, Direction.EAST);
-		else if(orientation == FrontAndTop.SOUTH_UP)
-			return canSupport(state, levelReader, pos, Direction.SOUTH);
-		else if(orientation == FrontAndTop.WEST_UP)
-			return canSupport(state, levelReader, pos, Direction.WEST);
-		
-		else if(orientation.front() == Direction.DOWN)
-			return canSupport(state, levelReader, pos, Direction.DOWN);
-			
-		return canSupport(state, levelReader, pos, Direction.UP);
 	}
 	
 	@Override
