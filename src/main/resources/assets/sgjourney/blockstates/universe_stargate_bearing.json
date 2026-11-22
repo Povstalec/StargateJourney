@@ -1,0 +1,12 @@
+{
+	"variants": 
+	{
+		"facing=up": { "model": "sgjourney:block/universe_stargate_bearing" },
+		"facing=down": { "model": "sgjourney:block/universe_stargate_bearing", "x":  180 },
+		"facing=north": { "model": "sgjourney:block/universe_stargate_bearing", "x":  90 },
+		"facing=south": { "model": "sgjourney:block/universe_stargate_bearing", "x":  90, "y": 180 },
+		"facing=west": { "model": "sgjourney:block/universe_stargate_bearing", "x":  90, "y": 270 },
+		"facing=east": { "model": "sgjourney:block/universe_stargate_bearing", "x":  90, "y": 90 }
+	}
+}
+
