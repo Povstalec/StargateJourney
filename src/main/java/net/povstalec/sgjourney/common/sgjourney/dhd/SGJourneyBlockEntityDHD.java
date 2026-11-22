@@ -5,6 +5,7 @@ import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.api.dhd.BlockEntityDHD;
 import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
 import net.povstalec.sgjourney.common.block_entities.dhd.AbstractDHDEntity;
+import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
 
@@ -23,7 +24,7 @@ public interface SGJourneyBlockEntityDHD<DHDEntity extends AbstractDHDEntity<?>>
 	@Override
 	default @Nullable Vec3 getPosition()
 	{
-		return dhdReturn(stargate -> stargate.getBlockPos().getCenter(), null);
+		return dhdReturn(stargate -> CoordinateHelper.blockPosCenter(stargate.getBlockPos()), null);
 	}
 	
 	@Override
