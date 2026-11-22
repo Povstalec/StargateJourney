@@ -30,7 +30,12 @@ public class MilkyWayDHDScreen extends AbstractDHDScreen<MilkyWayDHDMenu>
 		{
 			defaultButton = DefaultButton.values()[i];
 			addRenderableWidget(new MilkyWayDHDSymbolButton.Dialing(leftPos, topPos, menu, width, height, i, MilkyWayDHDSymbolButton.CANON_SYMBOLS[i], defaultButton,
-				button -> encodeSymbol(((MilkyWayDHDSymbolButton.Dialing) button).getSymbol())));
+				button ->
+				{
+					encodeSymbol(((MilkyWayDHDSymbolButton.Dialing) button).getSymbol());
+					if(!menu.getDHD().getAddress().canGrow())
+						onClose();
+				}));
 		}
 	}
 }

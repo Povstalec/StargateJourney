@@ -201,11 +201,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
         {
 			AbstractStargateEntity<?> stargate = getStargate(level, pos, oldState);
     		if(stargate != null)
-    		{
-    			stargate.bypassDisconnectStargate(StargateInfo.Feedback.STARGATE_DESTROYED.withInfo());
-				stargate.dhdCache.clearTwoWays();
-    			stargate.removeStargateFromNetwork();
-    		}
+    			stargate.removeStargate();
     		
 			dropStargateItem(level, pos, oldState, null);
     		destroyStargate(level, pos, getParts(), getShieldingParts(), oldState.getValue(FACING), oldState.getValue(ORIENTATION), oldState.getValue(PART));
@@ -330,6 +326,7 @@ public abstract class AbstractStargateBaseBlock extends AbstractStargateBlock im
 	}
 	
 	@Override
+	@Nullable
 	public AbstractStargateEntity<?> getStargate(BlockGetter reader, BlockPos pos, BlockState state)
 	{
 		BlockEntity blockentity = reader.getBlockEntity(pos);

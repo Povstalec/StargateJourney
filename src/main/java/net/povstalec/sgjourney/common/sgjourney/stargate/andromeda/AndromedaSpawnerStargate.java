@@ -21,4 +21,5 @@ public class AndromedaSpawnerStargate extends SGJourneySpawnerStargate implement
 	{
 		return doKawoosh ? CHEVRON_LOCK_SPEED : StargateInfo.ChevronLockSpeed.FAST;
 	}
+	
 }

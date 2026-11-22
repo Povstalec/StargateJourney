@@ -14,11 +14,11 @@ import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTranspo
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.sgjourney.Address;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 
 import javax.annotation.Nonnull;
@@ -38,12 +38,12 @@ public class BlockEntityList extends SavedData
 	
 	public static final String STARGATES = "Stargates";
 	public static final String TRANSPORT_RINGS = "TransportRings";
-	public static final String TRANSPORTERS = "Transporters"; //TODO Replace TransportRings with this
+	public static final String TRANSPORTERS = "Transporters";
 	
 	private MinecraftServer server;
 	
-	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<Address.Immutable, Stargate>();
-	protected HashMap<TransporterID, Transporter> transporterMap = new HashMap<TransporterID, Transporter>();
+	protected HashMap<Address.Immutable, Stargate> stargateMap = new HashMap<>();
+	protected HashMap<TransporterID, Transporter> transporterMap = new HashMap<>();
 	
 	//============================================================================================
 	//******************************************Stargate******************************************
@@ -55,7 +55,7 @@ public class BlockEntityList extends SavedData
 	 * @return Stargate that got added if successful, null if unsuccessful
 	 */
 	@Nullable
-	public <SG extends BlockEntityStargate<?>> SG addStargate(AbstractStargateEntity<SG> stargateEntity)
+	public <SG extends SGJourneyBlockEntityStargate<?>> SG addStargate(AbstractStargateEntity<SG> stargateEntity)
 	{
 		Address.Immutable address = stargateEntity.get9ChevronAddress();
 		
@@ -144,6 +144,9 @@ public class BlockEntityList extends SavedData
 	public <SG extends Stargate> SG getStargate(Class<SG> clazz, Address address)
 	{
 		Stargate stargate = getStargate(address);
+		if(stargate == null)
+			return null;
+		
 		if(clazz.isInstance(stargate))
 			return clazz.cast(stargate);
 		
@@ -181,7 +184,7 @@ public class BlockEntityList extends SavedData
 	 * @param transporterEntity Transporter Block Entity to add to the Transporter Network
 	 * @return Transporter that got added if successful, null if unsuccessful
 	 */
-	public <T extends BlockEntityTransporter<?>> T addTransporter(AbstractTransporterEntity<T> transporterEntity)
+	public <T extends SGJourneyBlockEntityTransporter<?>> T addTransporter(AbstractTransporterEntity<T> transporterEntity)
 	{
 		if(!transporterEntity.getID().isValid())
 			transporterEntity.setID(generateTransporterID(transporterEntity.getLevel().getRandom()));
@@ -339,25 +342,17 @@ public class BlockEntityList extends SavedData
 	
 	// Stargates
 	
-	private <SG extends BlockEntityStargate<?>> SG constructAndLoadStargate(StargateType<SG> stargateType)
-	{
-		SG stargate = stargateType.constructStargate(server);
-		stargate.loadFromBlockEntity(stargate.getStargateEntity());
-		
-		return stargate;
-	}
-	
 	private void loadStargateFromBlockEntity(Address.Immutable address, CompoundTag stargateTag)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(stargateTag.getString(Stargate.DIMENSION));
-		BlockPos blockPos = Conversion.intArrayToBlockPos(stargateTag.getIntArray(BlockEntityStargate.COORDINATES));
+		BlockPos blockPos = Conversion.intArrayToBlockPos(stargateTag.getIntArray(SGJourneyBlockEntityStargate.COORDINATES));
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)
 		{
-			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends BlockEntityStargate<?>> stargateEntity)
+			if(level.getBlockEntity(blockPos) instanceof AbstractStargateEntity<? extends SGJourneyBlockEntityStargate<?>> stargateEntity)
 			{
-				BlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
+				SGJourneyBlockEntityStargate<?> stargate = stargateEntity.getStargateType().constructStargate(server);
 				stargate.loadFromBlockEntity(stargateEntity);
 				this.stargateMap.put(address, stargate);
 				setDirty(); // A pretty important change happened
@@ -402,17 +397,17 @@ public class BlockEntityList extends SavedData
 	private void loadTransporterFromBlockEntity(TransporterID.Immutable transporterID, CompoundTag transporterTag, boolean setEntityID)
 	{
 		ResourceKey<Level> dimension = Conversion.stringToDimension(transporterTag.getString(Transporter.DIMENSION));
-		BlockPos blockPos = Conversion.intArrayToBlockPos(transporterTag.getIntArray(BlockEntityTransporter.COORDINATES));
+		BlockPos blockPos = Conversion.intArrayToBlockPos(transporterTag.getIntArray(SGJourneyBlockEntityTransporter.COORDINATES));
 		ServerLevel level = server.getLevel(dimension);
 		
 		if(level != null && blockPos != null)
 		{
-			if(level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity<? extends BlockEntityTransporter<?>> transporterEntity)
+			if(level.getBlockEntity(blockPos) instanceof AbstractTransporterEntity<? extends SGJourneyBlockEntityTransporter<?>> transporterEntity)
 			{
 				if(setEntityID)
 					transporterEntity.setID(transporterID);
 				
-				BlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter(server);
+				SGJourneyBlockEntityTransporter<?> transporter = transporterEntity.getTransporterType().constructTransporter(server);
 				transporter.loadFromBlockEntity(transporterEntity);
 				this.transporterMap.put(transporterID, transporter);
 				setDirty(); // A pretty important change happened

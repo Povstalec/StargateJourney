@@ -8,11 +8,13 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -126,6 +128,44 @@ public class LocatorHelper
 		
 		return newQueue;
 	}*/
+	
+	@Nullable
+	public static <T> T getNearestCapability(@NotNull final Capability<T> cap, Level level, BlockPos centerPos, double maxDistance, Predicate<T> filter)
+	{
+		double bestDistance = Double.POSITIVE_INFINITY;
+		T closest = null;
+		
+		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
+		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
+		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		
+		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
+		{
+			for(int z = chunkZ - chunkDistance; z <= chunkZ + chunkDistance; z++)
+			{
+				ChunkAccess chunk = level.getChunk(x, z);
+				for(BlockPos pos : chunk.getBlockEntitiesPos())
+				{
+					BlockEntity blockEntity = level.getBlockEntity(pos);
+					if(blockEntity != null)
+					{
+						double distanceSqr = CoordinateHelper.Relative.distanceSqr(centerPos, blockEntity.getBlockPos());
+						if(distanceSqr < bestDistance && blockEntity.getCapability(cap).isPresent())
+						{
+							T t = blockEntity.getCapability(cap).resolve().get();
+							if(filter.test(t))
+							{
+								bestDistance = distanceSqr;
+								closest = t;
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		return closest;
+	}
 	
 	@SuppressWarnings("unchecked")
 	@Nullable

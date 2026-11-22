@@ -24,6 +24,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.block_entities.ProtectedBlockEntity;
 import net.povstalec.sgjourney.common.blocks.ProtectedBlock;
 import net.povstalec.sgjourney.common.capabilities.AncientGene;
@@ -33,8 +35,6 @@ import net.povstalec.sgjourney.common.config.CommonPermissionConfig;
 import net.povstalec.sgjourney.common.data.*;
 import net.povstalec.sgjourney.common.misc.ComponentHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
 
 import java.util.List;
 import java.util.Map;
@@ -339,8 +339,8 @@ public class CommandInit
 		if(stargate != null)
 		{
 			StargateInfo.FeedbackMessage feedback = bypass ?
-				stargate.bypassDisconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
-				stargate.disconnect(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
+				stargate.bypassDisconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo()) :
+				stargate.disconnectStargate(StargateInfo.Feedback.CONNECTION_ENDED_BY_DISCONNECT.withInfo());
 			
 			context.getSource().sendSuccess(new TranslatableComponent("info.sgjourney.recent_feedback")
 				.append(new TextComponent(": ").append(feedback.getMessageComponent())).withStyle(ChatFormatting.WHITE), true);

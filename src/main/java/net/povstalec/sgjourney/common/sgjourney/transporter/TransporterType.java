@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.TransporterInit;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import java.util.Optional;
 

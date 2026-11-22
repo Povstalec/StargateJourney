@@ -7,6 +7,9 @@ import net.minecraftforge.energy.IEnergyStorage;
 import net.povstalec.sgjourney.common.config.CommonZPMConfig;
 import net.povstalec.sgjourney.common.config.SyncedConfig;
 import net.povstalec.sgjourney.common.items.ZeroPointModule;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.Nullable;
 
 public abstract class ZeroPointEnergy extends SGJourneyEnergy
 {
@@ -127,7 +130,7 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
     }
 	
 	@Override
-	public void fillSGJourneyEnergyStorage(SGJourneyEnergy sgjourneyEnergy, long amount)
+	public void fillSGJourneyEnergyStorage(@NotNull SGJourneyEnergy sgjourneyEnergy, long amount)
 	{
 		long simulatedOutputAmount = this.extractLongEnergy(amount, true);
 		long simulatedReceiveAmount = sgjourneyEnergy.receiveZeroPointEnergy(simulatedOutputAmount, true);
@@ -137,9 +140,9 @@ public abstract class ZeroPointEnergy extends SGJourneyEnergy
 	}
 	
 	@Override
-	public void fillOtherEnergyStorage(IEnergyStorage otherEnergyStorage, long amount)
+	public void fillOtherEnergyStorage(@Nullable IEnergyStorage otherEnergyStorage, long amount)
 	{
-		if(!otherEnergyStorage.canReceive())
+		if(otherEnergyStorage == null || !otherEnergyStorage.canReceive())
 			return;
 		
 		if(otherEnergyStorage instanceof SGJourneyEnergy sgjourneyEnergy)

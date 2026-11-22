@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.stargate.AndromedaStargateEntity;
@@ -12,17 +12,18 @@ import net.povstalec.sgjourney.common.blockstates.Orientation;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.Address;
+import net.povstalec.sgjourney.common.sgjourney.StargateConnection;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.BlockEntityStargate;
+import net.povstalec.sgjourney.common.sgjourney.stargate.SGJourneyBlockEntityStargate;
 import net.povstalec.sgjourney.common.sgjourney.stargate.StargateType;
 
 import javax.annotation.Nullable;
 
-public class AndromedaBlockEntityStargate extends AndromedaStargate implements BlockEntityStargate<AndromedaStargateEntity>
+public class AndromedaBlockEntityStargate extends AndromedaStargate implements SGJourneyBlockEntityStargate<AndromedaStargateEntity>
 {
 	// Stargate BlockEntity cache
 	protected boolean stargateCacheRequiresUpdate = true;
-	protected AndromedaStargateEntity cachedStargateEntity = null;
+	protected AndromedaStargateEntity stargateBlockEntity = null;
 	
 	protected BlockPos blockPos;
 	
@@ -39,6 +40,13 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 		super(type, server);
 	}
 	
+	public AndromedaBlockEntityStargate(StargateType<?> type, MinecraftServer server, AndromedaStargateEntity stargate)
+	{
+		this(type, server);
+		
+		loadFromBlockEntity(stargate);
+	}
+	
 	@Override
 	public BlockPos getBlockPos()
 	{
@@ -48,7 +56,7 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 	protected void cacheStargateEntity(@Nullable AndromedaStargateEntity stargate)
 	{
 		this.stargateCacheRequiresUpdate = false;
-		this.cachedStargateEntity = stargate;
+		this.stargateBlockEntity = stargate;
 	}
 	
 	public void invalidateCachedStargateEntity()
@@ -56,14 +64,13 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 		if(!this.stargateCacheRequiresUpdate)
 		{
 			this.stargateCacheRequiresUpdate = true;
-			this.cachedStargateEntity = null;
+			this.stargateBlockEntity = null;
 		}
 	}
 	
 	protected @Nullable AndromedaStargateEntity fetchStargateEntity()
 	{
-		ServerLevel level = server.getLevel(dimension);
-		
+		Level level = getLevel();
 		if(level != null && level.getBlockEntity(blockPos) instanceof AndromedaStargateEntity stargate)
 			return stargate;
 		
@@ -71,35 +78,40 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 	}
 	
 	@Override
-	public @Nullable AndromedaStargateEntity getStargateEntity()
+	public @Nullable AndromedaStargateEntity getStargateBlockEntity()
 	{
 		if(this.stargateCacheRequiresUpdate)
 			cacheStargateEntity(fetchStargateEntity());
 		
-		return this.cachedStargateEntity;
+		return this.stargateBlockEntity;
 	}
 	
 	@Override
-	public void onStargateEntityUnloaded()
+	public void onStargateBlockEntityUnloaded()
 	{
-		invalidateCachedStargateEntity();
+		if(getServer() != null)
+			invalidateCachedStargateEntity();
 	}
 	
 	@Override
-	public void onStargateEntityRemoved()
+	public void onStargateBlockEntityRemoved()
 	{
-		invalidateCachedStargateEntity();
+		if(getServer() != null)
+			invalidateCachedStargateEntity();
 	}
 	
 	@Override
 	public void loadFromBlockEntity(AbstractStargateEntity<?> stargate)
 	{
+		SGJourneyBlockEntityStargate.super.loadFromBlockEntity(stargate);
+		
 		this.id9ChevronAddress = stargate.get9ChevronAddress();
 		
+		this.level = stargate.getLevel();
 		this.dimension = stargate.getLevel().dimension();
 		this.blockPos = stargate.getBlockPos();
 		
-		this.hasDHD = stargate.dhdCache.isPresent();
+		this.hasDHD = dhdCache.isPresent();
 		this.timesOpened = stargate.getTimesOpened();
 		
 		this.hasNetworkRestrictions = stargate.hasNetworkRestrictions();
@@ -113,8 +125,13 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 	@Override
 	public StargateInfo.FeedbackMessage resetStargate(StargateInfo.FeedbackMessage feedback)
 	{
+		this.connectionTime = 0;
+		this.kawooshTime = 0;
+		this.openTime = 0;
+		this.timeSinceLastTraveler = 0;
+		
 		invalidateCachedStargateEntity();
-		return BlockEntityStargate.super.resetStargate(feedback);
+		return SGJourneyBlockEntityStargate.super.resetStargate(feedback);
 	}
 	
 	@Override
@@ -166,22 +183,36 @@ public class AndromedaBlockEntityStargate extends AndromedaStargate implements B
 	// Updating
 	
 	@Override
-	public void update()
+	public void updateFromBlockEntity(AndromedaStargateEntity stargate)
 	{
-		stargateRun(stargate ->
-		{
-			// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
-			this.hasDHD = stargate.dhdCache.isCached();
-			
-			this.timesOpened = stargate.getTimesOpened();
-			
-			// Retrieving cached ones here too because they're influenced by the DHD
-			this.hasNetworkRestrictions = stargate.hasCachedNetworkRestrictions();
-			this.networks = stargate.getCachedNetworks();
-		});
+		// When it comes to the DHD, this update method should only take cached values, as the cache changing is what causes the update in the first place
+		this.hasDHD = dhdCache.isCached();
+		
+		this.timesOpened = stargate.getTimesOpened();
+		
+		// Retrieving cached ones here too because they're influenced by the DHD
+		this.hasNetworkRestrictions = stargate.hasCachedNetworkRestrictions();
+		this.networks = stargate.getCachedNetworks();
 		
 		// Make sure any changes are saved to the Block Entity List
-		updateBlockEntityList();
+		if(!stargate.getLevel().isClientSide())
+			updateBlockEntityList();
+	}
+	
+	@Override
+	public void onClientUpdate(@Nullable CompoundTag tag)
+	{
+		super.onClientUpdate(tag);
+		
+		if(tag != null)
+		{
+			stargateRun(stargate ->
+			{
+				stargate.setKawooshTime(getKawooshTime());
+				stargate.setOpenTime(getOpenTime());
+				stargate.setTimeSinceLastTraveler(getTimeSinceLastTraveler());
+			});
+		}
 	}
 	
 	//============================================================================================

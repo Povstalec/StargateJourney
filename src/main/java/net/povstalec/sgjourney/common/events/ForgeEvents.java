@@ -73,7 +73,9 @@ import net.povstalec.sgjourney.common.items.armor.PersonalShieldItem;
 import net.povstalec.sgjourney.common.misc.TreasureMapForEmeraldsTrade;
 import net.povstalec.sgjourney.common.sgjourney.PointOfOriginTable;
 import net.povstalec.sgjourney.common.sgjourney.SpaceLocation;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.api.dhd.DHD;
+import net.povstalec.sgjourney.api.stargate.DHDControlledStargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -480,6 +482,8 @@ public class ForgeEvents
 		event.register(GoauldHost.class);
 		event.register(AncientGene.class);
 		event.register(Stargate.class);
+		event.register(DHDControlledStargate.class);
+		event.register(DHD.class);
 	}
 	
 	private static void addCartographerTrades(VillagerTradesEvent event)

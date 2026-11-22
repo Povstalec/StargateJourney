@@ -1,24 +1,25 @@
 package net.povstalec.sgjourney.common.sgjourney;
 
-import java.util.List;
-import java.util.Objects;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.povstalec.sgjourney.StargateJourney;
+import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.data.StargateNetworkSettings;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+
+import java.util.List;
+import java.util.Objects;
 
 public class Dialing
 {
@@ -55,6 +56,14 @@ public class Dialing
 		};
 	}
 	
+	public static StargateInfo.FeedbackMessage invalidAddressFeedback(Address address)
+	{
+		if(!address.hasMinValidLength()) // Address is too short
+			return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.too_short"));
+		
+		return StargateInfo.Feedback.INCOMPLETE_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.incomplete_address.no_point_of_origin"));
+	}
+	
 	public static StargateInfo.FeedbackMessage dialStargate(MinecraftServer server, Stargate dialingStargate, Address address, boolean doKawoosh)
 	{
 		return dialStargate(server, dialingStargate, address, doKawoosh, false);
@@ -89,7 +98,7 @@ public class Dialing
 			case ADDRESS_7_CHEVRON -> get7ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
 			case ADDRESS_8_CHEVRON -> get8ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
 			case ADDRESS_9_CHEVRON -> get9ChevronStargate(server, dialingStargate, address, doKawoosh, mustBeLoaded, action);
-			case ADDRESS_INVALID -> resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
+			case ADDRESS_INVALID -> resetStargate(action, dialingStargate, invalidAddressFeedback(address));
 		};
 	}
 	
@@ -98,7 +107,7 @@ public class Dialing
 		AddressRegion addressRegion = Universe.get(server).getSameGalaxyAddressRegion(dialingStargate.getAddressRegion(), dialedAddress);
 		
 		if(addressRegion == null)
-			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.no_address_region")));
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_7_CHEVRON, doKawoosh, mustBeLoaded, action);
 	}
@@ -108,7 +117,7 @@ public class Dialing
 		AddressRegion addressRegion = Universe.get(server).getAddressRegionFromExtragalacticAddress(extragalacticAddress);
 		
 		if(addressRegion == null)
-			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.no_address_region")));
 		
 		return getStargate(server, dialingStargate, addressRegion, Address.Type.ADDRESS_8_CHEVRON, doKawoosh, mustBeLoaded, action);
 	}
@@ -163,7 +172,7 @@ public class Dialing
 		Stargate stargate = StargateNetwork.get(server).getStargate(address);
 		
 		if(stargate == null)
-			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS);
+			return resetStargate(action, dialingStargate, StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.no_stargate")));
 		
 		StargateInfo.FeedbackMessage feedback = attemptConnection(server, dialingStargate, stargate, Address.Type.ADDRESS_9_CHEVRON, doKawoosh, mustBeLoaded, action);
 		

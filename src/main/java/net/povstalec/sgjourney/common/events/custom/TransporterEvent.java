@@ -9,7 +9,7 @@ import net.minecraftforge.eventbus.api.Cancelable;
 import net.minecraftforge.eventbus.api.Event;
 import net.povstalec.sgjourney.common.sgjourney.TransporterConnection;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import javax.annotation.Nullable;
 
