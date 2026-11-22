@@ -5,8 +5,8 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
 import net.povstalec.sgjourney.common.sgjourney.*;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.api.stargate.Stargate;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import javax.annotation.Nullable;
 

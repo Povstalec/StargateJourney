@@ -1,9 +1,6 @@
 package net.povstalec.sgjourney.common.sgjourney.transporter;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.povstalec.sgjourney.StargateJourney;
@@ -15,71 +12,16 @@ import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.Transporting;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
-import org.jetbrains.annotations.NotNull;
+import net.povstalec.sgjourney.api.transporter.BlockEntityTransporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
-public interface BlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends Transporter
+public interface SGJourneyBlockEntityTransporter<TransporterEntity extends AbstractTransporterEntity<?>> extends BlockEntityTransporter<TransporterEntity>
 {
-	String COORDINATES = "Coordinates"; //TODO Change this to "coordinates"
-	
-	BlockPos getBlockPos();
-	
-	@Nullable
-	TransporterEntity getTransporterEntity(MinecraftServer server);
-	
-	default void transporterRun(MinecraftServer server, Consumer<TransporterEntity> consumer)
-	{
-		TransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			consumer.accept(transporter);
-	}
-	
-	default <T> T transporterReturn(MinecraftServer server, Function<TransporterEntity, T> consumer, @Nullable T defaultValue)
-	{
-		TransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return consumer.apply(transporter);
-		
-		return defaultValue;
-	}
-	
-	default <T> T transporterReturnOrSupply(MinecraftServer server, Function<TransporterEntity, T> consumer, @NotNull Supplier<T> defaultValueSupplier)
-	{
-		TransporterEntity transporter = getTransporterEntity(server);
-		
-		if(transporter != null)
-			return consumer.apply(transporter);
-		
-		return defaultValueSupplier.get();
-	}
-	
-	static TransporterInfo.Feedback noTransporterEntity()
-	{
-		StargateJourney.LOGGER.error("SGJourneyTransporter.noTransporterEntity: Transporter Entity could not be found");
-		return TransporterInfo.Feedback.UNKNOWN_ERROR;
-	}
-	
 	void loadFromBlockEntity(AbstractTransporterEntity<?> transporterEntity);
-	
-	
-	
-	@Override
-	default boolean isLoaded()
-	{
-		ServerLevel level = getLevel();
-		if(level == null)
-			return false;
-		
-		return level.isLoaded(getBlockPos());
-	}
 	
 	@Override
 	default @Nullable Vec3 getPosition()

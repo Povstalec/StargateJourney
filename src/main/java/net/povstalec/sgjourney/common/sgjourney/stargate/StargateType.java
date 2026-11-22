@@ -10,6 +10,7 @@ import net.minecraft.server.MinecraftServer;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.init.StargateInit;
 import net.povstalec.sgjourney.common.sgjourney.StargateInfo;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 
 import java.util.Optional;
 

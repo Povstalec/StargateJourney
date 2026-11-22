@@ -1,4 +1,4 @@
-package net.povstalec.sgjourney.common.sgjourney.transporter;
+package net.povstalec.sgjourney.api.transporter;
 
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -18,6 +18,7 @@ import net.povstalec.sgjourney.common.data.Universe;
 import net.povstalec.sgjourney.common.misc.CoordinateHelper;
 import net.povstalec.sgjourney.common.sgjourney.*;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
+import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;

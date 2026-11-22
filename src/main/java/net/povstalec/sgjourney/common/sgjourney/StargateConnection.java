@@ -15,7 +15,7 @@ import net.povstalec.sgjourney.common.data.BlockEntityList;
 import net.povstalec.sgjourney.common.data.StargateNetwork;
 import net.povstalec.sgjourney.common.events.custom.SGJourneyEvents;
 import net.povstalec.sgjourney.common.misc.Trinary;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -271,11 +271,11 @@ public class StargateConnection
 				dialedStargate.connectStargate(stargateConnection, StargateConnection.State.INCOMING_CONNECTION);
 			}
 			
-			dialingStargate.connectionUpdate(stargateConnection);
+			dialingStargate.updateFromConnection(stargateConnection);
 			dialingStargate.updateClient();
 			for(Stargate dialedStargate : dialedStargates)
 			{
-				dialedStargate.connectionUpdate(stargateConnection);
+				dialedStargate.updateFromConnection(stargateConnection);
 				dialedStargate.updateClient();
 			}
 			
@@ -487,11 +487,11 @@ public class StargateConnection
 		
 		this.increaseTicks(maxKawooshTicks);
 		
-		this.dialingStargate.connectionUpdate(this);
+		this.dialingStargate.updateFromConnection(this);
 		this.dialingStargate.updateClient();
 		for(Stargate dialedStargate : this.dialedStargates)
 		{
-			dialedStargate.connectionUpdate(this);
+			dialedStargate.updateFromConnection(this);
 			dialedStargate.updateClient();
 		}
 		

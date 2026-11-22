@@ -20,7 +20,7 @@ public class WormholeIdleSound extends StargateSound<AbstractStargateEntity<?>>
 	@Override
 	public void tick()
 	{
-		if(stargate.isConnected() && stargate.getKawooshTickCount() >= StargateConnection.KAWOOSH_DURATION)
+		if(stargate.isConnected() && stargate.getKawooshTime() >= StargateConnection.KAWOOSH_DURATION)
 			fadeIn();
 		else
 			fadeOut();

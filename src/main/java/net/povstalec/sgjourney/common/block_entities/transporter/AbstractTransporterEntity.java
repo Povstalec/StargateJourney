@@ -33,8 +33,8 @@ import net.povstalec.sgjourney.common.misc.*;
 import net.povstalec.sgjourney.common.sgjourney.TransporterID;
 import net.povstalec.sgjourney.common.sgjourney.TransporterInfo;
 import net.povstalec.sgjourney.common.sgjourney.info.TransporterIDFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.transporter.BlockEntityTransporter;
-import net.povstalec.sgjourney.common.sgjourney.transporter.Transporter;
+import net.povstalec.sgjourney.common.sgjourney.transporter.SGJourneyBlockEntityTransporter;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.sgjourney.transporter.TransporterType;
 import org.jetbrains.annotations.NotNull;
 
@@ -48,7 +48,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.povstalec.sgjourney.StargateJourney;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 
-public abstract class AbstractTransporterEntity<T extends BlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
+public abstract class AbstractTransporterEntity<T extends SGJourneyBlockEntityTransporter<?>> extends EnergySlotBlockEntity implements StructureGenEntity,
 		Nameable, TransporterIDFilterInfo.Interface, ProtectedBlockEntity, PDAStatus, AutoCache.IReceiver<TransporterControllerEntity, AbstractTransporterEntity<?>>
 {
 	public static final String TRANSPORTER_ID = TransporterID.TRANSPORTER_ID;

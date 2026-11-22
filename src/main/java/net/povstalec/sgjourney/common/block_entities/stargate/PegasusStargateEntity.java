@@ -82,7 +82,14 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 	@Nullable
 	protected PegasusBlockEntityStargate fetchStargate()
 	{
-		return BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
+		if(level.isClientSide())
+			return new PegasusBlockEntityStargate(getStargateType(), level.getServer(), this);
+		
+		PegasusBlockEntityStargate stargate = BlockEntityList.get(level).getStargate(PegasusBlockEntityStargate.class, this.id9ChevronAddress);
+		if(stargate != null)
+			setupAutoCache(stargate.controllerCache());
+		
+		return stargate;
 	}
 	
 	//============================================================================================
@@ -154,7 +161,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 	{
 		// Delay the opening of the gate to the tick after all symbols are encoded
 		if(canEngage == CanEngage.YES && !isConnected() && addressBuffer.equals(address) && (!addressBuffer.hasPointOfOrigin() || address.hasPointOfOrigin()))
-			engageStargate();
+			engageStargate(true, Dialing.Action.EXECUTE);
 		
 		if(isSymbolSpinning())
 		{
@@ -164,7 +171,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 				if(currentSymbol == getChevronPosition(9))
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbol, false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+					if(!super.directEngageSymbol(symbol, false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 				else
@@ -180,7 +187,7 @@ public class PegasusStargateEntity extends StopMotionStargateEntity<PegasusBlock
 				else
 				{
 					updateInterfaceBlocks(EVENT_STARGATE_ROTATION_STOPPED);
-					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
+					if(!super.directEngageSymbol(symbolMap.getOriginalSymbol(symbol), false, StargateInfo.ChevronSound.ENGAGE).feedback().isError() && getAddress().hasPointOfOriginOrMaxLength() && canEngage == CanEngage.READY)
 						canEngage = CanEngage.YES; // Stargate is ready to engage
 				}
 			}

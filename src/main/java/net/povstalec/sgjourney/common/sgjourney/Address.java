@@ -22,7 +22,7 @@ import net.povstalec.sgjourney.common.misc.ArrayHelper;
 import net.povstalec.sgjourney.common.misc.Conversion;
 import net.povstalec.sgjourney.common.misc.ParsingResult;
 import net.povstalec.sgjourney.common.sgjourney.info.AddressFilterInfo;
-import net.povstalec.sgjourney.common.sgjourney.stargate.Stargate;
+import net.povstalec.sgjourney.api.stargate.Stargate;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -38,11 +38,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public static final String DIMENSION = "dimension";
 	
 	public static final String ADDRESS_DIVIDER = "-";
-	public static final int MIN_DIALED_ADDRESS_LENGTH = 6;
+	public static final int MIN_DIALED_ADDRESS_LENGTH = 7;
 	public static final int MAX_ADDRESS_LENGTH = 9;
 	public static final int POINT_OF_ORIGIN = 0;
 	public static final int MIN_SYMBOL = POINT_OF_ORIGIN;
-	public static final int MAX_SYMBOL = 47;
+	public static final int TOTAL_SYMBOLS = 48; // Total symbols (including the Point of Origin)
+	public static final int MAX_SYMBOL = TOTAL_SYMBOLS - 1;
 	public static final int ADDRESS_GENERATION_SYMBOLS = 36; // Max symbol (exclusive) allowed for normal generation purposes
 	
 	protected int[] addressArray = new int[0];
@@ -206,7 +207,12 @@ public abstract class Address implements Cloneable, Comparable<Address>
 	public boolean containsSymbol(int symbol, int fromInclusive, int toExclusive)
 	{
 		if(symbol == 0)
-			return hasPointOfOrigin();
+		{
+			if(addressArray.length > fromInclusive && addressArray.length <= toExclusive)
+				return hasPointOfOrigin();
+			
+			return false;
+		}
 		
 		return containsRegularSymbol(symbol, fromInclusive, toExclusive);
 	}
@@ -219,10 +225,15 @@ public abstract class Address implements Cloneable, Comparable<Address>
 		return containsRegularSymbol(symbol, 0, MAX_ADDRESS_LENGTH);
 	}
 	
+	public boolean hasMinValidLength()
+	{
+		return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+	}
+	
 	public boolean canBeDialed()
 	{
 		if(hasPointOfOrigin())
-			return addressArray.length >= MIN_DIALED_ADDRESS_LENGTH;
+			return hasMinValidLength();
 		
 		return addressArray.length == MAX_ADDRESS_LENGTH;
 	}
