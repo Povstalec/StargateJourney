@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-/**
- * Basically a copy of {@link ElementsModel.Loader}
- */
 public abstract class SymbolModelLoader<T extends ISimpleModelGeometry<T>> implements IModelLoader<T>
 {
 	public abstract T getGeometry(JsonObject jsonObject, JsonDeserializationContext deserializationContext, List<BlockElement> elements, int symbolTint);
@@ -52,9 +49,6 @@ public abstract class SymbolModelLoader<T extends ISimpleModelGeometry<T>> imple
 	}
 	
 	
-	/**
-	 * Basically a copy of {@link ElementsModel}
-	 */
 	public static abstract class SymbolModelGeometry<T extends SymbolModelGeometry<T>> implements ISimpleModelGeometry<T>
 	{
 		protected final List<BlockElement> elements;
