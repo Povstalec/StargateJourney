@@ -190,14 +190,14 @@ public class UniverseStargateEntity extends RotatingStargateEntity<UniverseBlock
 				{
 					// Address is too long
 					if(addressBuffer.hasMinValidLength())
-						return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.symbols_after_point_of_origin")));
+						return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.invalid_address.symbols_after_point_of_origin")));
 						// Address is too short
 					else
 						return disconnectStargate(incompleteAddress());
 				}
 				// Attempting to encode symbols after the 9-th symbol is encoded
 				else
-					return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(Component.translatable("message.sgjourney.stargate.error.invalid_address.too_long")));
+					return disconnectStargate(StargateInfo.Feedback.INVALID_ADDRESS.withInfo(new TranslatableComponent("message.sgjourney.stargate.error.invalid_address.too_long")));
 			}
 			// Stargate is ready to be engaged and is ignoring new symbol input (dialing can only be canceled by pressing the big center button)
 			else

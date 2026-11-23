@@ -9,11 +9,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
+import net.povstalec.sgjourney.api.transporter.Transporter;
 import net.povstalec.sgjourney.common.block_entities.stargate.AbstractStargateEntity;
 import net.povstalec.sgjourney.common.block_entities.transporter.AbstractTransporterEntity;
 import net.povstalec.sgjourney.common.data.TransporterNetwork;
 import net.povstalec.sgjourney.common.data.Universe;
-import net.povstalec.sgjourney.api.transporter.Transporter;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -137,7 +137,7 @@ public class LocatorHelper
 		
 		int chunkX = SectionPos.blockToSectionCoord(centerPos.getX());
 		int chunkZ = SectionPos.blockToSectionCoord(centerPos.getZ());
-		int chunkDistance = SectionPos.blockToSectionCoord(maxDistance);
+		int chunkDistance = SectionPos.blockToSectionCoord(Mth.floor(maxDistance));
 		
 		for(int x = chunkX - chunkDistance; x <= chunkX + chunkDistance; x++)
 		{

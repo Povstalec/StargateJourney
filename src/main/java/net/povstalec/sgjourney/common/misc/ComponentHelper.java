@@ -127,7 +127,7 @@ public class ComponentHelper
 	public static Component coordinate(@Nullable Vec3 vec)
 	{
 		if(vec == null)
-			return Component.literal("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
+			return new TextComponent("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
 		
 		return coordinate(vec.x(), vec.y(), vec.z());
 	}
@@ -140,7 +140,7 @@ public class ComponentHelper
 	public static Component coordinate(@Nullable Vec3i vec)
 	{
 		if(vec == null)
-			return Component.literal("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
+			return new TextComponent("[X: - Y: - Z: - ]").withStyle(ChatFormatting.DARK_RED);
 		
 		return coordinate(vec.getX(), vec.getY(), vec.getZ());
 	}

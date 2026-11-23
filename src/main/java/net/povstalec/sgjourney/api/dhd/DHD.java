@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.api.dhd;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.Level;
@@ -168,7 +169,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 			},
 			() ->
 			{
-				messageNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
+				messageNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
 				return StargateInfo.Feedback.NONE.withInfo();
 			});
 	}
@@ -193,7 +194,7 @@ public interface DHD extends AutoCache.IController<DHD, DHDControlledStargate>
 			},
 			() ->
 			{
-				messageNearbyPlayers(Component.translatable("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
+				messageNearbyPlayers(new TranslatableComponent("message.sgjourney.dhd.error.not_connected_to_stargate").withStyle(ChatFormatting.DARK_RED));
 				return StargateInfo.Feedback.NONE.withInfo();
 			});
 	}
