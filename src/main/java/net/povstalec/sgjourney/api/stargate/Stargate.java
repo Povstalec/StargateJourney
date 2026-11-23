@@ -154,12 +154,18 @@ public interface Stargate extends Comparable<Stargate>
 				CoordinateHelper.Relative.toOrthogonalBasis(vector, getForward(), getUp(), getRight());
 	}
 	
+	/**
+	 * @return The Resourcekey of the Stargate's Point of Origin
+	 */
 	@Nullable
 	default ResourceKey<PointOfOrigin> pointOfOrigin()
 	{
 		return null;
 	}
 	
+	/**
+	 * @return The Resourcekey of the Point of Origin the Stargate's Symbols is using
+	 */
 	@Nullable
 	default ResourceKey<Symbols> symbols()
 	{
