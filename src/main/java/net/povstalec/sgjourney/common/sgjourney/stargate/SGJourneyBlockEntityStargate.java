@@ -2,6 +2,7 @@ package net.povstalec.sgjourney.common.sgjourney.stargate;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.AABB;
@@ -61,6 +62,18 @@ public interface SGJourneyBlockEntityStargate<StargateEntity extends AbstractSta
 	default @Nullable Vec3 getPosition()
 	{
 		return stargateReturn(stargate -> stargate.getCenter(), null);
+	}
+	
+	@Override
+	default @Nullable ResourceKey<PointOfOrigin> pointOfOrigin()
+	{
+		return stargateReturn(stargate -> stargate.symbolInfo().pointOfOrigin(), null);
+	}
+	
+	@Override
+	default @Nullable ResourceKey<Symbols> symbols()
+	{
+		return stargateReturn(stargate -> stargate.symbolInfo().symbols(), null);
 	}
 	
 	@Override
