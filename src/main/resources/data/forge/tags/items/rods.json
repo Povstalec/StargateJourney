@@ -2,9 +2,9 @@
 	"replace": false,
 	"values":
 	[
-		"sgjourney:naquadah_rod",
-		"sgjourney:naquadah_copper_rod",
-		"sgjourney:naquadah_iron_rod",
-		"sgjourney:trinium_rod"
+		"#forge:rods/naquadah",
+		"#forge:rods/naquadah_iron_alloy",
+		"#forge:rods/naquadah_copper_alloy",
+		"#forge:rods/trinium"
 	]
 }
