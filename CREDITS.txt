@@ -6,7 +6,7 @@ tehgreatdoge - Various code contributions
 AngelaTheSephira - Sandstone with Gold
 Otwnt - Stargate Pedestals, Jaffa House
 Kranyolsu - Stargate Pedestals
-Carter Addon Pack - Sounds
+Carter Addon Pack (https://github.com/RafaelDeJongh/cap/blob/master/CREDITS.md) - Nearly all sound files (except movie_chevron_open.ogg, movie_chevron_close.ogg and nothing.ogg)
 diesieben07 - Code for GUI shift-clicking
 TelepathicGrunt - Code for Structure spawning
 AlexandriaOL - Fixed a typo in advancements
