@@ -264,6 +264,9 @@ public class BlockEntityList extends SavedData
 	public <T extends Transporter> T getTransporter(Class<T> clazz, TransporterID transporterID)
 	{
 		Transporter transporter = getTransporter(transporterID);
+		if(transporter == null)
+			return null;
+		
 		if(clazz.isInstance(transporter))
 			return clazz.cast(transporter);
 		
